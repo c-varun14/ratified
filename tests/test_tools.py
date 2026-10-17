@@ -259,3 +259,47 @@ def test_sync_defers_on_rate_limit_without_a_usable_cache(graph, sample_dataset)
     assert result["deferred"] is True
     assert result["reason"] == "rate limit"
     assert result["title"] == "sync deferred (rate limit), graph unchanged"
+
+
+def test_section_by_heading_returns_the_number(graph, sample_dataset):
+    ingest.ingest(graph, sample_dataset)
+    result = tools.section_by_heading(graph, "draft-ietf-tls-tls13", "Record Padding")
+    assert result["outcome"] == "answer"
+    assert result["answer"] == "5.4"
+    assert result["title"] == "§5.4 — Record Padding"
+    assert any(chip["kind"] == "section" for chip in result["chips"])
+    assert all(chip["url"].startswith("http") for chip in result["chips"])
+
+
+def test_section_by_heading_is_unknown_for_an_absent_heading(graph, sample_dataset):
+    ingest.ingest(graph, sample_dataset)
+    result = tools.section_by_heading(graph, "draft-ietf-tls-tls13", "No Such Heading")
+    assert result["outcome"] == "unknown"
+    assert result["outcome_message"] == "the graph does not know"
+    assert result["answer"] is None
+
+
+def test_revisions_lists_ranges_latest_and_count(graph, sample_dataset):
+    ingest.ingest(graph, sample_dataset)
+    ids = ["draft-ietf-tls-tls13-20", "draft-ietf-tls-tls13-21"]
+    listed = tools.revisions(graph, "draft-ietf-tls-tls13")
+    assert listed["answer"] == ids
+    assert listed["count"] == 2 and listed["latest"] == ids[-1]
+    assert all(chip["kind"] == "revision" for chip in listed["chips"])
+    assert tools.revisions(graph, "draft-ietf-tls-tls13", lo=21, hi=21)["answer"] == [ids[-1]]
+    assert tools.revisions(graph, "draft-ietf-tls-tls13", latest=True)["answer"] == ids[-1]
+    assert tools.revisions(graph, "draft-ietf-tls-tls13", count=True)["answer"] == 2
+
+
+def test_revisions_unknown_for_an_absent_draft(graph, sample_dataset):
+    ingest.ingest(graph, sample_dataset)
+    assert tools.revisions(graph, "draft-ietf-tls-nope")["outcome"] == "unknown"
+
+
+def test_count_unresolved_counts_cited_clauses_only(graph, sample_dataset):
+    ingest.ingest(graph, sample_dataset)
+    result = tools.count_unresolved(graph, "draft-ietf-tls-tls13")
+    assert result["outcome"] == "answer"
+    assert result["answer"] == 1 and result["count"] == 1
+    assert any("§5.4" in claim["text"] for claim in result["claims"])
+    assert any(chip["kind"] == "section" for chip in result["chips"])
