@@ -178,13 +178,14 @@ def has_revision_rows(docs: dict) -> list[dict]:
     ]
 
 
-def rfc_rows(docs: dict) -> tuple[list[dict], list[dict]]:
+def rfc_rows(docs: dict, published: dict | None = None) -> tuple[list[dict], list[dict]]:
     rfcs = [
         {
             "id": name,
             "number": v.get("rfc_number"),
             "title": (v.get("title") or "")[:300],
             "url": f"https://www.rfc-editor.org/rfc/{name}.html",
+            "published": (published or {}).get(name),
         }
         for name, v in docs["rfcs"].items()
     ]
@@ -319,7 +320,8 @@ def ingest(graph, data: dict, *, list_name: str = LIST, draft_prefix: str = DRAF
     edges("AUTHORED", person_message_rows(data["messages"]))
 
     drafts, revisions, in_wg, superseded = draft_rows(data["docs"])
-    rfcs, became = rfc_rows(data["docs"])
+    rfc_record = data["sections"]["rfc"]
+    rfcs, became = rfc_rows(data["docs"], {rfc_record["name"]: rfc_record.get("published")})
     nodes("Draft", drafts)
     nodes("DraftRevision", revisions)
     nodes("RFC", rfcs)

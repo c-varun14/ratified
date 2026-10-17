@@ -12,7 +12,7 @@ FROZEN_NODES = {
     "MessageBody": ("text",),
     "Draft": ("title", "latest_rev"),
     "DraftRevision": ("revision", "rev", "date"),
-    "RFC": ("number", "title", "url"),
+    "RFC": ("number", "title", "url", "published"),
     "Section": ("number", "title", "url"),
 }
 

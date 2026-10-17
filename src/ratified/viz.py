@@ -31,7 +31,21 @@ def _node(x: int, y: int, width: int, kind: str, label: str, css: str) -> str:
     )
 
 
+MAX_REVISIONS = 3
+
+
+def _collapse(steps: list[dict]) -> list[dict]:
+    """Keep the first and last revisions of a long chain and fold the middle into one node."""
+    revisions = [i for i, step in enumerate(steps) if step["kind"] == "revision"]
+    if len(revisions) <= MAX_REVISIONS:
+        return steps
+    first, last = revisions[0], revisions[-1]
+    folded = {"kind": "revision", "label": f"… {last - first - 1} more revisions …"}
+    return steps[: first + 1] + [folded] + steps[last:]
+
+
 def path_svg(steps: list[dict], other_revisions: list[str], other_threads: list[str]) -> str:
+    steps = _collapse(steps)
     ghosts = [("revision", revision) for revision in other_revisions]
     ghosts += [("thread", thread) for thread in other_threads]
     extra = max(0, len(ghosts) - MAX_GHOSTS)

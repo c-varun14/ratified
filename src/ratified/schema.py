@@ -38,7 +38,7 @@ NODES: dict[str, NodeDef] = {
     "MessageBody": NodeDef("MessageBody", ("text",)),
     "Draft": NodeDef("Draft", ("title", "latest_rev")),
     "DraftRevision": NodeDef("DraftRevision", ("revision", "rev", "date")),
-    "RFC": NodeDef("RFC", ("number", "title", "url")),
+    "RFC": NodeDef("RFC", ("number", "title", "url", "published")),
     "Section": NodeDef("Section", ("number", "title", "url")),
 }
 

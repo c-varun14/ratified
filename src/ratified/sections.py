@@ -125,6 +125,20 @@ def align_to_rfc(draft_sections: dict[str, dict], rfc_sections: dict[str, dict])
     return align, stats
 
 
+MONTHS = ("January", "February", "March", "April", "May", "June", "July", "August", "September", "October",
+          "November", "December")
+PUBLISHED_RE = re.compile(r"\s(" + "|".join(MONTHS) + r")\s+(\d{4})\s*$")
+
+
+def published_month(rfc_text: str) -> str | None:
+    """The RFC's publication month as YYYY-MM, read from the first-page header ("August 2018")."""
+    for line in rfc_text.splitlines()[:15]:
+        match = PUBLISHED_RE.search(line)
+        if match:
+            return f"{match.group(2)}-{MONTHS.index(match.group(1)) + 1:02d}"
+    return None
+
+
 def build(
     fetcher,
     data_dir: str = DATA_DIR,
@@ -132,12 +146,14 @@ def build(
     draft_revs: tuple[str, ...] = DEFAULT_DRAFT_REVS,
 ) -> dict:
     name, number, title = rfc
-    rfc_sections = parse_sections(fetcher.get(RFC_URL.format(name=name)).decode("utf-8", "replace"))
+    rfc_text = fetcher.get(RFC_URL.format(name=name)).decode("utf-8", "replace")
+    rfc_sections = parse_sections(rfc_text)
     record: dict = {
         "rfc": {
             "name": name,
             "number": number,
             "title": title,
+            "published": published_month(rfc_text),
             "n_sections": len(rfc_sections),
             "sections": rfc_sections,
         },

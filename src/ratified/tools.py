@@ -129,6 +129,10 @@ def aggregate_unresolved(graph, draft: str = DEFAULT_DRAFT):
         WHERE al.changed = true
         MATCH (m:Message)-[:DISCUSSED]->(dr)
         MATCH (m)-[:CITES]->(s)
+        OPTIONAL MATCH (dr)-[:SUPERSEDED]->(next:DraftRevision)
+        OPTIONAL MATCH (shipped:RFC)-[:HAS_SECTION]->(s)
+        WITH s, m, dr, coalesce(next.date, shipped.published + '-31') AS until
+        WHERE until IS NULL OR m.date <= until
         OPTIONAL MATCH (p:Person)-[:AUTHORED]->(m)
         OPTIONAL MATCH (m)-[:IN_THREAD]->(t:Thread)
         RETURN s.id AS sid, s.number AS number, s.title AS title, s.url AS url,
@@ -236,10 +240,14 @@ MATCH (s:Section {id:$sid})
 MATCH (m:Message)-[:CITES]->(s)
 MATCH (m)-[:DISCUSSED]->(dr:DraftRevision)
 MATCH (dr)-[al:ALIGNS_SECTION]->(s)
+WHERE al.changed = true
+OPTIONAL MATCH (dr)-[:SUPERSEDED]->(next:DraftRevision)
+OPTIONAL MATCH (shipped:RFC)-[:HAS_SECTION]->(s)
+WITH s, m, dr, al, coalesce(next.date, shipped.published + '-31') AS until
+WHERE until IS NULL OR m.date <= until
 MATCH (m)-[:IN_THREAD]->(t:Thread)
 MATCH p=(dr)-[:SUPERSEDED*0..]->(last:DraftRevision)
 MATCH (last)-[:BECAME]->(rfc:RFC)-[:HAS_SECTION]->(s)
-WHERE al.changed = true
 RETURN DISTINCT m.id AS mid, m.url AS murl, m.date AS date, m.subject AS subject,
        t.id AS tid, t.url AS turl,
        [n IN nodes(p) | n.id] AS chain, rfc.id AS rfc,
@@ -340,6 +348,10 @@ MATCH (s:Section {id:$sid})
 MATCH (m:Message)-[:CITES]->(s)
 MATCH (m)-[:DISCUSSED]->(dr:DraftRevision)-[al:ALIGNS_SECTION]->(s)
 WHERE al.changed = true
+OPTIONAL MATCH (dr)-[:SUPERSEDED]->(next:DraftRevision)
+OPTIONAL MATCH (shipped:RFC)-[:HAS_SECTION]->(s)
+WITH s, m, dr, coalesce(next.date, shipped.published + '-31') AS until
+WHERE until IS NULL OR m.date <= until
 MATCH (m)-[:IN_THREAD]->(t:Thread)
 OPTIONAL MATCH (p:Person)-[:AUTHORED]->(m)
 RETURN m.id AS mid, m.url AS murl, m.date AS date, m.subject AS subject,
@@ -358,8 +370,12 @@ MATCH (a:AreaDirector)-[:AD_FOR]->(w:Wg {id:$wg}) RETURN a.name AS name, 'area d
 DISCUSSED_CLAUSES_Q = """
 MATCH (d:Draft {id:$draft})-[:HAS_REVISION]->(:DraftRevision)-[:BECAME]->(:RFC)-[:HAS_SECTION]->(s:Section)
 MATCH (m:Message)-[:CITES]->(s)
-MATCH (m)-[:DISCUSSED]->(:DraftRevision)-[al:ALIGNS_SECTION]->(s)
+MATCH (m)-[:DISCUSSED]->(dr:DraftRevision)-[al:ALIGNS_SECTION]->(s)
 WHERE al.changed = true
+OPTIONAL MATCH (dr)-[:SUPERSEDED]->(next:DraftRevision)
+OPTIONAL MATCH (shipped:RFC)-[:HAS_SECTION]->(s)
+WITH s, m, dr, coalesce(next.date, shipped.published + '-31') AS until
+WHERE until IS NULL OR m.date <= until
 OPTIONAL MATCH (p:Person)-[:AUTHORED]->(m)
 RETURN s.number AS number, s.title AS title,
        count(DISTINCT m) AS messages, count(DISTINCT coalesce(p.name, m.from)) AS people
