@@ -684,6 +684,27 @@ def count_thread_messages(graph, thread_or_draft: str = ""):
     return result
 
 
+NO_ANSWER = "no_answer"
+
+
+def no_answer(scope: str = "that record"):
+    """The router's honest abstention for a shape no catalogue tool can answer.
+
+    Reserved: it is not in TOOL_CATALOGUE, so the LLM can never pick it and it is
+    not offered as a tool. It only renders the same "the graph does not know" card
+    the empty traversals already use.
+    """
+    result = card(
+        NO_ANSWER,
+        f"{scope} is not in the ingested record",
+        [],
+        notes=[f"the graph holds one WG's drafts, RFCs and mailing-list threads — no {scope} artefact is loaded"],
+    )
+    result["explanation"] = "This is the graph saying: the question names a record it was not built to hold."
+    result["answer"] = None
+    return result
+
+
 class SyncDeferred(RuntimeError):
     """Raised when mailarchive cannot be re-fetched and the cache cannot stand in."""
 
@@ -847,4 +868,6 @@ TOOLS = {
 
 
 def run(graph, tool: str, **kwargs):
+    if tool == NO_ANSWER:
+        return no_answer(**kwargs)
     return TOOLS[tool](graph, **kwargs)

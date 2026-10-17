@@ -1,23 +1,29 @@
 """Map a free-text question to one catalogue tool and its argument, with no LLM.
 
 The router is deterministic and shaped: a question is classified into one of the
-four known shapes — single-lookup, collect, aggregate or unanswerable — by
-explicit keyword rules, and each shape names exactly one catalogue tool with its
-argument. The LLM is never required to pick a tool; when it is enabled it is used
-only to phrase the result, and it is consulted as a tie-breaker solely when no
-shape rule matches (`route_ex` then returns `tied=True`). That tie-break call is
-cached by (model, prompt, graph-hash) like every other LLM call.
+known shapes — single-lookup, collect, aggregate or unanswerable — by explicit
+keyword rules, and each shape names exactly one catalogue tool with its argument.
+A shape the ingested graph cannot answer (the IESG-ballot / meeting-minutes
+questions) routes to the reserved ``no_answer`` sentinel, which renders the same
+"the graph does not know" card the app already uses rather than bluffing.
+
+The LLM is never required to pick a tool; when it is enabled it is used only to
+phrase the result, and it is consulted as a tie-breaker solely when no shape rule
+matches (`route_ex` then returns `tied=True`). That tie-break call is cached by
+(model, prompt, graph-hash) like every other LLM call.
 """
 from __future__ import annotations
 
 import re
 
-from .tools import DEFAULT_DRAFT
+from .ingest import LIST as DEFAULT_WG
+from .tools import DEFAULT_DRAFT, NO_ANSWER
 
 DRAFT_RE = re.compile(r"(draft-[a-z0-9-]+)")
 NUMBER_RE = re.compile(r"(?:section|§)\s*(\d+(?:\.\d+)*)", re.I)
 MESSAGE_RE = re.compile(r"([A-Za-z0-9][A-Za-z0-9_-]{13,})")
 HEADING_RE = re.compile(r"['\"“”‘’]([^'\"“”‘’]{2,})['\"“”‘’]")
+THREAD_RE = re.compile(r"\b([a-z][a-z0-9-]*:\d+)\b", re.I)
 REV_RANGE_RE = re.compile(
     r"(?:revision[s]?\s*)?#?-?(\d{1,4})\s*(?:to|through|–|—|-)\s*#?-?(\d{1,4})\b", re.I
 )
@@ -28,6 +34,7 @@ PRECEDENT_WORDS = ("precedent", "trace", "why")
 SECTION_WORDS = ("what happened", "clause", "section", "changed", "§")
 LATEST_WORDS = ("latest", "newest", "most recent")
 COUNT_WORDS = ("how many", "count", "number of")
+OUT_OF_SCOPE_WORDS = ("iesg", "ballot", "minutes")
 
 
 def extract_draft(question: str) -> str:
@@ -55,12 +62,31 @@ def extract_heading(question: str) -> str | None:
     return match.group(1).strip() if match else None
 
 
+def extract_thread(question: str) -> str | None:
+    match = THREAD_RE.search(question or "")
+    return match.group(1) if match else None
+
+
+def extract_needle(question: str) -> str | None:
+    """The distinctive pattern a subject question names: a full draft id or a quoted phrase."""
+    match = DRAFT_RE.search(question or "")
+    if match:
+        return match.group(1)
+    return extract_heading(question)
+
+
 def extract_revision_range(question: str) -> tuple[int | None, int | None]:
     match = REV_RANGE_RE.search(question or "")
     if not match:
         return None, None
     lo, hi = int(match.group(1)), int(match.group(2))
     return (lo, hi) if lo <= hi else (hi, lo)
+
+
+def _out_of_scope(text: str) -> str:
+    if "iesg" in text or "ballot" in text:
+        return "IESG ballot positions"
+    return "meeting minutes"
 
 
 def route_ex(question: str) -> tuple[str, dict, bool]:
@@ -82,6 +108,26 @@ def route_ex(question: str) -> tuple[str, dict, bool]:
         if any(word in text for word in LATEST_WORDS):
             return "revisions", {"draft": draft, "latest": True}, False
         return "revisions", {"draft": draft}, False
+
+    if any(word in text for word in OUT_OF_SCOPE_WORDS):
+        return NO_ANSWER, {"scope": _out_of_scope(text)}, False
+
+    if "become" in text or "became" in text:
+        if any(word in text for word in COUNT_WORDS):
+            return "count_became", {"draft": draft}, False
+        return "became_rfc", {"draft": draft}, False
+
+    if "chair" in text:
+        return "chairs", {"wg": DEFAULT_WG}, False
+
+    thread = extract_thread(question)
+    if "thread" in text and ("subject" in text or "mention" in text):
+        needle = extract_needle(question)
+        if needle:
+            return "threads_by_subject", {"pattern": needle}, False
+
+    if thread and "thread" in text and any(word in text for word in COUNT_WORDS):
+        return "count_thread_messages", {"thread_or_draft": thread}, False
 
     number = extract_number(question)
     if number and any(word in text for word in SECTION_WORDS):

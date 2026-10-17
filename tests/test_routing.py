@@ -7,24 +7,23 @@ from ratified import routing
 
 QUESTIONS = json.loads((Path(__file__).resolve().parents[1] / "bench" / "questions.json").read_text())
 
-# The deterministic route for every bench question. The heading, revision and
-# clause shapes reach the tool that answers them; a4, b2, b3, c1, c2, d2 and d3
-# have no catalogue tool yet, so they fall through to the hero default. That
-# residual is what the evaluation table reports, not something the router fixes.
+# The deterministic route for every bench question. Every shape now names the
+# tool that answers it; the two out-of-scope shapes route to the reserved
+# no_answer sentinel, which renders "the graph does not know" instead of bluffing.
 ROUTES: dict[str, tuple[str, dict]] = {
     "a1": ("section_by_heading", {"draft": "draft-ietf-tls-tls13", "heading": "Record Padding"}),
     "a2": ("section_by_heading", {"draft": "draft-ietf-tls-tls13", "heading": "Hello Retry Request"}),
     "a3": ("revisions", {"draft": "draft-ietf-tls-tls13", "latest": True}),
-    "a4": ("aggregate_unresolved", {"draft": "draft-ietf-tls-tls13"}),
+    "a4": ("became_rfc", {"draft": "draft-ietf-tls-tls13"}),
     "b1": ("revisions", {"draft": "draft-ietf-tls-tls13", "lo": 18, "hi": 28}),
-    "b2": ("aggregate_unresolved", {"draft": "draft-ietf-tls-tls13"}),
-    "b3": ("aggregate_unresolved", {"draft": "draft-ietf-tls-tls13"}),
-    "c1": ("aggregate_unresolved", {"draft": "draft-ietf-tls-"}),
-    "c2": ("aggregate_unresolved", {"draft": "draft-ietf-tls-tls13"}),
+    "b2": ("chairs", {"wg": "tls"}),
+    "b3": ("threads_by_subject", {"pattern": "draft-ietf-tls-tls13-21"}),
+    "c1": ("count_became", {"draft": "draft-ietf-tls-"}),
+    "c2": ("count_thread_messages", {"thread_or_draft": "tls:1721641"}),
     "c3": ("revisions", {"draft": "draft-ietf-tls-tls13", "count": True}),
     "d1": ("what_happened_to", {"number": "9.4"}),
-    "d2": ("aggregate_unresolved", {"draft": "draft-ietf-tls-tls13"}),
-    "d3": ("aggregate_unresolved", {"draft": "draft-ietf-tls-tls13"}),
+    "d2": ("no_answer", {"scope": "IESG ballot positions"}),
+    "d3": ("no_answer", {"scope": "meeting minutes"}),
 }
 
 
