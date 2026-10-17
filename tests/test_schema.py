@@ -31,11 +31,13 @@ FROZEN_EDGES = {
     "ABOUT_SECTION": ("Thread", "Section", ("matched_tokens",)),
     "HAS_SECTION": ("RFC", "Section", ()),
     "ALIGNS_SECTION": ("DraftRevision", "Section", ("similarity", "changed", "how")),
+    "CO_CITED": ("Section", "Section", ("n",)),
+    "CO_DISCUSSED": ("Person", "Person", ("n",)),
 }
 
 
 def test_frozen_vocabulary():
-    assert schema.SCHEMA_VERSION == 1
+    assert schema.SCHEMA_VERSION == 2
     assert {label: node.props for label, node in schema.NODES.items()} == FROZEN_NODES
     assert {
         type_: (edge.source, edge.target, edge.props) for type_, edge in schema.EDGES.items()
@@ -86,6 +88,8 @@ def test_round_trip(graph, sample_dataset):
         "ABOUT_SECTION": 2,
         "HAS_SECTION": 2,
         "ALIGNS_SECTION": 1,
+        "CO_CITED": 0,
+        "CO_DISCUSSED": 2,
     }
     assert counts["cites_unresolved"] == 0
 

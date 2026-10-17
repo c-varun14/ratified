@@ -8,7 +8,7 @@ import re
 from collections import Counter
 from pathlib import Path
 
-from . import schema
+from . import insights, schema, search
 from .paths import DATA_DIR
 
 LIST = os.environ.get("RATIFIED_LIST", "tls")
@@ -60,10 +60,11 @@ def load_dataset(data_dir: str = DATA_DIR, list_name: str = LIST) -> dict:
 
 
 def person_key(msg: dict) -> str | None:
-    if msg.get("from_email"):
-        return msg["from_email"]
-    display = (msg.get("from_display") or "").strip()
-    return f"name:{display}" if display else None
+    """One Person per display name: browse rows carry only a name, and people post from several addresses."""
+    name = " ".join((msg.get("from_name") or msg.get("from_display") or "").split())
+    if name:
+        return f"name:{name.lower()}"
+    return msg.get("from_email") or None
 
 
 def person_rows(messages: list[dict]) -> list[dict]:
@@ -327,6 +328,9 @@ def ingest(graph, data: dict, *, list_name: str = LIST, draft_prefix: str = DRAF
     edges("DISCUSSED", discussed)
     edges("CITES", cites)
 
+    search.create_indexes(graph)
+    insights.derive_projections(graph)
+
     return {
         "nodes": {
             label: _count(graph, f"MATCH (n:{label}) RETURN count(n)")
@@ -353,6 +357,7 @@ def append_messages(graph, messages: list[dict], threads: list[dict], sections: 
     discussed, cites, unresolved = discussion_rows(messages, sections, draft_prefix)
     _write(graph, schema.merge_edges("DISCUSSED"), discussed, batch)
     _write(graph, schema.merge_edges("CITES"), cites, batch)
+    insights.derive_projections(graph)
     return {"messages": len(messages), "threads": len(threads), "discussed": len(discussed), "cites": len(cites)}
 
 

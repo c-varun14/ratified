@@ -43,6 +43,11 @@ REVISION_WORDS = ("revision", "revised")
 BECAME_WORDS = ("become", "became", "turn into", "turned into", "ended up as")
 CHAIR_WORDS = ("chair", "who runs", "who leads", "leading the", "steering", "in charge of")
 WHO_DISCUSSED_WORDS = ("took part", "participated", "whose messages", "who posted", "who discussed", "who talked")
+WHO_KNOWS_WORDS = ("who knows", "key people", "most influential", "central", "expert", "most active", "who matters")
+SEARCH_WORDS = (
+    "say about", "said about", "says about", "talk about", "talked about", "discussion of", "discussions of",
+    "discussions about", "opinions on", "mentioned", "anyone mention", "search",
+)
 SECTION_WORDS = ("what happened", "clause", "section", "changed", "§")
 LATEST_WORDS = ("latest", "newest", "most recent")
 COUNT_WORDS = ("how many", "count", "number of")
@@ -152,11 +157,16 @@ def route_ex(question: str) -> tuple[str, dict, bool]:
         return "aggregate_unresolved", {"draft": draft}, False
     if ("argu" in text and ("who" in text or "people" in text)) or any(word in text for word in WHO_DISCUSSED_WORDS):
         return "who_argued", {"draft": draft}, False
+    if any(word in text for word in WHO_KNOWS_WORDS):
+        return "who_knows", {}, False
+    if any(word in text for word in SEARCH_WORDS):
+        return "search_discussion", {"text": question}, False
     if any(word in text for word in PRECEDENT_WORDS):
         message = extract_message(question)
         if message:
             return "precedent", {"message_id": message}, False
-        return NOT_UNDERSTOOD, {}, True
+    if any(word in text for word in WHY_WORDS):
+        return "why_clause", {"topic": question, "draft": draft}, False
     if any(word in text for word in SYNC_WORDS):
         return "sync", {"days": 1}, False
     return NOT_UNDERSTOOD, {}, True

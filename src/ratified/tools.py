@@ -10,12 +10,13 @@ import os
 import re
 from datetime import date, timedelta
 
-from . import ingest, mail, viz
+from . import ingest, insights, mail, search, viz
 from .fetch import Fetcher
 from .graph import rows
 from .paths import DATA_DIR
 
 DEFAULT_DRAFT = "draft-ietf-tls-tls13"
+LIST_LABEL = "the TLS list's messages"
 
 TOPIC_LINK_PRECISION = "9 of 52 decided links (17.3%; 36 ties)"
 
@@ -39,7 +40,9 @@ OUTCOME_MESSAGE = {
 }
 
 TOOL_CATALOGUE = [
-    {"name": "why_clause", "args": ["number", "heading", "draft"], "description": "where a shipped clause was discussed while still changing, who to ask now, and a drafted (never sent) question"},
+    {"name": "why_clause", "args": ["number", "heading", "topic", "draft"], "description": "where a shipped clause was discussed while still changing, clauses discussed with it, who to ask now, and a drafted (never sent) question; a plain-words topic is resolved by FalkorDB's full-text index"},
+    {"name": "search_discussion", "args": ["text"], "description": "what people wrote about a topic: FalkorDB full-text over message text, expanded to threads, authors and the clauses each message cites"},
+    {"name": "who_knows", "args": [], "description": "the most central people in the list's discussions: algo.pageRank and algo.betweenness over who wrote in the same threads"},
     {"name": "aggregate_unresolved", "args": ["draft"], "description": "clauses of a draft discussed while still changing, with no later resolution trail"},
     {"name": "who_argued", "args": ["draft"], "description": "people who discussed a draft on the list, with their messages"},
     {"name": "what_happened_to", "args": ["number"], "description": "what happened to a clause across revisions and the RFC"},
@@ -420,10 +423,28 @@ def _draft_message(section: dict, discussed: list[dict], people: list[str], role
     }
 
 
-def why_clause(graph, number: str = "", heading: str = "", draft: str = DEFAULT_DRAFT):
-    """Where a shipped clause was discussed while it was still changing, and who to ask now."""
+def why_clause(graph, number: str = "", heading: str = "", draft: str = DEFAULT_DRAFT, topic: str = ""):
+    """Where a shipped clause was discussed while it was still changing, and who to ask now.
+
+    A clause is named by number, by exact heading, or by a plain-words topic that FalkorDB's full-text index on
+    Section.title resolves (the best match is answered; the runners-up are listed).
+    """
     number = (number or "").strip().lstrip("§")
     heading = (heading or "").strip().lower()
+    resolved = []
+    if not number and not heading and topic:
+        resolved = search.find_sections(graph, topic, draft)
+        if not resolved:
+            result = card(
+                "why_clause",
+                "No clause matches that question",
+                [],
+                notes=[f"FalkorDB's full-text index on RFC section headings found nothing for: {search.query_terms(topic) or topic!r}"]
+                + [f"you can ask: {item}" for item in ANSWERABLE],
+            )
+            result["answer"] = None
+            return result
+        number = resolved[0]["number"]
     sections = rows(graph, WHY_SECTION_Q, {"draft": draft, "number": number, "heading": heading})
     asked = f"§{number}" if number else f"the section titled '{heading}'"
     if not sections:
@@ -479,7 +500,81 @@ def why_clause(graph, number: str = "", heading: str = "", draft: str = DEFAULT_
         {"name": name, "why": f"cited this clause in {counts[name]} message(s)"} for name in people
     ] + [{"name": r["name"], "why": f"current TLS {r['role']}"} for r in sorted(roles, key=lambda r: (r["role"], r["name"]))]
     result["draft_message"] = _draft_message(section, discussed, people, roles)
+    result["related"] = insights.related_clauses(graph, section["sid"])
+    if resolved:
+        result["resolved"] = {
+            "topic": topic,
+            "query": search.query_terms(topic),
+            "matches": [{"number": r["number"], "title": r["title"], "score": r["score"]} for r in resolved],
+        }
     result["answer"] = people
+    return result
+
+
+def search_discussion(graph, text: str = "", limit: int = 10):
+    """What people wrote about a topic: FalkorDB full-text over message bodies and subjects, then the graph
+    expands each hit to its thread, its author and the RFC clauses it cites."""
+    hits = search.search_messages(graph, text, limit)
+    query = search.query_terms(text)
+    if not hits:
+        result = card(
+            "search_discussion",
+            "No message in the record matches that",
+            [],
+            notes=[f"FalkorDB's full-text index over {LIST_LABEL} found nothing for: {query or text!r}"],
+        )
+        result["answer"] = []
+        return result
+    claims = []
+    for hit in hits:
+        chips = [message_chip(hit["mid"], hit["url"])]
+        if hit.get("tid"):
+            chips.append(thread_chip(hit["tid"], hit["turl"]))
+        cited = ", ".join(f"§{s['number']} {s['title']}" for s in hit["sections"])
+        text_out = f"{hit['date']} · {hit['person']}: \"{_bare_subject(hit['subject'])}\""
+        claims.append({"text": text_out + (f" (cites {cited})" if cited else ""), "chips": chips})
+    clauses = sorted({(s["number"], s["title"]) for hit in hits for s in hit["sections"]}, key=lambda s: s[0])
+    notes = [f"full-text query run in FalkorDB: {query}"]
+    if clauses:
+        notes.append("clauses these messages cite: " + ", ".join(f"§{n} {t}" for n, t in clauses))
+    result = card("search_discussion", f"{len(hits)} messages on the list match", claims, notes=notes)
+    result["answer"] = [hit["mid"] for hit in hits]
+    return result
+
+
+def who_knows(graph, limit: int = 10):
+    """The people at the centre of the list's discussions: PageRank and betweenness over CO_DISCUSSED."""
+    people = insights.central_people(graph, limit)
+    if not people:
+        result = card("who_knows", "No discussion network in the graph", [], notes=["CO_DISCUSSED has no edges"])
+        result["answer"] = []
+        return result
+    claims = [
+        {
+            "text": (
+                f"{p['name']} — PageRank {p['pagerank']}, betweenness {round(p['betweenness'])}; "
+                f"wrote in {p['threads']} threads, cited {p['clauses']} RFC 8446 clauses"
+            ),
+            "chips": [],
+        }
+        for p in people
+    ]
+    result = card(
+        "who_knows",
+        f"The {len(people)} most central people in the TLS list discussions",
+        claims,
+        rows_out=people,
+        notes=[
+            "PageRank and betweenness are FalkorDB's algo.pageRank and algo.betweenness over CO_DISCUSSED, "
+            "an edge between two people who wrote in the same thread (derived from the record by Cypher)",
+            "central in the discussion network is not the same as being right, or being the decider",
+        ],
+    )
+    result["explanation"] = (
+        "PageRank ranks people by how connected their conversation partners are; betweenness ranks the people "
+        "who link otherwise separate discussions."
+    )
+    result["answer"] = [p["name"] for p in people]
     return result
 
 
@@ -851,7 +946,9 @@ NO_ANSWER = "no_answer"
 NOT_UNDERSTOOD = "not_understood"
 
 ANSWERABLE = [
-    "why a section of RFC 8446 reads the way it does, and who to ask (e.g. \"why does section 4.2.11 read the way it does?\")",
+    "why a section of RFC 8446 reads the way it does, and who to ask (e.g. \"why does early data work like this?\")",
+    "what the list said about a topic (e.g. \"what did people say about middleboxes?\")",
+    "who the most central people in the discussions are",
     "which clauses of draft-ietf-tls-tls13 were discussed while still changing and never resolved",
     "who chairs the TLS working group",
     "the latest revision of draft-ietf-tls-tls13, how many revisions it had, or the revisions between two numbers",
@@ -1037,6 +1134,8 @@ def sync(graph, days: int = 1, fetcher=None, sections: dict | None = None):
 
 TOOLS = {
     "why_clause": why_clause,
+    "search_discussion": search_discussion,
+    "who_knows": who_knows,
     "aggregate_unresolved": aggregate_unresolved,
     "who_argued": who_argued,
     "what_happened_to": what_happened_to,

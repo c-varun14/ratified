@@ -147,7 +147,32 @@ def test_routing_maps_questions_to_the_catalogue():
     assert routing.route("is the graph up to date")[0] == "sync"
     assert routing.route("trace the precedent for message abcdefghijklmnop")[0] == "precedent"
     assert routing.route("anything at all") == ("not_understood", {})
-    assert routing.route("why is the sky blue") == ("not_understood", {})
+    assert routing.route("why is the sky blue") == ("why_clause", {"topic": "why is the sky blue", "draft": "draft-ietf-tls-tls13"})
+
+
+def test_why_clause_resolves_a_plain_words_topic_through_the_full_text_index(graph, sample_dataset):
+    ingest.ingest(graph, sample_dataset)
+    result = tools.why_clause(graph, topic="how come record padding works like this")
+    assert result["sid"] == "rfc8446#5.4"
+    assert result["resolved"]["matches"][0]["number"] == "5.4"
+    missing = tools.why_clause(graph, topic="why is the sky blue")
+    assert missing["outcome"] == "unknown"
+    assert missing["answer"] is None
+
+
+def test_search_discussion_expands_hits_to_cited_clauses(graph, sample_dataset):
+    ingest.ingest(graph, sample_dataset)
+    result = tools.search_discussion(graph, "what did people say about padding leaks?")
+    assert result["answer"][0] == "aaa111"
+    assert any("§5.4 Record Padding" in note for note in result["notes"])
+    assert tools.search_discussion(graph, "quantum teleportation")["outcome"] == "unknown"
+
+
+def test_who_knows_ranks_people_by_pagerank(graph, sample_dataset):
+    ingest.ingest(graph, sample_dataset)
+    result = tools.who_knows(graph)
+    assert set(result["answer"]) == {"Ada Lovelace", "Grace Hopper"}
+    assert "algo.pageRank" in result["notes"][0]
 
 
 def test_not_understood_says_what_can_be_asked():

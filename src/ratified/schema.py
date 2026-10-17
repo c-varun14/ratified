@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 GRAPH_NAME = "ratified"
 KEY = "id"
 
@@ -59,7 +59,11 @@ EDGES: dict[str, EdgeDef] = {
     "ALIGNS_SECTION": EdgeDef(
         "ALIGNS_SECTION", "DraftRevision", "Section", ("similarity", "changed", "how")
     ),
+    "CO_CITED": EdgeDef("CO_CITED", "Section", "Section", ("n",)),
+    "CO_DISCUSSED": EdgeDef("CO_DISCUSSED", "Person", "Person", ("n",)),
 }
+
+DERIVED_EDGES = ("CO_CITED", "CO_DISCUSSED")
 
 
 def merge_nodes(label: str) -> str:
