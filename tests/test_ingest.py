@@ -8,7 +8,7 @@ from ratified import ingest
 
 RECORD_NODES = {
     "Wg": 1,
-    "Person": 405,
+    "Person": 403,
     "Chair": 3,
     "AreaDirector": 2,
     "Thread": 633,
@@ -32,7 +32,7 @@ RECORD_EDGES = {
     "CITES": 333,
     "ABOUT_SECTION": 229,
     "CO_CITED": 968,
-    "CO_DISCUSSED": 40402,
+    "CO_DISCUSSED": 40390,
 }
 
 

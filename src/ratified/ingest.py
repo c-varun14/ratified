@@ -59,9 +59,19 @@ def load_dataset(data_dir: str = DATA_DIR, list_name: str = LIST) -> dict:
     }
 
 
+LAST_FIRST_RE = re.compile(r"^([^,@]+),\s*([^,@]+)$")
+
+
+def display_name(msg: dict) -> str:
+    """The sender's name, with mail-system "Last, First" turned into "First Last"."""
+    name = " ".join((msg.get("from_name") or msg.get("from_display") or "").split())
+    match = LAST_FIRST_RE.match(name)
+    return f"{match.group(2)} {match.group(1)}" if match else name
+
+
 def person_key(msg: dict) -> str | None:
     """One Person per display name: browse rows carry only a name, and people post from several addresses."""
-    name = " ".join((msg.get("from_name") or msg.get("from_display") or "").split())
+    name = display_name(msg)
     if name:
         return f"name:{name.lower()}"
     return msg.get("from_email") or None
@@ -77,7 +87,7 @@ def person_rows(messages: list[dict]) -> list[dict]:
             key,
             {
                 "id": key,
-                "name": msg.get("from_name") or msg.get("from_display") or "",
+                "name": display_name(msg),
                 "email": msg.get("from_email") or "",
             },
         )
