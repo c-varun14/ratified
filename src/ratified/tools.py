@@ -90,8 +90,8 @@ def card(tool, title, claims, rows_out=None, missing=None, conflicts=None, notes
 
 def _topic_link_note(count: int) -> str:
     return (
-        f"{count} clause(s) matched only by subject-token overlap were excluded from the count above; "
-        f"hand-checking those links measured {TOPIC_LINK_PRECISION} correct, so they are leads, not objections"
+        f"{count} clause(s) below are leads, not objections: they carry no message citation and are matched only "
+        f"by subject-token overlap, where hand-checking the links measured {TOPIC_LINK_PRECISION} correct"
     )
 
 
@@ -128,19 +128,30 @@ def aggregate_unresolved(graph, draft: str = DEFAULT_DRAFT):
 
     clauses: dict[str, dict] = {}
     for row in cited:
-        clause = clauses.setdefault(row["sid"], {**row})
+        clause = clauses.setdefault(row["sid"], {**row, "buckets": set()})
+        clause["buckets"].add("cited")
         for key in ("messages", "message_urls", "dates", "people", "threads", "thread_urls"):
             clause[key] = sorted(set(clause.get(key) or []) | set(row.get(key) or []))
+    for row in about:
+        clause = clauses.setdefault(
+            row["sid"],
+            {**row, "messages": [], "message_urls": [], "dates": [], "people": [], "buckets": set()},
+        )
+        clause["buckets"].add("topic")
+        for key in ("revisions", "threads", "thread_urls"):
+            clause[key] = sorted(set(clause.get(key) or []) | set(row.get(key) or []))
 
-    excluded = [row for row in about if row["sid"] not in clauses]
     if not clauses:
-        notes = [_topic_link_note(len(excluded))] if excluded else [
-            f"no clause of {draft} is linked to an objection message by a mechanical citation"
-        ]
-        return card("aggregate_unresolved", f"Unresolved objections in {draft}", [], notes=notes)
+        return card(
+            "aggregate_unresolved",
+            f"Unresolved objections in {draft}",
+            [],
+            notes=[f"no clause of {draft} is linked to an objection in the graph"],
+        )
 
     claims = []
     for clause in clauses.values():
+        cited_bucket = "cited" in clause["buckets"]
         last_argued = max(clause.get("dates") or [""])
         later = rows(
             graph,
@@ -153,25 +164,38 @@ def aggregate_unresolved(graph, draft: str = DEFAULT_DRAFT):
         chips += [thread_chip(t, u) for t, u in zip(clause.get("threads") or [], clause.get("thread_urls") or [])]
         chips += [message_chip(m, u) for m, u in zip(clause.get("messages") or [], clause.get("message_urls") or [])]
         people = ", ".join(sorted(set(clause.get("people") or [])))
-        messages = len(set(clause.get("messages") or []))
         label = f"§{clause['number']} {clause['title']}"
         if trail:
             text = f"{label} — a later citation trail exists ({trail} message(s) after {last_argued})"
-        elif people:
+        elif cited_bucket and people:
             text = f"{label} — argued against by {people}; no resolution trail found"
+        elif cited_bucket:
+            text = f"{label} — cited by {len(set(clause.get('messages') or []))} message(s); no resolution trail found"
         else:
-            text = f"{label} — cited by {messages} message(s); no resolution trail found"
-        claims.append({"text": text, "unresolved": not trail, "attributed": bool(people), "chips": chips})
+            threads = len(set(clause.get("threads") or []))
+            text = f"{label} — {threads} thread(s) matched this clause by subject tokens; no resolution trail found"
+        claims.append(
+            {
+                "text": text,
+                "unresolved": not trail,
+                "attributed": cited_bucket and bool(people),
+                "bucket": "cited" if cited_bucket else "topic",
+                "sid": clause["sid"],
+                "draft": draft,
+                "chips": chips,
+            }
+        )
 
-    claims.sort(key=lambda c: (not c["unresolved"], not c["attributed"], c["text"]))
+    claims.sort(key=lambda c: (c["bucket"] != "cited", not c["unresolved"], not c["attributed"], c["text"]))
     attributed = sum(1 for c in claims if c["unresolved"] and c["attributed"])
+    leads = sum(1 for c in claims if c["bucket"] == "topic")
     title = f"{attributed} clauses of {draft} argued against, no resolution trail"
-    notes = [_topic_link_note(len(excluded))] if excluded else []
+    notes = [_topic_link_note(leads)] if leads else []
     return card(
         "aggregate_unresolved",
         title,
         claims,
-        rows_out=[{"section": c["text"], "unresolved": c["unresolved"], "attributed": c["attributed"]} for c in claims],
+        rows_out=[{"section": c["text"], "unresolved": c["unresolved"], "bucket": c["bucket"]} for c in claims],
         notes=notes,
     )
 

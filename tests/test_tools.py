@@ -89,3 +89,32 @@ def test_routing_maps_questions_to_the_catalogue():
     assert routing.route("trace the precedent for message abcdefghijklmnop")[0] == "precedent"
     assert routing.route("anything at all")[0] == "aggregate_unresolved"
     assert routing.route("who argued about draft-ietf-tls-tls13-28")[1] == {"draft": "draft-ietf-tls-tls13"}
+
+
+def test_aggregate_claims_carry_a_clause_id_for_the_receipt(graph, sample_dataset):
+    ingest.ingest(graph, sample_dataset)
+    result = tools.aggregate_unresolved(graph, "draft-ietf-tls-tls13")
+    assert result["claims"]
+    assert all(claim["sid"].startswith("rfc8446#") for claim in result["claims"])
+    assert all(claim["draft"] == "draft-ietf-tls-tls13" for claim in result["claims"])
+
+
+def test_aggregate_labels_topic_links_as_leads(graph, sample_dataset):
+    data = copy.deepcopy(sample_dataset)
+    data["sections"]["drafts"]["draft-ietf-tls-tls13-21"]["align"]["5.5"] = {
+        "draft_number": "5.5",
+        "draft_title": "Record Payload Protection",
+        "rfc_number": "5.5",
+        "rfc_title": "Record Payload Protection",
+        "how": "heading",
+        "similarity": 0.9,
+        "changed": True,
+    }
+    ingest.ingest(graph, data)
+    result = tools.aggregate_unresolved(graph, "draft-ietf-tls-tls13")
+    buckets: dict[str, list] = {}
+    for claim in result["claims"]:
+        buckets.setdefault(claim["bucket"], []).append(claim)
+    assert any("§5.4" in claim["text"] for claim in buckets["cited"])
+    assert any("§5.5" in claim["text"] for claim in buckets["topic"])
+    assert result["notes"] and "measured" in result["notes"][0]
