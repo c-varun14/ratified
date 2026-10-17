@@ -29,7 +29,8 @@ STOP_WORDS = {
     "she", "should", "so", "some", "spec", "story", "talk", "tell", "than", "that", "the", "their", "them", "then",
     "there", "these", "they", "this", "those", "tls", "tls13", "to", "too", "under", "up", "us", "very", "want", "was",
     "way", "we", "were", "what", "whats", "when", "where", "which", "while", "who", "whom", "why", "will", "with",
-    "work", "works", "worded", "wording", "would", "written", "yes", "you", "your", "8446",
+    "work", "works", "worded", "wording", "would", "written", "yes", "you", "your", "8446", "handled", "handle",
+    "approach", "behave", "behaves", "exist", "exists", "thing", "things", "pick", "picked", "chose", "choose",
 }
 
 WORD_RE = re.compile(r"[a-z0-9]+")

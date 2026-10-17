@@ -143,3 +143,13 @@ def test_casual_phrasings_reach_their_shapes():
 def test_why_without_a_clause_keeps_the_old_routes():
     assert routing.route("Which RFC 8446 section numbered 9.4 covers protocol invariants?")[0] == "what_happened_to"
     assert routing.route("why 4BwmDeAqZ1ccHKkEk1R9tqdXTW8")[0] == "precedent"
+
+
+def test_tls_version_numbers_are_not_section_numbers():
+    assert routing.route("why does early data work the way it does in TLS 1.3")[1] == {
+        "topic": "why does early data work the way it does in TLS 1.3",
+        "draft": "draft-ietf-tls-tls13",
+    }
+    assert routing.route("which parts of the TLS 1.3 draft had no follow-up discussion")[0] == "aggregate_unresolved"
+    assert routing.route("what section number is 'Certificate Verify' in RFC 8446")[0] == "section_by_heading"
+    assert routing.route("which RFC did draft-ietf-tls-tls13 end up becoming")[0] == "became_rfc"

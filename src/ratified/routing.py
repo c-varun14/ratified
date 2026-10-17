@@ -21,6 +21,7 @@ from .tools import DEFAULT_DRAFT, NO_ANSWER, NOT_UNDERSTOOD
 
 DRAFT_RE = re.compile(r"(draft-[a-z0-9-]+)")
 NUMBER_RE = re.compile(r"(?:section|§)\s*(\d+(?:\.\d+)*)", re.I)
+BARE_NUMBER_RE = re.compile(r"(?<!tls )(?<!tls)(?<!version )\b(\d+(?:\.\d+)+)\b", re.I)
 MESSAGE_RE = re.compile(r"([A-Za-z0-9][A-Za-z0-9_-]{13,})")
 HEADING_RE = re.compile(r"(?<![A-Za-z])['\"“”‘’]([^'\"“”‘’]{2,})['\"“”‘’](?![A-Za-z])")
 THREAD_RE = re.compile(r"\b([a-z][a-z0-9-]*:\d+)\b", re.I)
@@ -30,7 +31,7 @@ REV_RANGE_RE = re.compile(
 
 HERO_WORDS = (
     "unresolved", "never resolved", "argued against", "aggregate", "objection", "settle",
-    "left open", "never closed", "never formally closed",
+    "left open", "never closed", "never formally closed", "no follow-up", "no follow up", "discussion stopped",
 )
 SYNC_WORDS = ("sync", "up to date", "fresh", "how current")
 PRECEDENT_WORDS = ("precedent", "trace", "why")
@@ -40,7 +41,7 @@ WHY_WORDS = (
     "who should i talk", "who should i ping", "reasoning",
 )
 REVISION_WORDS = ("revision", "revised")
-BECAME_WORDS = ("become", "became", "turn into", "turned into", "ended up as")
+BECAME_WORDS = ("become", "became", "becoming", "turn into", "turned into", "ended up as")
 CHAIR_WORDS = ("chair", "who runs", "who leads", "leading the", "steering", "in charge of")
 WHO_DISCUSSED_WORDS = ("took part", "participated", "whose messages", "who posted", "who discussed", "who talked")
 WHO_KNOWS_WORDS = ("who knows", "key people", "most influential", "central", "expert", "most active", "who matters")
@@ -65,7 +66,7 @@ def extract_number(question: str) -> str | None:
     match = NUMBER_RE.search(question)
     if match:
         return match.group(1)
-    match = re.search(r"\b(\d+(?:\.\d+)+)\b", question)
+    match = BARE_NUMBER_RE.search(question)
     return match.group(1) if match else None
 
 
@@ -112,7 +113,7 @@ def route_ex(question: str) -> tuple[str, dict, bool]:
     draft = extract_draft(question)
 
     heading = extract_heading(question)
-    if heading and ("heading" in text or "titled" in text):
+    if heading and ("heading" in text or "titled" in text or "section number" in text or "which number" in text):
         return "section_by_heading", {"draft": draft, "heading": heading}, False
 
     if any(word in text for word in REVISION_WORDS):
