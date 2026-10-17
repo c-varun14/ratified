@@ -32,6 +32,8 @@ TOOL_CATALOGUE = [
     {"name": "sync", "args": ["days"], "description": "how current the graph is, by record date"},
 ]
 
+CATALOGUE_BY_NAME = {tool["name"]: tool for tool in TOOL_CATALOGUE}
+
 
 def thread_chip(thread_id, url):
     return {"kind": "thread", "label": thread_id, "url": url}

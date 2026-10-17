@@ -7,7 +7,7 @@ from fastapi import FastAPI, Form, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
-from . import routing, tools
+from . import llm, tools
 from .graph import connect
 
 TEMPLATES = Jinja2Templates(directory=str(Path(__file__).parent / "templates"))
@@ -26,8 +26,10 @@ def index(request: Request):
 
 @app.post("/ask", response_class=HTMLResponse)
 def ask(request: Request, question: str = Form("")):
-    tool, arguments = routing.route(question)
-    result = tools.run(connect(), tool, **arguments)
+    graph = connect()
+    tool, arguments = llm.choose_tool(graph, question)
+    result = tools.run(graph, tool, **arguments)
+    result["phrasing"] = llm.phrase(graph, question, result)
     return TEMPLATES.TemplateResponse(
         request,
         "_card.html",
