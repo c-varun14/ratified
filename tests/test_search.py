@@ -44,3 +44,18 @@ def test_search_messages_finds_the_body_and_its_citations(graph, sample_dataset)
     assert hits[0]["person"] == "Ada Lovelace"
     assert hits[0]["tid"] == "tls:1001"
     assert hits[0]["sections"] == [{"number": "5.4", "title": "Record Padding"}]
+
+
+def test_query_terms_trim_plurals_and_conversation_words():
+    assert search.query_terms("What did people say about middleboxes?") == "middlebox*"
+
+
+def test_excerpt_keeps_the_writers_own_words_around_the_match():
+    text = "> quoted: middleboxes everywhere\nWe saw middleboxes break when the version field changed."
+    assert search.excerpt(text, ["middlebox"]) == "We saw middleboxes break when the version field changed."
+    assert search.excerpt(text, ["quantum"]) == ""
+
+
+def test_excerpt_hides_email_addresses():
+    text = "On Fri, John Mattsson <john.mattsson=40ericsson.com@dmarc.ietf.org> wrote: middlebox traversal"
+    assert "@" not in search.excerpt(text, ["middlebox"])

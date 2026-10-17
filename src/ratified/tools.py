@@ -548,7 +548,7 @@ def search_discussion(graph, text: str = "", limit: int = 10):
             chips.append(thread_chip(hit["tid"], hit["turl"]))
         cited = ", ".join(f"§{s['number']} {s['title']}" for s in hit["sections"])
         text_out = f"{hit['date']} · {hit['person']}: \"{_bare_subject(hit['subject'])}\""
-        claims.append({"text": text_out + (f" (cites {cited})" if cited else ""), "chips": chips})
+        claims.append({"text": text_out + (f" (cites {cited})" if cited else ""), "quote": hit["excerpt"], "chips": chips})
     clauses = sorted({(s["number"], s["title"]) for hit in hits for s in hit["sections"]}, key=lambda s: s[0])
     notes = [f"full-text query run in FalkorDB: {query}"]
     if clauses:
