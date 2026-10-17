@@ -1,0 +1,145 @@
+[
+  {
+    "id": "a1",
+    "category": "single_lookup",
+    "q": "Which section number of RFC 8446 carries the heading 'Record Padding'? Answer with the section number.",
+    "answer_kind": "text",
+    "rule": "section_number_for_heading",
+    "params": {"heading": "Record Padding"},
+    "source": "RFC Editor, https://www.rfc-editor.org/rfc/rfc8446.txt (numbered headings)",
+    "graph": {"kind": "cypher", "query": "MATCH (s:Section) WHERE toLower(s.title) = 'record padding' RETURN s.number ORDER BY s.number"},
+    "rag_answerable": true
+  },
+  {
+    "id": "a2",
+    "category": "single_lookup",
+    "q": "Which section number of RFC 8446 carries the heading 'Hello Retry Request'? Answer with the section number.",
+    "answer_kind": "text",
+    "rule": "section_number_for_heading",
+    "params": {"heading": "Hello Retry Request"},
+    "source": "RFC Editor, https://www.rfc-editor.org/rfc/rfc8446.txt (numbered headings)",
+    "graph": {"kind": "cypher", "query": "MATCH (s:Section) WHERE toLower(s.title) = 'hello retry request' RETURN s.number ORDER BY s.number"},
+    "rag_answerable": true
+  },
+  {
+    "id": "a3",
+    "category": "single_lookup",
+    "q": "Which is the latest revision of draft-ietf-tls-tls13 in the datatracker? Answer with the draft revision id.",
+    "answer_kind": "text",
+    "rule": "latest_revision",
+    "params": {"name": "draft-ietf-tls-tls13"},
+    "source": "IETF datatracker API, /api/v1/doc/dochistory/?doc=55251 (all revisions)",
+    "graph": {"kind": "cypher", "query": "MATCH (d:Draft {id:'draft-ietf-tls-tls13'})-[:HAS_REVISION]->(r:DraftRevision) RETURN r.id ORDER BY r.rev DESC LIMIT 1"},
+    "rag_answerable": false
+  },
+  {
+    "id": "a4",
+    "category": "single_lookup",
+    "q": "Which RFC did draft-ietf-tls-tls13 become? Answer with the RFC id.",
+    "answer_kind": "text",
+    "rule": "became_rfc_of",
+    "params": {"name": "draft-ietf-tls-tls13"},
+    "source": "IETF datatracker API, /api/v1/doc/relateddocument/?relationship__slug=became_rfc",
+    "graph": {"kind": "cypher", "query": "MATCH (d:Draft {id:'draft-ietf-tls-tls13'})-[:HAS_REVISION]->(:DraftRevision)-[:BECAME]->(rfc:RFC) RETURN DISTINCT rfc.id ORDER BY rfc.id"},
+    "rag_answerable": false
+  },
+  {
+    "id": "b1",
+    "category": "collect",
+    "q": "Which revision ids of draft-ietf-tls-tls13 does the datatracker list from revision -18 to -28 inclusive? Answer with the draft revision ids.",
+    "answer_kind": "list",
+    "rule": "revision_ids_between",
+    "params": {"name": "draft-ietf-tls-tls13", "lo": 18, "hi": 28},
+    "source": "IETF datatracker API, /api/v1/doc/dochistory/?doc=55251 (all revisions)",
+    "graph": {"kind": "cypher", "query": "MATCH (d:Draft {id:'draft-ietf-tls-tls13'})-[:HAS_REVISION]->(r:DraftRevision) WHERE toInteger(r.rev) >= 18 AND toInteger(r.rev) <= 28 RETURN r.id ORDER BY r.rev"},
+    "rag_answerable": false
+  },
+  {
+    "id": "b2",
+    "category": "collect",
+    "q": "Which people does the datatracker record as chairs of the TLS working group? Answer with their names.",
+    "answer_kind": "list",
+    "rule": "chairs",
+    "params": {"role": "chair"},
+    "source": "IETF datatracker API, /api/v1/group/role/?group=1326&name=chair",
+    "graph": {"kind": "cypher", "query": "MATCH (c:Chair) RETURN c.name ORDER BY c.name"},
+    "rag_answerable": false
+  },
+  {
+    "id": "b3",
+    "category": "collect",
+    "q": "Which thread ids are named by an archive subject that mentions draft-ietf-tls-tls13-21? Answer with the thread ids.",
+    "answer_kind": "list",
+    "rule": "threads_naming",
+    "params": {"needle": "draft-ietf-tls-tls13-21"},
+    "source": "mailarchive browse pages, /arch/browse/tls/ (per-row subject and thread columns)",
+    "graph": {"kind": "cypher", "query": "MATCH (t:Thread)<-[:IN_THREAD]-(m:Message) WHERE m.subject CONTAINS 'draft-ietf-tls-tls13-21' RETURN DISTINCT t.id ORDER BY t.id"},
+    "rag_answerable": true
+  },
+  {
+    "id": "c1",
+    "category": "aggregate",
+    "q": "How many draft-ietf-tls-* drafts does the datatracker record as having become an RFC? Answer with a number.",
+    "answer_kind": "number",
+    "rule": "count_became_rfc",
+    "params": {},
+    "source": "IETF datatracker API, /api/v1/doc/relateddocument/?relationship__slug=became_rfc (deduplicated by source)",
+    "graph": {"kind": "cypher", "query": "MATCH ()-[b:BECAME]->() RETURN count(b)"},
+    "rag_answerable": false
+  },
+  {
+    "id": "c2",
+    "category": "aggregate",
+    "q": "How many messages does the archive show in thread tls:1721641? Answer with a number.",
+    "answer_kind": "number",
+    "rule": "count_thread_messages",
+    "params": {"thread": "tls:1721641"},
+    "source": "mailarchive browse pages, /arch/browse/tls/ (per-row thread column)",
+    "graph": {"kind": "cypher", "query": "MATCH (t:Thread {id:'tls:1721641'})<-[:IN_THREAD]-(m:Message) RETURN count(m)"},
+    "rag_answerable": false
+  },
+  {
+    "id": "c3",
+    "category": "aggregate",
+    "q": "How many revisions of draft-ietf-tls-tls13 does the datatracker list in total? Answer with a number.",
+    "answer_kind": "number",
+    "rule": "count_revisions",
+    "params": {"name": "draft-ietf-tls-tls13"},
+    "source": "IETF datatracker API, /api/v1/doc/dochistory/?doc=55251 (distinct revision labels)",
+    "graph": {"kind": "cypher", "query": "MATCH (d:Draft {id:'draft-ietf-tls-tls13'})-[:HAS_REVISION]->(r:DraftRevision) RETURN count(r)"},
+    "rag_answerable": false
+  },
+  {
+    "id": "d1",
+    "category": "unanswerable",
+    "q": "Which RFC 8446 section numbered 9.4 covers protocol invariants? Answer with the section number and title.",
+    "answer_kind": "abstain",
+    "rule": "abstain",
+    "params": {"reason": "RFC 8446 has no section 9.4; the heading 'Protocol Invariants' is section 9.3"},
+    "source": "RFC Editor, https://www.rfc-editor.org/rfc/rfc8446.txt (numbered headings: no 9.4)",
+    "graph": {"kind": "tool", "tool": "what_happened_to", "args": {"number": "9.4"}},
+    "rag_answerable": false
+  },
+  {
+    "id": "d2",
+    "category": "unanswerable",
+    "q": "Which IESG DISCUSS positions were filed against draft-ietf-tls-tls13? Answer with the positions.",
+    "answer_kind": "abstain",
+    "rule": "abstain",
+    "params": {"reason": "IESG ballot positions are not part of the ingested record"},
+    "source": "absence from the ingested record: no ballot/DISCUSS artefact is cached or loaded",
+    "graph": {"kind": "cypher", "query": "MATCH (b:Ballot)-[:OBJECTED_TO]->(:Draft {id:'draft-ietf-tls-tls13'}) RETURN b.id"},
+    "rag_answerable": false
+  },
+  {
+    "id": "d3",
+    "category": "unanswerable",
+    "q": "Which TLS working-group meeting minutes record the decision to adopt draft-ietf-tls-tls13? Answer with the minutes.",
+    "answer_kind": "abstain",
+    "rule": "abstain",
+    "params": {"reason": "meeting minutes are not part of the ingested record"},
+    "source": "absence from the ingested record: no minutes artefact is cached or loaded",
+    "graph": {"kind": "cypher", "query": "MATCH (min:Minutes)-[:RECORDS]->(:Draft {id:'draft-ietf-tls-tls13'}) RETURN min.id"},
+    "rag_answerable": false
+  }
+]
