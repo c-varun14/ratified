@@ -115,3 +115,14 @@ def test_parse_body_extracts_draft_refs():
     assert parsed["from_email"] == "ada@example.org"
     assert "draft-ietf-tls-tls13-21" in parsed["draft_refs"]
     assert parsed["body"].startswith("About that padding clause.")
+
+
+def test_parse_rows_reads_a_search_page_subject_once():
+    row = (
+        '<div class="xtr"><div class="xtd subj-col depth-0"><span>[TLS] supported_versions complexity</span>'
+        '<a class="msg-detail" href="/arch/msg/tls/abc/">[TLS] supported_versions complexity</a></div>'
+        '<div class="xtd from-col">Eric Rescorla</div><div class="xtd date-col">2018-03-01</div>'
+        '<div class="xtd id-col d-none">1</div><div class="xtd thread-col d-none">9</div></div>'
+    )
+    rows = mail.parse_rows("x" + row, "tls")
+    assert rows[0]["subject"] == "[TLS] supported_versions complexity"

@@ -36,11 +36,11 @@ def parse_rows(page_html: str, list_name: str) -> list[dict]:
             continue
         thread = _col(chunk, "thread-col")
         number = _col(chunk, "id-col")
-        subject_html = _col(chunk, "subj-col")
+        subject_cell = re.search(r'<div class="xtd subj-col[^"]*">(.*?)</div>', chunk, re.S)
         subject = ""
-        if subject_html:
-            anchor = re.search(r"<a[^>]*>(.*?)</a>", subject_html, re.S)
-            subject = html.unescape(re.sub(r"<[^>]+>", "", anchor.group(1) if anchor else subject_html)).strip()
+        if subject_cell:
+            anchor = re.search(r"<a[^>]*>(.*?)</a>", subject_cell.group(1), re.S)
+            subject = html.unescape(re.sub(r"<[^>]+>", "", anchor.group(1) if anchor else subject_cell.group(1))).strip()
         depth = DEPTH_RE.search(chunk)
         rows.append(
             {
