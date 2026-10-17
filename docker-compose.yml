@@ -1,0 +1,28 @@
+services:
+  falkordb:
+    image: falkordb/falkordb:latest
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  app:
+    build: .
+    depends_on:
+      falkordb:
+        condition: service_healthy
+    environment:
+      RATIFIED_FALKOR_HOST: falkordb
+      RATIFIED_FALKOR_PORT: "6379"
+      RATIFIED_GRAPH: ratified
+      RATIFIED_DATA_DIR: /app/data
+      RATIFIED_CACHE_DIR: /app/cache/http
+      RATIFIED_LLM: "off"
+    ports:
+      - "127.0.0.1:8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
