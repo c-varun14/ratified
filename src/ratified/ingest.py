@@ -9,10 +9,8 @@ from collections import Counter
 from pathlib import Path
 
 from . import schema
+from .paths import DATA_DIR
 
-DATA_DIR = os.environ.get(
-    "RATIFIED_DATA_DIR", str(Path(__file__).resolve().parents[2] / "data")
-)
 LIST = os.environ.get("RATIFIED_LIST", "tls")
 DRAFT_PREFIX = os.environ.get("RATIFIED_DRAFT_PREFIX", "draft-ietf-tls")
 BATCH = 500
