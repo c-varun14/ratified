@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from datetime import date, timedelta
 
+from . import viz
 from .graph import rows
 
 DEFAULT_DRAFT = "draft-ietf-tls-tls13"
@@ -253,20 +254,45 @@ def clause_receipt(graph, draft: str, sid: str):
     """
     cited = rows(graph, CITED_PATH_Q, {"sid": sid})
     topic = rows(graph, TOPIC_PATH_Q, {"sid": sid})
-    paths = [
-        {"via": "cited in message", "similarity": row["similarity"], "steps": _path_steps(row)}
-        for row in cited
+    all_revisions = [
+        row["id"]
+        for row in rows(
+            graph,
+            "MATCH (d:Draft {id:$draft})-[:HAS_REVISION]->(r:DraftRevision) "
+            "RETURN r.id AS id, r.date AS date ORDER BY r.date",
+            {"draft": draft},
+        )
     ]
+    all_threads = [
+        row["id"]
+        for row in rows(
+            graph,
+            "MATCH (t:Thread)-[:ABOUT_SECTION]->(s:Section {id:$sid}) RETURN t.id AS id",
+            {"sid": sid},
+        )
+    ]
+    entries = [("cited in message", row) for row in cited]
     seen: set[str] = set()
     for row in topic:
         if row["tid"] in seen:
             continue
         seen.add(row["tid"])
+        entries.append((f"thread matched by subject tokens ({row['tokens']})", row))
+
+    paths = []
+    for via, row in entries:
+        steps = _path_steps(row)
+        chain = [revision for revision in (row.get("chain") or [])]
         paths.append(
             {
-                "via": f"thread matched by subject tokens ({row['tokens']})",
+                "via": via,
                 "similarity": row["similarity"],
-                "steps": _path_steps(row),
+                "steps": steps,
+                "svg": viz.path_svg(
+                    steps,
+                    [revision for revision in all_revisions if revision not in chain],
+                    [thread for thread in all_threads if thread != row["tid"]],
+                ),
             }
         )
     return {"draft": draft, "sid": sid, "paths": paths}

@@ -131,6 +131,8 @@ def test_clause_receipt_traces_object_thread_revisions_to_section(graph, sample_
     assert "revision" in kinds
     assert kinds[-2] == "rfc" and kinds[-1] == "section"
     assert all(step["url"].startswith("http") for step in steps)
+    assert receipt["paths"][0]["svg"].startswith("<svg")
+    assert 'class="node on-path"' in receipt["paths"][0]["svg"]
 
 
 def test_clause_receipt_empty_for_unknown_clause(graph, sample_dataset):

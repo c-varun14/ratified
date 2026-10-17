@@ -46,6 +46,7 @@ def test_page_serves_and_answers_end_to_end(monkeypatch, falkor, sample_dataset)
         assert "tls:1001" in receipt.text
         assert "rfc8446" in receipt.text
         assert "rfc8446.html#section-5.4" in receipt.text
+        assert "<svg" in receipt.text and "path-graph" in receipt.text
 
         assert client.get("/health").json() == {"status": "ok"}
     finally:
