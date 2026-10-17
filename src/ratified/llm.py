@@ -63,9 +63,10 @@ def complete(prompt: str, *, graph, model: str = MODEL) -> str | None:
 
 
 def choose_tool(graph, question: str) -> tuple[str, dict]:
-    fallback = routing.route(question)
-    if not enabled():
-        return fallback
+    """The deterministic route; the LLM only breaks a tie when no shape rule matched."""
+    tool, arguments, tied = routing.route_ex(question)
+    if not (tied and enabled()):
+        return tool, arguments
     catalogue = json.dumps([{"name": t["name"], "args": t["args"]} for t in tools.TOOL_CATALOGUE])
     prompt = (
         "Choose one tool and its arguments for the question. Reply with a single JSON object "
@@ -74,17 +75,17 @@ def choose_tool(graph, question: str) -> tuple[str, dict]:
     )
     text = complete(prompt, graph=graph)
     if not text:
-        return fallback
+        return tool, arguments
     try:
         choice = json.loads(_first_json(text))
         name = choice["tool"]
         if name not in tools.TOOLS:
-            return fallback
+            return tool, arguments
         allowed = tools.CATALOGUE_BY_NAME[name]["args"]
-        arguments = {k: v for k, v in (choice.get("arguments") or {}).items() if k in allowed}
-        return name, arguments
+        chosen = {k: v for k, v in (choice.get("arguments") or {}).items() if k in allowed}
+        return name, chosen
     except (ValueError, KeyError, TypeError):
-        return fallback
+        return tool, arguments
 
 
 def phrase(graph, question: str, answer: dict) -> str | None:
