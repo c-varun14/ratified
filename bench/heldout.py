@@ -8,13 +8,13 @@ case-insensitively).
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 
 from ratified import routing
 
 HERE = Path(__file__).resolve().parent
-QUESTIONS = HERE / "heldout_questions.json"
-RESULTS = HERE / "heldout_results.json"
+ABSTAIN = {"no_answer", "not_understood"}
 
 
 def _norm(value):
@@ -29,15 +29,19 @@ def _args_match(expected: dict, got: dict) -> bool:
 
 
 def main() -> int:
-    questions = json.loads(QUESTIONS.read_text())
+    name = sys.argv[1] if len(sys.argv) > 1 else "heldout"
+    questions = json.loads((HERE / f"{name}_questions.json").read_text())
+    results_path = HERE / f"{name}_results.json"
     rows = []
     hits = 0
+    abstain_hits = 0
     for entry in questions:
         tool, arguments, tied = routing.route_ex(entry["q"])
         arguments = arguments or {}
         expected_args = entry.get("expect_args") or {}
         hit = tool == entry["expect_tool"] and _args_match(expected_args, arguments)
         hits += 1 if hit else 0
+        abstain_hits += 1 if hit or (tool in ABSTAIN and entry["expect_tool"] in ABSTAIN) else 0
         rows.append(
             {
                 "id": entry["id"],
@@ -55,10 +59,14 @@ def main() -> int:
             f'expected {entry["expect_tool"]} {expected_args} | got {tool} {arguments}'
         )
     total = len(questions)
-    print(f"held-out routing: {hits}/{total}")
-    RESULTS.write_text(
+    summary = (
+        f"held-out routing: {hits}/{total} strict; {abstain_hits}/{total} counting either abstention "
+        f"({', '.join(sorted(ABSTAIN))}) as a correct decline"
+    )
+    print(summary)
+    results_path.write_text(
         json.dumps(
-            {"total": {"hits": hits, "n": total}, "summary": f"held-out routing: {hits}/{total}", "rows": rows},
+            {"total": {"hits": hits, "abstain_equivalent": abstain_hits, "n": total}, "summary": summary, "rows": rows},
             indent=2,
         )
         + "\n"
