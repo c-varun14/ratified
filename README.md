@@ -14,35 +14,35 @@ grade. `bench/results.json` is the authoritative artefact; this table is read fr
 
 | Questions answered | Graph (direct) | Graph via the shipped router (post-fix) | RAG (BM25 + bge-small) |
 |---|---|---|---|
-| single-lookup | 4/4 exact | 3/4 exact, 1 negative | 1/4 exact |
-| collect | 3/3 exact | 1/3 exact, 2 negatives | 0/3 |
-| aggregate | 3/3 exact | 1/3 exact, 2 negatives | 0/0 *not scoreable* |
-| unanswerable | 3/3 abstained | 1/3 abstained, 2 negatives | 0/3 abstained |
-| **overall** | **13/13 exact, 0 ties, 0 negatives** | **6/13 exact, 0 ties, 7 negatives** | **1/10 exact, 0 ties, 9 negatives** |
+| single-lookup | 4/4 exact | 4/4 exact | 1/4 exact |
+| collect | 3/3 exact | 3/3 exact | 0/3 |
+| aggregate | 3/3 exact | 3/3 exact | 0/0 *not scoreable* |
+| unanswerable | 3/3 abstained | 3/3 abstained | 0/3 abstained |
+| **overall** | **13/13 exact, 0 ties, 0 negatives** | **13/13 exact, 0 ties, 0 negatives** | **1/10 exact, 0 ties, 9 negatives** |
 
 * Graph (direct) is the graph answering the question. "Graph via the shipped router
   (post-fix)" is the free-text path the demo actually runs — question → router →
-  catalogue tool — with each card's canonical answer graded, and it is reported
-  separately because where the router picks a tool that cannot answer the question's
-  shape the graph has not failed but the demo has. A deterministic shape router took
-  this column from **1/13** to **6/13**: heading lookup (`a1`, `a2`), the latest
-  revision (`a3`), a revision range (`b1`) and a revision count (`c3`) now reach the
-  tools that answer them, and the section-number question (`d1`) still abstains.
-* The **7 negatives that remain** are not router mislabels: they are shapes the fixed
-  catalogue still has no tool for — which RFC a draft became (`a4`), the chairs (`b2`),
-  threads named by a subject (`b3`), counting drafts that became an RFC (`c1`) or
-  messages in a thread (`c2`), and the out-of-scope ballot/minutes questions (`d2`,
-  `d3`), which fall through to the aggregate default rather than abstaining. The
-  residual is reported, not hidden: those seven are the next catalogue gaps to close.
+  catalogue tool — with each card's canonical answer graded. A deterministic shape
+  router took this column from **1/13** to **13/13** across two passes: the first
+  added heading lookup, the latest revision, a revision range and a revision count;
+  the second added chairs, which-RFC-a-draft-became (`a4`), threads-by-subject (`b3`)
+  and the two counts (`c1`, `c2`), and made the out-of-scope ballot/minutes shapes
+  (`d2`, `d3`) abstain instead of answering. It now equals the direct column: every
+  shape reaches the tool that answers it, or declines.
+* The five tools added in the second pass are thin wrappers over existing edges —
+  `CHAIRS`/`AD_FOR`, `BECAME`, the `Thread`/`Message` subject text and `IN_THREAD` —
+  with no schema change. Where a shape names a record the graph was never built to
+  hold, the router returns an explicit `the graph does not know` card rather than
+  routing to a tool that would bluff.
 * RAG is the comparison baseline: BM25 (rank_bm25) and dense (fastembed's
   `bge-small-en-v1.5`) over the same text the graph ingests, fused by reciprocal rank
   at equal weight, k=60, top-10. It is scored as a retriever, so the aggregate
   questions are marked not scoreable rather than credited: a rank-1 chunk that merely
   contains the digits of a count is not a count.
 * Unanswerable, and the honest hard case: for all three, RAG returned confident,
-  substance-free context and the graph — read directly — abstained (`the graph does
-  not know`). Through the shipped router only `d1` (a section-number shape) abstains;
-  the ballot/minutes shapes (`d2`, `d3`) have no catalogue tool to abstain with yet.
+  substance-free context and the graph abstained (`the graph does not know`) — both
+  read directly and through the shipped router, where the out-of-scope ballot/minutes
+  shapes now return an explicit abstention instead of the hero card.
 * Text-supported subset (`a1`, `a2`, `b3` — the questions whose evidence is inside
   text the RAG corpus indexes): graph 3/3, RAG 1/3. The baseline's weakness on the
   rest is partly structural: only 69 of 2,011 messages carry a body, and the graph
