@@ -55,7 +55,9 @@ def message_chip(message_id, url):
 
 
 def revision_chip(revision):
-    return {"kind": "revision", "label": revision, "url": f"https://datatracker.ietf.org/doc/{revision}/"}
+    name, _, rev = revision.rpartition("-")
+    path = f"{name}/{rev}" if name and rev.isdigit() else revision
+    return {"kind": "revision", "label": revision, "url": f"https://datatracker.ietf.org/doc/{path}/"}
 
 
 def section_chip(number, title, url):

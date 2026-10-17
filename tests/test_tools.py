@@ -40,6 +40,16 @@ def test_precedent_unknown_when_no_path(graph, sample_dataset):
     assert result["outcome_message"] == "the graph does not know"
 
 
+def test_revision_chip_uses_the_canonical_datatracker_path():
+    chip = tools.revision_chip("draft-ietf-tls-tls13-21")
+    assert chip["url"] == "https://datatracker.ietf.org/doc/draft-ietf-tls-tls13/21/"
+
+
+def test_revision_chip_falls_back_for_a_non_numeric_suffix():
+    chip = tools.revision_chip("draft-ietf-tls-tls13-latest")
+    assert chip["url"] == "https://datatracker.ietf.org/doc/draft-ietf-tls-tls13-latest/"
+
+
 def test_precedent_conflict_when_citation_is_ambiguous(graph, sample_dataset):
     data = copy.deepcopy(sample_dataset)
     data["messages"].append(
