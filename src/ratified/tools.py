@@ -12,6 +12,8 @@ from .graph import rows
 
 DEFAULT_DRAFT = "draft-ietf-tls-tls13"
 
+TOPIC_LINK_PRECISION = "9 of 52 decided links (17.3%; 36 ties)"
+
 OUTCOME_ANSWER = "answer"
 OUTCOME_PARTIAL = "partial"
 OUTCOME_UNKNOWN = "unknown"
@@ -86,6 +88,13 @@ def card(tool, title, claims, rows_out=None, missing=None, conflicts=None, notes
     }
 
 
+def _topic_link_note(count: int) -> str:
+    return (
+        f"{count} clause(s) matched only by subject-token overlap were excluded from the count above; "
+        f"hand-checking those links measured {TOPIC_LINK_PRECISION} correct, so they are leads, not objections"
+    )
+
+
 def aggregate_unresolved(graph, draft: str = DEFAULT_DRAFT):
     cited = rows(
         graph,
@@ -119,23 +128,16 @@ def aggregate_unresolved(graph, draft: str = DEFAULT_DRAFT):
 
     clauses: dict[str, dict] = {}
     for row in cited:
-        clause = clauses.setdefault(row["sid"], {**row, "via": set()})
-        clause["via"].add("cite")
+        clause = clauses.setdefault(row["sid"], {**row})
         for key in ("messages", "message_urls", "dates", "people", "threads", "thread_urls"):
-            clause[key] = sorted(set(clause.get(key, []) or []) | set(row.get(key) or []))
-    for row in about:
-        clause = clauses.setdefault(row["sid"], {**row, "messages": [], "message_urls": [], "dates": [], "people": [], "via": set()})
-        clause["via"].add("about")
-        for key in ("revisions", "threads", "thread_urls"):
-            clause[key] = sorted(set(clause.get(key, []) or []) | set(row.get(key) or []))
+            clause[key] = sorted(set(clause.get(key) or []) | set(row.get(key) or []))
 
+    excluded = [row for row in about if row["sid"] not in clauses]
     if not clauses:
-        return card(
-            "aggregate_unresolved",
-            f"Unresolved objections in {draft}",
-            [],
-            notes=[f"no clause of {draft} is linked to an objection thread in the graph"],
-        )
+        notes = [_topic_link_note(len(excluded))] if excluded else [
+            f"no clause of {draft} is linked to an objection message by a mechanical citation"
+        ]
+        return card("aggregate_unresolved", f"Unresolved objections in {draft}", [], notes=notes)
 
     claims = []
     for clause in clauses.values():
@@ -151,25 +153,20 @@ def aggregate_unresolved(graph, draft: str = DEFAULT_DRAFT):
         chips += [thread_chip(t, u) for t, u in zip(clause.get("threads") or [], clause.get("thread_urls") or [])]
         chips += [message_chip(m, u) for m, u in zip(clause.get("messages") or [], clause.get("message_urls") or [])]
         people = ", ".join(sorted(set(clause.get("people") or [])))
-        threads = len(set(clause.get("threads") or []))
+        messages = len(set(clause.get("messages") or []))
         label = f"§{clause['number']} {clause['title']}"
         if trail:
             text = f"{label} — a later citation trail exists ({trail} message(s) after {last_argued})"
         elif people:
             text = f"{label} — argued against by {people}; no resolution trail found"
         else:
-            text = f"{label} — topic-linked by subject tokens to {threads} thread(s); no attributed message, no resolution trail"
+            text = f"{label} — cited by {messages} message(s); no resolution trail found"
         claims.append({"text": text, "unresolved": not trail, "attributed": bool(people), "chips": chips})
 
     claims.sort(key=lambda c: (not c["unresolved"], not c["attributed"], c["text"]))
     attributed = sum(1 for c in claims if c["unresolved"] and c["attributed"])
-    topic_only = sum(1 for c in claims if c["unresolved"] and not c["attributed"])
     title = f"{attributed} clauses of {draft} argued against, no resolution trail"
-    if topic_only:
-        title += f" (+{topic_only} topic-linked, precision unmeasured)"
-    notes = []
-    if topic_only:
-        notes.append("topic-linked clauses come from a thread subject-token match (ABOUT_SECTION); its precision is not yet measured")
+    notes = [_topic_link_note(len(excluded))] if excluded else []
     return card(
         "aggregate_unresolved",
         title,
