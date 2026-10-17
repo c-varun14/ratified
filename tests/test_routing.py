@@ -103,3 +103,20 @@ def test_pre_follow_up_passing_routes_are_unchanged():
     by_id = {question["id"]: question for question in QUESTIONS}
     for qid in PRE_FOLLOW_UP_PASSING:
         assert routing.route(by_id[qid]["q"]) == ROUTES[qid], qid
+
+
+def test_why_questions_route_to_why_clause():
+    assert routing.route("I'm new here: why does RFC 8446 section 4.2.1 read the way it does, and who do I ask?") == (
+        "why_clause",
+        {"number": "4.2.1", "draft": "draft-ietf-tls-tls13"},
+    )
+    assert routing.route("who do I ask about §4.2.11?")[0] == "why_clause"
+    assert routing.route("why is 'Supported Versions' like this?") == (
+        "why_clause",
+        {"heading": "Supported Versions", "draft": "draft-ietf-tls-tls13"},
+    )
+
+
+def test_why_without_a_clause_keeps_the_old_routes():
+    assert routing.route("Which RFC 8446 section numbered 9.4 covers protocol invariants?")[0] == "what_happened_to"
+    assert routing.route("why 4BwmDeAqZ1ccHKkEk1R9tqdXTW8")[0] == "precedent"

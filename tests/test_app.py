@@ -35,9 +35,16 @@ def test_page_serves_and_answers_end_to_end(monkeypatch, falkor, sample_dataset)
         assert answered.status_code == 200
         assert "outcome-answer" in answered.text
         assert "outcome-answer hero" in answered.text
-        assert "This is the graph saying: people objected" in answered.text
+        assert "This is the graph saying: people discussed these clauses" in answered.text
         assert "§5.4" in answered.text
         assert "mailarchive.ietf.org" in answered.text
+
+        why = client.post("/ask", data={"question": "why does section 5.4 read the way it does, and who do I ask?"})
+        assert why.status_code == 200
+        assert "via <code>why_clause</code>" in why.text
+        assert "Ada Lovelace" in why.text
+        assert "not sent" in why.text
+        assert "limit=1" in why.text
 
         unknown = client.post("/ask", data={"question": "what happened to section 99.9"})
         assert unknown.status_code == 200

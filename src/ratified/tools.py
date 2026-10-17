@@ -7,6 +7,7 @@ an LLM, and no LLM output can become a citation.
 from __future__ import annotations
 
 import os
+import re
 from datetime import date, timedelta
 
 from . import ingest, mail, viz
@@ -17,6 +18,8 @@ from .paths import DATA_DIR
 DEFAULT_DRAFT = "draft-ietf-tls-tls13"
 
 TOPIC_LINK_PRECISION = "9 of 52 decided links (17.3%; 36 ties)"
+
+SUBJECT_PREFIX_RE = re.compile(r"^(?:\s*(?:re|fwd?):\s*|\s*\[[^\]]+\]\s*)+", re.I)
 
 BROWSE_BASE = "https://mailarchive.ietf.org/arch/browse"
 SYNC_PAGES = 3
@@ -36,14 +39,15 @@ OUTCOME_MESSAGE = {
 }
 
 TOOL_CATALOGUE = [
-    {"name": "aggregate_unresolved", "args": ["draft"], "description": "clauses of a draft argued against with no resolution trail"},
-    {"name": "who_argued", "args": ["draft"], "description": "people who argued about a draft, with their messages"},
+    {"name": "why_clause", "args": ["number", "heading", "draft"], "description": "where a shipped clause was discussed while still changing, who to ask now, and a drafted (never sent) question"},
+    {"name": "aggregate_unresolved", "args": ["draft"], "description": "clauses of a draft discussed while still changing, with no later resolution trail"},
+    {"name": "who_argued", "args": ["draft"], "description": "people who discussed a draft on the list, with their messages"},
     {"name": "what_happened_to", "args": ["number"], "description": "what happened to a clause across revisions and the RFC"},
     {"name": "precedent", "args": ["message_id"], "description": "trace a message to a revision and the RFC section it became"},
     {"name": "sync", "args": ["days"], "description": "how current the graph is, by record date"},
     {"name": "section_by_heading", "args": ["draft", "heading"], "description": "the section number a heading names, from the draft's RFC"},
     {"name": "revisions", "args": ["draft", "lo", "hi", "latest", "count"], "description": "a draft's revisions: list them, bound them to a range, count them, or name the latest"},
-    {"name": "count_unresolved", "args": ["draft"], "description": "how many clauses of a draft are argued against with no resolution trail"},
+    {"name": "count_unresolved", "args": ["draft"], "description": "how many clauses of a draft were discussed while still changing, with no later resolution trail"},
     {"name": "chairs", "args": ["wg"], "description": "the chairs of the working group, and its area directors, from CHAIRS/AD_FOR"},
     {"name": "became_rfc", "args": ["draft"], "description": "the RFC a draft became, from the BECAME edge"},
     {"name": "threads_by_subject", "args": ["pattern"], "description": "thread ids whose subject names a distinctive pattern, from Thread/Message subjects"},
@@ -163,9 +167,9 @@ def aggregate_unresolved(graph, draft: str = DEFAULT_DRAFT):
     if not clauses:
         return card(
             "aggregate_unresolved",
-            f"Unresolved objections in {draft}",
+            f"Unresolved discussions in {draft}",
             [],
-            notes=[f"no clause of {draft} is linked to an objection in the graph"],
+            notes=[f"no clause of {draft} is linked to a discussion in the graph"],
         )
 
     claims = []
@@ -187,7 +191,7 @@ def aggregate_unresolved(graph, draft: str = DEFAULT_DRAFT):
         if trail:
             text = f"{label} — a later citation trail exists ({trail} message(s) after {last_argued})"
         elif cited_bucket and people:
-            text = f"{label} — argued against by {people}; no resolution trail found"
+            text = f"{label} — discussed by {people} while still changing; no resolution trail found"
         elif cited_bucket:
             text = f"{label} — cited by {len(set(clause.get('messages') or []))} message(s); no resolution trail found"
         else:
@@ -208,7 +212,7 @@ def aggregate_unresolved(graph, draft: str = DEFAULT_DRAFT):
     claims.sort(key=lambda c: (c["bucket"] != "cited", not c["unresolved"], not c["attributed"], c["text"]))
     attributed = sum(1 for c in claims if c["unresolved"] and c["attributed"])
     leads = sum(1 for c in claims if c["bucket"] == "topic")
-    title = f"{attributed} clauses of {draft} argued against, no resolution trail"
+    title = f"{attributed} clauses of {draft} discussed while still changing, no resolution trail"
     notes = [_topic_link_note(leads)] if leads else []
     result = card(
         "aggregate_unresolved",
@@ -218,7 +222,8 @@ def aggregate_unresolved(graph, draft: str = DEFAULT_DRAFT):
         notes=notes,
     )
     result["explanation"] = (
-        "This is the graph saying: people objected, and no later document trail says it was settled."
+        "This is the graph saying: people discussed these clauses while their text was still changing, "
+        "and no later message in the record returns to them. A gap in the record, not proof of an open objection."
     )
     return result
 
@@ -268,7 +273,7 @@ def _path_steps(row: dict) -> list[dict]:
     return steps
 
 
-def clause_receipt(graph, draft: str, sid: str):
+def clause_receipt(graph, draft: str, sid: str, limit: int | None = None):
     """The full traced path for one clause as ordered lists of mechanical permalinks.
 
     object -> thread -> draft revision -> SUPERSEDED hops -> RFC section. Citation
@@ -302,7 +307,7 @@ def clause_receipt(graph, draft: str, sid: str):
         entries.append((f"thread matched by subject tokens ({row['tokens']})", row))
 
     paths = []
-    for via, row in entries:
+    for via, row in entries[:limit]:
         steps = _path_steps(row)
         chain = [revision for revision in (row.get("chain") or [])]
         paths.append(
@@ -318,6 +323,147 @@ def clause_receipt(graph, draft: str, sid: str):
             }
         )
     return {"draft": draft, "sid": sid, "paths": paths}
+
+
+WHY_SECTION_Q = """
+MATCH (d:Draft {id:$draft})-[:HAS_REVISION]->(:DraftRevision)-[:BECAME]->(rfc:RFC)-[:HAS_SECTION]->(s:Section)
+WHERE s.number = $number OR toLower(s.title) = $heading
+RETURN DISTINCT s.id AS sid, s.number AS number, s.title AS title, s.url AS url, rfc.id AS rfc
+ORDER BY s.number
+"""
+
+WHY_DISCUSSION_Q = """
+MATCH (s:Section {id:$sid})
+MATCH (m:Message)-[:CITES]->(s)
+MATCH (m)-[:DISCUSSED]->(dr:DraftRevision)-[al:ALIGNS_SECTION]->(s)
+WHERE al.changed = true
+MATCH (m)-[:IN_THREAD]->(t:Thread)
+OPTIONAL MATCH (p:Person)-[:AUTHORED]->(m)
+RETURN m.id AS mid, m.url AS murl, m.date AS date, m.subject AS subject,
+       coalesce(p.name, m.from) AS person, t.id AS tid, t.url AS turl, t.subject AS tsubject,
+       collect(DISTINCT dr.id) AS revisions
+ORDER BY date, mid
+"""
+
+WHY_ROLES_Q = """
+MATCH (c:Chair)-[:CHAIRS]->(w:Wg {id:$wg}) RETURN c.name AS name, 'chair' AS role
+UNION
+MATCH (a:AreaDirector)-[:AD_FOR]->(w:Wg {id:$wg}) RETURN a.name AS name, 'area director' AS role
+"""
+
+
+def _short_rev(revision: str) -> str:
+    return "-" + revision.rpartition("-")[2]
+
+
+def _rfc_label(rfc_id: str) -> str:
+    return f"RFC {rfc_id[3:]}" if rfc_id.startswith("rfc") else rfc_id
+
+
+def _bare_subject(subject: str) -> str:
+    return SUBJECT_PREFIX_RE.sub("", subject or "").strip()
+
+
+def _draft_message(section: dict, discussed: list[dict], people: list[str], roles: list[dict]) -> dict:
+    label = f"{_rfc_label(section['rfc'])} §{section['number']} {section['title']}"
+    chairs = [r["name"] for r in roles if r["role"] == "chair"]
+    lines = [
+        "Hi all,",
+        "",
+        f"I'm new to TLS 1.3 and trying to understand why {label} reads the way it does.",
+        "",
+    ]
+    threads: dict[str, dict] = {}
+    for row in discussed:
+        threads.setdefault(row["tid"], row | {"dates": [], "revs": set()})
+        threads[row["tid"]]["dates"].append(row["date"])
+        threads[row["tid"]]["revs"].update(row["revisions"])
+    for thread in threads.values():
+        revs = ", ".join(_short_rev(r) for r in sorted(thread["revs"]))
+        span = min(thread["dates"]) if min(thread["dates"]) == max(thread["dates"]) else (
+            f"{min(thread['dates'])} to {max(thread['dates'])}"
+        )
+        lines.append(
+            f"The list archive shows you discussed it in \"{_bare_subject(thread['tsubject'] or thread['subject'])}\" ({span}), "
+            f"while the draft was at {revs} and the clause's text still differed from what shipped."
+        )
+    lines += [
+        "",
+        "Could you point me to the reasoning, or to whatever settled it?",
+        "",
+        "Sources:",
+    ]
+    lines += [f"- {thread['turl']}" for thread in threads.values()]
+    lines.append(f"- {section['url']}")
+    return {
+        "to": people,
+        "cc": [f"{name} (TLS chair)" for name in chairs],
+        "subject": f"Question on {label}",
+        "body": "\n".join(lines),
+    }
+
+
+def why_clause(graph, number: str = "", heading: str = "", draft: str = DEFAULT_DRAFT):
+    """Where a shipped clause was discussed while it was still changing, and who to ask now."""
+    number = (number or "").strip().lstrip("§")
+    heading = (heading or "").strip().lower()
+    sections = rows(graph, WHY_SECTION_Q, {"draft": draft, "number": number, "heading": heading})
+    asked = f"§{number}" if number else f"the section titled '{heading}'"
+    if not sections:
+        result = card(
+            "why_clause",
+            f"Why {asked} reads the way it does",
+            [],
+            notes=[f"the RFC that {draft} became has no {asked} in the graph"],
+        )
+        result["answer"] = None
+        return result
+    section = sections[0]
+    label = f"§{section['number']} {section['title']}"
+    discussed = rows(graph, WHY_DISCUSSION_Q, {"sid": section["sid"]})
+    roles = rows(graph, WHY_ROLES_Q, {"wg": ingest.LIST})
+
+    counts: dict[str, int] = {}
+    for row in discussed:
+        counts[row["person"]] = counts.get(row["person"], 0) + 1
+    people = sorted(counts, key=lambda name: (-counts[name], name))
+
+    claims = []
+    for row in discussed:
+        revs = ", ".join(_short_rev(r) for r in sorted(row["revisions"]))
+        chips = [message_chip(row["mid"], row["murl"]), thread_chip(row["tid"], row["turl"])]
+        chips += [revision_chip(r) for r in sorted(row["revisions"])]
+        claims.append(
+            {
+                "text": f"{row['date']} · {row['person']} cited {label} in \"{_bare_subject(row['subject'])}\" (draft at {revs})",
+                "chips": chips,
+            }
+        )
+    missing = []
+    if not claims:
+        claims = [{"text": f"{label} shipped in {_rfc_label(section['rfc'])}", "chips": [section_chip(section["number"], section["title"], section["url"])]}]
+        missing = [f"no message in the graph cites {label} while its text was still changing"]
+
+    title = (
+        f"{label}: discussed by {len(people)} people while still changing, then shipped in {_rfc_label(section['rfc'])}"
+        if people
+        else f"{label}: shipped in {_rfc_label(section['rfc'])}, no discussion found"
+    )
+    result = card("why_clause", title, claims, rows_out=discussed, missing=missing)
+    result["hero"] = True
+    result["explanation"] = (
+        "Connected, not caused: these messages cited the clause while its text still differed from what shipped. "
+        "The graph does not show that they caused the change."
+    )
+    result["section"] = section
+    result["sid"] = section["sid"]
+    result["draft"] = draft
+    result["who_to_ask"] = [
+        {"name": name, "why": f"cited this clause in {counts[name]} message(s)"} for name in people
+    ] + [{"name": r["name"], "why": f"current TLS {r['role']}"} for r in sorted(roles, key=lambda r: (r["role"], r["name"]))]
+    result["draft_message"] = _draft_message(section, discussed, people, roles)
+    result["answer"] = people
+    return result
 
 
 def who_argued(graph, draft: str = DEFAULT_DRAFT):
@@ -337,13 +483,13 @@ def who_argued(graph, draft: str = DEFAULT_DRAFT):
         {"draft": draft},
     )
     if not people:
-        return card("who_argued", f"Who argued about {draft}", [], notes=[f"no message in the graph discusses {draft}"])
+        return card("who_argued", f"Who discussed {draft}", [], notes=[f"no message in the graph discusses {draft}"])
     claims = []
     for person in people:
         chips = [message_chip(m, u) for m, u in zip(person["messages"], person["message_urls"])]
         chips += [thread_chip(t, u) for t, u in zip(person["threads"], person["thread_urls"])]
         claims.append({"text": f"{person['person']} — {person['n']} messages", "chips": chips})
-    return card("who_argued", f"Who argued about {draft}", claims, rows_out=people)
+    return card("who_argued", f"Who discussed {draft}", claims, rows_out=people)
 
 
 def what_happened_to(graph, number: str):
@@ -524,7 +670,7 @@ def revisions(graph, draft: str = DEFAULT_DRAFT, lo=None, hi=None, latest: bool 
 
 
 def count_unresolved(graph, draft: str = DEFAULT_DRAFT):
-    """How many clauses of a draft are argued against with no resolution trail."""
+    """How many clauses of a draft were discussed while still changing, with no resolution trail."""
     aggregate = aggregate_unresolved(graph, draft)
     cited = [claim for claim in aggregate["claims"] if claim.get("bucket") == "cited" and claim.get("unresolved")]
     leads = [claim for claim in aggregate["claims"] if claim.get("bucket") == "topic"]
@@ -535,7 +681,7 @@ def count_unresolved(graph, draft: str = DEFAULT_DRAFT):
         notes.append(f"{len(leads)} further clause(s) are subject-token leads, counted separately from the {count} cited here")
     result = card(
         "count_unresolved",
-        f"{count} clauses of {draft} argued against, no resolution trail",
+        f"{count} clauses of {draft} discussed while still changing, no resolution trail",
         claims,
         rows_out=[{"section": claim["text"]} for claim in cited],
         notes=notes,
@@ -851,6 +997,7 @@ def sync(graph, days: int = 1, fetcher=None, sections: dict | None = None):
 
 
 TOOLS = {
+    "why_clause": why_clause,
     "aggregate_unresolved": aggregate_unresolved,
     "who_argued": who_argued,
     "what_happened_to": what_happened_to,

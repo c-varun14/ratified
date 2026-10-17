@@ -1,4 +1,5 @@
-<div class="card outcome-{{ card.outcome }}{% if card.tool == 'aggregate_unresolved' %} hero{% endif %}">
+{% if question %}<p class="asked">You asked: <q>{{ question }}</q></p>{% endif %}
+<div class="card outcome-{{ card.outcome }}{% if card.hero or card.tool == 'aggregate_unresolved' %} hero{% endif %}">
   <div class="card-head">
     <span class="badge">{{ card.outcome }}</span>
     <h2>{{ card.title }}</h2>
@@ -17,6 +18,13 @@
   </ul>
   {% endif %}
 
+  {% if card.tool == 'why_clause' and card.sid %}
+  <h3>The traced path</h3>
+  <p class="sub">mailing-list message → thread → the draft revision it discussed → every later revision → the RFC section that shipped</p>
+  <div class="receipt" hx-get="/receipt?draft={{ card.draft | urlencode }}&sid={{ card.sid | urlencode }}&limit=1" hx-trigger="load" hx-swap="innerHTML"></div>
+  <h3>The discussion it rests on</h3>
+  {% endif %}
+
   <ol class="claims">
     {% for claim in card.claims %}
     <li class="claim{% if claim.bucket == 'topic' %} lead{% endif %}">
@@ -32,6 +40,24 @@
     </li>
     {% endfor %}
   </ol>
+
+  {% if card.who_to_ask %}
+  <h3>Who to ask now</h3>
+  <ul class="people">
+    {% for person in card.who_to_ask %}<li><strong>{{ person.name }}</strong> <span class="sub">— {{ person.why }}</span></li>{% endfor %}
+  </ul>
+  {% endif %}
+
+  {% if card.draft_message %}
+  <h3>Drafted question <span class="tag">not sent</span></h3>
+  <p class="sub">Ratified never sends email. Every line below is filled from the graph; copy it if you want to ask.</p>
+  <div class="draft-mail">
+    <div><span class="field">To</span> {{ card.draft_message.to | join(', ') }}</div>
+    {% if card.draft_message.cc %}<div><span class="field">Cc</span> {{ card.draft_message.cc | join(', ') }}</div>{% endif %}
+    <div><span class="field">Subject</span> {{ card.draft_message.subject }}</div>
+    <pre>{{ card.draft_message.body }}</pre>
+  </div>
+  {% endif %}
 
   {% if card.missing %}
   <ul class="missing">{% for item in card.missing %}<li>{{ item }}</li>{% endfor %}</ul>

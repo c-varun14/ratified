@@ -17,6 +17,48 @@ def test_aggregate_unresolved_reports_the_hero_clause(graph, sample_dataset):
     assert result["explanation"].startswith("This is the graph saying")
 
 
+def test_why_clause_traces_discussion_people_and_a_draft_question(graph, sample_dataset):
+    ingest.ingest(graph, sample_dataset)
+    result = tools.why_clause(graph, "5.4")
+    assert result["outcome"] == "answer"
+    assert result["sid"] == "rfc8446#5.4"
+    assert result["answer"] == ["Ada Lovelace"]
+    assert any("Ada Lovelace cited §5.4 Record Padding" in claim["text"] for claim in result["claims"])
+    assert {chip["kind"] for chip in result["claims"][0]["chips"]} == {"message", "thread", "revision"}
+    assert [person["name"] for person in result["who_to_ask"]] == ["Ada Lovelace", "ad", "chair"]
+    message = result["draft_message"]
+    assert message["to"] == ["Ada Lovelace"]
+    assert message["subject"] == "Question on RFC 8446 §5.4 Record Padding"
+    assert "TLS 1.3 Record Padding removal" in message["body"]
+    assert "rfc8446.html#section-5.4" in message["body"]
+    assert result["explanation"].startswith("Connected, not caused")
+
+
+def test_why_clause_resolves_a_heading(graph, sample_dataset):
+    ingest.ingest(graph, sample_dataset)
+    assert tools.why_clause(graph, heading="Record Padding")["sid"] == "rfc8446#5.4"
+
+
+def test_why_clause_is_partial_when_nothing_cites_the_clause(graph, sample_dataset):
+    ingest.ingest(graph, sample_dataset)
+    result = tools.why_clause(graph, "5.5")
+    assert result["outcome"] == "partial"
+    assert result["answer"] == []
+    assert result["missing"] == ["no message in the graph cites §5.5 Record Payload Protection while its text was still changing"]
+
+
+def test_why_clause_does_not_know_a_missing_section(graph, sample_dataset):
+    ingest.ingest(graph, sample_dataset)
+    result = tools.why_clause(graph, "9.4")
+    assert result["outcome"] == "unknown"
+    assert result["answer"] is None
+
+
+def test_clause_receipt_limit_keeps_the_first_path(graph, sample_dataset):
+    ingest.ingest(graph, sample_dataset)
+    assert len(tools.clause_receipt(graph, "draft-ietf-tls-tls13", "rfc8446#5.4", limit=1)["paths"]) == 1
+
+
 def test_who_argued_lists_people(graph, sample_dataset):
     ingest.ingest(graph, sample_dataset)
     result = tools.who_argued(graph, "draft-ietf-tls-tls13")

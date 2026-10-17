@@ -31,6 +31,7 @@ REV_RANGE_RE = re.compile(
 HERO_WORDS = ("unresolved", "never resolved", "argued against", "aggregate", "objection", "settle")
 SYNC_WORDS = ("sync", "up to date", "fresh", "how current")
 PRECEDENT_WORDS = ("precedent", "trace", "why")
+WHY_WORDS = ("why", "who do i ask", "who should i ask", "who to ask", "reasoning")
 SECTION_WORDS = ("what happened", "clause", "section", "changed", "§")
 LATEST_WORDS = ("latest", "newest", "most recent")
 COUNT_WORDS = ("how many", "count", "number of")
@@ -130,6 +131,10 @@ def route_ex(question: str) -> tuple[str, dict, bool]:
         return "count_thread_messages", {"thread_or_draft": thread}, False
 
     number = extract_number(question)
+    if any(word in text for word in WHY_WORDS) and (number or heading):
+        if number:
+            return "why_clause", {"number": number, "draft": draft}, False
+        return "why_clause", {"heading": heading, "draft": draft}, False
     if number and any(word in text for word in SECTION_WORDS):
         return "what_happened_to", {"number": number}, False
     if any(word in text for word in HERO_WORDS):
