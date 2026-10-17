@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ratified</title>
+  <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+  <style>
+    :root { color-scheme: light dark; }
+    body { font: 15px/1.55 ui-sans-serif, system-ui, sans-serif; margin: 0; padding: 2rem; max-width: 62rem; }
+    header h1 { margin: 0; font-size: 1.6rem; }
+    header p { margin: .2rem 0 1.4rem; opacity: .7; }
+    form { display: flex; gap: .5rem; margin-bottom: 1rem; }
+    input[name=question] { flex: 1; padding: .6rem .7rem; font: inherit; }
+    button { padding: .6rem 1rem; font: inherit; cursor: pointer; }
+    .catalogue { list-style: none; padding: 0; margin: 0 0 1.5rem; opacity: .75; font-size: .85rem; }
+    .catalogue code { font-weight: 600; }
+    .card { border: 1px solid currentColor; border-radius: .6rem; padding: 1rem 1.2rem; }
+    .card-head { display: flex; align-items: baseline; gap: .6rem; flex-wrap: wrap; }
+    .card-head h2 { font-size: 1.1rem; margin: 0; }
+    .badge { font-size: .72rem; text-transform: uppercase; letter-spacing: .04em; padding: .12rem .45rem; border-radius: .4rem; border: 1px solid currentColor; }
+    .outcome-answer .badge { background: #1b5e20; color: #fff; border-color: #1b5e20; }
+    .outcome-partial .badge { background: #8d6e00; color: #fff; border-color: #8d6e00; }
+    .outcome-unknown .badge { background: #37474f; color: #fff; border-color: #37474f; }
+    .outcome-conflict .badge { background: #8e0000; color: #fff; border-color: #8e0000; }
+    .tool { font-size: .8rem; opacity: .65; margin-left: auto; }
+    .empty { font-style: italic; opacity: .8; }
+    .claims { padding-left: 1.2rem; }
+    .claims li { margin: .6rem 0; }
+    .chips { display: flex; flex-wrap: wrap; gap: .35rem; margin: .3rem 0 0; }
+    .chip { font-size: .76rem; text-decoration: none; border: 1px solid currentColor; border-radius: 999px; padding: .08rem .5rem; opacity: .85; }
+    .chip:hover { opacity: 1; }
+    .missing li, .notes li { font-size: .82rem; opacity: .75; }
+    .conflicts { font-size: .85rem; color: #8e0000; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Ratified</h1>
+    <p>TLS working group · every claim carries a mechanical permalink to the public record</p>
+  </header>
+
+  <form hx-post="/ask" hx-target="#card" hx-swap="innerHTML">
+    <input name="question" placeholder="Which clauses of draft-ietf-tls-tls13 were argued against and never resolved?" value="{{ question }}" autofocus>
+    <button type="submit">Ask</button>
+  </form>
+
+  <ul class="catalogue">
+    {% for tool in catalogue %}<li><code>{{ tool.name }}</code>({{ tool.args | join(', ') }}) — {{ tool.description }}</li>{% endfor %}
+  </ul>
+
+  <section id="card">
+    {% if card %}{% include "_card.html" %}{% endif %}
+  </section>
+</body>
+</html>
