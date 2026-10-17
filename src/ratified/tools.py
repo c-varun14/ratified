@@ -200,13 +200,17 @@ def aggregate_unresolved(graph, draft: str = DEFAULT_DRAFT):
     leads = sum(1 for c in claims if c["bucket"] == "topic")
     title = f"{attributed} clauses of {draft} argued against, no resolution trail"
     notes = [_topic_link_note(leads)] if leads else []
-    return card(
+    result = card(
         "aggregate_unresolved",
         title,
         claims,
         rows_out=[{"section": c["text"], "unresolved": c["unresolved"], "bucket": c["bucket"]} for c in claims],
         notes=notes,
     )
+    result["explanation"] = (
+        "This is the graph saying: people objected, and no later document trail says it was settled."
+    )
+    return result
 
 
 CITED_PATH_Q = """

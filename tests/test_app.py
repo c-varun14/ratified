@@ -34,6 +34,8 @@ def test_page_serves_and_answers_end_to_end(monkeypatch, falkor, sample_dataset)
         )
         assert answered.status_code == 200
         assert "outcome-answer" in answered.text
+        assert "outcome-answer hero" in answered.text
+        assert "This is the graph saying: people objected" in answered.text
         assert "§5.4" in answered.text
         assert "mailarchive.ietf.org" in answered.text
 

@@ -14,6 +14,7 @@ def test_aggregate_unresolved_reports_the_hero_clause(graph, sample_dataset):
     assert any(claim["unresolved"] for claim in result["claims"])
     assert any(chip["kind"] == "section" for chip in result["chips"])
     assert all(chip["url"].startswith("http") for chip in result["chips"])
+    assert result["explanation"].startswith("This is the graph saying")
 
 
 def test_who_argued_lists_people(graph, sample_dataset):
