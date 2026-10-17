@@ -118,6 +118,18 @@ def check(chip: dict) -> dict:
         draft = name.rsplit("-", 1)[0]
         ok = name in body or draft in body
         detail = f"page names {name}" if ok else f"page does not name {name}"
+    elif chip["kind"] == "thread" and ok:
+        # A thread chip labels a thread id but permalinks the thread's root message.
+        # mailarchive renders that root message page as the full thread listing, so
+        # require the thread-row markup rather than merely a 200.
+        markers = body.count("depth-")
+        root = chip["url"].rstrip("/").rsplit("/", 1)[-1]
+        ok = markers > 0 and root in body
+        detail = f"thread listing present ({markers} depth markers, root {root} on page)"
+    elif chip["kind"] == "message" and ok:
+        marker = chip["url"].rstrip("/").rsplit("/", 1)[-1]
+        ok = marker in body
+        detail = f"message id {marker} present" if ok else f"message id {marker} absent"
     elif ok:
         detail = f"HTTP {status}"
     else:
