@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from ratified import routing
+from ratified import routing, tools
 
 QUESTIONS = json.loads((Path(__file__).resolve().parents[1] / "bench" / "questions.json").read_text())
 
@@ -56,3 +56,50 @@ def test_shape_rules_are_keyword_explicit():
     assert routing.route("trace the precedent for message abcdefghijklmnop")[0] == "precedent"
     assert routing.route("which section number carries the heading 'Record Padding'")[0] == "section_by_heading"
     assert routing.route("how many revisions of draft-ietf-tls-tls13 are there")[0] == "revisions"
+
+
+def test_each_new_shape_routes_to_its_tool():
+    assert routing.route_ex("Who are the chairs of the TLS working group?") == ("chairs", {"wg": "tls"}, False)
+    assert routing.route_ex("Which RFC did draft-ietf-tls-tls13 become?") == (
+        "became_rfc", {"draft": "draft-ietf-tls-tls13"}, False
+    )
+    assert routing.route_ex("Which threads name draft-ietf-tls-tls13-21 in the subject?") == (
+        "threads_by_subject", {"pattern": "draft-ietf-tls-tls13-21"}, False
+    )
+    assert routing.route_ex("How many draft-ietf-tls-* drafts became an RFC?") == (
+        "count_became", {"draft": "draft-ietf-tls-"}, False
+    )
+    assert routing.route_ex("How many messages does the archive show in thread tls:1721641?") == (
+        "count_thread_messages", {"thread_or_draft": "tls:1721641"}, False
+    )
+
+
+def test_out_of_scope_shapes_route_to_the_no_answer_sentinel():
+    assert routing.route_ex("Which IESG DISCUSS positions were filed against draft-ietf-tls-tls13?") == (
+        "no_answer", {"scope": "IESG ballot positions"}, False
+    )
+    assert routing.route_ex("Which TLS working-group meeting minutes record the decision to adopt draft-ietf-tls-tls13?") == (
+        "no_answer", {"scope": "meeting minutes"}, False
+    )
+    # the sentinel is reserved, never offered as a tool the LLM or a reader can pick
+    assert tools.NO_ANSWER not in {tool["name"] for tool in tools.TOOL_CATALOGUE}
+    assert tools.NO_ANSWER not in tools.TOOLS
+
+
+def test_the_abstention_card_declines_with_the_unknown_outcome():
+    result = tools.run(None, tools.NO_ANSWER, scope="IESG ballot positions")
+    assert result["outcome"] == "unknown"
+    assert result["answer"] is None
+    assert result["outcome_message"] == "the graph does not know"
+    assert "IESG ballot positions" in result["title"]
+
+
+# The questions the post-fix bench scored exact, before this follow-up. Their
+# routes must not drift (the full thirteen are pinned by ROUTES above).
+PRE_FOLLOW_UP_PASSING = ["a1", "a2", "a3", "b1", "c3", "d1"]
+
+
+def test_pre_follow_up_passing_routes_are_unchanged():
+    by_id = {question["id"]: question for question in QUESTIONS}
+    for qid in PRE_FOLLOW_UP_PASSING:
+        assert routing.route(by_id[qid]["q"]) == ROUTES[qid], qid

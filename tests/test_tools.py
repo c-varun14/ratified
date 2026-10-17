@@ -303,3 +303,46 @@ def test_count_unresolved_counts_cited_clauses_only(graph, sample_dataset):
     assert result["answer"] == 1 and result["count"] == 1
     assert any("§5.4" in claim["text"] for claim in result["claims"])
     assert any(chip["kind"] == "section" for chip in result["chips"])
+
+
+def test_chairs_lists_the_chairs_and_area_directors(graph, sample_dataset):
+    ingest.ingest(graph, sample_dataset)
+    result = tools.chairs(graph, "tls")
+    assert result["outcome"] == "answer"
+    assert result["answer"] == ["chair"]
+    assert result["area_directors"] == ["ad"]
+    assert tools.chairs(graph, "no-such-wg")["outcome"] == "unknown"
+
+
+def test_became_rfc_reads_the_became_edge(graph, sample_dataset):
+    ingest.ingest(graph, sample_dataset)
+    result = tools.became_rfc(graph, "draft-ietf-tls-tls13")
+    assert result["outcome"] == "answer"
+    assert result["answer"] == "rfc8446"
+    assert any(chip["kind"] == "rfc" for chip in result["chips"])
+    assert tools.became_rfc(graph, "draft-ietf-tls-nope")["outcome"] == "unknown"
+
+
+def test_threads_by_subject_matches_a_message_subject(graph, sample_dataset):
+    ingest.ingest(graph, sample_dataset)
+    result = tools.threads_by_subject(graph, "draft-ietf-tls-tls13-21")
+    assert result["outcome"] == "answer"
+    assert result["answer"] == ["tls:1001"]
+    assert any(chip["kind"] == "thread" for chip in result["chips"])
+    assert tools.threads_by_subject(graph, "nothing-matches-this")["outcome"] == "unknown"
+
+
+def test_count_became_counts_the_matching_family(graph, sample_dataset):
+    ingest.ingest(graph, sample_dataset)
+    assert tools.count_became(graph, "draft-ietf-tls-")["answer"] == 1
+    assert tools.count_became(graph, "draft-ietf-tls-tls13")["answer"] == 1
+    assert tools.count_became(graph, "draft-ietf-tls-nope")["outcome"] == "unknown"
+
+
+def test_count_thread_messages_counts_the_thread(graph, sample_dataset):
+    ingest.ingest(graph, sample_dataset)
+    result = tools.count_thread_messages(graph, "tls:1001")
+    assert result["outcome"] == "answer"
+    assert result["answer"] == 2
+    assert any(chip["kind"] == "thread" for chip in result["chips"])
+    assert tools.count_thread_messages(graph, "tls:9999")["outcome"] == "unknown"

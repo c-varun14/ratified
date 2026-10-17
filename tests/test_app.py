@@ -80,3 +80,19 @@ def test_sync_route_renders_the_deferred_state(monkeypatch, falkor):
     assert response.status_code == 200
     assert "sync deferred (rate limit), graph unchanged" in response.text
     assert "graph unchanged" in response.text
+
+
+def test_out_of_scope_question_declines_instead_of_answering(monkeypatch, falkor):
+    host = os.environ.get("RATIFIED_FALKOR_HOST", "127.0.0.1")
+    port = int(os.environ.get("RATIFIED_FALKOR_PORT", "6379"))
+    monkeypatch.setenv("RATIFIED_FALKOR_HOST", host)
+    monkeypatch.setenv("RATIFIED_FALKOR_PORT", str(port))
+    client = TestClient(app_module.app)
+    response = client.post(
+        "/ask",
+        data={"question": "Which IESG DISCUSS positions were filed against draft-ietf-tls-tls13?"},
+    )
+    assert response.status_code == 200
+    assert "the graph does not know" in response.text
+    assert "outcome-answer" not in response.text
+    assert "outcome-unknown" in response.text
