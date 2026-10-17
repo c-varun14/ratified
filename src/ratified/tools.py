@@ -6,14 +6,22 @@ an LLM, and no LLM output can become a citation.
 """
 from __future__ import annotations
 
+import os
 from datetime import date, timedelta
 
-from . import viz
+from . import ingest, mail, viz
+from .fetch import Fetcher
 from .graph import rows
+from .paths import DATA_DIR
 
 DEFAULT_DRAFT = "draft-ietf-tls-tls13"
 
 TOPIC_LINK_PRECISION = "9 of 52 decided links (17.3%; 36 ties)"
+
+BROWSE_BASE = "https://mailarchive.ietf.org/arch/browse"
+SYNC_PAGES = 3
+SYNC_BODY_CAP = 20
+CACHE_LIFETIME = 6 * 3600
 
 OUTCOME_ANSWER = "answer"
 OUTCOME_PARTIAL = "partial"
@@ -410,29 +418,149 @@ def precedent(graph, message_id: str):
     return card("precedent", f"Precedent for {message_id}", claims, rows_out=paths, missing=missing, conflicts=conflicts)
 
 
-def sync(graph, days: int = 1):
+class SyncDeferred(RuntimeError):
+    """Raised when mailarchive cannot be re-fetched and the cache cannot stand in."""
+
+    def __init__(self, reason: str):
+        self.reason = reason
+        super().__init__(reason)
+
+
+def _fetch_window(fetcher, list_name: str, since: str) -> tuple[list[dict], bool]:
+    window: list[dict] = []
+    seen: set[str] = set()
+    from_cache = False
+    for page in range(1, SYNC_PAGES + 1):
+        url = f"{BROWSE_BASE}/{list_name}/?page={page}"
+        try:
+            body = fetcher.get(url, use_cache=False)
+        except Exception:
+            if fetcher.offline:
+                raise SyncDeferred("offline")
+            age = fetcher.cache_age(url)
+            if age is None or age > CACHE_LIFETIME:
+                raise SyncDeferred("rate limit")
+            body = fetcher.get(url)
+            from_cache = True
+        page_rows = mail.parse_rows(body.decode("utf-8", "replace"), list_name)
+        if not page_rows:
+            break
+        recent = [row for row in page_rows if (row.get("date") or "") >= since]
+        window.extend(row for row in recent if row["id"] not in seen)
+        seen.update(row["id"] for row in recent)
+        if len(recent) < len(page_rows):
+            break
+    return window, from_cache
+
+
+def _attach_bodies(fetcher, new_rows: list[dict]) -> int:
+    targets = [row for row in new_rows if mail.DRAFT_SUBJ_RE.search(row.get("subject") or "")][:SYNC_BODY_CAP]
+    fetched = 0
+    for row in targets:
+        try:
+            parsed = mail.parse_body(fetcher.get(row["url"] + "download/"))
+        except Exception:
+            continue
+        fetched += 1
+        for key in ("message_id", "in_reply_to", "references", "from_name", "from_email", "body", "draft_refs"):
+            row[key] = parsed.get(key)
+    return fetched
+
+
+def _threads_for(new_rows: list[dict], existing: set[str], list_name: str) -> list[dict]:
+    grouped: dict[int, list[dict]] = {}
+    for row in new_rows:
+        grouped.setdefault(row["thread_numeric"], []).append(row)
+    threads = []
+    for number, group in grouped.items():
+        if f"{list_name}:{number}" in existing:
+            continue
+        ordered = sorted(group, key=lambda r: r.get("date") or "")
+        threads.append(
+            {
+                "thread_numeric": number,
+                "url": ordered[0]["url"],
+                "subject": ordered[0]["subject"],
+                "n_messages": len(group),
+                "first_date": ordered[0].get("date"),
+                "last_date": ordered[-1].get("date"),
+            }
+        )
+    return threads
+
+
+def _aggregate_summary(graph, draft: str = DEFAULT_DRAFT):
+    result = aggregate_unresolved(graph, draft)
+    return (result["title"], tuple(sorted(c["sid"] for c in result["claims"] if c["unresolved"])))
+
+
+def sync(graph, days: int = 1, fetcher=None, sections: dict | None = None):
+    list_name = ingest.LIST
     since = (date.today() - timedelta(days=int(days))).isoformat()
-    window = rows(
-        graph,
-        "MATCH (m:Message) WHERE m.date >= $since RETURN count(m) AS messages, max(m.date) AS latest",
-        {"since": since},
+    fetcher = fetcher or Fetcher(min_interval=2.0)
+    before = _aggregate_summary(graph)
+    try:
+        window, from_cache = _fetch_window(fetcher, list_name, since)
+    except SyncDeferred as deferred:
+        return {
+            "tool": "sync",
+            "deferred": True,
+            "title": f"sync deferred ({deferred.reason}), graph unchanged",
+            "reason": deferred.reason,
+            "n_changed": 0,
+            "new_people": [],
+            "aggregate_changed": False,
+            "aggregate": None,
+            "notes": [
+                f"mailarchive could not be re-fetched ({deferred.reason}); the graph and the aggregate card are unchanged"
+            ],
+        }
+
+    known = {row["id"] for row in rows(graph, "MATCH (m:Message) RETURN m.id AS id")}
+    known_people = {row["name"] for row in rows(graph, "MATCH (p:Person) RETURN p.name AS name")}
+    new_rows = [row for row in window if row["id"] not in known]
+    new_people = sorted(
+        {
+            row["from_display"]
+            for row in new_rows
+            if row.get("from_display") and row["from_display"] not in known_people
+        }
     )
-    threads = rows(graph, "MATCH (t:Thread) RETURN count(t) AS n, max(t.last_date) AS latest")
-    total = rows(graph, "MATCH (m:Message) RETURN count(m) AS n")[0]["n"]
-    recent = window[0]["messages"] if window else 0
-    latest = (threads[0]["latest"] if threads else None) or "unknown"
-    newest = rows(
-        graph,
-        "MATCH (t:Thread) WHERE t.last_date = $latest RETURN t.id AS id, t.url AS url LIMIT 1",
-        {"latest": latest},
-    )
-    chips = [thread_chip(n["id"], n["url"]) for n in newest]
-    summary = (
-        f"{total} messages in the graph; {recent} dated on or after {since}; "
-        f"most recent thread dated {latest}"
-    )
-    claims = [{"text": summary, "chips": chips}]
-    return card("sync", f"Graph freshness (last {days} day(s))", claims, rows_out=window + threads)
+
+    fetched_bodies = 0
+    if new_rows:
+        fetched_bodies = _attach_bodies(fetcher, new_rows)
+        if sections is None:
+            sections = ingest.load_sections(os.path.join(DATA_DIR, "sections.json"))
+        existing = {row["id"] for row in rows(graph, "MATCH (t:Thread) RETURN t.id AS id")}
+        ingest.append_messages(
+            graph, new_rows, _threads_for(new_rows, existing, list_name), sections, list_name=list_name
+        )
+
+    after_card = aggregate_unresolved(graph)
+    after = (after_card["title"], tuple(sorted(c["sid"] for c in after_card["claims"] if c["unresolved"])))
+    changed = before != after
+
+    chips = [message_chip(row["id"], row["url"]) for row in new_rows[:8]]
+    if new_rows:
+        claims = [{"text": f"{len(new_rows)} new message(s) in the last {days} day(s); {fetched_bodies} body fetch(es)", "chips": chips}]
+    elif window:
+        claims = [{"text": f"no new messages in the last {days} day(s); {len(window)} already in the graph", "chips": []}]
+    else:
+        claims = [{"text": f"no messages dated on or after {since}", "chips": []}]
+    if new_people:
+        claims.append({"text": "new people: " + ", ".join(new_people), "chips": []})
+
+    result = card("sync", f"sync — {len(new_rows)} changed / {len(new_people)} new people", claims)
+    result["deferred"] = False
+    result["n_changed"] = len(new_rows)
+    result["new_people"] = new_people
+    result["aggregate_changed"] = changed
+    result["aggregate"] = after_card if changed else None
+    result["notes"].append(f"aggregate card {'changed' if changed else 'unchanged'}")
+    if from_cache:
+        result["notes"].append("the fresh fetch did not answer; the window was compared against the cached browse page(s)")
+    return result
 
 
 TOOLS = {

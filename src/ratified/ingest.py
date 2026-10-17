@@ -340,6 +340,22 @@ def ingest(graph, data: dict, *, list_name: str = LIST, draft_prefix: str = DRAF
     }
 
 
+def append_messages(graph, messages: list[dict], threads: list[dict], sections: dict,
+                    *, list_name: str = LIST, draft_prefix: str = DRAFT_PREFIX, batch: int = BATCH) -> dict:
+    """Add newly fetched messages (and any new threads) without touching existing nodes."""
+    _write(graph, schema.merge_nodes("Person"), person_rows(messages), batch)
+    _write(graph, schema.merge_nodes("Thread"), thread_rows(threads, list_name), batch)
+    _write(graph, schema.merge_nodes("Message"), message_rows(messages, list_name), batch)
+    _write(graph, schema.merge_nodes("MessageBody"), message_rows(messages, list_name), batch)
+    _write(graph, schema.merge_edges("IN_THREAD"), thread_message_rows(messages, list_name), batch)
+    _write(graph, schema.merge_edges("AUTHORED"), person_message_rows(messages), batch)
+    _write(graph, schema.merge_edges("HAS_BODY"), body_rows(messages), batch)
+    discussed, cites, unresolved = discussion_rows(messages, sections, draft_prefix)
+    _write(graph, schema.merge_edges("DISCUSSED"), discussed, batch)
+    _write(graph, schema.merge_edges("CITES"), cites, batch)
+    return {"messages": len(messages), "threads": len(threads), "discussed": len(discussed), "cites": len(cites)}
+
+
 def _write(graph, cypher: str, rows: list[dict], batch: int) -> None:
     for start in range(0, max(1, len(rows)), batch):
         graph.query(cypher, {"rows": rows[start : start + batch]})

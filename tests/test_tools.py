@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+from datetime import date
 
 from ratified import ingest, routing, tools
 
@@ -138,3 +139,112 @@ def test_clause_receipt_traces_object_thread_revisions_to_section(graph, sample_
 def test_clause_receipt_empty_for_unknown_clause(graph, sample_dataset):
     ingest.ingest(graph, sample_dataset)
     assert tools.clause_receipt(graph, "draft-ietf-tls-tls13", "rfc8446#99.9")["paths"] == []
+
+
+def _browse_row(msg_id, thread_numeric, subject, sender, when):
+    return (
+        '<div class="xtr">'
+        f'<div class="xtd thread-col">{thread_numeric}</div>'
+        '<div class="xtd id-col">9999</div>'
+        f'<div class="xtd subj-col"><a href="/arch/msg/tls/{msg_id}/">{subject}</a></div>'
+        f'<div class="xtd from-col">{sender}</div>'
+        f'<div class="xtd date-col">{when}</div>'
+        f'<a href="/arch/msg/tls/{msg_id}/">x</a><span class="depth-1"></span>'
+        "</div>"
+    )
+
+
+NEW_BODY = (
+    b"From: New Person <new@example.org>\r\n"
+    b"Subject: Re: draft-ietf-tls-tls13-21 Section 5.5\r\n"
+    b"Date: Sat, 17 Oct 2026 10:00:00 +0000\r\n"
+    b"Message-ID: <ddd@example.org>\r\n"
+    b"Content-Type: text/plain\r\n\r\n"
+    b"About Section 5.5 of draft-ietf-tls-tls13-21.\r\n"
+)
+
+
+class _FakeFetcher:
+    offline = False
+
+    def __init__(self, page, body=b""):
+        self.page = page.encode()
+        self.body = body
+
+    def get(self, url, use_cache=True):
+        return self.body if url.endswith("download/") else self.page
+
+    def cache_age(self, url):
+        return 0.0
+
+
+class _OfflineFetcher:
+    offline = True
+
+    def get(self, url, use_cache=True):
+        raise RuntimeError("offline: not cached")
+
+    def cache_age(self, url):
+        return None
+
+
+class _RateLimitedFetcher:
+    offline = False
+
+    def get(self, url, use_cache=True):
+        raise RuntimeError("HTTP 429")
+
+    def cache_age(self, url):
+        return None
+
+
+def _with_55_changed(sample_dataset):
+    data = copy.deepcopy(sample_dataset)
+    data["sections"]["drafts"]["draft-ietf-tls-tls13-21"]["align"]["5.5"] = {
+        "draft_number": "5.5",
+        "draft_title": "Record Payload Protection",
+        "rfc_number": "5.5",
+        "rfc_title": "Record Payload Protection",
+        "how": "heading",
+        "similarity": 0.9,
+        "changed": True,
+    }
+    return data
+
+
+def test_sync_appends_new_messages_and_reports_aggregate_change(graph, sample_dataset):
+    data = _with_55_changed(sample_dataset)
+    ingest.ingest(graph, data)
+    page = _browse_row("ddd444", 1001, "draft-ietf-tls-tls13-21 Section 5.5", "New Person", date.today().isoformat())
+    result = tools.sync(graph, days=1, fetcher=_FakeFetcher(page, NEW_BODY), sections=data["sections"])
+    assert result["deferred"] is False
+    assert result["n_changed"] == 1
+    assert "New Person" in result["new_people"]
+    assert result["aggregate_changed"] is True
+    assert result["aggregate"]["title"].startswith("2 clauses")
+    assert graph.query("MATCH (m:Message {id:'ddd444'}) RETURN count(m)").result_set[0][0] == 1
+
+
+def test_sync_reports_unchanged_when_nothing_is_new(graph, sample_dataset):
+    ingest.ingest(graph, sample_dataset)
+    page = _browse_row("aaa111", 1001, "draft-ietf-tls-tls13-21 padding", "Ada Lovelace", date.today().isoformat())
+    result = tools.sync(graph, days=1, fetcher=_FakeFetcher(page), sections=sample_dataset["sections"])
+    assert result["n_changed"] == 0
+    assert result["aggregate_changed"] is False
+    assert result["title"] == "sync — 0 changed / 0 new people"
+
+
+def test_sync_defers_offline(graph, sample_dataset):
+    ingest.ingest(graph, sample_dataset)
+    result = tools.sync(graph, days=1, fetcher=_OfflineFetcher())
+    assert result["deferred"] is True
+    assert result["reason"] == "offline"
+    assert result["title"] == "sync deferred (offline), graph unchanged"
+
+
+def test_sync_defers_on_rate_limit_without_a_usable_cache(graph, sample_dataset):
+    ingest.ingest(graph, sample_dataset)
+    result = tools.sync(graph, days=1, fetcher=_RateLimitedFetcher())
+    assert result["deferred"] is True
+    assert result["reason"] == "rate limit"
+    assert result["title"] == "sync deferred (rate limit), graph unchanged"

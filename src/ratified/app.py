@@ -47,6 +47,12 @@ def receipt(request: Request, draft: str = "", sid: str = ""):
     )
 
 
+@app.post("/sync", response_class=HTMLResponse)
+def run_sync(request: Request, days: int = Form(1)):
+    graph = connect()
+    return TEMPLATES.TemplateResponse(request, "_sync.html", {"status": tools.sync(graph, days=days)})
+
+
 @app.get("/health")
 def health():
     return {"status": "ok"}

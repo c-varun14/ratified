@@ -119,6 +119,17 @@ class Fetcher:
             return self._offline
         return os.environ.get(OFFLINE_ENV) == "1"
 
+    def cache_age(self, url: str) -> float | None:
+        """Seconds since the cached response was stored, or None if not cached."""
+        body_path, meta_path = self._paths(url)
+        if not self._cacheable(body_path, meta_path):
+            return None
+        try:
+            stored = float(json.loads(Path(meta_path).read_text()).get("ts", 0))
+        except (ValueError, OSError):
+            return None
+        return max(0.0, time.time() - stored)
+
     def save_stats(self, path: str | None = None) -> str:
         path = path or os.path.join(os.path.dirname(self.cache_dir.rstrip("/")), "fetch_stats.json")
         os.makedirs(os.path.dirname(path), exist_ok=True)

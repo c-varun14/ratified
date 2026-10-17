@@ -51,3 +51,30 @@ def test_page_serves_and_answers_end_to_end(monkeypatch, falkor, sample_dataset)
         assert client.get("/health").json() == {"status": "ok"}
     finally:
         graph.delete()
+
+
+def test_sync_route_renders_the_deferred_state(monkeypatch, falkor):
+    host = os.environ.get("RATIFIED_FALKOR_HOST", "127.0.0.1")
+    port = int(os.environ.get("RATIFIED_FALKOR_PORT", "6379"))
+    monkeypatch.setenv("RATIFIED_FALKOR_HOST", host)
+    monkeypatch.setenv("RATIFIED_FALKOR_PORT", str(port))
+
+    def fake_sync(graph, days=1):
+        return {
+            "tool": "sync",
+            "deferred": True,
+            "title": "sync deferred (rate limit), graph unchanged",
+            "reason": "rate limit",
+            "n_changed": 0,
+            "new_people": [],
+            "aggregate_changed": False,
+            "aggregate": None,
+            "notes": ["mailarchive could not be re-fetched (rate limit)"],
+        }
+
+    monkeypatch.setattr(app_module.tools, "sync", fake_sync)
+    client = TestClient(app_module.app)
+    response = client.post("/sync")
+    assert response.status_code == 200
+    assert "sync deferred (rate limit), graph unchanged" in response.text
+    assert "graph unchanged" in response.text
