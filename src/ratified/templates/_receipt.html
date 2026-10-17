@@ -2,16 +2,15 @@
   {% if receipt.paths %}
   {% for path in receipt.paths %}
   <div class="path">
-    <div class="path-via">{{ path.via }}{% if path.similarity is not none %} · clause similarity {{ path.similarity }}{% endif %}</div>
+    <div class="path-via">{{ path.via }}{% if path.similarity is not none %} · the cited revision's text was {{ (100 * path.similarity) | round | int }}% similar to what shipped{% endif %}</div>
     {{ path.svg | safe }}
     <ol class="steps">
-      {% for step in path.steps %}
-      <li class="step step-{{ step.kind }}"><a href="{{ step.url }}" target="_blank" rel="noopener">{{ step.kind }}: {{ step.label }}</a></li>
-      {% endfor %}
+      {% for step in path.steps %}<li class="step-{{ step.kind }}"><a href="{{ step.url }}" target="_blank" rel="noopener">{{ step.kind }}: {{ step.label }}</a></li>{% endfor %}
     </ol>
   </div>
   {% endfor %}
   {% else %}
   <p class="empty">no traced path for this clause</p>
   {% endif %}
+  {% if trace %}{% include "_trace.html" %}{% endif %}
 </div>

@@ -7,8 +7,8 @@ from fastapi import FastAPI, Form, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
-from . import llm, tools
-from .graph import connect, rows
+from . import insights, llm, tools
+from .graph import connect, rows, start_trace, stop_trace
 
 TEMPLATES = Jinja2Templates(directory=str(Path(__file__).parent / "templates"))
 
@@ -17,9 +17,10 @@ app = FastAPI(title="Ratified")
 SCENARIO = "I'm new here: why does RFC 8446 section 4.2.1 read the way it does, and who do I ask?"
 
 EXAMPLES = [
-    "Why does section 4.2.11 read the way it does?",
+    "Why does early data work like this in TLS 1.3?",
+    "What did people say about middleboxes?",
+    "Who knows the most about TLS 1.3?",
     "Which clauses of draft-ietf-tls-tls13 were discussed while still changing and never resolved?",
-    "Who are the chairs of the TLS working group?",
     "Which IESG DISCUSS positions were filed against draft-ietf-tls-tls13?",
 ]
 
@@ -47,6 +48,13 @@ def clause_index() -> list[dict]:
         return []
 
 
+def people_index() -> list[dict]:
+    try:
+        return insights.central_people(connect(), 6)
+    except Exception:  # noqa: BLE001
+        return []
+
+
 @app.get("/", response_class=HTMLResponse)
 def index(request: Request):
     return TEMPLATES.TemplateResponse(
@@ -60,6 +68,7 @@ def index(request: Request):
             "examples": EXAMPLES,
             "stats": corpus_stats(),
             "clauses": clause_index(),
+            "people": people_index(),
         },
     )
 
@@ -67,24 +76,29 @@ def index(request: Request):
 @app.post("/ask", response_class=HTMLResponse)
 def ask(request: Request, question: str = Form("")):
     graph = connect()
-    tool, arguments = llm.choose_tool(graph, question)
-    result = tools.run(graph, tool, **arguments)
-    result["phrasing"] = llm.phrase(graph, question, result)
+    start_trace()
+    try:
+        tool, arguments = llm.choose_tool(graph, question)
+        result = tools.run(graph, tool, **arguments)
+        result["phrasing"] = llm.phrase(graph, question, result)
+    finally:
+        trace = stop_trace()
     return TEMPLATES.TemplateResponse(
         request,
         "_card.html",
-        {"card": result, "tool": tool, "arguments": arguments, "question": question},
+        {"card": result, "tool": tool, "arguments": arguments, "question": question, "trace": trace},
     )
 
 
 @app.get("/receipt", response_class=HTMLResponse)
 def receipt(request: Request, draft: str = "", sid: str = "", limit: int | None = None):
     graph = connect()
-    return TEMPLATES.TemplateResponse(
-        request,
-        "_receipt.html",
-        {"receipt": tools.clause_receipt(graph, draft, sid, limit=limit)},
-    )
+    start_trace()
+    try:
+        found = tools.clause_receipt(graph, draft, sid, limit=limit)
+    finally:
+        trace = stop_trace()
+    return TEMPLATES.TemplateResponse(request, "_receipt.html", {"receipt": found, "trace": trace})
 
 
 @app.post("/sync", response_class=HTMLResponse)

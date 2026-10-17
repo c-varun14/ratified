@@ -41,7 +41,8 @@ def test_page_serves_and_answers_end_to_end(monkeypatch, falkor, sample_dataset)
 
         why = client.post("/ask", data={"question": "why does section 5.4 read the way it does, and who do I ask?"})
         assert why.status_code == 200
-        assert "via <code>why_clause</code>" in why.text
+        assert "answered by <code>why_clause</code>" in why.text
+        assert "<strong>FalkorDB</strong>" in why.text and "MATCH (s:Section {id:$sid})" in why.text
         assert "Ada Lovelace" in why.text
         assert "not sent" in why.text
         assert "limit=1" in why.text
@@ -56,6 +57,7 @@ def test_page_serves_and_answers_end_to_end(monkeypatch, falkor, sample_dataset)
         assert "rfc8446" in receipt.text
         assert "rfc8446.html#section-5.4" in receipt.text
         assert "<svg" in receipt.text and "path-graph" in receipt.text
+        assert "SUPERSEDED*0.." in receipt.text
 
         assert client.get("/health").json() == {"status": "ok"}
     finally:

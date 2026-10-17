@@ -4,137 +4,245 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Ratified</title>
+  <meta name="description" content="Ask why a spec reads the way it does: a FalkorDB graph of the IETF TLS working group traces every answer to the public record.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/htmx.org@1.9.12"></script>
   <style>
-    :root { color-scheme: light dark; }
-    body { font: 15px/1.55 ui-sans-serif, system-ui, sans-serif; margin: 0; padding: 2rem; max-width: 62rem; }
-    header h1 { margin: 0; font-size: 1.6rem; }
-    header p { margin: .2rem 0 1.4rem; opacity: .7; }
-    form { display: flex; gap: .5rem; margin-bottom: 1rem; }
-    input[name=question] { flex: 1; padding: .6rem .7rem; font: inherit; }
-    button { padding: .6rem 1rem; font: inherit; cursor: pointer; }
-    .catalogue { list-style: none; padding: 0; margin: 0 0 1.5rem; opacity: .75; font-size: .85rem; }
-    .catalogue code { font-weight: 600; }
-    .card { border: 1px solid currentColor; border-radius: .6rem; padding: 1rem 1.2rem; }
-    .card-head { display: flex; align-items: baseline; gap: .6rem; flex-wrap: wrap; }
-    .card-head h2 { font-size: 1.1rem; margin: 0; }
-    .card.hero { padding: 1.25rem 1.4rem 1.1rem; }
-    .card.hero .card-head { gap: .5rem .7rem; }
-    .card.hero .card-head h2 { font-size: 1.4rem; line-height: 1.25; letter-spacing: -.01em; }
-    .hero-explain { margin: .55rem 0 1rem; font-size: 1.02rem; line-height: 1.45; opacity: .92; }
-    .card.hero .claims li { margin: .7rem 0; }
-    .badge { font-size: .72rem; text-transform: uppercase; letter-spacing: .04em; padding: .12rem .45rem; border-radius: .4rem; border: 1px solid currentColor; }
-    .outcome-answer .badge { background: #1b5e20; color: #fff; border-color: #1b5e20; }
-    .outcome-partial .badge { background: #8d6e00; color: #fff; border-color: #8d6e00; }
-    .outcome-unknown .badge { background: #37474f; color: #fff; border-color: #37474f; }
-    .outcome-conflict .badge { background: #8e0000; color: #fff; border-color: #8e0000; }
-    .tool { font-size: .8rem; opacity: .65; margin-left: auto; }
-    .empty { font-style: italic; opacity: .8; }
-    .phrasing { border-left: 3px solid currentColor; padding-left: .7rem; opacity: .85; }
-    .phrasing em { opacity: .6; font-size: .8rem; }
-    .card.sync { margin-bottom: .8rem; border-style: dashed; }
-    .sync-counts { font-weight: 600; margin: .2rem 0; }
-    .claims { padding-left: 1.2rem; }
-    .claims li { margin: .6rem 0; }
-    .chips { display: flex; flex-wrap: wrap; gap: .35rem; margin: .3rem 0 0; }
-    .chip { font-size: .76rem; text-decoration: none; border: 1px solid currentColor; border-radius: 999px; padding: .08rem .5rem; opacity: .85; }
-    .chip:hover { opacity: 1; }
-    .claim.lead { opacity: .82; }
-    .tag { font-size: .68rem; text-transform: uppercase; letter-spacing: .04em; border: 1px dashed currentColor; border-radius: .35rem; padding: 0 .3rem; opacity: .7; }
-    .path-btn { font: inherit; font-size: .76rem; padding: .05rem .5rem; cursor: pointer; border: 1px solid currentColor; border-radius: 999px; background: none; color: inherit; opacity: .8; }
-    .path-btn:hover { opacity: 1; }
+    :root {
+      --bg: #f6f6f3; --surface: #ffffff; --surface-2: #f0f0ec; --ink: #16181d; --muted: #5d6470; --faint: #8a909a;
+      --line: #e2e2dc; --line-strong: #c9cac2;
+      --accent: #3b4cca; --accent-ink: #ffffff; --accent-soft: #e8eafb; --accent-line: #b9c0f0;
+      --ok: #17663a; --ok-soft: #e3f3e8; --warn: #8a5a00; --warn-soft: #fbf0d9; --none: #4a5260; --none-soft: #eceef1;
+      --bad: #a3221b; --bad-soft: #fbe5e3;
+      --shadow: 0 1px 2px rgba(20, 22, 30, .05), 0 4px 16px rgba(20, 22, 30, .05);
+      --radius: 14px; --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+      color-scheme: light;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #111317; --surface: #191c22; --surface-2: #20242b; --ink: #eceef2; --muted: #a2a9b4; --faint: #7d8591;
+        --line: #2a2f37; --line-strong: #3a404a;
+        --accent: #8f9bff; --accent-ink: #0f1226; --accent-soft: #23284a; --accent-line: #444d8c;
+        --ok: #6fd39a; --ok-soft: #173325; --warn: #f0c25e; --warn-soft: #382c12; --none: #b4bcc8; --none-soft: #262b33;
+        --bad: #ff8c84; --bad-soft: #3d1c1a;
+        --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 6px 20px rgba(0, 0, 0, .25);
+        color-scheme: dark;
+      }
+    }
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.6 Inter, ui-sans-serif, system-ui, sans-serif; }
+    a { color: var(--accent); }
+    code, pre, .mono { font-family: var(--mono); font-size: .86em; }
+    .wrap { max-width: 64rem; margin: 0 auto; padding: 2.4rem 1.25rem 4rem; }
+
+    .top { display: flex; align-items: center; gap: .6rem; margin-bottom: 2rem; }
+    .mark { width: 30px; height: 30px; border-radius: 9px; background: var(--accent); display: grid; place-items: center; }
+    .mark svg { width: 18px; height: 18px; }
+    .brand { font-weight: 700; letter-spacing: -.01em; font-size: 1.05rem; }
+    .top .tag-line { margin-left: auto; font-size: .78rem; color: var(--muted); }
+
+    h1 { font-size: clamp(1.9rem, 4.6vw, 2.8rem); line-height: 1.12; letter-spacing: -.025em; margin: 0 0 .8rem; max-width: 46rem; }
+    .lede { font-size: 1.08rem; color: var(--muted); max-width: 44rem; margin: 0 0 1.2rem; }
+    .stats { display: flex; flex-wrap: wrap; gap: .4rem; margin: 0 0 2rem; padding: 0; list-style: none; }
+    .stats li { font-size: .78rem; color: var(--muted); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: .2rem .65rem; }
+    .stats strong { color: var(--ink); font-weight: 600; }
+
+    .scenario { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.4rem 1.5rem; margin: 0 0 1.6rem; display: grid; grid-template-columns: 1fr auto; gap: 1rem 1.5rem; align-items: center; }
+    .eyebrow { font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; font-weight: 600; color: var(--accent); margin: 0 0 .35rem; }
+    .scenario p.story { margin: 0; font-size: 1.02rem; }
+    .run { font: 600 1rem Inter, sans-serif; padding: .85rem 1.35rem; border-radius: 10px; border: 0; background: var(--accent); color: var(--accent-ink); cursor: pointer; white-space: nowrap; box-shadow: var(--shadow); }
+    .run:hover { filter: brightness(1.07); }
+
+    .ask { display: flex; gap: .5rem; margin: 0 0 .8rem; }
+    .ask input { flex: 1; min-width: 0; font: inherit; padding: .75rem .95rem; border-radius: 10px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink); }
+    .ask input:focus { outline: 2px solid var(--accent-line); border-color: var(--accent); }
+    .btn { font: 500 .92rem Inter, sans-serif; padding: .7rem 1rem; border-radius: 10px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink); cursor: pointer; }
+    .btn.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+    .btn:hover { border-color: var(--accent); }
+    .chips-row { display: flex; flex-wrap: wrap; gap: .4rem; margin: 0 0 1.8rem; }
+    .pill { font: 500 .8rem Inter, sans-serif; padding: .32rem .7rem; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; text-align: left; }
+    .pill:hover { border-color: var(--accent); color: var(--accent); }
+    .pill .sub { color: var(--faint); font-weight: 400; }
+    .htmx-request.run, .htmx-request.pill, .htmx-request.btn, .htmx-request .btn.primary { opacity: .55; cursor: progress; }
+    .loading { display: none; color: var(--muted); font-size: .9rem; margin: .5rem 0 1rem; }
+    .htmx-request .loading, .loading.htmx-request { display: block; }
+
+    #card:empty { display: none; }
+    #card { margin: 0 0 2.4rem; scroll-margin-top: 1rem; }
+    .asked { font-size: .88rem; color: var(--muted); margin: 0 0 .6rem; }
+    .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.3rem 1.5rem; }
+    .card + .card { margin-top: 1rem; }
+    .card-head { display: flex; align-items: flex-start; gap: .7rem; flex-wrap: wrap; }
+    .card-head h2 { font-size: 1.15rem; line-height: 1.3; margin: 0; flex: 1 1 20rem; letter-spacing: -.01em; }
+    .card.hero .card-head h2 { font-size: 1.5rem; letter-spacing: -.02em; }
+    .badge { font-size: .68rem; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; padding: .22rem .55rem; border-radius: 6px; margin-top: .2rem; }
+    .outcome-answer .badge { background: var(--ok-soft); color: var(--ok); }
+    .outcome-partial .badge { background: var(--warn-soft); color: var(--warn); }
+    .outcome-unknown .badge { background: var(--none-soft); color: var(--none); }
+    .outcome-conflict .badge { background: var(--bad-soft); color: var(--bad); }
+    .tool { font-size: .76rem; color: var(--faint); margin-top: .3rem; }
+    .hero-explain { margin: .8rem 0 0; color: var(--muted); font-size: .98rem; }
+    .resolved { margin: .9rem 0 0; padding: .65rem .85rem; border-radius: 10px; background: var(--accent-soft); font-size: .86rem; }
+    .resolved .alts { display: inline-flex; flex-wrap: wrap; gap: .3rem; margin-left: .3rem; vertical-align: middle; }
+    .resolved .pill { padding: .12rem .55rem; font-size: .76rem; }
+    .empty { color: var(--muted); font-style: italic; }
+    .phrasing { border-left: 3px solid var(--line-strong); padding-left: .8rem; color: var(--muted); }
+    .card h3 { font-size: .74rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 1.6rem 0 .2rem; font-weight: 600; }
+    .card .sub { font-size: .82rem; color: var(--faint); margin: 0 0 .5rem; }
+    .claims { list-style: none; padding: 0; margin: .4rem 0 0; }
+    .claims > li { padding: .65rem 0; border-top: 1px solid var(--line); }
+    .claims > li:first-child { border-top: 0; }
+    .claim.lead { opacity: .8; }
+    .chips { display: flex; flex-wrap: wrap; gap: .3rem; margin-top: .35rem; }
+    .chip { font: 500 .72rem var(--mono); text-decoration: none; color: var(--accent); background: var(--accent-soft); border-radius: 6px; padding: .12rem .45rem; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .chip:hover { text-decoration: underline; }
+    .tag { font-size: .66rem; text-transform: uppercase; letter-spacing: .06em; border: 1px solid var(--line-strong); color: var(--muted); border-radius: 5px; padding: 0 .3rem; margin-left: .3rem; }
+    .path-btn { font: 500 .74rem Inter, sans-serif; margin-top: .4rem; padding: .18rem .6rem; border-radius: 999px; border: 1px solid var(--line-strong); background: none; color: var(--ink); cursor: pointer; }
+    .people { list-style: none; padding: 0; margin: .5rem 0 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: .45rem; }
+    .people li { background: var(--surface-2); border-radius: 10px; padding: .5rem .7rem; font-size: .88rem; }
+    .people li span { display: block; font-size: .76rem; color: var(--muted); }
+    .mail { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; margin-top: .5rem; }
+    .mail-head { background: var(--surface-2); padding: .6rem .9rem; font-size: .84rem; display: grid; grid-template-columns: 4.5rem 1fr; gap: .15rem .6rem; }
+    .mail-head .field { color: var(--faint); font-size: .74rem; text-transform: uppercase; letter-spacing: .05em; padding-top: .1rem; }
+    .mail pre { margin: 0; padding: .9rem; white-space: pre-wrap; word-break: break-word; font: .9rem/1.55 Inter, sans-serif; }
+    .mail-foot { display: flex; justify-content: flex-end; padding: 0 .9rem .8rem; }
+    .notes, .missing { list-style: none; padding: 0; margin: 1rem 0 0; }
+    .notes li, .missing li { font-size: .82rem; color: var(--muted); padding: .15rem 0; }
+    .missing li::before { content: "partial · "; color: var(--warn); font-weight: 600; }
+    .conflicts { color: var(--bad); font-size: .88rem; }
+
     .receipt:empty { display: none; }
-    .receipt-body { margin: .5rem 0 0; padding: .5rem .7rem; border-left: 3px solid currentColor; }
-    .path { margin: .4rem 0; }
-    .path-via { font-size: .76rem; opacity: .7; }
-    .steps { list-style: decimal; padding-left: 1.4rem; margin: .3rem 0; }
-    .steps .step { font-size: .8rem; margin: .1rem 0; }
-    .steps .step a { text-decoration: none; }
-    .steps .step a:hover { text-decoration: underline; }
+    .receipt-body { margin: .6rem 0 0; padding: .9rem 1rem; border-radius: 12px; background: var(--surface-2); }
+    .path-via { font-size: .76rem; color: var(--muted); margin-bottom: .3rem; }
+    .path-graph { display: block; width: 100%; max-width: 36rem; height: auto; margin: .3rem 0 .5rem; }
+    .path-graph text { font: 12px Inter, sans-serif; fill: var(--ink); }
+    .path-graph .kind { font-size: 9px; letter-spacing: .06em; fill: var(--muted); }
+    .path-graph .on-path rect { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.4; }
+    .path-graph .ghost { opacity: .45; }
+    .path-graph .ghost rect { fill: none; stroke: var(--line-strong); stroke-dasharray: 3 3; }
+    .path-graph .edge { stroke: var(--accent); stroke-width: 2; }
+    .steps { margin: .2rem 0 0; padding-left: 1.3rem; font-size: .8rem; }
+    .steps a { text-decoration: none; }
+    .steps a:hover { text-decoration: underline; }
     .step-section a { font-weight: 600; }
-    .path-graph { display: block; width: 100%; max-width: 34rem; height: auto; margin: .4rem 0; }
-    .path-graph text { font-size: 12px; fill: currentColor; }
-    .path-graph .kind { font-size: 9.5px; text-transform: uppercase; letter-spacing: .04em; opacity: .6; }
-    .path-graph .on-path rect { fill: none; stroke: currentColor; stroke-width: 1.5; }
-    .path-graph .ghost { opacity: .28; }
-    .path-graph .ghost rect { fill: none; stroke: currentColor; stroke-dasharray: 3 3; }
-    .path-graph .edge { stroke: currentColor; stroke-width: 2; }
-    .path-graph .node.on-path rect { fill: color-mix(in srgb, currentColor 12%, transparent); }
-    .missing li, .notes li { font-size: .82rem; opacity: .75; }
-    .conflicts { font-size: .85rem; color: #8e0000; }
-    .lede { font-size: 1.12rem; line-height: 1.5; max-width: 46rem; margin: .4rem 0 .3rem; opacity: 1; }
-    .stats { font-size: .8rem; opacity: .65; margin: 0 0 1.4rem; }
-    .scenario { border: 2px solid currentColor; border-radius: .7rem; padding: 1rem 1.2rem; margin: 0 0 1.4rem; }
-    .scenario h2 { font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; margin: 0 0 .4rem; opacity: .7; }
-    .scenario p { margin: 0 0 .8rem; font-size: 1.02rem; max-width: 46rem; }
-    .run { font-weight: 600; font-size: 1.02rem; padding: .65rem 1.2rem; border-radius: .5rem; border: 2px solid currentColor; background: none; color: inherit; }
-    .run:hover { background: color-mix(in srgb, currentColor 10%, transparent); }
-    .examples { display: flex; flex-wrap: wrap; gap: .4rem; margin: -.4rem 0 1.2rem; }
-    .examples button { font-size: .8rem; padding: .25rem .6rem; border-radius: 999px; border: 1px solid currentColor; background: none; color: inherit; opacity: .8; }
-    .examples button:hover { opacity: 1; }
-    details.clause-index { margin: 1.4rem 0; }
-    details.clause-index summary { cursor: pointer; font-weight: 600; margin-bottom: .7rem; }
-    details.clause-index .examples { margin: 0; }
-    details.catalogue-box { margin: 0 0 1.4rem; font-size: .85rem; }
-    details.catalogue-box summary { cursor: pointer; opacity: .75; }
-    .asked { font-size: .9rem; opacity: .75; margin: 0 0 .5rem; }
-    .card h3 { font-size: .95rem; margin: 1.2rem 0 .2rem; }
-    .sub { font-size: .8rem; opacity: .7; margin: 0 0 .3rem; }
-    .people { padding-left: 1.2rem; margin: .3rem 0; }
-    .people li { margin: .15rem 0; }
-    .draft-mail { border: 1px dashed currentColor; border-radius: .5rem; padding: .7rem .9rem; font-size: .88rem; }
-    .draft-mail .field { display: inline-block; min-width: 4.2rem; opacity: .6; font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; }
-    .draft-mail pre { white-space: pre-wrap; word-break: break-word; font: inherit; margin: .6rem 0 0; }
-    .htmx-request .run, .htmx-request.run { opacity: .5; }
-    @media (max-width: 640px) {
-      body { padding: 1rem; }
-      form { flex-wrap: wrap; }
-      input[name=question] { flex-basis: 100%; }
-      .tool { margin-left: 0; }
+
+    .trace { margin: 1.4rem 0 0; border-top: 1px dashed var(--line-strong); padding-top: .7rem; }
+    .trace summary { cursor: pointer; font-size: .8rem; color: var(--muted); list-style: none; display: flex; align-items: center; gap: .45rem; }
+    .trace summary::-webkit-details-marker { display: none; }
+    .trace summary .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+    .trace summary strong { color: var(--ink); font-weight: 600; }
+    .trace ol { margin: .6rem 0 0; padding-left: 1.4rem; }
+    .trace li { margin: 0 0 .6rem; font-size: .76rem; color: var(--muted); }
+    .trace pre { margin: .2rem 0 0; padding: .55rem .7rem; background: var(--surface-2); border-radius: 8px; overflow-x: auto; white-space: pre-wrap; word-break: break-word; color: var(--ink); font-size: .74rem; }
+
+    .explore { display: grid; grid-template-columns: 3fr 2fr; gap: 1rem; margin: 0 0 2rem; }
+    .panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.1rem 1.2rem; }
+    .panel h2 { font-size: 1rem; margin: 0 0 .2rem; letter-spacing: -.01em; }
+    .panel p.sub { font-size: .82rem; color: var(--muted); margin: 0 0 .8rem; }
+    .panel .chips-row { margin: 0; max-height: 19rem; overflow-y: auto; }
+    .rank { list-style: none; padding: 0; margin: 0; }
+    .rank li { display: grid; grid-template-columns: 1.4rem 1fr auto; gap: .5rem; align-items: center; padding: .4rem 0; border-top: 1px solid var(--line); font-size: .88rem; }
+    .rank li:first-child { border-top: 0; }
+    .rank .n { color: var(--faint); font-size: .76rem; }
+    .rank .bar { height: 6px; width: 4.5rem; background: var(--surface-2); border-radius: 3px; overflow: hidden; }
+    .rank .bar i { display: block; height: 100%; background: var(--accent); }
+    .rank small { display: block; color: var(--muted); font-size: .74rem; }
+    details.catalogue-box { margin: 0 0 1.4rem; font-size: .84rem; }
+    details.catalogue-box summary { cursor: pointer; color: var(--muted); }
+    .catalogue { padding-left: 1.2rem; color: var(--muted); }
+    .catalogue code { color: var(--ink); }
+    footer { color: var(--faint); font-size: .78rem; border-top: 1px solid var(--line); padding-top: 1rem; }
+    footer a { color: var(--muted); }
+    .sync-counts { font-weight: 600; }
+
+    @media (max-width: 720px) {
+      .wrap { padding: 1.4rem 16px 3rem; }
+      .top .tag-line { display: none; }
+      .scenario { grid-template-columns: 1fr; padding: 1.1rem; }
+      .run { width: 100%; }
+      .ask { flex-wrap: wrap; }
+      .ask input { flex-basis: 100%; }
+      .ask .btn { flex: 1; }
+      .explore { grid-template-columns: 1fr; }
+      .card { padding: 1.05rem; }
+      .card.hero .card-head h2 { font-size: 1.22rem; }
+      .mail-head { grid-template-columns: 3.6rem 1fr; }
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Ratified</h1>
-    <p class="lede">Every team argues in chat and forgets who decided what. Ratified is a company brain for an organisation where every argument is public, the IETF's TLS working group, so every answer can be checked against the record.</p>
-    {% if stats %}<p class="stats">FalkorDB graph: {{ "{:,}".format(stats.nodes) }} nodes · {{ "{:,}".format(stats.edges) }} edges · {{ "{:,}".format(stats.messages) }} list messages ({{ stats.first[:4] }}–{{ stats.last[:4] }}), {{ "{:,}".format(stats.with_text) }} with their text · drafts, revisions and RFC sections · every claim links to its public source</p>{% endif %}
-  </header>
-
-  <section class="scenario">
-    <h2>The scenario</h2>
-    <p>You just joined a team shipping TLS 1.3. RFC 8446 negotiates the protocol version in a <code>supported_versions</code> extension instead of the version field everyone used before. Why? The people who settled it are spread across years of mailing-list threads.</p>
-    <button class="run" hx-post="/ask" hx-vals='{"question": {{ scenario | tojson }}}' hx-target="#card" hx-swap="innerHTML">▶ Run the scenario</button>
-  </section>
-
-  <form hx-post="/ask" hx-target="#card" hx-swap="innerHTML">
-    <input name="question" placeholder="Why does section 4.2.10 read the way it does?" value="{{ question }}">
-    <button type="submit">Ask</button>
-    <button type="button" hx-post="/sync" hx-target="#card" hx-swap="innerHTML" title="re-fetch the last 24 h of the WG list">sync</button>
-  </form>
-
-  <div class="examples">
-    {% for example in examples %}<button type="button" hx-post="/ask" hx-vals='{"question": {{ example | tojson }}}' hx-target="#card" hx-swap="innerHTML">{{ example }}</button>{% endfor %}
+<div class="wrap">
+  <div class="top">
+    <div class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="6" r="2.4"/><circle cx="19" cy="6" r="2.4"/><circle cx="12" cy="18" r="2.4"/><path d="M7 7.5 10.6 16M17 7.5 13.4 16M7.4 6h9.2"/></svg></div>
+    <span class="brand">Ratified</span>
+    <span class="tag-line">A company brain on FalkorDB · Graph Hacks 2026</span>
   </div>
 
-  <section id="card">
-    {% if card %}{% include "_card.html" %}{% endif %}
-  </section>
-
-  {% if clauses %}
-  <details class="clause-index"{% if not card %} open{% endif %}>
-    <summary>{{ clauses | length }} clauses of RFC 8446 have a traced discussion. Pick any one to ask why it reads the way it does.</summary>
-    <div class="examples">
-      {% for clause in clauses %}<button type="button" hx-post="/ask" hx-vals='{"question": {{ ("Why does section " ~ clause.number ~ " read the way it does, and who do I ask?") | tojson }}}' hx-target="#card" hx-swap="innerHTML" onclick="window.scrollTo({top: document.getElementById('card').offsetTop - 16, behavior: 'smooth'})">§{{ clause.number }} {{ clause.title }} <span class="sub">· {{ clause.messages }} msg, {{ clause.people }} people</span></button>{% endfor %}
-    </div>
-  </details>
+  <h1>Ask why a decision was made. Get the discussion, the people, and a path you can click.</h1>
+  <p class="lede">Every team argues in chat and forgets who decided what. Ratified is a company brain built on an organisation where every argument is public, the IETF's TLS working group, so every answer can be checked against the record.</p>
+  {% if stats %}
+  <ul class="stats">
+    <li><strong>{{ "{:,}".format(stats.nodes) }}</strong> nodes</li>
+    <li><strong>{{ "{:,}".format(stats.edges) }}</strong> edges</li>
+    <li><strong>{{ "{:,}".format(stats.messages) }}</strong> list messages, {{ "{:,}".format(stats.with_text | int) }} with their text ({{ stats.first[:4] }}–{{ stats.last[:4] }})</li>
+    <li>drafts, revisions, RFC 8446 sections, chairs</li>
+    <li>every claim links to its public source</li>
+  </ul>
   {% endif %}
 
+  <section class="scenario">
+    <div>
+      <p class="eyebrow">The scenario</p>
+      <p class="story">You just joined a team shipping TLS 1.3. RFC 8446 negotiates the protocol version in a <code>supported_versions</code> extension instead of the version field everyone used before. Why? The people who settled it are spread across years of mailing-list threads.</p>
+    </div>
+    <button class="run" hx-post="/ask" hx-vals='{"question": {{ scenario | tojson }}}' hx-target="#card" hx-swap="innerHTML show:#card:top">▶ Run the scenario</button>
+  </section>
+
+  <form class="ask" hx-post="/ask" hx-target="#card" hx-swap="innerHTML show:#card:top">
+    <input name="question" placeholder="Why does early data work like this? · What did people say about middleboxes?" value="{{ question }}" aria-label="Ask a question">
+    <button class="btn primary" type="submit">Ask</button>
+    <button class="btn" type="button" hx-post="/sync" hx-target="#card" hx-swap="innerHTML show:#card:top" title="re-fetch the last 24 h of the WG list">Sync</button>
+  </form>
+
+  <div class="chips-row">
+    {% for example in examples %}<button type="button" class="pill" hx-post="/ask" hx-vals='{"question": {{ example | tojson }}}' hx-target="#card" hx-swap="innerHTML show:#card:top">{{ example }}</button>{% endfor %}
+  </div>
+
+  <section id="card">{% if card %}{% include "_card.html" %}{% endif %}</section>
+
+  <div class="explore">
+    {% if clauses %}
+    <section class="panel">
+      <h2>{{ clauses | length }} clauses with a traced discussion</h2>
+      <p class="sub">Every RFC 8446 clause the graph can trace to messages written while its text was still changing. Pick one.</p>
+      <div class="chips-row">
+        {% for clause in clauses %}<button type="button" class="pill" hx-post="/ask" hx-vals='{"question": {{ ("Why does section " ~ clause.number ~ " read the way it does, and who do I ask?") | tojson }}}' hx-target="#card" hx-swap="innerHTML show:#card:top">§{{ clause.number }} {{ clause.title }} <span class="sub">· {{ clause.messages }} msg · {{ clause.people }} people</span></button>{% endfor %}
+      </div>
+    </section>
+    {% endif %}
+    {% if people %}
+    <section class="panel">
+      <h2>Who knows what</h2>
+      <p class="sub">FalkorDB <code>algo.pageRank</code> over who wrote in the same threads. Central is not the same as right.</p>
+      <ol class="rank">
+        {% set top = people[0].pagerank %}
+        {% for person in people %}<li><span class="n">{{ loop.index }}</span><span>{{ person.name }}<small>{{ person.threads }} threads · {{ person.clauses }} clauses cited</small></span><span class="bar" title="PageRank {{ person.pagerank }}"><i style="width: {{ (100 * person.pagerank / top) | round | int }}%"></i></span></li>{% endfor %}
+      </ol>
+    </section>
+    {% endif %}
+  </div>
+
   <details class="catalogue-box">
-    <summary>The fixed tool catalogue: questions route to one of these, each a hand-written Cypher query. No model writes Cypher or citations.</summary>
+    <summary>The fixed tool catalogue: every question routes to one of these, each a hand-written Cypher query. No model writes Cypher or citations.</summary>
     <ul class="catalogue">
       {% for tool in catalogue %}<li><code>{{ tool.name }}</code>({{ tool.args | join(', ') }}) — {{ tool.description }}</li>{% endfor %}
     </ul>
   </details>
+
+  <footer>Ratified · built on FalkorDB · data from the IETF datatracker, the mailarchive and the RFC Editor · Graph Hacks 2026 (WeMakeDevs × FalkorDB), Track 03 Company Brain</footer>
+</div>
 </body>
 </html>
