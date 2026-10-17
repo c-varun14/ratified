@@ -1,0 +1,266 @@
+From nobody Mon Jul 19 09:17:46 2021
+Return-Path: <davidben@google.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 30D003A38F7
+ for <tls@ietfa.amsl.com>; Mon, 19 Jul 2021 09:17:44 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -9.949
+X-Spam-Level: 
+X-Spam-Status: No, score=-9.949 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIMWL_WL_HIGH=-0.452, DKIM_SIGNED=0.1,
+ DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1,
+ HEADER_FROM_DIFFERENT_DOMAINS=0.001, HTML_MESSAGE=0.001,
+ RCVD_IN_DNSWL_NONE=-0.0001, SPF_HELO_NONE=0.001, SPF_PASS=-0.001,
+ URIBL_BLOCKED=0.001, USER_IN_DEF_SPF_WL=-7.5]
+ autolearn=unavailable autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=chromium.org
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id Vj9hHdUa3K-1 for <tls@ietfa.amsl.com>;
+ Mon, 19 Jul 2021 09:17:39 -0700 (PDT)
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com
+ [IPv6:2607:f8b0:4864:20::430])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 5B0633A38FA
+ for <tls@ietf.org>; Mon, 19 Jul 2021 09:17:34 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id i14so4884075pfd.5
+ for <tls@ietf.org>; Mon, 19 Jul 2021 09:17:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=on/xG4fQrev6v25V/o4mmpD8T7roGFURDfaMuyBrkv0=;
+ b=Z2CFHzXIqA1+TSLAr40qoyQiJ9TRkJtIwi4nMYmekRuoLSwcvqaMQA6OizVHhhyj6i
+ yILOIUoyTLqrCaoL05AUCQNqALrUpuchQ6DaddY32m2Vu8yfgoELdgY8ZJlnNvJLZ9Op
+ GtrLfNzQ10XNCoyZ5ruOJ1lHm/ZAKxB1qRAEQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=on/xG4fQrev6v25V/o4mmpD8T7roGFURDfaMuyBrkv0=;
+ b=bU1mv5BPxAb7LAvsd0dGTw+kivn4ZpyocUZw613uppIVUSaxGu6jTMFcq/WHsoxMwN
+ 1XG50PXVJYeh6CSvLELNo6D+1aN5D2qrlrm8HEJDtH0Bja88cRGL8Dm45mwOdeFv9Sd+
+ d4/3Ycf8+Z22/S3juVx4w2JIrFzBpBGPiUTLOXfBbjBPJWvltSUoK+kYxplWaEDgjMpb
+ HCi4Y0coRpwPopGqt//P3/6AlDpbpHzNpxKsvsysWb35y1QHRRVpgOznZFbIl3x5Dz3m
+ ZUxLMucbgyGZljJSu2x5JUJaTFOylfQhxmVUQMZlIz6bCmpq2GNP9ZKsCSyE3tyM7a/h
+ 4qZQ==
+X-Gm-Message-State: AOAM531PxeYgq21zl8PADlx+ipsdOfKKud1MPsIDgmPf9dppSAtl8Jxs
+ wSNlYgKBjp6Jtw8irxcrby9I951wCIDKehvAQTeHmW2/og==
+X-Google-Smtp-Source: ABdhPJwpFUpK22OXPqqB/+tnkQDU/gQf9BLflu8vHuJ2V/GnCe7XBT7GQeeXXngRXRrL9Odlq4Q9suhEhNGrM4Pq1BM=
+X-Received: by 2002:a63:210b:: with SMTP id h11mr6169389pgh.6.1626711453061;
+ Mon, 19 Jul 2021 09:17:33 -0700 (PDT)
+MIME-Version: 1.0
+References: <0ad354da-5300-4b48-8925-f7ab18cdf235@www.fastmail.com>
+ <5D834B58-7A0C-4701-96EB-31663BC0C2DE@akamai.com>
+ <2c7c53a8-cf47-f51d-f97b-f6cd5a712024@cs.tcd.ie>
+ <CAErg=HE92wz3-aLDSfNWk_qJA35+V-euUvtW07HKA=B7CVB3iA@mail.gmail.com>
+In-Reply-To: <CAErg=HE92wz3-aLDSfNWk_qJA35+V-euUvtW07HKA=B7CVB3iA@mail.gmail.com>
+From: David Benjamin <davidben@chromium.org>
+Date: Mon, 19 Jul 2021 12:17:16 -0400
+Message-ID: <CAF8qwaDKScDihLVHTahVGqwZjU3U1OXwpsygR=SXMt_3rEOZpA@mail.gmail.com>
+To: Ryan Sleevi <ryan-ietftls@sleevi.com>
+Cc: Stephen Farrell <stephen.farrell@cs.tcd.ie>, 
+ "Salz, Rich" <rsalz=40akamai.com@dmarc.ietf.org>, "TLS@ietf.org" <tls@ietf.org>
+Content-Type: multipart/alternative; boundary="000000000000508d9b05c77c468b"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/KGhJhz-bVj7zqOxZjwn-JY_2uHQ>
+Subject: Re: [TLS] WGLC for draft-ietf-tls-cross-sni-resumption
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Mon, 19 Jul 2021 16:17:44 -0000
+
+--000000000000508d9b05c77c468b
+Content-Type: text/plain; charset="UTF-8"
+
+I'll add that, in the context of cross-domain tracking on the web, this
+draft is a red herring. Remember that web pages have subresources. That
+means looking at the destination domain isn't useful because two different
+pages can embed a common destination domain. So the same concerns exist
+with RFC8446 (TLS resumption), RFC7540 (connection-reuse, same- and
+cross-domain), and RFC7230 (connection reuse). That's why we need a
+holistic answer like network partition keys from [FETCH], that apply to
+*all* network state. That answer applies equally to plain resumption and
+this draft.
+
+Of course, [FETCH] doesn't apply to other applications, just the web. But I
+think the above should demonstrate that correlation boundaries are
+necessarily a whole-application question. That's why the [FETCH] citation
+is only an example. The general guidance is this:
+
+> Client applications should partition the session cache between
+connections that are meant to be uncorrelated.
+
+This applies to all application protocols. Do you believe your correlation
+boundary is an individual email? Well, you shouldn't reuse any state across
+those and probably will end up not doing any resumption at all. Do you have
+multiple contexts in your application, like different profiles, that are
+meant to be separate? Well, you shouldn't reuse state across those
+profiles. Does your application not have correlation boundaries? Well, then
+you can resume whatever. Are you a non-web application where partitioning
+by just the destination domain is meaningful? Well, then you should
+partition your session cache accordingly, which no-ops this extension and
+parts of RFC7540.
+
+Indeed, since this is a general problem with TLS resumption, we're really
+talking about an omission in RFC8446 itself. For rfc8446bis, I landed this
+PR, which corrects the omission.
+https://github.com/tlswg/tls13-spec/pull/1205
+Were publication orders different, there would be no need to include the
+same text in draft-ietf-tls-cross-sni-resumption, but so it goes.
+
+On Mon, Jul 19, 2021 at 11:22 AM Ryan Sleevi <ryan-ietftls@sleevi.com>
+wrote:
+
+>
+>
+> On Mon, Jul 19, 2021 at 11:02 AM Stephen Farrell <
+> stephen.farrell@cs.tcd.ie> wrote:
+>
+>> I don't find the reference to [FETCH] explains how that
+>> problem can be mitigated by browsers. (IIRC, adding that
+>> was the result of earlier discussion of this point?)
+>>
+>
+> I'm not sure I'm parsing this correctly.
+>
+> Are you saying that you don't believe network isolation keys are
+> sufficient? That is, this is the current language from the draft:
+>
+> > For example, the Web use case uses network partition keys to separate
+> cache lookups [FETCH].
+>
+> And the term there ("network partition keys") is a defined term in the
+> FETCH spec that forms the basis of cross-domain tracking prevention:
+> https://fetch.spec.whatwg.org/#network-partition-key
+>
+> It's unclear whether you're saying that the spec should diverge from FETCH
+> and impose additional requirements, or whether you're saying you don't
+> believe the current FETCH spec is robust enough there.
+>
+> It's unclear that there's any benefit to having the Cross-SNI spec impose
+> additional requirements: you have to consider the Web application in its
+> entire context, which is precisely what network partition keys do.
+> Similarly, if the concern is that FETCH isn't sufficient for your concerns,
+> is that a concern with this spec, or with FETCH, and can/should they be
+> articulated there (and the related issue mentioned)
+>
+> <snip>
+>
+>> I think both of those are indicators that this mechanism
+>> could be used at scale for tracking.
+>>
+>
+> You opened by talking about MTAs, but it's unclear if this is meant to be
+> a general statement or specific to mail. In the context of the Web, then we
+> have to consider the holistic platform, and ask whether this hooks into the
+> same appropriate points - it does, as the partition keys are based on the
+> same cross-origin tracking protection mechanisms (e.g. the determination of
+> "first party" vs "third party" contexts is implicitly handled here). If
+> this is for mail, then isn't the point that this remains an
+> application-/protocol-specific consideration?
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+>
+
+--000000000000508d9b05c77c468b
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">I&#39;ll add that, in the context of cross-domain tracking=
+ on the web, this draft is a red herring. Remember that web pages have subr=
+esources. That means looking at the destination domain isn&#39;t useful bec=
+ause two different pages can embed a common destination domain. So the same=
+ concerns exist with RFC8446 (TLS resumption), RFC7540 (connection-reuse, s=
+ame- and cross-domain), and RFC7230 (connection reuse). That&#39;s why we n=
+eed a holistic answer like network partition keys from [FETCH], that apply =
+to <i>all</i>=C2=A0network state. That answer applies equally to plain resu=
+mption and this draft.<div><div><br>Of course, [FETCH] doesn&#39;t apply to=
+ other applications,=C2=A0just the web. But I think the above should demons=
+trate that correlation boundaries are necessarily a whole-application quest=
+ion. That&#39;s why the [FETCH] citation is only an example. The general gu=
+idance is this:<br><br>&gt;=C2=A0Client applications should partition the s=
+ession cache between connections that are meant to be uncorrelated.<br><br>=
+This applies to all application protocols. Do you believe your correlation =
+boundary is an individual email? Well, you shouldn&#39;t reuse any state ac=
+ross those and probably will end up not doing any resumption at all. Do you=
+ have multiple contexts in your application,=C2=A0like different profiles,=
+=C2=A0that are meant to be separate? Well, you shouldn&#39;t reuse state ac=
+ross those profiles. Does your application not have correlation boundaries?=
+ Well, then you can resume whatever. Are you a non-web application where pa=
+rtitioning by just the destination domain is meaningful? Well, then you sho=
+uld partition your session cache accordingly, which no-ops this extension a=
+nd parts of=C2=A0RFC7540.<div><br></div><div>Indeed, since this is a genera=
+l problem with TLS resumption, we&#39;re really talking about an omission i=
+n RFC8446 itself. For rfc8446bis, I landed this PR, which corrects the omis=
+sion.</div><div><a href=3D"https://github.com/tlswg/tls13-spec/pull/1205" t=
+arget=3D"_blank">https://github.com/tlswg/tls13-spec/pull/1205</a><br></div=
+><div>Were publication orders different, there would be no need to include =
+the same text in draft-ietf-tls-cross-sni-resumption, but so it goes.</div>=
+</div></div></div><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"=
+gmail_attr">On Mon, Jul 19, 2021 at 11:22 AM Ryan Sleevi &lt;<a href=3D"mai=
+lto:ryan-ietftls@sleevi.com" target=3D"_blank">ryan-ietftls@sleevi.com</a>&=
+gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0=
+px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div =
+dir=3D"ltr"><div dir=3D"ltr"><br></div><br><div class=3D"gmail_quote"><div =
+dir=3D"ltr" class=3D"gmail_attr">On Mon, Jul 19, 2021 at 11:02 AM Stephen F=
+arrell &lt;<a href=3D"mailto:stephen.farrell@cs.tcd.ie" target=3D"_blank">s=
+tephen.farrell@cs.tcd.ie</a>&gt; wrote:</div><blockquote class=3D"gmail_quo=
+te" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204=
+);padding-left:1ex">
+I don&#39;t find the reference to [FETCH] explains how that<br>
+problem can be mitigated by browsers. (IIRC, adding that<br>
+was the result of earlier discussion of this point?)<br></blockquote><div><=
+br></div><div>I&#39;m not sure I&#39;m parsing this correctly.</div><div><b=
+r></div><div>Are you saying that you don&#39;t believe network isolation ke=
+ys are sufficient? That is, this is the current language from the draft:</d=
+iv><div><br></div><div>&gt;=C2=A0For example, the Web use case uses network=
+ partition keys to separate cache lookups [FETCH].</div><div><br></div><div=
+>And the term there (&quot;network partition keys&quot;) is a defined term =
+in the FETCH spec that forms the basis of cross-domain tracking prevention:=
+=C2=A0<a href=3D"https://fetch.spec.whatwg.org/#network-partition-key" targ=
+et=3D"_blank">https://fetch.spec.whatwg.org/#network-partition-key</a></div=
+><div><br></div><div>It&#39;s unclear whether you&#39;re saying that the sp=
+ec should diverge from FETCH and impose additional requirements, or whether=
+ you&#39;re saying you don&#39;t believe the current FETCH spec is robust e=
+nough there.</div><div><br></div><div>It&#39;s unclear that there&#39;s any=
+ benefit to having the Cross-SNI spec impose additional requirements: you h=
+ave to consider the Web application in its entire context, which is precise=
+ly what network partition keys do. Similarly, if the concern is that FETCH =
+isn&#39;t sufficient for your concerns, is that a concern with this spec, o=
+r with FETCH, and can/should they be articulated there (and the related iss=
+ue mentioned)</div><div>=C2=A0<br></div><div>&lt;snip&gt;</div><blockquote =
+class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px sol=
+id rgb(204,204,204);padding-left:1ex">I think both of those are indicators =
+that this mechanism<br>
+could be used at scale for tracking.<br></blockquote><div><br></div><div>Yo=
+u opened by talking about MTAs, but it&#39;s unclear if this is meant to be=
+ a general statement or specific to mail. In the context of the Web, then w=
+e have to consider the holistic platform, and ask whether this hooks into t=
+he same appropriate points - it does, as the partition keys are based on th=
+e same cross-origin tracking protection mechanisms (e.g. the determination =
+of &quot;first party&quot; vs &quot;third party&quot; contexts is implicitl=
+y handled here). If this is for mail, then isn&#39;t the point that this re=
+mains an application-/protocol-specific consideration?</div></div></div>
+_______________________________________________<br>
+TLS mailing list<br>
+<a href=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.org</a><br>
+<a href=3D"https://www.ietf.org/mailman/listinfo/tls" rel=3D"noreferrer" ta=
+rget=3D"_blank">https://www.ietf.org/mailman/listinfo/tls</a><br>
+</blockquote></div>
+
+--000000000000508d9b05c77c468b--
+

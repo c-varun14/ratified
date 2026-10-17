@@ -1,0 +1,311 @@
+Return-Path: <stephen.farrell@cs.tcd.ie>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 26BA9120724
+ for <tls@ietfa.amsl.com>; Thu, 15 Mar 2018 11:47:16 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -4.31
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.31 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ DKIM_VALID_AU=-0.1, RCVD_IN_DNSWL_MED=-2.3, SPF_PASS=-0.001,
+ T_RP_MATCHES_RCVD=-0.01, URIBL_BLOCKED=0.001]
+ autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=cs.tcd.ie
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id N2hifTJtDdWQ for <tls@ietfa.amsl.com>;
+ Thu, 15 Mar 2018 11:47:13 -0700 (PDT)
+Received: from mercury.scss.tcd.ie (mercury.scss.tcd.ie [134.226.56.6])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 9BAA8124D37
+ for <tls@ietf.org>; Thu, 15 Mar 2018 11:47:13 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+ by mercury.scss.tcd.ie (Postfix) with ESMTP id 68077BE4D;
+ Thu, 15 Mar 2018 18:47:11 +0000 (GMT)
+X-Virus-Scanned: Debian amavisd-new at scss.tcd.ie
+Received: from mercury.scss.tcd.ie ([127.0.0.1])
+ by localhost (mercury.scss.tcd.ie [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id nOd0X6Vmfw9m; Thu, 15 Mar 2018 18:47:06 +0000 (GMT)
+Received: from [10.244.2.138]
+ (95-45-153-252-dynamic.agg2.phb.bdt-fng.eircom.net [95.45.153.252])
+ by mercury.scss.tcd.ie (Postfix) with ESMTPSA id 4FBF1BE38;
+ Thu, 15 Mar 2018 18:47:06 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cs.tcd.ie; s=mail;
+ t=1521139626; bh=/oKfrJu0rJbsQX0ydTI2vw+pyb/1T7jgMTX+hO3Bxk8=;
+ h=Subject:To:References:From:Date:In-Reply-To:From;
+ b=NHId0aTJW20Xjo2EKNF+KLvjcGpNTaLnPCszadY8ZKzVQpUrDwJst+aU/TTmKDZz6
+ kDU/a5fIc1u2qEYTKrjQUlwzwJ5Ek9C0WmLGiFybHsxNaIMPJavrpTZGukEokBAMZ3
+ GpuZN3gkJ7kAm16FmYRtX+gJ+rMlTkOjs5dHX8UE=
+To: Russ Housley <housley@vigilsec.com>, IETF TLS <tls@ietf.org>
+References: <6140B7A6-A1C7-44BC-9C65-9BE0D5E1B580@sn3rd.com>
+ <CAOgPGoBYc7O+qmjM-ptkRkE6mRsOYgc5O7Wu9pm3drFp3TVa6Q@mail.gmail.com>
+ <d7dfdc1a-2c96-fd88-df1b-3167fe0f804b@cs.tcd.ie>
+ <CAHbuEH7E8MhFcMt2GSngSrGxN=6bU6LD49foPC-mdoUZboH_0Q@mail.gmail.com>
+ <1a024320-c674-6f75-ccc4-d27b75e3d017@nomountain.net>
+ <2ed0gc.p5dcxd.31eoyz-qmf@mercury.scss.tcd.ie>
+ <d7ec110f-2a0b-cf97-94a3-eeb5594d8c24@cs.tcd.ie>
+ <CAAF6GDcaG7nousyQ6wotEg4dW8PFuXi=riH2702eZZn2fwfLQw@mail.gmail.com>
+ <CAPsNn2XCNtqZaQM6Bg8uoMZRJE+qQakEwvw8Cn9fBm-5H+Xn_A@mail.gmail.com>
+ <3F8142DE-EADB-4AB9-A204-7D87ACDCD3E3@akamai.com>
+ <CAPsNn2VE_7+rWT0fp9rrVnZrgcY7ORLWTee+kf_Av1dqm4CiDQ@mail.gmail.com>
+ <CB55AABB-8937-4F6B-B5AC-B6F262F08A4F@akamai.com>
+ <CAPsNn2U_xG28Tumo3oRkQ+6=BHzgv-6YtgNSpwvhdFFRWc7EQQ@mail.gmail.com>
+ <2DC45296-244E-4C72-8B3C-DE47EADAC2DE@fugue.com>
+ <MWHPR21MB018978EDE7EA49B3D55B65268CD20@MWHPR21MB0189.namprd21.prod.outlook.com>
+ <25354088-1C2F-47D3-916B-898F238BB943@vigilsec.com>
+From: Stephen Farrell <stephen.farrell@cs.tcd.ie>
+Openpgp: id=5BB5A6EA5765D2C5863CAE275AB2FAF17B172BEA; url=
+Message-ID: <fb2be90f-6039-132b-f50f-21784958149c@cs.tcd.ie>
+Date: Thu, 15 Mar 2018 18:47:05 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.6.0
+MIME-Version: 1.0
+In-Reply-To: <25354088-1C2F-47D3-916B-898F238BB943@vigilsec.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="puyZFbw9Up2K8VA5Zx6Gb0fiMm0U8nRy8"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/fUntFSzE1R8yjhQYtAAUs6J_cEI>
+Subject: Re: [TLS] TLS@IETF101 Agenda Posted
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Thu, 15 Mar 2018 18:47:16 -0000
+
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--puyZFbw9Up2K8VA5Zx6Gb0fiMm0U8nRy8
+Content-Type: multipart/mixed; boundary="1POjFkGe33TPpXPcdyyDVSX9Z6XIwLARO";
+ protected-headers="v1"
+From: Stephen Farrell <stephen.farrell@cs.tcd.ie>
+To: Russ Housley <housley@vigilsec.com>, IETF TLS <tls@ietf.org>
+Message-ID: <fb2be90f-6039-132b-f50f-21784958149c@cs.tcd.ie>
+Subject: Re: [TLS] TLS@IETF101 Agenda Posted
+References: <6140B7A6-A1C7-44BC-9C65-9BE0D5E1B580@sn3rd.com>
+ <986797a7-81b0-7874-5f39-afe83c86635b@cs.tcd.ie>
+ <CAOgPGoBYc7O+qmjM-ptkRkE6mRsOYgc5O7Wu9pm3drFp3TVa6Q@mail.gmail.com>
+ <d7dfdc1a-2c96-fd88-df1b-3167fe0f804b@cs.tcd.ie>
+ <CAHbuEH7E8MhFcMt2GSngSrGxN=6bU6LD49foPC-mdoUZboH_0Q@mail.gmail.com>
+ <1a024320-c674-6f75-ccc4-d27b75e3d017@nomountain.net>
+ <2ed0gc.p5dcxd.31eoyz-qmf@mercury.scss.tcd.ie>
+ <d7ec110f-2a0b-cf97-94a3-eeb5594d8c24@cs.tcd.ie>
+ <CAAF6GDcaG7nousyQ6wotEg4dW8PFuXi=riH2702eZZn2fwfLQw@mail.gmail.com>
+ <CAPsNn2XCNtqZaQM6Bg8uoMZRJE+qQakEwvw8Cn9fBm-5H+Xn_A@mail.gmail.com>
+ <3F8142DE-EADB-4AB9-A204-7D87ACDCD3E3@akamai.com>
+ <CAPsNn2VE_7+rWT0fp9rrVnZrgcY7ORLWTee+kf_Av1dqm4CiDQ@mail.gmail.com>
+ <CB55AABB-8937-4F6B-B5AC-B6F262F08A4F@akamai.com>
+ <CAPsNn2U_xG28Tumo3oRkQ+6=BHzgv-6YtgNSpwvhdFFRWc7EQQ@mail.gmail.com>
+ <2DC45296-244E-4C72-8B3C-DE47EADAC2DE@fugue.com>
+ <MWHPR21MB018978EDE7EA49B3D55B65268CD20@MWHPR21MB0189.namprd21.prod.outlook.com>
+ <25354088-1C2F-47D3-916B-898F238BB943@vigilsec.com>
+In-Reply-To: <25354088-1C2F-47D3-916B-898F238BB943@vigilsec.com>
+
+--1POjFkGe33TPpXPcdyyDVSX9Z6XIwLARO
+Content-Type: multipart/mixed;
+ boundary="------------B5C3CAE309CDE989C7761B75"
+Content-Language: en-GB
+
+This is a multi-part message in MIME format.
+--------------B5C3CAE309CDE989C7761B75
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+
+Russ,
+
+On 15/03/18 17:29, Russ Housley wrote:
+>>> Nalini, why don't you (the consortium) define the standard,
+>>> then?
+>=20
+>> Indeed, if a =E2=80=9CTLS13-visibility=E2=80=9D standard has to be def=
+ined, it
+>> would make sense for the consortium (rather than the TLS WG) to
+>> define it.
+>=20
+> In fact, my mistake that was caught by Martin is exactly the reason
+> that we want the experts in the TLS WG to review the document.
+
+Two things:-
+
+1. I disagree with your assertion. Broad review to improve
+security is well worthwhile and is a reason to bring work
+to the IETF. Figuring out the how to controversially yet
+diligently make TLS (or any IETF protocol) *weaker* is not
+part of our process, and would IMO be extremely long-term
+damaging to the argument that IETF security review is a
+benefit of work being done via the IETF's processes.
+
+2. Having had that fairly fundamental error pointed out,
+and given the serious amount of analysis done for TLS1.3,
+and *not done* for this MitM enabler, (e.g. the >1 snooper
+issue has some showstoppers IMO no matter how any MitM
+capability proposal tries to tackle or avoid it) - would you
+not now agree that your draft is far too far from baked to
+be worth the WG's f2f time in London, even if the WG had
+consensus to consider the topic, which I think we've all
+acknowledged is not the case? (*)
+
+Thanks,
+S.
+
+(*) I considered not making this point - it could suit my
+arguments better if the WG have a sequence of drafts like
+this and draft-green to dismiss I guess but in fairness
+and just in case you're now happy to withdraw your request
+for a slot, I figured it worth asking, as I continue to
+think that the way this topic is being mishandled is a bad
+plan for all concerned.
+
+>=20
+> Russ
+>=20
+>=20
+>=20
+>=20
+> _______________________________________________ TLS mailing list=20
+> TLS@ietf.org https://www.ietf.org/mailman/listinfo/tls
+>=20
+
+--------------B5C3CAE309CDE989C7761B75
+Content-Type: application/pgp-keys;
+ name="0x7B172BEA.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="0x7B172BEA.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+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
+nUk+H3pkqOKoHAy/8fST
+=3Dg8yx
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------B5C3CAE309CDE989C7761B75--
+
+--1POjFkGe33TPpXPcdyyDVSX9Z6XIwLARO--
+
+--puyZFbw9Up2K8VA5Zx6Gb0fiMm0U8nRy8
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIcBAEBCAAGBQJaqr+pAAoJEFqy+vF7FyvqcWgQAI/rIgJoSCY6hqXB2Q8rWneg
+QQ+rR3bzVNSqix+NBYqfK5RHV2cV7UviJlRrn3dbp8FGPNuyMs2m8V/F7H66MpQX
+GdPSsPLhaDq5FbYdx+AVtod2AggrHjCD968eowdiz3qw1o10Y1iusw7/Nif09eug
+Du7AZl34RCDr2ZCnpJmyjmN7bld/V2gAOiFTO2SiPmoM3NMOBGIGCxHKPdtUMz+/
+pAMxNtR822EybU44xiPor6uSgK4KpllyLEVtq+BL+YRZBy9FLHfIU+s9hNR1DCGk
+nDzHEWwnqdhS5TwVaEgbB4O1fOze+0QDPIJrFSJqoI/YKgIXm2aKR6NXPk4y+r7r
+9gp1SHnDoKWOKCyy/C0sR1a0jJH7phmBeGiMixQSXuqH1Q2PMYIqhsgmqwWYDRw0
+mDN2myH75lKCw/0FIzywgBnJBItvj4ze+f4KX2Ny1ZsKpXYYZxvU8q1kyo605DTz
+EmxkPLxNdP/EZQu4ZzZMmc93VlWQlokG5KLyz/FoQTwkozdD49r8kNEsYQEWTKqr
+3IOX+Mp8iy3kknNiA0UIWQ7o3bpRcKgc5wm4G+faxgxhXbC220jSIk/bkiR+c0zg
+jQztX1k2EDk9oOqbmuwT+VNOB4EAxAmT3KqDRNOYoqx+SeuNRCygfy3Tu5AaFnS7
+J6FgyW8cd98cEjbHqdsn
+=fbS5
+-----END PGP SIGNATURE-----
+
+--puyZFbw9Up2K8VA5Zx6Gb0fiMm0U8nRy8--
+

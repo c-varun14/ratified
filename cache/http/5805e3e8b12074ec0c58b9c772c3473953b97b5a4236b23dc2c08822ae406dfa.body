@@ -1,0 +1,188 @@
+From nobody Sun Jan 31 18:17:10 2021
+Return-Path: <kaduk@mit.edu>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id C3F1E3A1514;
+ Sun, 31 Jan 2021 18:17:02 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.919
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.919 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, RCVD_IN_MSPIKE_H4=-0.01,
+ RCVD_IN_MSPIKE_WL=-0.01, SPF_HELO_NONE=0.001, SPF_PASS=-0.001,
+ URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id hiajBLGhJ-s9; Sun, 31 Jan 2021 18:16:59 -0800 (PST)
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 0ED123A1513;
+ Sun, 31 Jan 2021 18:16:58 -0800 (PST)
+Received: from kduck.mit.edu ([24.16.140.251]) (authenticated bits=56)
+ (User authenticated as kaduk@ATHENA.MIT.EDU)
+ by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1112GjY0025641
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Sun, 31 Jan 2021 21:16:49 -0500
+Date: Sun, 31 Jan 2021 18:16:44 -0800
+From: Benjamin Kaduk <kaduk@mit.edu>
+To: Alan DeKok <aland@deployingradius.com>
+Cc: Joseph Salowey <joe@salowey.net>, "<tls@ietf.org>" <tls@ietf.org>,
+ Martin Thomson <mt@lowentropy.net>, EMU WG <emu@ietf.org>
+Message-ID: <20210201021644.GW21@kduck.mit.edu>
+References: <CAOgPGoA3U+XpZMY7J+KGovNx6MtAdEzRaGW33xVJdQNWSi4LVg@mail.gmail.com>
+ <770e6a49-52fc-4e8b-91af-48f85e581fbb@www.fastmail.com>
+ <CAOgPGoBGOMXH-kMhQSujWxnACdmBL845u0ouE0fUYc4rWtUrZg@mail.gmail.com>
+ <ca4c526e-79a0-4fa7-abda-2b626795f068@www.fastmail.com>
+ <3409F71E-4CE4-46BB-8079-BFBE9BE83C9A@deployingradius.com>
+ <66157321-55DC-4831-8EF2-D75934D9024C@deployingradius.com>
+ <20210129183220.GI21@kduck.mit.edu>
+ <1A830492-3404-4BCC-844B-D7D950458BD9@deployingradius.com>
+ <CAOgPGoAoFL0aL8-g2waWny=BCod4tN9R==jR_N3kuLPFzvNGOg@mail.gmail.com>
+ <60EE664C-025B-4409-AE62-49C7DCF77FF3@deployingradius.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <60EE664C-025B-4409-AE62-49C7DCF77FF3@deployingradius.com>
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/vE1PBjF-EtF0ZqLAZttWIqhVsQw>
+Subject: Re: [TLS] [Emu] Fwd: Benjamin Kaduk's Discuss on
+ draft-ietf-emu-eap-tls13-13: (with DISCUSS and COMMENT)
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Mon, 01 Feb 2021 02:17:03 -0000
+
+On Sun, Jan 31, 2021 at 09:20:57AM -0500, Alan DeKok wrote:
+> On Jan 29, 2021, at 5:00 PM, Joseph Salowey <joe@salowey.net> wrote:
+> > DISCUSS: the EAP-TLS draft should also explain that session tickets may be sent either before or after the 0x00 octet.  Does the packet flow look any different for the two cases?  If so, what does that mean?
+> > 
+> > [Joe] I believe the flow of the message flights would be the same, but the on-the-wire format of those flights could be reversed.  I don't think this will necessarily cause a problem since the application data is consumed by the EAP TLS and the NewSessionTicket is consumed by TLS,  However I think the draft should be clear that this can happen.  
+> 
+>   I think so, too.
+
+I think we should talk about that, yes.
+But I haven't managed to convince myself yet that it is 100% safe in the
+face of fragmentation -- can we rule out a case where we end up delivering
+an EAP-TLS message that ends exactly at the end of the application data
+record (say, if bundled along with the tail end of the server handshake
+flight) and there is a NewSessionTicket queued that would get fragmented
+into the next EAP-TLS message?
+
+> > DISCUSS: the EAP-TLS draft Section 2.1.1 should be updated to note that this examples does not include Session Tickets.  Section 2.1.2 should be updated to note that there are more rounds than for the previous section.
+> > 
+> > [Joe] Yes.  It might be helpful to say that the commitment message may be sent before or after the client authentication is verified, but in the case that resumption is used it will always be after.  
+> 
+>   I think that's a good idea.  The current draft doesn't make this explicit.
+> 
+>   But... if the commitment message is sent before the client certificates have been authenticated, what does that commitment message *mean*?
+> 
+>   i.e. can the server send the commitment message, ignore the client cert information, and send an EAP-Success?  Even if the client certs have expired, been revoked, etc.?  Can the client detect a rogue server which always answers "yes"?
+
+That's a scenario that I was starting to puzzle over this weekend as well
+-- with EAP-Success "completely unauthenticated", it would be fairly easy
+for an on-path attacker to send the EAP-Success the EAP peer was expecting
+and make the EAP peer think things succeeded even if the server had
+rejected the client cert.  Now, a server that has rejected the client cert
+is hopefully not going to be exporting the keys and continuing to run the
+next steps of protocol operation, but to some extent it seems that the
+security of the system as a whole relies on the server operating correctly
+in this regard.  Strictlys speaking, it need not do so -- we could have
+defined a mechanism where the exported keys depend, cryptographically, on
+the client authentication flight such that the TLS layer will not produce
+the needed keys on failed authentication. [0]
+
+I'm assuming that people will not be terribly keen on switching to such a
+scheme given that (AFAIK) it would require defining a new TLS 1.3 Exporter
+variant that includes the full transcript hash, [1] not just up to Server
+Finished, which would incur at a minimum several months' delay.  It might
+be worth asking the teams that did formal analysis work on TLS 1.3 how they
+modelled client authentication and what assumptions on server behavior they
+made.
+
+So, if we do not wait for a cryptographic method to assure successful
+client authentication, and thus are going to be stuck requiring some amount
+of trust that the server is doing the right thing with the keys, how is it
+different to say that the server is going to not export the keys if the
+client authentication fails vs saying that the server is going to not
+export the keys if it is not done sending handshake messages?  There is
+perhaps some detail in terms of how EAP-TLS interacts with the TLS layer
+and what information is available when, but it seems that if you have an
+interface with TLS of "provide input bytes; get output bytes out" [2] you
+could achieve this by not exporting keys until you've sent all those bytes
+into EAP-TLS messages.
+
+
+>   RFC 4137 (https://tools.ietf.org/html/rfc4137) describes a state machine for EAP peer and server.  Does this work follow that?
+
+A good question!
+
+> > [Joe]  If we are going to make a change in the key derivation we should do it now.  Personally, I think we should update the key derivation to separate the MSK and EMSK, but it is workable as is.  
+> > I think there are potential issues around the ordering of the 0x00 octet and other messages, but I don't think this will require changes to implementations in the short term, but the spec needs to clarify this. 
+> 
+>   I agree.
+
+I wonder if (assuming that 0x00 goes forward instead of "close_notify") we
+should also go further and say that this mechanism does not use stock TLS
+1.3, but rather a variant of the protocol that imposes an additional ordering
+requirement across the "higher-level protocols" that are multiplexed over
+the record layer (i.e., the TLS handshake protocol and the application data
+protocol).  In stock TLS there is only an ordering requirement for the TLS
+alert protocol with other messages carried by the record layer (because
+activity on the alert protocol tears down the record-layer connection), but it
+seems like a lot of what is being described as desired here ends up relying
+on ordering between application data and handshake messages.
+
+>   There's also the question of *why* the commitment message is there.  It's not in EAP-TLS for TLS 1.2.  The draft doesn't explain why it's not needed in TLS 1.2, but is needed for TLS 1.3.  Such an explanation would go a long way to clarifying many issues around the commitment message.
+
+(A lot of my hedging in messages on this thread is because I also don't
+really understand why the message is there.)
+I believe I read somewhere that it stemmed from the change in who speaks
+last in the TLS handshake, but am a bit hazy on how that implies it is
+needed.
+
+> >   So if we later discover that EAP-TLS is flawed, we can only deprecated EAP-TLS, and create a new EAP-TLS "prime", with a new EAP type code.
+> > 
+> > [Joe] Perhaps we could use an expanded EAP-Type for the alpha? Or perhaps experimental or a temporary experimental allocation could be made (not sure if that would be possible). 
+> 
+>   I think the issue for MS is less "alpha" code than "shipping" code.  If we use an experimental type, it doesn't matter if it's interoperable, because people won't deploy it in production.  Implementors are already verifying code behind the scenes in builds which aren't shipped to customers.  So the type code is less of an issue, because that interoperability is "inter-engineer", and not "inter-customer".
+
+I don't disagree with what you say, but I will note that if we are seeing a
+conflict between a desire to ship something ASAP and uncertainty that the
+current specification is fully correct, it's easy process-wise to allocate
+a new type code for people to ship "now" without locking in behavior for
+0x0d.  Whether we call it an early allocation, an experimental usage, or a
+normal allocation via specification required doesn't seem terribly
+important (and given that Joe is the expert and he basically suggested it,
+I suspect that allocation would occur quite quickly after a request).
+How easy it would be to get things back onto 0x0d in the future is less
+clear, though.
+
+-Ben
+
+[0] This sounds related to what 5247 calls a "compound key by which the EAP
+peer and server can prove that they have participated in the entire EAP
+exchange", but I am just reading that part of 5247 for the first time now
+and don't want to make too much of it.
+
+[1] Thinking about this further, it almost seems that for EAP-TLS purposes
+we would actually want to digest into the transcript *all* messages sent
+with TLS ContentType 'handshake', including NewSessionTicket, though even
+just adding the client authentication flight would go a long way.
+
+[2] This is essentially the interface that QUIC has with TLS, and for
+QUIC's purposes it's guaranteed that output bytes will only be generated
+immediately after processing input bytes and not at other times.  It is
+also possible to process input bytes and not produce output bytes, of
+course.
+

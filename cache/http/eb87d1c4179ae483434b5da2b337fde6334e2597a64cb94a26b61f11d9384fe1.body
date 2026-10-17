@@ -1,0 +1,194 @@
+Return-Path: <ilariliusvaara@welho.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 97078129AB6
+ for <tls@ietfa.amsl.com>; Tue, 11 Apr 2017 14:25:45 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.9
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, RCVD_IN_DNSWL_NONE=-0.0001,
+ RP_MATCHES_RCVD=-0.001, URIBL_BLOCKED=0.001]
+ autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 1euYT1geSnrw for <tls@ietfa.amsl.com>;
+ Tue, 11 Apr 2017 14:25:42 -0700 (PDT)
+Received: from welho-filter4.welho.com (welho-filter4.welho.com [83.102.41.26])
+ by ietfa.amsl.com (Postfix) with ESMTP id 6F8B8129A91
+ for <tls@ietf.org>; Tue, 11 Apr 2017 14:25:42 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+ by welho-filter4.welho.com (Postfix) with ESMTP id 5464122F57;
+ Wed, 12 Apr 2017 00:25:40 +0300 (EEST)
+X-Virus-Scanned: Debian amavisd-new at pp.htv.fi
+Received: from welho-smtp1.welho.com ([IPv6:::ffff:83.102.41.84])
+ by localhost (welho-filter4.welho.com [::ffff:83.102.41.26]) (amavisd-new,
+ port 10024)
+ with ESMTP id Z9Ey-JApUrA2; Wed, 12 Apr 2017 00:25:39 +0300 (EEST)
+Received: from LK-Perkele-V2 (87-92-51-204.bb.dnainternet.fi [87.92.51.204])
+ (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by welho-smtp1.welho.com (Postfix) with ESMTPSA id C552AC4;
+ Wed, 12 Apr 2017 00:25:39 +0300 (EEST)
+Date: Wed, 12 Apr 2017 00:25:38 +0300
+From: Ilari Liusvaara <ilariliusvaara@welho.com>
+To: Eric Rescorla <ekr@rtfm.com>
+Cc: Nikos Mavrogiannopoulos <nmav@redhat.com>,
+	"tls@ietf.org" <tls@ietf.org>
+Message-ID: <20170411212538.GA17709@LK-Perkele-V2.elisa-laajakaista.fi>
+References: <1490797726.28079.18.camel@redhat.com>
+ <1490797957.28079.20.camel@redhat.com>
+ <CABcZeBMCZrVKM959F3ycKN_WAky2NAZTy9OOetnC+KJAj3L+Pw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CABcZeBMCZrVKM959F3ycKN_WAky2NAZTy9OOetnC+KJAj3L+Pw@mail.gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
+Sender: ilariliusvaara@welho.com
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/FjBwrV1jyXjmqTu12Kcci1AKYUI>
+Subject: Re: [TLS] comments on draft-ietf-tls-tls13-19
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Tue, 11 Apr 2017 21:25:46 -0000
+
+On Tue, Apr 11, 2017 at 01:47:08PM -0700, Eric Rescorla wrote:
+> Thanks for your comments.
+> 
+> > 4.1.2. It is not defined what a server should do if encountered with a
+> > ProtocolVersion of TLS 1.3.
+> 
+> https://tlswg.github.io/tls13-spec/#supported-versions says:
+> 
+>    If this extension is not present, servers which are compliant with
+>    this specification MUST negotiate TLS 1.2 or prior as specified in
+>    [RFC5246], even if ClientHello.legacy_version is 0x0304 or
+>    later. Servers MAY abort the handshake upon receiving a ClientHello
+>    with legacy_version 0x0304 or later.
+
+I think that MAY abort should be removed. client_version field has
+always been defined to be tolerant to higher values.
+ 
+> However, as David Benjamin points out, it's not clear how one would
+> handle this in practice, because HRR is an instruction to the client
+> to do something, so if it can't parse that then the handshake fails.
+
+I think if one wanted to have new mandatory HRR extension, one could
+just have it sent, resulting older clients blowing up. But those would
+not be able to connect anyway.
+ 
+> > 4.2.7. There is no guidance on the use of max_early_data_size.
+> > I'd find it natural to have a recommended minimum value for application
+> > protocols layered on TLS to take into account. E.g., text like servers
+> > supporting early_data SHOULD allow at least 1024 bytes of data
+> > (arbitrary number). Is the 32-bit upper limit intentional?
+> 
+> I think it's just a result of the way the PDU is formatted. I
+> would be interested in seeing a PR with guidance...
+
+The max_early_data_size looks kinda iffy. I understand the justification
+is about buffering for verification, but that kind of buffering AFAICT
+destroys the benefits of 0-RTT, so I would just skip 0-RTT if I knew
+such buffering would take place.
+ 
+> > The text recommends: "a server SHOULD measure the round trip time prior
+> > to sending the NewSessionTicket message". I see two issues here. (1) it
+> > doesn't mention how to do this measurement --my guess is that this can
+> > be done in the context of TLS--, and (2) it assumes that round-trips
+> > are fixed over time. About (1), I ask because the obvious measurement
+> > time between [server Application Data*] and client [Certificate*] would
+> > include the processing of the application data by the client.
+> > On (2), this check will not work as is for mobile clients which will
+> > have variable round-trips.
+
+The thresholds seem so loose anyway, that I don't see much need to even
+try to measure the RTT, one can seemingly just ignore them.
+
+> > 4.3.2.1. The OID Filters extension on a first look seems quite
+> > independent and unrelated to everything else in this document (seemed
+> > quite a distraction that could have been in an appendix as well).
+> 
+> This is a fair point, but it's been in the document a long time,
+> so I think this would require WG Consensus.
+
+Also, I have no idea of exact contents of that extension (maybe some mail
+to this list has those, but that won't do with RFCs), as I can interpret
+the thing in multiple ways. 
+ 
+> > 4.4.2.1.  OCSP Status and SCT Extensions
+> > This is a very nice addition to TLS 1.3. Something that I miss as an
+> > implementer is guidelines on how to determine the (time) validity of an
+> > OCSP stapled response. Here my point is that OCSP responses have
+> > several fields optional (e.g., nextUpdate), which make a validation to
+> > be hand-wavy. It would be nice to have a profile of OCSP responses that
+> > would be recommended for use in TLS, as well or a recommendation of
+> > what constitutes a "fresh" response for use in TLS.
+> 
+> Do you have any thoughts on what text we should insert here? I admit
+> to being not that familiar with the practical matters of OCSP stapling.
+
+Well, my implementation considers OCSP responses valid to NextUpdate,
+and fails handshake if it is absent but OCSP staple is sent.
+
+> > 4.4.2.2., 4.4.2.3.
+> > I think the reference to RFC5081 should be replaced with RFC5270 which
+> > obsoletes the former even though not explicitly.
+> 
+> Indeed. Also, we are now explicitly prohibiting OpenPGP per discussion
+> in Chicago.
+
+Also, maybe needs some text about possible future Certificate Types
+(or are those akin to DNS classes: heavy objects dropped by bad idea
+fairy? :-) ). 
+
+Also, client_certificate_type looks to be still CH,EE, which is not
+good if any future certificate types might get defined (or even if
+just RPK is allowed).
+ 
+> > 4.4.3. "RSA signatures MUST use an RSASSA-PSS algorithm". What should a
+> > client or server do when encounters an non RSA-PSS signature in TLS
+
+Well, my implementation just aborts. I have actually seen an TLS 1.3
+draft implementation sign with RSA PKCS#1 (it did so if one sent a
+ClientHello that only had that and ECDSA and EdDSAs).
+
+> > 4.6.3. My comment on this section, is that leaving up to the
+> > implementer to decide the re-key, would most probably result in the
+> > implementer delegating that decision to the application. In my
+> > experience that would mean no re-key in practice for the majority of
+> > applications. I'd have preferred a one-size fits all approach, where
+> > re-key is done on decided points.
+> 
+> I can understand that, but we did litigate this extensively, so I think
+> any change would require WG consensus at this point.
+
+Might be a good idea to have suggestion to send one fairly early in the
+connection.
+ 
+> > B.4.
+> > I believe it was discussed before, but I miss the AES-256-CCM
+> > ciphersuites. If only one must be defined, it may be better to only
+> > have the 256-bit variants (at least for the non-mac-truncated version)
+> 
+> Open to WG feedback here as well.
+
+Also, who uses those? It seems like CCM is mostly for things, and those
+don't use AES-256, as AES-128 already seems quite much for various IoS.
+
+Also, if one wanted special ciphersuite for things, I think there are
+ones that are implementable in smaller space than AES CCM.
+
+
+-Ilari
+

@@ -1,0 +1,364 @@
+Return-Path: <mglt.ietf@gmail.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id AE85D129B5C;
+ Tue, 23 May 2017 07:02:19 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.399
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.399 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ FREEMAIL_FORGED_FROMDOMAIN=0.199, FREEMAIL_FROM=0.001,
+ HEADER_FROM_DIFFERENT_DOMAINS=0.001, HTML_MESSAGE=0.001,
+ RCVD_IN_DNSWL_LOW=-0.7, SPF_PASS=-0.001]
+ autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=gmail.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id iVOsHT9zo80Z; Tue, 23 May 2017 07:02:16 -0700 (PDT)
+Received: from mail-lf0-x22c.google.com (mail-lf0-x22c.google.com
+ [IPv6:2a00:1450:4010:c07::22c])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 217E4129B51;
+ Tue, 23 May 2017 07:02:16 -0700 (PDT)
+Received: by mail-lf0-x22c.google.com with SMTP id m18so49601444lfj.0;
+ Tue, 23 May 2017 07:02:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025; 
+ h=mime-version:sender:in-reply-to:references:from:date:message-id
+ :subject:to:cc;
+ bh=EY/Oa89lWWKQKK5tKTI1x2fCFQseLb7Wowx8rmAtCjU=;
+ b=SJkhJQJiZWdBcne03sNxzDftMtxRx7PoDYpNzIRn9FMPD7JsVZmVTZcg4P7YtqiR2s
+ MHJEcr8linpmrxfiUpUIE8DlMHiv7oE4HhjQscr2vqgLwtVIK+iErdWIkctLsvxy/W5g
+ QZL5sL3UlmdrDrhJFdPE9DQH6aeEIXlB8Z+d0/fYwmoCt4WBSKMa2slTVV8aG4W1YEyc
+ 6avcBn0X9ObobzJ9E+4uITeigfM2Zy0g+rLXifoCLrBMes2jtQNMKQ7BtKSzwURdQ/67
+ sT6Wj4t35o9FmZ859AioXhxyZ9oScen1lNC8in/EqVEHC9JU2W1QXPGOO2gGpj8aNH0B
+ i+2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:sender:in-reply-to:references:from
+ :date:message-id:subject:to:cc;
+ bh=EY/Oa89lWWKQKK5tKTI1x2fCFQseLb7Wowx8rmAtCjU=;
+ b=Qi1S2P9/VkYfp5oad+UBn3H3VXg9uuMy62ERGTaRAfy6FLB+p2YxriDjZ612vllK16
+ TlVEwQlAqNUClAjSmrS974yh3JM7q6YQNHe2ZwFkfSUKCmwy9O/wIiJ9C2+1AE0cYgsy
+ ia33tHIY9ajUSBOYEJ52y2AHqbblchr72hi+xCjLwkVYfPNMS7ttu2+xhGGGkmhno77d
+ eddLiomSYrRn7dkWjFCEsyQypLEElMgd40dfxE9QqaW+P9Lx/oeeGozurMXL8t0R1pVD
+ ClgMwqNrdZCPMrOEIuLF4guRV+FILJ0OtSX+iXHfhoevcu3u4NXRQKKfgkK2Z/BnoDqi
+ N0Wg==
+X-Gm-Message-State: AODbwcB+ayUBRTDHKbujjxjxb8lcaL4S8DckICREApE94+qX/2bvEklO
+ qZid3oLGvIWigLbvDsZqn4bF/dl+ug==
+X-Received: by 10.25.193.145 with SMTP id r139mr7414547lff.111.1495548134375; 
+ Tue, 23 May 2017 07:02:14 -0700 (PDT)
+MIME-Version: 1.0
+Sender: mglt.ietf@gmail.com
+Received: by 10.46.0.14 with HTTP; Tue, 23 May 2017 07:02:13 -0700 (PDT)
+In-Reply-To: <e6f67985-97a1-3943-7016-3cc6584d38bb@akamai.com>
+References: <149522417333.23956.7024977757521677892.idtracker@ietfa.amsl.com>
+ <2DD56D786E600F45AC6BDE7DA4E8A8C118BDBB01@eusaamb107.ericsson.se>
+ <e6f67985-97a1-3943-7016-3cc6584d38bb@akamai.com>
+From: Daniel Migault <daniel.migault@ericsson.com>
+Date: Tue, 23 May 2017 10:02:13 -0400
+X-Google-Sender-Auth: Ze0zJf-h5K8R0bOIeEpnsEK93aY
+Message-ID: <CADZyTk=DHURsrjwTVCeUnA_3LiUO7Af=8jWTKCXhF6nZkt4Ayw@mail.gmail.com>
+To: Benjamin Kaduk <bkaduk@akamai.com>
+Cc: "tls@ietf.org" <tls@ietf.org>, tls-chairs <tls-chairs@ietf.org>
+Content-Type: multipart/alternative; boundary="94eb2c1a08784b48220550316f58"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/zUl2HWHtbcf9SrybJuQoyv_bJ7E>
+Subject: Re: [TLS] FW: New Version Notification for
+ draft-ietf-tls-ecdhe-psk-aead-04.txt
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Tue, 23 May 2017 14:02:19 -0000
+
+--94eb2c1a08784b48220550316f58
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Thanks I will add these by the end of the day.
+Yours,
+Daniel
+
+On Mon, May 22, 2017 at 1:56 PM, Benjamin Kaduk <bkaduk@akamai.com> wrote:
+
+> Thanks for the updates; the new revision addresses my concerns raised in
+> the secdir review.
+>
+> However,
+>
+> % In addition, it is worth noting that TLS 1.0 [RFC2246] and TL1.2
+> % [RFC4346] splits the pre-master in two parts.
+>
+> s/TL1.2/TLS 1.1/, and maybe the ending as "split the pre-master secret
+> into two parts".
+>
+> % the PSK and pre-master are treated by
+> % distinct hash function with distinct properties.
+>
+> s/pre-master/ECDHE shared secret/?
+>
+> -Ben
+>
+>
+> On 05/19/2017 03:18 PM, Daniel Migault wrote:
+>
+> Hi,
+>
+> Thank you to all reviewers for their feed backs. Please find the latest v=
+ersion, which as far as I know includes all comments. Comments were not con=
+troversial. In order to raise next reviews I am raising aspects that might =
+need a bit more attention.
+>
+> 1)  The current document mentions I-D.ietf-tls-rfc4492bis and I-D.ietf-tl=
+s-tls13 as normative. We can wait for these documents to become RFCs, but w=
+e can also dowref them to informational reference if we want to move that d=
+ocument forward. I will leave the AD to decide, and changes if needed can b=
+e done by the RFC -editor
+>
+> 2)  Section 4 has the following text:
+>
+> """In the case of ECDHE_PSK authentication, the PSK and pre-master are tr=
+eated by distinct hash function with distinct properties.  This may introdu=
+ce vulnerabilities over the expected security provided by the constructed p=
+re-master. As such TLS 1.0 and TLS 1.1 should not be  used with ECDHE_PSK. =
+"""
+>
+> With EDCHE_PSK being the ECDHE PSK method not restricted to the cipher su=
+ites defined in the document.  I just want to make sure we are ok with the =
+last sentence.
+>
+> Yours,
+> Daniel
+>
+> -----Original Message-----
+> From: internet-drafts@ietf.org [mailto:internet-drafts@ietf.org <internet=
+-drafts@ietf.org>]
+> Sent: Friday, May 19, 2017 4:03 PM
+> To: John Mattsson <john.mattsson@ericsson.com> <john.mattsson@ericsson.co=
+m>; Daniel Migault <daniel.migault@ericsson.com> <daniel.migault@ericsson.c=
+om>; tls-chairs@ietf.org
+> Subject: New Version Notification for draft-ietf-tls-ecdhe-psk-aead-04.tx=
+t
+>
+>
+> A new version of I-D, draft-ietf-tls-ecdhe-psk-aead-04.txt
+> has been successfully submitted by Daniel Migault and posted to the IETF =
+repository.
+>
+> Name:		draft-ietf-tls-ecdhe-psk-aead
+> Revision:	04
+> Title:		ECDHE_PSK with AES-GCM and AES-CCM Cipher Suites for Transport La=
+yer Security (TLS)
+> Document date:	2017-05-18
+> Group:		tls
+> Pages:		8
+> URL:            https://www.ietf.org/internet-drafts/draft-ietf-tls-ecdhe=
+-psk-aead-04.txt
+> Status:         https://datatracker.ietf.org/doc/draft-ietf-tls-ecdhe-psk=
+-aead/
+> Htmlized:       https://tools.ietf.org/html/draft-ietf-tls-ecdhe-psk-aead=
+-04
+> Htmlized:       https://datatracker.ietf.org/doc/html/draft-ietf-tls-ecdh=
+e-psk-aead-04
+> Diff:           https://www.ietf.org/rfcdiff?url2=3Ddraft-ietf-tls-ecdhe-=
+psk-aead-04
+>
+> Abstract:
+>    This document defines several new cipher suites for the Transport
+>    Layer Security (TLS) protocol.  The cipher suites are all based on
+>    the Ephemeral Elliptic Curve Diffie-Hellman with Pre-Shared Key
+>    (ECDHE_PSK) key exchange together with the Authenticated Encryption
+>    with Associated Data (AEAD) algorithms AES-GCM and AES-CCM.  PSK
+>    provides light and efficient authentication, ECDHE provides forward
+>    secrecy, and AES-GCM and AES-CCM provides encryption and integrity
+>    protection.
+>
+>
+>
+>
+> Please note that it may take a couple of minutes from the time of submiss=
+ion until the htmlized version and diff are available at tools.ietf.org.
+>
+> The IETF Secretariat
+>
+> _______________________________________________
+> TLS mailing listTLS@ietf.orghttps://www.ietf.org/mailman/listinfo/tls
+>
+>
+>
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+>
+>
+
+--94eb2c1a08784b48220550316f58
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div><div>Thanks I will add these by the end of the day. <=
+br></div>Yours, <br></div>Daniel<br></div><div class=3D"gmail_extra"><br><d=
+iv class=3D"gmail_quote">On Mon, May 22, 2017 at 1:56 PM, Benjamin Kaduk <s=
+pan dir=3D"ltr">&lt;<a href=3D"mailto:bkaduk@akamai.com" target=3D"_blank">=
+bkaduk@akamai.com</a>&gt;</span> wrote:<br><blockquote class=3D"gmail_quote=
+" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex">
+ =20
+   =20
+ =20
+  <div text=3D"#000000" bgcolor=3D"#FFFFFF">
+    <tt>Thanks for the updates; the new revision addresses my concerns
+      raised in the secdir review.<br>
+      <br>
+      However,<br>
+      <br>
+      % In addition, it is worth noting that TLS 1.0 [RFC2246] and TL1.2<br=
+>
+      % [RFC4346] splits the pre-master in two parts.<br>
+      <br>
+      s/TL1.2/TLS 1.1/, and maybe the ending as &quot;split the pre-master
+      secret into two parts&quot;.<br>
+      <br>
+      % the PSK and pre-master are treated by<br>
+      % distinct hash function with distinct properties.<br>
+    </tt><br>
+    s/pre-master/ECDHE shared secret/?<br>
+    <br>
+    -Ben<div><div class=3D"h5"><br>
+    <br>
+    <div class=3D"m_-4649436460963133150moz-cite-prefix">On 05/19/2017 03:1=
+8 PM, Daniel Migault
+      wrote:<br>
+    </div>
+    <blockquote type=3D"cite">
+      <pre>Hi,=20
+
+Thank you to all reviewers for their feed backs. Please find the latest ver=
+sion, which as far as I know includes all comments. Comments were not contr=
+oversial. In order to raise next reviews I am raising aspects that might ne=
+ed a bit more attention. =20
+
+1)  The current document mentions I-D.ietf-tls-rfc4492bis and I-D.ietf-tls-=
+tls13 as normative. We can wait for these documents to become RFCs, but we =
+can also dowref them to informational reference if we want to move that doc=
+ument forward. I will leave the AD to decide, and changes if needed can be =
+done by the RFC -editor
+
+2)  Section 4 has the following text:
+
+&quot;&quot;&quot;In the case of ECDHE_PSK authentication, the PSK and pre-=
+master are treated by distinct hash function with distinct properties.  Thi=
+s may introduce vulnerabilities over the expected security provided by the =
+constructed pre-master. As such TLS 1.0 and TLS 1.1 should not be  used wit=
+h ECDHE_PSK. &quot;&quot;&quot;
+
+With EDCHE_PSK being the ECDHE PSK method not restricted to the cipher suit=
+es defined in the document.  I just want to make sure we are ok with the la=
+st sentence.=20
+
+Yours,=20
+Daniel
+
+-----Original Message-----
+From: <a class=3D"m_-4649436460963133150moz-txt-link-abbreviated" href=3D"m=
+ailto:internet-drafts@ietf.org" target=3D"_blank">internet-drafts@ietf.org<=
+/a> [<a class=3D"m_-4649436460963133150moz-txt-link-freetext" href=3D"mailt=
+o:internet-drafts@ietf.org" target=3D"_blank">mailto:internet-drafts@ietf.<=
+wbr>org</a>]=20
+Sent: Friday, May 19, 2017 4:03 PM
+To: John Mattsson <a class=3D"m_-4649436460963133150moz-txt-link-rfc2396E" =
+href=3D"mailto:john.mattsson@ericsson.com" target=3D"_blank">&lt;john.matts=
+son@ericsson.com&gt;</a>; Daniel Migault <a class=3D"m_-4649436460963133150=
+moz-txt-link-rfc2396E" href=3D"mailto:daniel.migault@ericsson.com" target=
+=3D"_blank">&lt;daniel.migault@ericsson.com&gt;</a>; <a class=3D"m_-4649436=
+460963133150moz-txt-link-abbreviated" href=3D"mailto:tls-chairs@ietf.org" t=
+arget=3D"_blank">tls-chairs@ietf.org</a>
+Subject: New Version Notification for draft-ietf-tls-ecdhe-psk-aead-<wbr>04=
+.txt
+
+
+A new version of I-D, draft-ietf-tls-ecdhe-psk-aead-<wbr>04.txt
+has been successfully submitted by Daniel Migault and posted to the IETF re=
+pository.
+
+Name:		draft-ietf-tls-ecdhe-psk-aead
+Revision:	04
+Title:		ECDHE_PSK with AES-GCM and AES-CCM Cipher Suites for Transport Laye=
+r Security (TLS)
+Document date:	2017-05-18
+Group:		tls
+Pages:		8
+URL:            <a class=3D"m_-4649436460963133150moz-txt-link-freetext" hr=
+ef=3D"https://www.ietf.org/internet-drafts/draft-ietf-tls-ecdhe-psk-aead-04=
+.txt" target=3D"_blank">https://www.ietf.org/internet-<wbr>drafts/draft-iet=
+f-tls-ecdhe-<wbr>psk-aead-04.txt</a>
+Status:         <a class=3D"m_-4649436460963133150moz-txt-link-freetext" hr=
+ef=3D"https://datatracker.ietf.org/doc/draft-ietf-tls-ecdhe-psk-aead/" targ=
+et=3D"_blank">https://datatracker.ietf.org/<wbr>doc/draft-ietf-tls-ecdhe-ps=
+k-<wbr>aead/</a>
+Htmlized:       <a class=3D"m_-4649436460963133150moz-txt-link-freetext" hr=
+ef=3D"https://tools.ietf.org/html/draft-ietf-tls-ecdhe-psk-aead-04" target=
+=3D"_blank">https://tools.ietf.org/html/<wbr>draft-ietf-tls-ecdhe-psk-aead-=
+<wbr>04</a>
+Htmlized:       <a class=3D"m_-4649436460963133150moz-txt-link-freetext" hr=
+ef=3D"https://datatracker.ietf.org/doc/html/draft-ietf-tls-ecdhe-psk-aead-0=
+4" target=3D"_blank">https://datatracker.ietf.org/<wbr>doc/html/draft-ietf-=
+tls-ecdhe-<wbr>psk-aead-04</a>
+Diff:           <a class=3D"m_-4649436460963133150moz-txt-link-freetext" hr=
+ef=3D"https://www.ietf.org/rfcdiff?url2=3Ddraft-ietf-tls-ecdhe-psk-aead-04"=
+ target=3D"_blank">https://www.ietf.org/rfcdiff?<wbr>url2=3Ddraft-ietf-tls-=
+ecdhe-psk-<wbr>aead-04</a>
+
+Abstract:
+   This document defines several new cipher suites for the Transport
+   Layer Security (TLS) protocol.  The cipher suites are all based on
+   the Ephemeral Elliptic Curve Diffie-Hellman with Pre-Shared Key
+   (ECDHE_PSK) key exchange together with the Authenticated Encryption
+   with Associated Data (AEAD) algorithms AES-GCM and AES-CCM.  PSK
+   provides light and efficient authentication, ECDHE provides forward
+   secrecy, and AES-GCM and AES-CCM provides encryption and integrity
+   protection.
+
+                                                                           =
+      =20
+
+
+Please note that it may take a couple of minutes from the time of submissio=
+n until the htmlized version and diff are available at <a href=3D"http://to=
+ols.ietf.org" target=3D"_blank">tools.ietf.org</a>.
+
+The IETF Secretariat
+
+______________________________<wbr>_________________
+TLS mailing list
+<a class=3D"m_-4649436460963133150moz-txt-link-abbreviated" href=3D"mailto:=
+TLS@ietf.org" target=3D"_blank">TLS@ietf.org</a>
+<a class=3D"m_-4649436460963133150moz-txt-link-freetext" href=3D"https://ww=
+w.ietf.org/mailman/listinfo/tls" target=3D"_blank">https://www.ietf.org/mai=
+lman/<wbr>listinfo/tls</a>
+</pre>
+    </blockquote>
+    <br>
+  </div></div></div>
+
+<br>______________________________<wbr>_________________<br>
+TLS mailing list<br>
+<a href=3D"mailto:TLS@ietf.org">TLS@ietf.org</a><br>
+<a href=3D"https://www.ietf.org/mailman/listinfo/tls" rel=3D"noreferrer" ta=
+rget=3D"_blank">https://www.ietf.org/mailman/<wbr>listinfo/tls</a><br>
+<br></blockquote></div><br></div>
+
+--94eb2c1a08784b48220550316f58--
+

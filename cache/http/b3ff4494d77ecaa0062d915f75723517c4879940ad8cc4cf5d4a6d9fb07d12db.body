@@ -1,0 +1,115 @@
+Return-Path: <dkg@fifthhorseman.net>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (ietfa.amsl.com [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 080891B28BA
+ for <tls@ietfa.amsl.com>; Fri, 20 Jun 2014 11:57:03 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.9
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9] autolearn=ham
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id DhMaphz6abyw for <tls@ietfa.amsl.com>;
+ Fri, 20 Jun 2014 11:57:01 -0700 (PDT)
+Received: from che.mayfirst.org (che.mayfirst.org [209.234.253.108])
+ by ietfa.amsl.com (Postfix) with ESMTP id 3535D1B28B9
+ for <tls@ietf.org>; Fri, 20 Jun 2014 11:57:01 -0700 (PDT)
+Received: from fifthhorseman.net (unknown [38.109.115.130])
+ by che.mayfirst.org (Postfix) with ESMTPSA id 8BB51F984
+ for <tls@ietf.org>; Fri, 20 Jun 2014 14:56:58 -0400 (EDT)
+Received: by fifthhorseman.net (Postfix, from userid 1000)
+ id E58BC201CF; Fri, 20 Jun 2014 14:56:49 -0400 (EDT)
+From: Daniel Kahn Gillmor <dkg@fifthhorseman.net>
+To: IETF TLS Working Group <tls@ietf.org>
+In-Reply-To: <CABcZeBNKJ7F4C39NYPZ1h2UH61C0gj2kMOSgkB0P2OP6PwtjNQ@mail.gmail.com>
+References: <87k38bzc0h.fsf@alice.fifthhorseman.net>
+ <CABcZeBNKJ7F4C39NYPZ1h2UH61C0gj2kMOSgkB0P2OP6PwtjNQ@mail.gmail.com>
+User-Agent: Notmuch/0.18 (http://notmuchmail.org) Emacs/24.3.1
+ (x86_64-pc-linux-gnu)
+Date: Fri, 20 Jun 2014 14:56:49 -0400
+Message-ID: <87egyjz9xq.fsf@alice.fifthhorseman.net>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="=-=-=";
+ micalg=pgp-sha512; protocol="application/pgp-signature"
+Archived-At: http://mailarchive.ietf.org/arch/msg/tls/-pNn0rRdtE55dF3TEiVXrevtHE4
+Subject: Re: [TLS] On the possibility of AEAD modes that require padding
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.15
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <http://www.ietf.org/mail-archive/web/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Fri, 20 Jun 2014 18:57:03 -0000
+
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+On Fri 2014-06-20 14:29:45 -0400, Eric Rescorla wrote:
+> - Simply remove the length field from the additional_data on the theory
+> that the AEAD mode itself must verify the length
+
+Does anyone object to this approach for TLS 1.3?
+
+An AEAD that does not verify the length seems like it would be
+problematic in other ways, and this seems like a nice simplifying
+approach.
+
+
+diff --git a/draft-ietf-tls-tls13.md b/draft-ietf-tls-tls13.md
+index d9ace55..cda3dbf 100644
+=2D-- a/draft-ietf-tls-tls13.md
++++ b/draft-ietf-tls-tls13.md
+@@ -1016,7 +1016,7 @@ The additional authenticated data, which we denote as=
+ additional_data, is
+ defined as follows:
+=20
+        additional_data =3D seq_num + TLSPlaintext.type +
+=2D                         TLSPlaintext.version + TLSPlaintext.length;
++                         TLSPlaintext.version;
+=20
+ where "+" denotes concatenation.
+=20
+
+I don't know whether folks think this warrants an entry in the "Major
+Differences from TLS 1.2" section.  It's a small change, but it would be
+a significant one for implementers who missed it.
+
+I don't know that we even need to bother with it for TLS 1.2, unless
+someone wants to add a new padded AEAD mode to TLS 1.2 separately.
+
+        --dkg
+
+--=-=-=
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQJ8BAEBCgBmBQJTpIPxXxSAAAAAAC4AKGlzc3Vlci1mcHJAbm90YXRpb25zLm9w
+ZW5wZ3AuZmlmdGhob3JzZW1hbi5uZXRFQjk2OTEyODdBN0FEREUzNzU3RDkxMUVB
+NTI0MDFCMTFCRkRGQTVDAAoJEKUkAbEb/fpcItAP/i0L0xBNUWv2oHMWbhytxHa0
+KOkaOBjuSqGWsy7GPTkTq8xOVR82aPYo3rc+opuIVVdUY1L9e5RaabrFi9pczvKr
+ehKFRPk5mDB6NvBwXIbYMcJ2iY6DLrwG+5wZ2wTTf240zYeaaq54ujQlAlr4tVtE
+GO4jAWMsMDBxBGnvbpNYFdC9XgFwxRcsNG/NRW9kgRWobl1ZTsBhtUtvo5NOkaDi
+MyxGpKH0H5HrHjg9TIPHBLxvkjY9MtBbbeTd1dfI6s52y9AkaciFLsDITDikTRCt
+ulMVYu72kanspmSmaGoyTNVesb9XgSyZr96ig8Kwx3uWVsnyGR/yw6dYrwHIe8Ma
+0wPw38z5PmEUBUrGrTz/NTHLN0y+qse8JdiVuy/XtQFGqpbXTVk9OCUifVob8sDx
++8LPFgU9G3bRIrorm9gW8orG7+voHLd8S2ed/NO6dz7zvtxDUUhWZBeaaMrUcKMM
+A5jFldEgRUwukAaPcwMuEEoYTkvzX3/bT+G8AQljaPcBt2E8NN/dETlt5vRggPNY
+wB28MTDGypknP9brZBFNoL6NkI+Hvg/9azBbz6Cokuv/bDY3n2/CQA84AWIindvw
+LHbRKmMf9PZmQJx8LWcg76u9tF7m9D4JWIGiEcZ7pQ9gUB9L5FVEC47/PYB+TvpZ
+PYcC9v5ho7j+yHkGLLBI
+=eKVg
+-----END PGP SIGNATURE-----
+--=-=-=--
+

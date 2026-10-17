@@ -1,0 +1,391 @@
+From nobody Sun Jun  6 01:20:04 2021
+Return-Path: <do_not_reply@mnot.net>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 553423A102B
+ for <tls@ietfa.amsl.com>; Sun,  6 Jun 2021 01:19:53 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.097
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.097 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, HTML_MESSAGE=0.001,
+ RCVD_IN_MSPIKE_H4=0.001, RCVD_IN_MSPIKE_WL=0.001, SPF_PASS=-0.001,
+ URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=mnot.net header.b=EXb+S+9P;
+ dkim=pass (2048-bit key)
+ header.d=messagingengine.com header.b=Dsk4egDx
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id porKG_m8CA_2 for <tls@ietfa.amsl.com>;
+ Sun,  6 Jun 2021 01:19:49 -0700 (PDT)
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com
+ [64.147.123.19])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id EC3853A0FF9
+ for <tls@ietf.org>; Sun,  6 Jun 2021 01:19:48 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+ by mailout.west.internal (Postfix) with ESMTP id 40AB117B8
+ for <tls@ietf.org>; Sun,  6 Jun 2021 04:19:48 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute5.internal (MEProxy); Sun, 06 Jun 2021 04:19:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mnot.net; h=
+ content-type:mime-version:from:to:subject; s=fm2; bh=AFYbD22b+AM
+ e5Q+40TOnVZ87AkO7I2A5h5nw9puWgFA=; b=EXb+S+9PFcfqrbnWUdcwt14dwnZ
+ ate6nAdF1LinGeVV8A57kZyI9N99c8DtlaDF8gmDz5wOaJ0GXzkzgSEaOBOexbcu
+ 17zsCSJETGiXW59aMADUfp4SazVeuFe8cxsOLBoOlz8wbJsd0K7Ike3R42EOC/lS
+ GkVpwbT1yDKsl0Ubvf5JuB3nLc7QQPg5w8BQgYizVLHtc61g/gskVhHmw2gVYDKJ
+ bk7pTe2bg7gavAP9E+osl1ZCis6jMxf4c1H8RYIL9Z7B6Ui4iTKgKGyl+7RoV8hg
+ WwGtJ1JAnFPvjkvv6PegWwrPmpkAwiprfdAIqDDh9j9WKVqwPibuIslCyLA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=content-type:from:mime-version:subject:to
+ :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+ fm3; bh=AFYbD22b+AMe5Q+40TOnVZ87AkO7I2A5h5nw9puWgFA=; b=Dsk4egDx
+ mlPn89j6y5RDGMJuVNo038URouEV5+aaf0VeCIGR8QJo2VzpdsvoWapC8YnYN78h
+ /vGkl3BT8e8OvdRhMQuIV5M9SbBVqK9qNqWKFPSia4iLwB/atUyqERViWoTeQVYz
+ i8NUwfBqZ0FfVJM04gUVDDCpAQm0gxzed8zZ8et8nNNHPbTRYfWpwoJtYRf/QC2r
+ b1i3G1MAGWpnkCw8TyfUddsHYLlzgK5BUvMruNkeq5q3X4R3Ffxiku8zw2scH6Lc
+ YU+tqXvBvuh8nWFFxXv/To1JDhP2YE0hjGtyVWvvm30PqZVDLXCNbIob2vOq2s5W
+ DfC4A2jBQFilUg==
+X-ME-Sender: <xms:IoW8YLUPOtrx31bB6A7xlxIgqH87lCVibPoAMaIm0O5IeF7erxLSfw>
+ <xme:IoW8YDlqp82CKPGRQ3YPxDMCJdOkCyA4H_8wvIVWP3yZGothq_8RzWedrg5dj8cFI
+ nF-kDGbFWeUOQWqQQ>
+X-ME-Received: <xmr:IoW8YHbIo0uTOiQ-l94gMS4-WvXCJ0MX9zxcNH9V1fem_Wne9VCgmMzEZ2ZKPHO2tWbPjj3Eq5l6qOXlnkKKcA1voHWYdld0BNQtSGYIQz25TbsZklPjIKziXUNghwhR6Jni8w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedthedgtddvucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucfpohcuuggrthgvuchfihgvlhguucdlgeelmdenuc
+ fjughrpegtggfhvffusegrtddtredttdejnecuhfhrohhmpeftvghpohhsihhtohhrhicu
+ tegtthhivhhithihucfuuhhmmhgrrhihuceuohhtuceoughopghnohhtpghrvghplhihse
+ hmnhhothdrnhgvtheqnecuggftrfgrthhtvghrnhepkeefvdduteejvdefkeehieevuefg
+ fefhteetveegffekffefteffvdelheduieetnecuffhomhgrihhnpehgihhthhhusgdrtg
+ homhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegu
+ ohgpnhhothgprhgvphhlhiesmhhnohhtrdhnvght
+X-ME-Proxy: <xmx:IoW8YGXKgcDFiIOxdXNhq8ZqS7vHZWLgfQ3I01YyhnXija_a0cI7VA>
+ <xmx:IoW8YFmvefoAcC0XQgF8Wnk0cA5x_9gJgHVfoc-3JJQEBefj3VLhRw>
+ <xmx:IoW8YDc7TE79hCw7Abgq7MubMdXNx-7Uomsmx6EK2jHTYcYayIAUmg>
+ <xmx:I4W8YKzuPzmfcqvY6moH-hSRrY3TE5hoQG5WyWiBp26pN1B9UtkGhA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA for <tls@ietf.org>; 
+ Sun, 6 Jun 2021 04:19:46 -0400 (EDT)
+Content-Type: multipart/alternative;
+ boundary="===============0216398299175563844=="
+MIME-Version: 1.0
+From: Repository Activity Summary Bot <do_not_reply@mnot.net>
+To: tls@ietf.org
+Message-Id: <20210606081948.EC3853A0FF9@ietfa.amsl.com>
+Date: Sun,  6 Jun 2021 01:19:48 -0700 (PDT)
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/i5mSQ64EfN0Ex2ByuropxNpwqck>
+Subject: [TLS] Weekly github digest (TLS Working Group Drafts)
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Sun, 06 Jun 2021 08:20:02 -0000
+
+--===============0216398299175563844==
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+
+
+
+
+Issues
+------
+* tlswg/draft-ietf-tls-esni (+2/-0/=F0=9F=92=AC9)
+  2 issues created:
+  - Reconsider non-HRR ECH acceptance signal (by chris-wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/441=20
+  - Mitigate HRR when possible (by chris-wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/440=20
+
+  2 issues received 9 new comments:
+  - #440 Mitigate HRR when possible (8 by chris-wood, davidben, ekr, martin=
+thomson, sftcd)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/440=20
+  - #433 Embedded ClientHello padding complicates whole-input padding schem=
+es (1 by davidben)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/433=20
+
+* tlswg/tls13-spec (+2/-0/=F0=9F=92=AC0)
+  2 issues created:
+  - Informal reference to RFC 8879 TLS Certificate Compression (by emanjon)
+    https://github.com/tlswg/tls13-spec/issues/1232=20
+  - PSK binder hash function is ambiguously-specified and potentially simpl=
+ifiable (by davidben)
+    https://github.com/tlswg/tls13-spec/issues/1227=20
+
+* tlswg/dtls13-spec (+1/-0/=F0=9F=92=AC0)
+  1 issues created:
+  - message_hash construction is ambiguous in DTLS (by davidben)
+    https://github.com/tlswg/dtls13-spec/issues/247=20
+
+
+
+Pull requests
+-------------
+* tlswg/draft-ietf-tls-esni (+4/-2/=F0=9F=92=AC24)
+  4 pull requests submitted:
+  - Link to sections of references. (by davidben)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/445=20
+  - Allow empty enc in ClientECH. (by davidben)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/444=20
+  - Move ClientHello padding to the encoding. (by davidben)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/443=20
+  - Preserve length prefixes in ClientHelloOuterAAD (by davidben)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/442=20
+
+  4 pull requests received 24 new comments:
+  - #443 Move ClientHello padding to the encoding. (1 by davidben)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/443=20
+  - #442 Preserve length prefixes in ClientHelloOuterAAD (7 by briansmith, =
+davidben, martinthomson)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/442=20
+  - #438 Remove redundant length prefix from ClientHelloOuterAAD. (1 by say=
+rer)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/438=20
+  - #436 Prohibit IP addresses in ECHConfig.public_name. (15 by cbartle891,=
+ chris-wood, davidben, martinthomson, richsalz)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/436=20
+
+  2 pull requests merged:
+  - Allow empty enc in ClientECH.
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/444=20
+  - Remove redundant length prefix from ClientHelloOuterAAD.
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/438=20
+
+* tlswg/tls13-spec (+4/-0/=F0=9F=92=AC0)
+  4 pull requests submitted:
+  - RFC 8773 TLS 1.3 Extension for Certificate-Based Authentication with =
+=E2=80=A6 (by emanjon)
+    https://github.com/tlswg/tls13-spec/pull/1231=20
+  - RFC 8996 "Deprecating TLS 1.0 and TLS 1.1" (by emanjon)
+    https://github.com/tlswg/tls13-spec/pull/1230=20
+  - Updates and obsolete in abstract (by emanjon)
+    https://github.com/tlswg/tls13-spec/pull/1229=20
+  - Outdated references to ITU-T/ISO/IEC specifications (by emanjon)
+    https://github.com/tlswg/tls13-spec/pull/1228=20
+
+
+Repositories tracked by this digest:
+-----------------------------------
+* https://github.com/tlswg/draft-ietf-tls-semistatic-dh
+* https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate
+* https://github.com/tlswg/draft-ietf-tls-esni
+* https://github.com/tlswg/certificate-compression
+* https://github.com/tlswg/draft-ietf-tls-external-psk-importer
+* https://github.com/tlswg/draft-ietf-tls-ticketrequest
+* https://github.com/tlswg/tls13-spec
+* https://github.com/tlswg/tls-flags
+* https://github.com/tlswg/dtls13-spec
+* https://github.com/tlswg/dtls-conn-id
+* https://github.com/tlswg/tls-subcerts
+* https://github.com/tlswg/oldversions-deprecate
+* https://github.com/tlswg/sniencryption
+* https://github.com/tlswg/tls-exported-authenticator
+* https://github.com/tlswg/draft-ietf-tls-ctls
+* https://github.com/tlswg/external-psk-design-team
+
+--===============0216398299175563844==
+Content-Type: text/html; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+
+<!doctype html>
+<html lang=3D"en">
+<head>
+<meta charset=3D"utf-8">
+<title>Weekly github digest (TLS Working Group Drafts)</title>
+<style>
+body { font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;=
+ font-size: 14px; }
+h2 { margin-top: 3em; color: #A52A2A; font-style: italic; font-weight: norm=
+al; }
+h3 { margin-bottom:0; margin-top: 2em; font-size: 1.2em; }
+h1+h2 { margin-top: 1em; }
+a { color: #bb6219; text-decoration: none; }
+li { margin-bottom: .35em; }
+.repos { margin-bottom: 0; margin-top:0; line-height: 1.2; }
+.new { color: red; }
+.label { display: inline;
+	padding: .2em .6em .3em;
+	font-size: 75%;
+	font-weight: 700;
+	line-height: 1;
+	color: #fff;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: baseline;
+	border-radius: .25em;
+}
+</style>
+</head>
+
+<body>
+<h1>Sunday June 06, 2021</h1>
+
+
+<h2>Issues</h2>
+
+<h3>tlswg/draft-ietf-tls-esni (+2/-0/=F0=9F=92=AC9)</h3>
+  <p class=3D"new">2 issues created:</p>
+  <ul>
+  <li>#441 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/4=
+41">Reconsider non-HRR ECH acceptance signal</a> (by chris-wood) </li>
+ =20
+  <li>#440 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/4=
+40">Mitigate HRR when possible</a> (by chris-wood) </li>
+  </ul>
+
+  <p>2 issues received 9 new comments:</p>
+  <ul>
+  <li>#440 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/4=
+40">Mitigate HRR when possible</a> (8 by chris-wood, davidben, ekr, martint=
+homson, sftcd) </li>
+ =20
+  <li>#433 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/4=
+33">Embedded ClientHello padding complicates whole-input padding schemes</a=
+> (1 by davidben) </li>
+  </ul>
+
+
+<h3>tlswg/tls13-spec (+2/-0/=F0=9F=92=AC0)</h3>
+  <p class=3D"new">2 issues created:</p>
+  <ul>
+  <li>#1232 <a href=3D"https://github.com/tlswg/tls13-spec/issues/1232">Inf=
+ormal reference to RFC 8879 TLS Certificate Compression</a> (by emanjon) </=
+li>
+ =20
+  <li>#1227 <a href=3D"https://github.com/tlswg/tls13-spec/issues/1227">PSK=
+ binder hash function is ambiguously-specified and potentially simplifiable=
+</a> (by davidben) </li>
+  </ul>
+
+
+
+<h3>tlswg/dtls13-spec (+1/-0/=F0=9F=92=AC0)</h3>
+  <p class=3D"new">1 issues created:</p>
+  <ul>
+  <li>#247 <a href=3D"https://github.com/tlswg/dtls13-spec/issues/247">mess=
+age_hash construction is ambiguous in DTLS</a> (by davidben) </li>
+  </ul>
+
+
+
+
+
+<h2>Pull requests</h2>
+<h3>tlswg/draft-ietf-tls-esni (+4/-2/=F0=9F=92=AC24)</h3>
+  <p class=3D"new">4 pull requests submitted:</p>
+  <ul>
+  <li>#445 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/445=
+">Link to sections of references.</a> (by davidben) </li>
+ =20
+  <li>#444 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/444=
+">Allow empty enc in ClientECH.</a> (by davidben) </li>
+ =20
+  <li>#443 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/443=
+">Move ClientHello padding to the encoding.</a> (by davidben) </li>
+ =20
+  <li>#442 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/442=
+">Preserve length prefixes in ClientHelloOuterAAD</a> (by davidben) </li>
+  </ul>
+
+  <p>4 pull requests received 24 new comments:</p>
+  <ul>
+  <li>#443 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/443=
+">Move ClientHello padding to the encoding.</a> (1 by davidben) </li>
+ =20
+  <li>#442 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/442=
+">Preserve length prefixes in ClientHelloOuterAAD</a> (7 by briansmith, dav=
+idben, martinthomson) </li>
+ =20
+  <li>#438 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/438=
+">Remove redundant length prefix from ClientHelloOuterAAD.</a> (1 by sayrer=
+) </li>
+ =20
+  <li>#436 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/436=
+">Prohibit IP addresses in ECHConfig.public_name.</a> (15 by cbartle891, ch=
+ris-wood, davidben, martinthomson, richsalz) </li>
+  </ul>
+
+  <p>2 pull requests merged:</p>
+  <ul>
+  <li>#444 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/444=
+">Allow empty enc in ClientECH.</a> </li>
+ =20
+  <li>#438 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/438=
+">Remove redundant length prefix from ClientHelloOuterAAD.</a> </li>
+  </ul>
+
+<h3>tlswg/tls13-spec (+4/-0/=F0=9F=92=AC0)</h3>
+  <p class=3D"new">4 pull requests submitted:</p>
+  <ul>
+  <li>#1231 <a href=3D"https://github.com/tlswg/tls13-spec/pull/1231">RFC 8=
+773 TLS 1.3 Extension for Certificate-Based Authentication with =E2=80=A6</=
+a> (by emanjon) </li>
+ =20
+  <li>#1230 <a href=3D"https://github.com/tlswg/tls13-spec/pull/1230">RFC 8=
+996 &quot;Deprecating TLS 1.0 and TLS 1.1&quot;</a> (by emanjon) </li>
+ =20
+  <li>#1229 <a href=3D"https://github.com/tlswg/tls13-spec/pull/1229">Updat=
+es and obsolete in abstract</a> (by emanjon) </li>
+ =20
+  <li>#1228 <a href=3D"https://github.com/tlswg/tls13-spec/pull/1228">Outda=
+ted references to ITU-T/ISO/IEC specifications</a> (by emanjon) </li>
+  </ul>
+
+
+
+
+<h2>Repositories tracked by this digest:</h2>
+<ul class=3D"repos">
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-semistatic-dh">htt=
+ps://github.com/tlswg/draft-ietf-tls-semistatic-dh</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate=
+">https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-esni">https://gith=
+ub.com/tlswg/draft-ietf-tls-esni</a></li>
+  <li><a href=3D"https://github.com/tlswg/certificate-compression">https://=
+github.com/tlswg/certificate-compression</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-external-psk-impor=
+ter">https://github.com/tlswg/draft-ietf-tls-external-psk-importer</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-ticketrequest">htt=
+ps://github.com/tlswg/draft-ietf-tls-ticketrequest</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls13-spec">https://github.com/tl=
+swg/tls13-spec</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-flags">https://github.com/tls=
+wg/tls-flags</a></li>
+  <li><a href=3D"https://github.com/tlswg/dtls13-spec">https://github.com/t=
+lswg/dtls13-spec</a></li>
+  <li><a href=3D"https://github.com/tlswg/dtls-conn-id">https://github.com/=
+tlswg/dtls-conn-id</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-subcerts">https://github.com/=
+tlswg/tls-subcerts</a></li>
+  <li><a href=3D"https://github.com/tlswg/oldversions-deprecate">https://gi=
+thub.com/tlswg/oldversions-deprecate</a></li>
+  <li><a href=3D"https://github.com/tlswg/sniencryption">https://github.com=
+/tlswg/sniencryption</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-exported-authenticator">https=
+://github.com/tlswg/tls-exported-authenticator</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-ctls">https://gith=
+ub.com/tlswg/draft-ietf-tls-ctls</a></li>
+  <li><a href=3D"https://github.com/tlswg/external-psk-design-team">https:/=
+/github.com/tlswg/external-psk-design-team</a></li>
+  </ul>
+</body>
+</html>
+
+--===============0216398299175563844==--
+

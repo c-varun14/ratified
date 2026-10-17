@@ -1,0 +1,173 @@
+Return-Path: <mt@lowentropy.net>
+X-Original-To: tls@mail2.ietf.org
+Delivered-To: tls@mail2.ietf.org
+Received: from localhost (localhost [127.0.0.1])
+	by mail2.ietf.org (Postfix) with ESMTP id 123C3635831B
+	for <tls@mail2.ietf.org>; Mon, 15 Sep 2025 22:35:10 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at ietf.org
+X-Spam-Flag: NO
+X-Spam-Score: -2.799
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.799 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+	DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, RCVD_IN_DNSWL_LOW=-0.7,
+	RCVD_IN_VALIDITY_RPBL_BLOCKED=0.001,
+	RCVD_IN_VALIDITY_SAFE_BLOCKED=0.001, SPF_PASS=-0.001]
+	autolearn=ham autolearn_force=no
+Authentication-Results: mail2.ietf.org (amavisd-new); dkim=pass (2048-bit key)
+	header.d=lowentropy.net header.b="1o1zifqI"; dkim=pass (2048-bit key)
+	header.d=messagingengine.com header.b="L7Gc2lLJ"
+Received: from mail2.ietf.org ([166.84.6.31])
+	by localhost (mail2.ietf.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id UqlZ6LRaq-f7 for <tls@mail2.ietf.org>;
+	Mon, 15 Sep 2025 22:35:09 -0700 (PDT)
+Received: from fout-b8-smtp.messagingengine.com
+ (fout-b8-smtp.messagingengine.com [202.12.124.151])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail2.ietf.org (Postfix) with ESMTPS id 7DBF66358305
+	for <tls@ietf.org>; Mon, 15 Sep 2025 22:35:09 -0700 (PDT)
+Received: from phl-compute-06.internal (phl-compute-06.internal [10.202.2.46])
+	by mailfout.stl.internal (Postfix) with ESMTP id 62DC11D0022F;
+	Tue, 16 Sep 2025 01:35:03 -0400 (EDT)
+Received: from phl-imap-15 ([10.202.2.104])
+  by phl-compute-06.internal (MEProxy); Tue, 16 Sep 2025 01:35:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lowentropy.net;
+	 h=cc:cc:content-transfer-encoding:content-type:content-type
+	:date:date:from:from:in-reply-to:in-reply-to:message-id
+	:mime-version:references:reply-to:subject:subject:to:to; s=fm2;
+	 t=1758000903; x=1758087303; bh=oXRS0eebnKzgkFDff3KdYholZG6wEcrJ
+	386Z5O6J4yk=; b=1o1zifqIBNW4gj8XsBaQlFerYisMnagqsOTtG/yYGOu2mrYT
+	e3qC4gJ97RyCBiAdbBae8Ea8bZZVPKVIPe8ve4g+XzYK8RcqFoVfsxXVYr1VNrsy
+	Y/4vl8RYN/7+aibygbih2wESZQZFEUEtEUz/VBDRa7Z4QKG/2F4eiZpSKjpiZCW7
+	EegwSuYVIjPjShpcwohdA9WI4jFuaZpp+9rjp1untskJFruqhQOmyfWUc3lhCH9Y
+	udszcrKZlb0Kox7MG/FFD7RxuQxJihzOxkUIAm/H2vCwFeutCQcB3OmB022QgmzI
+	uGeHq1JOWAraNnXdTOmZSQ0lq5VhkI/Ly7NLsA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1758000903; x=
+	1758087303; bh=oXRS0eebnKzgkFDff3KdYholZG6wEcrJ386Z5O6J4yk=; b=L
+	7Gc2lLJKmGDjzjaLSS39igjEVBMNhrPODVXm2/yDjfI+mXHzlruhjDsU9yZBKgtw
+	bgB1qTmZVmYo+1GwLq//53GZ11M29shxjt5Grzc27GchYb4dXAwhZBITZCoHghZu
+	mNxh0MfxTXuCYvBdIY8hiDTC/NnaBdiDC6jJ8nf80JFIuTzD6zMXaw9pbBe9jeQr
+	9AvixnlAeEDPCHibVsaaPznIzSl47oUcNsPl3ScKCjxZadC/II7Wo14TIyGPBufs
+	r1D2fuBitdDVU7yKZz+ji4FfpsdwnxmlY/SsvRMZQNPSBiN3CipWjo7FQjvcMjKt
+	6NfjF6GzrHDelp0zDwyxw==
+X-ME-Sender: <xms:BvfIaGE1GQFOct2pnj96RgXXiwz5W_ls7aOfxH90ZZjJ--Tuhr9gJg>
+    <xme:BvfIaHX8ErnVthyLPWnAdkUCC724G1akvRx6ZJBb16ypquGvafiknMJqMKFlGIUa4
+    kAKZURvuiF55d1etPo>
+X-ME-Proxy-Cause: 
+ gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggdefleejgecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
+    hrpefoggffhffvvefkjghfufgtgfesthhqredtredtjeenucfhrhhomhepfdforghrthhi
+    nhcuvfhhohhmshhonhdfuceomhhtsehlohifvghnthhrohhphidrnhgvtheqnecuggftrf
+    grthhtvghrnhepgfduffelffegudeliefhfeeljedvgeegtdffueetgefhgeefjeefheff
+    hedutedunecuffhomhgrihhnpehivghtfhdrohhrghenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmtheslhhofigvnhhtrhhophihrdhnvght
+    pdhnsggprhgtphhtthhopeefpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopegurg
+    hvihgusggvnhestghhrhhomhhiuhhmrdhorhhgpdhrtghpthhtohepthhlshesihgvthhf
+    rdhorhhgpdhrtghpthhtohepshgvrghnsehsnhefrhgurdgtohhm
+X-ME-Proxy: <xmx:BvfIaFMRCZOaiy_J5bis4vn_oTAIKdge3711pGdsx6kEWGymTri5xw>
+    <xmx:BvfIaLP6bue4ky-EcxT3FpKH0sYq5-9WwVuc7iQdgbI6Jg9cbaFwtg>
+    <xmx:BvfIaNsTTH9VfM0qL1sk1ioL10f41jYqp3hnuhEOjIN0tQngAUbAsQ>
+    <xmx:BvfIaNWxgC_-4qkapG_SqbazWIWAEJRO2F0AmJqS6oF5kwPofKLTvQ>
+    <xmx:B_fIaL2FiQA2HoHsoBrGFR0FmF8exjldKTZCKl4t2mI_-TKpOkOw0Pas>
+Feedback-ID: ic129442d:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id C946578026F; Tue, 16 Sep 2025 01:35:02 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+MIME-Version: 1.0
+X-ThreadId: AF1EATCzqx--
+Date: Tue, 16 Sep 2025 13:34:41 +0800
+From: "Martin Thomson" <mt@lowentropy.net>
+To: "David Benjamin" <davidben@chromium.org>, "Sean Turner" <sean@sn3rd.com>
+Message-Id: <0c8a138b-878f-442b-84f9-540dbcb68125@betaapp.fastmail.com>
+In-Reply-To: 
+ <CAF8qwaDPzP9O71a+MHHLgkMC87eg3ADh-YX+maxoZBa_DjTeqw@mail.gmail.com>
+References: <A729C01D-2CFA-48DD-B709-70D3DBB41250@sn3rd.com>
+ <F626C530-EA68-4BE5-B17F-28548791578C@sn3rd.com>
+ <EED6FC46-7D72-4C4F-A1A5-68B4F55AAB92@sn3rd.com>
+ <26280737-89D5-4411-977F-BC9101950F1B@sn3rd.com>
+ <CAF8qwaDPzP9O71a+MHHLgkMC87eg3ADh-YX+maxoZBa_DjTeqw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Message-ID-Hash: HDFYSVY7L4QCI5QWEAJPABCZBYY4HUXF
+X-Message-ID-Hash: HDFYSVY7L4QCI5QWEAJPABCZBYY4HUXF
+X-MailFrom: mt@lowentropy.net
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+CC: TLS List <tls@ietf.org>
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Re=3A_Working_Group_Last_Call_for_Legacy_RSASSA-PKCS1-v1?=
+ =?utf-8?q?=5F5_codepoints_for_TLS_1=2E3?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/e3n6CrviFkc_CxgCzoxHApwPxn4>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+FWIW, these address my concerns. Thanks to David for being patient and r=
+esponsive.
+
+On Tue, Sep 16, 2025, at 00:59, David Benjamin wrote:
+> I've published draft-04 with the changes I mentioned, and a small twea=
+k=20
+> in response to a follow-up comment Martin left on GitHub.
+> https://www.ietf.org/archive/id/draft-ietf-tls-tls13-pkcs1-04.html
+> https://author-tools.ietf.org/iddiff?url1=3Ddraft-ietf-tls-tls13-pkcs1=
+-03&url2=3Ddraft-ietf-tls-tls13-pkcs1-04&difftype=3D--html
+>
+> On Mon, Sep 15, 2025 at 9:40=E2=80=AFAM Sean Turner <sean@sn3rd.com> w=
+rote:
+>> Hi! We=E2=80=99re closing out the WGLC on this I-D. Once we come to c=
+losure on Martin=E2=80=99s comments we will progress this.
+>>=20
+>> spt
+>>=20
+>>> On Aug 5, 2025, at 10:25, Sean Turner <sean@sn3rd.com> wrote:
+>>>=20
+>>>>=20
+>>>> On Jul 28, 2025, at 10:57, Sean Turner <sean@sn3rd.com> wrote:
+>>>>=20
+>>>>=20
+>>>>> On Jul 24, 2025, at 03:00, Sean Turner <sean@sn3rd.com> wrote:
+>>>>>=20
+>>>>> This is the working group last call for Legacy RSASSA-PKCS1-v1_5 c=
+odepoints for TLS 1.3. Please review draft-ietf-tls-tls13-pkcs1 [1] and =
+reply to this thread indicating if you think it is ready for publication=
+ or not.  If you do not think it is ready please indicate why.  This cal=
+l will end on at 2359 UTC on 07 August 2024.
+>>>>>=20
+>>>>> Cheers,
+>>>>> spt
+>>>>=20
+>>>> [1] https://datatracker.ietf.org/doc/draft-ietf-tls-tls13-pkcs1/
+>>>>=20
+>>>> Just a reminder that this is still on-going (and this time with the=
+ correct link).
+>>>=20
+>>> Final reminder that this is still ongoing.
+>>>=20
+>>> Cheers,
+>>> spt
+>>=20
+>> _______________________________________________
+>> TLS mailing list -- tls@ietf.org
+>> To unsubscribe send an email to tls-leave@ietf.org
+> _______________________________________________
+> TLS mailing list -- tls@ietf.org
+> To unsubscribe send an email to tls-leave@ietf.org
+

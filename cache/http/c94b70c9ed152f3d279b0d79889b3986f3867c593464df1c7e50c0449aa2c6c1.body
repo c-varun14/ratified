@@ -1,0 +1,339 @@
+Return-Path: <ekr@rtfm.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 88CC61270AC
+ for <tls@ietfa.amsl.com>; Sun, 18 Mar 2018 08:28:28 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.599
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.599 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_LOW=-0.7]
+ autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=rtfm-com.20150623.gappssmtp.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 26bvR1c5lXJp for <tls@ietfa.amsl.com>;
+ Sun, 18 Mar 2018 08:28:26 -0700 (PDT)
+Received: from mail-qk0-x22d.google.com (mail-qk0-x22d.google.com
+ [IPv6:2607:f8b0:400d:c09::22d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id E878F12D87A
+ for <tls@ietf.org>; Sun, 18 Mar 2018 08:28:15 -0700 (PDT)
+Received: by mail-qk0-x22d.google.com with SMTP id z184so15898931qkc.1
+ for <tls@ietf.org>; Sun, 18 Mar 2018 08:28:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=rtfm-com.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+ :cc; bh=MoJuLrkVAu+iq0j+sN85O+dZ0WRwLBJE7dUJ4u9mu54=;
+ b=Pqniw3PLg7J6gpokknKtZE/Ao40fQbS9QLAi3TqsCJClooMUFJeV+Cj3gyr3Vaa0SS
+ pdHBlzuTotFk2T97YRHhas8PbG/z5flJ5XWwaiOGFIiv1Qyldfn8ObulvbOhSFXxEnk4
+ dQSaLgm4BoZOMSgMkd75Wtz7VxzUUJBgjwALwO2qm7OliWbkUXs+rOOqXXdC/t0LVOvf
+ I0U6B1FjxwcL+QnZ6OfkiFD+C/LgTD3dHtc2OAeFaMTFV0Bm59LZhjPrTVyUeFHN/Dh/
+ tU5wE5G7/TuYc+Ady7Zwc3cPmgDc/K2/VuLER85bs+E0Y7zORvgTptgEFZV4ZKAm9/Vz
+ RivQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+ :message-id:subject:to:cc;
+ bh=MoJuLrkVAu+iq0j+sN85O+dZ0WRwLBJE7dUJ4u9mu54=;
+ b=dDbnsDn00M4mJW5fSnIHMMqZfGy1amBq47yoSZI7uErHCW21ixiNhXju/SFhabIMbN
+ QQEj1FBNcpPvYa+AzifJn3cS4zT6+XLax+wcgoKUY4pbfCvWPwRmzVXVxi5LU4Lufz2Y
+ 4xW+1rSR1qk6KkHeZe3KTcfQiaJzw3oukwKZXCiNcTfG5HU5r8biLuxcg8DpW0LfhbmC
+ lBmn8b2pXyEJcHKbk/2kyQNcQXI4LdpG+XlyA4thUqB13we6zvGZ3fgppBIGWzDpmECw
+ D4SIJUL1jsB0vc8k8E9RZljERZBk1t/csDDC+aybBSz0y/agx6Uknj6fCLuR9bnr14pF
+ FBpw==
+X-Gm-Message-State: AElRT7E+M2BeyGkIvvOmbL71GrV6OM00iAYIxQ8U7Zi8kyl09tuJAz37
+ 6qpgI+K7W2afIAb885sySxmvmj8c48RTYv0+vnTb/w==
+X-Google-Smtp-Source: AG47ELv/RDwYehGfEw2sN+h/YTCRx3fEwj8yDIOD14SB/c3nCF9TeBGF5wYuJlvS5FAms5MlrObPKKxm6QPS9RUZfBI=
+X-Received: by 10.55.89.7 with SMTP id n7mr13478878qkb.15.1521386894987; Sun,
+ 18 Mar 2018 08:28:14 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 10.200.37.234 with HTTP; Sun, 18 Mar 2018 08:27:34 -0700 (PDT)
+In-Reply-To: <6112806.hxzZ6NivhB@pintsize.usersys.redhat.com>
+References: <6112806.hxzZ6NivhB@pintsize.usersys.redhat.com>
+From: Eric Rescorla <ekr@rtfm.com>
+Date: Sun, 18 Mar 2018 15:27:34 +0000
+Message-ID: <CABcZeBOFvdfV3b5+yfJbeYxHLi_uDY34X7u3cbpiLa6RtnmFkQ@mail.gmail.com>
+To: Hubert Kario <hkario@redhat.com>
+Cc: TLS WG <tls@ietf.org>, The IESG <iesg@ietf.org>,
+ tls-chairs <tls-chairs@ietf.org>
+Content-Type: multipart/alternative; boundary="001a114c91aa712c740567b17db2"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/JW8nx0rPZByUIHb7EE0mZSBBwFQ>
+Subject: Re: [TLS] draft-ietf-tls-tls13-26 is vulnerable to externally set
+ PSK identity enumeration
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Sun, 18 Mar 2018 15:28:28 -0000
+
+--001a114c91aa712c740567b17db2
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+After discussion with the chairs and the AD, I have opted to just add a
+section
+that explains the attack. I just merged that (but managed not to get it
+into -27
+due to fumble fingering).
+
+-Ekr
+
+
+On Mon, Mar 12, 2018 at 8:27 AM, Hubert Kario <hkario@redhat.com> wrote:
+
+> When the server supports externally set PSKs that use human readable
+> identities (or, in general, guessable identities), the current text makes
+> it
+> trivial to perform enumeration attack.
+>
+> The proposed fix was identified as conflicting with the "Client Hello
+> Recording" security section, the severity of that conflict wasn't
+> quantified
+> though.
+>
+>
+> Issue in detail:
+>
+> Problematic paragraph as it stands in draft-ietf-tls-tls13-26 (section
+> 4.2.11):
+>    Prior to accepting PSK key establishment, the server MUST validate
+>    the corresponding binder value (see Section 4.2.11.2 below).  If this
+>    value is not present or does not validate, the server MUST abort the
+>    handshake.  Servers SHOULD NOT attempt to validate multiple binders;
+>    rather they SHOULD select a single PSK and validate solely the binder
+>    that corresponds to that PSK.  In order to accept PSK key
+>    establishment, the server sends a "pre_shared_key" extension
+>    indicating the selected identity.
+>
+> That means, given a server with both PSK and PKI authentication, if
+> attacker
+> sends multiple PSK identities with garbage binders, the server will abort
+> the
+> connection if and only if at least one of the identities was recognised b=
+y
+> server. Applying the well known binary search method allows the attacker =
+to
+> then narrow it down to a single identity in O(log_2(n)) steps.
+>
+> The solution to ignore that one selected binder, and continuing the
+> connection
+> in case that binder does not validate (this is the version in the PR
+> mentioned
+> below), unfortunately doesn't solve this issue either;
+>
+> If the attacker is in possession of a known good PSK secret (established
+> either through session resumption mechanism or of a less-privileged
+> identity),
+> it can list the known good one as the very last one in the PSK extension.
+> If
+> server recognises one of the identities earlier in the list it will choos=
+e
+> no
+> identity (as the binder didn't validate) or the known good identity if
+> none of
+> the previous identities were recognised. Again, applying binary search
+> method
+> allows the attacker to narrow the list to a single entry in just
+> O(log_2(n))
+> steps.
+>
+>
+> Proposed solution:
+>
+> in paragraph above, in description of `binders`:
+>   binders
+>   : A series of HMAC values, one for
+>    each PSK offered in the "pre_shared_keys" extension and in the same
+>    order, computed as described below. If the number of binders does not
+> match
+>    number of identities the server MUST abort the connection with
+>    "illegal_parameter" alert.
+>
+> problematic paragraph after changes:
+>    Prior to accepting PSK key establishment, the server MUST validate
+>    the corresponding binder value (see Section 4.2.11.2 below).  If this
+>    value does not validate, the server MUST ignore the
+>    associated identity and retry selection of identity. If no identity is
+>    recognised or, for recognised identities, no binder could be validated
+>    the server MUST continue connection as if PSK key establishment wasn't
+>    attempted.  In order to accept PSK key
+>    establishment, the server sends a "pre_shared_key" extension
+>    indicating the selected identity.
+>
+> Unfortunately that solution was identified as conflicting with "Client
+> Hello
+> Recording" section.
+>
+> Do we consider that conflict to be severe enough to block this change?
+>
+> Or should we just add more information to that security section, that it
+> needs
+> to deal with this kind of attack?
+>
+> PS: some discussion on this issue already happened in the github PR:
+> https://github.com/tlswg/tls13-spec/pull/1167
+> --
+> Regards,
+> Hubert Kario
+> Senior Quality Engineer, QE BaseOS Security team
+> Web: www.cz.redhat.com
+> Red Hat Czech s.r.o., Purky=C5=88ova 115, 612 00  Brno, Czech Republic
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+>
+>
+
+--001a114c91aa712c740567b17db2
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">After discussion with the chairs and the AD, I have opted =
+to just add a section<div>that explains the attack. I just merged that (but=
+ managed not to get it into -27</div><div>due to fumble fingering).</div><d=
+iv><br></div><div>-Ekr</div><div>=C2=A0<br><div class=3D"gmail_extra"><br><=
+div class=3D"gmail_quote">On Mon, Mar 12, 2018 at 8:27 AM, Hubert Kario <sp=
+an dir=3D"ltr">&lt;<a href=3D"mailto:hkario@redhat.com" target=3D"_blank">h=
+kario@redhat.com</a>&gt;</span> wrote:<br><blockquote class=3D"gmail_quote"=
+ style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex">Wh=
+en the server supports externally set PSKs that use human readable<br>
+identities (or, in general, guessable identities), the current text makes i=
+t<br>
+trivial to perform enumeration attack.<br>
+<br>
+The proposed fix was identified as conflicting with the &quot;Client Hello<=
+br>
+Recording&quot; security section, the severity of that conflict wasn&#39;t =
+quantified<br>
+though.<br>
+<br>
+<br>
+Issue in detail:<br>
+<br>
+Problematic paragraph as it stands in draft-ietf-tls-tls13-26 (section<br>
+4.2.11):<br>
+=C2=A0 =C2=A0Prior to accepting PSK key establishment, the server MUST vali=
+date<br>
+=C2=A0 =C2=A0the corresponding binder value (see Section 4.2.11.2 below).=
+=C2=A0 If this<br>
+=C2=A0 =C2=A0value is not present or does not validate, the server MUST abo=
+rt the<br>
+=C2=A0 =C2=A0handshake.=C2=A0 Servers SHOULD NOT attempt to validate multip=
+le binders;<br>
+=C2=A0 =C2=A0rather they SHOULD select a single PSK and validate solely the=
+ binder<br>
+=C2=A0 =C2=A0that corresponds to that PSK.=C2=A0 In order to accept PSK key=
+<br>
+=C2=A0 =C2=A0establishment, the server sends a &quot;pre_shared_key&quot; e=
+xtension<br>
+=C2=A0 =C2=A0indicating the selected identity.<br>
+<br>
+That means, given a server with both PSK and PKI authentication, if attacke=
+r<br>
+sends multiple PSK identities with garbage binders, the server will abort t=
+he<br>
+connection if and only if at least one of the identities was recognised by<=
+br>
+server. Applying the well known binary search method allows the attacker to=
+<br>
+then narrow it down to a single identity in O(log_2(n)) steps.<br>
+<br>
+The solution to ignore that one selected binder, and continuing the connect=
+ion<br>
+in case that binder does not validate (this is the version in the PR mentio=
+ned<br>
+below), unfortunately doesn&#39;t solve this issue either;<br>
+<br>
+If the attacker is in possession of a known good PSK secret (established<br=
+>
+either through session resumption mechanism or of a less-privileged identit=
+y),<br>
+it can list the known good one as the very last one in the PSK extension. I=
+f<br>
+server recognises one of the identities earlier in the list it will choose =
+no<br>
+identity (as the binder didn&#39;t validate) or the known good identity if =
+none of<br>
+the previous identities were recognised. Again, applying binary search meth=
+od<br>
+allows the attacker to narrow the list to a single entry in just O(log_2(n)=
+)<br>
+steps.<br>
+<br>
+<br>
+Proposed solution:<br>
+<br>
+in paragraph above, in description of `binders`:<br>
+=C2=A0 binders<br>
+=C2=A0 : A series of HMAC values, one for<br>
+=C2=A0 =C2=A0each PSK offered in the &quot;pre_shared_keys&quot; extension =
+and in the same<br>
+=C2=A0 =C2=A0order, computed as described below. If the number of binders d=
+oes not match<br>
+=C2=A0 =C2=A0number of identities the server MUST abort the connection with=
+<br>
+=C2=A0 =C2=A0&quot;illegal_parameter&quot; alert.<br>
+<br>
+problematic paragraph after changes:<br>
+=C2=A0 =C2=A0Prior to accepting PSK key establishment, the server MUST vali=
+date<br>
+=C2=A0 =C2=A0the corresponding binder value (see Section 4.2.11.2 below).=
+=C2=A0 If this<br>
+=C2=A0 =C2=A0value does not validate, the server MUST ignore the<br>
+=C2=A0 =C2=A0associated identity and retry selection of identity. If no ide=
+ntity is<br>
+=C2=A0 =C2=A0recognised or, for recognised identities, no binder could be v=
+alidated<br>
+=C2=A0 =C2=A0the server MUST continue connection as if PSK key establishmen=
+t wasn&#39;t<br>
+=C2=A0 =C2=A0attempted.=C2=A0 In order to accept PSK key<br>
+=C2=A0 =C2=A0establishment, the server sends a &quot;pre_shared_key&quot; e=
+xtension<br>
+=C2=A0 =C2=A0indicating the selected identity.<br>
+<br>
+Unfortunately that solution was identified as conflicting with &quot;Client=
+ Hello<br>
+Recording&quot; section.<br>
+<br>
+Do we consider that conflict to be severe enough to block this change?<br>
+<br>
+Or should we just add more information to that security section, that it ne=
+eds<br>
+to deal with this kind of attack?<br>
+<br>
+PS: some discussion on this issue already happened in the github PR:<br>
+<a href=3D"https://github.com/tlswg/tls13-spec/pull/1167" rel=3D"noreferrer=
+" target=3D"_blank">https://github.com/tlswg/tls13<wbr>-spec/pull/1167</a><=
+br>
+<span class=3D"m_-8545945963054212470m_6898714306170337795m_-53578688836132=
+7188HOEnZb"><font color=3D"#888888">--<br>
+Regards,<br>
+Hubert Kario<br>
+Senior Quality Engineer, QE BaseOS Security team<br>
+Web: <a href=3D"http://www.cz.redhat.com" rel=3D"noreferrer" target=3D"_bla=
+nk">www.cz.redhat.com</a><br>
+Red Hat Czech s.r.o., Purky=C5=88ova 115, 612 00=C2=A0 Brno, Czech Republic=
+</font></span><br>______________________________<wbr>_________________<br>
+TLS mailing list<br>
+<a href=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.org</a><br>
+<a href=3D"https://www.ietf.org/mailman/listinfo/tls" rel=3D"noreferrer" ta=
+rget=3D"_blank">https://www.ietf.org/mailman/l<wbr>istinfo/tls</a><br>
+<br></blockquote></div><br></div></div></div>
+
+--001a114c91aa712c740567b17db2--
+

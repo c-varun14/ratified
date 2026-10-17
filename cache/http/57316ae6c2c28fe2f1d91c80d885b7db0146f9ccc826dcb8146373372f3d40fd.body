@@ -1,0 +1,314 @@
+From nobody Wed Oct 27 10:02:23 2021
+Return-Path: <jonathan.hoyland@gmail.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 35DFA3A0DE1;
+ Wed, 27 Oct 2021 10:02:21 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.097
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.097 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, FREEMAIL_FROM=0.001,
+ HTML_MESSAGE=0.001, SPF_HELO_NONE=0.001, SPF_PASS=-0.001,
+ URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=gmail.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id Chx1CwVoC9Gc; Wed, 27 Oct 2021 10:02:16 -0700 (PDT)
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com
+ [IPv6:2607:f8b0:4864:20::830])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id C7F223A0DDA;
+ Wed, 27 Oct 2021 10:02:15 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id v17so3128005qtp.1;
+ Wed, 27 Oct 2021 10:02:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112; 
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=IXK9BKq+5tYqkaO3tCHHszZ1ULB6+s1ei3HdI5Jt2pw=;
+ b=H0ZCCD5j+1/8yuMi8XH4Ga924uStZUIy+LXVUmeMoqxfDEkT5RvJqduyKC1HXDd/QZ
+ h4GzSAghsk44LS555ph0JIO5yixeamfODUVvVtlcdtB+CzKxQnukNE+w1sqBwg6a8WkQ
+ 4K1J8SQDAuI4D4USvIMlOdx/oXh6ZkeBZboP7Pz1wWdnTe30F9TVs+LUYRYX7C6i4Btn
+ mkSPY5tvn2pJJ5jbZXNFEYMPRtsTDKDO9g2Xc8KPORFeD2fK6M+0TDbld0sARm8dWkQi
+ RxUTFameAiefWExCgeoEYdE6PWiMx7D5v/r744OtOvR6GeJOo0inwJ/FGBrZ8VxQ69jq
+ TQzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=IXK9BKq+5tYqkaO3tCHHszZ1ULB6+s1ei3HdI5Jt2pw=;
+ b=xLfMcfDq1t3xg/l2XYkquDskU7aHTi2rneo7/EbcwkBLx8LWr/i3Sy8xWu8qysYNcd
+ pZ3N3pkBCUsbogl404ZofmMhr+9ZOsNen5ZNR+htUkm/Lo3h+7r1sexsutId3MEX2thX
+ Q2O/QitqEb9AMNbE7h+x97bj0l4Zj6ii9mVqr+7btfLljNshW6pch1oKV1abMVUPfRt6
+ FIcZ3to2j1m3SlzAEkHNuOv/t3vKjbq2/aqi5X5T4CXj0oBvHiDZnnO3Bw6yREC6PZVe
+ Bya8dJpyVQlYx0xvaajFivLOWVt3DAGtbRfgntoOmlMbZK6Nx4Yo2yCvM3KvWixN1yad
+ eE1w==
+X-Gm-Message-State: AOAM531SHUZg6XydExkjg+xSG5CDcZddUm8+U6Ul3q7RCnuhBFSySP1i
+ jG4i4lGaK7/ws56sYK6Sslq4KUktBcB4lwjJvHo=
+X-Google-Smtp-Source: ABdhPJwmbL55HA+UeRUd7Rr2dal9MC3ziSk7BBVqSJvE4TZThvuAlcDlbNf73+necVG8aje0fFA6oBD8o73K7ylsQC4=
+X-Received: by 2002:ac8:580b:: with SMTP id g11mr32523648qtg.272.1635354132075; 
+ Wed, 27 Oct 2021 10:02:12 -0700 (PDT)
+MIME-Version: 1.0
+References: <163311243544.13917.11736165165419008870@ietfa.amsl.com>
+ <20211001190002.GC98042@kduck.mit.edu>
+ <CABcZeBPQG82xJdwMrmj4-=9aJymo1xts=D6VZedBW5X9k+34cQ@mail.gmail.com>
+ <92ed26c1-bfde-43c1-93f4-2bbdbd4f6ec1@www.fastmail.com>
+ <CAChr6Sw6Rs42DfS8KgD3qasPcWM_gGZhWN5C4b7W7JsPy0wDzw@mail.gmail.com>
+ <8796f867-12b8-41f8-b124-82b3ab0e2d32@www.fastmail.com>
+ <CAChr6SyKAnBcE9t68coGGXFt9WPLuDuWtVKoCXrK+QrwAVtPXw@mail.gmail.com>
+ <f1bcd676-13ad-49b3-a8e8-8a272e0124e3@www.fastmail.com>
+ <CABcZeBNo0gKjNZOKPYJYraioaw6G=z5ibTqh-o9GkWsDkfDmSQ@mail.gmail.com>
+ <c4d6f2e5-0712-42a6-aef5-0cbada7e149e@www.fastmail.com>
+ <CABcZeBM6y-6ZqaLGZ=8qr+uBnWOOgczhcx=ruy5S=n-YrHweKg@mail.gmail.com>
+ <ca676a77-b2c9-4926-9842-d1d6587206ed@www.fastmail.com>
+ <CACykbs11rHUweXmR1NSU0N2rRjcQ8Sf1S+DY2LO7T+e6cLt+5w@mail.gmail.com>
+ <e9570c02c4f703780a4e317b26607ac124a3b595.camel@ruff.mobi>
+In-Reply-To: <e9570c02c4f703780a4e317b26607ac124a3b595.camel@ruff.mobi>
+From: Jonathan Hoyland <jonathan.hoyland@gmail.com>
+Date: Wed, 27 Oct 2021 18:02:00 +0100
+Message-ID: <CACykbs3v0FC50WQHNqq-oXwKDE=Jha-o0P=Mgr92OgyeKPS6Ug@mail.gmail.com>
+To: "Ruslan N. Marchenko" <rufferson@gmail.com>
+Cc: Sam Whited <sam@samwhited.com>, KITTEN Working Group <kitten@ietf.org>,
+ "<tls@ietf.org>" <tls@ietf.org>
+Content-Type: multipart/alternative; boundary="0000000000001fd81f05cf588e21"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/uV8bOtEG8b-DTM_Uh0Lf7hiTnTw>
+Subject: Re: [TLS] [kitten] Fwd: Last Call:
+ <draft-ietf-kitten-tls-channel-bindings-for-tls13-09.txt> (Channel Bindings
+ for TLS 1.3) to Proposed Standard
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Wed, 27 Oct 2021 17:02:21 -0000
+
+--0000000000001fd81f05cf588e21
+Content-Type: text/plain; charset="UTF-8"
+
+Hi Ruslan,
+
+Without digging into the guts of GSS-API and SCRAM I can't give you a
+concrete attack, the issue is that all our assumptions about protocol
+security assume that different protocols use totally separate key material.
+For example if I have one protocol that signs arbitrary blobs and another
+that requires me to sign a challenge to prove I know a private key then
+even if they're both perfectly secure on their own they are totally broken
+in composition.
+This separation of keys is one of the core reasons for the use of HKDFs, it
+lets us take some source randomness and use it to generate independent keys.
+
+Designing a channel binding that explicitly suggests people use the same
+key material for different things is bad practice and poor protocol design.
+Pretty much every attack is on the table if you have multiple protocols
+using the same keys, message forgery, improper authentication, key leakage,
+etc.
+The reason for separation of keys is to simply rule out this entire class
+of vulnerability.
+If you don't separate the keys then whenever you make any change to any
+protocol you have to consider its security in composition with every other
+protocol, including ones that you don't know about or that haven't been
+written yet.
+
+Using different labels for different purposes shouldn't require anything
+complicated, as it's just changing the input literals to the API call.
+You just need to use different strings based on the configuration.
+If keeping a counter of the number of calls to the API is really hard it
+might be easier to just pick a big enough random number to make collisions
+sufficiently unlikely.
+
+Using the second approach lets you achieve a higher level of security, but
+is perhaps overkill if you don't include attackers that can break TLS /
+steal certificates in your threat model.
+I totally accept that passing state between layers can be tricky, but if
+you need the security then I think the correct solution is to design the
+API carefully, rather than to implement something insecurely.
+As it so happens implementing my second suggestion specifically doesn't
+require any access to TLS internals.
+The authentication session needs to make two calls to the `Exporter` API
+but doesn't require anything more of the TLS connection.
+
+Regards,
+
+Jonathan
+
+
+
+
+
+
+On Tue, 26 Oct 2021 at 20:58, Ruslan N. Marchenko <rufferson@gmail.com>
+wrote:
+
+> Hi Jonathan,
+>
+> Am Dienstag, dem 26.10.2021 um 17:32 +0100 schrieb Jonathan Hoyland:
+> > Hi Sam, all,
+> >
+> > I'd like to again raise the issues I pointed out in
+> >
+> https://mailarchive.ietf.org/arch/msg/kitten/13pPj4E3-gYwpbu2K844uI1BPoU/
+> > .
+> > This draft hasn't received enough security analysis, and further, I
+> > pointed out a specific security issue that remains unaddressed.
+> >
+> > Using the same label for different protocols produces trivial
+> > collisions, and thus it is perfectly possible that a message meant for
+> > GSS-API is identical in both form and key to a message for SCRAM, and
+> > thus there is strong potential for confusion.
+> > I'm not familiar with either of these protocols, so maybe they have
+> > internal reasons why this example doesn't work, but that misses the
+> > much larger and more significant point.
+> > Any future protocol that uses the same label will potentially be
+> > confusable, and further updates to GSS-API now must ensure that they
+> > don't form valid SCRAM messages, and vice versa.
+> >
+> > There isn't even a one-to-one relationship between GSS-API / SCRAM
+> > runs. This channel binding design doesn't protect against messages
+> > being swapped between two GSS-API runs on a single TLS connection.
+> > Again, whether that is a specific problem for GSS-API is totally
+> > irrelevant.
+> > Another protocol that uses this draft may well be vulnerable, and thus
+> > this is just leaving a huge security landmine in TLS channel bindings.
+> >
+> > At an absolute minimum this draft should include "A TLS session using
+> > this RFC to produce a binding for any purpose MUST NOT generate more
+> > than one per session. If a second exporter using this protocol is
+> > required the TLS session MUST be rekeyed."
+> >
+> Can you please elaborate a bit more on this particular attack vector?
+> What exactly information it may leak/compromise and how?
+>
+> The reason I'm asking is that application is the one glueing together
+> TLS and authentication sessions, however application does not always
+> have access to internals of either one(tls), or another(auth) or even
+> both. Therefore asking application to transfer context between
+> authentication and transport APIs may not always be feasible or even
+> possible.
+>
+> Regards,
+> Ruslan
+>
+>
+
+--0000000000001fd81f05cf588e21
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div>Hi Ruslan,</div><div><br></div><div>Without digging i=
+nto the guts of GSS-API and SCRAM I can&#39;t give you a concrete attack, t=
+he issue is that all our assumptions about protocol security assume that di=
+fferent protocols use totally separate key material.</div><div>For example =
+if I have one protocol that signs arbitrary blobs and another that requires=
+ me to sign a challenge to prove I know a private key then even if they&#39=
+;re both perfectly secure on their own they are totally broken in compositi=
+on. <br></div><div>This separation of keys is one of the core reasons for t=
+he use of HKDFs, it lets us take some source randomness and use it to gener=
+ate independent keys.</div><div><br></div><div>Designing a channel binding =
+that explicitly suggests people use the same key material for different thi=
+ngs is bad practice and poor protocol design.</div><div>Pretty much every a=
+ttack is on the table if you have multiple protocols using the same keys, m=
+essage forgery, improper authentication, key leakage, etc.</div><div>The re=
+ason for separation of keys is to simply rule out this entire class of vuln=
+erability.</div><div>If you don&#39;t separate the keys then whenever you m=
+ake any change to any protocol you have to consider its security in composi=
+tion with every other protocol, including ones that you don&#39;t know abou=
+t or that haven&#39;t been written yet.</div><div><br></div><div>Using diff=
+erent labels for different purposes shouldn&#39;t require anything complica=
+ted, as it&#39;s just changing the input literals to the API call.</div><di=
+v>You just need to use different strings based on the configuration. <br></=
+div><div>If keeping a counter of the number of calls to the API is really h=
+ard it might be easier to just pick a big enough random number to make coll=
+isions sufficiently unlikely.<br></div><div><br></div><div>Using the second=
+ approach lets you achieve a higher level of security, but is perhaps overk=
+ill if you don&#39;t include attackers that can break TLS / steal certifica=
+tes in your threat model.<br></div><div>I totally accept that passing state=
+ between layers can be tricky, but if you need the security then I think th=
+e correct solution is to design the API carefully, rather than to implement=
+ something insecurely.</div><div>As it so happens implementing my second su=
+ggestion specifically doesn&#39;t require any access to TLS internals. <br>=
+</div><div>The authentication session needs to make two calls to the `Expor=
+ter` API but doesn&#39;t require anything more of the TLS connection.</div>=
+<div><br></div><div>Regards,</div><div><br></div><div>Jonathan<br></div><di=
+v><br></div><div><br></div><div><br></div><div><br></div><div> <br></div></=
+div><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On=
+ Tue, 26 Oct 2021 at 20:58, Ruslan N. Marchenko &lt;<a href=3D"mailto:ruffe=
+rson@gmail.com">rufferson@gmail.com</a>&gt; wrote:<br></div><blockquote cla=
+ss=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid =
+rgb(204,204,204);padding-left:1ex">Hi Jonathan,<br>
+<br>
+Am Dienstag, dem 26.10.2021 um 17:32 +0100 schrieb Jonathan Hoyland:<br>
+&gt; Hi Sam, all,<br>
+&gt; <br>
+&gt; I&#39;d like to again raise the issues I pointed out in<br>
+&gt; <a href=3D"https://mailarchive.ietf.org/arch/msg/kitten/13pPj4E3-gYwpb=
+u2K844uI1BPoU/" rel=3D"noreferrer" target=3D"_blank">https://mailarchive.ie=
+tf.org/arch/msg/kitten/13pPj4E3-gYwpbu2K844uI1BPoU/</a><br>
+&gt; .<br>
+&gt; This draft hasn&#39;t received enough security analysis, and further, =
+I<br>
+&gt; pointed out a specific security issue that remains unaddressed.<br>
+&gt; <br>
+&gt; Using the same label for different protocols produces trivial<br>
+&gt; collisions, and thus it is perfectly possible that a message meant for=
+<br>
+&gt; GSS-API is identical in both form and key to a message for SCRAM, and<=
+br>
+&gt; thus there is strong potential for confusion.<br>
+&gt; I&#39;m not familiar with either of these protocols, so maybe they hav=
+e<br>
+&gt; internal reasons why this example doesn&#39;t work, but that misses th=
+e<br>
+&gt; much larger and more significant point. <br>
+&gt; Any future protocol that uses the same label will potentially be<br>
+&gt; confusable, and further updates to GSS-API now must ensure that they<b=
+r>
+&gt; don&#39;t form valid SCRAM messages, and vice versa.<br>
+&gt; <br>
+&gt; There isn&#39;t even a one-to-one relationship between GSS-API / SCRAM=
+<br>
+&gt; runs. This channel binding design doesn&#39;t protect against messages=
+<br>
+&gt; being swapped between two GSS-API runs on a single TLS connection.<br>
+&gt; Again, whether that is a specific problem for GSS-API is totally<br>
+&gt; irrelevant.<br>
+&gt; Another protocol that uses this draft may well be vulnerable, and thus=
+<br>
+&gt; this is just leaving a huge security landmine in TLS channel bindings.=
+ <br>
+&gt; <br>
+&gt; At an absolute minimum this draft should include &quot;A TLS session u=
+sing<br>
+&gt; this RFC to produce a binding for any purpose MUST NOT generate more<b=
+r>
+&gt; than one per session. If a second exporter using this protocol is<br>
+&gt; required the TLS session MUST be rekeyed.&quot;<br>
+&gt; <br>
+Can you please elaborate a bit more on this particular attack vector?<br>
+What exactly information it may leak/compromise and how?<br>
+<br>
+The reason I&#39;m asking is that application is the one glueing together<b=
+r>
+TLS and authentication sessions, however application does not always<br>
+have access to internals of either one(tls), or another(auth) or even<br>
+both. Therefore asking application to transfer context between<br>
+authentication and transport APIs may not always be feasible or even<br>
+possible.<br>
+<br>
+Regards,<br>
+Ruslan<br>
+<br>
+</blockquote></div>
+
+--0000000000001fd81f05cf588e21--
+

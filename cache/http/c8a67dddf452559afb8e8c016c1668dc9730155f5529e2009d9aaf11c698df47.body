@@ -1,0 +1,302 @@
+Return-Path: <mellon@fugue.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 73F9D13F3D2
+ for <tls@ietfa.amsl.com>; Tue, 24 Oct 2017 12:31:23 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.599
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.599 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_LOW=-0.7, SPF_PASS=-0.001,
+ URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=fugue-com.20150623.gappssmtp.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id JzKwvnKnfyiy for <tls@ietfa.amsl.com>;
+ Tue, 24 Oct 2017 12:31:21 -0700 (PDT)
+Received: from mail-qk0-x229.google.com (mail-qk0-x229.google.com
+ [IPv6:2607:f8b0:400d:c09::229])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id F045913B482
+ for <tls@ietf.org>; Tue, 24 Oct 2017 12:31:20 -0700 (PDT)
+Received: by mail-qk0-x229.google.com with SMTP id y23so27722567qkb.10
+ for <tls@ietf.org>; Tue, 24 Oct 2017 12:31:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=fugue-com.20150623.gappssmtp.com; s=20150623;
+ h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+ :references; bh=oTbCcN3/lhaPQRwidrA+TCQhD0FMSYThJv+U6ANLg5c=;
+ b=dsSy1BQhQpmpPkcRKjEGGlaEQYLDRBrRVxlFCVLTtn1odvItBb/NPk93SEWXxiBj12
+ 8LRKzBmyPm/iQedJTomZY/X7mXn0dyjDIJL0e996Jav5LXeA+hiJ7StYBIPeo38koLyv
+ KP1IFM04Xylpos9HsnyHhw3FswAja9RHYBsybYeNGSCpjCmut2nfQ8RbYg50YxR+SM/V
+ 3GW8ZiufSLmcIbkzBxpKwD89m9gT4DuUA/tPH1DNKQNAlewctJea955A+OOe71LR3EGt
+ Sx6eFpN8dKQ12kwo48L/XXdDJRDfGQw2ZLh2mvSo7L1eilrhpFnNk75KFqAWMSwf331S
+ hYEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:message-id:mime-version:subject:date
+ :in-reply-to:cc:to:references;
+ bh=oTbCcN3/lhaPQRwidrA+TCQhD0FMSYThJv+U6ANLg5c=;
+ b=SHHlcdzXPt/+U7RxOYaeju53JrtRH6ZvLR5HZmazBVvM/HeTmWIfJ9T6P/R1y8RCPn
+ z8BtjXbUTJVwNDrHXH363uX5qAU6lc1UF+7lzb+JpbxsvELQOPq8kYA+psG+3iF2D4XF
+ 4EJHDepVa7JcsBkGTpWXCJujGpF77yymUtvmkDc/7x4y9avEXbFCIBdEUwTMApXvN+4x
+ xH5ySR79vgAS/mOYqOZPRxrnmwX8dapc/G9Ss/JmBjLnYlXUjVmsdpGVz3ywYoZMgM88
+ Ix+6D2pWciXB3Jxr4UaK8i0V2CK2gNkPXz3tl+JL8Q278twDOIrMiYsqp4TY/OapfKGY
+ CM1Q==
+X-Gm-Message-State: AMCzsaXDKEvrGKHS4hftQO1W/EfzCTrbKJDphEiSPV7bdZBXdD7g9faK
+ I0SEkOWp20P1Tdq6+NAIOm+uYA==
+X-Google-Smtp-Source: ABhQp+SqQvX84wWidLaI0P6cDdqfozTlGlZ28IWA5vvEElJ+QDNnqxfShJLLfTcExAlrZyRyTFAJlg==
+X-Received: by 10.55.79.129 with SMTP id d123mr25887108qkb.247.1508873479959; 
+ Tue, 24 Oct 2017 12:31:19 -0700 (PDT)
+Received: from cavall.lan (c-24-60-163-103.hsd1.ma.comcast.net.
+ [24.60.163.103])
+ by smtp.gmail.com with ESMTPSA id s6sm734366qtg.34.2017.10.24.12.31.18
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Tue, 24 Oct 2017 12:31:18 -0700 (PDT)
+From: Ted Lemon <mellon@fugue.com>
+Message-Id: <B8045478-E301-4DC0-9CFE-379CD3BE3E3F@fugue.com>
+Content-Type: multipart/alternative;
+ boundary="Apple-Mail=_54A50D4F-1463-4BA7-88A9-C37F4D6CE16A"
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Date: Tue, 24 Oct 2017 15:31:17 -0400
+In-Reply-To: <CAOgPGoAHPq2oAmU46_Wi31pDXEY7u4yPHoT1jSrRaibEpX15yQ@mail.gmail.com>
+Cc: "tls@ietf.org" <tls@ietf.org>
+To: Joseph Salowey <joe@salowey.net>
+References: <7E6C8F1F-D341-456B-9A48-79FA7FEC0BC1@gmail.com>
+ <2EE9CB23-AEDA-4155-BF24-EBC70CD302EF@fugue.com>
+ <CY4PR14MB136816569A2AE2A9760C6E08D7410@CY4PR14MB1368.namprd14.prod.outlook.com>
+ <557F43AC-A236-47BB-8C51-EDD37D09D5CB@fugue.com>
+ <CY4PR14MB13684F18AD75F4AE767CE35CD7460@CY4PR14MB1368.namprd14.prod.outlook.com>
+ <57CFBA2A-E878-47B0-8284-35369D4DA2DF@fugue.com>
+ <CY4PR14MB13680B6D5726D940C4C51B4BD7460@CY4PR14MB1368.namprd14.prod.outlook.com>
+ <0D75E20C-135D-45BC-ABE4-5C737B7491C9@akamai.com>
+ <CY4PR14MB1368378B42A6C46B27F5EF01D7460@CY4PR14MB1368.namprd14.prod.outlook.com>
+ <2AC16F9E-C745-43AD-82C1-D3953D51816C@fugue.com>
+ <CY4PR14MB1368895DD0D72286635E4E83D7460@CY4PR14MB1368.namprd14.prod.outlook.com>
+ <E37A3920-D7E3-4C94-89D0-6D3ECDEBCFF6@fugue.com>
+ <CAFJuDmMZMRqvhyLFMoUo_5KPaVu3d4o2ZEQ_PiAOxWe7CtGgYQ@mail.gmail.com>
+ <CAHOTMVJZpWfdCSrzYXhb5-gyzpjuNzoEMjM9DywqRu6Q8op_vw@mail.gmail.com>
+ <CY4PR14MB1368C52236964E69E1F124FBD7460@CY4PR14MB1368.namprd14.prod.outlook.com>
+ <17ae3ecd-ab72-59ac-c0fd-fb040dc67faa@akamai.com>
+ <CY4PR14MB1368BC5ED91EB52D702C7C76D7460@CY4PR14MB1368.namprd14.prod.outlook.com>
+ <403C3386-2B86-45B4-BB6B-B627CBE85B9D@akamai.com>
+ <CY4PR14MB1368E8323DCDE987099EAA3FD7470@CY4PR14MB1368.namprd14.prod.outlook.com>
+ <5D88D34E-E950-40E9-9483-D65D978D2758@akamai.com>
+ <CAOgPGoAHPq2oAmU46_Wi31pDXEY7u4yPHoT1jSrRaibEpX15yQ@mail.gmail.com>
+X-Mailer: Apple Mail (2.3273)
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/agXbBF8-OwWC_6mGCQVpS0fPOEI>
+Subject: Re: [TLS] Publication of draft-rhrd-tls-tls13-visibility-00
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Tue, 24 Oct 2017 19:31:23 -0000
+
+
+--Apple-Mail=_54A50D4F-1463-4BA7-88A9-C37F4D6CE16A
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=utf-8
+
+On Oct 24, 2017, at 12:49 PM, Joseph Salowey <joe@salowey.net> wrote:
+> First, we would like to clarify that this discussion isn't delaying =
+TLS 1.3. We've been holding final publication to resolve some middlebox =
+issues as described in a recent message from ekr
+> https://mailarchive.ietf.org/arch/msg/tls/yt4otPd5u_6fOzW02TEe2e-W5G0 =
+<https://mailarchive.ietf.org/arch/msg/tls/yt4otPd5u_6fOzW02TEe2e-W5G0> =
+and expect to discuss this in Singapore. No one and we mean no one =
+should delay submitting a PR related to TLS1.3 or any other WG draft =
+because of this discussion. You=E2=80=99ll note that others have =
+recently, you should follow suit.
+
+Perhaps not.   I don't feel qualified to judge.   But it's delaying =
+other work, because people who could be doing useful work in the IETF =
+are engaging on this topic instead.   No discussion is without cost, so =
+there is value in cutting off useless discussion, and it is very much =
+your job to do so.   E.g., this was about a half hour of my time, and I =
+have a bunch of other things to do before the draft submission cutoff =
+that I didn't do so that I could respond to this.
+
+> In Prague, we had a discussion of draft-green and there was neither =
+consensus to work in this area nor to decline to work in this area.  In =
+addition to the comments that we should simply decline all such work, =
+the authors received technical comments about their approach and =
+draft-rhrd seems to be an attempt to address some of those comments.  As =
+is normal IETF practice, we will be giving this topic agenda time in =
+Singapore to see if a consensus emerges one way or the other.
+
+The problem with this is that technical comments about a bad idea just =
+improve the bad idea.   The discussion we have been trying to have with =
+the proponents of this idea is the question of whether or not it is a =
+bad idea, not about the technical details.   I say this as someone who =
+has proposed lots of bad ideas in the past.   When I propose a bad idea, =
+and for example Dave Oran points out something obvious that I missed =
+(true story), my response to this is to reconsider what I've proposed to =
+do and to see if there is a better way to solve the problem, not to =
+continue pushing for the idea that has been shown to be a bad idea.
+
+Our objection here, which I third or fourth, is that this discussion has =
+not progressed that way.   This is clearly a bad idea.   Maybe you don't =
+agree.   But we've said why it's clearly a bad idea, and that is =
+something that could have been discussed.   But none of the proponents =
+of this idea have made any attempt to address the substantive objections =
+that have been raised about the idea itself.
+
+So it's not really fair to say that progress is being made.   Progress =
+is being made on refining the bad idea, but no progress has been made in =
+discussing ways to solve the problem that aren't a bad idea.   To be =
+clear, I and several others have proposed ways of solving this problem =
+that are not bad ideas.   These have been rejected on non-technical =
+grounds.
+
+> Absolutely no decisions will be made about adoption prior to that =
+time, nor prior to a formal call for adoption. In particular, decisions =
+will not be made based on the volume of messages to the mailing list.  =
+It is unnecessary and unproductive to repeat points you have already =
+made just because someone responds to you. You will not be missing out =
+on the chance to make your argument.
+
+This feels like the Overton window shifting due to a false equivalence.  =
+ The issue here is not that we feel that we will miss out on the chance =
+to make our arguments.   It's that we've been making them, and they've =
+been explicitly ignored.
+
+> Finally, we would like to remind WG members to keep their messages =
+professional and civil. We have noted a number of recent messages that =
+do not conform to those standards and we will be reaching out to people =
+personally to address those instances.
+
+I believe that I have been personally chastized by another participant =
+for responding in a way that was held by that participant to be =
+uncivil/unprofessional.   If you agree with that assessment, please =
+communicate with me to that effect privately (or publicly, if you =
+prefer, but this conversation has really gone on for too long).
+
+
+--Apple-Mail=_54A50D4F-1463-4BA7-88A9-C37F4D6CE16A
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html;
+	charset=utf-8
+
+<html><head><meta http-equiv=3D"Content-Type" content=3D"text/html =
+charset=3Dutf-8"></head><body style=3D"word-wrap: break-word; =
+-webkit-nbsp-mode: space; -webkit-line-break: after-white-space;" =
+class=3D"">On Oct 24, 2017, at 12:49 PM, Joseph Salowey &lt;<a =
+href=3D"mailto:joe@salowey.net" class=3D"">joe@salowey.net</a>&gt; =
+wrote:<br class=3D""><div><blockquote type=3D"cite" class=3D""><span =
+style=3D"font-family: arial, helvetica, sans-serif; font-size: 10pt; =
+white-space: pre-wrap;" class=3D"">First, we would like to clarify that =
+this discussion isn't delaying TLS 1.3. We've been holding final =
+publication to resolve some middlebox issues as described in a recent =
+message from ekr</span><br class=3D""><div class=3D""><div dir=3D"ltr" =
+class=3D""><span =
+id=3D"gmail-docs-internal-guid-4a434785-4f48-87b6-1c03-64c07644f490" =
+class=3D""><div style=3D"line-height: 1.656; margin-top: 0pt; =
+margin-bottom: 0pt;" class=3D""><font face=3D"arial, helvetica, =
+sans-serif" class=3D""><a =
+href=3D"https://mailarchive.ietf.org/arch/msg/tls/yt4otPd5u_6fOzW02TEe2e-W=
+5G0" style=3D"text-decoration-line:none" class=3D""><span =
+style=3D"font-size: 10pt; vertical-align: baseline; white-space: =
+pre-wrap;" =
+class=3D"">https://mailarchive.ietf.org/arch/msg/tls/yt4otPd5u_6fOzW02TEe2=
+e-W5G0</span></a><span style=3D"font-size: 10pt; vertical-align: =
+baseline; white-space: pre-wrap;" class=3D""> and expect to discuss this =
+in Singapore. No one and we mean no one should delay submitting a PR =
+related to TLS1.3 or any other WG draft because of this discussion. =
+You=E2=80=99ll note that others have recently, you should follow =
+suit.</span></font></div></span></div></div></blockquote><div><br =
+class=3D""></div>Perhaps not. &nbsp; I don't feel qualified to judge. =
+&nbsp; But it's delaying other work, because people who could be doing =
+useful work in the IETF are engaging on this topic instead. &nbsp; No =
+discussion is without cost, so there is value in cutting off useless =
+discussion, and it is very much your job to do so. &nbsp; E.g., this was =
+about a half hour of my time, and I have a bunch of other things to do =
+before the draft submission cutoff that I didn't do so that I could =
+respond to this.</div><div><br class=3D""><blockquote type=3D"cite" =
+class=3D""><div class=3D""><div dir=3D"ltr" class=3D""><span =
+id=3D"gmail-docs-internal-guid-4a434785-4f48-87b6-1c03-64c07644f490" =
+class=3D""><div style=3D"line-height: 1.656; margin-top: 0pt; =
+margin-bottom: 0pt;" class=3D""><span style=3D"font-size: 10pt; =
+vertical-align: baseline; white-space: pre-wrap;" class=3D""><font =
+face=3D"arial, helvetica, sans-serif" class=3D"">In Prague, we had a =
+discussion of draft-green and there was neither consensus to work in =
+this area nor to decline to work in this area.&nbsp; In addition to the =
+comments that we should simply decline all such work, the authors =
+received technical comments about their approach and draft-rhrd seems to =
+be an attempt to address some of those comments.&nbsp; As is normal IETF =
+practice, we will be giving this topic agenda time in Singapore to see =
+if a consensus emerges one way or the =
+other.</font></span></div></span></div></div></blockquote><div><br =
+class=3D""></div>The problem with this is that technical comments about =
+a bad idea just improve the bad idea. &nbsp; The discussion we have been =
+trying to have with the proponents of this idea is the question of =
+whether or not it is a bad idea, not about the technical details. &nbsp; =
+I say this as someone who has proposed lots of bad ideas in the past. =
+&nbsp; When I propose a bad idea, and for example Dave Oran points out =
+something obvious that I missed (true story), my response to this is to =
+reconsider what I've proposed to do and to see if there is a better way =
+to solve the problem, not to continue pushing for the idea that has been =
+shown to be a bad idea.</div><div><br class=3D""></div><div>Our =
+objection here, which I third or fourth, is that this discussion has not =
+progressed that way. &nbsp; This is clearly a bad idea. &nbsp; Maybe you =
+don't agree. &nbsp; But we've said <i class=3D"">why</i>&nbsp;it's =
+clearly a bad idea, and that is something that could have been =
+discussed. &nbsp; But none of the proponents of this idea have made any =
+attempt to address the substantive objections that have been raised =
+about the idea itself.</div><div><br class=3D""></div><div>So it's not =
+really fair to say that progress is being made. &nbsp; Progress is being =
+made on refining the bad idea, but no progress has been made in =
+discussing ways to solve the problem that aren't a bad idea. &nbsp; To =
+be clear, I and several others have <i class=3D"">proposed</i>&nbsp;ways =
+of solving this problem that are not bad ideas. &nbsp; These have been =
+rejected on non-technical grounds.</div><div><br class=3D""><blockquote =
+type=3D"cite" class=3D""><div class=3D""><div dir=3D"ltr" class=3D""><span=
+ id=3D"gmail-docs-internal-guid-4a434785-4f48-87b6-1c03-64c07644f490" =
+class=3D""><div style=3D"line-height: 1.656; margin-top: 0pt; =
+margin-bottom: 0pt;" class=3D""><span style=3D"font-size: 10pt; =
+vertical-align: baseline; white-space: pre-wrap;" class=3D""><font =
+face=3D"arial, helvetica, sans-serif" class=3D"">Absolutely no decisions =
+will be made about adoption prior to that time, nor prior to a formal =
+call for adoption. In particular, decisions will not be made based on =
+the volume of messages to the mailing list.&nbsp; It is unnecessary and =
+unproductive to repeat points you have already made just because someone =
+responds to you. You will not be missing out on the chance to make your =
+argument.</font></span></div></span></div></div></blockquote><div><br =
+class=3D""></div>This feels like the Overton window shifting due to a =
+false equivalence. &nbsp; The issue here is not that we feel that we =
+will miss out on the chance to make our arguments. &nbsp; It's that =
+we've been making them, and they've been explicitly =
+ignored.</div><div><br class=3D""><blockquote type=3D"cite" =
+class=3D""><div class=3D""><div dir=3D"ltr" class=3D""><span =
+id=3D"gmail-docs-internal-guid-4a434785-4f48-87b6-1c03-64c07644f490" =
+class=3D""><div style=3D"line-height: 1.656; margin-top: 0pt; =
+margin-bottom: 0pt;" class=3D""><span style=3D"font-size: 10pt; =
+vertical-align: baseline; white-space: pre-wrap;" class=3D""><font =
+face=3D"arial, helvetica, sans-serif" class=3D"">Finally, we would like =
+to remind WG members to keep their messages professional and civil. We =
+have noted a number of recent messages that do not conform to those =
+standards and we will be reaching out to people personally to address =
+those =
+instances.</font></span></div></span></div></div></blockquote></div><br =
+class=3D""><div class=3D"">I believe that I have been personally =
+chastized by another participant for responding in a way that was held =
+by that participant to be uncivil/unprofessional. &nbsp; If you agree =
+with that assessment, please communicate with me to that effect =
+privately (or publicly, if you prefer, but this conversation has really =
+gone on for too long).</div><div class=3D""><br =
+class=3D""></div></body></html>=
+
+--Apple-Mail=_54A50D4F-1463-4BA7-88A9-C37F4D6CE16A--
+

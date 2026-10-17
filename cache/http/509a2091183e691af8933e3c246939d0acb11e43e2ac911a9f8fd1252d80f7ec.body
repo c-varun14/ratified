@@ -1,0 +1,371 @@
+Return-Path: <ekr@rtfm.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 97D4B129438
+ for <tls@ietfa.amsl.com>; Mon, 24 Apr 2017 05:39:25 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.599
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.599 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_LOW=-0.7]
+ autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=rtfm-com.20150623.gappssmtp.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id UYQuRcBI5pjY for <tls@ietfa.amsl.com>;
+ Mon, 24 Apr 2017 05:39:23 -0700 (PDT)
+Received: from mail-yw0-x233.google.com (mail-yw0-x233.google.com
+ [IPv6:2607:f8b0:4002:c05::233])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 79F2512EC04
+ for <tls@ietf.org>; Mon, 24 Apr 2017 05:39:23 -0700 (PDT)
+Received: by mail-yw0-x233.google.com with SMTP id k11so31620207ywb.1
+ for <tls@ietf.org>; Mon, 24 Apr 2017 05:39:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=rtfm-com.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+ :cc; bh=sAzzISBmD5wxua4IyWkagCqdVTynVhqUUClhywbbdd4=;
+ b=iCYxdEOvAoUDhOS2sz5NSmOQPa09b/kF0zdIutCsrudprYTWOKSGmDq9JUGHSdFX02
+ fmCX6KR37R+Ht04Y/FRGeQ7I8kA91l4uCtzjvkCeIjT9T+rlhdrOLJ7UlMQ4PjSmhnWB
+ cotgVuLWK7NCIPRY3zjdpv8q2bAqGkn7kl8LXcrWrtCBCXznCCkPQEeFCeYUR5aZz7LW
+ NPn7jD63Z5RYcQob7UIUFcoFgL2yCHCMoyVuCVvM7TnWZeFLnah61cUGI+JtsLH1shqB
+ /3wyXCbmfCFN4Pfv2gq1Xi6wFeAQsKV66fFRAMFX4W8vKkzJHPBhGVnVn58tjqO8THq7
+ ZAqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+ :message-id:subject:to:cc;
+ bh=sAzzISBmD5wxua4IyWkagCqdVTynVhqUUClhywbbdd4=;
+ b=Uj+Idg1gjvE6GijNtpZVFEAXv6y0HkzBqeaJcmTf7JpwsdLL8NmGCrmsFfqJCwmKxi
+ GmiSHVf/Zra7yinzkjb4tOkDPYl2WaDI0uzt37Tkqz0FSrQ9kcv+RHOT7WCRmsPWD67N
+ 7ihxUMWTmZZDRT2qqkxYuvIQGGX4OAA4RKmV9UoLlBU5OIF77dhOEd3hBtvbZUv1/ZnM
+ BV6P+QOLLmyDRRi2soWmEBmH9zeETeHW1yaL9dCDqeYxnw9PKJlPQW35OOAPJeYQ2qJ0
+ s1/nmOZfa6IGFfQpzklCjNoz0FBTe+MBl95Il7Rw3GaeF3u/lQ5HjeIXrf62Weyj+lM+
+ SCyA==
+X-Gm-Message-State: AN3rC/7oqhZNoWhspmYrJpIhhRIJNnkkocJ3fsFS9ENLRCFKL0pQS1eR
+ lBidY3l+vy8drVFoVes+sjzuzMkugPblSzE=
+X-Received: by 10.13.203.73 with SMTP id n70mr4532461ywd.71.1493037562759;
+ Mon, 24 Apr 2017 05:39:22 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 10.129.113.7 with HTTP; Mon, 24 Apr 2017 05:38:42 -0700 (PDT)
+In-Reply-To: <1989fd9d-d76c-bc0c-dce0-de47a76fe94c@objectiveintegration.uk>
+References: <1989fd9d-d76c-bc0c-dce0-de47a76fe94c@objectiveintegration.uk>
+From: Eric Rescorla <ekr@rtfm.com>
+Date: Mon, 24 Apr 2017 05:38:42 -0700
+Message-ID: <CABcZeBODR4YG9k5D=vDeaFacuNi2tH1AfJVKHSgL-Fzt13QU_w@mail.gmail.com>
+To: Mark Dunn <mark.dunn@objectiveintegration.uk>
+Cc: "tls@ietf.org" <tls@ietf.org>
+Content-Type: multipart/alternative; boundary=001a114fd3d6909cc7054de8e5c9
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/Q4_NfJDLASMUtQFVQpTFajAXkAo>
+Subject: Re: [TLS] TLS: Cryptographic Computations
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Mon, 24 Apr 2017 12:39:26 -0000
+
+--001a114fd3d6909cc7054de8e5c9
+Content-Type: text/plain; charset=UTF-8
+
+Hi Mark,
+
+You might find it helpful to refer to:
+https://datatracker.ietf.org/doc/draft-ietf-tls-tls13-vectors/
+
+Which contains test vectors.
+
+
+On Mon, Apr 24, 2017 at 5:21 AM, Mark Dunn <
+mark.dunn@objectiveintegration.uk> wrote:
+
+> Sorry, I am having a dull moment trying to understand the Transcript-hash,
+> could someone help please?
+>
+> From *TLS 1.3: section 4* I have:
+>
+>    enum {
+>        client_hello(1),
+>        server_hello(2),
+>        new_session_ticket(4),
+>        end_of_early_data(5),
+>        hello_retry_request(6),
+>        encrypted_extensions(8),
+>        certificate(11),
+>        certificate_request(13),
+>        certificate_verify(15),
+>        finished(20),
+>        key_update(24),
+>        message_hash(254),
+>        (255)
+>    } HandshakeType;
+>
+>    struct {
+>        HandshakeType msg_type;    /* handshake type */
+>        uint24 length;             /* bytes in message */
+>        select (Handshake.msg_type) {
+>            case client_hello:          ClientHello;
+>            case server_hello:          ServerHello;
+>            case end_of_early_data:     EndOfEarlyData;
+>            case hello_retry_request:   HelloRetryRequest;
+>            case encrypted_extensions:  EncryptedExtensions;
+>            case certificate_request:   CertificateRequest;
+>            case certificate:           Certificate;
+>            case certificate_verify:    CertificateVerify;
+>            case finished:              Finished;
+>            case new_session_ticket:    NewSessionTicket;
+>            case key_update:            KeyUpdate;
+>        } body;
+>    } Handshake;
+>
+> and from *TLS 1.3: Section 4.1* I have:
+>
+>    uint16 ProtocolVersion;
+>    opaque Random[32];
+>
+>    uint8 CipherSuite[2];    /* Cryptographic suite selector */
+>
+>    struct {
+>        ProtocolVersion legacy_version = 0x0303;    /* TLS v1.2 */
+>        Random random;
+>        opaque legacy_session_id<0..32>;
+>        CipherSuite cipher_suites<2..2^16-2>;
+>        opaque legacy_compression_methods<1..2^8-1>;
+>        Extension extensions<8..2^16-1>;
+>    } ClientHello;
+>
+> So combining the two for a ClientHello gives something like
+>
+>    struct {
+>         HandshakeType msg_type  = 0x01;         /* handshake type
+> client_hello*/
+>         uint24 length           = 0x001234;     /* example of number of
+> bytes in message */
+>         struct {
+>             ProtocolVersion legacy_version = 0x0303;    /* TLS v1.2 */
+>             Random random;
+>             ...
+>         } ClientHello;
+>     }  ClientHelloHandshake
+>
+> In trying to understand the transcript hash, I read in *TLS **1.3: section
+> 7*
+>
+>     "Note that because the handshake transcript includes the random values
+> in the Hello messages, any given handshake will have different traffic
+> secrets"
+>
+> This gives me a warm fuzzy feeling but *TLS 1.3: section 7.1* states
+>
+>     "Messages are the concatenation of the indicated handshake messages,
+> including the handshake message type and length fields, but not including
+> record layer headers."
+>
+> I am guessing that "handshake message" is the ClientHelloHandshake I
+> created above and the "record layer headers" is the ClientHello,
+>
+
+I think this is where you are going wrong. Remember that in order to be
+serialized on the wire the handshake message is wrapped in a TLSPlaintext
+structure (and then potentially encrypted). It's those which are the record
+headers and which are excluded. What is included is what you are calling
+ClientHelloHandshake.
+
+-Ekr
+
+
+
+Does this mean that the transcript-hash just uses the
+> ClientHelloHandshake.msg_type and ClientHelloHandshake.length highlighted
+> below?
+>
+>    struct {
+> *HandshakeType msg_type = 0x01; /* handshake type client_hello*/ uint24
+> length = 0x001234; /* example of number of bytes in message */*
+>         struct {
+>             ProtocolVersion legacy_version = 0x0303;    /* TLS v1.2 */
+>             Random random;
+>             ...
+>         } ClientHello;
+>     }  ClientHelloHandshake
+>
+> If so, how does ClientHelloHandshake.ClientHello.random get included in
+> the handshake transcript?
+>
+
+
+
+-Ekr
+
+
+>
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+>
+
+--001a114fd3d6909cc7054de8e5c9
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">Hi Mark,<div><br></div><div>You might find it helpful to r=
+efer to:</div><div><a href=3D"https://datatracker.ietf.org/doc/draft-ietf-t=
+ls-tls13-vectors/">https://datatracker.ietf.org/doc/draft-ietf-tls-tls13-ve=
+ctors/</a><br></div><div><br></div><div>Which contains test vectors.</div><=
+div><br></div><div class=3D"gmail_extra"><br><div class=3D"gmail_quote">On =
+Mon, Apr 24, 2017 at 5:21 AM, Mark Dunn <span dir=3D"ltr">&lt;<a href=3D"ma=
+ilto:mark.dunn@objectiveintegration.uk" target=3D"_blank">mark.dunn@objecti=
+veintegration.uk</a>&gt;</span> wrote:<br><blockquote class=3D"gmail_quote"=
+ style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex">So=
+rry, I am having a dull moment trying to understand the Transcript-hash, co=
+uld someone help please?<br>
+<br>
+>From *TLS 1.3: section 4* I have:<br>
+<br>
+=C2=A0 =C2=A0enum {<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0client_hello(1),<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0server_hello(2),<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0new_session_ticket(4),<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0end_of_early_data(5),<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0hello_retry_request(6),<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0encrypted_extensions(8),<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0certificate(11),<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0certificate_request(13),<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0certificate_verify(15),<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0finished(20),<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0key_update(24),<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0message_hash(254),<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0(255)<br>
+=C2=A0 =C2=A0} HandshakeType;<br>
+<br>
+=C2=A0 =C2=A0struct {<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0HandshakeType msg_type;=C2=A0 =C2=A0 /* handshak=
+e type */<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0uint24 length;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0/* bytes in message */<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0select (Handshake.msg_type) {<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0case client_hello:=C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 ClientHello;<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0case server_hello:=C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 ServerHello;<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0case end_of_early_data:=C2=A0 =C2=
+=A0 =C2=A0EndOfEarlyData;<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0case hello_retry_request:=C2=A0 =
+=C2=A0HelloRetryRequest;<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0case encrypted_extensions:=C2=A0 E=
+ncryptedExtensions;<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0case certificate_request:=C2=A0 =
+=C2=A0CertificateRequest;<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0case certificate:=C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0Certificate;<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0case certificate_verify:=C2=A0 =C2=
+=A0 CertificateVerify;<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0case finished:=C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 Finished;<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0case new_session_ticket:=C2=A0 =C2=
+=A0 NewSessionTicket;<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0case key_update:=C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 KeyUpdate;<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0} body;<br>
+=C2=A0 =C2=A0} Handshake;<br>
+<br>
+and from *TLS 1.3: Section 4.1* I have:<br>
+<br>
+=C2=A0 =C2=A0uint16 ProtocolVersion;<br>
+=C2=A0 =C2=A0opaque Random[32];<br>
+<br>
+=C2=A0 =C2=A0uint8 CipherSuite[2];=C2=A0 =C2=A0 /* Cryptographic suite sele=
+ctor */<br>
+<br>
+=C2=A0 =C2=A0struct {<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0ProtocolVersion legacy_version =3D 0x0303;=C2=A0=
+ =C2=A0 /* TLS v1.2 */<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0Random random;<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0opaque legacy_session_id&lt;0..32&gt;;<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0CipherSuite cipher_suites&lt;2..2^16-2&gt;;<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0opaque legacy_compression_methods&lt;1..<wbr>2^8=
+-1&gt;;<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0Extension extensions&lt;8..2^16-1&gt;;<br>
+=C2=A0 =C2=A0} ClientHello;<br>
+<br>
+So combining the two for a ClientHello gives something like<br>
+<br>
+=C2=A0 =C2=A0struct {<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 HandshakeType msg_type=C2=A0 =3D 0x01;=C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0/* handshake type client_hello*/<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 uint24 length=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0=3D 0x001234;=C2=A0 =C2=A0 =C2=A0/* example of number of bytes in me=
+ssage */<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 struct {<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 ProtocolVersion legacy_version =
+=3D 0x0303;=C2=A0 =C2=A0 /* TLS v1.2 */<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Random random;<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 ...<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 } ClientHello;<br>
+=C2=A0 =C2=A0 }=C2=A0 ClientHelloHandshake<br>
+<br>
+In trying to understand the transcript hash, I read in *TLS **1.3: section =
+7*<br>
+<br>
+=C2=A0 =C2=A0 &quot;Note that because the handshake transcript includes the=
+ random values in the Hello messages, any given handshake will have differe=
+nt traffic secrets&quot;<br>
+<br>
+This gives me a warm fuzzy feeling but *TLS 1.3: section 7.1* states<br>
+<br>
+=C2=A0 =C2=A0 &quot;Messages are the concatenation of the indicated handsha=
+ke messages, including the handshake message type and length fields, but no=
+t including record layer headers.&quot;<br>
+<br>
+I am guessing that &quot;handshake message&quot; is the ClientHelloHandshak=
+e I created above and the &quot;record layer headers&quot; is the ClientHel=
+lo,<br></blockquote><div><br></div><div>I think this is where you are going=
+ wrong. Remember that in order to be serialized on the wire the handshake m=
+essage is wrapped in a TLSPlaintext structure (and then potentially encrypt=
+ed). It&#39;s those which are the record headers and which are excluded. Wh=
+at is included is what you are calling ClientHelloHandshake.</div><div><br>=
+</div><div>-Ekr</div><div><br></div><div><br></div><div><br></div><blockquo=
+te class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc so=
+lid;padding-left:1ex">
+Does this mean that the transcript-hash just uses the ClientHelloHandshake.=
+msg_type and ClientHelloHandshake.length highlighted below?<br>
+<br>
+=C2=A0 =C2=A0struct {<br>
+*HandshakeType msg_type =3D 0x01; /* handshake type client_hello*/ uint24 l=
+ength =3D 0x001234; /* example of number of bytes in message */*<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 struct {<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 ProtocolVersion legacy_version =
+=3D 0x0303;=C2=A0 =C2=A0 /* TLS v1.2 */<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Random random;<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 ...<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 } ClientHello;<br>
+=C2=A0 =C2=A0 }=C2=A0 ClientHelloHandshake<br>
+<br>
+If so, how does ClientHelloHandshake.ClientHel<wbr>lo.random get included i=
+n the handshake transcript?<br></blockquote><div><br></div><div><br></div><=
+div><br></div><div>-Ekr</div><div><br></div><blockquote class=3D"gmail_quot=
+e" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex">
+<br>
+<br>
+______________________________<wbr>_________________<br>
+TLS mailing list<br>
+<a href=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.org</a><br>
+<a href=3D"https://www.ietf.org/mailman/listinfo/tls" rel=3D"noreferrer" ta=
+rget=3D"_blank">https://www.ietf.org/mailman/l<wbr>istinfo/tls</a><br>
+</blockquote></div><br></div></div>
+
+--001a114fd3d6909cc7054de8e5c9--
+

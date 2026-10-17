@@ -1,0 +1,219 @@
+Return-Path: <mt@lowentropy.net>
+X-Original-To: tls@mail2.ietf.org
+Delivered-To: tls@mail2.ietf.org
+Received: from localhost (localhost [127.0.0.1])
+	by mail2.ietf.org (Postfix) with ESMTP id D694BC256376
+	for <tls@mail2.ietf.org>; Mon,  2 Mar 2026 09:36:45 -0800 (PST)
+X-Virus-Scanned: amavisd-new at ietf.org
+X-Spam-Flag: NO
+X-Spam-Score: -2.799
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.799 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+	DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, RCVD_IN_DNSWL_LOW=-0.7,
+	RCVD_IN_VALIDITY_CERTIFIED_BLOCKED=0.001,
+	RCVD_IN_VALIDITY_RPBL_BLOCKED=0.001, SPF_PASS=-0.001]
+	autolearn=ham autolearn_force=no
+Authentication-Results: mail2.ietf.org (amavisd-new); dkim=pass (2048-bit key)
+	header.d=lowentropy.net header.b="oWG7HaMo"; dkim=pass (2048-bit key)
+	header.d=messagingengine.com header.b="Q0tU7Bmk"
+Received: from mail2.ietf.org ([166.84.6.31])
+	by localhost (mail2.ietf.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id kWYe1b4AL-kO for <tls@mail2.ietf.org>;
+	Mon,  2 Mar 2026 09:36:44 -0800 (PST)
+Received: from fout-a7-smtp.messagingengine.com
+ (fout-a7-smtp.messagingengine.com [103.168.172.150])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail2.ietf.org (Postfix) with ESMTPS id B8797C255AC5
+	for <tls@ietf.org>; Mon,  2 Mar 2026 09:36:06 -0800 (PST)
+Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
+	by mailfout.phl.internal (Postfix) with ESMTP id 9F0D6EC0594;
+	Mon,  2 Mar 2026 12:36:00 -0500 (EST)
+Received: from phl-imap-15 ([10.202.2.104])
+  by phl-compute-04.internal (MEProxy); Mon, 02 Mar 2026 12:36:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lowentropy.net;
+	 h=cc:cc:content-transfer-encoding:content-type:content-type
+	:date:date:from:from:in-reply-to:in-reply-to:message-id
+	:mime-version:references:reply-to:subject:subject:to:to; s=fm2;
+	 t=1772472960; x=1772559360; bh=b8USR8lo+8eHwA6cd8XZTeP3bfN8YK94
+	+U2luLw9e8o=; b=oWG7HaMohyQZlcnLlKtOhkIRZGfQbv1SLbMKtNl3mwZdyigS
+	CgLPI+A2xHBSdjjqsy+sFVlT0u52MJ1/0gcxlSoVYfI9hWEznHZWNHHIQayMO/RW
+	d4KPamHn5Pt99F52WZ5pdKMfH+6rENULSXZ5C6UgVt0yIQ1eot+U5Oa6/7PqgWYe
+	bi1urNKrMOaiwVKVoVYSA7wAGZzF8Z7A5T4eqfybqeAZzul2GrL8MkbYfJgqNGGT
+	PT5P2mQqzLHM3zlxLb63IXo8xCqn0pAnniyRZnwv7sRW8/GGKrfO76Eu/9Ets9ke
+	+vnLS+qsVJ7TK9Gci54tC7LbcvW8TP8mLtZuvg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1772472960; x=
+	1772559360; bh=b8USR8lo+8eHwA6cd8XZTeP3bfN8YK94+U2luLw9e8o=; b=Q
+	0tU7BmkjUcMS+EHKoL29xQeVIv/hzSdKgqkQAb272EXj9DCtz9Ki73XfbOQXEBvf
+	/vHx3s2+QL5TPbbnC1zcptH1l/apL74uktYawpVVWPcK3NZgxlmLphsnYU91WVlU
+	RjF4EOeEiCgQgHAto3c3agsf3klQKYJl783AbnqDOdn4xFJqmYMJaVdyYzMjIN9B
+	IfpRPMNsZL/U/YaCTDnh7hKZZg5Gc3NjfvMM6uDw5GacISLByRLO6t173JPxsmqv
+	3vHg3s4iwhglSQ7TcZggwoJPIgF9BwVEfRbUHq4f0pXzMzmtNmqfmdNj/viczxWD
+	H//a7h7Hp3IH2wxp+6ZbA==
+X-ME-Sender: <xms:gMqlaYvRJ83B5l4zyiWQL58B0mQL5znwaxWydWkms1GcAyxybA7_TA>
+    <xme:gMqlaQTu6bEWeqqNkslJiYs-aTHu639DcupJX8FyTGwXFve5hQm78GW-ttwPZFKye
+    QoDehj2B4WNzlHF80KmJpPYhJS4Tt1kKfK4tqZgFNc1UzcJXpLcOz8>
+X-ME-Proxy-Cause: 
+ gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddvheekfedtucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurhepofggfffhvfevkfgjfhfutgfgsehtqhertdertdejnecuhfhrohhmpedfofgrrhht
+    ihhnucfvhhhomhhsohhnfdcuoehmtheslhhofigvnhhtrhhophihrdhnvghtqeenucggtf
+    frrghtthgvrhhnpefhhfeggeeitdekkedugfeltdffvdevvdelgfeujeduveejudfhkedt
+    ueelieehkeenucffohhmrghinhepghhithhhuhgsrdgtohhmpdhrfhgtqdgvughithhorh
+    drohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhm
+    pehmtheslhhofigvnhhtrhhophihrdhnvghtpdhnsggprhgtphhtthhopeekpdhmohguvg
+    epshhmthhpohhuthdprhgtphhtthhopehprghulhdrfihouhhtvghrshesrghivhgvnhdr
+    ihhopdhrtghpthhtohepuggvsggtohholhgvhidusehgmhgrihhlrdgtohhmpdhrtghpth
+    htohepughurhhumhgtrhhushhtuhhluhhmsehgmhgrihhlrdgtohhmpdhrtghpthhtohep
+    thhlshesihgvthhfrdhorhhgpdhrtghpthhtoheprhhftgdqvgguihhtohhrsehrfhgtqd
+    gvughithhorhdrohhrghdprhgtphhtthhopegvkhhrsehrthhfmhdrtghomhdprhgtphht
+    thhopehjohgvsehsrghlohifvgihrdhnvghtpdhrtghpthhtohepshgvrghnodhivghtfh
+    esshhnfehrugdrtghomh
+X-ME-Proxy: <xmx:gMqlaWT5IkQulcrq2zYBC3J2--XefiMde9BQykG_bxRSRe2WdYlweQ>
+    <xmx:gMqlaa0CjZ34o8tduLjz27MzX2ccmfb8GydNH9hpTBc7niMh_Bmmdw>
+    <xmx:gMqlaaBPetayKVc5n9IGeqpsqL-WS64hIKTp7GEb78H_FoErXzhpWg>
+    <xmx:gMqlaejEBtK6CI05-RWz3nL6Uip6DupKpC_kCU-ZAgtoQCCtmpzFHA>
+    <xmx:gMqlaRXxUuj2crAhnzuK-jmODvRJoUEVHOo748J3QB2RrpsB0VH_u-Bq>
+Feedback-ID: ic129442d:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id 09F29780070; Mon,  2 Mar 2026 12:36:00 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+MIME-Version: 1.0
+X-ThreadId: A51J78NLQcWJ
+Date: Mon, 02 Mar 2026 17:35:38 +0000
+From: "Martin Thomson" <mt@lowentropy.net>
+To: rfc-editor <rfc-editor@rfc-editor.org>, "Eric Rescorla" <ekr@rtfm.com>,
+ "Deb Cooley" <debcooley1@gmail.com>, "Paul Wouters" <paul.wouters@aiven.io>,
+ "Joseph Salowey" <joe@salowey.net>, sean+ietf@sn3rd.com,
+ "Deirdre Connolly" <durumcrustulum@gmail.com>
+Message-Id: <3e2daf63-16e1-4824-b742-aafc7608dcaf@app.fastmail.com>
+In-Reply-To: <20260302161747.5FDD7C000CC4@rfcpa.rfc-editor.org>
+References: <20260302161747.5FDD7C000CC4@rfcpa.rfc-editor.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Message-ID-Hash: DABSTXFHXIA5G32JQMAVX25TQK7ZHIAE
+X-Message-ID-Hash: DABSTXFHXIA5G32JQMAVX25TQK7ZHIAE
+X-MailFrom: mt@lowentropy.net
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+CC: tls@ietf.org
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Re=3A_=5BTechnical_Errata_Reported=5D_RFC8446_=288794=29?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/w81GRHw4Cj_kefRszvqJhnKFFXg>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+This seems right.  I've opened https://github.com/tlswg/tls13-spec/issue=
+s/1409 for the -bis.
+
+On Mon, Mar 2, 2026, at 16:17, RFC Errata System wrote:
+> The following errata report has been submitted for RFC8446,
+> "The Transport Layer Security (TLS) Protocol Version 1.3".
+>
+> --------------------------------------
+> You may review the report below and at:
+> https://www.rfc-editor.org/errata/eid8794
+>
+> --------------------------------------
+> Type: Technical
+> Reported by: Lo=C3=AFc Ferreira <loic.ferreira@orange.com>
+>
+> Section: 2.3
+>
+> Original Text
+> -------------
+>
+>          Client                                               Server
+>
+>          ClientHello
+>          + early_data
+>          + key_share*
+>          + psk_key_exchange_modes
+>          + pre_shared_key
+>          (Application Data*)     -------->
+>                                                          ServerHello
+>                                                     + pre_shared_key
+>                                                         + key_share*
+>                                                {EncryptedExtensions}
+>                                                        + early_data*
+>                                                           {Finished}
+>                                  <--------       [Application Data*]
+>          (EndOfEarlyData)
+>          {Finished}              -------->
+>          [Application Data]      <------->        [Application Data]
+>
+> Corrected Text
+> --------------
+>
+>          Client                                               Server
+>
+>          ClientHello
+>          + early_data
+>          + key_share*
+>          + psk_key_exchange_modes
+>          + pre_shared_key
+>          (Application Data*)     -------->
+>                                                          ServerHello
+>                                                     + pre_shared_key
+>                                                         + key_share*
+>                                                {EncryptedExtensions}
+>                                                        + early_data*
+>                                                           {Finished}
+>                                  <--------       [Application Data*]
+>          (EndOfEarlyData*)
+>          {Finished}              -------->
+>          [Application Data]      <------->        [Application Data]
+>
+> Notes
+> -----
+> Section 4.5 reads: "If the server sent an "early_data" extension in=20
+> EncryptedExtensions, the client MUST send an EndOfEarlyData message=20
+> after receiving the server Finished.  If the server does not send an=20
+> "early_data" extension in EncryptedExtensions, then the client MUST NO=
+T=20
+> send an EndOfEarlyData message."
+> Therefore, EndOfEarlyData is sent only if the server sends an=20
+> "early_data" extension and should be marked as situation-dependent.
+>
+> Instructions:
+> -------------
+> This erratum is currently posted as "Reported". (If it is spam, it=20
+> will be removed shortly by the RFC Production Center.) Please
+> use "Reply All" to discuss whether it should be verified or
+> rejected. When a decision is reached, the verifying party =20
+> will log in to change the status and edit the report, if necessary.
+>
+> --------------------------------------
+> RFC8446 (draft-ietf-tls-tls13-28)
+> --------------------------------------
+> Title               : The Transport Layer Security (TLS) Protocol Vers=
+ion 1.3
+> Publication Date    : August 2018
+> Author(s)           : E. Rescorla
+> Category            : PROPOSED STANDARD
+> Source              : Transport Layer Security
+> Stream              : IETF
+> Verifying Party     : IESG
+>
+> _______________________________________________
+> TLS mailing list -- tls@ietf.org
+> To unsubscribe send an email to tls-leave@ietf.org
+

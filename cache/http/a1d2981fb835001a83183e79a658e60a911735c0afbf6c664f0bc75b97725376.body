@@ -1,0 +1,121 @@
+Return-Path: <olivier.levillain@ssi.gouv.fr>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 60B8912949B
+ for <tls@ietfa.amsl.com>; Mon, 27 Mar 2017 00:47:38 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.901
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.901 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, RCVD_IN_DNSWL_NONE=-0.0001,
+ RP_MATCHES_RCVD=-0.001, SPF_PASS=-0.001, URIBL_BLOCKED=0.001]
+ autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id tOLPQYu0ombL for <tls@ietfa.amsl.com>;
+ Mon, 27 Mar 2017 00:47:34 -0700 (PDT)
+Received: from smtp.ssi.gouv.fr (smtp.ssi.gouv.fr [86.65.182.16])
+ (using TLSv1 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id C5D351293DA
+ for <tls@ietf.org>; Mon, 27 Mar 2017 00:47:34 -0700 (PDT)
+Received: from smtp-switch.internet.local (smtp-switch [192.168.3.9])
+ by smtp.ssi.gouv.fr (Postfix) with ESMTP id D074590B8E2
+ for <tls@ietf.org>; Mon, 27 Mar 2017 09:46:32 +0200 (CEST)
+To: tls@ietf.org
+References: <025D3ABD-199F-421A-9265-6F960135A3B7@sn3rd.com>
+From: Olivier Levillain <olivier.levillain@ssi.gouv.fr>
+X-Enigmail-Draft-Status: N1110
+Message-ID: <58D8C395.8090707@ssi.gouv.fr>
+Date: Mon, 27 Mar 2017 09:47:33 +0200
+User-Agent: 
+MIME-Version: 1.0
+In-Reply-To: <025D3ABD-199F-421A-9265-6F960135A3B7@sn3rd.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/GI1zy46PSWbeOObuzHEZPlIhQuo>
+Subject: Re: [TLS] WGLC: draft-ietf-tls-tls13-19
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Mon, 27 Mar 2017 07:47:38 -0000
+
+Hi list,
+
+I think there is at least another issue that still needs to be
+discussed: how to properly handle post-handshake handshake messages.
+
+The subject has also been raised several times on GitHub
+(https://github.com/tlswg/tls13-spec/pull/680,
+https://github.com/tlswg/tls13-spec/pull/676,
+https://github.com/tlswg/tls13-spec/issues/572) and on the mailing list
+(https://www.ietf.org/mail-archive/web/tls/current/msg22038.html).
+
+Bottom line is:
+- handling client late authentication requires a lot of state in the
+client stack
+- currently, handling client late authentication is mandatory
+
+
+For a longer version, post-handshake records of type Handshake can be of
+three kinds:
+- NewSessionTicket (sent by the server, and that can safely be ignored
+entirely by clients)
+- KeyUpdate (sent by either party, requiring only a bit of state)
+- CertificateRequest (sent by the server, an arbirary number of times,
+and requring the client to keep some state *for each request*)
+
+Of course, this last item makes the post-handshake client state machine
+explode, whereas the first two items can ben implemented in a trivial
+way. The client can not indeed ignore all this state to answer, since it
+is supposed to answer at least with a Finished message, which will cover
+the CertificateRequest message. Moreover, since each of these Finished
+messages must cover the initial handshake and the current
+CertificateRequest message, it requires a forkable hash implementation,
+which requires more memory.
+
+A client _could_ ignore CertificateRequest and never answer them, but
+this would not really be conformant, and it would be problematic as soon
+as the parties need to send Handshake messages.
+
+
+Thus, I believe the current text is inadequate. Different solutions are
+possible :
+- remove client late authentication entirely (this would have my
+preference, since it introduces other issues*)
+- make client late authentication optional (compatible clients would
+signal it as an extension)
+- rethink the client late authentication, as was done with KeyUpdate,
+to limit the state required on the client side.
+
+Best regards,
+Olivier Levillain
+
+
+* One of these issues is that requiring Client Authentication upon an
+applicative request may lead a client to have to write records on a
+SSL_read call :
+1) client and server complete the handshake
+2) client sends a request (SSL_write)
+3) server reads the request, decides an authentication is required, and
+sends a CR
+4) client reads the response (SSL_read), but has first to comply with
+the CR (that is write packets) to get the response
+
+This violation of the network layers can be dealt with (and has been,
+since Apache allows eactly this kind of flow) but it introduces
+complexity in the code, which I belive we should remove altogether : an
+application request should not trigger an SSL authentication request.
+What was done with KeyUpdate sanitized a similar situation.
+

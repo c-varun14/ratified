@@ -1,0 +1,473 @@
+Return-Path: <do_not_reply@mnot.net>
+X-Original-To: tls@mail2.ietf.org
+Delivered-To: tls@mail2.ietf.org
+Received: from localhost (localhost [127.0.0.1])
+	by mail2.ietf.org (Postfix) with ESMTP id A084B100FE1E1
+	for <tls@mail2.ietf.org>; Sun, 14 Jun 2026 03:38:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1781433500; bh=Jj2LB8fUumhEfG8gdEbae+lqndvGABaP460e6QVtITs=;
+	h=From:To:Subject:Date;
+	b=AtxkTsJido5IElziBZR0I/L6A58fuJ47RkeItxbvhdkEEO3DFl2NKWy8IBu9T/69d
+	 QfYtnhhE7Owtugwv0SjcUJQrK6/HVR57wI6MLiUt9EHHYRaZTNrc/xRjbOYRpuN221
+	 1jFbtb8c3+HmajGg+724eJh6jDFgIJIhlO/eeUEY=
+X-Virus-Scanned: amavisd-new at ietf.org
+X-Spam-Flag: NO
+X-Spam-Score: -2.397
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.397 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIM_INVALID=0.1, DKIM_SIGNED=0.1,
+	HTML_MESSAGE=0.001, MSGID_FROM_MTA_HEADER=0.001,
+	RCVD_IN_DNSWL_LOW=-0.7, RCVD_IN_VALIDITY_CERTIFIED_BLOCKED=0.001,
+	RCVD_IN_VALIDITY_RPBL_BLOCKED=0.001, SPF_PASS=-0.001]
+	autolearn=ham autolearn_force=no
+Authentication-Results: mail2.ietf.org (amavisd-new); dkim=fail (2048-bit key)
+	reason="fail (message has been altered)" header.d=mnot.net
+	header.b="jZdpbTiX"; dkim=fail (2048-bit key)
+	reason="fail (message has been altered)" header.d=messagingengine.com
+	header.b="I/81/OhZ"
+Received: from mail2.ietf.org ([166.84.6.31])
+	by localhost (mail2.ietf.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id Ih3-g9GcPyqT for <tls@mail2.ietf.org>;
+	Sun, 14 Jun 2026 03:38:20 -0700 (PDT)
+Received: from fhigh-a3-smtp.messagingengine.com
+ (fhigh-a3-smtp.messagingengine.com [103.168.172.154])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail2.ietf.org (Postfix) with ESMTPS id 58751100FE044
+	for <tls@ietf.org>; Sun, 14 Jun 2026 03:38:13 -0700 (PDT)
+Received: from phl-compute-10.internal (phl-compute-10.internal [10.202.2.50])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id B5A2614000C1
+	for <tls@ietf.org>; Sun, 14 Jun 2026 06:38:07 -0400 (EDT)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-10.internal (MEProxy); Sun, 14 Jun 2026 06:38:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mnot.net; h=cc
+	:content-type:content-type:date:from:from:in-reply-to:message-id
+	:mime-version:reply-to:subject:subject:to:to; s=fm2; t=
+	1781433487; x=1781519887; bh=6clMdZPyo3ju0xOzd16tzDlE9szJGeAw/7N
+	Bt9EHki0=; b=jZdpbTiXdhzyq1fHA0ufcCGopB/pUqY8aaFzuwqBbvTC6dafKgA
+	wVVA0ptTQ/EuXVH4Vmsk2JD20Q0EoqZ02QWb27J0ngtqk4jSmG0txU7Cy/vQcobX
+	PdCqU3kVv8wi4XIZqg/xqK1NVK8YxqPgv/pQUdAhZAVLvcwniFhXKq1sfHUMNAQG
+	9LHFIQLqnUxZdoY/OOE+iYw9pY5T8qgUlo/qDScNxwjTddUajnz/0XLu/fmtr3v+
+	/ml2RH3JgWgj8VH8/cL/2i0khxKnqWvsVjKglibCvjfnM1DsS9YNoBTGb4RPW6iG
+	cOmfA7Sh0nRC6biY15miwiXBiFtY/l6aDcw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-type:content-type:date
+	:feedback-id:feedback-id:from:from:in-reply-to:message-id
+	:mime-version:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1781433487; x=
+	1781519887; bh=6clMdZPyo3ju0xOzd16tzDlE9szJGeAw/7NBt9EHki0=; b=I
+	/81/OhZeysc0cdfHfoxM8UCOUP+yvCbErE74JyL+JPc2//pUpnPEpSKTWgBwm5IA
+	eTlmvusjvEH/252qys9FMpW3BqZQ8DZgSn0kkT0mucuaHVjx6MS2EkXjO65dd8rL
+	IrilPICrE1KkY225RRR3YVlmRLpJJ9KKX9of7PWxhgSxBHyjmfSDGkiWUmTgq1rz
+	qS/lLgbbAFK5s03L2h7r1jbRdtzHUgMTksMjEMfZZ7POYe9C6R6+h+7DTYSmkNX8
+	aoqXcJMsU4vk5lXOq9r6nvu8YNjjr9LlTVGynW+0QcsNOYa3/Cu9kanigLHd8sY+
+	4gJcdEILvA39BA3niR6IA==
+X-ME-Sender: <xms:j4QuapefTaqZAfA6HoZz-PH8fz0LU-NC2TctYQCE6rVJR-q97PE-6g>
+    <xme:j4QuatEuQMR00Ui7cU7gWm_jryhjVyIfUzR1lmHoK4XDNOuEublQwlzKcAAxkgr1R
+    Bd-GqJx2By5cH99pGSbc9FgPuB_ctXSVq5issnDqbZa8soVBK-_vA>
+X-ME-Received: 
+ <xmr:j4QuatmBwKg5_dfeN479ISqo963FRIrbwX9EuKIA1GBwnccgC_R9Rm721M8dJjAwm5W97dmbCj4WYMKEO7bfUpKRneYx90kYsIDQHX_apme-2oOOcFQsgtBaHypSMK_y1BDFSr4>
+X-ME-Proxy-Cause: 
+ dmFkZTE/M+/Cy2f64ujqFS1stMHrCnjBJh/HrcfuVY4WOETQ8eC9qYKKo+1oATU5F7IzUL
+    QRtCfNawYcGY61vGJrZjqXKIWE9UowabcTwQ8g8yC4O3qqVhQCAXj/6uVhSq6xLshTql+I
+    8o9TNACx/jfT2RH20nIR1dBY1RRAN0Yo0ZqZOOEJas7nQ81vCYs3Yr5kRvAE28bMafdmSj
+    5DO6qLe8I11VHRgoj1Xn4wD8wGgvL58oQS8v1N1UIHgFlgdP4lg+EUWHtCMPhFzwtrPS4R
+    cS+piFIg6o7pllHEgN3FATqA/lEzi+rlstooevOgR/osGPCn+65uYL1ZkwC+oMq+w8t5ie
+    yfeG+e2+zeSyTlUTgxMq2xcL9Ffsnwq8nAiDu/y2Q0Ugfx0YbW6IBitsEjWeTVU1yjH/Wr
+    /O50rFXMQyPGWZHN4ntyueNsPeQduJ7AJNqNtg0OGS8I6SZzGA3qA62Xmbvijcl/abB8G1
+    fKiiqpcEh4HOW/vn7jM6BTsmkl8i/TbLWcJElf9A+1zOPNj2CfYUm3PEXtpT/huAJT5enG
+    UKWWU4mr+3ZOzj3iqTkm4tcEs8NAQpmCW+2zD/K3V7hTUSoW2BB0i0Rtug4jXVbV4dtrhm
+    lU/xsVS//9YYQ/fvqxz62CBEoHqJ63FAIJHBS477ucZi8+SeWQofh2kOVtnQ
+X-ME-Proxy: <xmx:j4QuavxTTFfEjZZzVeE6Me5FufxT2clzqX7dOaK_i4qNm-FI7vGGgQ>
+    <xmx:j4QuapSVZi-7Zdkpnsm7AUPMdypu-GzgwNCZ3hq96yTfoSNyjT897w>
+    <xmx:j4Quaisp9v3hRupJ3QvEGciZkV9H7xpcUHLomkKHUtbD17ppmJxC4g>
+    <xmx:j4QuarselSmjKyS6WPkHsn04RSnmY54wprQRmAeZUnPdrMkv12Qd9w>
+    <xmx:j4QuatkFpWrfagoohc4dHTQOBiE1iv7YX-qqQF14_wdey2YE2jD4XdPi>
+Feedback-ID: i1c3946f2:Fastmail
+Message-Id: <1781433487.3025267.2410FA47@outbound.messagingengine.com>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA for
+ <tls@ietf.org>;
+ Sun, 14 Jun 2026 06:38:07 -0400 (EDT)
+Content-Type: multipart/alternative;
+ boundary="===============2368023046954703450=="
+MIME-Version: 1.0
+From: Repository Activity Summary Bot <do_not_reply@mnot.net>
+To: tls@ietf.org
+Date: Sun, 14 Jun 2026 03:38:13 -0700 (PDT)
+Message-ID-Hash: VNEIT2KLAG224VJKYCGOYOKA4H57DMWF
+X-Message-ID-Hash: VNEIT2KLAG224VJKYCGOYOKA4H57DMWF
+X-MailFrom: do_not_reply@mnot.net
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Weekly_github_digest_=28TLS_Working_Group_Drafts=29?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/2nhoyXfeW3YJsbAPuNLtpgO8dG4>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+--===============2368023046954703450==
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+
+
+Errors while compiling the digest:
+ - Repo tlswg/tlswg-wkesni/events yields 404 error
+
+Issues
+------
+* tlswg/draft-ietf-tls-mlkem (+0/-3/=F0=9F=92=AC3)
+  3 issues received 3 new comments:
+  - #18 Technical justification of security regression (1 by muhammad-usama=
+-sardar)
+    https://github.com/tlswg/draft-ietf-tls-mlkem/issues/18=20
+  - #16 Highlight risks in security cosiderations (1 by muhammad-usama-sard=
+ar)
+    https://github.com/tlswg/draft-ietf-tls-mlkem/issues/16=20
+  - #9 Review of -07 (1 by muhammad-usama-sardar)
+    https://github.com/tlswg/draft-ietf-tls-mlkem/issues/9=20
+
+  3 issues closed:
+  - Highlight risks in security cosiderations https://github.com/tlswg/draf=
+t-ietf-tls-mlkem/issues/16=20
+  - Review of -07 https://github.com/tlswg/draft-ietf-tls-mlkem/issues/9=20
+  - Clarify status of WGLC https://github.com/tlswg/draft-ietf-tls-mlkem/is=
+sues/17=20
+
+
+
+Pull requests
+-------------
+* tlswg/draft-ietf-tls-mlkem (+2/-0/=F0=9F=92=AC10)
+  2 pull requests submitted:
+  -  (by muhammad-usama-sardar)
+    =20
+  -  (by muhammad-usama-sardar)
+    =20
+
+  2 pull requests received 10 new comments:
+  - #22 Symbolic analysis (3 by muhammad-usama-sardar, nadimkobeissi)
+    https://github.com/tlswg/draft-ietf-tls-mlkem/pull/22=20
+  - #20 Add that symbolic analysis supports hybrid key agreement (7 by muha=
+mmad-usama-sardar, nadimkobeissi, thomwiggers)
+    https://github.com/tlswg/draft-ietf-tls-mlkem/pull/20=20
+
+* tlswg/tls-mldsa (+3/-0/=F0=9F=92=AC3)
+  3 pull requests submitted:
+  -  (by davidben)
+    =20
+  -  (by bwesterb)
+    =20
+  -  (by bwesterb)
+    =20
+
+  2 pull requests received 3 new comments:
+  - #37 Remove explicit prohibition on use in TLS 1.2 (1 by bwesterb)
+    https://github.com/tlswg/tls-mldsa/pull/37=20
+  - #36 Elaborate on deterministic vs hedged variant (2 by emanjon, soatok)
+    https://github.com/tlswg/tls-mldsa/pull/36=20
+
+* tlswg/tls13-spec (+0/-0/=F0=9F=92=AC2)
+  1 pull requests received 2 new comments:
+  - #1451 IANA alignment (2 by ekr, seanturner)
+    https://github.com/tlswg/tls13-spec/pull/1451=20
+
+
+Repositories tracked by this digest:
+-----------------------------------
+* https://github.com/tlswg/certificate-compression
+* https://github.com/tlswg/dnssec-chain-extension
+* https://github.com/tlswg/draft-deprecate-obsolete-kex
+* https://github.com/tlswg/draft-ietf-tls-cert-abridge
+* https://github.com/tlswg/draft-ietf-tls-ctls
+* https://github.com/tlswg/draft-ietf-tls-ecdhe-psk-aead
+* https://github.com/tlswg/draft-ietf-tls-ech-keylogfile
+* https://github.com/tlswg/draft-ietf-tls-esni
+* https://github.com/tlswg/draft-ietf-tls-external-psk-importer
+* https://github.com/tlswg/draft-ietf-tls-grease
+* https://github.com/tlswg/draft-ietf-tls-iana-registry-updates
+* https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate
+* https://github.com/tlswg/draft-ietf-tls-mlkem
+* https://github.com/tlswg/draft-ietf-tls-semistatic-dh
+* https://github.com/tlswg/draft-ietf-tls-svcb-ech
+* https://github.com/tlswg/draft-ietf-tls-ticketrequest
+* https://github.com/tlswg/draft-ietf-tls-tls13-vectors
+* https://github.com/tlswg/dtls-conn-id
+* https://github.com/tlswg/dtls-rrc
+* https://github.com/tlswg/dtls13-spec
+* https://github.com/tlswg/oldversions-deprecate
+* https://github.com/tlswg/rfc4492bis
+* https://github.com/tlswg/rfc8447bis
+* https://github.com/tlswg/rfc8773bis
+* https://github.com/tlswg/sniencryption
+* https://github.com/tlswg/sslkeylogfile
+* https://github.com/tlswg/sslv3-diediedie
+* https://github.com/tlswg/super-jumbo-record-limit
+* https://github.com/tlswg/tls-ecdhe-mlkem
+* https://github.com/tlswg/tls-exported-authenticator
+* https://github.com/tlswg/tls-fatt
+* https://github.com/tlswg/tls-flags
+* https://github.com/tlswg/tls-key-share-prediction
+* https://github.com/tlswg/tls-key-update
+* https://github.com/tlswg/tls-mldsa
+* https://github.com/tlswg/tls-pake
+* https://github.com/tlswg/tls-record-limit
+* https://github.com/tlswg/tls-subcerts
+* https://github.com/tlswg/tls-trust-anchor-ids
+* https://github.com/tlswg/tls12-frozen
+* https://github.com/tlswg/tls13-pkcs1
+* https://github.com/tlswg/tls13-rfc
+* https://github.com/tlswg/tls13-spec
+* https://github.com/tlswg/tlswg-wiki
+* https://github.com/tlswg/tlswg-wkesni
+
+
+--=20
+To have a summary like this sent to your list, see: https://github.com/ietf=
+-github-services/activity-summary
+
+--===============2368023046954703450==
+Content-Type: text/html; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+
+<!doctype html>
+<html lang=3D"en">
+<head>
+<meta charset=3D"utf-8">
+<title>Weekly github digest (TLS Working Group Drafts)</title>
+<style>
+body { font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;=
+ font-size: 14px; }
+h2 { margin-top: 3em; color: #A52A2A; font-style: italic; font-weight: norm=
+al; }
+h3 { margin-bottom:0; margin-top: 2em; font-size: 1.2em; }
+h1+h2 { margin-top: 1em; }
+a { color: #bb6219; text-decoration: none; }
+li { margin-bottom: .35em; }
+.repos { margin-bottom: 0; margin-top:0; line-height: 1.2; }
+.new { color: red; }
+.label { display: inline;
+	padding: .2em .6em .3em;
+	font-size: 75%;
+	font-weight: 700;
+	line-height: 1;
+	color: #fff;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: baseline;
+	border-radius: .25em;
+}
+details {
+	margin-top: 8em;
+	}
+summary {
+	margin-bottom: 1em;
+	cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+<h1>Sunday June 14, 2026</h1>
+Errors while compiling the digest:
+<ul>
+<li>Repo tlswg/tlswg-wkesni/events yields 404 error</li>
+</ul>
+
+
+<h2>Issues</h2>
+
+<h3>tlswg/draft-ietf-tls-mlkem (+0/-3/=F0=9F=92=AC3)</h3>
+
+  <p>3 issues received 3 new comments:</p>
+  <ul>
+  <li>#18 <a href=3D"https://github.com/tlswg/draft-ietf-tls-mlkem/issues/1=
+8">Technical justification of security regression</a> (1 by muhammad-usama-=
+sardar) </li>
+ =20
+  <li>#16 <a href=3D"https://github.com/tlswg/draft-ietf-tls-mlkem/issues/1=
+6">Highlight risks in security cosiderations</a> (1 by muhammad-usama-sarda=
+r) </li>
+ =20
+  <li>#9 <a href=3D"https://github.com/tlswg/draft-ietf-tls-mlkem/issues/9"=
+>Review of -07</a> (1 by muhammad-usama-sardar) </li>
+  </ul>
+
+  <p>3 issues closed:</p>
+  <ul>
+  <li>#16 <a href=3D"https://github.com/tlswg/draft-ietf-tls-mlkem/issues/1=
+6">Highlight risks in security cosiderations</a> </li>
+ =20
+  <li>#9 <a href=3D"https://github.com/tlswg/draft-ietf-tls-mlkem/issues/9"=
+>Review of -07</a> </li>
+ =20
+  <li>#17 <a href=3D"https://github.com/tlswg/draft-ietf-tls-mlkem/issues/1=
+7">Clarify status of WGLC</a> </li>
+  </ul>
+
+
+
+<h2>Pull requests</h2>
+<h3>tlswg/draft-ietf-tls-mlkem (+2/-0/=F0=9F=92=AC10)</h3>
+  <p class=3D"new">2 pull requests submitted:</p>
+  <ul>
+  <li>#22 <a href=3D""></a> (by muhammad-usama-sardar) </li>
+ =20
+  <li>#21 <a href=3D""></a> (by muhammad-usama-sardar) </li>
+  </ul>
+
+  <p>2 pull requests received 10 new comments:</p>
+  <ul>
+  <li>#22 <a href=3D"https://github.com/tlswg/draft-ietf-tls-mlkem/pull/22"=
+>Symbolic analysis</a> (3 by muhammad-usama-sardar, nadimkobeissi) </li>
+ =20
+  <li>#20 <a href=3D"https://github.com/tlswg/draft-ietf-tls-mlkem/pull/20"=
+>Add that symbolic analysis supports hybrid key agreement</a> (7 by muhamma=
+d-usama-sardar, nadimkobeissi, thomwiggers) </li>
+  </ul>
+
+
+<h3>tlswg/tls-mldsa (+3/-0/=F0=9F=92=AC3)</h3>
+  <p class=3D"new">3 pull requests submitted:</p>
+  <ul>
+  <li>#39 <a href=3D""></a> (by davidben) </li>
+ =20
+  <li>#38 <a href=3D""></a> (by bwesterb) </li>
+ =20
+  <li>#37 <a href=3D""></a> (by bwesterb) </li>
+  </ul>
+
+  <p>2 pull requests received 3 new comments:</p>
+  <ul>
+  <li>#37 <a href=3D"https://github.com/tlswg/tls-mldsa/pull/37">Remove exp=
+licit prohibition on use in TLS 1.2</a> (1 by bwesterb) </li>
+ =20
+  <li>#36 <a href=3D"https://github.com/tlswg/tls-mldsa/pull/36">Elaborate =
+on deterministic vs hedged variant</a> (2 by emanjon, soatok) </li>
+  </ul>
+
+
+<h3>tlswg/tls13-spec (+0/-0/=F0=9F=92=AC2)</h3>
+
+  <p>1 pull requests received 2 new comments:</p>
+  <ul>
+  <li>#1451 <a href=3D"https://github.com/tlswg/tls13-spec/pull/1451">IANA =
+alignment</a> (2 by ekr, seanturner) </li>
+  </ul>
+
+
+
+  <details>
+    <summary>Repositories tracked by this digest:</summary>
+<ul class=3D"repos">
+  <li><a href=3D"https://github.com/tlswg/certificate-compression">https://=
+github.com/tlswg/certificate-compression</a></li>
+  <li><a href=3D"https://github.com/tlswg/dnssec-chain-extension">https://g=
+ithub.com/tlswg/dnssec-chain-extension</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-deprecate-obsolete-kex">htt=
+ps://github.com/tlswg/draft-deprecate-obsolete-kex</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-cert-abridge">http=
+s://github.com/tlswg/draft-ietf-tls-cert-abridge</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-ctls">https://gith=
+ub.com/tlswg/draft-ietf-tls-ctls</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-ecdhe-psk-aead">ht=
+tps://github.com/tlswg/draft-ietf-tls-ecdhe-psk-aead</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-ech-keylogfile">ht=
+tps://github.com/tlswg/draft-ietf-tls-ech-keylogfile</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-esni">https://gith=
+ub.com/tlswg/draft-ietf-tls-esni</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-external-psk-impor=
+ter">https://github.com/tlswg/draft-ietf-tls-external-psk-importer</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-grease">https://gi=
+thub.com/tlswg/draft-ietf-tls-grease</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-iana-registry-upda=
+tes">https://github.com/tlswg/draft-ietf-tls-iana-registry-updates</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate=
+">https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-mlkem">https://git=
+hub.com/tlswg/draft-ietf-tls-mlkem</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-semistatic-dh">htt=
+ps://github.com/tlswg/draft-ietf-tls-semistatic-dh</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-svcb-ech">https://=
+github.com/tlswg/draft-ietf-tls-svcb-ech</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-ticketrequest">htt=
+ps://github.com/tlswg/draft-ietf-tls-ticketrequest</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-tls13-vectors">htt=
+ps://github.com/tlswg/draft-ietf-tls-tls13-vectors</a></li>
+  <li><a href=3D"https://github.com/tlswg/dtls-conn-id">https://github.com/=
+tlswg/dtls-conn-id</a></li>
+  <li><a href=3D"https://github.com/tlswg/dtls-rrc">https://github.com/tlsw=
+g/dtls-rrc</a></li>
+  <li><a href=3D"https://github.com/tlswg/dtls13-spec">https://github.com/t=
+lswg/dtls13-spec</a></li>
+  <li><a href=3D"https://github.com/tlswg/oldversions-deprecate">https://gi=
+thub.com/tlswg/oldversions-deprecate</a></li>
+  <li><a href=3D"https://github.com/tlswg/rfc4492bis">https://github.com/tl=
+swg/rfc4492bis</a></li>
+  <li><a href=3D"https://github.com/tlswg/rfc8447bis">https://github.com/tl=
+swg/rfc8447bis</a></li>
+  <li><a href=3D"https://github.com/tlswg/rfc8773bis">https://github.com/tl=
+swg/rfc8773bis</a></li>
+  <li><a href=3D"https://github.com/tlswg/sniencryption">https://github.com=
+/tlswg/sniencryption</a></li>
+  <li><a href=3D"https://github.com/tlswg/sslkeylogfile">https://github.com=
+/tlswg/sslkeylogfile</a></li>
+  <li><a href=3D"https://github.com/tlswg/sslv3-diediedie">https://github.c=
+om/tlswg/sslv3-diediedie</a></li>
+  <li><a href=3D"https://github.com/tlswg/super-jumbo-record-limit">https:/=
+/github.com/tlswg/super-jumbo-record-limit</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-ecdhe-mlkem">https://github.c=
+om/tlswg/tls-ecdhe-mlkem</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-exported-authenticator">https=
+://github.com/tlswg/tls-exported-authenticator</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-fatt">https://github.com/tlsw=
+g/tls-fatt</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-flags">https://github.com/tls=
+wg/tls-flags</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-key-share-prediction">https:/=
+/github.com/tlswg/tls-key-share-prediction</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-key-update">https://github.co=
+m/tlswg/tls-key-update</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-mldsa">https://github.com/tls=
+wg/tls-mldsa</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-pake">https://github.com/tlsw=
+g/tls-pake</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-record-limit">https://github.=
+com/tlswg/tls-record-limit</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-subcerts">https://github.com/=
+tlswg/tls-subcerts</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-trust-anchor-ids">https://git=
+hub.com/tlswg/tls-trust-anchor-ids</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls12-frozen">https://github.com/=
+tlswg/tls12-frozen</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls13-pkcs1">https://github.com/t=
+lswg/tls13-pkcs1</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls13-rfc">https://github.com/tls=
+wg/tls13-rfc</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls13-spec">https://github.com/tl=
+swg/tls13-spec</a></li>
+  <li><a href=3D"https://github.com/tlswg/tlswg-wiki">https://github.com/tl=
+swg/tlswg-wiki</a></li>
+  <li><a href=3D"https://github.com/tlswg/tlswg-wkesni">https://github.com/=
+tlswg/tlswg-wkesni</a></li>
+</ul>
+</details>
+<address>To have a summary like this sent to your list, see: https://github=
+.com/ietf-github-services/activity-summary</address>
+</body>
+</html>
+
+--===============2368023046954703450==--
+

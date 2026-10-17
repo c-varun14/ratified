@@ -1,0 +1,553 @@
+From nobody Sat Mar 13 23:38:50 2021
+Return-Path: <do_not_reply@mnot.net>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 1DA6C3A1EA9
+ for <tls@ietfa.amsl.com>; Sat, 13 Mar 2021 23:38:41 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.119
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.119 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, HTML_MESSAGE=0.001,
+ RCVD_IN_MSPIKE_H4=-0.01, RCVD_IN_MSPIKE_WL=-0.01, SPF_PASS=-0.001,
+ URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=mnot.net header.b=XHXV1mMr;
+ dkim=pass (2048-bit key)
+ header.d=messagingengine.com header.b=O6tltaHn
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id mmdOgSWeUtGo for <tls@ietfa.amsl.com>;
+ Sat, 13 Mar 2021 23:38:38 -0800 (PST)
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com
+ [64.147.123.20])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 0BFCA3A1D53
+ for <tls@ietf.org>; Sat, 13 Mar 2021 23:38:38 -0800 (PST)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+ by mailout.west.internal (Postfix) with ESMTP id 92B7217CA
+ for <tls@ietf.org>; Sun, 14 Mar 2021 03:38:37 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute1.internal (MEProxy); Sun, 14 Mar 2021 03:38:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mnot.net; h=
+ content-type:mime-version:from:to:subject:message-id:date; s=
+ fm2; bh=eXJstVNAjDEuy4oeKGXAKUyhv5ZDXWU3pHf0pYlnOKo=; b=XHXV1mMr
+ Z66SXejsclJmfikLWfYdNHkWZBzAMN08SSxa6MAjfXAKA+6Qkhn22aMqSm3tqTy9
+ QhnLazknIw0kPjDXR1nIqgvOT/TM4qrglPANtDxMVbSHb7eAtJG8zM/GOXxAhrGx
+ Kni/mLLp1x+h1SoX3aFa2QA45xCX6Di1cWdDmPaeSMs9dmhjs3RICrf9MfAuHLwh
+ 0MiNwB2VeWnpzN10nRVamuaX4yt8jgft9gVqSLmlpanZPnat9S4tTtB1dEs1FSys
+ pmsnRZ6mfs5+1SmoKEIDR7ErI+XOVeL1cw1ax664UDyE/seG5ASCUaw5MWLNfoWM
+ ugCMXoU33Cfx6Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=content-type:date:from:message-id
+ :mime-version:subject:to:x-me-proxy:x-me-proxy:x-me-sender
+ :x-me-sender:x-sasl-enc; s=fm2; bh=eXJstVNAjDEuy4oeKGXAKUyhv5ZDX
+ WU3pHf0pYlnOKo=; b=O6tltaHn7sKpXxKqTT2WLXra0PKNBCmeeQlho9/krhU49
+ XzfranbEsJASe7zShKpGOuvEbmj9CCcF9WgltYf6Ir7M31ia12O3ZGustINx/YFW
+ nC7yaRrC1rFlsnpTU9DLCl/DKn2IgShHx9i6bGFxctPMYU3b4pV1ymW1P3IrNINA
+ QYUsUOA7vsGyZOoOT7fCN1NMMtHz2j4fuVIAwiNq6h9gccWs9G48BZdXA9mfTPUX
+ 8kinr/0xi1rVkBeqEuFILqYGjC5oMyQcxLdsjC8vsQI6/dAVR4Bt6tkiTutR1TKf
+ pdwQbfY0s1M+MoIHS8vLiTQccZEyOW2LmOYF+cP5A==
+X-ME-Sender: <xms:fb1NYDS-k55rxyDpRDpP24OJInAzrO_UenTV9QFQzU8e6aY25r-mjg>
+ <xme:fb1NYEzQsPlARe-CmwyO1piAfdoqEs_ptkYiyp3LynBEbfeNzM9ViYXHyyB6lqbB4
+ G7n6b2EC1HKfCmjLQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddvhedgkeeiucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucenucfjughrpegtggfhvffusegrtddtredttdejne
+ cuhfhrohhmpeftvghpohhsihhtohhrhicutegtthhivhhithihucfuuhhmmhgrrhihuceu
+ ohhtuceoughopghnohhtpghrvghplhihsehmnhhothdrnhgvtheqnecuggftrfgrthhtvg
+ hrnhepkeefvdduteejvdefkeehieevuefgfefhteetveegffekffefteffvdelheduieet
+ necuffhomhgrihhnpehgihhthhhusgdrtghomhenucfkphepvdefrddutddurddugeehrd
+ dujedunecuvehluhhsthgvrhfuihiivgepvdenucfrrghrrghmpehmrghilhhfrhhomhep
+ ughopghnohhtpghrvghplhihsehmnhhothdrnhgvth
+X-ME-Proxy: <xmx:fb1NYI1Q3RDbqoX8gU6eyz7exQY4YrjdvVAKId7AbHAaXMXPyguKJg>
+ <xmx:fb1NYDBmedGc4K71ejCAzeafDFm_KTxoSvg1X28OpxV1NTgml21OCA>
+ <xmx:fb1NYMhmA1Njnn0dIa0qTXopN27QASFgkn4yJqBbW6My-YMFojFCUQ>
+ <xmx:fb1NYIYHZRfDhT-i_AenbD7ZqAAsMlk8iuMabxdC5tKrlKjwbq2ayQ>
+Received: from fv-az207-156.internal.cloudapp.net (unknown [23.101.145.171])
+ by mail.messagingengine.com (Postfix) with ESMTPA id 02FC324005A
+ for <tls@ietf.org>; Sun, 14 Mar 2021 03:38:36 -0400 (EDT)
+Content-Type: multipart/alternative;
+ boundary="===============4724813980977934292=="
+MIME-Version: 1.0
+From: Repository Activity Summary Bot <do_not_reply@mnot.net>
+To: tls@ietf.org
+Message-Id: <20210314073837.02FC324005A@mailuser.nyi.internal>
+Date: Sun, 14 Mar 2021 03:38:36 -0400 (EDT)
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/MJAXWVWG6BduxW_2krNhlVA3q9M>
+Subject: [TLS] Weekly github digest (TLS Working Group Drafts)
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Sun, 14 Mar 2021 07:38:47 -0000
+
+--===============4724813980977934292==
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+
+
+
+
+Issues
+------
+* tlswg/draft-ietf-tls-esni (+7/-2/=F0=9F=92=AC22)
+  7 issues created:
+  - ECH complexity (by sftcd)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/401=20
+  - Hard to imagine ECH handling in constant time - ponder and document? (b=
+y sftcd)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/400=20
+  - The serverhello.random trick is ugly and might interact with ticket han=
+dling... (by sftcd)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/399=20
+  - Is the outer compression really worthwhile? (by sftcd)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/398=20
+  - Including the client's ephemeral public key in the AAD precludes use of=
+ a single-shot HPKE API (by sftcd)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/397=20
+  - A MUST for inclusion of public_name in outer SNI seems wrong (by sftcd)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/396=20
+  - (Editorial) Add some more structure to "Offering ECH" (by sayrer)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/395=20
+
+  8 issues received 22 new comments:
+  - #399 The serverhello.random trick is ugly and might interact with ticke=
+t handling... (2 by davidben, ekr)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/399=20
+  - #398 Is the outer compression really worthwhile? (2 by davidben, sayrer)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/398=20
+  - #397 Including the client's ephemeral public key in the AAD precludes u=
+se of a single-shot HPKE API (2 by davidben, sftcd)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/397=20
+  - #396 A MUST for inclusion of public_name in outer SNI seems wrong (11 b=
+y cbartle891, chris-wood, davidben, dmcardle, ekr, sayrer, sftcd)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/396=20
+  - #386 Fixed-length values should probably be fixed-length (1 by chris-wo=
+od)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/386=20
+  - #384 PSK usage sticks out (1 by chris-wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/384=20
+  - #379 Consider a shorter config ID length (2 by chris-wood, enygren)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/379=20
+  - #378 Naive outer_extensions decoding is a DoS risk (1 by chris-wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/378=20
+
+  2 issues closed:
+  - Include changelog going forward https://github.com/tlswg/draft-ietf-tls=
+-esni/issues/388=20
+  - Fixed-length values should probably be fixed-length https://github.com/=
+tlswg/draft-ietf-tls-esni/issues/386=20
+
+* tlswg/tls13-spec (+2/-1/=F0=9F=92=AC18)
+  2 issues created:
+  - HRR server behavior is underspecified (by davidben)
+    https://github.com/tlswg/tls13-spec/issues/1224=20
+  - HRR consistency requirements are too strict (by davidben)
+    https://github.com/tlswg/tls13-spec/issues/1223=20
+
+  6 issues received 18 new comments:
+  - #1224 HRR server behavior is underspecified (1 by davidben)
+    https://github.com/tlswg/tls13-spec/issues/1224=20
+  - #1223 HRR consistency requirements are too strict (5 by davidben, marti=
+nthomson, richsalz, tomato42)
+    https://github.com/tlswg/tls13-spec/issues/1223=20
+  - #1221 Unsolicited extensions (5 by ekr, jhoyla, richsalz)
+    https://github.com/tlswg/tls13-spec/issues/1221=20
+  - #1214 Implication of Recommended/Not Recommended (5 by chris-wood, dkg,=
+ richsalz)
+    https://github.com/tlswg/tls13-spec/issues/1214=20
+  - #1212 general alert (1 by chris-wood)
+    https://github.com/tlswg/tls13-spec/issues/1212=20
+  - #1208 Contradition around user_cancelled (1 by chris-wood)
+    https://github.com/tlswg/tls13-spec/issues/1208=20
+
+  1 issues closed:
+  - Unsolicited extensions https://github.com/tlswg/tls13-spec/issues/1221 =
+
+
+* tlswg/dtls-conn-id (+4/-0/=F0=9F=92=AC4)
+  4 issues created:
+  - IANA section slight reorg (by thomas-fossati)
+    https://github.com/tlswg/dtls-conn-id/issues/91=20
+  - Assorted typos (by thomas-fossati)
+    https://github.com/tlswg/dtls-conn-id/issues/90=20
+  - Zero-length CID clarifications (by thomas-fossati)
+    https://github.com/tlswg/dtls-conn-id/issues/89=20
+  - Missing RFC 8174 boilerplate (by thomas-fossati)
+    https://github.com/tlswg/dtls-conn-id/issues/88=20
+
+  4 issues received 4 new comments:
+  - #91 IANA section slight reorg (1 by hannestschofenig)
+    https://github.com/tlswg/dtls-conn-id/issues/91=20
+  - #90 Assorted typos (1 by hannestschofenig)
+    https://github.com/tlswg/dtls-conn-id/issues/90=20
+  - #89 Zero-length CID clarifications (1 by boaks)
+    https://github.com/tlswg/dtls-conn-id/issues/89=20
+  - #88 Missing RFC 8174 boilerplate (1 by hannestschofenig)
+    https://github.com/tlswg/dtls-conn-id/issues/88=20
+
+
+
+Pull requests
+-------------
+* tlswg/draft-ietf-tls-esni (+1/-3/=F0=9F=92=AC1)
+  1 pull requests submitted:
+  - Retarget #384 (by chris-wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/394=20
+
+  1 pull requests received 1 new comments:
+  - #381 Truncate the config_id to a single byte. (1 by ekr)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/381=20
+
+  3 pull requests merged:
+  - Retarget #384
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/394=20
+  - Truncate the config_id to a single byte.
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/381=20
+  - Add -09 to -10 change log.
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/392=20
+
+* tlswg/tls13-spec (+1/-1/=F0=9F=92=AC0)
+  1 pull requests submitted:
+  - Clarify that indications are just requests with no response. Fixes #122=
+1 (by ekr)
+    https://github.com/tlswg/tls13-spec/pull/1222=20
+
+  1 pull requests merged:
+  - Clarify that indications are just requests with no response. Fixes #1221
+    https://github.com/tlswg/tls13-spec/pull/1222=20
+
+* tlswg/dtls-conn-id (+4/-0/=F0=9F=92=AC0)
+  4 pull requests submitted:
+  - Added Acknowledgements (by hannestschofenig)
+    https://github.com/tlswg/dtls-conn-id/pull/95=20
+  - Improved readability of the IANA Consideration Section (by hannestschof=
+enig)
+    https://github.com/tlswg/dtls-conn-id/pull/94=20
+  - Nits (by hannestschofenig)
+    https://github.com/tlswg/dtls-conn-id/pull/93=20
+  - Adding reference to RFC 8174 (by hannestschofenig)
+    https://github.com/tlswg/dtls-conn-id/pull/92=20
+
+
+Repositories tracked by this digest:
+-----------------------------------
+* https://github.com/tlswg/draft-ietf-tls-semistatic-dh
+* https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate
+* https://github.com/tlswg/draft-ietf-tls-esni
+* https://github.com/tlswg/certificate-compression
+* https://github.com/tlswg/draft-ietf-tls-external-psk-importer
+* https://github.com/tlswg/draft-ietf-tls-ticketrequest
+* https://github.com/tlswg/tls13-spec
+* https://github.com/tlswg/tls-flags
+* https://github.com/tlswg/dtls13-spec
+* https://github.com/tlswg/dtls-conn-id
+* https://github.com/tlswg/tls-subcerts
+* https://github.com/tlswg/oldversions-deprecate
+* https://github.com/tlswg/sniencryption
+* https://github.com/tlswg/tls-exported-authenticator
+* https://github.com/tlswg/draft-ietf-tls-ctls
+* https://github.com/tlswg/external-psk-design-team
+
+--===============4724813980977934292==
+Content-Type: text/html; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+
+<!doctype html>
+<html lang=3D"en">
+<head>
+<meta charset=3D"utf-8">
+<title>Weekly github digest (TLS Working Group Drafts)</title>
+<style>
+body { font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;=
+ font-size: 14px; }
+h2 { margin-top: 3em; color: #A52A2A; font-style: italic; font-weight: norm=
+al; }
+h3 { margin-bottom:0; margin-top: 2em; font-size: 1.2em; }
+h1+h2 { margin-top: 1em; }
+a { color: #bb6219; text-decoration: none; }
+li { margin-bottom: .35em; }
+.repos { margin-bottom: 0; margin-top:0; line-height: 1.2; }
+.new { color: red; }
+.label { display: inline;
+	padding: .2em .6em .3em;
+	font-size: 75%;
+	font-weight: 700;
+	line-height: 1;
+	color: #fff;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: baseline;
+	border-radius: .25em;
+}
+</style>
+</head>
+
+<body>
+<h1>Sunday March 14, 2021</h1>
+
+
+<h2>Issues</h2>
+
+<h3>tlswg/draft-ietf-tls-esni (+7/-2/=F0=9F=92=AC22)</h3>
+  <p class=3D"new">7 issues created:</p>
+  <ul>
+  <li>#401 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/4=
+01">ECH complexity</a> (by sftcd) </li>
+ =20
+  <li>#400 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/4=
+00">Hard to imagine ECH handling in constant time - ponder and document?</a=
+> (by sftcd) </li>
+ =20
+  <li>#399 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/3=
+99">The serverhello.random trick is ugly and might interact with ticket han=
+dling...</a> (by sftcd) </li>
+ =20
+  <li>#398 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/3=
+98">Is the outer compression really worthwhile?</a> (by sftcd) </li>
+ =20
+  <li>#397 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/3=
+97">Including the client&#x27;s ephemeral public key in the AAD precludes u=
+se of a single-shot HPKE API</a> (by sftcd) </li>
+ =20
+  <li>#396 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/3=
+96">A MUST for inclusion of public_name in outer SNI seems wrong</a> (by sf=
+tcd) </li>
+ =20
+  <li>#395 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/3=
+95">(Editorial) Add some more structure to &quot;Offering ECH&quot;</a> (by=
+ sayrer) </li>
+  </ul>
+
+  <p>8 issues received 22 new comments:</p>
+  <ul>
+  <li>#399 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/3=
+99">The serverhello.random trick is ugly and might interact with ticket han=
+dling...</a> (2 by davidben, ekr) </li>
+ =20
+  <li>#398 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/3=
+98">Is the outer compression really worthwhile?</a> (2 by davidben, sayrer)=
+ </li>
+ =20
+  <li>#397 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/3=
+97">Including the client&#x27;s ephemeral public key in the AAD precludes u=
+se of a single-shot HPKE API</a> (2 by davidben, sftcd) </li>
+ =20
+  <li>#396 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/3=
+96">A MUST for inclusion of public_name in outer SNI seems wrong</a> (11 by=
+ cbartle891, chris-wood, davidben, dmcardle, ekr, sayrer, sftcd) </li>
+ =20
+  <li>#386 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/3=
+86">Fixed-length values should probably be fixed-length</a> (1 by chris-woo=
+d) </li>
+ =20
+  <li>#384 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/3=
+84">PSK usage sticks out</a> (1 by chris-wood) </li>
+ =20
+  <li>#379 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/3=
+79">Consider a shorter config ID length</a> (2 by chris-wood, enygren) </li>
+ =20
+  <li>#378 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/3=
+78">Naive outer_extensions decoding is a DoS risk</a> (1 by chris-wood) </l=
+i>
+  </ul>
+
+  <p>2 issues closed:</p>
+  <ul>
+  <li>#388 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/3=
+88">Include changelog going forward</a> </li>
+ =20
+  <li>#386 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/3=
+86">Fixed-length values should probably be fixed-length</a> </li>
+  </ul>
+
+<h3>tlswg/tls13-spec (+2/-1/=F0=9F=92=AC18)</h3>
+  <p class=3D"new">2 issues created:</p>
+  <ul>
+  <li>#1224 <a href=3D"https://github.com/tlswg/tls13-spec/issues/1224">HRR=
+ server behavior is underspecified</a> (by davidben) </li>
+ =20
+  <li>#1223 <a href=3D"https://github.com/tlswg/tls13-spec/issues/1223">HRR=
+ consistency requirements are too strict</a> (by davidben) </li>
+  </ul>
+
+  <p>6 issues received 18 new comments:</p>
+  <ul>
+  <li>#1224 <a href=3D"https://github.com/tlswg/tls13-spec/issues/1224">HRR=
+ server behavior is underspecified</a> (1 by davidben) </li>
+ =20
+  <li>#1223 <a href=3D"https://github.com/tlswg/tls13-spec/issues/1223">HRR=
+ consistency requirements are too strict</a> (5 by davidben, martinthomson,=
+ richsalz, tomato42) </li>
+ =20
+  <li>#1221 <a href=3D"https://github.com/tlswg/tls13-spec/issues/1221">Uns=
+olicited extensions</a> (5 by ekr, jhoyla, richsalz) </li>
+ =20
+  <li>#1214 <a href=3D"https://github.com/tlswg/tls13-spec/issues/1214">Imp=
+lication of Recommended/Not Recommended</a> (5 by chris-wood, dkg, richsalz=
+) </li>
+ =20
+  <li>#1212 <a href=3D"https://github.com/tlswg/tls13-spec/issues/1212">gen=
+eral alert</a> (1 by chris-wood) </li>
+ =20
+  <li>#1208 <a href=3D"https://github.com/tlswg/tls13-spec/issues/1208">Con=
+tradition around user_cancelled</a> (1 by chris-wood) </li>
+  </ul>
+
+  <p>1 issues closed:</p>
+  <ul>
+  <li>#1221 <a href=3D"https://github.com/tlswg/tls13-spec/issues/1221">Uns=
+olicited extensions</a> </li>
+  </ul>
+
+<h3>tlswg/dtls-conn-id (+4/-0/=F0=9F=92=AC4)</h3>
+  <p class=3D"new">4 issues created:</p>
+  <ul>
+  <li>#91 <a href=3D"https://github.com/tlswg/dtls-conn-id/issues/91">IANA =
+section slight reorg</a> (by thomas-fossati) </li>
+ =20
+  <li>#90 <a href=3D"https://github.com/tlswg/dtls-conn-id/issues/90">Assor=
+ted typos</a> (by thomas-fossati) </li>
+ =20
+  <li>#89 <a href=3D"https://github.com/tlswg/dtls-conn-id/issues/89">Zero-=
+length CID clarifications</a> (by thomas-fossati) </li>
+ =20
+  <li>#88 <a href=3D"https://github.com/tlswg/dtls-conn-id/issues/88">Missi=
+ng RFC 8174 boilerplate</a> (by thomas-fossati) </li>
+  </ul>
+
+  <p>4 issues received 4 new comments:</p>
+  <ul>
+  <li>#91 <a href=3D"https://github.com/tlswg/dtls-conn-id/issues/91">IANA =
+section slight reorg</a> (1 by hannestschofenig) </li>
+ =20
+  <li>#90 <a href=3D"https://github.com/tlswg/dtls-conn-id/issues/90">Assor=
+ted typos</a> (1 by hannestschofenig) </li>
+ =20
+  <li>#89 <a href=3D"https://github.com/tlswg/dtls-conn-id/issues/89">Zero-=
+length CID clarifications</a> (1 by boaks) </li>
+ =20
+  <li>#88 <a href=3D"https://github.com/tlswg/dtls-conn-id/issues/88">Missi=
+ng RFC 8174 boilerplate</a> (1 by hannestschofenig) </li>
+  </ul>
+
+
+
+
+<h2>Pull requests</h2>
+<h3>tlswg/draft-ietf-tls-esni (+1/-3/=F0=9F=92=AC1)</h3>
+  <p class=3D"new">1 pull requests submitted:</p>
+  <ul>
+  <li>#394 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/394=
+">Retarget #384</a> (by chris-wood) </li>
+  </ul>
+
+  <p>1 pull requests received 1 new comments:</p>
+  <ul>
+  <li>#381 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/381=
+">Truncate the config_id to a single byte.</a> (1 by ekr) </li>
+  </ul>
+
+  <p>3 pull requests merged:</p>
+  <ul>
+  <li>#394 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/394=
+">Retarget #384</a> </li>
+ =20
+  <li>#381 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/381=
+">Truncate the config_id to a single byte.</a> </li>
+ =20
+  <li>#392 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/392=
+">Add -09 to -10 change log.</a> </li>
+  </ul>
+
+<h3>tlswg/tls13-spec (+1/-1/=F0=9F=92=AC0)</h3>
+  <p class=3D"new">1 pull requests submitted:</p>
+  <ul>
+  <li>#1222 <a href=3D"https://github.com/tlswg/tls13-spec/pull/1222">Clari=
+fy that indications are just requests with no response. Fixes #1221</a> (by=
+ ekr) </li>
+  </ul>
+
+
+  <p>1 pull requests merged:</p>
+  <ul>
+  <li>#1222 <a href=3D"https://github.com/tlswg/tls13-spec/pull/1222">Clari=
+fy that indications are just requests with no response. Fixes #1221</a> </l=
+i>
+  </ul>
+
+<h3>tlswg/dtls-conn-id (+4/-0/=F0=9F=92=AC0)</h3>
+  <p class=3D"new">4 pull requests submitted:</p>
+  <ul>
+  <li>#95 <a href=3D"https://github.com/tlswg/dtls-conn-id/pull/95">Added A=
+cknowledgements</a> (by hannestschofenig) </li>
+ =20
+  <li>#94 <a href=3D"https://github.com/tlswg/dtls-conn-id/pull/94">Improve=
+d readability of the IANA Consideration Section</a> (by hannestschofenig) <=
+/li>
+ =20
+  <li>#93 <a href=3D"https://github.com/tlswg/dtls-conn-id/pull/93">Nits</a=
+> (by hannestschofenig) </li>
+ =20
+  <li>#92 <a href=3D"https://github.com/tlswg/dtls-conn-id/pull/92">Adding =
+reference to RFC 8174</a> (by hannestschofenig) </li>
+  </ul>
+
+
+
+
+<h2>Repositories tracked by this digest:</h2>
+<ul class=3D"repos">
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-semistatic-dh">htt=
+ps://github.com/tlswg/draft-ietf-tls-semistatic-dh</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate=
+">https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-esni">https://gith=
+ub.com/tlswg/draft-ietf-tls-esni</a></li>
+  <li><a href=3D"https://github.com/tlswg/certificate-compression">https://=
+github.com/tlswg/certificate-compression</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-external-psk-impor=
+ter">https://github.com/tlswg/draft-ietf-tls-external-psk-importer</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-ticketrequest">htt=
+ps://github.com/tlswg/draft-ietf-tls-ticketrequest</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls13-spec">https://github.com/tl=
+swg/tls13-spec</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-flags">https://github.com/tls=
+wg/tls-flags</a></li>
+  <li><a href=3D"https://github.com/tlswg/dtls13-spec">https://github.com/t=
+lswg/dtls13-spec</a></li>
+  <li><a href=3D"https://github.com/tlswg/dtls-conn-id">https://github.com/=
+tlswg/dtls-conn-id</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-subcerts">https://github.com/=
+tlswg/tls-subcerts</a></li>
+  <li><a href=3D"https://github.com/tlswg/oldversions-deprecate">https://gi=
+thub.com/tlswg/oldversions-deprecate</a></li>
+  <li><a href=3D"https://github.com/tlswg/sniencryption">https://github.com=
+/tlswg/sniencryption</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-exported-authenticator">https=
+://github.com/tlswg/tls-exported-authenticator</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-ctls">https://gith=
+ub.com/tlswg/draft-ietf-tls-ctls</a></li>
+  <li><a href=3D"https://github.com/tlswg/external-psk-design-team">https:/=
+/github.com/tlswg/external-psk-design-team</a></li>
+  </ul>
+</body>
+</html>
+
+--===============4724813980977934292==--
+

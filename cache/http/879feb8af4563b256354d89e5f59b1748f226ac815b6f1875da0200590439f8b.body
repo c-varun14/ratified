@@ -1,0 +1,391 @@
+From nobody Thu Jan 12 01:03:16 2023
+Return-Path: <john.mattsson@ericsson.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 52F06C1516E2
+ for <tls@ietfa.amsl.com>; Thu, 12 Jan 2023 01:03:15 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -7.098
+X-Spam-Level: 
+X-Spam-Status: No, score=-7.098 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIMWL_WL_HIGH=-0.001, DKIM_SIGNED=0.1,
+ DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_HI=-5, RCVD_IN_MSPIKE_H2=-0.001,
+ RCVD_IN_ZEN_BLOCKED_OPENDNS=0.001, SPF_PASS=-0.001,
+ URIBL_BLOCKED=0.001, URIBL_DBL_BLOCKED_OPENDNS=0.001,
+ URIBL_ZEN_BLOCKED_OPENDNS=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=ericsson.com
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id rG7NNfrIcRSx for <tls@ietfa.amsl.com>;
+ Thu, 12 Jan 2023 01:03:11 -0800 (PST)
+Received: from EUR03-AM7-obe.outbound.protection.outlook.com
+ (mail-am7eur03on2076.outbound.protection.outlook.com [40.107.105.76])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 1A6D3C15155E
+ for <TLS@ietf.org>; Thu, 12 Jan 2023 01:03:11 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gA/TbyFgpfs7pLJWTr4TH/A6DvldOUiVoUw9WRYBir09wkYsYBM04BE53CeEJQN7MRDXIYzHyxxjDReEw6vh1Gy0b5ivvUDq4/2u1O+p2bwUaLxQtlO0pLHz/05snswmMakexu0hy/nAkAgUXl5CePE/3Dp9lluzMLUYSPrNfyRjQp38fXEdsLdG6pMnLa4sIv/JJqmRIzpTikYrXDgP+EDGwQqnTFaP54w2B8LXviDYa/dwTw+kTOtDgS/LnVRmM9NnT/wxk0FaeA2TBcznHzj2W3RyLqVzk1WlL3oR0Bgc50jvX47iV4K3Qhop107fE7S08nu6X5cbkbiX7VAKeg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=d+Dy91sBsTXUUXocyEHsNBWj+2/uQtiAH+BpaY2Kdh0=;
+ b=h69cpQNtszxuQG0xc1yUIDF+vyZVOGzihVub71tnnJjYpCMoBL+MTPJw/3jPQl8B0sVZEhsfa4SHH4umVSJykPFaYpymsqixlmC+cJcw21y4wvQf9zeME5cRoXC3oato3nQgZNsrsQcCKWS9x+mwYCyuccU3CgrGpZyYFeoGX86cFWt/xGN7Lw9C4fI/IKYdyeKvQN4pFClqr0ZFWEzB92xfUoixHwpSFsIxffFUwDd6vaOykBNpr7Mlj/P/LxmpPfyu1Ip51U57vvrTpM2AcfwvmlweWSRHdx1LKRcVOuBZOaKzI5ihAEVkkjGj5VLi7XE9kELCtkamAMz2f4ojjw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=ericsson.com; dmarc=pass action=none header.from=ericsson.com;
+ dkim=pass header.d=ericsson.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ericsson.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=d+Dy91sBsTXUUXocyEHsNBWj+2/uQtiAH+BpaY2Kdh0=;
+ b=ijyMusPQlllV/0zQP2lRYX0kGub3M6FJQ5LiPR+vd7VOd1ci/TbBIb804YrUNlGzHzzr872XULGVv7/v34noXo8trBYFvEED2CyS9LX+rt85wl3Zt+crYX9lr4SMcaspBFtOQ6Uf8GnHW2o4WI0Y1MWrDjgKMs06yt3aiAZ4I3w=
+Received: from HE1PR0701MB3050.eurprd07.prod.outlook.com (2603:10a6:3:4b::8)
+ by PAWPR07MB9249.eurprd07.prod.outlook.com (2603:10a6:102:2e9::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6002.12; Thu, 12 Jan
+ 2023 09:03:05 +0000
+Received: from HE1PR0701MB3050.eurprd07.prod.outlook.com
+ ([fe80::fc77:42d2:1bc6:ec49]) by HE1PR0701MB3050.eurprd07.prod.outlook.com
+ ([fe80::fc77:42d2:1bc6:ec49%12]) with mapi id 15.20.5986.019; Thu, 12 Jan
+ 2023 09:03:05 +0000
+From: John Mattsson <john.mattsson@ericsson.com>
+To: Stephen Farrell <stephen.farrell@cs.tcd.ie>, Christopher Wood
+ <caw@heapingbits.net>, "TLS@ietf.org" <TLS@ietf.org>
+Thread-Topic: [TLS] New Version Notification for draft-ietf-tls-esni-15.txt
+Thread-Index: AQHY1zI6h2I1KwVllUOt024+BXeIrq6Tq5regAAaioCAB1O+Mw==
+Date: Thu, 12 Jan 2023 09:03:05 +0000
+Message-ID: <HE1PR0701MB3050262A84BEAF1F581FA4B089FD9@HE1PR0701MB3050.eurprd07.prod.outlook.com>
+References: <166479817595.57857.17931210797817258896@ietfa.amsl.com>
+ <ffa1da83-ec74-45ac-b891-ac0013b55a11@app.fastmail.com>
+ <HE1PR0701MB3050714D20C69FD650FF691089F89@HE1PR0701MB3050.eurprd07.prod.outlook.com>
+ <17a073ad-3d92-9b8b-5c56-077108e45c57@cs.tcd.ie>
+In-Reply-To: <17a073ad-3d92-9b8b-5c56-077108e45c57@cs.tcd.ie>
+Accept-Language: en-US
+Content-Language: en-GB
+X-MS-Has-Attach: yes
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=ericsson.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: HE1PR0701MB3050:EE_|PAWPR07MB9249:EE_
+x-ms-office365-filtering-correlation-id: b695b055-5978-4993-9aeb-08daf47bd15d
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: N97gvtKJusBZ0ZiPdnwgKZppmmZBgoGLAn0tTnosEoXZYXmkW+N/mXR1m9xbL1dAoSk1ap5pPoU3DiyA6t6ICJm1DCxAJikOoxNJ1Bu2b4W7I14mhJuUZKMgG/Ged0+soHyJYqzv42/J21U7KVKAlMpAEDhTSLeUG44zt1V/ibFF3dEhLXKnH0bvA3mL/imo3D6/Q6IpdcgZlF8ZKKM97hMzbtET8HkY7f98pRzZVe+1J8/aIt7FR2xt3ec3ne5ykbVBvSrR4JYr+qOSZdZQt+TNVUGxjju/AQkzbtVPNglSzj16IV3JkDTuiZGED/Oyd8jxpHiVJDd7psQbMm1AKK0w8FyjEAWFK9rQ8VSJTBk0DHEhJXmzPfjAKyVqx7TUEQA3k93EyCX/fpTxQ2NSlMom4/j0SmOXsYjHLSofGEAiUA3d9SFETuOQxh8qyY7YlkB2XQoB+bGU767roDhuANOs0ut3t7FsGygTr1wXXZI9NhfzVhi5MOJfbpZ6dbXUK8mkCAsc4lL5UdWzHp8S5DMbZpC5ocgJzvD4HcU7qla6McGxbcA9dOPixc8VCm2NPEfGOpveDVJ9NtyWKHjKLy3qTCopPRRcWkHMdraK/fG5lfAuVHLE+CIHAVCDnuBFLaARuKhP+RXQ6HfdoUfIlo0eCVlpgk61lK0wMlysg+lQz3E7yV+FhwKr/rd/ffG0nKZq6mPYJUAj0rEXkU/M9MzIiexGIeXzPhxIOJjxJ9w=
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:; 
+ IPV:NLI; SFV:NSPM;
+ H:HE1PR0701MB3050.eurprd07.prod.outlook.com; PTR:; CAT:NONE; 
+ SFS:(13230022)(4636009)(396003)(346002)(366004)(136003)(376002)(39860400002)(451199015)(7696005)(166002)(9686003)(38070700005)(122000001)(82960400001)(99936003)(478600001)(55016003)(38100700002)(966005)(53546011)(6506007)(86362001)(33656002)(71200400001)(186003)(26005)(41300700001)(5660300002)(66946007)(8676002)(91956017)(66476007)(66446008)(66556008)(8936002)(52536014)(76116006)(64756008)(296002)(316002)(66899015)(110136005)(2906002)(44832011)(4744005);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?+j1sqtflf/64OqRVg23cMaSgCN298YQEDZYgzRLh0oltDFEeo0qL2YMWwqDV?=
+ =?us-ascii?Q?0W/h8B9i3Uck/hT58dQyUOmOMK+KkF4SZ7r0GePy+HqPCCwyhMMgvWAmvqDu?=
+ =?us-ascii?Q?pqsA9DuNmAxXg+/7O99+xFR2FN90A/RWDqeTYDBZS/Nn8oeY7Twty3/cOYOz?=
+ =?us-ascii?Q?ryJNt3gCbjWaqDmh8LIuV2hX7Ityn7DsBv7iLa4dGD+iUuZwi14CfmdIT5Vg?=
+ =?us-ascii?Q?+J6hK29GL8Uhqy70SD/4PFSY2L9AelvFj+evhtvQoZy4Dvkg+LD7yanWrWBd?=
+ =?us-ascii?Q?NT/F6asqOfozUV0gBADB1Tmz74kV7iaH5u3FqG3nFOwi5OnDr+iDpS/saaHy?=
+ =?us-ascii?Q?KkkSVxGU1HGDLCJJhmt9Wo1oEHqZH+TKeVz0SIFyO9YJhMoSXQTztVyQVIaI?=
+ =?us-ascii?Q?BK4BYk2TXXCQWlc6T8Pq/d7l72zhnjselwpzRKqRHfzdr1G+EUq6kAHYu3gG?=
+ =?us-ascii?Q?iAq835u8X7HKm91nM8rdV/SnmRz0CSeE5WRVyuXDY08NmxA3Yyopz5MlwsoX?=
+ =?us-ascii?Q?w4Mn0UisJHNU2MvVpvSCuv+INl2cGu/+LiULlVjBrSxuhNyQiFYwE4HWDAKp?=
+ =?us-ascii?Q?bwQTKINsdsxK52iw9pY+fxX4yoBEDfKPz2ZILn0Vv6hhEYlGswg/65WNa/iW?=
+ =?us-ascii?Q?wkkhgWKMcEmVQ/V+s7hQiD2yH18n8xzh7xjIJo0jnd/Ddk0hM1cb79UO3huG?=
+ =?us-ascii?Q?9Ox7+k8cpWbilIns6n94gItXH2xdqxu1QlusUH86g00NjaU1ctKCSMv5hbNv?=
+ =?us-ascii?Q?OFib/AW/uiPZd3SVcRIkjWx+6l0F3f4j62DoUgUiKpWzzXrf8yAR4nz/S+qQ?=
+ =?us-ascii?Q?0T40mWFVYC56fT8+LNli+L1wwjQMnzWAg0pn4DJifdFcdNfyB5LJJngzM7r7?=
+ =?us-ascii?Q?bo8bCbMJ0gDXl7rPx1QMyvwRsOau7QRo6RrAUoGhWxNJJvF1Ax7Cu/xbpSRp?=
+ =?us-ascii?Q?qBITNmuJblFibiljqAFJ2Bcn7sB0UU2MYdzDwkJEIy/MHXVUS+vJaRyDr/Fi?=
+ =?us-ascii?Q?PGzGVOr8O21/w0IJxYtyblODiokS0RMLxmNkOE5cESYNGq4mBviWlRvvtZg4?=
+ =?us-ascii?Q?HhS/zWqhP2duI8strimaw7dXENWEMeYHuEC3eGlGZoCcZCdhmIJzEdrLiNjm?=
+ =?us-ascii?Q?AsPxdqtntKLZV0ScaZNr7Z7fFSbygKqugzt7DaSa4bgqC/UpUYSIHnmaiznj?=
+ =?us-ascii?Q?G/Ja9pQcK97/YYflDmKPKqGJdR6gwjrSV8nrFH2WfnEejGk6aro1qgBADygA?=
+ =?us-ascii?Q?O97yKqZNZx+w1XpczUlbBLlRiAnhraAASWFODEAn1wRqd2xAi927Q4j/nb/k?=
+ =?us-ascii?Q?OUNFJbFpn8tD1B6dt4f/7OPzHG6yY3TpU5HI7hqROEBOAZLVlwcsZSKKGmTh?=
+ =?us-ascii?Q?57MQxO/DtONuHr6HlO5Rfa9vPu2r0HMNCYL27r7v1F9LtnRh23o8j8ogoZc6?=
+ =?us-ascii?Q?fZoRPGAUICGLIo0ZPuiv98xA8gexB1/XA14AhHp8PcbJVQtm+wHkJVIqOhnu?=
+ =?us-ascii?Q?0A/yzVEz/FPdgNCRwEBEX02363ksPpqmtaxYZxx8/mlSQzkbb46GRNshzMnr?=
+ =?us-ascii?Q?ENRDM3b03PA+129dyq/L6rylwKYSWU96+79e7vSBlJVH01DU+7RlOToZ/7sM?=
+ =?us-ascii?Q?ibZIrHiXoAJanC/27xJpmag=3D?=
+Content-Type: multipart/signed; protocol="application/x-pkcs7-signature";
+ micalg="sha256"; 
+ boundary="_F92207F5-AB92-794E-AFA8-2024DF9889EF_"
+MIME-Version: 1.0
+X-OriginatorOrg: ericsson.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: HE1PR0701MB3050.eurprd07.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b695b055-5978-4993-9aeb-08daf47bd15d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jan 2023 09:03:05.6448 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 92e84ceb-fbfd-47ab-be52-080c6b87953f
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: YTwla6MUMxq7wYD6qCvvVLyMivHSCxcH7h5UeESrmaC/Sb7jlWSn8a6yTzdrvlXdqI79Ydm+1x+GiqbdJKzVogVIJ1mGTOxnRiPjmmqHfZE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAWPR07MB9249
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/EsaEEZd76-JlTzMHJ2-Q8dDLSeE>
+Subject: Re: [TLS] New Version Notification for draft-ietf-tls-esni-15.txt
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Thu, 12 Jan 2023 09:03:15 -0000
+
+--_F92207F5-AB92-794E-AFA8-2024DF9889EF_
+Content-Type: multipart/alternative;
+	boundary="_42B80531-508D-EB4B-9169-E4808A6FED85_"
+
+--_42B80531-508D-EB4B-9169-E4808A6FED85_
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+
+=EF=BB=BFOn 2023-01-07, 18:13, "Stephen Farrell" <stephen.farrell@cs.tcd.ie=
+> wrote:=0D=0D=0D>Hiya, =0D> =0D>On 07/01/2023 15:46, John Mattsson wrote: =
+=0D>> My current understanding is that draft-ietf-tls-esni should require =
+=0D>> that the server MUST NOT reuse a key shares. Unless I miss something =
+=0D>> I suggest adding that and one or two of the above figures to the =0D>=
+> draft. An alternative solution would be to extend the ECH encryption =0D>=
+> to also cover ServerHello. If I understand ECH correctly, the =0D>> Serve=
+rHello is still unencrypted. =0D> =0D>I'd support adding a requirement that=
+ key shares not be =0D>re-used, either as a general thing or in an ECH-spec=
+ific =0D>manner. =0D=0DI made an issue and PR for RFC8446bis. For privacy r=
+easons, I think this should be SHOULD NOT as a general thing. For servers u=
+sing ECH, I think MUST NOT seems motivated. Does MUST NOT lead to DoS probl=
+ems for servers using x25519? =0D=0Dhttps://github.com/tlswg/tls13-spec/iss=
+ues/1285 <https://github.com/tlswg/tls13-spec/issues/1285> =0Dhttps://githu=
+b.com/tlswg/tls13-spec/pull/1286 <https://github.com/tlswg/tls13-spec/pull/=
+1286> =0D=0DCheers, =0DJohn =0D=0D=0D=
+
+--_42B80531-508D-EB4B-9169-E4808A6FED85_
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html; charset="utf-8"
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-micr=
+osoft-com:office:office" xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" xmlns=3D"http:=
+//www.w3.org/TR/REC-html40"><head><meta http-equiv=3DContent-Type content=
+=3D"text/html; charset=3Dutf-8"><meta name=3DGenerator content=3D"Microsoft=
+ Word 15 (filtered medium)"><style><!--
+/* Font Definitions */
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:#0563C1;
+	text-decoration:underline;}
+span.EmailStyle18
+	{mso-style-type:personal-reply;
+	font-family:"Calibri",sans-serif;
+	color:windowtext;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	font-size:10.0pt;}
+@page WordSection1
+	{size:612.0pt 792.0pt;
+	margin:72.0pt 72.0pt 72.0pt 72.0pt;}
+div.WordSection1
+	{page:WordSection1;}
+--></style></head><body lang=3Den-SE link=3D"#0563C1" vlink=3D"#954F72" sty=
+le=3D'word-wrap:break-word'><div class=3DWordSection1><div><p class=3DMsoNo=
+rmal>On 2023-01-07, 18:13, &quot;Stephen Farrell&quot; &lt;stephen.farrell@=
+cs.tcd.ie&gt; wrote:<br><br><o:p></o:p></p><p class=3DMsoNormal>&gt;Hiya,<o=
+:p></o:p></p><p class=3DMsoNormal>&gt;<o:p>&nbsp;</o:p></p><p class=3DMsoNo=
+rmal>&gt;On 07/01/2023 15:46, John Mattsson wrote:<o:p></o:p></p><p class=
+=3DMsoNormal>&gt;&gt; My current understanding is that draft-ietf-tls-esni =
+should require<o:p></o:p></p><p class=3DMsoNormal>&gt;&gt; that the server =
+MUST NOT reuse a key shares. Unless I miss something<o:p></o:p></p><p class=
+=3DMsoNormal>&gt;&gt; I suggest adding that and one or two of the above fig=
+ures to the<o:p></o:p></p><p class=3DMsoNormal>&gt;&gt; draft. An alternati=
+ve solution would be to extend the ECH encryption<o:p></o:p></p><p class=3D=
+MsoNormal>&gt;&gt; to also cover ServerHello. If I understand ECH correctly=
+, the<o:p></o:p></p><p class=3DMsoNormal>&gt;&gt; ServerHello is still unen=
+crypted.<o:p></o:p></p><p class=3DMsoNormal>&gt;<o:p>&nbsp;</o:p></p><p cla=
+ss=3DMsoNormal>&gt;I'd support adding a requirement that key shares not be<=
+o:p></o:p></p><p class=3DMsoNormal>&gt;re-used, either as a general thing o=
+r in an ECH-specific<o:p></o:p></p><p class=3DMsoNormal>&gt;manner.<o:p></o=
+:p></p><p class=3DMsoNormal><o:p>&nbsp;</o:p></p><p class=3DMsoNormal>I mad=
+e an issue and PR for RFC8446bis. For privacy reasons, I think this should =
+be SHOULD NOT as a general thing. For servers using ECH, I think MUST NOT s=
+eems motivated. Does MUST NOT lead to DoS problems for servers using x25519=
+?<o:p></o:p></p><p class=3DMsoNormal><o:p>&nbsp;</o:p></p><p class=3DMsoNor=
+mal><a href=3D"https://github.com/tlswg/tls13-spec/issues/1285">https://git=
+hub.com/tlswg/tls13-spec/issues/1285</a><o:p></o:p></p><p class=3DMsoNormal=
+><a href=3D"https://github.com/tlswg/tls13-spec/pull/1286">https://github.c=
+om/tlswg/tls13-spec/pull/1286</a><o:p></o:p></p><p class=3DMsoNormal><o:p>&=
+nbsp;</o:p></p><p class=3DMsoNormal>Cheers,<o:p></o:p></p><p class=3DMsoNor=
+mal>John<o:p></o:p></p></div></div></body></html>=
+
+--_42B80531-508D-EB4B-9169-E4808A6FED85_--
+
+--_F92207F5-AB92-794E-AFA8-2024DF9889EF_
+Content-type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCHcYw
+ggU4MIIDIKADAgECAhEAlb4WoPcuRvF7OYJy+ovNljANBgkqhkiG9w0BAQUFADA3MRQwEgYDVQQK
+DAtUZWxpYVNvbmVyYTEfMB0GA1UEAwwWVGVsaWFTb25lcmEgUm9vdCBDQSB2MTAeFw0wNzEwMTgx
+MjAwNTBaFw0zMjEwMTgxMjAwNTBaMDcxFDASBgNVBAoMC1RlbGlhU29uZXJhMR8wHQYDVQQDDBZU
+ZWxpYVNvbmVyYSBSb290IENBIHYxMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAwr7r
+J/Aho/NpJlV+ncVVFpFc/e8hv1OAei3SkYxjMfDsJPDDpdJyfBBt9De35eZ8eeqMtYKLrki2rADc
+ZXXsKk1fwYf1IGUrgahHPokjlTAWkH/oVwdI5xmuv0VnsTcbBir+3vmsfYP7Xrrkj5dnvkuOjWQH
+VzhVaTQ2PRNI70/i02YepM8at142M9S0Br0YAf13hFAARfWMXegjvH7+NeHtUHupMI0Z0wmOaGdd
+vzyXGFO7KWLFyl5ywceW1NstoLQfaQPs6uJQ8Qw88KzzUy3wHPXtbDk5c4AWyFKwI83gPtzdPEeg
+uzWK4phoi77lv3Lu0vql7RLt/JgYqSZ23ChLECAc038Wdy3tb4D3SbtTBbtdaMfUyHUWP4lai/cX
+R9RM8dKJeT5NPZioYd46HtL4XgPgwckcjNONTdOVNrM3X2NjmzMU8C0ma1N8iYwywm7sPSEAOcmh
+aOJQgy6wOivzNqCsL+RvYcJRCTk+i1O5u2fa3FO5dlk2nUPlIOA9MmCFIlG3xzO73RUvpHimB3uB
+RjYEht15NceVLDuwoxc15XMftFxZ79rqEGV7etB/n7O0Kjc7cIubW7krt+yyURKXUyla1PASENxP
+ArsSki9i1D9pQ3wN1vxYdQGInVgWS966kP9HAYkGavZfspBqswKmAoi/s0d+KtnV+mh4NU0CAwEA
+AaM/MD0wDwYDVR0TAQH/BAUwAwEB/zALBgNVHQ8EBAMCAQYwHQYDVR0OBBYEFPCPWTgAs/WPmpYM
+1ev6e6oX6BMSMA0GCSqGSIb3DQEBBQUAA4ICAQC+5FxiTiT0DAj/8NMMaOSTSSI/RCdvu23eg2bO
+qMwN/PWaBuV3FJHrnUF7mSqE5f/8IcFd8OQfV7d1qaFfAib/18f3Tt5P+PccRsB6T0AsIjXwGbHQ
+a2cssKjgwEA3NfaEXFzjr0J4/qfJDVDqDYR29lHvg1PGev8OVkkuj3rWDOYnVONNCmByYs2RB9al
+v8iZa+3EGearTBE4xW8x4m5JyD92gCYDJingNvb2IFPjF3A0F51jaB5r7MNNhrgTMC9dRg1HQ9Ub
+qlkOuVyNBkitdIdfx/wxVEET4schDp7gHg3hwHtDhZDFiljGZQp4V/LGIw8B2SBL3g/7koV1Klxz
+jW17JZHK7kWuBksAzNOxWVDaOog7KUNGXpcrVM5Tb41K55b6v3EOQot8/Sig0EjK2sSBTLuic5Mm
+yOsM1iaItsAkz7u9W+t1fekIjoYzLHl3CWmlifyzcJCHdo/TIrtCzr1zCyAmKtCbPXAeJGzNh3ap
+F5a3zw2S+44YqZhJ0Z7+YERyIbkZ7cL1MfE5SIiQJHVUFq3O9PhpFGQ5+6O4unBAxyccv8RWU/pj
+ZdDzHA4W9WuGWE0Y1OQNjqWdW5HcdiRQP8Yq+9m3nLXW5tDZ6BmLFXFIrbfq2FmI1JC/FrPZ6axZ
+YVTIHLrKwcrhuSBMjzqTiaWgzL/T9nWkdZZtVjCCBegwggPQoAMCAQICDwF3r34LKhhktpF96P0L
+0DANBgkqhkiG9w0BAQsFADBHMQswCQYDVQQGEwJTRTERMA8GA1UECgwIRXJpY3Nzb24xJTAjBgNV
+BAMMHEVyaWNzc29uIE5MIEluZGl2aWR1YWwgQ0EgdjMwHhcNMjEwMjE3MTAxNjUwWhcNMjQwMjE4
+MTAxNjQ5WjBWMREwDwYDVQQKDAhFcmljc3NvbjEWMBQGA1UEAwwNSm9obiBNYXR0c3NvbjEpMCcG
+CSqGSIb3DQEJARYaam9obi5tYXR0c3NvbkBlcmljc3Nvbi5jb20wggEiMA0GCSqGSIb3DQEBAQUA
+A4IBDwAwggEKAoIBAQCJsuIpqIoQkEs9I2Xbx+pz2Ou44atDksD6BQeWVmqCdqWax1SsPxLNjePG
+RlpTho6lNR7D7nOkbIkb//vEiADf5uy1ePxfqywPiczvld4OKsMsSZT5Kv6ras4FnU04p4bKnuqo
+xLRuYMpwdhxmeWhLv3tVNJDNqwkFVhx+GFRa75I99RS3hHOyXInWrWj0ZLd4XWevxeJGkSYf5+KC
+O0bUQ82ex/FP7Tps8yPWQlQF1xNiH7yGam47eeiwjwIUeRj6XrXZpBlFf4irLhmLs5HTNbXZC1vv
+srFJbEb0Z61baAXxTon+a4Vq60MRZVI53ah/Z44kep71vHh9EcGE5KCJAgMBAAGjggHAMIIBvDAf
+BgNVHSMEGDAWgBQcexmel5x2rCA92NzjkWrj2y2mUzAdBgNVHQ4EFgQUB6SV3zQRgzVj7MvBwH5b
+fhntIxgwDgYDVR0PAQH/BAQDAgWgMFUGA1UdIAROMEwwSgYMKwYBBAGCDwIDAQESMDowOAYIKwYB
+BQUHAgEWLGh0dHBzOi8vcmVwb3NpdG9yeS50cnVzdC50ZWxpYXNvbmVyYS5jb20vQ1BTMCUGA1Ud
+EQQeMByBGmpvaG4ubWF0dHNzb25AZXJpY3Nzb24uY29tMEgGA1UdHwRBMD8wPaA7oDmGN2h0dHA6
+Ly9jcmwudHJ1c3QudGVsaWEuY29tL2VyaWNzc29ubmxpbmRpdmlkdWFsY2F2My5jcmwwHQYDVR0l
+BBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMCMIGCBggrBgEFBQcBAQR2MHQwKAYIKwYBBQUHMAGGHGh0
+dHA6Ly9vY3NwMi50cnVzdC50ZWxpYS5jb20wSAYIKwYBBQUHMAKGPGh0dHA6Ly9jYS50cnVzdC50
+ZWxpYXNvbmVyYS5jb20vZXJpY3Nzb25ubGluZGl2aWR1YWxjYXYzLmNlcjANBgkqhkiG9w0BAQsF
+AAOCAgEAt4+IDAu+M6CEAuRf6eHSWt2uf9MWfDURNBZNVN98pN+Y7BreJeaN63w5LyFDFgidafPg
+qspVnLNi31Q6kdHyxg2Wlpt87cC7SpxNFs6FOeaTpa3e/j25xIUoj4owobYVxPXTp/yNPcyWujz8
+TO3NM/KY5O65ltWS4QY9QPHyuHoW8uU+Y6KdE6ecWQ46sef33RCfuPDjrj669Zw6Ise8pjjlc7JS
+j3ilanaIqKdYj04gcSLneKAJtmblxbkRctmsZHQ9IWIubjTkB/sXu5jJpDbMdqMnm0LsGHbLyd2x
+BEqLUbVFdMdmz8rdyiFESnHfOggJSgKxd9l00dJzJs1d2t4JnoyRdq7MlUMBgWSJWbL09h4/C6z5
+pKy56k8idiEckJ4OnXk9d1XniX2ggNinfeek0Emj/nDu9qBOdHMcRpnhwi06FLBFJNNQMz03GsRG
+GM8ex/gSnQuHbYrf61DFUvM9TRqcbdh0CBiqjsk9GDn68Zsh4hhTWCeZLeyL15BHfy9o5kBmPL9X
+Hi73PAya/5nmer0N7i15h3favGMDaqY+1jRYBSNxJgzcw1vvsq/ILNSIZNjJVw2cTboEZIfkwVbf
+bFe8EI0xlLl9xQ/pFMflfcZPc685Ezqr8BPvIlthBlOOGTk8KzGqonsbVy6qQPvAfmWy50D2zKbe
+Ngo2giMwggXoMIID0KADAgECAg8Bd69+CyoYZLaRfej9C9AwDQYJKoZIhvcNAQELBQAwRzELMAkG
+A1UEBhMCU0UxETAPBgNVBAoMCEVyaWNzc29uMSUwIwYDVQQDDBxFcmljc3NvbiBOTCBJbmRpdmlk
+dWFsIENBIHYzMB4XDTIxMDIxNzEwMTY1MFoXDTI0MDIxODEwMTY0OVowVjERMA8GA1UECgwIRXJp
+Y3Nzb24xFjAUBgNVBAMMDUpvaG4gTWF0dHNzb24xKTAnBgkqhkiG9w0BCQEWGmpvaG4ubWF0dHNz
+b25AZXJpY3Nzb24uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAibLiKaiKEJBL
+PSNl28fqc9jruOGrQ5LA+gUHllZqgnalmsdUrD8SzY3jxkZaU4aOpTUew+5zpGyJG//7xIgA3+bs
+tXj8X6ssD4nM75XeDirDLEmU+Sr+q2rOBZ1NOKeGyp7qqMS0bmDKcHYcZnloS797VTSQzasJBVYc
+fhhUWu+SPfUUt4RzslyJ1q1o9GS3eF1nr8XiRpEmH+figjtG1EPNnsfxT+06bPMj1kJUBdcTYh+8
+hmpuO3nosI8CFHkY+l612aQZRX+Iqy4Zi7OR0zW12Qtb77KxSWxG9GetW2gF8U6J/muFautDEWVS
+Od2of2eOJHqe9bx4fRHBhOSgiQIDAQABo4IBwDCCAbwwHwYDVR0jBBgwFoAUHHsZnpecdqwgPdjc
+45Fq49stplMwHQYDVR0OBBYEFAekld80EYM1Y+zLwcB+W34Z7SMYMA4GA1UdDwEB/wQEAwIFoDBV
+BgNVHSAETjBMMEoGDCsGAQQBgg8CAwEBEjA6MDgGCCsGAQUFBwIBFixodHRwczovL3JlcG9zaXRv
+cnkudHJ1c3QudGVsaWFzb25lcmEuY29tL0NQUzAlBgNVHREEHjAcgRpqb2huLm1hdHRzc29uQGVy
+aWNzc29uLmNvbTBIBgNVHR8EQTA/MD2gO6A5hjdodHRwOi8vY3JsLnRydXN0LnRlbGlhLmNvbS9l
+cmljc3Nvbm5saW5kaXZpZHVhbGNhdjMuY3JsMB0GA1UdJQQWMBQGCCsGAQUFBwMEBggrBgEFBQcD
+AjCBggYIKwYBBQUHAQEEdjB0MCgGCCsGAQUFBzABhhxodHRwOi8vb2NzcDIudHJ1c3QudGVsaWEu
+Y29tMEgGCCsGAQUFBzAChjxodHRwOi8vY2EudHJ1c3QudGVsaWFzb25lcmEuY29tL2VyaWNzc29u
+bmxpbmRpdmlkdWFsY2F2My5jZXIwDQYJKoZIhvcNAQELBQADggIBALePiAwLvjOghALkX+nh0lrd
+rn/TFnw1ETQWTVTffKTfmOwa3iXmjet8OS8hQxYInWnz4KrKVZyzYt9UOpHR8sYNlpabfO3Au0qc
+TRbOhTnmk6Wt3v49ucSFKI+KMKG2FcT106f8jT3Mlro8/EztzTPymOTuuZbVkuEGPUDx8rh6FvLl
+PmOinROnnFkOOrHn990Qn7jw464+uvWcOiLHvKY45XOyUo94pWp2iKinWI9OIHEi53igCbZm5cW5
+EXLZrGR0PSFiLm405Af7F7uYyaQ2zHajJ5tC7Bh2y8ndsQRKi1G1RXTHZs/K3cohREpx3zoICUoC
+sXfZdNHScybNXdreCZ6MkXauzJVDAYFkiVmy9PYePwus+aSsuepPInYhHJCeDp15PXdV54l9oIDY
+p33npNBJo/5w7vagTnRzHEaZ4cItOhSwRSTTUDM9NxrERhjPHsf4Ep0Lh22K3+tQxVLzPU0anG3Y
+dAgYqo7JPRg5+vGbIeIYU1gnmS3si9eQR38vaOZAZjy/Vx4u9zwMmv+Z5nq9De4teYd32rxjA2qm
+PtY0WAUjcSYM3MNb77KvyCzUiGTYyVcNnE26BGSH5MFW32xXvBCNMZS5fcUP6RTH5X3GT3OvORM6
+q/AT7yJbYQZTjhk5PCsxqqJ7G1cuqkD7wH5lsudA9sym3jYKNoIjMIIF6DCCA9CgAwIBAgIPAXev
+fgsqGGS2kX3o/QvQMA0GCSqGSIb3DQEBCwUAMEcxCzAJBgNVBAYTAlNFMREwDwYDVQQKDAhFcmlj
+c3NvbjElMCMGA1UEAwwcRXJpY3Nzb24gTkwgSW5kaXZpZHVhbCBDQSB2MzAeFw0yMTAyMTcxMDE2
+NTBaFw0yNDAyMTgxMDE2NDlaMFYxETAPBgNVBAoMCEVyaWNzc29uMRYwFAYDVQQDDA1Kb2huIE1h
+dHRzc29uMSkwJwYJKoZIhvcNAQkBFhpqb2huLm1hdHRzc29uQGVyaWNzc29uLmNvbTCCASIwDQYJ
+KoZIhvcNAQEBBQADggEPADCCAQoCggEBAImy4imoihCQSz0jZdvH6nPY67jhq0OSwPoFB5ZWaoJ2
+pZrHVKw/Es2N48ZGWlOGjqU1HsPuc6RsiRv/+8SIAN/m7LV4/F+rLA+JzO+V3g4qwyxJlPkq/qtq
+zgWdTTinhsqe6qjEtG5gynB2HGZ5aEu/e1U0kM2rCQVWHH4YVFrvkj31FLeEc7JcidataPRkt3hd
+Z6/F4kaRJh/n4oI7RtRDzZ7H8U/tOmzzI9ZCVAXXE2IfvIZqbjt56LCPAhR5GPpetdmkGUV/iKsu
+GYuzkdM1tdkLW++ysUlsRvRnrVtoBfFOif5rhWrrQxFlUjndqH9njiR6nvW8eH0RwYTkoIkCAwEA
+AaOCAcAwggG8MB8GA1UdIwQYMBaAFBx7GZ6XnHasID3Y3OORauPbLaZTMB0GA1UdDgQWBBQHpJXf
+NBGDNWPsy8HAflt+Ge0jGDAOBgNVHQ8BAf8EBAMCBaAwVQYDVR0gBE4wTDBKBgwrBgEEAYIPAgMB
+ARIwOjA4BggrBgEFBQcCARYsaHR0cHM6Ly9yZXBvc2l0b3J5LnRydXN0LnRlbGlhc29uZXJhLmNv
+bS9DUFMwJQYDVR0RBB4wHIEaam9obi5tYXR0c3NvbkBlcmljc3Nvbi5jb20wSAYDVR0fBEEwPzA9
+oDugOYY3aHR0cDovL2NybC50cnVzdC50ZWxpYS5jb20vZXJpY3Nzb25ubGluZGl2aWR1YWxjYXYz
+LmNybDAdBgNVHSUEFjAUBggrBgEFBQcDBAYIKwYBBQUHAwIwgYIGCCsGAQUFBwEBBHYwdDAoBggr
+BgEFBQcwAYYcaHR0cDovL29jc3AyLnRydXN0LnRlbGlhLmNvbTBIBggrBgEFBQcwAoY8aHR0cDov
+L2NhLnRydXN0LnRlbGlhc29uZXJhLmNvbS9lcmljc3Nvbm5saW5kaXZpZHVhbGNhdjMuY2VyMA0G
+CSqGSIb3DQEBCwUAA4ICAQC3j4gMC74zoIQC5F/p4dJa3a5/0xZ8NRE0Fk1U33yk35jsGt4l5o3r
+fDkvIUMWCJ1p8+CqylWcs2LfVDqR0fLGDZaWm3ztwLtKnE0WzoU55pOlrd7+PbnEhSiPijChthXE
+9dOn/I09zJa6PPxM7c0z8pjk7rmW1ZLhBj1A8fK4ehby5T5jop0Tp5xZDjqx5/fdEJ+48OOuPrr1
+nDoix7ymOOVzslKPeKVqdoiop1iPTiBxIud4oAm2ZuXFuRFy2axkdD0hYi5uNOQH+xe7mMmkNsx2
+oyebQuwYdsvJ3bEESotRtUV0x2bPyt3KIURKcd86CAlKArF32XTR0nMmzV3a3gmejJF2rsyVQwGB
+ZIlZsvT2Hj8LrPmkrLnqTyJ2IRyQng6deT13VeeJfaCA2Kd956TQSaP+cO72oE50cxxGmeHCLToU
+sEUk01AzPTcaxEYYzx7H+BKdC4dtit/rUMVS8z1NGpxt2HQIGKqOyT0YOfrxmyHiGFNYJ5kt7IvX
+kEd/L2jmQGY8v1ceLvc8DJr/meZ6vQ3uLXmHd9q8YwNqpj7WNFgFI3EmDNzDW++yr8gs1Ihk2MlX
+DZxNugRkh+TBVt9sV7wQjTGUuX3FD+kUx+V9xk9zrzkTOqvwE+8iW2EGU44ZOTwrMaqiextXLqpA
++8B+ZbLnQPbMpt42CjaCIzCCBsIwggSqoAMCAQICEFO4foPhnJkok7CbSRzsuOswDQYJKoZIhvcN
+AQELBQAwNzEUMBIGA1UECgwLVGVsaWFTb25lcmExHzAdBgNVBAMMFlRlbGlhU29uZXJhIFJvb3Qg
+Q0EgdjEwHhcNMTUxMDI3MTIxNjQ2WhcNMjUxMDI3MTIxNjQ2WjBHMQswCQYDVQQGEwJTRTERMA8G
+A1UECgwIRXJpY3Nzb24xJTAjBgNVBAMMHEVyaWNzc29uIE5MIEluZGl2aWR1YWwgQ0EgdjMwggIi
+MA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQDs8t8AALhQ8qe72FS3xpP348GqO9TDRjS0s85e
+Q7Y0LTLZdmSz2cl+lYqs0zfSTm+7meisbhkqUXkL7fFzoe4iIZCh/VuYUaW407CZlDCXes4n4TqT
+SuoklN6uOPhY7EC9ZVbXILlLhRummTdDdxhVW4Leo0awEhfLf98MvWxzwCHzMj8m6YOmNjx+f9Tc
+JE3qaA0piuvSxlfpVdiCulPTlmsmV2RSBSAwqBshZYRcQBIDfqmdvkaoP9EzNKAh7yjthC0hpgHZ
+yZMIs0eNo4v2PUmE0rhu+Zs0nujnwhljPA2/8b8v9tGixD1zbtT7zoM2Ot1menJpFp4zJVSfdKVg
+toWqg5t2H/E0XY1LwJez89W07nscEocyBmpC+zJAmKxKhzEWqIyP1UrZaEIFu+hO+s0Nm8sOUMa4
+TlG4rAUikc5U5TmUIGBRQGxulYhfAzqSYf8oLUMLky1DOa9eRu3sp0FdQDEzQlnF/h1L4AK1MOkX
+1vS+fLgOvBo5LRU1fLPUZQ7FKrDXC6nl2ldvEtljHWstGBmqv25aEvAA+yrrplCh/kYvSBjvZibz
+9Obbwx4yqS77/NHN1iyZyVP2s52B2BLdvo4yhzk6nRk8S/8zHaUUkBUrrvijPDaGK5FNVSaioGvk
+C7IKioITKffYLtT9XuirKrHlh3VzkazG46pAVwIDAQABo4IBuDCCAbQwgYoGCCsGAQUFBwEBBH4w
+fDAtBggrBgEFBQcwAYYhaHR0cDovL29jc3AudHJ1c3QudGVsaWFzb25lcmEuY29tMEsGCCsGAQUF
+BzAChj9odHRwOi8vcmVwb3NpdG9yeS50cnVzdC50ZWxpYXNvbmVyYS5jb20vdGVsaWFzb25lcmFy
+b290Y2F2MS5jZXIwEgYDVR0TAQH/BAgwBgEB/wIBADBVBgNVHSAETjBMMEoGDCsGAQQBgg8CAwEB
+AjA6MDgGCCsGAQUFBwIBFixodHRwczovL3JlcG9zaXRvcnkudHJ1c3QudGVsaWFzb25lcmEuY29t
+L0NQUzBLBgNVHR8ERDBCMECgPqA8hjpodHRwOi8vY3JsLTMudHJ1c3QudGVsaWFzb25lcmEuY29t
+L3RlbGlhc29uZXJhcm9vdGNhdjEuY3JsMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDBDAO
+BgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFBx7GZ6XnHasID3Y3OORauPbLaZTMB8GA1UdIwQYMBaA
+FPCPWTgAs/WPmpYM1ev6e6oX6BMSMA0GCSqGSIb3DQEBCwUAA4ICAQBQWGvx1Yw7tC6rV0PIjKfD
+yxaanIX+NZLEGOkdQLKGW2gVLtDUJQEPRs5QtaZiObNHCZ7mmSNMVek4lkt/0dqfVIFutVw/QkyF
+GwC99ZmNwXSX9z+OoMyoEBHGvw5RY6vRlZrj0uKvdASzYL4KMaB7m3NwurNDmmNbG52suRIZ76wB
+OEOddRZcZiTy50ZkBqYnnl2t3D3oBX2NZCQysshUcqRdUbkS13HTCIChMuTV9W0tzPXUOJoJlJlU
+9nd91IikhGEOrPwfixWms+C8sF0r9qN1uJGx6ELPOiFrLfNtcMNMMbAqRHwpSLxe3wcNkJGxv9T8
+LswLi1UrRIQ85AKjqzBnLSsjRGgbMgJ+xKtngmvEA155JmoKfUD7DRbP6Kp14/Y9XFbR/WuDj84b
+YNKXe4HdDc1P+UMYm16m2L6LkIIoRlx0A5mi+K7jewuGqzFKkaPNmJ0RLCi+4d4/47Zs3DC3PUNO
+xdOEEHf4kkdWOaSIuj3TQYhNv+LsgF0uijiBmaz2zUFDa2bcIkKakDZfAFM4HoHz8K2BZRaHKWhd
+3dZua/tlSiqokUFX2DxmHmZ1n5HM9OiaAIXP/Zo2x10j/Yb1mM3i0bqGahxlHYzl/QyEG/dujp3l
+ewuVjCI0mPDkZGphvxyqp4Jo8qS94EnOqBvxOgftYug7OY9EKY+WkDGCAl4wggJaAgEBMFowRzEL
+MAkGA1UEBhMCU0UxETAPBgNVBAoMCEVyaWNzc29uMSUwIwYDVQQDDBxFcmljc3NvbiBOTCBJbmRp
+dmlkdWFsIENBIHYzAg8Bd69+CyoYZLaRfej9C9AwDQYJYIZIAWUDBAIBBQCggdYwGAYJKoZIhvcN
+AQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMwMTEyMDkwMjUyWjAvBgkqhkiG9w0B
+CQQxIgQgw4nISVqAXKHAnR/z290fJc2P+33xVA6qILCeTfMRpzEwawYLKoZIhvcNAQkQAgsxXKBa
+MEcxCzAJBgNVBAYTAlNFMREwDwYDVQQKDAhFcmljc3NvbjElMCMGA1UEAwwcRXJpY3Nzb24gTkwg
+SW5kaXZpZHVhbCBDQSB2MwIPAXevfgsqGGS2kX3o/QvQMA0GCSqGSIb3DQEBAQUABIIBAF7tJgpS
+j8O4l4xeO2EaqnF2Mlg0H+I9mT3BuTXYX6W0/XarCLAhWaSW5VkgdScfdKQ11Q9TX57xvc5GyJCr
+nowx2jq5gkeGIMQXWraNyJ7zqwkL6jHzsgkq3TZI5Ndj4rN5DH94NFfIK5ZyvnZsDSAW2FvN2Mlz
+WbIPNaR4eRvZPaH0VALpCCh+Q9zGQFwq505jFQWPKz8brxuHOPas89HchcCoX3KR6n/e6VMF/GbX
+BoQjnfROuwu0ifOJ90bknOxvfcUFsRoYxd0GeuDOp89M+gEIn3Wr1XQ9tqcQhgmBoYHoNX66VBlk
+3MCdGhcmqEy0KrGEU+b74rz72GdnztsAAAAAAAA=
+
+--_F92207F5-AB92-794E-AFA8-2024DF9889EF_--
+

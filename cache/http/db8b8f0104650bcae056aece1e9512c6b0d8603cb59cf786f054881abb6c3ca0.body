@@ -1,0 +1,999 @@
+Return-Path: <mglt.ietf@gmail.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 05E6C12946C;
+ Tue, 23 May 2017 19:37:41 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.398
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.398 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ FREEMAIL_FORGED_FROMDOMAIN=0.199, FREEMAIL_FROM=0.001,
+ HEADER_FROM_DIFFERENT_DOMAINS=0.001, HTML_MESSAGE=0.001,
+ RCVD_IN_DNSWL_LOW=-0.7, SPF_PASS=-0.001, URIBL_BLOCKED=0.001]
+ autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=gmail.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id CgXD_x1RRhJz; Tue, 23 May 2017 19:37:36 -0700 (PDT)
+Received: from mail-lf0-x22f.google.com (mail-lf0-x22f.google.com
+ [IPv6:2a00:1450:4010:c07::22f])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 9C2481286AB;
+ Tue, 23 May 2017 19:37:35 -0700 (PDT)
+Received: by mail-lf0-x22f.google.com with SMTP id h4so59720109lfj.3;
+ Tue, 23 May 2017 19:37:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025; 
+ h=mime-version:sender:in-reply-to:references:from:date:message-id
+ :subject:to:cc;
+ bh=Ywg70humm/wAG37gn1zWDG9mE5/mrn+OhW94pzYwutM=;
+ b=ig0Om4LtNfWbnyYiiSO62d7FdpT8Y+6HGmQDTX2vv85MF7Gx/scWKfVRVu1Qi7qJBz
+ XXrVC3bj8zRf0rnFzA0WnlvSUPo3AwIGZhbqiJ87XcM4TIXFm4U9HvoLaap4iN7zt8Nl
+ ng/arq3oH1q2E9g7tFcfL9cxJm0pbyjo1Tu+8VUr93ctFUM5RVs+09ieChwVjhP3ys6o
+ 7j3cq5UDqn9vc3kncFVNKPNhLQi/lXsmOceeCAaHPxEXLVwS51GdAtNLFidrVyBL4dke
+ edPsUDfiRPtqcGFrhIgXHvccO8r3HEn7ZAKyBL/4zp8DABiZpKpzwudsWAndWAiwT3uC
+ U9mA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:sender:in-reply-to:references:from
+ :date:message-id:subject:to:cc;
+ bh=Ywg70humm/wAG37gn1zWDG9mE5/mrn+OhW94pzYwutM=;
+ b=Shg3B67/xvUkKF7nAd23L6bnb8rsNsLmDErbrO9dUKgrOdJUmuVbpfchzcbN/CDkF0
+ zLUKXqVb601fl5ZCkqjlYcK8P7nW9Xp2lDbdwL7DqNSh6YkUb45OFEC8KAUeXxrXIRQt
+ WZpOKU7xacWdqMtjXJg3q37ry+JZh3jGw97z2a/t20IwLXZY+qio4d8kQD6JB5776fGA
+ U/F8Eg+eLXO+H5QYpcEooYyGv9LuDd2+tynAwPNHw31N1UUnShynUMVEEK6qx1BxAv/u
+ 6NI2S130ZQ0q9zf2BsPhLIAEs2OdN4pTEjz7Xvs+ugoPF0p3MsKbKEwZgx7GdOwzz6fl
+ uicA==
+X-Gm-Message-State: AODbwcAz+JG/1+lNVLLFxHxThYYyZ9d3J78mhW8DY3+trT8vsgWHy+Cd
+ 0H1zJcz7CVGUFPFzqdkSeLH89dhBog==
+X-Received: by 10.25.208.14 with SMTP id h14mr7224506lfg.174.1495593453923;
+ Tue, 23 May 2017 19:37:33 -0700 (PDT)
+MIME-Version: 1.0
+Sender: mglt.ietf@gmail.com
+Received: by 10.46.0.14 with HTTP; Tue, 23 May 2017 19:37:33 -0700 (PDT)
+In-Reply-To: <CADZyTknmXE6UW5e9SbSwwSUZWU-wHw_+9sTB_xnYUmo8KBOJxg@mail.gmail.com>
+References: <149550551972.4974.3201248950751611020.idtracker@ietfa.amsl.com>
+ <CADZyTknOk=skkKXFtrvVWuKVU_PLV3tecaeo9kdLe77a9YxkNQ@mail.gmail.com>
+ <CABcZeBM-4_xqBOum3vCd2Sb5327CYpU08kxadqYwW+qh0W3eJw@mail.gmail.com>
+ <CADZyTknmXE6UW5e9SbSwwSUZWU-wHw_+9sTB_xnYUmo8KBOJxg@mail.gmail.com>
+From: Daniel Migault <daniel.migault@ericsson.com>
+Date: Tue, 23 May 2017 21:37:33 -0500
+X-Google-Sender-Auth: vhBbM_T1hl-s3GknTGuQREBJ1EQ
+Message-ID: <CADZyTk=K8dzYaEL3TBjHMzsHnF+X52RvZiUsSBJQmNi0CkH=CA@mail.gmail.com>
+To: Eric Rescorla <ekr@rtfm.com>
+Cc: The IESG <iesg@ietf.org>, draft-ietf-tls-ecdhe-psk-aead@ietf.org, 
+ Joseph Salowey <joe@salowey.net>, tls-chairs <tls-chairs@ietf.org>,
+ tls <tls@ietf.org>
+Content-Type: multipart/mixed; boundary="001a11412d3c8cca6305503bfc78"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/wOIj_gYduZSPzGzOPjan6t7h2so>
+Subject: Re: [TLS] Eric Rescorla's Discuss on
+ draft-ietf-tls-ecdhe-psk-aead-04: (with DISCUSS and COMMENT)
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Wed, 24 May 2017 02:37:41 -0000
+
+--001a11412d3c8cca6305503bfc78
+Content-Type: multipart/alternative; boundary="001a11412d3c8cca5e05503bfc76"
+
+--001a11412d3c8cca5e05503bfc76
+Content-Type: text/plain; charset="UTF-8"
+
+re-sending with the version 05 but removing the diff to be under the 100 KB
+limit.
+Yours,
+Daniel
+
+On Tue, May 23, 2017 at 9:28 PM, Daniel Migault <daniel.migault@ericsson.com
+> wrote:
+
+> Hi Eric,
+>
+> Thank you for the feed backs. The version 05 contains all text changes you
+> agreed. In addition, the text explaining dictionary/brute force has been
+> removed and replace by a reference to 4279. The recommendation regarding to
+> all PSK ciphers has been limited to the one of the document.  Please see
+> inline for more details.
+>
+> For some reasons I am not able to validate the submission of version 05. I
+> have attached the diff with version 04 as well as the locally generated
+> version 05.
+>
+> Yours,
+> Daniel
+>
+> On Tue, May 23, 2017 at 7:40 PM, Eric Rescorla <ekr@rtfm.com> wrote:
+>
+>>
+>>
+>> On Wed, May 24, 2017 at 6:00 AM, Daniel Migault <
+>> daniel.migault@ericsson.com> wrote:
+>>
+>>> Hi Eric,
+>>>
+>>> Thank you for your reviews. Please see my responses inline. If you agree
+>>> with the text I will update the draft.
+>>>
+>>> Yours,
+>>> Daniel
+>>>
+>>> On Mon, May 22, 2017 at 10:11 PM, Eric Rescorla <ekr@rtfm.com> wrote:
+>>>
+>>>> Eric Rescorla has entered the following ballot position for
+>>>> draft-ietf-tls-ecdhe-psk-aead-04: Discuss
+>>>>
+>>>> When responding, please keep the subject line intact and reply to all
+>>>> email addresses included in the To and CC lines. (Feel free to cut this
+>>>> introductory paragraph, however.)
+>>>>
+>>>>
+>>>> Please refer to https://www.ietf.org/iesg/stat
+>>>> ement/discuss-criteria.html
+>>>> for more information about IESG DISCUSS and COMMENT positions.
+>>>>
+>>>>
+>>>> The document, along with other ballot positions, can be found here:
+>>>> https://datatracker.ietf.org/doc/draft-ietf-tls-ecdhe-psk-aead/
+>>>>
+>>>>
+>>>>
+>>>> ----------------------------------------------------------------------
+>>>> DISCUSS:
+>>>> ----------------------------------------------------------------------
+>>>>
+>>>> The following text appears to have been added in -04
+>>>>
+>>>>    A server receiving a ClientHello and a client_version indicating
+>>>>    (3,1) "TLS 1.0" or (3,2) "TLS 1.1" and any of the cipher suites from
+>>>>    this document in ClientHello.cipher_suites can safely assume that
+>>>> the
+>>>>    client supports TLS 1.2 and is willing to use it.  The server MUST
+>>>>    NOT negotiate these cipher suites with TLS protocol versions earlier
+>>>>    than TLS 1.2.  Not requiring clients to indicate their support for
+>>>>    TLS 1.2 cipher suites exclusively through ClientHello.client_hello
+>>>>    improves the interoperability in the installed base and use of TLS
+>>>>    1.2 AEAD cipher suites without upsetting the installed base of
+>>>>    version-intolerant TLS servers, results in more TLS handshakes
+>>>>    succeeding and obviates fallback mechanisms.
+>>>>
+>>>> This is a major technical change from -03, which, AFAIK, prohibited
+>>>> the server from negotiating these algorithms with TLS 1.1 and below
+>>>> and maintained the usual TLS version 1.2 negotiation rules.
+>>>>
+>>>> This is a very material technical change. I don't consider it wise,
+>>>> but in any case it would absolutely need WG consensus, which I
+>>>> don't believe that it has given the recent introduction.
+>>>>
+>>>
+>>> I agree that the text is a technical change, and that it may not be
+>>> appropriated to do so now. The reason I included it was that it was conform
+>>> to the previous text, but I agree that implicit assumption of version 1.2
+>>> may need some additional discussion especially regarding RFC5246 Appendix
+>>> E. Unless you prefer further discussion I assume the text below address
+>>> your concern.
+>>>
+>>> <t>The cipher suites defined in this document MUST NOT be negotiated for
+>>> any version of (D)TLS other than TLS 1.2. Clients MUST NOT offer one of
+>>> these cipher suites with a (D)TLS version that differs from TLS 1.2.
+>>> Servers MUST NOT select one of these cipher suites with a TLS version that
+>>> differs from TLS 1.2. A client MUST treat the selection of these cipher
+>>> suites in combination with a version of TLS as an error and generate a
+>>> fatal 'illegal_parameter' TLS alert. </t>
+>>>
+>>
+>> Yes, this seems fine
+>>
+>>
+>> The discussion of dictionary attacks here seems inferior to that
+>>>> in 4279. In particular, you only need to actively attack one
+>>>> connection to capture the data you need for a brute force attack
+>>>> despite the text there referring to trying "different keys".
+>>>> Please correct that.
+>>>>
+>>>> I believe the text below address your concern:
+>>>
+>>> OLD:
+>>> <t>Use of Pre-Shared Keys of limited entropy may allow an active
+>>> attacker attempts to connect to the server and try different keys.
+>>> For example, limited entropy may be provided by using a short PSK in
+>>> which
+>>> case an attacker may perform a brute-force attack. Another example
+>>> includes the use of a PSK  chosen by a human which thus may be exposed to
+>>> dictionary attacks.</t>
+>>>
+>>> NEW:
+>>> <t>Pre-Shared Keys security relies on its associated entropy, and it is
+>>> RECOMMENDED to follow <xref target="4086"/> to ensure the PSK has enough
+>>> entropy. Possible reasons for low entropy includes PSK chosen by humans or
+>>> PSK of small length as well as using random generators with limited
+>>> entropy. </t>
+>>>
+>>> <t>PSK of limited entropy may allow an attacker to test different PSK
+>>> values against a valid output such as master secret or any output derived
+>>> from it. In this document, the master secret is generated using the PSK as
+>>> well as the ECDHE shared secret. The use of ECDHE limits the possibilities
+>>> of passive eavesdropping attackers, as the ECDHE shared secret is not
+>>> expected to be derived from the observed ECDH parameters. As a result,
+>>> passive eavesdropping is unlikely to happen, and the collection of all
+>>> necessary material relies on an active attack.
+>>> An active attacker may collect the necessary material by setting a TLS
+>>> session as a client with the legitimate server. One PSK is tested for each
+>>> session, and a match occurs when key exchange succeeds. On the other hand,
+>>> an active attacker may also consider gathering the necessary information
+>>> for offline computation. One way consists in getting a legitimate client to
+>>> establish a connection with the attacker. It is also assumed that the
+>>> client will accept the ECDH parameters authenticated by the attacker's
+>>> private key and finally returns the Finished message authenticating the
+>>> exchange. The attacker will be then in possession of all the necessary
+>>> information to perform a brute force attack.</t>
+>>>
+>>
+>> Is there a reason to not just point directly to the 4279 security
+>> considerations?
+>>
+>
+> No, basically I tried to complete the previous text that missed the
+> offline use case. The current version just point to 4279, without having
+> the above text. If you think the text above is clarifying I can add it as
+> well.
+>
+>> -
+>>
+>>>
+>>>
+>>>>
+>>>> ----------------------------------------------------------------------
+>>>> COMMENT:
+>>>> ----------------------------------------------------------------------
+>>>>
+>>>> The citations to TLS 1.3 still seem pretty muddled. I think you
+>>>> should just stop referencing and discussing 1.3.
+>>>>
+>>>
+>>> My understanding of your comment is that mentioning TLS 1.3 to further
+>>> insisting that the code point are not valid for TLS 1.3 is confusing. I
+>>> propose to:
+>>>
+>>> Explicitly mention the TLS version in the title:
+>>>
+>>> OLD title:
+>>> ECDHE_PSK with AES-GCM and AES-CCM Cipher Suites for Transport Layer
+>>> Security (TLS)
+>>>
+>>> NEW title:
+>>> ECDHE_PSK with AES-GCM and AES-CCM Cipher Suites for Transport Layer
+>>> Security (TLS)
+>>>
+>>> OLD Introduction:
+>>>
+>>>     The cipher
+>>>    suites are defined for version 1.2 of the Transport Layer Security
+>>>    (TLS) [RFC5246 <https://tools.ietf.org/html/rfc5246>] protocol, version 1.2 of the Datagram Transport Layer
+>>>    Security (DTLS) protocol [RFC6347 <https://tools.ietf.org/html/rfc6347>], as well as version 1.3 of TLS
+>>>    [I-D.ietf-tls-tls13 <https://tools.ietf.org/html/draft-ietf-tls-ecdhe-psk-aead-04#ref-I-D.ietf-tls-tls13>].
+>>>
+>>> NEW introduction
+>>>
+>>> The cipher
+>>>    suites are defined for version 1.2 of the Transport Layer Security
+>>>    (TLS) [RFC5246 <https://tools.ietf.org/html/rfc5246>] protocol, version 1.2 of the Datagram Transport Layer
+>>>    Security (DTLS) protocol [RFC6347 <https://tools.ietf.org/html/rfc6347>].
+>>>
+>>>
+>>> I suggest to keep the following text of the introduction:
+>>>
+>>>
+>>> AEAD algorithms that combine encryption and integrity protection are
+>>>    strongly recommended for (D)TLS [RFC7525 <https://tools.ietf.org/html/rfc7525>] and non-AEAD algorithms are
+>>>    forbidden to use in TLS 1.3 [I-D.ietf-tls-tls13 <https://tools.ietf.org/html/draft-ietf-tls-ecdhe-psk-aead-04#ref-I-D.ietf-tls-tls13>].  The AEAD
+>>>    algorithms considered in this document are AES-GCM and AES-CCM.  The
+>>>    use of AES-GCM in TLS is defined in [RFC5288 <https://tools.ietf.org/html/rfc5288>] and the use of AES-CCM
+>>>    is defined in [RFC6655 <https://tools.ietf.org/html/rfc6655>].
+>>>
+>>>
+>> Yes, this seems fine.
+>>
+>>
+>>
+>>> I suggest to keep the following text of the Applicable versions
+>>> sections, as I believe the section discusses the cipher suites against all
+>>> existing TLS versions. In addition, it also justifies somewhat that we only
+>>> defined cipher suites that are compatible with TLS1.3.
+>>>
+>>>    TLS version 1.3 and later negotiate these features in a different
+>>>    manner.  Unlike TLS 1.2, TLS 1.3 separates authentication and cipher
+>>>    suite negotiation [I-D.ietf-tls-tls13 <https://tools.ietf.org/html/draft-ietf-tls-ecdhe-psk-aead-04#ref-I-D.ietf-tls-tls13>] Section 1.2 <https://tools.ietf.org/html/draft-ietf-tls-ecdhe-psk-aead-04#section-1.2>.  TLS 1.3 supports
+>>>    PSK with ECDHE key exchange and the cipher suites
+>>>    TLS_AES_128_GCM_SHA256, TLS_AES_256_GCM_SHA384,
+>>>    TLS_AES_128_CCM_8_SHA256 and TLS_AES_128_CCM_SHA256 are part of the
+>>>    specification.  As a result, TLS 1.3 and higher versions, negotiate
+>>>    and support these cipher suites in a different way.
+>>>
+>>>
+>> OK.
+>>
+>>
+>>> I suggest to remove the reference to TLS1.3 in the security
+>>> considerations
+>>>
+>>> OLD
+>>>
+>>>  The security considerations in TLS 1.2 [RFC5246 <https://tools.ietf.org/html/rfc5246>], DTLS 1.2 [RFC6347 <https://tools.ietf.org/html/rfc6347>],
+>>>    TLS 1.3 [I-D.ietf-tls-tls13 <https://tools.ietf.org/html/draft-ietf-tls-ecdhe-psk-aead-04#ref-I-D.ietf-tls-tls13>], ECDHE_PSK [RFC5489 <https://tools.ietf.org/html/rfc5489>], AES-GCM [RFC5288 <https://tools.ietf.org/html/rfc5288>],
+>>>    and AES-CCM [RFC6655 <https://tools.ietf.org/html/rfc6655>] apply to this document as well.
+>>>
+>>> NEW
+>>>
+>>>  The security considerations in TLS 1.2 [RFC5246 <https://tools.ietf.org/html/rfc5246>], DTLS 1.2 [RFC6347 <https://tools.ietf.org/html/rfc6347>],
+>>>  ECDHE_PSK [RFC5489 <https://tools.ietf.org/html/rfc5489>], AES-GCM [RFC5288 <https://tools.ietf.org/html/rfc5288>],and AES-CCM [RFC6655 <https://tools.ietf.org/html/rfc6655>] apply
+>>>  to this document as well.
+>>>
+>>>
+>>>> S 2.
+>>>> I'm not sure that the discussion of the PRF is helpful here in
+>>>> mandating the non-use of these cipher suites with TLS 1.1 and
+>>>> below.
+>>>>
+>>>
+>>> I find the text useful as it gives an idea why even introducing AEAD in
+>>> TLS version lower than 1.2 is a bad idea, so I would prefer to keep it. The
+>>> text has been changed to
+>>>
+>>> OLD:
+>>> As such TLS 1.0 and TLS 1.1 should not be used with ECDHE_PSK.
+>>>
+>>> NEW:
+>>> As such,  all ECDHE_PSK
+>>> ciphers, including those defined outside this document, SHOULD NOT be
+>>> negotiated in TLS versions prior to 1.2.
+>>>
+>>
+>> I don't think you should be levying a new normative requirement like this
+>> for other ciphers
+>> i this document
+>>
+>
+> Consideration for other ciphers has been removed. The requirement is
+> limited to the ciphers of the document. The new text is:
+>
+> As such, all ECDHE_PSK ciphers, including those defined in this document,
+> SHOULD NOT be
+> negotiated in TLS versions prior to 1.2.
+>
+>>
+>> -Ek
+>> r
+>>
+>>
+>
+
+--001a11412d3c8cca5e05503bfc76
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div><div>re-sending with the version 05 but removing the =
+diff to be under the 100 KB limit. <br></div>Yours, <br></div>Daniel<br><di=
+v><div><div><div class=3D"gmail_extra"><br><div class=3D"gmail_quote">On Tu=
+e, May 23, 2017 at 9:28 PM, Daniel Migault <span dir=3D"ltr">&lt;<a href=3D=
+"mailto:daniel.migault@ericsson.com" target=3D"_blank">daniel.migault@erics=
+son.com</a>&gt;</span> wrote:<br><blockquote class=3D"gmail_quote" style=3D=
+"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex"><div dir=3D=
+"ltr"><div><div>Hi Eric, <br><br></div>Thank you for the feed backs. The ve=
+rsion 05 contains all text changes you agreed. In addition, the text explai=
+ning dictionary/brute force has been removed and replace by a reference to =
+4279. The recommendation regarding to all PSK ciphers has been limited to t=
+he one of the document.=C2=A0 Please see=C2=A0 inline for more details.<br>=
+<span class=3D"m_4394873319862751035m_5356331867454488272gmail-im"><br></sp=
+an></div><div><span class=3D"m_4394873319862751035m_5356331867454488272gmai=
+l-im">For some reasons I am not able to validate the submission of version =
+05. I have attached the diff with version 04 as well as the locally generat=
+ed version 05. <br><br></span></div><span class=3D"m_4394873319862751035m_5=
+356331867454488272gmail-im">Yours, <br>Daniel<br></span><div class=3D"gmail=
+_extra"><br><div class=3D"gmail_quote"><div><div class=3D"h5">On Tue, May 2=
+3, 2017 at 7:40 PM, Eric Rescorla <span dir=3D"ltr">&lt;<a href=3D"mailto:e=
+kr@rtfm.com" target=3D"_blank">ekr@rtfm.com</a>&gt;</span> wrote:<br><block=
+quote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1=
+px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr"><br><div class=
+=3D"gmail_extra"><br><div class=3D"gmail_quote"><div><div class=3D"m_439487=
+3319862751035m_5356331867454488272gmail-h5">On Wed, May 24, 2017 at 6:00 AM=
+, Daniel Migault <span dir=3D"ltr">&lt;<a href=3D"mailto:daniel.migault@eri=
+csson.com" target=3D"_blank">daniel.migault@ericsson.com</a>&gt;</span> wro=
+te:<br><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;=
+border-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr"><=
+div><div><div>Hi Eric, <br><br></div>Thank you for your reviews. Please see=
+ my responses inline. If you agree with the text I will update the draft.<b=
+r><br></div>Yours, <br></div>Daniel<br><div><div><div><div><div class=3D"gm=
+ail_extra"><br><div class=3D"gmail_quote"><div><div class=3D"m_439487331986=
+2751035m_5356331867454488272gmail-m_4997153826884106269m_442933667941394762=
+3h5">On Mon, May 22, 2017 at 10:11 PM, Eric Rescorla <span dir=3D"ltr">&lt;=
+<a href=3D"mailto:ekr@rtfm.com" target=3D"_blank">ekr@rtfm.com</a>&gt;</spa=
+n> wrote:<br><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px =
+0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">Eric Rescorl=
+a has entered the following ballot position for<br>
+draft-ietf-tls-ecdhe-psk-aead-<wbr>04: Discuss<br>
+<br>
+When responding, please keep the subject line intact and reply to all<br>
+email addresses included in the To and CC lines. (Feel free to cut this<br>
+introductory paragraph, however.)<br>
+<br>
+<br>
+Please refer to <a href=3D"https://www.ietf.org/iesg/statement/discuss-crit=
+eria.html" rel=3D"noreferrer" target=3D"_blank">https://www.ietf.org/iesg/s=
+tat<wbr>ement/discuss-criteria.html</a><br>
+for more information about IESG DISCUSS and COMMENT positions.<br>
+<br>
+<br>
+The document, along with other ballot positions, can be found here:<br>
+<a href=3D"https://datatracker.ietf.org/doc/draft-ietf-tls-ecdhe-psk-aead/"=
+ rel=3D"noreferrer" target=3D"_blank">https://datatracker.ietf.org/d<wbr>oc=
+/draft-ietf-tls-ecdhe-psk-ae<wbr>ad/</a><br>
+<br>
+<br>
+<br>
+------------------------------<wbr>------------------------------<wbr>-----=
+-----<br>
+DISCUSS:<br>
+------------------------------<wbr>------------------------------<wbr>-----=
+-----<br>
+<br>
+The following text appears to have been added in -04<br>
+<br>
+=C2=A0 =C2=A0A server receiving a ClientHello and a client_version indicati=
+ng<br>
+=C2=A0 =C2=A0(3,1) &quot;TLS 1.0&quot; or (3,2) &quot;TLS 1.1&quot; and any=
+ of the cipher suites from<br>
+=C2=A0 =C2=A0this document in ClientHello.cipher_suites can safely assume t=
+hat<br>
+the<br>
+=C2=A0 =C2=A0client supports TLS 1.2 and is willing to use it.=C2=A0 The se=
+rver MUST<br>
+=C2=A0 =C2=A0NOT negotiate these cipher suites with TLS protocol versions e=
+arlier<br>
+=C2=A0 =C2=A0than TLS 1.2.=C2=A0 Not requiring clients to indicate their su=
+pport for<br>
+=C2=A0 =C2=A0TLS 1.2 cipher suites exclusively through ClientHello.client_h=
+ello<br>
+=C2=A0 =C2=A0improves the interoperability in the installed base and use of=
+ TLS<br>
+=C2=A0 =C2=A01.2 AEAD cipher suites without upsetting the installed base of=
+<br>
+=C2=A0 =C2=A0version-intolerant TLS servers, results in more TLS handshakes=
+<br>
+=C2=A0 =C2=A0succeeding and obviates fallback mechanisms.<br>
+<br>
+This is a major technical change from -03, which, AFAIK, prohibited<br>
+the server from negotiating these algorithms with TLS 1.1 and below<br>
+and maintained the usual TLS version 1.2 negotiation rules.<br>
+<br>
+This is a very material technical change. I don&#39;t consider it wise,<br>
+but in any case it would absolutely need WG consensus, which I<br>
+don&#39;t believe that it has given the recent introduction.<br></blockquot=
+e><div><br></div></div></div><div>I agree that the text is a technical chan=
+ge, and that it may not be appropriated to do so now. The reason I included=
+ it was that it was conform to the previous text, but I agree that implicit=
+ assumption of version 1.2 may need some additional discussion especially r=
+egarding RFC5246 Appendix E. Unless you prefer further discussion I assume =
+the text below address your concern. =C2=A0 <br><br>&lt;t&gt;The cipher sui=
+tes defined in this document MUST NOT be negotiated for any version of (D)T=
+LS other than TLS 1.2. Clients MUST NOT offer one of these cipher suites wi=
+th a (D)TLS version that differs from TLS 1.2. Servers MUST NOT select one =
+of these cipher suites with a TLS version that differs from TLS 1.2. A clie=
+nt MUST treat the selection of these cipher suites in combination with a ve=
+rsion of TLS as an error and generate a fatal &#39;illegal_parameter&#39; T=
+LS alert. &lt;/t&gt; <br></div></div></div></div></div></div></div></div></=
+blockquote><div><br></div></div></div><div>Yes, this seems fine</div><span =
+class=3D"m_4394873319862751035m_5356331867454488272gmail-"><div><br></div><=
+div><br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px=
+ 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D=
+"ltr"><div><div><div><div><div class=3D"gmail_extra"><div class=3D"gmail_qu=
+ote"><span><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.=
+8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">
+The discussion of dictionary attacks here seems inferior to that<br>
+in 4279. In particular, you only need to actively attack one<br>
+connection to capture the data you need for a brute force attack<br>
+despite the text there referring to trying &quot;different keys&quot;.<br>
+Please correct that.<br>
+<br></blockquote></span><div>I believe the text below address your concern:=
+<br><br>OLD:<br>&lt;t&gt;Use of Pre-Shared Keys of limited entropy may allo=
+w an active<br>attacker attempts to connect to the server and try different=
+ keys.<br>For example, limited entropy may be provided by using a short PSK=
+ in which<br>case an attacker may perform a brute-force attack. Another exa=
+mple<br>includes the use of a PSK=C2=A0 chosen by a human which thus may be=
+ exposed to<br>dictionary attacks.&lt;/t&gt;<br><br>NEW:<br>&lt;t&gt;Pre-Sh=
+ared Keys security relies on its associated entropy, and it is RECOMMENDED =
+to follow &lt;xref target=3D&quot;4086&quot;/&gt; to ensure the PSK has eno=
+ugh entropy. Possible reasons for low entropy includes PSK chosen by humans=
+ or PSK of small length as well as using random generators with limited ent=
+ropy. &lt;/t&gt;<br><br>&lt;t&gt;PSK of limited entropy may allow an attack=
+er to test different PSK values against a valid output such as master secre=
+t or any output derived from it. In this document, the master secret is gen=
+erated using the PSK as well as the ECDHE shared secret. The use of ECDHE l=
+imits the possibilities of passive eavesdropping attackers, as the ECDHE sh=
+ared secret is not expected to be derived from the observed ECDH parameters=
+. As a result, passive eavesdropping is unlikely to happen, and the collect=
+ion of all necessary material relies on an active attack. <br>An active att=
+acker may collect the necessary material by setting a TLS session as a clie=
+nt with the legitimate server. One PSK is tested for each session, and a ma=
+tch occurs when key exchange succeeds. On the other hand, an active attacke=
+r may also consider gathering the necessary information for offline computa=
+tion. One way consists in getting a legitimate client to establish a connec=
+tion with the attacker. It is also assumed that the client will accept the =
+ECDH parameters authenticated by the attacker&#39;s private key and finally=
+ returns the Finished message authenticating the exchange. The attacker wil=
+l be then in possession of all the necessary information to perform a brute=
+ force attack.&lt;/t&gt;=C2=A0=C2=A0 <br></div></div></div></div></div></di=
+v></div></div></blockquote><div><br></div></span><div>Is there a reason to =
+not just point directly to the 4279 security considerations?</div></div></d=
+iv></div></blockquote><div><br></div></div></div><div>No, basically I tried=
+ to complete the previous text that missed the offline use case. The curren=
+t version just point to 4279, without having the above text. If you think t=
+he text above is clarifying I can add it as well.=C2=A0 =C2=A0 =C2=A0 <br><=
+/div><div><div class=3D"h5"><blockquote class=3D"gmail_quote" style=3D"marg=
+in:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1e=
+x"><div dir=3D"ltr"><div class=3D"gmail_extra"><div class=3D"gmail_quote"><=
+div>-</div><div><div class=3D"m_4394873319862751035m_5356331867454488272gma=
+il-h5"><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;=
+border-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr"><=
+div><div><div><div><div class=3D"gmail_extra"><div class=3D"gmail_quote"><d=
+iv>=C2=A0 <br></div><span><blockquote class=3D"gmail_quote" style=3D"margin=
+:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"=
+>
+<br>
+------------------------------<wbr>------------------------------<wbr>-----=
+-----<br>
+COMMENT:<br>
+------------------------------<wbr>------------------------------<wbr>-----=
+-----<br>
+<br>
+The citations to TLS 1.3 still seem pretty muddled. I think you<br>
+should just stop referencing and discussing 1.3.<br></blockquote><div><br><=
+/div></span><div>My understanding of your comment is that mentioning TLS 1.=
+3 to further insisting that the code point are not valid for TLS 1.3 is con=
+fusing. I propose to:<br><br></div><div>Explicitly mention the TLS version =
+in the title:<br><br></div><div>OLD title:<br>ECDHE_PSK with AES-GCM and AE=
+S-CCM Cipher Suites for Transport Layer Security (TLS)<br><br></div><div>NE=
+W title:<br>ECDHE_PSK with AES-GCM and AES-CCM Cipher Suites for Transport =
+Layer Security (TLS)<br></div><div><pre><span class=3D"m_439487331986275103=
+5m_5356331867454488272gmail-m_4997153826884106269m_4429336679413947623m_-10=
+1311485245468505m_-6500030207053047939gmail-h1"></span><span class=3D"m_439=
+4873319862751035m_5356331867454488272gmail-m_4997153826884106269m_442933667=
+9413947623m_-101311485245468505m_-6500030207053047939gmail-h1"></span></pre=
+>OLD Introduction:<br><pre class=3D"m_4394873319862751035m_5356331867454488=
+272gmail-m_4997153826884106269m_4429336679413947623m_-101311485245468505m_-=
+6500030207053047939gmail-newpage">    The cipher
+   suites are defined for version 1.2 of the Transport Layer Security
+   (TLS) [<a href=3D"https://tools.ietf.org/html/rfc5246" title=3D"&quot;Th=
+e Transport Layer Security (TLS) Protocol Version 1.2&quot;" target=3D"_bla=
+nk">RFC5246</a>] protocol, version 1.2 of the Datagram Transport Layer
+   Security (DTLS) protocol [<a href=3D"https://tools.ietf.org/html/rfc6347=
+" title=3D"&quot;Datagram Transport Layer Security Version 1.2&quot;" targe=
+t=3D"_blank">RFC6347</a>], as well as version 1.3 of TLS
+   [<a href=3D"https://tools.ietf.org/html/draft-ietf-tls-ecdhe-psk-aead-04=
+#ref-I-D.ietf-tls-tls13" target=3D"_blank">I-D.ietf-tls-tls13</a>].</pre>NE=
+W introduction<br><br><pre class=3D"m_4394873319862751035m_5356331867454488=
+272gmail-m_4997153826884106269m_4429336679413947623m_-101311485245468505m_-=
+6500030207053047939gmail-newpage">The cipher
+   suites are defined for version 1.2 of the Transport Layer Security
+   (TLS) [<a href=3D"https://tools.ietf.org/html/rfc5246" title=3D"&quot;Th=
+e Transport Layer Security (TLS) Protocol Version 1.2&quot;" target=3D"_bla=
+nk">RFC5246</a>] protocol, version 1.2 of the Datagram Transport Layer
+   Security (DTLS) protocol [<a href=3D"https://tools.ietf.org/html/rfc6347=
+" title=3D"&quot;Datagram Transport Layer Security Version 1.2&quot;" targe=
+t=3D"_blank">RFC6347</a>]. <br><br><br>I suggest to keep the following text=
+ of the introduction:<br></pre></div><div><br><pre class=3D"m_4394873319862=
+751035m_5356331867454488272gmail-m_4997153826884106269m_4429336679413947623=
+m_-101311485245468505m_-6500030207053047939gmail-newpage">AEAD algorithms t=
+hat combine encryption and integrity protection are
+   strongly recommended for (D)TLS [<a href=3D"https://tools.ietf.org/html/=
+rfc7525" title=3D"&quot;Recommendations for Secure Use of Transport Layer S=
+ecurity (TLS) and Datagram Transport Layer Security (DTLS)&quot;" target=3D=
+"_blank">RFC7525</a>] and non-AEAD algorithms are
+   forbidden to use in TLS 1.3 [<a href=3D"https://tools.ietf.org/html/draf=
+t-ietf-tls-ecdhe-psk-aead-04#ref-I-D.ietf-tls-tls13" target=3D"_blank">I-D.=
+ietf-tls-tls13</a>].  The AEAD
+   algorithms considered in this document are AES-GCM and AES-CCM.  The
+   use of AES-GCM in TLS is defined in [<a href=3D"https://tools.ietf.org/h=
+tml/rfc5288" title=3D"&quot;AES Galois Counter Mode (GCM) Cipher Suites for=
+ TLS&quot;" target=3D"_blank">RFC5288</a>] and the use of AES-CCM
+   is defined in [<a href=3D"https://tools.ietf.org/html/rfc6655" title=3D"=
+&quot;AES-CCM Cipher Suites for Transport Layer Security (TLS)&quot;" targe=
+t=3D"_blank">RFC6655</a>].</pre></div></div></div></div></div></div></div><=
+/div></blockquote><div><br></div></div></div><div>Yes, this seems fine.</di=
+v><span class=3D"m_4394873319862751035m_5356331867454488272gmail-"><div><br=
+></div><div>=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"margin:0=
+px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><=
+div dir=3D"ltr"><div class=3D"gmail_extra"><div class=3D"gmail_quote"><div>=
+I suggest to keep the following text of the Applicable versions sections, a=
+s I believe the section discusses the cipher suites against all existing TL=
+S versions. In addition, it also justifies somewhat that we only defined ci=
+pher suites that are compatible with TLS1.3.=C2=A0 <br><pre class=3D"m_4394=
+873319862751035m_5356331867454488272gmail-m_4997153826884106269m_4429336679=
+413947623m_-101311485245468505m_-6500030207053047939gmail-newpage">   TLS v=
+ersion 1.3 and later negotiate these features in a different
+   manner.  Unlike TLS 1.2, TLS 1.3 separates authentication and cipher
+   suite negotiation [<a href=3D"https://tools.ietf.org/html/draft-ietf-tls=
+-ecdhe-psk-aead-04#ref-I-D.ietf-tls-tls13" target=3D"_blank">I-D.ietf-tls-t=
+ls13</a>] <a href=3D"https://tools.ietf.org/html/draft-ietf-tls-ecdhe-psk-a=
+ead-04#section-1.2" target=3D"_blank">Section 1.2</a>.  TLS 1.3 supports
+   PSK with ECDHE key exchange and the cipher suites
+   TLS_AES_128_GCM_SHA256, TLS_AES_256_GCM_SHA384,
+   TLS_AES_128_CCM_8_SHA256 and TLS_AES_128_CCM_SHA256 are part of the
+   specification.  As a result, TLS 1.3 and higher versions, negotiate
+   and support these cipher suites in a different way.</pre></div></div></d=
+iv></div></blockquote><div><br></div></span><div>OK.</div><span class=3D"m_=
+4394873319862751035m_5356331867454488272gmail-"><div>=C2=A0</div><blockquot=
+e class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px s=
+olid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr"><div class=3D"gmai=
+l_extra"><div class=3D"gmail_quote"><div>I suggest to remove the reference =
+to TLS1.3 in the security considerations<br><br></div>OLD<br><pre class=3D"=
+m_4394873319862751035m_5356331867454488272gmail-m_4997153826884106269m_4429=
+336679413947623m_-101311485245468505m_-6500030207053047939gmail-newpage"> T=
+he security considerations in TLS 1.2 [<a href=3D"https://tools.ietf.org/ht=
+ml/rfc5246" title=3D"&quot;The Transport Layer Security (TLS) Protocol Vers=
+ion 1.2&quot;" target=3D"_blank">RFC5246</a>], DTLS 1.2 [<a href=3D"https:/=
+/tools.ietf.org/html/rfc6347" title=3D"&quot;Datagram Transport Layer Secur=
+ity Version 1.2&quot;" target=3D"_blank">RFC6347</a>],
+   TLS 1.3 [<a href=3D"https://tools.ietf.org/html/draft-ietf-tls-ecdhe-psk=
+-aead-04#ref-I-D.ietf-tls-tls13" target=3D"_blank">I-D.ietf-tls-tls13</a>],=
+ ECDHE_PSK [<a href=3D"https://tools.ietf.org/html/rfc5489" title=3D"&quot;=
+ECDHE_PSK Cipher Suites for Transport Layer Security (TLS)&quot;" target=3D=
+"_blank">RFC5489</a>], AES-GCM [<a href=3D"https://tools.ietf.org/html/rfc5=
+288" title=3D"&quot;AES Galois Counter Mode (GCM) Cipher Suites for TLS&quo=
+t;" target=3D"_blank">RFC5288</a>],
+   and AES-CCM [<a href=3D"https://tools.ietf.org/html/rfc6655" title=3D"&q=
+uot;AES-CCM Cipher Suites for Transport Layer Security (TLS)&quot;" target=
+=3D"_blank">RFC6655</a>] apply to this document as well.<br><br></pre></div=
+><div class=3D"gmail_quote">NEW <br></div><div class=3D"gmail_quote"><div><=
+pre class=3D"m_4394873319862751035m_5356331867454488272gmail-m_499715382688=
+4106269m_4429336679413947623m_-101311485245468505m_-6500030207053047939gmai=
+l-newpage"> The security considerations in TLS 1.2 [<a href=3D"https://tool=
+s.ietf.org/html/rfc5246" title=3D"&quot;The Transport Layer Security (TLS) =
+Protocol Version 1.2&quot;" target=3D"_blank">RFC5246</a>], DTLS 1.2 [<a hr=
+ef=3D"https://tools.ietf.org/html/rfc6347" title=3D"&quot;Datagram Transpor=
+t Layer Security Version 1.2&quot;" target=3D"_blank">RFC6347</a>],<br> ECD=
+HE_PSK [<a href=3D"https://tools.ietf.org/html/rfc5489" title=3D"&quot;ECDH=
+E_PSK Cipher Suites for Transport Layer Security (TLS)&quot;" target=3D"_bl=
+ank">RFC5489</a>], AES-GCM [<a href=3D"https://tools.ietf.org/html/rfc5288"=
+ title=3D"&quot;AES Galois Counter Mode (GCM) Cipher Suites for TLS&quot;" =
+target=3D"_blank">RFC5288</a>],and AES-CCM [<a href=3D"https://tools.ietf.o=
+rg/html/rfc6655" title=3D"&quot;AES-CCM Cipher Suites for Transport Layer S=
+ecurity (TLS)&quot;" target=3D"_blank">RFC6655</a>] apply <br> to this docu=
+ment as well.</pre></div><span><blockquote class=3D"gmail_quote" style=3D"m=
+argin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left=
+:1ex">
+<br>
+S 2.<br>
+I&#39;m not sure that the discussion of the PRF is helpful here in<br>
+mandating the non-use of these cipher suites with TLS 1.1 and<br>
+below.<br></blockquote><div><br></div></span><div>I find the text useful as=
+ it gives an idea why even introducing AEAD in TLS version lower than 1.2 i=
+s a bad idea, so I would prefer to keep it. The text has been changed to <b=
+r><br></div><div>OLD:<br>As such TLS 1.0 and TLS 1.1 should not be used wit=
+h ECDHE_PSK.</div><div><br>NEW:<br></div></div>As such,=C2=A0 all ECDHE_PSK=
+<br>ciphers, including those defined outside this document, SHOULD NOT be<b=
+r>negotiated in TLS versions prior to 1.2.<br></div></div></blockquote><div=
+><br></div></span><div>I don&#39;t think you should be levying a new normat=
+ive requirement like this for other ciphers</div><div>i this document</div>=
+</div></div></div></blockquote><div><br></div></div></div><div>Consideratio=
+n for other ciphers has been removed. The requirement is limited to the cip=
+hers of the document. The new text is:<br><br>As such, all ECDHE_PSK cipher=
+s, including those defined in this document, SHOULD NOT be<span class=3D"">=
+<br>negotiated in TLS versions prior to 1.2.<br></span></div><blockquote cl=
+ass=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid=
+ rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr"><div class=3D"gmail_ex=
+tra"><div class=3D"gmail_quote"><div><br></div><div>-Ek</div><span class=3D=
+"m_4394873319862751035m_5356331867454488272gmail-HOEnZb"><font color=3D"#88=
+8888"><div>r</div></font></span></div><br></div></div>
+</blockquote></div><br></div></div>
+</blockquote></div><br></div></div></div></div></div>
+
+--001a11412d3c8cca5e05503bfc76--
+
+--001a11412d3c8cca6305503bfc78
+Content-Type: text/plain; charset="US-ASCII";
+ name="draft-ietf-tls-ecdhe-psk-aead-05.txt"
+Content-Disposition: attachment; 
+ filename="draft-ietf-tls-ecdhe-psk-aead-05.txt"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_j32dnssw2
+
+CgoKCk5ldHdvcmsgV29ya2luZyBHcm91cCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICBKLiBNYXR0c3NvbgpJbnRlcm5ldC1EcmFmdCAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIEQuIE1pZ2F1bHQKSW50ZW5kZWQgc3RhdHVzOiBTdGFu
+ZGFyZHMgVHJhY2sgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIEVyaWNzc29uCkV4cGly
+ZXM6IE5vdmVtYmVyIDI0LCAyMDE3ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIE1h
+eSAyMywgMjAxNwoKCiAgRUNESEVfUFNLIHdpdGggQUVTLUdDTSBhbmQgQUVTLUNDTSBDaXBoZXIg
+U3VpdGVzIGZvciBUcmFuc3BvcnQgTGF5ZXIKICAgICAgICAgICAgICAgICAgU2VjdXJpdHkgKFRM
+UykgUHJvdG9jb2wgdmVyc2lvbiAxLjIKICAgICAgICAgICAgICAgICAgICBkcmFmdC1pZXRmLXRs
+cy1lY2RoZS1wc2stYWVhZC0wNQoKQWJzdHJhY3QKCiAgIFRoaXMgZG9jdW1lbnQgZGVmaW5lcyBz
+ZXZlcmFsIG5ldyBjaXBoZXIgc3VpdGVzIGZvciB0aGUgVHJhbnNwb3J0CiAgIExheWVyIFNlY3Vy
+aXR5IChUTFMpIHByb3RvY29sIHZlcnNpb24gMS4yLiAgVGhlIGNpcGhlciBzdWl0ZXMgYXJlIGFs
+bAogICBiYXNlZCBvbiB0aGUgRXBoZW1lcmFsIEVsbGlwdGljIEN1cnZlIERpZmZpZS1IZWxsbWFu
+IHdpdGggUHJlLVNoYXJlZAogICBLZXkgKEVDREhFX1BTSykga2V5IGV4Y2hhbmdlIHRvZ2V0aGVy
+IHdpdGggdGhlIEF1dGhlbnRpY2F0ZWQKICAgRW5jcnlwdGlvbiB3aXRoIEFzc29jaWF0ZWQgRGF0
+YSAoQUVBRCkgYWxnb3JpdGhtcyBBRVMtR0NNIGFuZCBBRVMtCiAgIENDTS4gIFBTSyBwcm92aWRl
+cyBsaWdodCBhbmQgZWZmaWNpZW50IGF1dGhlbnRpY2F0aW9uLCBFQ0RIRSBwcm92aWRlcwogICBm
+b3J3YXJkIHNlY3JlY3ksIGFuZCBBRVMtR0NNIGFuZCBBRVMtQ0NNIHByb3ZpZGVzIGVuY3J5cHRp
+b24gYW5kCiAgIGludGVncml0eSBwcm90ZWN0aW9uLgoKU3RhdHVzIG9mIFRoaXMgTWVtbwoKICAg
+VGhpcyBJbnRlcm5ldC1EcmFmdCBpcyBzdWJtaXR0ZWQgaW4gZnVsbCBjb25mb3JtYW5jZSB3aXRo
+IHRoZQogICBwcm92aXNpb25zIG9mIEJDUCA3OCBhbmQgQkNQIDc5LgoKICAgSW50ZXJuZXQtRHJh
+ZnRzIGFyZSB3b3JraW5nIGRvY3VtZW50cyBvZiB0aGUgSW50ZXJuZXQgRW5naW5lZXJpbmcKICAg
+VGFzayBGb3JjZSAoSUVURikuICBOb3RlIHRoYXQgb3RoZXIgZ3JvdXBzIG1heSBhbHNvIGRpc3Ry
+aWJ1dGUKICAgd29ya2luZyBkb2N1bWVudHMgYXMgSW50ZXJuZXQtRHJhZnRzLiAgVGhlIGxpc3Qg
+b2YgY3VycmVudCBJbnRlcm5ldC0KICAgRHJhZnRzIGlzIGF0IGh0dHA6Ly9kYXRhdHJhY2tlci5p
+ZXRmLm9yZy9kcmFmdHMvY3VycmVudC8uCgogICBJbnRlcm5ldC1EcmFmdHMgYXJlIGRyYWZ0IGRv
+Y3VtZW50cyB2YWxpZCBmb3IgYSBtYXhpbXVtIG9mIHNpeCBtb250aHMKICAgYW5kIG1heSBiZSB1
+cGRhdGVkLCByZXBsYWNlZCwgb3Igb2Jzb2xldGVkIGJ5IG90aGVyIGRvY3VtZW50cyBhdCBhbnkK
+ICAgdGltZS4gIEl0IGlzIGluYXBwcm9wcmlhdGUgdG8gdXNlIEludGVybmV0LURyYWZ0cyBhcyBy
+ZWZlcmVuY2UKICAgbWF0ZXJpYWwgb3IgdG8gY2l0ZSB0aGVtIG90aGVyIHRoYW4gYXMgIndvcmsg
+aW4gcHJvZ3Jlc3MuIgoKICAgVGhpcyBJbnRlcm5ldC1EcmFmdCB3aWxsIGV4cGlyZSBvbiBOb3Zl
+bWJlciAyNCwgMjAxNy4KCkNvcHlyaWdodCBOb3RpY2UKCiAgIENvcHlyaWdodCAoYykgMjAxNyBJ
+RVRGIFRydXN0IGFuZCB0aGUgcGVyc29ucyBpZGVudGlmaWVkIGFzIHRoZQogICBkb2N1bWVudCBh
+dXRob3JzLiAgQWxsIHJpZ2h0cyByZXNlcnZlZC4KCiAgIFRoaXMgZG9jdW1lbnQgaXMgc3ViamVj
+dCB0byBCQ1AgNzggYW5kIHRoZSBJRVRGIFRydXN0J3MgTGVnYWwKICAgUHJvdmlzaW9ucyBSZWxh
+dGluZyB0byBJRVRGIERvY3VtZW50cwogICAoaHR0cDovL3RydXN0ZWUuaWV0Zi5vcmcvbGljZW5z
+ZS1pbmZvKSBpbiBlZmZlY3Qgb24gdGhlIGRhdGUgb2YKICAgcHVibGljYXRpb24gb2YgdGhpcyBk
+b2N1bWVudC4gIFBsZWFzZSByZXZpZXcgdGhlc2UgZG9jdW1lbnRzCiAgIGNhcmVmdWxseSwgYXMg
+dGhleSBkZXNjcmliZSB5b3VyIHJpZ2h0cyBhbmQgcmVzdHJpY3Rpb25zIHdpdGggcmVzcGVjdAoK
+CgpNYXR0c3NvbiAmIE1pZ2F1bHQgICAgICBFeHBpcmVzIE5vdmVtYmVyIDI0LCAyMDE3ICAgICAg
+ICAgICAgICAgW1BhZ2UgMV0KDApJbnRlcm5ldC1EcmFmdCAgICAgICAgICAgICAgIEVDREhFX1BT
+S19BRUFEICAgICAgICAgICAgICAgICAgICAgTWF5IDIwMTcKCgogICB0byB0aGlzIGRvY3VtZW50
+LiAgQ29kZSBDb21wb25lbnRzIGV4dHJhY3RlZCBmcm9tIHRoaXMgZG9jdW1lbnQgbXVzdAogICBp
+bmNsdWRlIFNpbXBsaWZpZWQgQlNEIExpY2Vuc2UgdGV4dCBhcyBkZXNjcmliZWQgaW4gU2VjdGlv
+biA0LmUgb2YKICAgdGhlIFRydXN0IExlZ2FsIFByb3Zpc2lvbnMgYW5kIGFyZSBwcm92aWRlZCB3
+aXRob3V0IHdhcnJhbnR5IGFzCiAgIGRlc2NyaWJlZCBpbiB0aGUgU2ltcGxpZmllZCBCU0QgTGlj
+ZW5zZS4KClRhYmxlIG9mIENvbnRlbnRzCgogICAxLiAgUmVxdWlyZW1lbnRzIG5vdGF0aW9uIC4g
+LiAuIC4gLiAuIC4gLiAuIC4gLiAuIC4gLiAuIC4gLiAuIC4gLiAgIDIKICAgMi4gIEludHJvZHVj
+dGlvbiAgLiAuIC4gLiAuIC4gLiAuIC4gLiAuIC4gLiAuIC4gLiAuIC4gLiAuIC4gLiAuIC4gICAy
+CiAgIDMuICBFQ0RIRV9QU0sgd2l0aCBBRVMtR0NNIGFuZCBBRVMtQ0NNIENpcGhlciBTdWl0ZXMg
+IC4gLiAuIC4gLiAuICAgMwogICA0LiAgQXBwbGljYWJsZSBUTFMgVmVyc2lvbnMgLiAuIC4gLiAu
+IC4gLiAuIC4gLiAuIC4gLiAuIC4gLiAuIC4gLiAgIDMKICAgNS4gIElBTkEgQ29uc2lkZXJhdGlv
+bnMgLiAuIC4gLiAuIC4gLiAuIC4gLiAuIC4gLiAuIC4gLiAuIC4gLiAuIC4gICA0CiAgIDYuICBT
+ZWN1cml0eSBDb25zaWRlcmF0aW9ucyAuIC4gLiAuIC4gLiAuIC4gLiAuIC4gLiAuIC4gLiAuIC4g
+LiAuICAgNAogICA3LiAgQWNrbm93bGVkZ2VtZW50cyAgLiAuIC4gLiAuIC4gLiAuIC4gLiAuIC4g
+LiAuIC4gLiAuIC4gLiAuIC4gLiAgIDUKICAgOC4gIFJlZmVyZW5jZXMgIC4gLiAuIC4gLiAuIC4g
+LiAuIC4gLiAuIC4gLiAuIC4gLiAuIC4gLiAuIC4gLiAuIC4gICA1CiAgICAgOC4xLiAgTm9ybWF0
+aXZlIFJlZmVyZW5jZXMgIC4gLiAuIC4gLiAuIC4gLiAuIC4gLiAuIC4gLiAuIC4gLiAuICAgNQog
+ICAgIDguMi4gIEluZm9ybWF0aXZlIFJlZmVyZW5jZXMgIC4gLiAuIC4gLiAuIC4gLiAuIC4gLiAu
+IC4gLiAuIC4gLiAgIDYKICAgQXV0aG9ycycgQWRkcmVzc2VzICAuIC4gLiAuIC4gLiAuIC4gLiAu
+IC4gLiAuIC4gLiAuIC4gLiAuIC4gLiAuIC4gICA3CgoxLiAgUmVxdWlyZW1lbnRzIG5vdGF0aW9u
+CgogICBUaGUga2V5IHdvcmRzICJNVVNUIiwgIk1VU1QgTk9UIiwgIlJFUVVJUkVEIiwgIlNIQUxM
+IiwgIlNIQUxMIE5PVCIsCiAgICJTSE9VTEQiLCAiU0hPVUxEIE5PVCIsICJSRUNPTU1FTkRFRCIs
+ICJNQVkiLCBhbmQgIk9QVElPTkFMIiBpbiB0aGlzCiAgIGRvY3VtZW50IGFyZSB0byBiZSBpbnRl
+cnByZXRlZCBhcyBkZXNjcmliZWQgaW4gW1JGQzIxMTldLgoKMi4gIEludHJvZHVjdGlvbgoKICAg
+VGhpcyBkb2N1bWVudCBkZWZpbmVzIG5ldyBjaXBoZXIgc3VpdGVzIHRoYXQgcHJvdmlkZSBQcmUt
+U2hhcmVkIEtleQogICAoUFNLKSBhdXRoZW50aWNhdGlvbiwgUGVyZmVjdCBGb3J3YXJkIFNlY3Jl
+Y3kgKFBGUyksIGFuZAogICBBdXRoZW50aWNhdGVkIEVuY3J5cHRpb24gd2l0aCBBc3NvY2lhdGVk
+IERhdGEgKEFFQUQpLiAgVGhlIGNpcGhlcgogICBzdWl0ZXMgYXJlIGRlZmluZWQgZm9yIHZlcnNp
+b24gMS4yIG9mIHRoZSBUcmFuc3BvcnQgTGF5ZXIgU2VjdXJpdHkKICAgKFRMUykgW1JGQzUyNDZd
+IHByb3RvY29sIGFuZCB2ZXJzaW9uIDEuMiBvZiB0aGUgRGF0YWdyYW0gVHJhbnNwb3J0CiAgIExh
+eWVyIFNlY3VyaXR5IChEVExTKSBwcm90b2NvbCBbUkZDNjM0N10uCgogICBQcmUtU2hhcmVkIEtl
+eSAoUFNLKSBBdXRoZW50aWNhdGlvbiBpcyB3aWRlbHkgdXNlZCBpbiBtYW55IHNjZW5hcmlvcy4K
+ICAgT25lIGRlcGxveW1lbnQgaXMgM0dQUCBuZXR3b3JrcyB3aGVyZSBwcmUtc2hhcmVkIGtleXMg
+YXJlIHVzZWQgdG8KICAgYXV0aGVudGljYXRlIGJvdGggc3Vic2NyaWJlciBhbmQgbmV0d29yay4g
+IEFub3RoZXIgZGVwbG95bWVudCBpcwogICBJbnRlcm5ldCBvZiBUaGluZ3Mgd2hlcmUgUFNLIGF1
+dGhlbnRpY2F0aW9uIGlzIG9mdGVuIHByZWZlcnJlZCBmb3IKICAgcGVyZm9ybWFuY2UgYW5kIGVu
+ZXJneSBlZmZpY2llbmN5IHJlYXNvbnMuICBJbiBib3RoIHNjZW5hcmlvcyB0aGUKICAgZW5kcG9p
+bnRzIGFyZSBvd25lZC9jb250cm9sbGVkIGJ5IGEgcGFydHkgdGhhdCBwcm92aXNpb25zIHRoZSBw
+cmUtCiAgIHNoYXJlZCBrZXlzIGFuZCBtYWtlcyBzdXJlIHRoYXQgdGhleSBwcm92aWRlIGEgaGln
+aCBsZXZlbCBvZiBlbnRyb3B5LgoKICAgUGVyZmVjdCBGb3J3YXJkIFNlY3JlY3kgKFBGUykgaXMg
+YSBzdHJvbmdseSByZWNvbW1lbmRlZCBmZWF0dXJlIGluCiAgIHNlY3VyaXR5IHByb3RvY29sIGRl
+c2lnbiBhbmQgY2FuIGJlIGFjY29tcGxpc2hlZCBieSB1c2luZyBhbgogICBlcGhlbWVyYWwgRGlm
+ZmllLUhlbGxtYW4ga2V5IGV4Y2hhbmdlIG1ldGhvZC4gIEVwaGVtZXJhbCBFbGxpcHRpYwogICBD
+dXJ2ZSBEaWZmaWUtSGVsbG1hbiAoRUNESEUpIHByb3ZpZGVzIFBGUyB3aXRoIGV4Y2VsbGVudCBw
+ZXJmb3JtYW5jZQogICBhbmQgc21hbGwga2V5IHNpemVzLiAgRUNESEUgaXMgbWFuZGF0b3J5IHRv
+IGltcGxlbWVudCBpbiBib3RoIEhUVFAvMgogICBbUkZDNzU0MF0gYW5kIENvQVAgW1JGQzcyNTJd
+LgoKCgpNYXR0c3NvbiAmIE1pZ2F1bHQgICAgICBFeHBpcmVzIE5vdmVtYmVyIDI0LCAyMDE3ICAg
+ICAgICAgICAgICAgW1BhZ2UgMl0KDApJbnRlcm5ldC1EcmFmdCAgICAgICAgICAgICAgIEVDREhF
+X1BTS19BRUFEICAgICAgICAgICAgICAgICAgICAgTWF5IDIwMTcKCgogICBBRUFEIGFsZ29yaXRo
+bXMgdGhhdCBjb21iaW5lIGVuY3J5cHRpb24gYW5kIGludGVncml0eSBwcm90ZWN0aW9uIGFyZQog
+ICBzdHJvbmdseSByZWNvbW1lbmRlZCBmb3IgKEQpVExTIFtSRkM3NTI1XSBhbmQgbm9uLUFFQUQg
+YWxnb3JpdGhtcyBhcmUKICAgZm9yYmlkZGVuIHRvIHVzZSBpbiBUTFMgMS4zIFtJLUQuaWV0Zi10
+bHMtdGxzMTNdLiAgVGhlIEFFQUQKICAgYWxnb3JpdGhtcyBjb25zaWRlcmVkIGluIHRoaXMgZG9j
+dW1lbnQgYXJlIEFFUy1HQ00gYW5kIEFFUy1DQ00uICBUaGUKICAgdXNlIG9mIEFFUy1HQ00gaW4g
+VExTIGlzIGRlZmluZWQgaW4gW1JGQzUyODhdIGFuZCB0aGUgdXNlIG9mIEFFUy1DQ00KICAgaXMg
+ZGVmaW5lZCBpbiBbUkZDNjY1NV0uCgogICBbUkZDNDI3OV0gZGVmaW5lcyBQcmUtU2hhcmVkIEtl
+eSAoUFNLKSBjaXBoZXIgc3VpdGVzIGZvciBUTFMgYnV0IGRvZXMKICAgbm90IGNvbnNpZGVyIEVs
+bGlwdGljIEN1cnZlIENyeXB0b2dyYXBoeS4gIFtSRkM0NDkyXSBpbnRyb2R1Y2VzCiAgIEVsbGlw
+dGljIEN1cnZlIENyeXB0b2dyYXBoeSBmb3IgVExTIGJ1dCBkb2VzIG5vdCBjb25zaWRlciBQU0sK
+ICAgYXV0aGVudGljYXRpb24uICBbUkZDNTQ4N10gZGVzY3JpYmVzIHRoZSB1c2Ugb2YgQUVTLUdD
+TSBpbgogICBjb21iaW5hdGlvbiB3aXRoIFBTSyBhdXRoZW50aWNhdGlvbiwgYnV0IGRvZXMgbm90
+IGNvbnNpZGVyIEVDREhFLgogICBbUkZDNTQ4OV0gZGVzY3JpYmVzIHRoZSB1c2Ugb2YgUFNLIGlu
+IGNvbWJpbmF0aW9uIHdpdGggRUNESEUgYnV0IGRvZXMKICAgbm90IGNvbnNpZGVyIEFFUy1HQ00g
+b3IgQUVTLUNDTS4KCjMuICBFQ0RIRV9QU0sgd2l0aCBBRVMtR0NNIGFuZCBBRVMtQ0NNIENpcGhl
+ciBTdWl0ZXMKCiAgIFRoZSBjaXBoZXIgc3VpdGVzIGRlZmluZWQgaW4gdGhpcyBkb2N1bWVudCBh
+cmUgYmFzZWQgb24gdGhlIEFFUy1HQ00KICAgYW5kIEFFUy1DQ00gQXV0aGVudGljYXRlZCBFbmNy
+eXB0aW9uIHdpdGggQXNzb2NpYXRlZCBEYXRhIChBRUFEKQogICBhbGdvcml0aG1zIEFFQURfQUVT
+XzEyOF9HQ00sIEFFQURfQUVTXzI1Nl9HQ00gYW5kIEFFQURfQUVTXzEyOF9DQ00KICAgZGVmaW5l
+ZCBpbiBbUkZDNTExNl0sIGFuZCBBRUFEX0FFU18xMjhfQ0NNXzggZGVmaW5lZCBpbiBbUkZDNjY1
+NV0uCgogICBNZXNzYWdlcyBhbmQgcHJlLW1hc3RlciBzZWNyZXQgY29uc3RydWN0aW9uIGluIHRo
+aXMgZG9jdW1lbnQgYXJlCiAgIGRlZmluZWQgaW4gW1JGQzU0ODldLiAgVGhlIFNlcnZlcktleUV4
+Y2hhbmdlIGFuZCBDbGllbnRLZXlFeGNoYW5nZQogICBtZXNzYWdlcyBhcmUgdXNlZCBhbmQgdGhl
+IHByZS1tYXN0ZXIgc2VjcmV0IGlzIGNvbXB1dGVkIGFzIGZvciB0aGUKICAgRUNESEVfUFNLIGtl
+eSBleGNoYW5nZS4gIFRoZSBlbGxpcHRpYyBjdXJ2ZSBwYXJhbWV0ZXJzIHVzZWQgaW4gaW4gdGhl
+CiAgIERpZmZpZS1IZWxsbWFuIHBhcmFtZXRlcnMgYXJlIG5lZ290aWF0ZWQgdXNpbmcgZXh0ZW5z
+aW9ucyBkZWZpbmVkIGluCiAgIFtJLUQuaWV0Zi10bHMtcmZjNDQ5MmJpc10uCgogICBGb3IgVExT
+IDEuMiwgdGhlIGZvbGxvd2luZyBjaXBoZXIgc3VpdGVzIGFyZSBkZWZpbmVkOgoKICAgVExTX0VD
+REhFX1BTS19XSVRIX0FFU18xMjhfR0NNX1NIQTI1NiAgID0gezB4VEJELDB4VEJEfTsKICAgVExT
+X0VDREhFX1BTS19XSVRIX0FFU18yNTZfR0NNX1NIQTM4NCAgID0gezB4VEJELDB4VEJEfTsKICAg
+VExTX0VDREhFX1BTS19XSVRIX0FFU18xMjhfQ0NNXzhfU0hBMjU2ID0gezB4VEJELDB4VEJEfTsK
+ICAgVExTX0VDREhFX1BTS19XSVRIX0FFU18xMjhfQ0NNX1NIQTI1NiAgID0gezB4VEJELDB4VEJE
+fTsKCiAgIFRoZSBhc3NpZ25lZCBjb2RlIHBvaW50cyBjYW4gb25seSBiZSB1c2VkIGZvciBUTFMg
+MS4yLgoKNC4gIEFwcGxpY2FibGUgVExTIFZlcnNpb25zCgogICBUaGUgY2lwaGVyIHN1aXRlcyBk
+ZWZpbmVkIGluIHRoaXMgZG9jdW1lbnQgTVVTVCBOT1QgYmUgbmVnb3RpYXRlZCBmb3IKICAgYW55
+IHZlcnNpb24gb2YgKEQpVExTIG90aGVyIHRoYW4gVExTIDEuMi4gIENsaWVudHMgTVVTVCBOT1Qg
+b2ZmZXIgb25lCiAgIG9mIHRoZXNlIGNpcGhlciBzdWl0ZXMgd2l0aCBhIChEKVRMUyB2ZXJzaW9u
+IHRoYXQgZGlmZmVycyBmcm9tIFRMUwogICAxLjIuICBTZXJ2ZXJzIE1VU1QgTk9UIHNlbGVjdCBv
+bmUgb2YgdGhlc2UgY2lwaGVyIHN1aXRlcyB3aXRoIGEgVExTCiAgIHZlcnNpb24gdGhhdCBkaWZm
+ZXJzIGZyb20gVExTIDEuMi4gIEEgY2xpZW50IE1VU1QgdHJlYXQgdGhlIHNlbGVjdGlvbgogICBv
+ZiB0aGVzZSBjaXBoZXIgc3VpdGVzIGluIGNvbWJpbmF0aW9uIHdpdGggYSB2ZXJzaW9uIG9mIFRM
+UyBhcyBhbgogICBlcnJvciBhbmQgZ2VuZXJhdGUgYSBmYXRhbCAnaWxsZWdhbF9wYXJhbWV0ZXIn
+IFRMUyBhbGVydC4KCgoKCk1hdHRzc29uICYgTWlnYXVsdCAgICAgIEV4cGlyZXMgTm92ZW1iZXIg
+MjQsIDIwMTcgICAgICAgICAgICAgICBbUGFnZSAzXQoMCkludGVybmV0LURyYWZ0ICAgICAgICAg
+ICAgICAgRUNESEVfUFNLX0FFQUQgICAgICAgICAgICAgICAgICAgICBNYXkgMjAxNwoKCiAgIFRM
+UyB2ZXJzaW9uIDEuMyBhbmQgbGF0ZXIgbmVnb3RpYXRlIHRoZXNlIGZlYXR1cmVzIGluIGEgZGlm
+ZmVyZW50CiAgIG1hbm5lci4gIFVubGlrZSBUTFMgMS4yLCBUTFMgMS4zIHNlcGFyYXRlcyBhdXRo
+ZW50aWNhdGlvbiBhbmQgY2lwaGVyCiAgIHN1aXRlIG5lZ290aWF0aW9uIFtJLUQuaWV0Zi10bHMt
+dGxzMTNdIFNlY3Rpb24gMS4yLiAgVExTIDEuMyBzdXBwb3J0cwogICBQU0sgd2l0aCBFQ0RIRSBr
+ZXkgZXhjaGFuZ2UgYW5kIHRoZSBjaXBoZXIgc3VpdGVzCiAgIFRMU19BRVNfMTI4X0dDTV9TSEEy
+NTYsIFRMU19BRVNfMjU2X0dDTV9TSEEzODQsCiAgIFRMU19BRVNfMTI4X0NDTV84X1NIQTI1NiBh
+bmQgVExTX0FFU18xMjhfQ0NNX1NIQTI1NiBhcmUgcGFydCBvZiB0aGUKICAgc3BlY2lmaWNhdGlv
+bi4gIEFzIGEgcmVzdWx0LCBUTFMgMS4zIGFuZCBoaWdoZXIgdmVyc2lvbnMsIG5lZ290aWF0ZQog
+ICBhbmQgc3VwcG9ydCB0aGVzZSBjaXBoZXIgc3VpdGVzIGluIGEgZGlmZmVyZW50IHdheS4KCiAg
+IFRoZSBjaXBoZXIgc3VpdGVzIGRlZmluZWQgaW4gdGhpcyBkb2N1bWVudCBtYWtlIHVzZSBvZiB0
+aGUKICAgYXV0aGVudGljYXRlZCBlbmNyeXB0aW9uIHdpdGggYWRkaXRpb25hbCBkYXRhIChBRUFE
+KSBkZWZpbmVkIGluIFRMUwogICAxLjIgW1JGQzUyNDZdIGFuZCBEVExTIDEuMiBbUkZDNjM0N10u
+ICBFYXJsaWVyIHZlcnNpb25zIG9mIFRMUyBkbyBub3QKICAgaGF2ZSBzdXBwb3J0IGZvciBBRUFE
+IGFuZCBjb25zZXF1ZW50bHksIHRoZSBjaXBoZXIgc3VpdGVzIGRlZmluZWQgaW4KICAgdGhpcyBk
+b2N1bWVudCBNVVNUIE5PVCBiZSBuZWdvdGlhdGVkIGluIFRMUyB2ZXJzaW9ucyBwcmlvciB0byAx
+LjIuCiAgIEluIGFkZGl0aW9uLCBpdCBpcyB3b3J0aCBub3RpbmcgdGhhdCBUTFMgMS4wIFtSRkMy
+MjQ2XSBhbmQgVExTIDEuMgogICBbUkZDNDM0Nl0gc3BsaXQgdGhlIHByZS1tYXN0ZXIgaW50byB0
+d28gcGFydHMuICBUaGUgUFJGIHJlc3VsdHMgZnJvbQogICBtaXhpbmcgdGhlIHR3byBwc2V1ZG9y
+YW5kb20gc3RyZWFtcyB3aXRoIGRpc3RpbmN0IGhhc2ggZnVuY3Rpb25zIChNRDUKICAgYW5kIFNI
+QS0xKSBieSBleGNsdXNpdmUtT1JpbmcgdGhlbSB0b2dldGhlci4gIEluIHRoZSBjYXNlIG9mCiAg
+IEVDREhFX1BTSyBhdXRoZW50aWNhdGlvbiwgdGhlIFBTSyBhbmQgRUNESEUgc2hhcmVkIHNlY3Jl
+dCBhcmUgdHJlYXRlZAogICBieSBkaXN0aW5jdCBoYXNoIGZ1bmN0aW9uIHdpdGggZGlzdGluY3Qg
+cHJvcGVydGllcy4gIFRoaXMgbWF5CiAgIGludHJvZHVjZSB2dWxuZXJhYmlsaXRpZXMgb3ZlciB0
+aGUgZXhwZWN0ZWQgc2VjdXJpdHkgcHJvdmlkZWQgYnkgdGhlCiAgIGNvbnN0cnVjdGVkIHByZS1t
+YXN0ZXIuICBBcyBzdWNoLCBhbGwgRUNESEVfUFNLIGNpcGhlcnMsIGluY2x1ZGluZwogICB0aG9z
+ZSBkZWZpbmVkIGluIHRoaXMgZG9jdW1lbnQsIFNIT1VMRCBOT1QgYmUgbmVnb3RpYXRlZCBpbiBU
+TFMKICAgdmVyc2lvbnMgcHJpb3IgdG8gMS4yLgoKNS4gIElBTkEgQ29uc2lkZXJhdGlvbnMKCiAg
+IFRoaXMgZG9jdW1lbnQgZGVmaW5lcyB0aGUgZm9sbG93aW5nIG5ldyBjaXBoZXIgc3VpdGVzLCB3
+aG9zZSB2YWx1ZXMKICAgaGF2ZSBiZWVuIGFzc2lnbmVkIGluIHRoZSBUTFMgQ2lwaGVyIFN1aXRl
+IFJlZ2lzdHJ5IGRlZmluZWQgYnkKICAgW1JGQzUyNDZdLgoKICAgVExTX0VDREhFX1BTS19XSVRI
+X0FFU18xMjhfR0NNX1NIQTI1NiAgID0gezB4VEJEOyAweFRCRH0gezB4RDAsMHgwMX07CiAgIFRM
+U19FQ0RIRV9QU0tfV0lUSF9BRVNfMjU2X0dDTV9TSEEzODQgICA9IHsweFRCRDsgMHhUQkR9IHsw
+eEQwLDB4MDJ9OwogICBUTFNfRUNESEVfUFNLX1dJVEhfQUVTXzEyOF9DQ01fOF9TSEEyNTYgPSB7
+MHhUQkQ7IDB4VEJEfSB7MHhEMCwweDAzfTsKICAgVExTX0VDREhFX1BTS19XSVRIX0FFU18xMjhf
+Q0NNX1NIQTI1NiAgID0gezB4VEJEOyAweFRCRH0gezB4RDAsMHgwNX07CgogICBOT1RFIFRPIFRI
+RSBSRkMgRURJVE9SOiBQTEVBU0UgUkVNT1ZFIFRISVMgUEFSQUdSQVBILiAgVGhlIGNpcGhlcgog
+ICBzdWl0ZSBudW1iZXJzIGxpc3RlZCBpbiB0aGUgbGFzdCBjb2x1bW4gYXJlIG51bWJlcnMgdXNl
+ZCBmb3IgY2lwaGVyCiAgIHN1aXRlIGludGVyb3BlcmFiaWxpdHkgdGVzdGluZyBhbmQgaXQncyBz
+dWdnZXN0ZWQgdGhhdCBJQU5BIHVzZSB0aGVzZQogICB2YWx1ZXMgZm9yIGFzc2lnbm1lbnQuCgo2
+LiAgU2VjdXJpdHkgQ29uc2lkZXJhdGlvbnMKCiAgIFRoZSBzZWN1cml0eSBjb25zaWRlcmF0aW9u
+cyBpbiBUTFMgMS4yIFtSRkM1MjQ2XSwgRFRMUyAxLjIgW1JGQzYzNDddLAogICBQU0sgQ2lwaGVy
+c3VpdGVzIGZvciBUTFMgW1JGQzQyNzldLCBFQ0RIRV9QU0sgW1JGQzU0ODldLCBBRVMtR0NNCiAg
+IFtSRkM1Mjg4XSwgYW5kIEFFUy1DQ00gW1JGQzY2NTVdIGFwcGx5IHRvIHRoaXMgZG9jdW1lbnQg
+YXMgd2VsbC4KCgoKCgpNYXR0c3NvbiAmIE1pZ2F1bHQgICAgICBFeHBpcmVzIE5vdmVtYmVyIDI0
+LCAyMDE3ICAgICAgICAgICAgICAgW1BhZ2UgNF0KDApJbnRlcm5ldC1EcmFmdCAgICAgICAgICAg
+ICAgIEVDREhFX1BTS19BRUFEICAgICAgICAgICAgICAgICAgICAgTWF5IDIwMTcKCgogICBBbGwg
+dGhlIGNpcGhlciBzdWl0ZXMgZGVmaW5lZCBpbiB0aGlzIGRvY3VtZW50IHByb3ZpZGUKICAgY29u
+ZmlkZW50aWFsaXR5LCBtdXR1YWwgYXV0aGVudGljYXRpb24sIGFuZCBmb3J3YXJkIHNlY3JlY3ku
+ICBUaGUKICAgQUVTLTEyOCBjaXBoZXIgc3VpdGVzIHByb3ZpZGUgMTI4LWJpdCBzZWN1cml0eSBh
+bmQgdGhlIEFFUy0yNTYgY2lwaGVyCiAgIHN1aXRlcyBwcm92aWRlIGF0IGxlYXN0IDE5Mi1iaXQg
+c2VjdXJpdHkuICBIb3dldmVyLCBBRVNfMTI4X0NDTV84CiAgIG9ubHkgcHJvdmlkZXMgNjQtYml0
+IHNlY3VyaXR5IGFnYWluc3QgbWVzc2FnZSBmb3JnZXJ5LgoKICAgVGhlIFByZS1TaGFyZWQgS2V5
+cyB1c2VkIGZvciBhdXRoZW50aWNhdGlvbiBNVVNUIGhhdmUgYSBzZWN1cml0eQogICBsZXZlbCBl
+cXVhbCBvciBoaWdoZXIgdGhhbiB0aGUgY2lwaGVyIHN1aXRlIHVzZWQsIGkuZS4sIGF0IGxlYXN0
+CiAgIDEyOC1iaXQgZm9yIHRoZSBBRVMtMTI4IGNpcGhlciBzdWl0ZXMgYW5kIGF0IGxlYXN0IDE5
+Mi1iaXQgZm9yIHRoZQogICBBRVMtMjU2IGNpcGhlciBzdWl0ZXMuCgogICBHQ00gb3IgQ0NNIGVu
+Y3J5cHRpb24gLSBldmVuIG9mIGRpZmZlcmVudCBjbGVhciB0ZXh0IC0gcmUtdXNpbmcgYQogICBu
+b25jZSB3aXRoIGEgc2FtZSBrZXkgdW5kZXJtaW5lcyB0aGUgc2VjdXJpdHkgb2YgR0NNIGFuZCBD
+Q00uICBBcyBhCiAgIHJlc3VsdCwgR0NNIGFuZCBDQ00gTVVTVCBvbmx5IGJlIHVzZWQgd2l0aCBh
+IHN5c3RlbSBndWFyYW50ZWVpbmcKICAgbm9uY2UgdW5pcXVlbmVzcyBbUkZDNTExNl0uCgo3LiAg
+QWNrbm93bGVkZ2VtZW50cwoKICAgVGhlIGF1dGhvcnMgd291bGQgbGlrZSB0byB0aGFuayBJbGFy
+aSBMaXVzdmFhcmEsIEVyaWMgUmVzY29ybGEsIERhbgogICBIYXJraW5zLCBSdXNzIEhvdXNsZXks
+IERhbiBIYXJraW5zLCBNYXJ0aW4gVGhvbXNvbiwgTmlrb3MKICAgTWF2cm9naWFubm9wb3Vsb3Ms
+IFBldGVyIERldHRtYW4sIFhpYW95aW4gTGl1LCBKb3NlcGggU2Fsb3dleSwgU2VhbgogICBUdXJu
+ZXIgRGF2ZSBHYXJyZXR0LCBNYXJ0aW4gUmV4IGFuZCBLYXRobGVlbiBNb3JpYXJ0eSBmb3IgdGhl
+aXIKICAgdmFsdWFibGUgY29tbWVudHMgYW5kIGZlZWRiYWNrLgoKOC4gIFJlZmVyZW5jZXMKCjgu
+MS4gIE5vcm1hdGl2ZSBSZWZlcmVuY2VzCgogICBbSS1ELmlldGYtdGxzLXJmYzQ0OTJiaXNdCiAg
+ICAgICAgICAgICAgTmlyLCBZLiwgSm9zZWZzc29uLCBTLiwgYW5kIE0uIFBlZ291cmllLUdvbm5h
+cmQsICJFbGxpcHRpYwogICAgICAgICAgICAgIEN1cnZlIENyeXB0b2dyYXBoeSAoRUNDKSBDaXBo
+ZXIgU3VpdGVzIGZvciBUcmFuc3BvcnQgTGF5ZXIKICAgICAgICAgICAgICBTZWN1cml0eSAoVExT
+KSBWZXJzaW9ucyAxLjIgYW5kIEVhcmxpZXIiLCBkcmFmdC1pZXRmLXRscy0KICAgICAgICAgICAg
+ICByZmM0NDkyYmlzLTE3ICh3b3JrIGluIHByb2dyZXNzKSwgTWF5IDIwMTcuCgogICBbSS1ELmll
+dGYtdGxzLXRsczEzXQogICAgICAgICAgICAgIFJlc2NvcmxhLCBFLiwgIlRoZSBUcmFuc3BvcnQg
+TGF5ZXIgU2VjdXJpdHkgKFRMUykgUHJvdG9jb2wKICAgICAgICAgICAgICBWZXJzaW9uIDEuMyIs
+IGRyYWZ0LWlldGYtdGxzLXRsczEzLTIwICh3b3JrIGluIHByb2dyZXNzKSwKICAgICAgICAgICAg
+ICBBcHJpbCAyMDE3LgoKICAgW1JGQzIxMTldICBCcmFkbmVyLCBTLiwgIktleSB3b3JkcyBmb3Ig
+dXNlIGluIFJGQ3MgdG8gSW5kaWNhdGUKICAgICAgICAgICAgICBSZXF1aXJlbWVudCBMZXZlbHMi
+LCBCQ1AgMTQsIFJGQyAyMTE5LAogICAgICAgICAgICAgIERPSSAxMC4xNzQ4Ny9SRkMyMTE5LCBN
+YXJjaCAxOTk3LAogICAgICAgICAgICAgIDxodHRwOi8vd3d3LnJmYy1lZGl0b3Iub3JnL2luZm8v
+cmZjMjExOT4uCgogICBbUkZDMjI0Nl0gIERpZXJrcywgVC4gYW5kIEMuIEFsbGVuLCAiVGhlIFRM
+UyBQcm90b2NvbCBWZXJzaW9uIDEuMCIsCiAgICAgICAgICAgICAgUkZDIDIyNDYsIERPSSAxMC4x
+NzQ4Ny9SRkMyMjQ2LCBKYW51YXJ5IDE5OTksCiAgICAgICAgICAgICAgPGh0dHA6Ly93d3cucmZj
+LWVkaXRvci5vcmcvaW5mby9yZmMyMjQ2Pi4KCgoKCk1hdHRzc29uICYgTWlnYXVsdCAgICAgIEV4
+cGlyZXMgTm92ZW1iZXIgMjQsIDIwMTcgICAgICAgICAgICAgICBbUGFnZSA1XQoMCkludGVybmV0
+LURyYWZ0ICAgICAgICAgICAgICAgRUNESEVfUFNLX0FFQUQgICAgICAgICAgICAgICAgICAgICBN
+YXkgMjAxNwoKCiAgIFtSRkM0Mjc5XSAgRXJvbmVuLCBQLiwgRWQuIGFuZCBILiBUc2Nob2Zlbmln
+LCBFZC4sICJQcmUtU2hhcmVkIEtleQogICAgICAgICAgICAgIENpcGhlcnN1aXRlcyBmb3IgVHJh
+bnNwb3J0IExheWVyIFNlY3VyaXR5IChUTFMpIiwKICAgICAgICAgICAgICBSRkMgNDI3OSwgRE9J
+IDEwLjE3NDg3L1JGQzQyNzksIERlY2VtYmVyIDIwMDUsCiAgICAgICAgICAgICAgPGh0dHA6Ly93
+d3cucmZjLWVkaXRvci5vcmcvaW5mby9yZmM0Mjc5Pi4KCiAgIFtSRkM0MzQ2XSAgRGllcmtzLCBU
+LiBhbmQgRS4gUmVzY29ybGEsICJUaGUgVHJhbnNwb3J0IExheWVyIFNlY3VyaXR5CiAgICAgICAg
+ICAgICAgKFRMUykgUHJvdG9jb2wgVmVyc2lvbiAxLjEiLCBSRkMgNDM0NiwKICAgICAgICAgICAg
+ICBET0kgMTAuMTc0ODcvUkZDNDM0NiwgQXByaWwgMjAwNiwKICAgICAgICAgICAgICA8aHR0cDov
+L3d3dy5yZmMtZWRpdG9yLm9yZy9pbmZvL3JmYzQzNDY+LgoKICAgW1JGQzUxMTZdICBNY0dyZXcs
+IEQuLCAiQW4gSW50ZXJmYWNlIGFuZCBBbGdvcml0aG1zIGZvciBBdXRoZW50aWNhdGVkCiAgICAg
+ICAgICAgICAgRW5jcnlwdGlvbiIsIFJGQyA1MTE2LCBET0kgMTAuMTc0ODcvUkZDNTExNiwgSmFu
+dWFyeSAyMDA4LAogICAgICAgICAgICAgIDxodHRwOi8vd3d3LnJmYy1lZGl0b3Iub3JnL2luZm8v
+cmZjNTExNj4uCgogICBbUkZDNTI0Nl0gIERpZXJrcywgVC4gYW5kIEUuIFJlc2NvcmxhLCAiVGhl
+IFRyYW5zcG9ydCBMYXllciBTZWN1cml0eQogICAgICAgICAgICAgIChUTFMpIFByb3RvY29sIFZl
+cnNpb24gMS4yIiwgUkZDIDUyNDYsCiAgICAgICAgICAgICAgRE9JIDEwLjE3NDg3L1JGQzUyNDYs
+IEF1Z3VzdCAyMDA4LAogICAgICAgICAgICAgIDxodHRwOi8vd3d3LnJmYy1lZGl0b3Iub3JnL2lu
+Zm8vcmZjNTI0Nj4uCgogICBbUkZDNTI4OF0gIFNhbG93ZXksIEouLCBDaG91ZGh1cnksIEEuLCBh
+bmQgRC4gTWNHcmV3LCAiQUVTIEdhbG9pcwogICAgICAgICAgICAgIENvdW50ZXIgTW9kZSAoR0NN
+KSBDaXBoZXIgU3VpdGVzIGZvciBUTFMiLCBSRkMgNTI4OCwKICAgICAgICAgICAgICBET0kgMTAu
+MTc0ODcvUkZDNTI4OCwgQXVndXN0IDIwMDgsCiAgICAgICAgICAgICAgPGh0dHA6Ly93d3cucmZj
+LWVkaXRvci5vcmcvaW5mby9yZmM1Mjg4Pi4KCiAgIFtSRkM2MzQ3XSAgUmVzY29ybGEsIEUuIGFu
+ZCBOLiBNb2RhZHVndSwgIkRhdGFncmFtIFRyYW5zcG9ydCBMYXllcgogICAgICAgICAgICAgIFNl
+Y3VyaXR5IFZlcnNpb24gMS4yIiwgUkZDIDYzNDcsIERPSSAxMC4xNzQ4Ny9SRkM2MzQ3LAogICAg
+ICAgICAgICAgIEphbnVhcnkgMjAxMiwgPGh0dHA6Ly93d3cucmZjLWVkaXRvci5vcmcvaW5mby9y
+ZmM2MzQ3Pi4KCiAgIFtSRkM2NjU1XSAgTWNHcmV3LCBELiBhbmQgRC4gQmFpbGV5LCAiQUVTLUND
+TSBDaXBoZXIgU3VpdGVzIGZvcgogICAgICAgICAgICAgIFRyYW5zcG9ydCBMYXllciBTZWN1cml0
+eSAoVExTKSIsIFJGQyA2NjU1LAogICAgICAgICAgICAgIERPSSAxMC4xNzQ4Ny9SRkM2NjU1LCBK
+dWx5IDIwMTIsCiAgICAgICAgICAgICAgPGh0dHA6Ly93d3cucmZjLWVkaXRvci5vcmcvaW5mby9y
+ZmM2NjU1Pi4KCjguMi4gIEluZm9ybWF0aXZlIFJlZmVyZW5jZXMKCiAgIFtSRkM0NDkyXSAgQmxh
+a2UtV2lsc29uLCBTLiwgQm9seWFyZCwgTi4sIEd1cHRhLCBWLiwgSGF3aywgQy4sIGFuZCBCLgog
+ICAgICAgICAgICAgIE1vZWxsZXIsICJFbGxpcHRpYyBDdXJ2ZSBDcnlwdG9ncmFwaHkgKEVDQykg
+Q2lwaGVyIFN1aXRlcwogICAgICAgICAgICAgIGZvciBUcmFuc3BvcnQgTGF5ZXIgU2VjdXJpdHkg
+KFRMUykiLCBSRkMgNDQ5MiwKICAgICAgICAgICAgICBET0kgMTAuMTc0ODcvUkZDNDQ5MiwgTWF5
+IDIwMDYsCiAgICAgICAgICAgICAgPGh0dHA6Ly93d3cucmZjLWVkaXRvci5vcmcvaW5mby9yZmM0
+NDkyPi4KCiAgIFtSRkM1NDg3XSAgQmFkcmEsIE0uLCAiUHJlLVNoYXJlZCBLZXkgQ2lwaGVyIFN1
+aXRlcyBmb3IgVExTIHdpdGggU0hBLQogICAgICAgICAgICAgIDI1Ni8zODQgYW5kIEFFUyBHYWxv
+aXMgQ291bnRlciBNb2RlIiwgUkZDIDU0ODcsCiAgICAgICAgICAgICAgRE9JIDEwLjE3NDg3L1JG
+QzU0ODcsIE1hcmNoIDIwMDksCiAgICAgICAgICAgICAgPGh0dHA6Ly93d3cucmZjLWVkaXRvci5v
+cmcvaW5mby9yZmM1NDg3Pi4KCgoKCgoKTWF0dHNzb24gJiBNaWdhdWx0ICAgICAgRXhwaXJlcyBO
+b3ZlbWJlciAyNCwgMjAxNyAgICAgICAgICAgICAgIFtQYWdlIDZdCgwKSW50ZXJuZXQtRHJhZnQg
+ICAgICAgICAgICAgICBFQ0RIRV9QU0tfQUVBRCAgICAgICAgICAgICAgICAgICAgIE1heSAyMDE3
+CgoKICAgW1JGQzU0ODldICBCYWRyYSwgTS4gYW5kIEkuIEhhamplaCwgIkVDREhFX1BTSyBDaXBo
+ZXIgU3VpdGVzIGZvcgogICAgICAgICAgICAgIFRyYW5zcG9ydCBMYXllciBTZWN1cml0eSAoVExT
+KSIsIFJGQyA1NDg5LAogICAgICAgICAgICAgIERPSSAxMC4xNzQ4Ny9SRkM1NDg5LCBNYXJjaCAy
+MDA5LAogICAgICAgICAgICAgIDxodHRwOi8vd3d3LnJmYy1lZGl0b3Iub3JnL2luZm8vcmZjNTQ4
+OT4uCgogICBbUkZDNzI1Ml0gIFNoZWxieSwgWi4sIEhhcnRrZSwgSy4sIGFuZCBDLiBCb3JtYW5u
+LCAiVGhlIENvbnN0cmFpbmVkCiAgICAgICAgICAgICAgQXBwbGljYXRpb24gUHJvdG9jb2wgKENv
+QVApIiwgUkZDIDcyNTIsCiAgICAgICAgICAgICAgRE9JIDEwLjE3NDg3L1JGQzcyNTIsIEp1bmUg
+MjAxNCwKICAgICAgICAgICAgICA8aHR0cDovL3d3dy5yZmMtZWRpdG9yLm9yZy9pbmZvL3JmYzcy
+NTI+LgoKICAgW1JGQzc1MjVdICBTaGVmZmVyLCBZLiwgSG9seiwgUi4sIGFuZCBQLiBTYWludC1B
+bmRyZSwKICAgICAgICAgICAgICAiUmVjb21tZW5kYXRpb25zIGZvciBTZWN1cmUgVXNlIG9mIFRy
+YW5zcG9ydCBMYXllcgogICAgICAgICAgICAgIFNlY3VyaXR5IChUTFMpIGFuZCBEYXRhZ3JhbSBU
+cmFuc3BvcnQgTGF5ZXIgU2VjdXJpdHkKICAgICAgICAgICAgICAoRFRMUykiLCBCQ1AgMTk1LCBS
+RkMgNzUyNSwgRE9JIDEwLjE3NDg3L1JGQzc1MjUsIE1heQogICAgICAgICAgICAgIDIwMTUsIDxo
+dHRwOi8vd3d3LnJmYy1lZGl0b3Iub3JnL2luZm8vcmZjNzUyNT4uCgogICBbUkZDNzU0MF0gIEJl
+bHNoZSwgTS4sIFBlb24sIFIuLCBhbmQgTS4gVGhvbXNvbiwgRWQuLCAiSHlwZXJ0ZXh0CiAgICAg
+ICAgICAgICAgVHJhbnNmZXIgUHJvdG9jb2wgVmVyc2lvbiAyIChIVFRQLzIpIiwgUkZDIDc1NDAs
+CiAgICAgICAgICAgICAgRE9JIDEwLjE3NDg3L1JGQzc1NDAsIE1heSAyMDE1LAogICAgICAgICAg
+ICAgIDxodHRwOi8vd3d3LnJmYy1lZGl0b3Iub3JnL2luZm8vcmZjNzU0MD4uCgpBdXRob3JzJyBB
+ZGRyZXNzZXMKCiAgIEpvaG4gTWF0dHNzb24KICAgRXJpY3Nzb24gQUIKICAgU0UtMTY0IDgwIFN0
+b2NraG9sbQogICBTd2VkZW4KCiAgIFBob25lOiArNDYgNzYgMTE1IDM1IDAxCiAgIEVtYWlsOiBq
+b2huLm1hdHRzc29uQGVyaWNzc29uLmNvbQoKCiAgIERhbmllbCBNaWdhdWx0CiAgIEVyaWNzc29u
+CiAgIDg0MDAgYm91bGV2YXJkIERlY2FyaWUKICAgTW9udHJlYWwsIFFDICAgSDRQIDJOMgogICBD
+YW5hZGEKCiAgIFBob25lOiArMSA1MTQtNDUyLTIxNjAKICAgRW1haWw6IGRhbmllbC5taWdhdWx0
+QGVyaWNzc29uLmNvbQoKCgoKCgoKCgoKCk1hdHRzc29uICYgTWlnYXVsdCAgICAgIEV4cGlyZXMg
+Tm92ZW1iZXIgMjQsIDIwMTcgICAgICAgICAgICAgICBbUGFnZSA3XQo=
+--001a11412d3c8cca6305503bfc78--
+

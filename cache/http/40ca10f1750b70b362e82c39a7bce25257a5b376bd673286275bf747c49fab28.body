@@ -1,0 +1,446 @@
+Return-Path: <ekr@rtfm.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 3C01412946A
+ for <tls@ietfa.amsl.com>; Tue, 16 May 2017 10:50:10 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.898
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.898 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_NONE=-0.0001, URIBL_BLOCKED=0.001]
+ autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=rtfm-com.20150623.gappssmtp.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 6Lv3aIRqGig0 for <tls@ietfa.amsl.com>;
+ Tue, 16 May 2017 10:50:07 -0700 (PDT)
+Received: from mail-yb0-x236.google.com (mail-yb0-x236.google.com
+ [IPv6:2607:f8b0:4002:c09::236])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 23160129489
+ for <tls@ietf.org>; Tue, 16 May 2017 10:45:21 -0700 (PDT)
+Received: by mail-yb0-x236.google.com with SMTP id p143so37183809yba.2
+ for <tls@ietf.org>; Tue, 16 May 2017 10:45:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=rtfm-com.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+ :cc; bh=NO2YHmgDavdX8LogEdBbFjVeZfWets18VjC8+abdC/s=;
+ b=EXLN8WuRjR9dvfCqkmlDrda2u2/nVSNIUcOwOIbkDipE7q7ze0bAP7lZw5WvyHBDTY
+ ozsc5K7+WIHgMB1VdI8zAm5X5esG+F0X2z2rS6EcQ3vvrlxjfhXDFjefC0Ca6FKvdXy7
+ 5gQe/g+DkQXZpWdWy0wxH+O/sFJsBx8iFKHUxEDdrNVmBuirrU3lNvWL5PoCb6HODfih
+ Empf1Id/kb/GRpvIUGP83JGqHsxJ2VchmV4dFbogVMEkjJaVG+mqbWRmeIpgZ0478R45
+ Wpl09aoNVGGl4Pd99Yd+AWoSD4cWgpmz4Tu5UtkWS5ZxORZpp/hYSeJCppRccjlcxpee
+ MbNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+ :message-id:subject:to:cc;
+ bh=NO2YHmgDavdX8LogEdBbFjVeZfWets18VjC8+abdC/s=;
+ b=PTkPkOH4qveSi+ZdDE8egnLNPlma4AZGfXwZyJf58/K0ufW+KIHyq2QdG3Z37c1RSX
+ pRmo2NCZzVYfzIgdxNhjoMUVYqDxGmLW+qF9c60W+Jylz8OAMUxvcmAnIP/9P3mRH6eq
+ MYQkGc38asHtFH/FbWpVWZHYy940iWLjKeN+b9GEu/USHgcR6H5noQJ6kurBXNYUHdlp
+ /KPLzu6CqltlLjRTAdCbHo9pMxWi3+/VKf29i4xpMxrDV+faTlMFABbRDntsBCBtZqh0
+ F03L/EE8Kw1iKpgoejgayX50OEJvKiz+WoNLt7yLTSoRAs1UUwsA5UyuXqX0iv9+Pwd5
+ Qt/g==
+X-Gm-Message-State: AODbwcAI9hWXQIeTSdy/nzmFicrLVWMdwrSaji9SJR9kihTZCLhwbCmi
+ 6SxNix9aO32z+KH3zGOk8xGHiBc7mA==
+X-Received: by 10.37.174.24 with SMTP id a24mr10744496ybj.50.1494956720258;
+ Tue, 16 May 2017 10:45:20 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 10.129.131.150 with HTTP; Tue, 16 May 2017 10:44:39 -0700 (PDT)
+In-Reply-To: <CAHbuEH7djXnZv-SvOFyLxTb6UWCKj8Hn0ZMS3ccgvviuPuPFKQ@mail.gmail.com>
+References: <CAHbuEH4PXU5569RYJ1uPcriQruCewmRrXUU3MVBZ+GtpyceiAw@mail.gmail.com>
+ <CABcZeBMMQ8kNWUA4Y6ssMw7h54fPbBxrLbgZtxSkYc7-fzypSA@mail.gmail.com>
+ <9C0E15E5-E852-47E0-B9A6-F807034ECFB8@vigilsec.com>
+ <CABcZeBPGK9BguF6OJo=QT3Sx1mLwBQJhh4JiBkAmws5umvctSg@mail.gmail.com>
+ <0ED5F216-365D-432E-B390-D95014ED5676@vigilsec.com>
+ <CABcZeBPnLSbNySpRoGd8gQNBDf9jAEzX8eG6WC96MTmoqdpJHA@mail.gmail.com>
+ <45BECF9F-0BBD-4E2D-B517-77709C0EAC9F@vigilsec.com>
+ <CAHbuEH7djXnZv-SvOFyLxTb6UWCKj8Hn0ZMS3ccgvviuPuPFKQ@mail.gmail.com>
+From: Eric Rescorla <ekr@rtfm.com>
+Date: Tue, 16 May 2017 10:44:39 -0700
+Message-ID: <CABcZeBOjK_zumDd3XyNDF5TM5ckkpFoHEzxWb_H8=cF4N-CxtQ@mail.gmail.com>
+To: Kathleen Moriarty <kathleen.moriarty.ietf@gmail.com>
+Cc: Russ Housley <housley@vigilsec.com>, IETF TLS <tls@ietf.org>
+Content-Type: multipart/alternative; boundary="f403045da3584499a4054fa7bccb"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/IN4mE-5cX6TL51tTL7feBDidwYc>
+Subject: Re: [TLS] AD Review of draft-ietf-tls-tls13
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Tue, 16 May 2017 17:50:10 -0000
+
+--f403045da3584499a4054fa7bccb
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, May 16, 2017 at 8:36 AM, Kathleen Moriarty <
+kathleen.moriarty.ietf@gmail.com> wrote:
+
+> On Tue, May 16, 2017 at 11:31 AM, Russ Housley <housley@vigilsec.com>
+> wrote:
+> >
+> > On May 16, 2017, at 11:23 AM, Eric Rescorla <ekr@rtfm.com> wrote:
+> >
+> >
+> >
+> > On Tue, May 16, 2017 at 8:17 AM, Russ Housley <housley@vigilsec.com>
+> wrote:
+> >>
+> >>
+> >> On May 15, 2017, at 7:01 PM, Eric Rescorla <ekr@rtfm.com> wrote:
+> >>
+> >>
+> >>
+> >> On Mon, May 15, 2017 at 12:38 PM, Russ Housley <housley@vigilsec.com>
+> >> wrote:
+> >>>
+> >>> Just commenting on Section 4.2 =E2=80=A6
+> >>>
+> >>> >
+> >>> > > 3. Section 4.2.
+> >>> > >
+> >>> > >    "In general, detailed certificate validation procedures are ou=
+t
+> of
+> >>> > >    scope for TLS (see [RFC5280]).  This section provides
+> TLS-specific
+> >>> > >    requirements."
+> >>> > >
+> >>> > > I don't see an explanation of why it is out-of-scope.  The
+> reference
+> >>> > > is just to RFC5280, which seems odd.  I would expect the referenc=
+e
+> to
+> >>> > > be to something that explains why it is out-of-scope.
+> >>>
+> >>> I think the the separation of certificate path validation from the TL=
+S
+> >>> protocol is correct, but perhaps this can be explained differently.
+> Perhaps
+> >>> the approach should be that TLS depends upon certificate path
+> validation as
+> >>> described in RFC 5280.
+> >>>
+> >>> > In general, TLS's policy (dating back to TLS 1.0) has been that the
+> >>> > job of TLS is to carry the certificates and other authentication
+> >>> > material but to leave it up to other parts of the system to
+> >>> > interpret them. It's been a long time since that decision was made,
+> >>> > but from my perspective, there are a number of major reasons:
+> >>> >
+> >>> > 1. Most of PKI processing (path construction, etc.) is generic and
+> >>> >    not specific to TLS. What is specific to TLS is:
+> >>> >
+> >>> >    * How to indicate what your PKI capabilities are
+> >>> >      (see, e.g, S 4.2.4 and 4.3.2)
+> >>> >    * How to stuff the PKI material into the protocol
+> >>> >      (principally S 4.4.2)
+> >>> >    * How to determine whether a given certificate is suitable for
+> >>> >      use in TLS 4.4.4.2 and 4.3.2.1).
+> >>> >
+> >>> >    So we want to outsource the generic PKI part
+> >>> >
+> >>> >
+> >>> > 2. It matches the software architecture that people often use,
+> >>> >    which is to have a TLS stack but separate PKI validation. For
+> >>> >    instance, Firefox uses NSS for TLS but moz::pkix for
+> >>> >    validation. Similarly, Chrome uses BoringSSL for TLS
+> >>> >    but the system PKI libraries for validation.
+> >>> >
+> >>> >
+> >>> > In this case, I think that this text was more intended to
+> >>> > say "and go read 5280 to learn how to do this". To that end,
+> >>> > I suggest we say"
+> >>> >
+> >>> >
+> >>> >     "In general detailed certificate validation procedures are out =
+of
+> >>> >     scope for TLS. [RFC5280] provides general procedures for
+> >>> >     certificate validation. This section provides TLS-specific
+> >>> >     requirements.=E2=80=9D
+> >>>
+> >>> I agree with the reasoning, however the dependency on RFC 5280 should
+> be
+> >>> called out in a MUST statement.  I suggest something like:
+> >>>
+> >>>     "TLS depends on certificate path validation, and a conformant
+> >>>     TLS implementation MUST implement certificate paths validation
+> >>>     in a manner that achieves the same result as [RFC5280]. This
+> >>>     section provides TLS-specific requirements.=E2=80=9D
+> >>>
+> >>> Note that RFC 5280 is already a normative reference.
+> >>
+> >>
+> >> A MUST here would be a pretty material change to historical TLS
+> practice.
+> >> As Viktor says, there are TLS-using applications that just don't
+> validate
+> >> the cert via 5280 at all.
+> >>
+> >>
+> >> I think we want to say that if the certificates are used, then the
+> >> certification path MUST be validated in a manner that is compatible wi=
+th
+> >> Internet X.509 certificate profile [RFC5280]; however, other approache=
+s
+> to
+> >> validation of the public key, such as the DANE TLSA resource record
+> >> [RFC6698], are also acceptable.
+> >
+> >
+> > I can see how you would want to say that, but it's not really consisten=
+t
+> > either
+> > with historical practice or with the way that other standards track RFC=
+s
+> use
+> > TLS
+> > with certificates (see RFC 5763).
+> >
+> >
+> > Actually, that is a great example.  I accept the need for loose couplin=
+g.
+>
+> OK, does that put us back to the suggested wording:
+>
+>     "TLS depends on certificate path validation, and a conformant
+>      TLS implementation MUST implement certificate paths validation
+>      in a manner that achieves the same result as [RFC5280]. This
+>      section provides TLS-specific requirements.=E2=80=9D
+>
+
+Hmm... I don't think so. Wouldn't the fingerprint-matching prescribed by
+5763
+contradict this?
+
+-Ekr
+
+
+> For any developers following, does this help enough with any
+> interoperability questions?
+>
+> Thanks,
+> Kathleen
+>
+> >
+> > Russ
+> >
+>
+>
+>
+> --
+>
+> Best regards,
+> Kathleen
+>
+
+--f403045da3584499a4054fa7bccb
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div class=3D"gmail_extra"><br><div class=3D"gmail_quote">=
+On Tue, May 16, 2017 at 8:36 AM, Kathleen Moriarty <span dir=3D"ltr">&lt;<a=
+ href=3D"mailto:kathleen.moriarty.ietf@gmail.com" target=3D"_blank">kathlee=
+n.moriarty.ietf@gmail.com</a>&gt;</span> wrote:<br><blockquote class=3D"gma=
+il_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-lef=
+t:1ex"><div class=3D"HOEnZb"><div class=3D"h5">On Tue, May 16, 2017 at 11:3=
+1 AM, Russ Housley &lt;<a href=3D"mailto:housley@vigilsec.com">housley@vigi=
+lsec.com</a>&gt; wrote:<br>
+&gt;<br>
+&gt; On May 16, 2017, at 11:23 AM, Eric Rescorla &lt;<a href=3D"mailto:ekr@=
+rtfm.com">ekr@rtfm.com</a>&gt; wrote:<br>
+&gt;<br>
+&gt;<br>
+&gt;<br>
+&gt; On Tue, May 16, 2017 at 8:17 AM, Russ Housley &lt;<a href=3D"mailto:ho=
+usley@vigilsec.com">housley@vigilsec.com</a>&gt; wrote:<br>
+&gt;&gt;<br>
+&gt;&gt;<br>
+&gt;&gt; On May 15, 2017, at 7:01 PM, Eric Rescorla &lt;<a href=3D"mailto:e=
+kr@rtfm.com">ekr@rtfm.com</a>&gt; wrote:<br>
+&gt;&gt;<br>
+&gt;&gt;<br>
+&gt;&gt;<br>
+&gt;&gt; On Mon, May 15, 2017 at 12:38 PM, Russ Housley &lt;<a href=3D"mail=
+to:housley@vigilsec.com">housley@vigilsec.com</a>&gt;<br>
+&gt;&gt; wrote:<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt; Just commenting on Section 4.2 =E2=80=A6<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt; &gt;<br>
+&gt;&gt;&gt; &gt; &gt; 3. Section 4.2.<br>
+&gt;&gt;&gt; &gt; &gt;<br>
+&gt;&gt;&gt; &gt; &gt;=C2=A0 =C2=A0 &quot;In general, detailed certificate =
+validation procedures are out of<br>
+&gt;&gt;&gt; &gt; &gt;=C2=A0 =C2=A0 scope for TLS (see [RFC5280]).=C2=A0 Th=
+is section provides TLS-specific<br>
+&gt;&gt;&gt; &gt; &gt;=C2=A0 =C2=A0 requirements.&quot;<br>
+&gt;&gt;&gt; &gt; &gt;<br>
+&gt;&gt;&gt; &gt; &gt; I don&#39;t see an explanation of why it is out-of-s=
+cope.=C2=A0 The reference<br>
+&gt;&gt;&gt; &gt; &gt; is just to RFC5280, which seems odd.=C2=A0 I would e=
+xpect the reference to<br>
+&gt;&gt;&gt; &gt; &gt; be to something that explains why it is out-of-scope=
+.<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt; I think the the separation of certificate path validation from=
+ the TLS<br>
+&gt;&gt;&gt; protocol is correct, but perhaps this can be explained differe=
+ntly.=C2=A0 Perhaps<br>
+&gt;&gt;&gt; the approach should be that TLS depends upon certificate path =
+validation as<br>
+&gt;&gt;&gt; described in RFC 5280.<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt; &gt; In general, TLS&#39;s policy (dating back to TLS 1.0) has=
+ been that the<br>
+&gt;&gt;&gt; &gt; job of TLS is to carry the certificates and other authent=
+ication<br>
+&gt;&gt;&gt; &gt; material but to leave it up to other parts of the system =
+to<br>
+&gt;&gt;&gt; &gt; interpret them. It&#39;s been a long time since that deci=
+sion was made,<br>
+&gt;&gt;&gt; &gt; but from my perspective, there are a number of major reas=
+ons:<br>
+&gt;&gt;&gt; &gt;<br>
+&gt;&gt;&gt; &gt; 1. Most of PKI processing (path construction, etc.) is ge=
+neric and<br>
+&gt;&gt;&gt; &gt;=C2=A0 =C2=A0 not specific to TLS. What is specific to TLS=
+ is:<br>
+&gt;&gt;&gt; &gt;<br>
+&gt;&gt;&gt; &gt;=C2=A0 =C2=A0 * How to indicate what your PKI capabilities=
+ are<br>
+&gt;&gt;&gt; &gt;=C2=A0 =C2=A0 =C2=A0 (see, e.g, S 4.2.4 and 4.3.2)<br>
+&gt;&gt;&gt; &gt;=C2=A0 =C2=A0 * How to stuff the PKI material into the pro=
+tocol<br>
+&gt;&gt;&gt; &gt;=C2=A0 =C2=A0 =C2=A0 (principally S 4.4.2)<br>
+&gt;&gt;&gt; &gt;=C2=A0 =C2=A0 * How to determine whether a given certifica=
+te is suitable for<br>
+&gt;&gt;&gt; &gt;=C2=A0 =C2=A0 =C2=A0 use in TLS 4.4.4.2 and 4.3.2.1).<br>
+&gt;&gt;&gt; &gt;<br>
+&gt;&gt;&gt; &gt;=C2=A0 =C2=A0 So we want to outsource the generic PKI part=
+<br>
+&gt;&gt;&gt; &gt;<br>
+&gt;&gt;&gt; &gt;<br>
+&gt;&gt;&gt; &gt; 2. It matches the software architecture that people often=
+ use,<br>
+&gt;&gt;&gt; &gt;=C2=A0 =C2=A0 which is to have a TLS stack but separate PK=
+I validation. For<br>
+&gt;&gt;&gt; &gt;=C2=A0 =C2=A0 instance, Firefox uses NSS for TLS but moz::=
+pkix for<br>
+&gt;&gt;&gt; &gt;=C2=A0 =C2=A0 validation. Similarly, Chrome uses BoringSSL=
+ for TLS<br>
+&gt;&gt;&gt; &gt;=C2=A0 =C2=A0 but the system PKI libraries for validation.=
+<br>
+&gt;&gt;&gt; &gt;<br>
+&gt;&gt;&gt; &gt;<br>
+&gt;&gt;&gt; &gt; In this case, I think that this text was more intended to=
+<br>
+&gt;&gt;&gt; &gt; say &quot;and go read 5280 to learn how to do this&quot;.=
+ To that end,<br>
+&gt;&gt;&gt; &gt; I suggest we say&quot;<br>
+&gt;&gt;&gt; &gt;<br>
+&gt;&gt;&gt; &gt;<br>
+&gt;&gt;&gt; &gt;=C2=A0 =C2=A0 =C2=A0&quot;In general detailed certificate =
+validation procedures are out of<br>
+&gt;&gt;&gt; &gt;=C2=A0 =C2=A0 =C2=A0scope for TLS. [RFC5280] provides gene=
+ral procedures for<br>
+&gt;&gt;&gt; &gt;=C2=A0 =C2=A0 =C2=A0certificate validation. This section p=
+rovides TLS-specific<br>
+&gt;&gt;&gt; &gt;=C2=A0 =C2=A0 =C2=A0requirements.=E2=80=9D<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt; I agree with the reasoning, however the dependency on RFC 5280=
+ should be<br>
+&gt;&gt;&gt; called out in a MUST statement.=C2=A0 I suggest something like=
+:<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt;=C2=A0 =C2=A0 =C2=A0&quot;TLS depends on certificate path valid=
+ation, and a conformant<br>
+&gt;&gt;&gt;=C2=A0 =C2=A0 =C2=A0TLS implementation MUST implement certifica=
+te paths validation<br>
+&gt;&gt;&gt;=C2=A0 =C2=A0 =C2=A0in a manner that achieves the same result a=
+s [RFC5280]. This<br>
+&gt;&gt;&gt;=C2=A0 =C2=A0 =C2=A0section provides TLS-specific requirements.=
+=E2=80=9D<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt; Note that RFC 5280 is already a normative reference.<br>
+&gt;&gt;<br>
+&gt;&gt;<br>
+&gt;&gt; A MUST here would be a pretty material change to historical TLS pr=
+actice.<br>
+&gt;&gt; As Viktor says, there are TLS-using applications that just don&#39=
+;t validate<br>
+&gt;&gt; the cert via 5280 at all.<br>
+&gt;&gt;<br>
+&gt;&gt;<br>
+&gt;&gt; I think we want to say that if the certificates are used, then the=
+<br>
+&gt;&gt; certification path MUST be validated in a manner that is compatibl=
+e with<br>
+&gt;&gt; Internet X.509 certificate profile [RFC5280]; however, other appro=
+aches to<br>
+&gt;&gt; validation of the public key, such as the DANE TLSA resource recor=
+d<br>
+&gt;&gt; [RFC6698], are also acceptable.<br>
+&gt;<br>
+&gt;<br>
+&gt; I can see how you would want to say that, but it&#39;s not really cons=
+istent<br>
+&gt; either<br>
+&gt; with historical practice or with the way that other standards track RF=
+Cs use<br>
+&gt; TLS<br>
+&gt; with certificates (see RFC 5763).<br>
+&gt;<br>
+&gt;<br>
+&gt; Actually, that is a great example.=C2=A0 I accept the need for loose c=
+oupling.<br>
+<br>
+</div></div>OK, does that put us back to the suggested wording:<br>
+<span class=3D""><br>
+=C2=A0 =C2=A0 &quot;TLS depends on certificate path validation, and a confo=
+rmant<br>
+=C2=A0 =C2=A0 =C2=A0TLS implementation MUST implement certificate paths val=
+idation<br>
+=C2=A0 =C2=A0 =C2=A0in a manner that achieves the same result as [RFC5280].=
+ This<br>
+=C2=A0 =C2=A0 =C2=A0section provides TLS-specific requirements.=E2=80=9D<br=
+></span></blockquote><div><br></div><div>Hmm... I don&#39;t think so. Would=
+n&#39;t the fingerprint-matching prescribed by 5763</div><div>contradict th=
+is?</div><div><br></div><div>-Ekr</div><div><br></div><blockquote class=3D"=
+gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-=
+left:1ex"><span class=3D"">
+<br>
+</span>For any developers following, does this help enough with any<br>
+interoperability questions?<br>
+<br>
+Thanks,<br>
+<div class=3D"HOEnZb"><div class=3D"h5">Kathleen<br>
+<br>
+&gt;<br>
+&gt; Russ<br>
+&gt;<br>
+<br>
+<br>
+<br>
+--<br>
+<br>
+Best regards,<br>
+Kathleen<br>
+</div></div></blockquote></div><br></div></div>
+
+--f403045da3584499a4054fa7bccb--
+

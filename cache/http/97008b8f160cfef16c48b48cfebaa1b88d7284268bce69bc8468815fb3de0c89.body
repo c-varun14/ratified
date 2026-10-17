@@ -1,0 +1,452 @@
+Return-Path: <ekr@rtfm.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id DB1F41289B0
+ for <tls@ietfa.amsl.com>; Wed,  7 Mar 2018 10:59:23 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.898
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.898 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_NONE=-0.0001, URIBL_BLOCKED=0.001]
+ autolearn=unavailable autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=rtfm-com.20150623.gappssmtp.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id bkrfQGs7lriA for <tls@ietfa.amsl.com>;
+ Wed,  7 Mar 2018 10:59:21 -0800 (PST)
+Received: from mail-qt0-x22d.google.com (mail-qt0-x22d.google.com
+ [IPv6:2607:f8b0:400d:c0d::22d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id BF599129C5D
+ for <tls@ietf.org>; Wed,  7 Mar 2018 10:59:18 -0800 (PST)
+Received: by mail-qt0-x22d.google.com with SMTP id d26so3888959qtk.10
+ for <tls@ietf.org>; Wed, 07 Mar 2018 10:59:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=rtfm-com.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+ :cc; bh=rHAISHy09B5nikF+malxZ/UTQN2xPNJdlfRW0UBE4mg=;
+ b=Y6ynpD7KV0NZQlW0agBE5GQPF6bw+vCfOInsg7cQdSJrDcF5UQkIYXiNdoG1GnZeHf
+ 4gWR1F6dZyPfLD5RfdSeVVTl64h6k/EhrVwMV+4cr1mpJ4klu1suDS+mql4wX0ljUx8s
+ d2TYyc8zshBwDcuUTQLKFTe9ifrHV9YGh8oaB9uwWZGFx0EdCxDCQwzhRQL35AdkTAix
+ JjE5YvJ0fi2h3lnOknZBwdC48EO1Fcg3CT86x7gKlEgHwkfBJh3YywbJpMrOhThudG2i
+ vRepQaL7CSEja0bCz/HVhrPPI2u9+KvKcg23TWPUuMFk3gCLqyaCxdP4IDMXV828fWKg
+ uVoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+ :message-id:subject:to:cc;
+ bh=rHAISHy09B5nikF+malxZ/UTQN2xPNJdlfRW0UBE4mg=;
+ b=NqRRw467BNP5H/tmbz2ALuWj+Og8+KnjwT+2FQPjlnW5tuy4D2FJYE/C3ADK7VVPF7
+ MzZYahR2ODrH2r3BFXTDRV8wIxRLn02H44vxFNq+nkf2fPt7LdE4G8+kiZCphr6v+het
+ fFDNWWio29g75tdQtXwT9msRBYkpr8neY76ZDiXNneio2gJ0YcCG1TqDBd12TzpDf5PI
+ QQsgtfRPyQzEPNSvx6jAssX3Vk41dzcqsKNqdugtbHOW+YG1gM7lX83XSSZXIA/W2clZ
+ dzIIoyUSmfocn1r6ZKKHf8yPAIp2Mgw5W2tbQPE45Kowb5K8haxKysWGaqkfoj8i7UZP
+ 9USg==
+X-Gm-Message-State: AElRT7GzyEujU1WCf/J1DBxf9s0QjcBWHVna4qzMScbfOk9hxFCvcusD
+ ZlRQ0lSxRmg+P++TDtg0IjUrNm1sLddjL4Lg4k0r4Q==
+X-Google-Smtp-Source: AG47ELvQaG4Kq07QCNiPHZ492O0yNNBfjGXzlS3N3o8nKUHsmVWGgNFusp4tazyeHQ+dL4UAFq+8cfNhj9DJmUn9fZo=
+X-Received: by 10.200.42.177 with SMTP id b46mr36391533qta.321.1520449157755; 
+ Wed, 07 Mar 2018 10:59:17 -0800 (PST)
+MIME-Version: 1.0
+Received: by 10.200.37.176 with HTTP; Wed, 7 Mar 2018 10:58:37 -0800 (PST)
+In-Reply-To: <152041310032.17609.1489959489741770597.idtracker@ietfa.amsl.com>
+References: <152041310032.17609.1489959489741770597.idtracker@ietfa.amsl.com>
+From: Eric Rescorla <ekr@rtfm.com>
+Date: Wed, 7 Mar 2018 10:58:37 -0800
+Message-ID: <CABcZeBM+uRTww=dZsQnwxyFA07nD-iifU-10O5u_bRqAAy39PQ@mail.gmail.com>
+To: Adam Roach <adam@nostrum.com>
+Cc: The IESG <iesg@ietf.org>, draft-ietf-tls-tls13@ietf.org, 
+ tls-chairs <tls-chairs@ietf.org>, Sean Turner <sean@sn3rd.com>,
+ "<tls@ietf.org>" <tls@ietf.org>
+Content-Type: multipart/alternative; boundary="001a113b0328f28bee0566d727d2"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/6J_UugKaE8LGe7Tca2v9r2pWBfY>
+Subject: Re: [TLS] Adam Roach's Yes on draft-ietf-tls-tls13-26: (with COMMENT)
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Wed, 07 Mar 2018 18:59:24 -0000
+
+--001a113b0328f28bee0566d727d2
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Hi Adam,
+
+
+Thanks for your comments.
+
+I'm going to let the Chairs handle the Abstract one.
+
+
+Responses below (I'm ignoring a bunch which I just agree with).
+
+> =C2=A74.2.1:
+>
+> >  TLS SHOULD support TLS 1.2.  Servers should be prepared to receive
+> >  ClientHellos that include this extension but do not include 0x0304 in
+> >  the list of versions.
+>
+> This "should" reads as if it should be normative. It also seems that
+making this
+> "should" instead of "MUST" could result in the same "can't negotiate to
+earlier
+> versions" implementation situation that is mentioned elsewhere in the
+document.
+> Consider a server that supports TLS 1.2 and TLS 1.3. It receives a
+ClientHello
+> from a client that supports TLS 1.2 and a future TLS 1.4. Let's postulate
+that
+> this client doesn't support 1.3 (say, because of some uncurable flaw that
+> exists in 1.3, but not in 1.2 or 1.4). If the server isn't prepared to
+deal
+> with this situation, we end up in the same "can't move versions forward"
+> corner that led to freezing the legacy version string at 0x0303.
+
+Yes, I agree. This should be a MUST.
+
+
+> =C2=A74.2.3:
+>
+> >         /* Reserved Code Points */
+> >         private_use(0xFE00..0xFFFF),
+> >         (0xFFFF)
+> >     } SignatureScheme;
+>
+> When a node supports both TLS 1.2 and TLS 1.3, this private use space onl=
+y
+> allows for the definition of two private-use hashes that can be used in
+both
+> circumstances (as only 0xFE and 0xFF will be recognized by 1.2 as
+specifying
+> hashes). I don't know what the use cases for this private use space is;
+but
+> given the relatively generous allocation in RFC 5246, is two going to be
+enough?
+
+I am not sure anyone has every used this space at all, so I tend to think
+this
+is OK.
+
+
+> =C2=A75.5:
+>
+> >  There are cryptographic limits on the amount of plaintext which can
+> >  be safely encrypted under a given set of keys.  [AEAD-LIMITS]
+> >  provides an analysis of these limits under the assumption that the
+> >  underlying primitive (AES or ChaCha20) has no weaknesses.
+> >  Implementations SHOULD do a key update as described in Section 4.6.3
+> >  prior to reaching these limits.
+>
+> Implementing this "SHOULD" is predicated on understanding the contents of
+> [AEAD-LIMITS], which means [AEAD-LIMITS] needs to be a normative
+reference.
+
+Agreed.
+
+
+> >  -  TLS SignatureScheme Registry: Values with the first byte in the
+> >     range 0-253 (decimal) are assigned via Specification Required
+> >     [RFC8126].  Values with the first byte 254 or 255 (decimal) are
+> >     reserved for Private Use [RFC8126].  Values with the first byte in
+> >     the range 0-6 or with the second byte in the range 0-3 that are
+> >     not currently allocated are reserved for backwards compatibility.
+>
+> Unless I misunderstand the compatibility mechanisms here, the reservation
+of
+> first byte=3D0-6 seems to assume that no further assignments will be made
+from
+> the "TLS HashAlgorithm Registry" (after 4492bis lands). If this is the
+case, I
+> would expect the IANA considerations section to include a request that
+the IANA
+> close the table to further registrations. The same comment applies to TLS
+> SignatureAlgorithm Registry.
+
+Agreed, but I'd like to hear from the chairs.
+
+
+
+> This is a consolidation of the structures found in the document.
+Presumably,
+> Appendix B is normative and the other versions are illustrative? To help
+deal
+> with the possibility of conflicts between the two versions, it would be
+nice if
+> this were stated explicitly.
+
+B is machine generated from the rest of the text, but I'm happy to add
+something here.
+
+
+
+>
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> Editorial Nits
+>
+---------------------------------------------------------------------------
+>
+> General:
+>
+>   ** There are 33 instances of too long lines in the document, the longes=
+t
+>      one being 8 characters in excess of 72.
+
+I expect the RFC Editor to fix this.
+
+
+>
+---------------------------------------------------------------------------
+>
+> General:
+>
+> Although both "implementor" and "implementer" are acceptable spellings,
+> it is unusual for a document to switch back and forth. I recommend
+consistency.
+
+OK.
+
+
+>
+---------------------------------------------------------------------------
+>
+> =C2=A74.4.3:
+>
+> >  The context string for a server signature is "TLS 1.3, server
+> >  CertificateVerify" and for a client signature is "TLS 1.3, client
+> >  CertificateVerify".  It is used to provide separation between
+> >  signatures made in different contexts, helping against potential
+> >  cross-protocol attacks.
+>
+> Although the example makes it clear, the preceding is the normative
+description
+> of behavior. Since the limitations of the RFC format result in line
+wrapping in
+> the middle of two strings that must be bit exact for the protocol to
+function,
+> it is probably worthwhile setting them off on their own lines so that
+they don't
+> contain extra line feeds and indenting spaces.
+
+Thanks. I can do this.
+
+> =C2=A77.4.1:
+>
+> >  For finite field groups, a conventional Diffie-Hellman computation is
+> >  performed.  The negotiated key (Z) is converted to a byte string by
+> >  encoding in big-endian and padded with zeros up to the size of the
+> >  prime.
+>
+> Presumably "...and left padded...", correct?
+
+Yes, thanks.
+
+>
+---------------------------------------------------------------------------
+>
+> =C2=A712.3:
+>
+> This section seems superfluous.
+
+Agreed.
+
+> It seems that this should cite "Chosen ciphertext attacks against
+protocols
+> based on the RSA encryption standard PKCS #1".
+
+Agreed.
+
+
+>
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+> General (deferred to the end due to length):
+>
+> As a rule of thumb, "that" is used to start restrictive clauses ("Two
+doors
+> are in front of you. The door that is on the right leads outside"), while
+> "which" is used to start non-restrictive clauses ("The only door in the
+room,
+> which is made of wood, leads outside.") This document uses "which" where
+"that"
+> is called for in numerous locations. Although there are several more than
+listed
+> below, I'm highlighting the locations where a literal reading of "which"
+> technically leads to ambiguity. Each instance has a leading line for
+context
+> (except those that occur at the beginning of a paragraph).
+
+I appreciate that many people hold to this rule of thumb, but it is,
+unfortunately, an invented rule:
+
+http://itre.cis.upenn.edu/~myl/languagelog/archives/000918.html
+http://itre.cis.upenn.edu/~myl/languagelog/archives/001461.html
+
+  There is an old myth that which is not used in integrated relative
+  clauses (e.g. something which I hate) and that has to be used instead
+  something that I hate). It is completely untrue. The choice between
+  the two is free and open.
+
+--001a113b0328f28bee0566d727d2
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">Hi Adam,<div><br></div><div><br></div><div>Thanks for your=
+ comments.</div><div><br></div><div>I&#39;m going to let the Chairs handle =
+the Abstract one.</div><div><br></div><div><br></div><div>Responses below (=
+I&#39;m ignoring a bunch which I just agree with).</div><div><br></div><div=
+><div>&gt; =C2=A74.2.1:</div><div>&gt;=C2=A0</div><div>&gt; &gt;=C2=A0 TLS =
+SHOULD support TLS 1.2.=C2=A0 Servers should be prepared to receive</div><d=
+iv>&gt; &gt;=C2=A0 ClientHellos that include this extension but do not incl=
+ude 0x0304 in</div><div>&gt; &gt;=C2=A0 the list of versions.</div><div>&gt=
+;=C2=A0</div><div>&gt; This &quot;should&quot; reads as if it should be nor=
+mative. It also seems that making this</div><div>&gt; &quot;should&quot; in=
+stead of &quot;MUST&quot; could result in the same &quot;can&#39;t negotiat=
+e to earlier</div><div>&gt; versions&quot; implementation situation that is=
+ mentioned elsewhere in the document.</div><div>&gt; Consider a server that=
+ supports TLS 1.2 and TLS 1.3. It receives a ClientHello</div><div>&gt; fro=
+m a client that supports TLS 1.2 and a future TLS 1.4. Let&#39;s postulate =
+that</div><div>&gt; this client doesn&#39;t support 1.3 (say, because of so=
+me uncurable flaw that</div><div>&gt; exists in 1.3, but not in 1.2 or 1.4)=
+. If the server isn&#39;t prepared to deal</div><div>&gt; with this situati=
+on, we end up in the same &quot;can&#39;t move versions forward&quot;</div>=
+<div>&gt; corner that led to freezing the legacy version string at 0x0303.<=
+/div><div><br></div><div>Yes, I agree. This should be a MUST.</div><div><br=
+></div><div><br></div><div>&gt; =C2=A74.2.3:</div><div>&gt;=C2=A0</div><div=
+>&gt; &gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0/* Reserved Code Points */</div=
+><div>&gt; &gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0private_use(0xFE00..0xFFFF=
+),</div><div>&gt; &gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0(0xFFFF)</div><div>=
+&gt; &gt;=C2=A0 =C2=A0 =C2=A0} SignatureScheme;</div><div>&gt;=C2=A0</div><=
+div>&gt; When a node supports both TLS 1.2 and TLS 1.3, this private use sp=
+ace only</div><div>&gt; allows for the definition of two private-use hashes=
+ that can be used in both</div><div>&gt; circumstances (as only 0xFE and 0x=
+FF will be recognized by 1.2 as specifying</div><div>&gt; hashes). I don&#3=
+9;t know what the use cases for this private use space is; but</div><div>&g=
+t; given the relatively generous allocation in RFC 5246, is two going to be=
+ enough?</div><div><br></div><div>I am not sure anyone has every used this =
+space at all, so I tend to think this</div><div>is OK.</div><div><br></div>=
+<div><br></div><div>&gt; =C2=A75.5:</div><div>&gt;=C2=A0</div><div>&gt; &gt=
+;=C2=A0 There are cryptographic limits on the amount of plaintext which can=
+</div><div>&gt; &gt;=C2=A0 be safely encrypted under a given set of keys.=
+=C2=A0 [AEAD-LIMITS]</div><div>&gt; &gt;=C2=A0 provides an analysis of thes=
+e limits under the assumption that the</div><div>&gt; &gt;=C2=A0 underlying=
+ primitive (AES or ChaCha20) has no weaknesses.</div><div>&gt; &gt;=C2=A0 I=
+mplementations SHOULD do a key update as described in Section 4.6.3</div><d=
+iv>&gt; &gt;=C2=A0 prior to reaching these limits.</div><div>&gt;=C2=A0</di=
+v><div>&gt; Implementing this &quot;SHOULD&quot; is predicated on understan=
+ding the contents of</div><div>&gt; [AEAD-LIMITS], which means [AEAD-LIMITS=
+] needs to be a normative reference.</div><div><br></div><div>Agreed.</div>=
+<div><br></div><div><br></div><div>&gt; &gt;=C2=A0 -=C2=A0 TLS SignatureSch=
+eme Registry: Values with the first byte in the</div><div>&gt; &gt;=C2=A0 =
+=C2=A0 =C2=A0range 0-253 (decimal) are assigned via Specification Required<=
+/div><div>&gt; &gt;=C2=A0 =C2=A0 =C2=A0[RFC8126].=C2=A0 Values with the fir=
+st byte 254 or 255 (decimal) are</div><div>&gt; &gt;=C2=A0 =C2=A0 =C2=A0res=
+erved for Private Use [RFC8126].=C2=A0 Values with the first byte in</div><=
+div>&gt; &gt;=C2=A0 =C2=A0 =C2=A0the range 0-6 or with the second byte in t=
+he range 0-3 that are</div><div>&gt; &gt;=C2=A0 =C2=A0 =C2=A0not currently =
+allocated are reserved for backwards compatibility.</div><div>&gt;=C2=A0</d=
+iv><div>&gt; Unless I misunderstand the compatibility mechanisms here, the =
+reservation of</div><div>&gt; first byte=3D0-6 seems to assume that no furt=
+her assignments will be made from</div><div>&gt; the &quot;TLS HashAlgorith=
+m Registry&quot; (after 4492bis lands). If this is the case, I</div><div>&g=
+t; would expect the IANA considerations section to include a request that t=
+he IANA</div><div>&gt; close the table to further registrations. The same c=
+omment applies to TLS</div><div>&gt; SignatureAlgorithm Registry.</div><div=
+><br></div><div>Agreed, but I&#39;d like to hear from the chairs.</div><div=
+><br></div><div><br></div><div><br></div><div>&gt; This is a consolidation =
+of the structures found in the document. Presumably,</div><div>&gt; Appendi=
+x B is normative and the other versions are illustrative? To help deal</div=
+><div>&gt; with the possibility of conflicts between the two versions, it w=
+ould be nice if</div><div>&gt; this were stated explicitly.</div><div><br><=
+/div><div>B is machine generated from the rest of the text, but I&#39;m hap=
+py to add</div><div>something here.</div><div><br></div><div><br></div><div=
+><br></div><div>&gt; =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D</div><div>&gt; Editorial Nits</div><div>&gt; --------=
+-------------------------------------------------------------------</div><d=
+iv>&gt;=C2=A0</div><div>&gt; General:</div><div>&gt;=C2=A0</div><div>&gt;=
+=C2=A0 =C2=A0** There are 33 instances of too long lines in the document, t=
+he longest</div><div>&gt;=C2=A0 =C2=A0 =C2=A0 one being 8 characters in exc=
+ess of 72.</div><div><br></div><div>I expect the RFC Editor to fix this.</d=
+iv><div><br></div><div><br></div><div>&gt; --------------------------------=
+-------------------------------------------</div><div>&gt;=C2=A0</div><div>=
+&gt; General:</div><div>&gt;=C2=A0</div><div>&gt; Although both &quot;imple=
+mentor&quot; and &quot;implementer&quot; are acceptable spellings,</div><di=
+v>&gt; it is unusual for a document to switch back and forth. I recommend c=
+onsistency.</div><div><br></div><div>OK.</div><div><br></div><div><br></div=
+><div>&gt; ----------------------------------------------------------------=
+-----------</div><div>&gt;=C2=A0</div><div>&gt; =C2=A74.4.3:</div><div>&gt;=
+=C2=A0</div><div>&gt; &gt;=C2=A0 The context string for a server signature =
+is &quot;TLS 1.3, server</div><div>&gt; &gt;=C2=A0 CertificateVerify&quot; =
+and for a client signature is &quot;TLS 1.3, client</div><div>&gt; &gt;=C2=
+=A0 CertificateVerify&quot;.=C2=A0 It is used to provide separation between=
+</div><div>&gt; &gt;=C2=A0 signatures made in different contexts, helping a=
+gainst potential</div><div>&gt; &gt;=C2=A0 cross-protocol attacks.</div><di=
+v>&gt;=C2=A0</div><div>&gt; Although the example makes it clear, the preced=
+ing is the normative description</div><div>&gt; of behavior. Since the limi=
+tations of the RFC format result in line wrapping in</div><div>&gt; the mid=
+dle of two strings that must be bit exact for the protocol to function,</di=
+v><div>&gt; it is probably worthwhile setting them off on their own lines s=
+o that they don&#39;t</div><div>&gt; contain extra line feeds and indenting=
+ spaces.</div><div><br></div><div>Thanks. I can do this.</div><div><br></di=
+v><div>&gt; =C2=A77.4.1:</div><div>&gt;=C2=A0</div><div>&gt; &gt;=C2=A0 For=
+ finite field groups, a conventional Diffie-Hellman computation is</div><di=
+v>&gt; &gt;=C2=A0 performed.=C2=A0 The negotiated key (Z) is converted to a=
+ byte string by</div><div>&gt; &gt;=C2=A0 encoding in big-endian and padded=
+ with zeros up to the size of the</div><div>&gt; &gt;=C2=A0 prime.</div><di=
+v>&gt;=C2=A0</div><div>&gt; Presumably &quot;...and left padded...&quot;, c=
+orrect?</div><div><br></div><div>Yes, thanks.</div><div><br></div><div>&gt;=
+ --------------------------------------------------------------------------=
+-</div><div>&gt;=C2=A0</div><div>&gt; =C2=A712.3:</div><div>&gt;=C2=A0</div=
+><div>&gt; This section seems superfluous.</div><div><br></div><div>Agreed.=
+</div><div><br></div><div>&gt; It seems that this should cite &quot;Chosen =
+ciphertext attacks against protocols</div><div>&gt; based on the RSA encryp=
+tion standard PKCS #1&quot;.</div><div><br></div><div>Agreed.</div><div><br=
+></div><div><br></div><div>&gt; =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D</div><div>&gt;=C2=A0</div><div>&gt; Gener=
+al (deferred to the end due to length):</div><div>&gt;=C2=A0</div><div>&gt;=
+ As a rule of thumb, &quot;that&quot; is used to start restrictive clauses =
+(&quot;Two doors</div><div>&gt; are in front of you. The door that is on th=
+e right leads outside&quot;), while</div><div>&gt; &quot;which&quot; is use=
+d to start non-restrictive clauses (&quot;The only door in the room,</div><=
+div>&gt; which is made of wood, leads outside.&quot;) This document uses &q=
+uot;which&quot; where &quot;that&quot;</div><div>&gt; is called for in nume=
+rous locations. Although there are several more than listed</div><div>&gt; =
+below, I&#39;m highlighting the locations where a literal reading of &quot;=
+which&quot;</div><div>&gt; technically leads to ambiguity. Each instance ha=
+s a leading line for context</div><div>&gt; (except those that occur at the=
+ beginning of a paragraph).</div><div><br></div><div>I appreciate that many=
+ people hold to this rule of thumb, but it is,</div><div>unfortunately, an =
+invented rule:</div><div><br></div><div><a href=3D"http://itre.cis.upenn.ed=
+u/~myl/languagelog/archives/000918.html">http://itre.cis.upenn.edu/~myl/lan=
+guagelog/archives/000918.html</a></div><div><a href=3D"http://itre.cis.upen=
+n.edu/~myl/languagelog/archives/001461.html">http://itre.cis.upenn.edu/~myl=
+/languagelog/archives/001461.html</a></div><div><br></div><div>=C2=A0 There=
+ is an old myth that which is not used in integrated relative</div><div>=C2=
+=A0 clauses (e.g. something which I hate) and that has to be used instead</=
+div><div>=C2=A0 something that I hate). It is completely untrue. The choice=
+ between</div><div>=C2=A0 the two is free and open.</div><div><br></div></d=
+iv></div>
+
+--001a113b0328f28bee0566d727d2--
+

@@ -1,0 +1,116 @@
+Return-Path: <ilariliusvaara@welho.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (ietfa.amsl.com [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 8A87B1A87DB
+ for <tls@ietfa.amsl.com>; Wed, 17 Feb 2016 12:23:51 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.906
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.906 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, RP_MATCHES_RCVD=-0.006] autolearn=ham
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id xmskMzkPIeBA for <tls@ietfa.amsl.com>;
+ Wed, 17 Feb 2016 12:23:49 -0800 (PST)
+Received: from welho-filter3.welho.com (welho-filter3.welho.com [83.102.41.25])
+ by ietfa.amsl.com (Postfix) with ESMTP id 683E91A0439
+ for <tls@ietf.org>; Wed, 17 Feb 2016 12:23:49 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+ by welho-filter3.welho.com (Postfix) with ESMTP id 0F9E4911;
+ Wed, 17 Feb 2016 22:23:47 +0200 (EET)
+X-Virus-Scanned: Debian amavisd-new at pp.htv.fi
+Received: from welho-smtp3.welho.com ([IPv6:::ffff:83.102.41.86])
+ by localhost (welho-filter3.welho.com [::ffff:83.102.41.25]) (amavisd-new,
+ port 10024)
+ with ESMTP id D6kSQmJ78N71; Wed, 17 Feb 2016 22:23:46 +0200 (EET)
+Received: from LK-Perkele-V2 (87-100-151-39.bb.dnainternet.fi [87.100.151.39])
+ (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by welho-smtp3.welho.com (Postfix) with ESMTPSA id B163F2313;
+ Wed, 17 Feb 2016 22:23:46 +0200 (EET)
+Date: Wed, 17 Feb 2016 22:23:43 +0200
+From: Ilari Liusvaara <ilariliusvaara@welho.com>
+To: =JeffH <Jeff.Hodges@KingsMountain.com>
+Message-ID: <20160217202342.GA8163@LK-Perkele-V2.elisa-laajakaista.fi>
+References: <56C4C918.4070606@KingsMountain.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <56C4C918.4070606@KingsMountain.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+Sender: ilariliusvaara@welho.com
+Archived-At: <http://mailarchive.ietf.org/arch/msg/tls/dPsCRYIaCLyZEIl08QSz5Cooy-I>
+Cc: IETF TLS WG <tls@ietf.org>
+Subject: Re: [TLS] RFC5705 Keying Material Exporters for TLS -- not
+ applicable to TLS 1.3 ?
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.15
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Wed, 17 Feb 2016 20:23:51 -0000
+
+On Wed, Feb 17, 2016 at 11:25:12AM -0800, =JeffH wrote:
+> Hi,
+> 
+> RFC5705 section 4 "Exporter Definition" [1] states..
+> 
+>    The exporter takes three input values:
+> 
+>    o a disambiguating label string,
+> 
+>    o a per-association context value provided by the application using
+>      the exporter, and
+> 
+>    o a length value.
+> 
+>    If no context is provided, it then computes:
+> 
+>            PRF(...
+>               )[length]
+> 
+>    If context is provided, it computes:
+> 
+>            PRF(...
+>               )[length]
+> 
+> 
+> ..i.e., RFC5705 directly utilizes the TLS PRF (pseudo-random function)
+> from TLS {1.0, 1.1, 1.3}.  Since the PRF() is no longer defined in TLS
+> 1.3, RFC5705 is incompatible with TLS 1.3, yes?
+> 
+> Also, draft-ietf-tls-tls13-11 seems to contain a built-in keying material
+> exporter (KME) in S 7.1 step 8 [2]..
+> 
+>    7.1.  Key Schedule
+> 
+>       [...]
+> 
+>       8. exporter_secret = HKDF-Expand-Label(master_secret,
+>                                           "exporter master secret",
+>                                           handshake_hash, L)
+>       [...]
+> 
+> 
+> ..i.e., does the above step "8." effectively define the TLS 1.3 keying
+> material exporter?
+> 
+
+Well, it isn't clear to me what TLS 1.3 exporters should do. Presumably
+the "master secret" used for calculations is exporter_secret. However,
+just replacing the PRF in definition with the standard TLS 1.3 PRF
+(HKDF) would leave those exporters using randoms, which aren't
+explicitly used anywhere in TLS 1.3.
+
+
+-Ilari
+

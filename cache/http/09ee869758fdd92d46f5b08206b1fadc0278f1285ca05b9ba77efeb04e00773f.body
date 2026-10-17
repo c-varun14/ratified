@@ -1,0 +1,443 @@
+Return-Path: <ekr@rtfm.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id C00C71275FD
+ for <tls@ietfa.amsl.com>; Mon, 19 Mar 2018 06:38:53 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.599
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.599 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_LOW=-0.7]
+ autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=rtfm-com.20150623.gappssmtp.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id LnrtWKp6MazJ for <tls@ietfa.amsl.com>;
+ Mon, 19 Mar 2018 06:38:47 -0700 (PDT)
+Received: from mail-qk0-x22d.google.com (mail-qk0-x22d.google.com
+ [IPv6:2607:f8b0:400d:c09::22d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id ABCF312DA15
+ for <tls@ietf.org>; Mon, 19 Mar 2018 06:38:46 -0700 (PDT)
+Received: by mail-qk0-x22d.google.com with SMTP id o64so2591389qkl.7
+ for <tls@ietf.org>; Mon, 19 Mar 2018 06:38:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=rtfm-com.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+ :cc; bh=9slXV0JQOzuDvl0HIbnVYILyqQ9nISt4dza1qxerQeg=;
+ b=RcNAhaqm/4xD7V1My1WNmeWhZxTFtQ8oQlzgfjBRv6Lu35Y0tnlqQdAR2vV7O+oIxF
+ NUIdMivkR8OlXnw5sQmKeLrwbvjGZKkbl+xJvoxeJaSTYxAvGHLYamTeoFDcOVr8fL0a
+ lXbEcWGe/UaxMk6K3e0pjZZt9R/SEU64Cki2nW8670lyk4/hS6wC6mTX2yhD8kALJuPU
+ Uai3CHyu5Qb0sWBKlwX5BliiTR9NyVNtJMMkidkozUuxIZMqNdN7oGJS33SqnqKpLIAk
+ SX+ywBt0Puvc52sB6Si0pRrRkpKh8tGh5UxvYgYmBzi5laQuGnvhUjn50w2owmNX8/FR
+ nULw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+ :message-id:subject:to:cc;
+ bh=9slXV0JQOzuDvl0HIbnVYILyqQ9nISt4dza1qxerQeg=;
+ b=oOKHIc2nz2JyBKpyY9ERVEo7lN7GEYK0n98Y+dbxZgGkFudeJcQuYAeG9HVXw9Ge68
+ ZXogqRDWHPWBojl4qI/zcFe3YyyGqdzspD5KtI2cMmt0Q3hf5Bw8UiElELqx6FGhGiJL
+ ILMLhw6Ah6LUlAcgmHSas2Skk6+JxUyBaRnccbUM9R3sJ/z0U692tP2ROi1zFrijDAM7
+ vigxfT76L2F9MSIlWT2AudK4BnYvpAe/Oe/W2M/Wev4t73LAwOHm155sAEqcKyjaHYaw
+ yrDmIcOJCXGkMi+lWHBMGCbjvPSh6IuxtPAkqu11cwXvR3M4uIJSMpHzkv6NBrV/Nz5N
+ Mong==
+X-Gm-Message-State: AElRT7GesTV11iZh/OcKhrbplZ0XZXHcF4x+2eW+BxOC3DzddXIrdk7E
+ E7+WouxHi9GyqLFwGPA5ebiQV8BonobhR4MA7QaUiQ==
+X-Google-Smtp-Source: AG47ELvJAwXZlWU2QScCSsWqnozTAmNRwog7p7E5MEoN5CB9jSBZ6yNcZErUE9AKOoNuvE8ebABj49R0A622MyR6RSY=
+X-Received: by 10.55.118.6 with SMTP id r6mr18314926qkc.211.1521466725683;
+ Mon, 19 Mar 2018 06:38:45 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 10.200.37.234 with HTTP; Mon, 19 Mar 2018 06:38:05 -0700 (PDT)
+In-Reply-To: <1521466432.30491.16.camel@redhat.com>
+References: <6112806.hxzZ6NivhB@pintsize.usersys.redhat.com>
+ <2062943.8cTCpni5Dm@pintsize.usersys.redhat.com>
+ <20180314201328.GF55987@kduck.kaduk.org>
+ <1937539.vLgMNW4b7C@pintsize.usersys.redhat.com>
+ <20180315215147.GP55987@kduck.kaduk.org>
+ <c7427ccf-51fc-235d-4555-a0c3d7d6f846@huitema.net>
+ <20180316194519.GZ55987@kduck.kaduk.org>
+ <1521466432.30491.16.camel@redhat.com>
+From: Eric Rescorla <ekr@rtfm.com>
+Date: Mon, 19 Mar 2018 13:38:05 +0000
+Message-ID: <CABcZeBPThERW6NnOKkTZ7gxPpq+7Xno+7nEkLr612kt_7FcHEw@mail.gmail.com>
+To: Nikos Mavrogiannopoulos <nmav@redhat.com>
+Cc: Benjamin Kaduk <kaduk@mit.edu>, Christian Huitema <huitema@huitema.net>,
+ TLS WG <tls@ietf.org>, IESG <iesg@ietf.org>
+Content-Type: multipart/alternative; boundary="94eb2c062738b8e8460567c41386"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/37iWopwod3-ZzECimI9vvA9AQ10>
+Subject: Re: [TLS] draft-ietf-tls-tls13-26 is vulnerable to externally set
+ PSK identity enumeration
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Mon, 19 Mar 2018 13:38:54 -0000
+
+--94eb2c062738b8e8460567c41386
+Content-Type: text/plain; charset="UTF-8"
+
+On Mon, Mar 19, 2018 at 1:33 PM, Nikos Mavrogiannopoulos <nmav@redhat.com>
+wrote:
+
+> On Fri, 2018-03-16 at 14:45 -0500, Benjamin Kaduk wrote:
+> > On Fri, Mar 16, 2018 at 09:11:32AM -0400, Christian Huitema wrote:
+> > >
+> > >
+> > > On 3/15/2018 5:51 PM, Benjamin Kaduk wrote:
+> > > > On Thu, Mar 15, 2018 at 12:25:38PM +0100, Hubert Kario wrote:
+> > > > ...
+> > > > > we do not have a reliable mechanism of differentiating between
+> > > > > external and
+> > > > > resumption PSKs while parsing Client Hello
+> > > >
+> > > > Well, a valid external PSK (identity) the server will of course
+> > > > recognize, and we have a SHOULD-level requirement that the
+> > > > obfuscated_ticket_age is zero for external PSKs.  I haven't
+> > > > gotten
+> > > > to think through whether there is still potential for information
+> > > > leakage about external PSK identities, but it seems like there
+> > > > would
+> > > > not be, provided that the server prefers resumption to external-
+> > > > PSK
+> > > > full handshakes.
+> > > >
+> > >
+> > > I am concerned with the privacy issues linked to these "external
+> > > PSK
+> > > identities". If a system is set so that clients use static PSK
+> > > identities, then the identity is an identifier and the client's
+> > > movements and connections can be tracked. I don't think privacy is
+> > > improved if we make it easy to differentiate external identities
+> > > from
+> > > resumption tickets.
+> >
+> > Oh, of course, the privacy considerations of the current external
+> > PSK scheme are terrible!  This follows naturally from external PSKs
+> > having not really been a first-class citizen while we were designing
+> > things; we stuffed resumption PSKs together with external PSKs for
+> > the convenience of having them use the same binder construct and
+> > only needing to have one extension at the end of the ClientHello.
+> > Resumption flows get single-use tickets for privacy preservation,
+> > and external PSKs get infinite use and a gigantic correlation
+> > channel.
+>
+> I agree.
+>
+> > > If you want to use PSK with some level of privacy, you might adopt
+> > > a
+> > > different setup. For example, servers could provision the clients
+> > > with a
+> > > set of single-use external PSK identities. But then, that looks a
+> > > lot
+> > > like resumption. Or, clients could generate single-use external PSK
+> > > identities by encrypting their long term identity and a nonce with
+> > > the
+> > > public key of the server, a design which of course has its own set
+> > > of
+> > > issues.
+> > >
+> >
+> > But, as you note, this is something of an open problem for how to do
+> > well, and this document is already approved by the IESG.  (It's also
+> > not entirely clear that the TLS WG would be the best place to design
+> > this sort of scheme, though of course it could choose to do so.)
+> >
+> > So to me the open question is whether we consider enumeration of
+> > external PSK identifiers to be something we can address reasonably
+> > at this stage of the document's lifecycle at all.  (I also note that
+> > the presence of a CVE number for a similar issue does not
+> > necessarily mean anything -- CVE assignments can occur for
+> > situations with no actual security impact and/or against the wishes
+> > of the software authors.)  I don't think anyone has proposed a
+> > minimal change that would close the enumeration channel, and given
+> > that external PSKs already have bad privacy properties, it seems
+> > like we may just have to accept this state of affairs for this
+> > document.
+>
+> That's a good general remark, but not really the case for the
+> vulnerabilities that Hubert pointed out.
+>
+> > Hubert also says:
+> >
+> > % so there's no reliable way to say that, yes, this identity is or is
+> > not a
+> > % resumption ticket, if I can't decrypt it
+> >
+> > Mostly.  External PSKs are established out of band, and that
+> > provisioning process *could* include knowledge that the
+> > obfuscated_ticket_age would always be zero when those PSKs are in
+> > use, and that would be reliable for those specific parties.
+>
+> I believe that this can happen in an interoperable way if the protocol
+> mandates it (which is not the case now). These specific parties may use
+> software from different vendors which may use different conventions if
+> the protocol is not clear enough.
+>
+> > It's probably also worth considering the two cases for server
+> > behavior when presented with a PSK id that is neither a known
+> > external PSK nor a known resumption ticket -- the server could
+> > either treat it as an unknown external PSK id or as a resumption
+> > ticket that fails to decrypt.  The latter case fails because the
+> > attacker can try candidate external identities and the server falls
+> > back to a full handshake unless the PSK ID is good.  (Well, maybe
+> > the server rejects PSK IDs that are shorter than a ticket would be.)
+> > The first case is not really usable since it would lead to spurious
+> > triggering of the proposed "at most one external PSK" check.
+> >
+> > So, in addition to the "we provision external PSKs only when we know
+> > that obfuscated_ticket_age will be zero", deployments could also
+> > agree that external PSK ids are shorter than a given length and
+> > resumption PSKs are larger, which would again provide a reliable
+> > differentiator between resumption and external.
+>
+> That cannot easily happen. I can have multiple servers answering to the
+> same hostname each using a different implementation. Any conventions
+> used in one implementation would not apply to another.
+>
+> > % I'd really prefer we exhaust other possibilities before sacrificing
+> > support
+> > % for multiple external PSK. With TLS 1.2 we had ticket_hint to guide
+> > PSK
+> > % selection, now we're left with just server IP or hostname.
+> >
+> > I think that "do nothing and accept external PSK enumeration as a
+> > risk" is more likely than sacrificing support for multiple external
+> > PSKs, personally.
+>
+> The problem is that you personally are not affected by that risk and I
+> guess that makes it easy for you to accept it. TLS1.2 with PSK did
+> explicitly prevent enumeration (by asking implementations to proceed to
+> handshake even with unknown usernames, and making up a key), meaning
+> that this is a risk that the designers of PSK (external) intentionally
+> ruled out. Going that path, it would be a step back in PSK security for
+> TLS1.3.
+>
+
+Nikos,
+
+Just as a clarification, I believe it's possible for a PSK-only
+implementation to
+avoid this attack by behaving uniformly for "unknown ID" and "invalid
+binder"
+
+-Ekr
+
+
+> regards,
+> Nikos
+>
+>
+
+--94eb2c062738b8e8460567c41386
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><br><div class=3D"gmail_extra"><br><div class=3D"gmail_quo=
+te">On Mon, Mar 19, 2018 at 1:33 PM, Nikos Mavrogiannopoulos <span dir=3D"l=
+tr">&lt;<a href=3D"mailto:nmav@redhat.com" target=3D"_blank">nmav@redhat.co=
+m</a>&gt;</span> wrote:<br><blockquote class=3D"gmail_quote" style=3D"margi=
+n:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex"><div class=3D"HOE=
+nZb"><div class=3D"h5">On Fri, 2018-03-16 at 14:45 -0500, Benjamin Kaduk wr=
+ote:<br>
+&gt; On Fri, Mar 16, 2018 at 09:11:32AM -0400, Christian Huitema wrote:<br>
+&gt; &gt;<br>
+&gt; &gt;<br>
+&gt; &gt; On 3/15/2018 5:51 PM, Benjamin Kaduk wrote:<br>
+&gt; &gt; &gt; On Thu, Mar 15, 2018 at 12:25:38PM +0100, Hubert Kario wrote=
+:<br>
+&gt; &gt; &gt; ...<br>
+&gt; &gt; &gt; &gt; we do not have a reliable mechanism of differentiating =
+between<br>
+&gt; &gt; &gt; &gt; external and<br>
+&gt; &gt; &gt; &gt; resumption PSKs while parsing Client Hello<br>
+&gt; &gt; &gt;<br>
+&gt; &gt; &gt; Well, a valid external PSK (identity) the server will of cou=
+rse<br>
+&gt; &gt; &gt; recognize, and we have a SHOULD-level requirement that the<b=
+r>
+&gt; &gt; &gt; obfuscated_ticket_age is zero for external PSKs.=C2=A0 I hav=
+en&#39;t<br>
+&gt; &gt; &gt; gotten<br>
+&gt; &gt; &gt; to think through whether there is still potential for inform=
+ation<br>
+&gt; &gt; &gt; leakage about external PSK identities, but it seems like the=
+re<br>
+&gt; &gt; &gt; would<br>
+&gt; &gt; &gt; not be, provided that the server prefers resumption to exter=
+nal-<br>
+&gt; &gt; &gt; PSK<br>
+&gt; &gt; &gt; full handshakes.<br>
+&gt; &gt; &gt;<br>
+&gt; &gt;<br>
+&gt; &gt; I am concerned with the privacy issues linked to these &quot;exte=
+rnal<br>
+&gt; &gt; PSK<br>
+&gt; &gt; identities&quot;. If a system is set so that clients use static P=
+SK<br>
+&gt; &gt; identities, then the identity is an identifier and the client&#39=
+;s<br>
+&gt; &gt; movements and connections can be tracked. I don&#39;t think priva=
+cy is<br>
+&gt; &gt; improved if we make it easy to differentiate external identities<=
+br>
+&gt; &gt; from<br>
+&gt; &gt; resumption tickets.<br>
+&gt;<br>
+&gt; Oh, of course, the privacy considerations of the current external<br>
+&gt; PSK scheme are terrible!=C2=A0 This follows naturally from external PS=
+Ks<br>
+&gt; having not really been a first-class citizen while we were designing<b=
+r>
+&gt; things; we stuffed resumption PSKs together with external PSKs for<br>
+&gt; the convenience of having them use the same binder construct and<br>
+&gt; only needing to have one extension at the end of the ClientHello.<br>
+&gt; Resumption flows get single-use tickets for privacy preservation,<br>
+&gt; and external PSKs get infinite use and a gigantic correlation<br>
+&gt; channel.<br>
+<br>
+</div></div>I agree.<br>
+<div><div class=3D"h5"><br>
+&gt; &gt; If you want to use PSK with some level of privacy, you might adop=
+t<br>
+&gt; &gt; a<br>
+&gt; &gt; different setup. For example, servers could provision the clients=
+<br>
+&gt; &gt; with a<br>
+&gt; &gt; set of single-use external PSK identities. But then, that looks a=
+<br>
+&gt; &gt; lot<br>
+&gt; &gt; like resumption. Or, clients could generate single-use external P=
+SK<br>
+&gt; &gt; identities by encrypting their long term identity and a nonce wit=
+h<br>
+&gt; &gt; the<br>
+&gt; &gt; public key of the server, a design which of course has its own se=
+t<br>
+&gt; &gt; of<br>
+&gt; &gt; issues.<br>
+&gt; &gt;<br>
+&gt;<br>
+&gt; But, as you note, this is something of an open problem for how to do<b=
+r>
+&gt; well, and this document is already approved by the IESG.=C2=A0 (It&#39=
+;s also<br>
+&gt; not entirely clear that the TLS WG would be the best place to design<b=
+r>
+&gt; this sort of scheme, though of course it could choose to do so.)<br>
+&gt;<br>
+&gt; So to me the open question is whether we consider enumeration of<br>
+&gt; external PSK identifiers to be something we can address reasonably<br>
+&gt; at this stage of the document&#39;s lifecycle at all.=C2=A0 (I also no=
+te that<br>
+&gt; the presence of a CVE number for a similar issue does not<br>
+&gt; necessarily mean anything -- CVE assignments can occur for<br>
+&gt; situations with no actual security impact and/or against the wishes<br=
+>
+&gt; of the software authors.)=C2=A0 I don&#39;t think anyone has proposed =
+a<br>
+&gt; minimal change that would close the enumeration channel, and given<br>
+&gt; that external PSKs already have bad privacy properties, it seems<br>
+&gt; like we may just have to accept this state of affairs for this<br>
+&gt; document.<br>
+<br>
+</div></div>That&#39;s a good general remark, but not really the case for t=
+he<br>
+vulnerabilities that Hubert pointed out.<br>
+<span class=3D""><br>
+&gt; Hubert also says:<br>
+&gt;<br>
+&gt; % so there&#39;s no reliable way to say that, yes, this identity is or=
+ is<br>
+&gt; not a<br>
+&gt; % resumption ticket, if I can&#39;t decrypt it<br>
+&gt;<br>
+&gt; Mostly.=C2=A0 External PSKs are established out of band, and that<br>
+&gt; provisioning process *could* include knowledge that the<br>
+&gt; obfuscated_ticket_age would always be zero when those PSKs are in<br>
+&gt; use, and that would be reliable for those specific parties.<br>
+<br>
+</span>I believe that this can happen in an interoperable way if the protoc=
+ol<br>
+mandates it (which is not the case now). These specific parties may use<br>
+software from different vendors which may use different conventions if<br>
+the protocol is not clear enough.<br>
+<span class=3D""><br>
+&gt; It&#39;s probably also worth considering the two cases for server<br>
+&gt; behavior when presented with a PSK id that is neither a known<br>
+&gt; external PSK nor a known resumption ticket -- the server could<br>
+&gt; either treat it as an unknown external PSK id or as a resumption<br>
+&gt; ticket that fails to decrypt.=C2=A0 The latter case fails because the<=
+br>
+&gt; attacker can try candidate external identities and the server falls<br=
+>
+&gt; back to a full handshake unless the PSK ID is good.=C2=A0 (Well, maybe=
+<br>
+&gt; the server rejects PSK IDs that are shorter than a ticket would be.)<b=
+r>
+&gt; The first case is not really usable since it would lead to spurious<br=
+>
+&gt; triggering of the proposed &quot;at most one external PSK&quot; check.=
+<br>
+&gt;<br>
+&gt; So, in addition to the &quot;we provision external PSKs only when we k=
+now<br>
+&gt; that obfuscated_ticket_age will be zero&quot;, deployments could also<=
+br>
+&gt; agree that external PSK ids are shorter than a given length and<br>
+&gt; resumption PSKs are larger, which would again provide a reliable<br>
+&gt; differentiator between resumption and external.<br>
+<br>
+</span>That cannot easily happen. I can have multiple servers answering to =
+the<br>
+same hostname each using a different implementation. Any conventions<br>
+used in one implementation would not apply to another.<br>
+<span class=3D""><br>
+&gt; % I&#39;d really prefer we exhaust other possibilities before sacrific=
+ing<br>
+&gt; support<br>
+&gt; % for multiple external PSK. With TLS 1.2 we had ticket_hint to guide<=
+br>
+&gt; PSK<br>
+&gt; % selection, now we&#39;re left with just server IP or hostname.<br>
+&gt;<br>
+&gt; I think that &quot;do nothing and accept external PSK enumeration as a=
+<br>
+&gt; risk&quot; is more likely than sacrificing support for multiple extern=
+al<br>
+&gt; PSKs, personally.<br>
+<br>
+</span>The problem is that you personally are not affected by that risk and=
+ I<br>
+guess that makes it easy for you to accept it. TLS1.2 with PSK did<br>
+explicitly prevent enumeration (by asking implementations to proceed to<br>
+handshake even with unknown usernames, and making up a key), meaning<br>
+that this is a risk that the designers of PSK (external) intentionally<br>
+ruled out. Going that path, it would be a step back in PSK security for<br>
+TLS1.3.<br></blockquote><div><br></div><div>Nikos,</div><div><br></div><div=
+>Just as a clarification, I believe it&#39;s possible for a PSK-only implem=
+entation to</div><div>avoid this attack by behaving uniformly for &quot;unk=
+nown ID&quot; and &quot;invalid binder&quot;</div><div><br></div><div>-Ekr<=
+/div><div><br></div><blockquote class=3D"gmail_quote" style=3D"margin:0 0 0=
+ .8ex;border-left:1px #ccc solid;padding-left:1ex">
+<br>
+regards,<br>
+Nikos<br>
+<br>
+</blockquote></div><br></div></div>
+
+--94eb2c062738b8e8460567c41386--
+

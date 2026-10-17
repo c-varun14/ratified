@@ -1,0 +1,291 @@
+From ekr@rtfm.com  Tue Jan 16 18:13:06 2024
+Return-Path: <ekr@rtfm.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 87689C1516EA
+ for <tls@ietfa.amsl.com>; Tue, 16 Jan 2024 18:13:06 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.903
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.903 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ HTML_MESSAGE=0.001, RCVD_IN_ZEN_BLOCKED_OPENDNS=0.001,
+ SPF_HELO_NONE=0.001, SPF_NONE=0.001, T_SCC_BODY_TEXT_LINE=-0.01,
+ URIBL_BLOCKED=0.001, URIBL_DBL_BLOCKED_OPENDNS=0.001,
+ URIBL_ZEN_BLOCKED_OPENDNS=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=rtfm-com.20230601.gappssmtp.com
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id HfMMK6bQrUFb for <tls@ietfa.amsl.com>;
+ Tue, 16 Jan 2024 18:13:02 -0800 (PST)
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com
+ [IPv6:2607:f8b0:4864:20::b2a])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 38B95C15155C
+ for <tls@ietf.org>; Tue, 16 Jan 2024 18:13:02 -0800 (PST)
+Received: by mail-yb1-xb2a.google.com with SMTP id
+ 3f1490d57ef6-da7ea62e76cso8934611276.3
+ for <tls@ietf.org>; Tue, 16 Jan 2024 18:13:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=rtfm-com.20230601.gappssmtp.com; s=20230601; t=1705457581; x=1706062381;
+ darn=ietf.org; 
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=8B5sNodaoApZTUYEhKCtDmTSYa/4J5QQ+BZT29Ay0ZU=;
+ b=c1FW9PDYCCTxfW4JRun1rVJkqiZcbDS6gcEQPKhxaNQWIb3/fGjYW/lCa5t1jPoR7U
+ Qd57XKBBdLAaPMFLRDwl3HrVzO8bMQGNpjrapADYnI3qOCCC24Ic6jEyhBBQRz+po7EP
+ 5uIPlRxFnZY5Fx74wPcKcb7kFdUnN8q8oyF1lMExEXKxM9/W7Zke0wmwbcnGjyqouKdS
+ rFbZqof7fIO+NUW0497U/LCUGpHAHN5NDRbbVrHhh3ReX972ToXubXbuSxLUjQxLJLxg
+ iUY0ftckSkenavT5EOqexR+ARwas+vCN4lGDvtrucZkAXnmV9B/jR8gbzsTVMkrCh9JB
+ 6GaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1705457581; x=1706062381;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=8B5sNodaoApZTUYEhKCtDmTSYa/4J5QQ+BZT29Ay0ZU=;
+ b=fgmSrUZRe75OoJ3cl78FJRVHqjCOiyB+/bAHhF1JVGZMF5OvmCzX9qQgzaorcE2GBd
+ LxF7SCrjO1/s/mgYet63PzTJsypZBCeH4vq3Kcra1LgRRUKzX2Ovxcmm0INxz7eLkX2J
+ 9cxuppj8Aah4VNow57ywSTKn/d+/8/Frm0sncswt60qvrR3pvvLNA0Spcajy1QouunZJ
+ PqBXOh0Q1k3GXFYbasIcEqTL5uBjoDKOqLhlrYY1aYQIQXK7wBEvBG5cWM2059HfBe05
+ espdv4pu1ROX7KwmeIsDNXm6tt9Pnrs2p22bvaHfmhLIGN77WBBwL7EJVa95H92lc88Q
+ burg==
+X-Gm-Message-State: AOJu0Yy0FkZHZL969MnJqP7M1T4SxRKNSAca785GJwGaY8yGUxN37zZM
+ i5qzL7Q6/4ksZE1g8HV4DRBMr1hRmKuTP32ZguQdBKmC73NMSw==
+X-Google-Smtp-Source: AGHT+IH/BsjqxOKiyI6w2Edl+GDSvTZ/Baek8hm/SoMcpECUWWRvEeHm3IOMPHcqv8KgK+nRSfBWQ67v5tlxjNOAbpA=
+X-Received: by 2002:a25:8a02:0:b0:dbe:1ccb:751a with SMTP id
+ g2-20020a258a02000000b00dbe1ccb751amr4507383ybl.31.1705457581150; Tue, 16 Jan
+ 2024 18:13:01 -0800 (PST)
+MIME-Version: 1.0
+References: <20240117005914.EE3C41BA410B@rfcpa.amsl.com>
+In-Reply-To: <20240117005914.EE3C41BA410B@rfcpa.amsl.com>
+From: Eric Rescorla <ekr@rtfm.com>
+Date: Tue, 16 Jan 2024 18:12:24 -0800
+Message-ID: <CABcZeBO1YGhJGVCugLq=eEORT4f61yYmVkFXHkim2arupszU+g@mail.gmail.com>
+To: RFC Errata System <rfc-editor@rfc-editor.org>
+Cc: mt@lowentropy.net, paul.wouters@aiven.io, iesg@ietf.org, tls@ietf.org
+Content-Type: multipart/alternative; boundary="0000000000004de3f7060f1ac909"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/udrdk2rMW0LYOhF640fkN31Z-aI>
+Subject: Re: [TLS] [Errata Held for Document Update] RFC8446 (6205)
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Wed, 17 Jan 2024 02:13:06 -0000
+
+--0000000000004de3f7060f1ac909
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+I believe that the current 8446-bis text addresses this. Martin?
+
+On Tue, Jan 16, 2024 at 4:59=E2=80=AFPM RFC Errata System <rfc-editor@rfc-e=
+ditor.org>
+wrote:
+
+> The following errata report has been held for document update
+> for RFC8446, "The Transport Layer Security (TLS) Protocol Version 1.3".
+>
+> --------------------------------------
+> You may review the report below and at:
+> https://www.rfc-editor.org/errata/eid6205
+>
+> --------------------------------------
+> Status: Held for Document Update
+> Type: Editorial
+>
+> Reported by: Martin Thomson <mt@lowentropy.net>
+> Date Reported: 2020-06-04
+> Held by: Paul Wouters (IESG)
+>
+> Section: 4.3.2
+>
+> Original Text
+> -------------
+>    Servers which are authenticating with a PSK MUST NOT send the
+>    CertificateRequest message in the main handshake, though they MAY
+>    send it in post-handshake authentication (see Section 4.6.2) provided
+>    that the client has sent the "post_handshake_auth" extension (see
+>    Section 4.2.6).
+>
+> Corrected Text
+> --------------
+>    Servers which are authenticating with a resumption PSK MUST NOT send t=
+he
+>    CertificateRequest message in the main handshake, though they MAY
+>    send it in post-handshake authentication (see Section 4.6.2) provided
+>    that the client has sent the "post_handshake_auth" extension (see
+>    Section 4.2.6).  Servers which are authenticating with an external PSK
+>    MUST NOT send the CertificateRequest message either in the main
+> handshake
+>    or request post-handshake authentication. Future specifications MAY
+>    provide an extension to permit this.
+>
+> Notes
+> -----
+> The lack of qualification on "authenticating with a PSK" implies that the
+> statement applies equally to both external and resumption PSKs.  However,
+> there are two conditions being governed: whether a certificate can be
+> requested during the handshake, and whether a certificate can be requeste=
+d
+> post-handshake.  The latter of these requires different rules depending o=
+n
+> the type of PSK.
+>
+> We know from the analysis of resumption (see
+> https://mailarchive.ietf.org/arch/msg/tls/TugB5ddJu3nYg7chcyeIyUqWSbA/)
+> that combining a PSK handshake of either type with a client certificate i=
+s
+> not safe.  Thus, the prohibition on CertificateRequest during the handsha=
+ke
+> applies equally to both resumption and external PSKs.
+>
+> For post-handshake, Appendix E.1 already discusses the risks of combining
+> PSKs with certificates, citing the same analysis as above.
+>
+>    [...]  It is unsafe to use certificate-based client
+>    authentication when the client might potentially share the same
+>    PSK/key-id pair with two different endpoints.
+>
+> For this reason an external PSK is not safe to use with post-handshake
+> authentication.  A resumption PSK does not have this property, so the sam=
+e
+> prohibition doesn't apply.
+>
+> Splitting the requirements as proposed makes this split clearer.
+>
+> --------------------------------------
+> RFC8446 (draft-ietf-tls-tls13-28)
+> --------------------------------------
+> Title               : The Transport Layer Security (TLS) Protocol Version
+> 1.3
+> Publication Date    : August 2018
+> Author(s)           : E. Rescorla
+> Category            : PROPOSED STANDARD
+> Source              : Transport Layer Security
+> Area                : Security
+> Stream              : IETF
+> Verifying Party     : IESG
+>
+
+--0000000000004de3f7060f1ac909
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">I believe that the current 8446-bis text addresses this. M=
+artin?<br></div><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gm=
+ail_attr">On Tue, Jan 16, 2024 at 4:59=E2=80=AFPM RFC Errata System &lt;<a =
+href=3D"mailto:rfc-editor@rfc-editor.org">rfc-editor@rfc-editor.org</a>&gt;=
+ wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px =
+0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">The foll=
+owing errata report has been held for document update <br>
+for RFC8446, &quot;The Transport Layer Security (TLS) Protocol Version 1.3&=
+quot;. <br>
+<br>
+--------------------------------------<br>
+You may review the report below and at:<br>
+<a href=3D"https://www.rfc-editor.org/errata/eid6205" rel=3D"noreferrer" ta=
+rget=3D"_blank">https://www.rfc-editor.org/errata/eid6205</a><br>
+<br>
+--------------------------------------<br>
+Status: Held for Document Update<br>
+Type: Editorial<br>
+<br>
+Reported by: Martin Thomson &lt;<a href=3D"mailto:mt@lowentropy.net" target=
+=3D"_blank">mt@lowentropy.net</a>&gt;<br>
+Date Reported: 2020-06-04<br>
+Held by: Paul Wouters (IESG)<br>
+<br>
+Section: 4.3.2<br>
+<br>
+Original Text<br>
+-------------<br>
+=C2=A0 =C2=A0Servers which are authenticating with a PSK MUST NOT send the<=
+br>
+=C2=A0 =C2=A0CertificateRequest message in the main handshake, though they =
+MAY<br>
+=C2=A0 =C2=A0send it in post-handshake authentication (see Section 4.6.2) p=
+rovided<br>
+=C2=A0 =C2=A0that the client has sent the &quot;post_handshake_auth&quot; e=
+xtension (see<br>
+=C2=A0 =C2=A0Section 4.2.6).<br>
+<br>
+Corrected Text<br>
+--------------<br>
+=C2=A0 =C2=A0Servers which are authenticating with a resumption PSK MUST NO=
+T send the<br>
+=C2=A0 =C2=A0CertificateRequest message in the main handshake, though they =
+MAY<br>
+=C2=A0 =C2=A0send it in post-handshake authentication (see Section 4.6.2) p=
+rovided<br>
+=C2=A0 =C2=A0that the client has sent the &quot;post_handshake_auth&quot; e=
+xtension (see<br>
+=C2=A0 =C2=A0Section 4.2.6).=C2=A0 Servers which are authenticating with an=
+ external PSK<br>
+=C2=A0 =C2=A0MUST NOT send the CertificateRequest message either in the mai=
+n handshake<br>
+=C2=A0 =C2=A0or request post-handshake authentication. Future specification=
+s MAY<br>
+=C2=A0 =C2=A0provide an extension to permit this. <br>
+<br>
+Notes<br>
+-----<br>
+The lack of qualification on &quot;authenticating with a PSK&quot; implies =
+that the statement applies equally to both external and resumption PSKs.=C2=
+=A0 However, there are two conditions being governed: whether a certificate=
+ can be requested during the handshake, and whether a certificate can be re=
+quested post-handshake.=C2=A0 The latter of these requires different rules =
+depending on the type of PSK.<br>
+<br>
+We know from the analysis of resumption (see <a href=3D"https://mailarchive=
+.ietf.org/arch/msg/tls/TugB5ddJu3nYg7chcyeIyUqWSbA/" rel=3D"noreferrer" tar=
+get=3D"_blank">https://mailarchive.ietf.org/arch/msg/tls/TugB5ddJu3nYg7chcy=
+eIyUqWSbA/</a>) that combining a PSK handshake of either type with a client=
+ certificate is not safe.=C2=A0 Thus, the prohibition on CertificateRequest=
+ during the handshake applies equally to both resumption and external PSKs.=
+<br>
+<br>
+For post-handshake, Appendix E.1 already discusses the risks of combining P=
+SKs with certificates, citing the same analysis as above.<br>
+<br>
+=C2=A0 =C2=A0[...]=C2=A0 It is unsafe to use certificate-based client<br>
+=C2=A0 =C2=A0authentication when the client might potentially share the sam=
+e<br>
+=C2=A0 =C2=A0PSK/key-id pair with two different endpoints.<br>
+<br>
+For this reason an external PSK is not safe to use with post-handshake auth=
+entication.=C2=A0 A resumption PSK does not have this property, so the same=
+ prohibition doesn&#39;t apply.<br>
+<br>
+Splitting the requirements as proposed makes this split clearer.<br>
+<br>
+--------------------------------------<br>
+RFC8446 (draft-ietf-tls-tls13-28)<br>
+--------------------------------------<br>
+Title=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0: The Transport=
+ Layer Security (TLS) Protocol Version 1.3<br>
+Publication Date=C2=A0 =C2=A0 : August 2018<br>
+Author(s)=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0: E. Rescorla<br>
+Category=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 : PROPOSED STANDARD<br>
+Source=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 : Transport Layer Se=
+curity<br>
+Area=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 : Security<br>
+Stream=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 : IETF<br>
+Verifying Party=C2=A0 =C2=A0 =C2=A0: IESG<br>
+</blockquote></div>
+
+--0000000000004de3f7060f1ac909--
+

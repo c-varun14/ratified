@@ -1,0 +1,118 @@
+Return-Path: <housley@vigilsec.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id F330312946B
+ for <tls@ietfa.amsl.com>; Thu,  2 Feb 2017 07:22:25 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.9
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9] autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id zHcdKj4AyPuL for <tls@ietfa.amsl.com>;
+ Thu,  2 Feb 2017 07:22:19 -0800 (PST)
+Received: from mail.smeinc.net (mail.smeinc.net [209.135.209.11])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id D18E212965D
+ for <tls@ietf.org>; Thu,  2 Feb 2017 07:22:19 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+ by mail.smeinc.net (Postfix) with ESMTP id 20204300466
+ for <tls@ietf.org>; Thu,  2 Feb 2017 10:22:19 -0500 (EST)
+X-Virus-Scanned: amavisd-new at mail.smeinc.net
+Received: from mail.smeinc.net ([127.0.0.1])
+ by localhost (mail.smeinc.net [127.0.0.1]) (amavisd-new, port 10026)
+ with ESMTP id uOCVKrmN7p0R for <tls@ietf.org>;
+ Thu,  2 Feb 2017 10:22:18 -0500 (EST)
+Received: from russellsleysmbp.home
+ (pool-108-45-101-150.washdc.fios.verizon.net [108.45.101.150])
+ by mail.smeinc.net (Postfix) with ESMTPSA id 233843003D0
+ for <tls@ietf.org>; Thu,  2 Feb 2017 10:22:18 -0500 (EST)
+Content-Type: text/plain; charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 7.3 \(1878.6\))
+From: Russ Housley <housley@vigilsec.com>
+In-Reply-To: <733EE968-69EF-43A5-A39B-F016993A3CCD@vigilsec.com>
+Date: Thu, 2 Feb 2017 10:20:09 -0500
+Content-Transfer-Encoding: 7bit
+Message-Id: <949EBD4E-613B-4B36-BD93-FDE3E4D4926F@vigilsec.com>
+References: <0DA64421-5975-4B7E-BC08-7428AFA9D1A1@vigilsec.com>
+ <CAF8qwaB8+o20QP71=zuCJ2EXt9EGFuLcn4s6es=gjnOccZE9fQ@mail.gmail.com>
+ <9D8BEE12-49F9-4DE3-81C7-909CB114805F@vigilsec.com>
+ <1b678d65-b146-b25f-c1ad-6dfc044f7ce0@akamai.com>
+ <CABkgnnXfw45-R-Tvf2cZQGb4a5mas2yZRXT4q3ArRyTMSF9x2Q@mail.gmail.com>
+ <733EE968-69EF-43A5-A39B-F016993A3CCD@vigilsec.com>
+To: IETF TLS <tls@ietf.org>
+X-Mailer: Apple Mail (2.1878.6)
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/pvEwsbTYmBKPrLyZ09T6eKUdOiw>
+Subject: Re: [TLS] Using both External PSK and (EC)DH in TLS 1.3
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.17
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Thu, 02 Feb 2017 15:22:26 -0000
+
+Proposed update to Section 4.1.1 of draft-ietf-tls-tls13-18
+
+OLD:
+
+  The server indicates its selected parameters in the ServerHello as
+  follows:
+
+  -  If PSK is being used then the server will send a "pre_shared_key"
+     extension indicating the selected key.
+
+  -  If PSK is not being used, then (EC)DHE and certificate-based
+     authentication are always used.
+
+  -  When (EC)DHE is in use, the server will also provide a "key_share"
+     extension.
+
+  -  When authenticating via a certificate (i.e., when a PSK is not in
+     use), the server will send the Certificate (Section 4.4.1) and
+     CertificateVerify (Section 4.4.2) messages.
+
+NEW:
+
+  The server indicates its selected parameters in the ServerHello as
+  follows:
+
+  -  If PSK is not being used, then (EC)DHE and certificate-based
+     authentication are always used, and the server will:
+
+     --  provide a "key_share" extension; and
+
+     --  send the Certificate (Section 4.4.1) and CertificateVerify
+         (Section 4.4.2) messages.
+
+  -  If PSK (without DH or ECDH) is being used, then the server sends a
+     "pre_shared_key" extension to indicate the selected key.
+
+  -  If PSK and (EC)DH are being used together, then the server will:
+
+     --  sends a "pre_shared_key" extension to indicate the selected
+         key;
+
+     --  provide a "key_share" extension; and
+
+     --  send the Certificate (Section 4.4.1) and CertificateVerify
+         (Section 4.4.2) messages.
+
+END
+
+Many thanks to Sean Turner for turning this into a PR for me:
+https://github.com/tlswg/tls13-spec/pull/870
+
+Thanks,
+  Russ
+

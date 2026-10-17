@@ -1,0 +1,482 @@
+Return-Path: <rlb@ipv.sx>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 73AFD127775
+ for <tls@ietfa.amsl.com>; Fri, 13 Apr 2018 11:50:11 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.909
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.909 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_NONE=-0.0001, T_DKIMWL_WL_MED=-0.01]
+ autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=ipv-sx.20150623.gappssmtp.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id ik4MjfYysItn for <tls@ietfa.amsl.com>;
+ Fri, 13 Apr 2018 11:50:07 -0700 (PDT)
+Received: from mail-ot0-x229.google.com (mail-ot0-x229.google.com
+ [IPv6:2607:f8b0:4003:c0f::229])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 3CDF9127601
+ for <tls@ietf.org>; Fri, 13 Apr 2018 11:50:07 -0700 (PDT)
+Received: by mail-ot0-x229.google.com with SMTP id i5-v6so1492650oth.1
+ for <tls@ietf.org>; Fri, 13 Apr 2018 11:50:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=ipv-sx.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+ :cc; bh=SL7q2BszXqXC/PEnvjBKtljdZAQ6Pek9mgOlqyyuQqw=;
+ b=Z8CVksf/Mbx/Nxg029nFnTJkJRVX6RtsS0EFkgGXPaTm9p1SaMvIgoL5e/tcrWAkP4
+ 3dLRvDU8iflJFzEWo4ERmN9zw/ZPATpVAH2q/e9x0941b2fFE9w3byBm+zDgp1IPlYYs
+ DlNn7cXf/1wp7RHQwVxD2cDt0yn/HzOrgdAe+NdkkJDHyaPFl6Ev9GVNyYdndFO+n0uL
+ 75YULUkhq2HpNYodfeqNM9D1tNWGNb9UA7r4Lrnerqo0z37WRDVNJgiCm6w79KXgzf7m
+ tp2lpy2Fn1I2sI2UZw3fHxbSg2iT4i0nz0hhcIWEAQN8l82hVnMAdU6khbBBGMobjuCE
+ pGbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+ :message-id:subject:to:cc;
+ bh=SL7q2BszXqXC/PEnvjBKtljdZAQ6Pek9mgOlqyyuQqw=;
+ b=WMlatJk+IIa9gbPl1D4MWyjH1sQndzLtYcO4sn/gHgd6yV1cNe6U+d9+ri4XPAneSS
+ KQm3emAKsZi4lOYOr/uiekIjMe5pRfqdZbF1RNzdzX7hlXDoGed2emC8p0LXzeN/ikEF
+ aoUdrPo8c5QUqzkuC+QjiZHIVLrGOBGoDZOHM3yB7eRAGWt4IAGOXcDDFuOMZFqHdb9v
+ FT1zEgOalBV+i1zJJfNSlBRuNlwCpZzzRdRDNRehQOnh7KP/9oHcS/dwud22P4b1ebqy
+ Vhf94tU0VR/HHZjNraJeQm7MSmG8grjMu2j1jL3/C8YWeo7iSJ5lFkTdXq593f7ouRyP
+ ZcMA==
+X-Gm-Message-State: ALQs6tD2zLwRy24d9hw4h1b1697qgxGhy+rxVYYmnUBGrOGvMmMsY13I
+ IKSQVqx08OYegSr1JEiPHjw6wac8kBrG3M8ZHh9enwgl8qw=
+X-Google-Smtp-Source: AIpwx4++UEG2wMacloGxLflNgtG6WBdCPsUwzu2JgpXLUszCpPA827hyZX/yHjHTKrKLGm7PKAfRsYng1YZ2TOqBLKU=
+X-Received: by 2002:a9d:1361:: with SMTP id
+ q30-v6mr4592351otq.103.1523645406188; 
+ Fri, 13 Apr 2018 11:50:06 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 10.201.90.67 with HTTP; Fri, 13 Apr 2018 11:50:05 -0700 (PDT)
+In-Reply-To: <140080C241BAA1419B58F093108F9EDC1DBF718C@UK-MAL-MBOX-01.dyson.global.corp>
+References: <152345795593.1972.17855870949078823595.idtracker@ietfa.amsl.com>
+ <CAL02cgSOA-asdvyFNLLpcN59qeVjwQU9F2f=mgM9Y_B0Xv4rmg@mail.gmail.com>
+ <140080C241BAA1419B58F093108F9EDC1DBF718C@UK-MAL-MBOX-01.dyson.global.corp>
+From: Richard Barnes <rlb@ipv.sx>
+Date: Fri, 13 Apr 2018 14:50:05 -0400
+Message-ID: <CAL02cgS7dJVrMwiE9UrJKmaxW1v876et0Qg_S8MKf5FbSZjekg@mail.gmail.com>
+To: Tony Putman <Tony.Putman@dyson.com>
+Cc: "<tls@ietf.org>" <tls@ietf.org>, Benjamin Kaduk <kaduk@mit.edu>,
+ Watson Ladd <watsonbladd@gmail.com>
+Content-Type: multipart/alternative; boundary="0000000000003378650569bf577b"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/3h4Gw30k2hcOMQ5vuj_J3IzTf7E>
+Subject: Re: [TLS] Fwd: New Version Notification for
+ draft-barnes-tls-pake-00.txt
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Fri, 13 Apr 2018 18:50:11 -0000
+
+--0000000000003378650569bf577b
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Hey Tony,
+
+Thanks for the comments.  Hopefully we can adapt this document to tick more
+boxes for you :)  Since I had noticed some other errors in the document
+(e.g., figures not rendering properly), I went ahead and submitted a new
+version that takes these comments into account.
+
+https://tools.ietf.org/html/draft-barnes-tls-pake-01
+
+Some responses inline below.
+
+On Thu, Apr 12, 2018 at 9:23 AM, Tony Putman <Tony.Putman@dyson.com> wrote:
+
+> Hi Richard,
+>
+>
+>
+> I work in the IoT space and am interested in handshakes that involve
+> little computation but offer better protection than symmetric PSK in the
+> event of server breach.
+>
+>
+>
+> *From:* TLS [mailto:tls-bounces@ietf.org] *On Behalf Of *Richard Barnes
+> *Sent:* 11 April 2018 15:54
+>
+> [=E2=80=A6]
+>
+> We would love to hear any feedback on the approach proposed here, and on
+> whether other people here would be interested in working on a PAKE
+> mechanism for TLS in this working group.
+>
+> [=E2=80=A6]
+>
+>
+>
+> I was interested in this draft as it seemed to tick some boxes, and I
+> offer some comments below. But in the end I don't think it offers what I'=
+m
+> looking for, so I can't offer to help with it in its current form.
+>
+>
+>
+> My main comment is that I disagree with the assertion in section 3 that
+> "w" is effectively a salted password hash. An attacker who obtains "w" ca=
+n
+> impersonate the client to the server, so it is equivalent to a password.
+> The only advantage is that a server breach cannot be extended to other
+> servers where the user uses the same password, but different salts are
+> used. It seems to me that SPAKE2+ prevents this, so perhaps this should b=
+e
+> used instead.
+>
+>
+>
+> Secondly, SPAKE2 is fitted to the TLS 1.3 handshake by forcing the client
+> to know the salt. This seems unreasonable to me unless there is also some
+> mechanism to retrieve the salt from the server. Could the salt be a hash =
+of
+> client identity and server identity? (I suspect there is not enough entro=
+py
+> in this). But in any case I think this is an issue which must be addresse=
+d
+> in the draft.
+>
+
+I'm not a cryptographer, but it seems to me that combining the client and
+server identities would probably provide enough salt.  After all, the idea
+of salt is just to make add a small degree of multiplicity to the hash.
+
+Your point about SPAKE2+ / having the server only store public keys is
+probably superseding, though.  I agree that we should try to arrange this
+protocol so that the server only has to store a verifier value, but it's
+not totally clear whether SPAKE2+ is needed, or whether we can use SPAKE2
+and just have the server cache w*N.  After all, both w and N are fixed over
+multiple runs of the protocol, so it doesn't seem like there's much benefit
+to storing w and not w*N.
+
+Given all that, I think my proposal would be:
+
+- w =3D H( client identity || SNI || password ) (probably by extending the
+IdentifierAndPassword struct that's in the document now)
+- Client stores w or takes identities/password as input
+- Server stores w*N
+
+Maybe Ben or Watson (CCed) could comment on whether this approach seems
+sound.
+
+
+
+> Why does the draft need to specify what the identity of the server is? It
+> doesn't seem to be used.
+>
+
+The identity field that the server sends isn't intended to be the server's
+identity, but rather to indicate which of the client's offered identities
+the server has selected.  The design pattern here is the same as the
+key_share extension in TLS 1.3, where the server sends back a (group, key
+share) pair, and the group identifies which of the client's shares the
+server is using.
+
+https://tlswg.github.io/tls13-spec/draft-ietf-tls-tls13.html#key-share
+
+
+
+>
+> Would it be helpful to send a list of SPAKE2Shares in ClientHello? For
+> example, if the application layer protocol is being negotiated, would it =
+be
+> necessary to supply shares for multiple protocols? Alternatively, if the
+> client and/or server support multiple pre-provisioned values (G, M, N, H)=
+,
+> how would this be signalled/managed? And would there be associated securi=
+ty
+> concerns?
+>
+
+The ClientHello extension in the document (SPAKE2ClientHello) already
+allows the client to send multiple SPAKE2Shares.  Note, however, that the
+only thing that can be negotiated is which identity/password is to be
+used.  The current document assumes that the group (and thus G, M, N) and
+the hash function (H) are fixed / pre-negotiated based on the identity.
+
+I can understand why people might want negotiation, but it does seem safer
+to me to only ever use a given password with the same group and hash.  It's
+also consistent with the "server stores w*N" approach above.
+
+
+
+> It is worth noting explicitly somewhere that x and y should have the same
+> ephemeral characteristics as are used by the key_share elements, and that
+> if this is followed then forward secrecy is provided by SPAKE2.
+>
+
+Agreed.
+
+
+
+> IMHO "w" should not be used as the PSK input. If somebody gets hold of a
+> derived key (e.g. early_exporter_master_secret) then the low entropy of "=
+w"
+> may allow it to be recovered. "K" provides all that's needed for key
+> derivation.
+>
+>
+Agreed.  Using "w" in the key schedule also means that the server has to
+have it.  As noted above, this is bad.
+
+
+
+> The draft should recommend somewhere (security section?) that H should be
+> suitable for password hashing (e.g. Argon2) and not a standard hash
+> function. This is particularly true if my earlier suggestion to use SPAKE=
+2+
+> is followed.
+>
+
+Agreed.
+
+--Richard
+
+
+
+>
+>
+> Regards,
+>
+> Tony
+>
+>
+>
+> Dyson Technology Limited, company number 01959090, Tetbury Hill,
+> Malmesbury, SN16 0RP, UK.
+> This message is intended solely for the addressee and may contain
+> confidential information. If you have received this message in error,
+> please immediately and permanently delete it, and do not use, copy or
+> disclose the information contained in this message or in any attachment.
+> Dyson may monitor email traffic data and content for security & training.
+>
+
+--0000000000003378650569bf577b
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div>Hey Tony,</div><div><br></div><div>Thanks for the com=
+ments.=C2=A0 Hopefully we can adapt this document to tick more boxes for yo=
+u :)=C2=A0 Since I had noticed some other errors in the document (e.g., fig=
+ures not rendering properly), I went ahead and submitted a new version that=
+ takes these comments into account.</div><div><br></div><div><a href=3D"htt=
+ps://tools.ietf.org/html/draft-barnes-tls-pake-01">https://tools.ietf.org/h=
+tml/draft-barnes-tls-pake-01</a></div><div><br></div><div>Some responses in=
+line below.<br></div><div class=3D"gmail_extra"><br><div class=3D"gmail_quo=
+te">On Thu, Apr 12, 2018 at 9:23 AM, Tony Putman <span dir=3D"ltr">&lt;<a h=
+ref=3D"mailto:Tony.Putman@dyson.com" target=3D"_blank">Tony.Putman@dyson.co=
+m</a>&gt;</span> wrote:<br><blockquote class=3D"gmail_quote" style=3D"margi=
+n:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex=
+">
+
+
+
+
+
+<div lang=3D"EN-GB">
+<div class=3D"gmail-m_3316286186353548485gmail-m_768184488250938294WordSect=
+ion1">
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:&quot;Cali=
+bri&quot;,&quot;sans-serif&quot;">Hi Richard,<u></u><u></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:&quot;Cali=
+bri&quot;,&quot;sans-serif&quot;"><u></u>=C2=A0<u></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:&quot;Cali=
+bri&quot;,&quot;sans-serif&quot;">I work in the IoT space and am interested=
+ in handshakes that involve little computation but offer better protection =
+than symmetric PSK in the event of server breach.
+<u></u><u></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:&quot;Cali=
+bri&quot;,&quot;sans-serif&quot;"><u></u>=C2=A0<u></u></span></p>
+<p class=3D"MsoNormal"><b><span style=3D"font-size:10pt;font-family:&quot;T=
+ahoma&quot;,&quot;sans-serif&quot;" lang=3D"EN-US">From:</span></b><span st=
+yle=3D"font-size:10pt;font-family:&quot;Tahoma&quot;,&quot;sans-serif&quot;=
+" lang=3D"EN-US"> TLS [mailto:<a href=3D"mailto:tls-bounces@ietf.org" targe=
+t=3D"_blank">tls-bounces@ietf.org</a>]
+<b>On Behalf Of </b>Richard Barnes<br>
+<b>Sent:</b> 11 April 2018 15:54<br>
+<br>
+</span><u></u><u></u></p>
+<div>
+<div>
+<p class=3D"MsoNormal">[=E2=80=A6]<u></u><u></u></p>
+</div><span class=3D"gmail-m_3316286186353548485gmail-">
+<div>
+<p class=3D"MsoNormal">We would love to hear any feedback on the approach p=
+roposed here, and on whether other people here would be interested in worki=
+ng on a PAKE mechanism for TLS in this working group.<u></u><u></u></p>
+</div>
+</span><div>
+<p class=3D"MsoNormal">[=E2=80=A6]<u></u><u></u></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:&quot;Cali=
+bri&quot;,&quot;sans-serif&quot;"><u></u>=C2=A0<u></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:&quot;Cali=
+bri&quot;,&quot;sans-serif&quot;">I was interested in this draft as it seem=
+ed to tick some boxes, and I offer some comments below. But in the end I do=
+n&#39;t think it offers what I&#39;m looking for, so I can&#39;t offer
+ to help with it in its current form. <u></u><u></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:&quot;Cali=
+bri&quot;,&quot;sans-serif&quot;"><u></u>=C2=A0<u></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:&quot;Cali=
+bri&quot;,&quot;sans-serif&quot;">My main comment is that I disagree with t=
+he assertion in section 3 that &quot;w&quot; is effectively a salted passwo=
+rd hash. An attacker who obtains &quot;w&quot; can impersonate the client
+ to the server, so it is equivalent to a password. The only advantage is th=
+at a server breach cannot be extended to other servers where the user uses =
+the same password, but different salts are used. It seems to me that SPAKE2=
++ prevents this, so perhaps this
+ should be used instead. <u></u><u></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:&quot;Cali=
+bri&quot;,&quot;sans-serif&quot;"><u></u>=C2=A0<u></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:&quot;Cali=
+bri&quot;,&quot;sans-serif&quot;">Secondly, SPAKE2 is fitted to the TLS 1.3=
+ handshake by forcing the client to know the salt. This seems unreasonable =
+to me unless there is also some mechanism to retrieve
+ the salt from the server. Could the salt be a hash of client identity and =
+server identity? (I suspect there is not enough entropy in this). But in an=
+y case I think this is an issue which must be addressed in the draft.
+<u></u><u></u></span></p>
+</div></div></div></div></blockquote><div><br></div><div>I&#39;m not a cryp=
+tographer, but it seems to me that combining the client and server identiti=
+es would probably provide enough salt.=C2=A0 After all, the idea of salt is=
+ just to make add a small degree of multiplicity to the hash.</div><div><br=
+></div><div>Your point about SPAKE2+ / having the server only store public =
+keys is probably superseding, though.=C2=A0 I agree that we should try to a=
+rrange this protocol so that the server only has to store a verifier value,=
+ but it&#39;s not totally clear whether SPAKE2+ is needed, or whether we ca=
+n use SPAKE2 and just have the server cache w*N.=C2=A0 After all, both w an=
+d N are fixed over multiple runs of the protocol, so it doesn&#39;t seem li=
+ke there&#39;s much benefit to storing w and not w*N.</div><div><br></div><=
+div>Given all that, I think my proposal would be:</div><div><br></div><div>=
+- w =3D H( client identity || SNI || password ) (probably by extending the =
+IdentifierAndPassword struct that&#39;s in the document now)</div><div>- Cl=
+ient stores w or takes identities/password as input</div><div>- Server stor=
+es w*N<br></div><div><br></div><div>Maybe Ben or Watson (CCed) could commen=
+t on whether this approach seems sound.<br></div><div><br></div><div>=C2=A0=
+<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8=
+ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div lang=3D"EN=
+-GB"><div class=3D"gmail-m_3316286186353548485gmail-m_768184488250938294Wor=
+dSection1"><div><div>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:&quot;Cali=
+bri&quot;,&quot;sans-serif&quot;">Why does the draft need to specify what t=
+he identity of the server is? It doesn&#39;t seem to be used.
+</span></p></div></div></div></div></blockquote><div>=C2=A0</div><div>The i=
+dentity field that the server sends isn&#39;t intended to be the server&#39=
+;s identity, but rather to indicate which of the client&#39;s offered ident=
+ities the server has selected.=C2=A0 The design pattern here is the same as=
+ the key_share extension in TLS 1.3, where the server sends back a (group, =
+key share) pair, and the group identifies which of the client&#39;s shares =
+the server is using.</div><div><br></div><div><a href=3D"https://tlswg.gith=
+ub.io/tls13-spec/draft-ietf-tls-tls13.html#key-share" target=3D"_blank">htt=
+ps://tlswg.github.io/tls13-<wbr>spec/draft-ietf-tls-tls13.<wbr>html#key-sha=
+re</a><br></div><div><br></div><div><br></div><blockquote class=3D"gmail_qu=
+ote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,20=
+4);padding-left:1ex"><div lang=3D"EN-GB"><div class=3D"gmail-m_331628618635=
+3548485gmail-m_768184488250938294WordSection1"><div><div><p class=3D"MsoNor=
+mal"><span style=3D"font-size:11pt;font-family:&quot;Calibri&quot;,&quot;sa=
+ns-serif&quot;"><u></u><u></u></span></p><span style=3D"font-size:11pt;font=
+-family:&quot;Calibri&quot;,&quot;sans-serif&quot;">=C2=A0</span>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:&quot;Cali=
+bri&quot;,&quot;sans-serif&quot;">Would it be helpful to send a list of SPA=
+KE2Shares in ClientHello? For example, if the application layer protocol is=
+ being negotiated, would it be necessary to supply shares
+ for multiple protocols? Alternatively, if the client and/or server support=
+ multiple pre-provisioned values (G, M, N, H), how would this be signalled/=
+managed? And would there be associated security concerns?<u></u><u></u></sp=
+an></p>
+</div></div></div></div></blockquote><div><br></div><div>The ClientHello ex=
+tension in the document (SPAKE2ClientHello) already allows the client to se=
+nd multiple SPAKE2Shares.=C2=A0 Note, however, that the only thing that can=
+ be negotiated is which identity/password is to be used.=C2=A0 The current =
+document assumes that the group (and thus G, M, N) and the hash function (H=
+) are fixed / pre-negotiated based on the identity.=C2=A0 <br></div><div><b=
+r></div><div>I can understand why people might want negotiation, but it doe=
+s seem safer to me to only ever use a given password with the same group an=
+d hash.=C2=A0 It&#39;s also consistent with the &quot;server stores w*N&quo=
+t; approach above.<br></div><div><br></div><div>=C2=A0</div><blockquote cla=
+ss=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid =
+rgb(204,204,204);padding-left:1ex"><div lang=3D"EN-GB"><div class=3D"gmail-=
+m_3316286186353548485gmail-m_768184488250938294WordSection1"><div><div>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:&quot;Cali=
+bri&quot;,&quot;sans-serif&quot;">It is worth noting explicitly somewhere t=
+hat x and y should have the same ephemeral characteristics as are used by t=
+he key_share elements, and that if this is followed then
+ forward secrecy is provided by SPAKE2. <u></u><u></u></span></p>
+</div></div></div></div></blockquote><div><br></div><div>Agreed.</div><div>=
+<br></div><div>=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"margi=
+n:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex=
+"><div lang=3D"EN-GB"><div class=3D"gmail-m_3316286186353548485gmail-m_7681=
+84488250938294WordSection1"><div><div>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:&quot;Cali=
+bri&quot;,&quot;sans-serif&quot;">IMHO &quot;w&quot; should not be used as =
+the PSK input. If somebody gets hold of a derived key (e.g. early_exporter_=
+master_secret) then the low entropy of &quot;w&quot; may allow it to be rec=
+overed.
+ &quot;K&quot; provides all that&#39;s needed for key derivation. <u></u><u=
+></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:&quot;Cali=
+bri&quot;,&quot;sans-serif&quot;"></span></p></div></div></div></div></bloc=
+kquote><div><br></div><div>Agreed.=C2=A0 Using &quot;w&quot; in the key sch=
+edule also means that the server has to have it.=C2=A0 As noted above, this=
+ is bad.<br></div><div><br></div><div>=C2=A0<span style=3D"font-size:11pt;f=
+ont-family:&quot;Calibri&quot;,&quot;sans-serif&quot;"> <br></span></div><b=
+lockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-le=
+ft:1px solid rgb(204,204,204);padding-left:1ex"><div lang=3D"EN-GB"><div cl=
+ass=3D"gmail-m_3316286186353548485gmail-m_768184488250938294WordSection1"><=
+div><div>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:&quot;Cali=
+bri&quot;,&quot;sans-serif&quot;">The draft should recommend somewhere (sec=
+urity section?) that H should be suitable for password hashing (e.g. Argon2=
+) and not a standard hash function. This is particularly
+ true if my earlier suggestion to use SPAKE2+ is followed. </span></p></div=
+></div></div></div></blockquote><div><br></div><div>Agreed. <br></div><div>=
+<br></div><div>--Richard<br></div><div><br></div><div>=C2=A0</div><blockquo=
+te class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px =
+solid rgb(204,204,204);padding-left:1ex"><div lang=3D"EN-GB"><div class=3D"=
+gmail-m_3316286186353548485gmail-m_768184488250938294WordSection1"><div><di=
+v><p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:&quot;Ca=
+libri&quot;,&quot;sans-serif&quot;"><u></u><u></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:&quot;Cali=
+bri&quot;,&quot;sans-serif&quot;"><u></u>=C2=A0<u></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:&quot;Cali=
+bri&quot;,&quot;sans-serif&quot;">Regards,<u></u><u></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:&quot;Cali=
+bri&quot;,&quot;sans-serif&quot;">Tony<u></u><u></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:&quot;Cali=
+bri&quot;,&quot;sans-serif&quot;"><u></u>=C2=A0<u></u></span></p>
+</div>
+</div>
+</div>
+<br>
+<span style=3D"font-size:13px">
+Dyson Technology Limited, company number 01959090, Tetbury Hill, Malmesbury=
+, SN16 0RP, UK.
+<br>
+This message is intended solely for the addressee and may contain confident=
+ial information. If you have received this message in error, please immedia=
+tely and permanently delete it, and do not use, copy or disclose the inform=
+ation contained in this message or in any attachment.
+<br>
+Dyson may monitor email traffic data and content for security &amp; trainin=
+g.
+</span></div>
+
+</blockquote></div><br></div></div>
+
+--0000000000003378650569bf577b--
+

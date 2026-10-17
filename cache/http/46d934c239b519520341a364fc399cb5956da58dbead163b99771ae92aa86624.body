@@ -1,0 +1,180 @@
+Return-Path: <ilariliusvaara@welho.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 50080126FDC
+ for <tls@ietfa.amsl.com>; Sat, 11 Mar 2017 11:28:25 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.9
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, RCVD_IN_DNSWL_NONE=-0.0001,
+ RP_MATCHES_RCVD=-0.001, URIBL_BLOCKED=0.001]
+ autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id lJBjs8KZERaP for <tls@ietfa.amsl.com>;
+ Sat, 11 Mar 2017 11:28:23 -0800 (PST)
+Received: from welho-filter2.welho.com (welho-filter2.welho.com [83.102.41.24])
+ by ietfa.amsl.com (Postfix) with ESMTP id BA2EF129511
+ for <tls@ietf.org>; Sat, 11 Mar 2017 11:28:22 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+ by welho-filter2.welho.com (Postfix) with ESMTP id 98A501F13E;
+ Sat, 11 Mar 2017 21:28:20 +0200 (EET)
+X-Virus-Scanned: Debian amavisd-new at pp.htv.fi
+Received: from welho-smtp1.welho.com ([IPv6:::ffff:83.102.41.84])
+ by localhost (welho-filter2.welho.com [::ffff:83.102.41.24]) (amavisd-new,
+ port 10024)
+ with ESMTP id yXJ-5QjsyXXX; Sat, 11 Mar 2017 21:28:19 +0200 (EET)
+Received: from LK-Perkele-V2 (87-92-51-204.bb.dnainternet.fi [87.92.51.204])
+ (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by welho-smtp1.welho.com (Postfix) with ESMTPSA id 8013AC4;
+ Sat, 11 Mar 2017 21:28:19 +0200 (EET)
+Date: Sat, 11 Mar 2017 21:28:12 +0200
+From: Ilari Liusvaara <ilariliusvaara@welho.com>
+To: Eric Rescorla <ekr@rtfm.com>
+Message-ID: <20170311192812.GA8701@LK-Perkele-V2.elisa-laajakaista.fi>
+References: <CABcZeBOZQQPSJFZJZe_a5LSe63BjLg+_argPTuexXzwPW04nig@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CABcZeBOZQQPSJFZJZe_a5LSe63BjLg+_argPTuexXzwPW04nig@mail.gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
+Sender: ilariliusvaara@welho.com
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/Ohnpr8EV0dPGqvuxLJCQ33apHJQ>
+Cc: "tls@ietf.org" <tls@ietf.org>
+Subject: Re: [TLS] draft-ietf-tls-tls13-19 posted
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.17
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Sat, 11 Mar 2017 19:28:25 -0000
+
+On Fri, Mar 10, 2017 at 03:34:39PM -0800, Eric Rescorla wrote:
+> I just posted draft-19 at:
+> 
+>   https://tools.ietf.org/html/draft-ietf-tls-tls13-19
+> 
+> This draft includes all the outstanding wire format changes that I believe
+> we are going
+> to make before publication (changelog below). There are three remaining
+> issues that
+> we need to address somehow. I've listed them and proposed resolutions.
+
+Did a preliminary implementation. Need to wait for other implementations
+in order to interop-test. Of course, doesn't imlplement most besides
+the basics (especially most of the subtler stuff is not implemented).
+
+
+I did a review, lookinge especially for text (other than the known
+issues) that:
+
+- I think is technically unworkable.
+- I am not entierley sure of proper interpretation.
+- I think is problematic w.r.t. security or interop.
+- I think is internally inconsistent.
+- I think references something that should not be referenced in that
+  context, due to problematic interpretations of applying whatever
+  is referenced there, or reference going seemingly to nowhere.
+- I think is some potential process mumbo-jumbo.
+
+------------------------------------------------------------------------
+Header:
+
+- Do you also need to update RFC6962? The data transport for it is
+  redefined.
+
+Section 2.3:
+
+- If client TLS library does not get explicit ACK from client
+  application to exit 0-RTT mode, you have a race condition that can
+  cause 0-RTT data to appear as 1-RTT data. Attacker may be able
+  to affect this race, and key changes do not help.
+
+Section 4.2.3:
+
+- This section talks about dsa_sha1 and ecdsa_sha1, but does not define
+  either in listing of values it has.
+
+Section 4.2.3.1:
+
+- What is the exact payload of  DistinguishedName? ASN.1 DER encoding
+  of Name structure from RFC5280, bit-to-bit identical as it appears
+  in the certificate subject, including the top-level SEQUENCE header
+  and length?
+
+Section 4.3.2.1:
+
+- What is the format of OIDs in oid filters? Does it include the
+  leading 0x06 and length byte (or two length bytes)?
+- What is the format of values? DER encoding of whatever structure goes
+  into value of extnValue field, including whatever top-level header
+  (usually SEQUENCE, but e.g. KeyUsage has BIT STRING) it happens to
+  have?
+
+One idea would be to make the match data abstract, and define that
+the match data for KeyUsage is ASN.1 DER encoding of KeyUsage structure
+from RFC5280, including the BIT STRING header, and match data for
+ExtendedKeyUsage is ASN.1 DER encoding of ExtendedKeyUsage structure
+from RFC5280, including the SEQUENCE header.
+
+Also, matcher for SubjectAlternativeName could be useful. Could e.g.
+carry DER encoding of RFC5280 SubjectAlternativeName structure,
+and match certificates that match all the listed names (including
+via wildcard match).
+
+  
+Section 4.4.2.2:
+
+- RFC5081 is quite bad example, given that it does not work with
+  TLS 1.3, and likely nothing like that ever will, given that there
+  is no interest in OpenPGP certs for TLS.
+- Should EdDSA added to list of authentication algorithms (alongside
+  RSA and ECDSA)?
+
+Section 4.4.2.3:
+
+- Again uses RFC5081 as an example.
+
+Section 4.4.2.4:
+
+- This section does talks about any certificate using MD5 or SHA-1,
+  when it probably should talk about any non-self-signed certificate
+  using MD5 or SHA-1. There are enormous amount of CA certs with SHA-1
+  self-sigs.
+
+Section 4.4.3:
+
+- There is exception allowing unsupported algorithms if no chain can be
+  produced. This can't work at all. The CertificateVerify must be
+  verfied and it for sure can't be if the algorithm is unsupported.
+  Exceptions might work with certificate chains (the chain might end in
+  trust anchor before problematic signature is reached), but not here.
+
+Section 5.1:
+
+- There is funky corner-case in initial enabling of encryption: If
+  client chokes on ServerHello, the alert it sends will be unencrypted,
+  despite next data from ServerHello being encrypted. And if client
+  chokes on any other server handshake message, the alert will be
+  encrypted.
+
+Section C.6:
+
+- Talks about RFC7250, despite that not going to work.
+- This section essentially has a FIXME regarding channel bindings.
+------------------------------------------------------------------------
+.
+
+-Ilari
+

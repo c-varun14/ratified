@@ -1,0 +1,225 @@
+Return-Path: <ilari.liusvaara@elisanet.fi>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (ietfa.amsl.com [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id DCECC1ACE8A
+ for <tls@ietfa.amsl.com>; Fri, 27 Mar 2015 08:00:41 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.901
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.901 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, RCVD_IN_DNSWL_NONE=-0.0001, SPF_PASS=-0.001]
+ autolearn=ham
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id XejrasTIBEUU for <tls@ietfa.amsl.com>;
+ Fri, 27 Mar 2015 08:00:38 -0700 (PDT)
+Received: from emh06.mail.saunalahti.fi (emh06.mail.saunalahti.fi
+ [62.142.5.116])
+ (using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 4B5971ACEE0
+ for <tls@ietf.org>; Fri, 27 Mar 2015 08:00:36 -0700 (PDT)
+Received: from LK-Perkele-VII (a88-112-44-140.elisa-laajakaista.fi
+ [88.112.44.140])
+ by emh06.mail.saunalahti.fi (Postfix) with ESMTP id 226346996F;
+ Fri, 27 Mar 2015 17:00:33 +0200 (EET)
+Date: Fri, 27 Mar 2015 17:00:32 +0200
+From: Ilari Liusvaara <ilari.liusvaara@elisanet.fi>
+To: Eric Rescorla <ekr@rtfm.com>
+Message-ID: <20150327150032.GA27825@LK-Perkele-VII>
+References: <CABcZeBNmufvfJ_2Nvw1YwvwGZ2u1=WvL45rPGJXARN1tAxOEfw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CABcZeBNmufvfJ_2Nvw1YwvwGZ2u1=WvL45rPGJXARN1tAxOEfw@mail.gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
+Sender: Ilari Liusvaara <ilari.liusvaara@elisanet.fi>
+Archived-At: <http://mailarchive.ietf.org/arch/msg/tls/2oocIarp5u3m5xIIRFyR58LnC-s>
+Cc: "tls@ietf.org" <tls@ietf.org>
+Subject: Re: [TLS] Initial draft of DH-based key exchange
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.15
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <http://www.ietf.org/mail-archive/web/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Fri, 27 Mar 2015 15:00:42 -0000
+
+Sorry, this is quite long.
+
+Some background:
+
+Be very vary about "security proofs". The scope of how TLS is used is
+very broad. There have been numerious papers about "TLS proven secure"
+or "part X of TLS proven secure", that have later turned out to be
+irrelevant in practice due to insufficient scope (then there are
+ocassional security proofs that are just plain wrong).
+
+E.g. number of papers that overlooked that TLS MS is not CRK and
+the screwyness that this causes. E.g. breaking authentication. Or
+paper that proved that "BEAST" is impossible... Only to turn out
+that it had made an assumption that BEAST attack broke.
+
+This problem is compounded by the fact that TLS is often used in
+environments like WWW, where attackers have unusual powers to
+exploit weaknesses that normally are not exploitable.
+
+The consequence is that even if some "security proof" says that
+it is okay to simplify system in some way, that simplification
+might still introduce vulernabilities.
+
+E.g. Consider TLS 1.3 draft -03 (I picked this because it is the
+earliest version that I think is implementable at all). It is a
+bit simpler than -04, and I think that it in some scope can be
+proven "secure". But it also has a known security hole (fixed in
+-04).
+
+OTOH, security proofs that produce conterexamples to security
+are useful to look at. The counterexample may or may not be
+relevant (telling which is likely nontrivial). If it is relevant
+or might be relevant, fixing the problem is worth it.
+
+
+Symmetric crypto is very fast, so a bit of extra hashing, PRFing
+or somesuch is pretty much insignificant compared to asymmeric
+things like computing signatures, DHFs or DHKGs.
+
+
+Short summary: Security proofs are useful, but relying on them
+is a very bad idea.
+
+
+On Mon, Mar 23, 2015 at 08:36:41AM -0500, Eric Rescorla wrote:
+> Folks,
+> 
+> As an outcome of the interim, I was asked to write up an initial draft
+> of what this would all look like and post it to the list. You can find
+> such a draft at:
+> 
+> Git branch:
+> https://github.com/ekr/tls13-spec/tree/WIP_dh_based
+> 
+> Text file:
+> https://github.com/ekr/tls13-spec/blob/ietf92_materials/draft-ietf-tls-tls13-dh-based.txt
+> 
+> HTML diff:
+> https://github.com/ekr/tls13-spec/blob/ietf92_materials/draft-ietf-tls-tls13-dh-based-diff.html
+> 
+> 
+> Please note that this is a very rough draft and no doubt contains
+> a number of major errors (and certainly has seen no security review).
+> Please point these out to me if you find them, especially if they
+> impede understanding. Assuming that people are happy with this
+> general direction, I will clean it up and turn it into a PR.
+
+Okay, let's analyze what goes wrong (and fix the thing so it is easy
+to analyze):
+
+- For PSK/PFS/Static-DH "unified" scheme, there is _three_ inputs, not two.
+  1) PSK input.
+  2) PFS diffie-hellman input
+  3) Static Diffie-Hellman input.
+  -> 1 and 3 are not the same, even if they can't appear simultaneously!
+- For chaining keys from 0RTT (optional), you need _fourth_ input:
+  4) Static diffie-hellman from 0RTT.
+  -> Only computable if server accepts 0RTT.
+  -> Needed for gradual static-DH rollover.
+- The "handshake master secret" needs to be CR function of:
+  1) PFS diffie-hellman iput.
+  2) PSK input.
+  3) Static diffie-hellman from 0RTT (if exists)
+  4) Hash of *Hello and *KeyShare packets.
+  -> The reason for last is to defend against class of attacks including
+     Triple Handshake.
+- The "application master secret" needs to be CR function of:
+  1) handshake master secret.
+  2) Static Diffie-Hellman input.
+  -> The hash is not needed here (but can be included).
+  -> Can be different in both directions (which has some benefits,
+     in this case, the hash should be included).
+- The "exporter master secret" needs to be CR function of:
+  1) hanshake master secret.
+  2) Static Diffie-Hellman input.
+  3) The hash of *Hello, *Keyshare EncryptedExtensions and whatever is
+     carrying the server static DH key packets (more can be included
+     for a good measure).
+  -> The reason why EncryptedExtensions needs to be included is in case
+     it contains some extensions affecting TLS-Extractor. The reason
+     server static DH key is needed is again to guard against attacks
+     like THS.
+- The "resume premaster secret" needs to be CR function of:
+  1) hanshake master secret.
+  2) Static Diffie-Hellman input.
+  3) Hash of entiere handshake.
+  -> The reason why last needs needs to be entiere handshake is that
+     otherwise session may be resumed in inocnsistent state.
+  -> Also so that resumption doesn't destroy forward security.
+- Online signature (if present) TBS needs to include:
+  1) *Random
+  2) Purpose of signature (e.g. server PoP)
+  3) Ciphersuite #
+  4) Prf-hash of messages so far
+  -> *Random is to support privsep. Which is extremely useful even with
+     pure SW if you have MMU available (and most of the time you do).
+  -> Ciphersuite # is to pin the prf-hash algorithm (I think that is
+     just the simplest way).
+
+
+The "function of" listings above are what I consider the absolute
+minimum, that's the reason why "application master secret" hash input
+is not marked as needed. It can (and should) be included.
+
+Also, one should take care that none of the different secrets may
+end up being same (except by very bad luck).
+
+The only thing above -05 fails is "exporter master secret", which
+is the same as handshake master secret nor does it hash enough state.
+
+
+Also, other comments:
+- I consider HKDF-HMAC-SHA256 to be too weak.
+  -> I think it needs at least HMAC-SHA384 (also would just give one
+     prf-hash).
+  -> SHA384 is FASTER than SHA256 on modern hardware (that's why
+     SHA-512/256 exists). But SHA3-384 is slower than SHA3-256.
+- There is no need to intermingle static DH key with signature, even if
+  statid DH key exists.
+  -> Signatures work like in -05.
+  -> Can completely eliminate signature if one has fixed-DH cert (DHF
+     is WAY simpler than signature primitive).
+
+
+Also, will *server* 0RTT be supported, even with client authentication?
+It would set the following boundary conditions:
+- Server application keys can't include hashes of client certificate,
+  as those need to be computable immediately on server finished.
+- The same for exporter master secret.
+
+The restrictions here are:
+- Replay protection is provoded.
+- There is no authentication (the server hasn't heard client's
+  certificate, which keeps misuse potential way down).
+
+Usecases:
+- Protocol banners, feature negoitiation (ALPN doesn't scale!),
+  etc...
+
+
+Also regarding splitting application keys to directional ones:
+- Allows JIT derivation, eliminating temporarily invalid keys.
+- Allows rekeying (since requirement is no dead time and arbitrarily
+  delayed responses, as breaking this causes problems for all
+  applications).
+
+
+
+-Ilari
+

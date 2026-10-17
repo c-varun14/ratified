@@ -1,0 +1,263 @@
+From nobody Fri Oct 29 06:55:57 2021
+Return-Path: <simo@redhat.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 8456B3A120F
+ for <tls@ietfa.amsl.com>; Fri, 29 Oct 2021 06:55:51 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.101
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.101 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIMWL_WL_HIGH=-0.001, DKIM_SIGNED=0.1,
+ DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1,
+ RCVD_IN_MSPIKE_H2=-0.001, SPF_HELO_NONE=0.001, SPF_PASS=-0.001,
+ URIBL_BLOCKED=0.001] autolearn=unavailable autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=redhat.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id Yt_Yo8To4ybO for <tls@ietfa.amsl.com>;
+ Fri, 29 Oct 2021 06:55:46 -0700 (PDT)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [216.205.24.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 92A093A1219
+ for <tls@ietf.org>; Fri, 29 Oct 2021 06:55:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1635515745;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=YTnYHzkWzXfeUTRVGTX0nrMpNTu6VXN84gr61XkaZn4=;
+ b=NV+uG/JoxzKDOhiAiFHg/2Y+VxQJxxM5RrvChiyx54y0wpfZdoh5DxUwkieXeygxgqRsXJ
+ QgpZc5sHbs2P7zs6tEL0g4UBLFYVP3rCze00UN2CX99AgMow0mzQtA4aAgUaPI5pMKQp6M
+ cMc4INL16yHoIvkGK7bzhas5k91u2mw=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-465-Dthyb8hHNuO40dHDfdqCjA-1; Fri, 29 Oct 2021 09:55:42 -0400
+X-MC-Unique: Dthyb8hHNuO40dHDfdqCjA-1
+Received: by mail-qt1-f199.google.com with SMTP id
+ 90-20020aed3163000000b002a6bd958077so6891604qtg.6
+ for <tls@ietf.org>; Fri, 29 Oct 2021 06:55:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+ :references:organization:user-agent:mime-version
+ :content-transfer-encoding;
+ bh=YTnYHzkWzXfeUTRVGTX0nrMpNTu6VXN84gr61XkaZn4=;
+ b=LxKWkdQvPUwUexOAQoG89Mi+D4Ebl/w9XhrRG2nZ1wuUBPWZ9BK0zZPW4X+l/XBh+H
+ MtYLwtYBFgXu2HJPKzsyo8BZIMuB9A6zvc2rwkRiGzSBAusvUl4NHkpis/CYjNVjXtUz
+ 2a+Nnxc7IAcK98bDtGSnlk+TSF75Nf95VXhNQdXNaQfYkOQG2pSOuYwxkya81mumqaJW
+ 69FNpYq1jRr+SqF3c7fgeCIfSyStxS5livVrvF2AllICWo8OQmPiv5mHmIwJcUB14yfN
+ zCkQGEiSXlVHdBplISavfcznTJJY7AMd0tqpV0VBWelgQVVlwAziDvcxz7Wt/iOr4uja
+ 049w==
+X-Gm-Message-State: AOAM531ZfYCpZQlzfsM9hsqlfrvQSuxRJndS2d+lpT5E2s3lxITl5DO3
+ 55ndf385oQWihjQejRjBiYHp0SpLOiNqp7c7PbbrJArsFVAs2ikueOsa2+UrgMjl/yol0YMz9n2
+ ZxHw=
+X-Received: by 2002:a37:4649:: with SMTP id t70mr9052089qka.139.1635515741235; 
+ Fri, 29 Oct 2021 06:55:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzlcesl4JIzZ1Rnb9K3MOGXrXC05gFRWqVrNxbxyTDsFB3ugj60hlDXNATda4EpXv6buE9v5A==
+X-Received: by 2002:a37:4649:: with SMTP id t70mr9052068qka.139.1635515740928; 
+ Fri, 29 Oct 2021 06:55:40 -0700 (PDT)
+Received: from m8.users.ipa.redhat.com (cpe-158-222-141-151.nyc.res.rr.com.
+ [158.222.141.151])
+ by smtp.gmail.com with ESMTPSA id o10sm930852qtx.52.2021.10.29.06.55.39
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 29 Oct 2021 06:55:40 -0700 (PDT)
+Message-ID: <e682da42c5ccd32d1d184970db631624eb6ee507.camel@redhat.com>
+From: Simo Sorce <simo@redhat.com>
+To: Jonathan Hoyland <jonathan.hoyland@gmail.com>, "Ruslan N. Marchenko"
+ <rufferson@gmail.com>
+Cc: KITTEN Working Group <kitten@ietf.org>, "<tls@ietf.org>" <tls@ietf.org>
+Date: Fri, 29 Oct 2021 09:55:39 -0400
+In-Reply-To: <CACykbs2V0mgxDz_MK2EiqSDBGWWfvq0TAX+UpLSEZKwOoFc8HQ@mail.gmail.com>
+References: <163311243544.13917.11736165165419008870@ietfa.amsl.com>
+ <20211001190002.GC98042@kduck.mit.edu>
+ <CABcZeBPQG82xJdwMrmj4-=9aJymo1xts=D6VZedBW5X9k+34cQ@mail.gmail.com>
+ <92ed26c1-bfde-43c1-93f4-2bbdbd4f6ec1@www.fastmail.com>
+ <CAChr6Sw6Rs42DfS8KgD3qasPcWM_gGZhWN5C4b7W7JsPy0wDzw@mail.gmail.com>
+ <8796f867-12b8-41f8-b124-82b3ab0e2d32@www.fastmail.com>
+ <CAChr6SyKAnBcE9t68coGGXFt9WPLuDuWtVKoCXrK+QrwAVtPXw@mail.gmail.com>
+ <f1bcd676-13ad-49b3-a8e8-8a272e0124e3@www.fastmail.com>
+ <CABcZeBNo0gKjNZOKPYJYraioaw6G=z5ibTqh-o9GkWsDkfDmSQ@mail.gmail.com>
+ <c4d6f2e5-0712-42a6-aef5-0cbada7e149e@www.fastmail.com>
+ <CABcZeBM6y-6ZqaLGZ=8qr+uBnWOOgczhcx=ruy5S=n-YrHweKg@mail.gmail.com>
+ <ca676a77-b2c9-4926-9842-d1d6587206ed@www.fastmail.com>
+ <CACykbs11rHUweXmR1NSU0N2rRjcQ8Sf1S+DY2LO7T+e6cLt+5w@mail.gmail.com>
+ <e9570c02c4f703780a4e317b26607ac124a3b595.camel@ruff.mobi>
+ <CACykbs3v0FC50WQHNqq-oXwKDE=Jha-o0P=Mgr92OgyeKPS6Ug@mail.gmail.com>
+ <7e862904cee5f86e4b77fce23c451c2abe0dc720.camel@ruff.mobi>
+ <CACykbs2V0mgxDz_MK2EiqSDBGWWfvq0TAX+UpLSEZKwOoFc8HQ@mail.gmail.com>
+Organization: Red Hat
+User-Agent: Evolution 3.40.4 (3.40.4-2.fc34)
+MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=simo@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/7YQTq0e5apWs7sRfTV_SEWyPRBI>
+Subject: Re: [TLS] [kitten] Fwd: Last Call:
+ <draft-ietf-kitten-tls-channel-bindings-for-tls13-09.txt> (Channel Bindings
+ for TLS 1.3) to Proposed Standard
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Fri, 29 Oct 2021 13:55:52 -0000
+
+Hi Jonathan,
+
+On Thu, 2021-10-28 at 18:46 +0100, Jonathan Hoyland wrote:
+> Hi Ruslan,
+> 
+> Yes, two distinct TLS connections having the same exporter key would be
+> really bad, but I'm specifically talking about two runs of some protocol
+> bound to a single TLS session.
+> A single TLS session will return the same key (modulo rekeying, resumption
+> etc.) if you call the Exporter API with the same label.
+> This means that the channel bindings it produces, which will then be used
+> to derive the keys of the higher layer protocol, will produce related keys.
+> 
+> The key reason for making the binding retrieval context-specific is to make
+> sure that different protocols run in the same TLS session produce disjoint
+> keys.
+
+Note, Channel Bindings are *not* a key and should never used as such,
+so I think you are using a false premise here.
+Channel Bindings are, at most, a unique value associated with a session
+(keep in mind that often Channel Bindings do not even bind to a
+specific session, see 'tls-server-end-point' which is used in
+preference in many cases within HTTPS endpoints because of the way
+server termination is built in some scalable architectures).
+
+> When someone tries to copy a message from a SCRAM handshake into some
+> GSS-API run on a single TLS connection I want to be sure that it will be
+> rejected, without having to understand exactly how every version of SCRAM
+> and GSS-API ever (including ones that will be drafted in the future) works
+> (not to mention every other protocol past, present, and future that uses
+> the same string.)
+
+Both SCRAM and GSS-API are authentication mechanisms that use shared
+keys for authentication. Both protocols are inherently resistant to
+message swapping because the chances of producing a message on one
+protocol that can be successfully decrypted/HMACed on the other are
+astronomically low (they must be or the protocols are broken).
+
+Channel bindings are just a way to tie those authentications to the
+specific channel used underneath. I can't see how using the same value
+for both protocols can lead to any compromise (see again 'tls-server-
+end-point', where there isn't even a "same" channel guarantee, or
+previous CBs where the binding was done to an IP address or other clear
+text session value).
+
+If passing an arbitrary channel binding values could suddenly (and
+predictably?) allow one protocol to be swapped for the other or have
+one protocol generate derived session keys that are usable with the
+other, it would mean those authentication mechanisms (SCRAM,GSS-
+API,...) are completely broken, as that would mean the keys and
+derivations used in those protocols are not providing the necessary
+security guarantees.
+
+> In the same way that we include strings in the TLS key schedule to ensure
+> that handshake messages can't be confused with each other or with earlier
+> versions of TLS, or even with Exported Authenticators, or MLS, or any other
+> protocol that uses keys, we should use channel bindings to separate
+> protocols run over the top of TLS.
+
+Yes, this is done because those messages are not further confounded
+with additional private keys, but the situation is substantially
+different when you talk about authentication mechanism that already use
+additional key material, key derivation and random challenges.
+
+HTH,
+Simo.
+
+> Regards,
+> 
+> Jonathan
+> 
+> On Wed, 27 Oct 2021 at 19:39, Ruslan N. Marchenko <rufferson@gmail.com>
+> wrote:
+> 
+> > Hi Jonathan,
+> > 
+> > Am Mittwoch, dem 27.10.2021 um 18:02 +0100 schrieb Jonathan Hoyland:
+> > > Hi Ruslan,
+> > > 
+> > > Without digging into the guts of GSS-API and SCRAM I can't give you a
+> > > concrete attack, the issue is that all our assumptions about protocol
+> > > security assume that different protocols use totally separate key
+> > > material.
+> > > For example if I have one protocol that signs arbitrary blobs and
+> > > another that requires me to sign a challenge to prove I know a private
+> > > key then even if they're both perfectly secure on their own they are
+> > > totally broken in composition.
+> > > This separation of keys is one of the core reasons for the use of
+> > > HKDFs, it lets us take some source randomness and use it to generate
+> > > independent keys.
+> > > 
+> > > Designing a channel binding that explicitly suggests people use the
+> > > same key material for different things is bad practice and poor
+> > > protocol design.
+> > > Pretty much every attack is on the table if you have multiple protocols
+> > > using the same keys, message forgery, improper authentication, key
+> > > leakage, etc.
+> > > The reason for separation of keys is to simply rule out this entire
+> > > class of vulnerability.
+> > 
+> > Sorry maybe I'm missing something but why would two unrelated protocols
+> > have same key? The binding is derived from TLS session key, if two
+> > unrelated TLS sessions are having the same key this is the problem by
+> > itself, and binding material is not amplifying it, just falling to the
+> > same problem bucket. And if they are related (eg resumed) then protocol
+> > muxing should perhaps be part of applicaiton stack and it should still
+> > be happy with a common security context.
+> > 
+> > > If you don't separate the keys then whenever you make any change to any
+> > > protocol you have to consider its security in composition with every
+> > > other protocol, including ones that you don't know about or that
+> > > haven't been written yet.
+> > > 
+> > > Using different labels for different purposes shouldn't require
+> > > anything complicated, as it's just changing the input literals to the
+> > > API call.
+> > > 
+> > There's a difference in telling TLS stack "give me binding of that
+> > type" - which is pretty much high level abstract call, and asking TLS
+> > to perform key derivation (export) for specific label - which requires
+> > speaking native TLS implementation api. Now that we have a bunch of TLS
+> > implementations and several abstractions and all other binding types
+> > are independent of the higher protocol - it may be challenging changing
+> > the API to make the binding retrieval context-specific. Not that it is
+> > impossible to make such change, but why?
+> > 
+> > 
+> > 
+> > 
+> _______________________________________________
+> Kitten mailing list
+> Kitten@ietf.org
+> https://www.ietf.org/mailman/listinfo/kitten
+
+-- 
+Simo Sorce
+RHEL Crypto Team
+Red Hat, Inc
+
+
+
+

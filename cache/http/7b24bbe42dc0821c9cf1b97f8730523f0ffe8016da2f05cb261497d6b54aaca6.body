@@ -1,0 +1,572 @@
+From nobody Mon Feb  1 22:09:35 2021
+Return-Path: <joe@salowey.net>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 01C053A179F
+ for <tls@ietfa.amsl.com>; Mon,  1 Feb 2021 22:09:33 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.898
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.898 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ HTML_MESSAGE=0.001, SPF_HELO_NONE=0.001, SPF_PASS=-0.001,
+ URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=salowey-net.20150623.gappssmtp.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id t6AWzXOsvF_m for <tls@ietfa.amsl.com>;
+ Mon,  1 Feb 2021 22:09:30 -0800 (PST)
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com
+ [IPv6:2a00:1450:4864:20::12d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 41C4A3A179E
+ for <tls@ietf.org>; Mon,  1 Feb 2021 22:09:30 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id a12so26299758lfb.1
+ for <tls@ietf.org>; Mon, 01 Feb 2021 22:09:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=salowey-net.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=Wd/9kuKlQMo0cLU7qTDLw6tl5arc6peO8Zld8fIihAM=;
+ b=IsS0WIapq8+qzykovhmdUlutjZyxIP+DoYoxVn6YSLRMp3r4dVFXe/6E188JaRnqNR
+ GQDNIzNICWXm3v/Aw4bYpbvS+JIb1BAWN+/6Z3wm+RsCIE/VubDXlXH45/8x+lrUy1/b
+ qdzTo8vCxSbOkFKn/ZTdNmaYyaOjPbYEXmI00wmaw06PeolUT8yQLctcg1iHMWjVP1n8
+ GWj2ZNLChMfdx0k6WR8QkYCQAkyzI9Ahr5r7/ZdVyebmNymVNcOIwHe0JMfjAuNeMqAA
+ WWlj6b1OJ+RXYO0Die0KYBWtUKFZ1L561cjRcee4BwToNOyQXap+LXHDiGeYSy3LQInl
+ 6ahg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=Wd/9kuKlQMo0cLU7qTDLw6tl5arc6peO8Zld8fIihAM=;
+ b=WdmpIBbHnwOquQwPmWxtMkqOXsD4dPKhMZ1YsHjGB1j14DeHsLo8TOe29o8u6k85Ch
+ 8XEK08I5zaXEkO1kpFUN26i1ZUZ3CsQN1nanjhIMOWYECaB1f7QiQqcOZhH/seyFUX7W
+ w9Fvego6VYAyV3u+FCfMY588ZS7bFN6l1xdAyzn9pD+jvwk6ICedEwt7u/lKwvbZzHJ/
+ 1982ybbO4XpFQ68ZNRrLVsN4utRYeaEumAkY6Y+b8/9nTVT8VzOfD2E9bIHIOHA+DNKy
+ oVOFsrzPfdV+AvwllBm9sdDHa1lnTJVKh3aKXK6Sx/TLQ9Vk/2PjUw2Sc+r/+PanZwHw
+ /rtQ==
+X-Gm-Message-State: AOAM530beW51iHRJVd2abqZRiYCuicrvbQYTiB9CUn49sKHawTOnWeia
+ b13TceXR64do6Dxbhq70qwWuKsLRhEhcj0MAQHAaGw==
+X-Google-Smtp-Source: ABdhPJw3wvbjZiRnOklKAVbuSh7Djz9MIR0HQz6TdGtdqYKGjIsVV8J/fYEamPwiPKp7uXy10ezXHeZ2VhnWQzpICRA=
+X-Received: by 2002:ac2:4c92:: with SMTP id d18mr9832068lfl.176.1612246167950; 
+ Mon, 01 Feb 2021 22:09:27 -0800 (PST)
+MIME-Version: 1.0
+References: <CAOgPGoBGOMXH-kMhQSujWxnACdmBL845u0ouE0fUYc4rWtUrZg@mail.gmail.com>
+ <ca4c526e-79a0-4fa7-abda-2b626795f068@www.fastmail.com>
+ <3409F71E-4CE4-46BB-8079-BFBE9BE83C9A@deployingradius.com>
+ <66157321-55DC-4831-8EF2-D75934D9024C@deployingradius.com>
+ <20210129183220.GI21@kduck.mit.edu>
+ <1A830492-3404-4BCC-844B-D7D950458BD9@deployingradius.com>
+ <CAOgPGoAoFL0aL8-g2waWny=BCod4tN9R==jR_N3kuLPFzvNGOg@mail.gmail.com>
+ <60EE664C-025B-4409-AE62-49C7DCF77FF3@deployingradius.com>
+ <20210201021644.GW21@kduck.mit.edu>
+ <45547CCC-0A54-431E-AD40-CD054B8B2A96@deployingradius.com>
+ <20210202042335.GL21@kduck.mit.edu>
+In-Reply-To: <20210202042335.GL21@kduck.mit.edu>
+From: Joseph Salowey <joe@salowey.net>
+Date: Mon, 1 Feb 2021 22:09:16 -0800
+Message-ID: <CAOgPGoCAc-YGjOhvH1GYz6DoOPOjJcxxgG8Nkww967SktdOreg@mail.gmail.com>
+To: Benjamin Kaduk <kaduk@mit.edu>
+Cc: Alan DeKok <aland@deployingradius.com>, "<tls@ietf.org>" <tls@ietf.org>,
+ EMU WG <emu@ietf.org>
+Content-Type: multipart/alternative; boundary="00000000000021ae2005ba5450b3"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/mzf4J81GhenFwnFSdhRV1XTgR3U>
+Subject: Re: [TLS] [Emu] Fwd: Benjamin Kaduk's Discuss on
+ draft-ietf-emu-eap-tls13-13: (with DISCUSS and COMMENT)
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Tue, 02 Feb 2021 06:09:33 -0000
+
+--00000000000021ae2005ba5450b3
+Content-Type: text/plain; charset="UTF-8"
+
+On Mon, Feb 1, 2021 at 8:23 PM Benjamin Kaduk <kaduk@mit.edu> wrote:
+
+> On Mon, Feb 01, 2021 at 07:09:14AM -0500, Alan DeKok wrote:
+> > On Jan 31, 2021, at 9:16 PM, Benjamin Kaduk <kaduk@mit.edu> wrote:
+> > > That's a scenario that I was starting to puzzle over this weekend as
+> well
+> > > -- with EAP-Success "completely unauthenticated", it would be fairly
+> easy
+> > > for an on-path attacker to send the EAP-Success the EAP peer was
+> expecting
+> > > and make the EAP peer think things succeeded even if the server had
+> > > rejected the client cert.
+> >
+> >   Yes.
+> >
+> > >  Now, a server that has rejected the client cert
+> > > is hopefully not going to be exporting the keys and continuing to run
+> the
+> > > next steps of protocol operation, but to some extent it seems that the
+> > > security of the system as a whole relies on the server operating
+> correctly
+> > > in this regard.
+> >
+> >   The TLS exporter keys are used for 802.1X / MacSec.  But they're not
+> always used.
+>
+> Somehow I had convinced myself that the EMSK was only sometimes used, but
+> MSK was always used.  If MSK is always used, then key confirmation of the
+> MSK can play the role of handshake (and client authentication)
+> confirmation, but otherwise I seem to be coming around to your "4.5 round
+> trips is unavoidable" conclusion.  I'm not sure how clear-cut a distinction
+> there is between cases that use the keys and those that don't, such that
+> the last round trip could be shaved off when the exported key is used for
+> key confirmation...
+>
+> > > ... it
+> > > seems like a lot of what is being described as desired here ends up
+> relying
+> > > on ordering between application data and handshake messages.
+> >
+> >   I think there's no implementation issue here.  The draft should be
+> clearer that there's no guaranteed ordering.
+>
+> I was going to stick this in a reply to Joe (at
+> https://mailarchive.ietf.org/arch/browse/emu/), but maybe I can sneak it
+> in
+> here and save a message in everybody's inbox.
+>
+> My understanding (based on
+> https://tools.ietf.org/html/rfc5216#section-2.1.5) is that EAP-TLS
+> fragments TLS records, or in some cases, groups of records, and the first
+> fragment includes a four-byte length field for the total message being
+> fragmented.  Recalling that a given TLS record can only have payload of a
+> single content type, in the scenario with a 0x00 confirmation message and a
+> NewSessionTicket, that means one record with inner type application data
+> and another record with inner type handshake.  If they are both grouped
+> together to the EAP-TLS fragmentation engine, then I agree that there is no
+> issue and a proper implementation should be waiting to reassemble the whole
+> fragmented bundle, including both records, before finalizing processing.
+> But is it also allowed to fragment the two records separately?  I didn't
+> see anything that required the entire TLS flight of messages to be
+> a single fragmentation input, and it's in the case that the 0x00 and
+> NewSessionTicket are fragmented separately that the ordering becomes
+> relevant -- if the 0x00 is fragmented first then the peer gets the complete
+> fragmented message, sees the commitment message, and prepares its
+> authentication flight in the EAP-Response, and based on the supposed
+> commitment semantics would then somehow be expected to reject an
+> EAP-Request with NewSessionTicket as breaking the commitment.  (Assuming it
+> had a way to tell it was a handshake message at all, that is...)
+>
+> I'd love to hear what I am missing that makes the above incorrect, and/or
+> that we have a way to require the NewSessionTicket and commitment message
+> to be part of the same fragmentation unit.
+>
+>
+[Joe] I would interpret the commitment message to mean that there are no
+more handshake messages coming after completing the processing of this
+entire EAP message.  An implementation should not stop processing the
+packet in the middle of an EAP-TLS message, even if it is fragmented.  The
+whole message should be consumed.
+
+
+> > > (A lot of my hedging in messages on this thread is because I also don't
+> > > really understand why the message is there.)
+> > > I believe I read somewhere that it stemmed from the change in who
+> speaks
+> > > last in the TLS handshake, but am a bit hazy on how that implies it is
+> > > needed.
+> >
+> >   I would like clarification on just what that message *means*.  If we
+> want an explicit EAP layer signal that the server saw the client cert and
+> authenticated it, then we MUST NOT send any such signal until after the
+> server has seen the client cert.  And because the EAP-Success is sent all
+> alone, we MUST then have another full round of TLS exchange, before the
+> final EAP-Success.   i.e.
+> >
+> >
+> >     EAP-TLS Peer                                      EAP-TLS Server
+> >
+> >                                                          EAP-Request/
+> >                                  <--------                  Identity
+> >     EAP-Response/
+> >     Identity (Privacy-Friendly)  -------->
+> >                                                          EAP-Request/
+> >                                                     EAP-Type=EAP-TLS
+> >                                  <--------                (TLS Start)
+> >     EAP-Response/
+> >     EAP-Type=EAP-TLS
+> >    (TLS ClientHello)             -------->
+> >                                                          EAP-Request/
+> >                                                     EAP-Type=EAP-TLS
+> >                                                     (TLS ServerHello,
+> >                                              TLS EncryptedExtensions,
+> >                                               TLS CertificateRequest,
+> >                                                      TLS Certificate,
+> >                                                TLS CertificateVerify,
+> >                                  <-------            TLS Finished)
+> >     EAP-Response/
+> >     EAP-Type=EAP-TLS
+> >    (TLS Certificate,
+> >     TLS CertificateVerify,
+> >     TLS Finished)                -------->
+> >
+> >                                                              EAP-Request/
+> >                                                     EAP-Type=EAP-TLS
+> >                              <--------        (TLS Commitment Message)
+> >
+> >     EAP-Response/
+> >     EAP-Type=EAP-TLS
+> >      (TLS Ack)                 -------->
+> >                                  <--------               EAP-Success
+> >
+> >   In that scenario, the commitment message *does* have a purpose:
+> >
+> > *  It was not needed in TLS 1.2, because the "TLS Finished" message from
+> the server came after the server saw the client cert.
+
+
+
+
+>
+> > *  In TLS 1.3, that behaviour has changed
+> > * so the *implicit* meaning of "server sends TLS finished" is no longer
+> "server has seen client cert"
+> > *  Since EAP-TLS wishes to authenticate the client cert, it MUST have an
+> EAP state after the "TLS Finished" message
+> > *  Since EAP-TLS does not provide for any data exchanged in the EAP
+> layer, any data MUST be mangled into TLS
+> > * and the only possibility is TLS application data.
+> >
+> >   I'd like to know if any of these assumptions are false.
+>
+> (I cannot contradict any of those assumptions, though I don't think I would
+> be one of the likely candidates to do so.)
+
+
+
+[Joe] Based on RFC 5216 the server could fail the finished message or as
+section 2.1.3 shows it could send the finish and then it can send an Alert
+and result in EAP-Failure.  In this case it would be possible for an
+attacker to remove the Alert and send a success.  Whether your
+implementation ends up in this scenario or not probably depends upon why
+the auth failed and the behavior of your TLS library.
+
+I do not believe that RFC 5216 provides protected result indications.   It
+would be a fine thing to add, but it is new to the specification and I'm
+not sure that is why the commitment message was added to begin with.
+
+
+> >   If all this is true, then the 3.5 round EAP-TLS goal is impossible.
+> >
+> > > I don't disagree with what you say, but I will note that if we are
+> seeing a
+> > > conflict between a desire to ship something ASAP and uncertainty that
+> the
+> > > current specification is fully correct, it's easy process-wise to
+> allocate
+> > > a new type code for people to ship "now" without locking in behavior
+> for
+> > > 0x0d.  Whether we call it an early allocation, an experimental usage,
+> or a
+> > > normal allocation via specification required doesn't seem terribly
+> > > important (and given that Joe is the expert and he basically suggested
+> it,
+> > > I suspect that allocation would occur quite quickly after a request).
+> > > How easy it would be to get things back onto 0x0d in the future is less
+> > > clear, though.
+> >
+> >   As an implementor, I fervently hope to *not* support an "ad hoc" EAP
+> type for the next 10 years.
+>
+> Understood!
+>
+> Thanks,
+>
+> Ben
+>
+
+--00000000000021ae2005ba5450b3
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><br></div><br><div class=3D"gmail_quote">=
+<div dir=3D"ltr" class=3D"gmail_attr">On Mon, Feb 1, 2021 at 8:23 PM Benjam=
+in Kaduk &lt;<a href=3D"mailto:kaduk@mit.edu">kaduk@mit.edu</a>&gt; wrote:<=
+br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8e=
+x;border-left:1px solid rgb(204,204,204);padding-left:1ex">On Mon, Feb 01, =
+2021 at 07:09:14AM -0500, Alan DeKok wrote:<br>
+&gt; On Jan 31, 2021, at 9:16 PM, Benjamin Kaduk &lt;<a href=3D"mailto:kadu=
+k@mit.edu" target=3D"_blank">kaduk@mit.edu</a>&gt; wrote:<br>
+&gt; &gt; That&#39;s a scenario that I was starting to puzzle over this wee=
+kend as well<br>
+&gt; &gt; -- with EAP-Success &quot;completely unauthenticated&quot;, it wo=
+uld be fairly easy<br>
+&gt; &gt; for an on-path attacker to send the EAP-Success the EAP peer was =
+expecting<br>
+&gt; &gt; and make the EAP peer think things succeeded even if the server h=
+ad<br>
+&gt; &gt; rejected the client cert.<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0Yes.<br>
+&gt; <br>
+&gt; &gt;=C2=A0 Now, a server that has rejected the client cert<br>
+&gt; &gt; is hopefully not going to be exporting the keys and continuing to=
+ run the<br>
+&gt; &gt; next steps of protocol operation, but to some extent it seems tha=
+t the<br>
+&gt; &gt; security of the system as a whole relies on the server operating =
+correctly<br>
+&gt; &gt; in this regard.<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0The TLS exporter keys are used for 802.1X / MacSec.=C2=A0 =
+But they&#39;re not always used.<br>
+<br>
+Somehow I had convinced myself that the EMSK was only sometimes used, but<b=
+r>
+MSK was always used.=C2=A0 If MSK is always used, then key confirmation of =
+the<br>
+MSK can play the role of handshake (and client authentication)<br>
+confirmation, but otherwise I seem to be coming around to your &quot;4.5 ro=
+und<br>
+trips is unavoidable&quot; conclusion.=C2=A0 I&#39;m not sure how clear-cut=
+ a distinction<br>
+there is between cases that use the keys and those that don&#39;t, such tha=
+t<br>
+the last round trip could be shaved off when the exported key is used for<b=
+r>
+key confirmation...<br>
+<br>
+&gt; &gt; ... it<br>
+&gt; &gt; seems like a lot of what is being described as desired here ends =
+up relying<br>
+&gt; &gt; on ordering between application data and handshake messages.<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0I think there&#39;s no implementation issue here.=C2=A0 Th=
+e draft should be clearer that there&#39;s no guaranteed ordering.<br>
+<br>
+I was going to stick this in a reply to Joe (at<br>
+<a href=3D"https://mailarchive.ietf.org/arch/browse/emu/" rel=3D"noreferrer=
+" target=3D"_blank">https://mailarchive.ietf.org/arch/browse/emu/</a>), but=
+ maybe I can sneak it in<br>
+here and save a message in everybody&#39;s inbox.<br>
+<br>
+My understanding (based on<br>
+<a href=3D"https://tools.ietf.org/html/rfc5216#section-2.1.5" rel=3D"norefe=
+rrer" target=3D"_blank">https://tools.ietf.org/html/rfc5216#section-2.1.5</=
+a>) is that EAP-TLS<br>
+fragments TLS records, or in some cases, groups of records, and the first<b=
+r>
+fragment includes a four-byte length field for the total message being<br>
+fragmented.=C2=A0 Recalling that a given TLS record can only have payload o=
+f a<br>
+single content type, in the scenario with a 0x00 confirmation message and a=
+<br>
+NewSessionTicket, that means one record with inner type application data<br=
+>
+and another record with inner type handshake.=C2=A0 If they are both groupe=
+d<br>
+together to the EAP-TLS fragmentation engine, then I agree that there is no=
+<br>
+issue and a proper implementation should be waiting to reassemble the whole=
+<br>
+fragmented bundle, including both records, before finalizing processing.<br=
+>
+But is it also allowed to fragment the two records separately?=C2=A0 I didn=
+&#39;t<br>
+see anything that required the entire TLS flight of messages to be<br>
+a single fragmentation input, and it&#39;s in the case that the 0x00 and<br=
+>
+NewSessionTicket are fragmented separately that the ordering becomes<br>
+relevant -- if the 0x00 is fragmented first then the peer gets the complete=
+<br>
+fragmented message, sees the commitment message, and prepares its<br>
+authentication flight in the EAP-Response, and based on the supposed<br>
+commitment semantics would then somehow be expected to reject an<br>
+EAP-Request with NewSessionTicket as breaking the commitment.=C2=A0 (Assumi=
+ng it<br>
+had a way to tell it was a handshake message at all, that is...)<br>
+<br>
+I&#39;d love to hear what I am missing that makes the above incorrect, and/=
+or<br>
+that we have a way to require the NewSessionTicket and commitment message<b=
+r>
+to be part of the same fragmentation unit.<br>
+<br></blockquote><div><br></div><div>[Joe] I would interpret the commitment=
+ message to mean that there are no more handshake messages coming after com=
+pleting the processing of this entire EAP message.=C2=A0 An implementation =
+should not stop processing the packet in the middle of an EAP-TLS message, =
+even if it is fragmented.=C2=A0 The whole message should be consumed.=C2=A0=
+=C2=A0</div><div>=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"mar=
+gin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1=
+ex">
+&gt; &gt; (A lot of my hedging in messages on this thread is because I also=
+ don&#39;t<br>
+&gt; &gt; really understand why the message is there.)<br>
+&gt; &gt; I believe I read somewhere that it stemmed from the change in who=
+ speaks<br>
+&gt; &gt; last in the TLS handshake, but am a bit hazy on how that implies =
+it is<br>
+&gt; &gt; needed.<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0I would like clarification on just what that message *mean=
+s*.=C2=A0 If we want an explicit EAP layer signal that the server saw the c=
+lient cert and authenticated it, then we MUST NOT send any such signal unti=
+l after the server has seen the client cert.=C2=A0 And because the EAP-Succ=
+ess is sent all alone, we MUST then have another full round of TLS exchange=
+, before the final EAP-Success.=C2=A0 =C2=A0i.e.<br>
+&gt; <br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 =C2=A0EAP-TLS Peer=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 EAP-TLS Server<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 EAP-Request/<br=
+>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 &lt;--------=C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Identity<br>
+&gt;=C2=A0 =C2=A0 =C2=A0EAP-Response/<br>
+&gt;=C2=A0 =C2=A0 =C2=A0Identity (Privacy-Friendly)=C2=A0 --------&gt;<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 EAP-Request/<br=
+>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0EAP-Type=3DEAP-TLS<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 &lt;--------=C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 (TLS Start)<br>
+&gt;=C2=A0 =C2=A0 =C2=A0EAP-Response/<br>
+&gt;=C2=A0 =C2=A0 =C2=A0EAP-Type=3DEAP-TLS<br>
+&gt;=C2=A0 =C2=A0 (TLS ClientHello)=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0--------&gt;<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 EAP-Request/<br=
+>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0EAP-Type=3DEAP-TLS<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0(TLS ServerHello,<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 TLS EncryptedExtensions,<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0TLS CertificateRequest,<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 TLS Certificate,<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 TLS CertificateVerify,<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 &lt;-------=C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 TLS Finished)<br>
+&gt;=C2=A0 =C2=A0 =C2=A0EAP-Response/<br>
+&gt;=C2=A0 =C2=A0 =C2=A0EAP-Type=3DEAP-TLS<br>
+&gt;=C2=A0 =C2=A0 (TLS Certificate,<br>
+&gt;=C2=A0 =C2=A0 =C2=A0TLS CertificateVerify,<br>
+&gt;=C2=A0 =C2=A0 =C2=A0TLS Finished)=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 --------&gt;<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 E=
+AP-Request/<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0EAP-Type=3DEAP-TLS<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 &lt;--------=C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+(TLS Commitment Message)<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 =C2=A0EAP-Response/<br>
+&gt;=C2=A0 =C2=A0 =C2=A0EAP-Type=3DEAP-TLS<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 (TLS Ack)=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0--------&gt;<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 &lt;--------=C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0EAP-Success<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0In that scenario, the commitment message *does* have a pur=
+pose:<br>
+&gt; <br>
+&gt; *=C2=A0 It was not needed in TLS 1.2, because the &quot;TLS Finished&q=
+uot; message from the server came after the server saw the client cert.</bl=
+ockquote><div><br></div><div>=C2=A0</div><blockquote class=3D"gmail_quote" =
+style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);pa=
+dding-left:1ex"> <br>
+&gt; *=C2=A0 In TLS 1.3, that behaviour has changed<br>
+&gt; * so the *implicit* meaning of &quot;server sends TLS finished&quot; i=
+s no longer &quot;server has seen client cert&quot;<br>
+&gt; *=C2=A0 Since EAP-TLS wishes to authenticate the client cert, it MUST =
+have an EAP state after the &quot;TLS Finished&quot; message<br>
+&gt; *=C2=A0 Since EAP-TLS does not provide for any data exchanged in the E=
+AP layer, any data MUST be mangled into TLS<br>
+&gt; * and the only possibility is TLS application data.<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0I&#39;d like to know if any of these assumptions are false=
+.<br>
+<br>
+(I cannot contradict any of those assumptions, though I don&#39;t think I w=
+ould<br>
+be one of the likely candidates to do so.)</blockquote><div><br></div><div>=
+<div><br></div><div>[Joe] Based on RFC 5216 the server could fail the finis=
+hed message or as section 2.1.3 shows it could send the finish and then it =
+can send an=C2=A0Alert and result in EAP-Failure.=C2=A0 In this case it wou=
+ld be possible for an attacker to remove the Alert and send a success.=C2=
+=A0 Whether your implementation ends up in this scenario or not probably de=
+pends upon why the auth failed and the behavior of your TLS library.</div><=
+/div><div><br></div><div>I do not believe that RFC 5216 provides protected =
+result indications.=C2=A0 =C2=A0It would be a fine thing to add, but it is =
+new to the specification and I&#39;m not sure that is why the commitment me=
+ssage was added to begin with.=C2=A0 =C2=A0=C2=A0</div><div>=C2=A0</div><bl=
+ockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-lef=
+t:1px solid rgb(204,204,204);padding-left:1ex">
+&gt;=C2=A0 =C2=A0If all this is true, then the 3.5 round EAP-TLS goal is im=
+possible.<br>
+&gt; <br>
+&gt; &gt; I don&#39;t disagree with what you say, but I will note that if w=
+e are seeing a<br>
+&gt; &gt; conflict between a desire to ship something ASAP and uncertainty =
+that the<br>
+&gt; &gt; current specification is fully correct, it&#39;s easy process-wis=
+e to allocate<br>
+&gt; &gt; a new type code for people to ship &quot;now&quot; without lockin=
+g in behavior for<br>
+&gt; &gt; 0x0d.=C2=A0 Whether we call it an early allocation, an experiment=
+al usage, or a<br>
+&gt; &gt; normal allocation via specification required doesn&#39;t seem ter=
+ribly<br>
+&gt; &gt; important (and given that Joe is the expert and he basically sugg=
+ested it,<br>
+&gt; &gt; I suspect that allocation would occur quite quickly after a reque=
+st).<br>
+&gt; &gt; How easy it would be to get things back onto 0x0d in the future i=
+s less<br>
+&gt; &gt; clear, though.<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0As an implementor, I fervently hope to *not* support an &q=
+uot;ad hoc&quot; EAP type for the next 10 years.<br>
+<br>
+Understood!<br>
+<br>
+Thanks,<br>
+<br>
+Ben<br>
+</blockquote></div></div>
+
+--00000000000021ae2005ba5450b3--
+

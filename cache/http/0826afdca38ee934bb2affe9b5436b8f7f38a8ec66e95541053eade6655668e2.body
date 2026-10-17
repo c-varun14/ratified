@@ -1,0 +1,85 @@
+Return-Path: <geoffk@geoffk.org>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id BCD1A1294F0
+ for <tls@ietfa.amsl.com>; Sun, 23 Apr 2017 11:46:34 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.9
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, SPF_PASS=-0.001, URIBL_BLOCKED=0.001]
+ autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id KmHJkB7Wohqj for <tls@ietfa.amsl.com>;
+ Sun, 23 Apr 2017 11:46:32 -0700 (PDT)
+Received: from dragaera.releasedominatrix.com (dragaera.releasedominatrix.com
+ [198.0.208.83])
+ (using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id C310C1252BA
+ for <tls@ietf.org>; Sun, 23 Apr 2017 11:46:32 -0700 (PDT)
+Received: by dragaera.releasedominatrix.com (Postfix, from userid 501)
+ id 4192A33D1BA; Sun, 23 Apr 2017 18:46:32 +0000 (UTC)
+Sender: geoffk@localhost.localdomain
+To: Ilari Liusvaara <ilariliusvaara@welho.com>
+Cc: Eric Rescorla <ekr@rtfm.com>,  "tls@ietf.org" <tls@ietf.org>
+References: <1490797726.28079.18.camel@redhat.com>
+ <1490797957.28079.20.camel@redhat.com>
+ <CABcZeBMCZrVKM959F3ycKN_WAky2NAZTy9OOetnC+KJAj3L+Pw@mail.gmail.com>
+ <1492786351.14070.2.camel@redhat.com>
+ <CABcZeBOe4-yEW8r15fsOtHJbQrnqGJ6oUaGYjoUwYS0MQE-rHQ@mail.gmail.com>
+ <20170422120017.GA4201@LK-Perkele-V2.elisa-laajakaista.fi>
+From: Geoffrey Keating <geoffk@geoffk.org>
+Date: 23 Apr 2017 11:46:32 -0700
+In-Reply-To: <20170422120017.GA4201@LK-Perkele-V2.elisa-laajakaista.fi>
+Message-ID: <m2tw5fj71z.fsf@localhost.localdomain>
+Lines: 26
+User-Agent: Gnus/5.09 (Gnus v5.9.0) Emacs/21.4
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/ETqWAt5YYrLaYTB4soaqbOJbArc>
+Subject: Re: [TLS] comments on draft-ietf-tls-tls13-19
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Sun, 23 Apr 2017 18:46:35 -0000
+
+Ilari Liusvaara <ilariliusvaara@welho.com> writes:
+> > On Fri, Apr 21, 2017 at 10:52 AM, Nikos Mavrogiannopoulos <nmav@redhat.com>
+> > wrote:
+> > 
+> > > My issue with OCSP when used under TLS was how to determine the
+> > > validity of the response when the nextUpdate field is missing. I've
+> > > added some text for that introducing an (arbitrary) upper limit at:
+> > > https://github.com/tlswg/tls13-spec/pull/974
+...
+> Anybody happens to know a CA that doesn't put NextUpdate in? If so,
+> what's the OCSP issuance frequency?
+
+The definition is:
+
+   If nextUpdate is not set, the responder is indicating that newer
+   revocation information is available all the time.
+
+I think 15 days is much too long.  I would suggest wording it more like:
+
+If the nextUpdate value is omitted, the server SHOULD refresh the
+response so that the thisUpdate field is no more than 24 hours in
+the past.
+
+and not place any requirement on the client; if the client wants
+fresher information than the server provides, it can go fetch it
+itself.
+

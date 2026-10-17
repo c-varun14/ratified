@@ -1,0 +1,498 @@
+Return-Path: <ekr@rtfm.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 87B8C124207
+ for <tls@ietfa.amsl.com>; Wed,  7 Mar 2018 06:16:47 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.598
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.598 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_LOW=-0.7, URIBL_BLOCKED=0.001]
+ autolearn=unavailable autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=rtfm-com.20150623.gappssmtp.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 6RHdHvLBbVZm for <tls@ietfa.amsl.com>;
+ Wed,  7 Mar 2018 06:16:45 -0800 (PST)
+Received: from mail-qk0-x233.google.com (mail-qk0-x233.google.com
+ [IPv6:2607:f8b0:400d:c09::233])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id CC3BE127522
+ for <tls@ietf.org>; Wed,  7 Mar 2018 06:16:42 -0800 (PST)
+Received: by mail-qk0-x233.google.com with SMTP id s198so2790541qke.5
+ for <tls@ietf.org>; Wed, 07 Mar 2018 06:16:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=rtfm-com.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+ :cc; bh=TN2fnSKbv8aTpOC8W/561q93ZZgV+O+t2/dwLV0ZVg4=;
+ b=omjgBCEkg8w9ZkowzWofLtszSC6FB1rD/nPVs5ClWCWaQnYxXZJ9gfalCemjNcsmDs
+ Z4LxlfzjZia8ZgF/lAiTPMfzfAgZvwtQxpK0FlZt5RfSdyJCafMWnruLBSqbZS/wa5FP
+ lvY2CwNeRzH2/7WrfAf3nQra1dk6kOJnv2OsbD2gxrQ+xUp6yWK3/FjTPmmBUX6ImUi9
+ yjMgric+75DiS8JWJq2F22rXSf3aeToyftkor9ZVUINvxHRC0mlkr6n8kQxdG+u/wrnh
+ Np4+dWGihXAPuf1+yxlX5hW5dTje1EF9Oi88CFeT83jSTRXrxDm222f7XCT8IPKbkkOP
+ 5DlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+ :message-id:subject:to:cc;
+ bh=TN2fnSKbv8aTpOC8W/561q93ZZgV+O+t2/dwLV0ZVg4=;
+ b=m2hsOgLhKubO2eVJ0cutAh6GTXGt9ersHj8HAtVnhVoEDQDhe1lNgnXPz5XOnX0+JN
+ rc+L45Xz0wjiGoqC1qP5P+aHyjhxtFJSLrSojSqpve+2DE9PxIVJJyvOw3sAGaH1Bi8I
+ jUzGUA6IOqVt0hcQBEJLassvO6Eh3SPFphITiJQS+DAzOHBYLxflT/e9IvnqHIMwetEs
+ 33P5cWF3b/4FF7pLE5e92Y1OVxrCrI6/EdwJA8l0frmI/QB6bPLtIZwjU0icPafueed3
+ 6sYYpayI48zH7y8p+MXD/yby3Vh3wCN9k8yunQvPbgzxtArTOXT65E4RWKREpkbSkIgi
+ CIgA==
+X-Gm-Message-State: AElRT7FaLtc58Hpip6jvsuijPseX7mgsflUO3KFen7v4wa8OWP/dKhKq
+ cC8Fmv19ZlXMYXdkrnT9S1OSxIJi02JuA3OqZ2mFjg==
+X-Google-Smtp-Source: AG47ELuyaypF3BVYUahGx5RnV4uPSxh4a/3ExD+B1i7ceaAL+SRcEZM/ciYnX5XAX80LXOy/IkL1YEYIUnAFjwnfu3o=
+X-Received: by 10.55.118.6 with SMTP id r6mr34766853qkc.211.1520432201791;
+ Wed, 07 Mar 2018 06:16:41 -0800 (PST)
+MIME-Version: 1.0
+Received: by 10.200.37.176 with HTTP; Wed, 7 Mar 2018 06:16:01 -0800 (PST)
+In-Reply-To: <152042939596.17646.2835997719834399943.idtracker@ietfa.amsl.com>
+References: <152042939596.17646.2835997719834399943.idtracker@ietfa.amsl.com>
+From: Eric Rescorla <ekr@rtfm.com>
+Date: Wed, 7 Mar 2018 06:16:01 -0800
+Message-ID: <CABcZeBOFCfNS1UXVVwAkkTMi2yOUUyhhh-K-vP2yDOWts6-4wA@mail.gmail.com>
+To: Alexey Melnikov <aamelnikov@fastmail.fm>
+Cc: The IESG <iesg@ietf.org>, draft-ietf-tls-tls13@ietf.org, 
+ Sean Turner <sean@sn3rd.com>, tls-chairs <tls-chairs@ietf.org>,
+ "<tls@ietf.org>" <tls@ietf.org>
+Content-Type: multipart/alternative; boundary="94eb2c0627384b12360566d33563"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/-NBc68PcmlgEJ15LkPC1604Cv88>
+Subject: Re: [TLS] Alexey Melnikov's Discuss on draft-ietf-tls-tls13-26:
+ (with DISCUSS and COMMENT)
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Wed, 07 Mar 2018 14:16:47 -0000
+
+--94eb2c0627384b12360566d33563
+Content-Type: text/plain; charset="UTF-8"
+
+On Wed, Mar 7, 2018 at 5:29 AM, Alexey Melnikov <aamelnikov@fastmail.fm>
+wrote:
+
+> Alexey Melnikov has entered the following ballot position for
+> draft-ietf-tls-tls13-26: Discuss
+>
+> When responding, please keep the subject line intact and reply to all
+> email addresses included in the To and CC lines. (Feel free to cut this
+> introductory paragraph, however.)
+>
+>
+> Please refer to https://www.ietf.org/iesg/statement/discuss-criteria.html
+> for more information about IESG DISCUSS and COMMENT positions.
+>
+>
+> The document, along with other ballot positions, can be found here:
+> https://datatracker.ietf.org/doc/draft-ietf-tls-tls13/
+>
+>
+>
+> ----------------------------------------------------------------------
+> DISCUSS:
+> ----------------------------------------------------------------------
+>
+> Thank you for a well written document. I will be switching to Yes once the
+> following is addressed/discussed:
+>
+> Relationship to TLS 1.2 needs to be clarified. The document is adding
+> requirements on TLS 1.2 clients. Implementors of TLS 1.2 are not going to
+> (or
+> very unlikely to) read this document. This looks fishy to me. Two examples
+> on
+> page 37:
+>
+>   TLS 1.2 clients SHOULD also check that the last eight bytes  are not
+> equal to
+>   the second value if the ServerHello indicates TLS  1.1 or below
+>
+> and
+>
+>  A legacy TLS client performing renegotiation with TLS 1.2 or prior  and
+> which
+>  receives a TLS 1.3 ServerHello during renegotiation MUST  abort the
+> handshake
+>  with a "protocol_version" alert.  Note that  renegotiation is not possible
+>  when TLS 1.3 has been negotiated.
+>
+> There are similar statements on page 45:
+>
+>   TLS 1.2 implementations SHOULD also process this extension.
+>
+> and on page 48:
+>
+>   However, the old semantics did not constrain the signing
+>   curve.  If TLS 1.2 is negotiated, implementations MUST be prepared
+>   to accept a signature that uses any curve that they advertised in
+>   the "supported_groups" extension.
+>
+> I think you need to clarify whether these normative requirements apply to
+> pure
+> TLS 1.2 clients or TLS clients that implement both 1.2 and 1.3 and choose
+> to
+> use 1.2 for some reason. Or maybe you need to say in the
+> Abstract/Introduction
+> that although this document obsoletes TLS 1.2 it also specifies new
+> requirements on TLS 1.2 implementations. (So it is sort of both
+> "Obsoletes" and
+> "Updates" TLS 1.2 RFC.)
+>
+
+
+The intent is that these affect old TLS 1.2 implementations as well. S 1.4
+tries
+to be clear about this, but maybe it fails.
+
+I suggest we:
+
+(1) Add the following sentence to the abstract:
+"This document also specifies new requirements for TLS 1.2 implementations.
+
+(2) Rewrite the first sentence of S 1.4 to say:
+   This document defines several changes that optionally affect
+   implementations of TLS 1.2, including those which do not also
+   support TLS 1.3
+
+(3) Strike the following graf:
+
+   An implementation of TLS 1.3 that also supports TLS 1.2 might need to
+   include changes to support these changes even when TLS 1.3 is not in
+   use.  See the referenced sections for more details.
+
+
+
+
+>
+> ----------------------------------------------------------------------
+> COMMENT:
+> ----------------------------------------------------------------------
+>
+> 1) On page 47:
+>  The length of the salt MUST be equal to the length of the digest
+> algorithm
+>
+> Length of algorithm?
+>
+
+Right. Output of.
+
+
+
+>
+> 2) DER need a Normative Reference on first use. There are some references
+> on
+> 2nd/3rd use.
+>
+
+Thanks.
+
+
+>
+> 3) On page 57:
+>
+>    The
+>    server then ignores early data by attempting to decrypt received
+>    records in the handshake traffic keys until it is able to receive
+>    the client's second flight and complete an ordinary 1-RTT
+>    handshake, skipping records that fail to decrypt, up to the
+>    configured max_early_data_size.
+>
+> I read this several times and still don't understand what this is saying.
+> It is
+> saying "ignores ... until it is able to receive". I think you either don't
+> mean
+> "ignore" (as in discard the rest) or I misunderstood. I clarifying example
+> or a
+> reference to another section (e.g. with the diagram) would be very helpful
+> here.
+>
+
+We do mean discard. The idea here is that you try to decrypt those records
+using the handshake keys and if that fails you ignore them.
+
+
+> 4) On page 82:
+>
+>    When record protection has not yet been engaged, TLSPlaintext
+> structures
+>    are written directly onto the wire.  Once record  protection has
+> started,
+>    TLSPlaintext records are protected and sent   as described in the
+> following
+>    section
+>
+> Just to double check: are you saying that before the handshake TLS
+> application
+> layer effectively results in plain text messages (with some extra octets to
+> signal record type)?
+>
+
+No, you can't write application data prior to this point, as stated in S 2.
+
+   Application data MUST NOT be sent prior to sending the Finished
+   message and until the record layer starts using encryption keys.
+   Note that while the server may send application data prior to
+   receiving the client's Authentication messages, any data sent at that
+   point is, of course, being sent to an unauthenticated peer.
+
+It's non-application data (handshake, alerts, acks) which is sent in this
+fashion
+prior to the handshake.
+
+
+
+5) I am pretty sure that [RFC5116] is a Normative reference. It is required
+> to
+> be understood to implemented TLS 1.3. Also, you have additional
+> requirements on
+> AEADs, which again implies understanding of what they are:
+>
+> On page 84:
+>
+>    An AEAD algorithm used in TLS 1.3 MUST NOT produce an expansion  greater
+>    than 255 octets
+>
+> and
+>
+>    An AEAD algorithm where N_MAX is less than 8  bytes MUST NOT be used
+> with TLS
+>
+
+I concur. Thanks.
+
+
+
+6) The diagram in section 7.1 was a bit cryptic. Maybe explain that when you
+> use '0' you mean as many bytes of 0s as needed for various functions.
+>
+
+This is in the first paragraph after the diagram. Would you prefer it
+elsewhere?
+
+   If a given secret is not available, then the 0-value consisting of a
+   string of Hash.length bytes set to zeros is used.  Note that this
+
+-Ekr
+
+--94eb2c0627384b12360566d33563
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><br><div class=3D"gmail_extra"><br><div class=3D"gmail_quo=
+te">On Wed, Mar 7, 2018 at 5:29 AM, Alexey Melnikov <span dir=3D"ltr">&lt;<=
+a href=3D"mailto:aamelnikov@fastmail.fm" target=3D"_blank">aamelnikov@fastm=
+ail.fm</a>&gt;</span> wrote:<br><blockquote class=3D"gmail_quote" style=3D"=
+margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-lef=
+t:1ex">Alexey Melnikov has entered the following ballot position for<br>
+draft-ietf-tls-tls13-26: Discuss<br>
+<br>
+When responding, please keep the subject line intact and reply to all<br>
+email addresses included in the To and CC lines. (Feel free to cut this<br>
+introductory paragraph, however.)<br>
+<br>
+<br>
+Please refer to <a href=3D"https://www.ietf.org/iesg/statement/discuss-crit=
+eria.html" rel=3D"noreferrer" target=3D"_blank">https://www.ietf.org/iesg/<=
+wbr>statement/discuss-criteria.<wbr>html</a><br>
+for more information about IESG DISCUSS and COMMENT positions.<br>
+<br>
+<br>
+The document, along with other ballot positions, can be found here:<br>
+<a href=3D"https://datatracker.ietf.org/doc/draft-ietf-tls-tls13/" rel=3D"n=
+oreferrer" target=3D"_blank">https://datatracker.ietf.org/<wbr>doc/draft-ie=
+tf-tls-tls13/</a><br>
+<br>
+<br>
+<br>
+------------------------------<wbr>------------------------------<wbr>-----=
+-----<br>
+DISCUSS:<br>
+------------------------------<wbr>------------------------------<wbr>-----=
+-----<br>
+<br>
+Thank you for a well written document. I will be switching to Yes once the<=
+br>
+following is addressed/discussed:<br>
+<br>
+Relationship to TLS 1.2 needs to be clarified. The document is adding<br>
+requirements on TLS 1.2 clients. Implementors of TLS 1.2 are not going to (=
+or<br>
+very unlikely to) read this document. This looks fishy to me. Two examples =
+on<br>
+page 37:<br>
+<br>
+=C2=A0 TLS 1.2 clients SHOULD also check that the last eight bytes=C2=A0 ar=
+e not equal to<br>
+=C2=A0 the second value if the ServerHello indicates TLS=C2=A0 1.1 or below=
+<br>
+<br>
+and<br>
+<br>
+=C2=A0A legacy TLS client performing renegotiation with TLS 1.2 or prior=C2=
+=A0 and which<br>
+=C2=A0receives a TLS 1.3 ServerHello during renegotiation MUST=C2=A0 abort =
+the handshake<br>
+=C2=A0with a &quot;protocol_version&quot; alert.=C2=A0 Note that=C2=A0 rene=
+gotiation is not possible<br>
+=C2=A0when TLS 1.3 has been negotiated.<br>
+<br>
+There are similar statements on page 45:<br>
+<br>
+=C2=A0 TLS 1.2 implementations SHOULD also process this extension.<br>
+<br>
+and on page 48:<br>
+<br>
+=C2=A0 However, the old semantics did not constrain the signing<br>
+=C2=A0 curve.=C2=A0 If TLS 1.2 is negotiated, implementations MUST be prepa=
+red<br>
+=C2=A0 to accept a signature that uses any curve that they advertised in<br=
+>
+=C2=A0 the &quot;supported_groups&quot; extension.<br>
+<br>
+I think you need to clarify whether these normative requirements apply to p=
+ure<br>
+TLS 1.2 clients or TLS clients that implement both 1.2 and 1.3 and choose t=
+o<br>
+use 1.2 for some reason. Or maybe you need to say in the Abstract/Introduct=
+ion<br>
+that although this document obsoletes TLS 1.2 it also specifies new<br>
+requirements on TLS 1.2 implementations. (So it is sort of both &quot;Obsol=
+etes&quot; and<br>
+&quot;Updates&quot; TLS 1.2 RFC.)<br></blockquote><div><br></div><div><br><=
+/div><div>The intent is that these affect old TLS 1.2 implementations as we=
+ll. S 1.4 tries</div><div>to be clear about this, but maybe it fails.</div>=
+<div><br></div><div>I suggest we:</div><div><br></div><div>(1) Add the foll=
+owing sentence to the abstract:</div><div>&quot;This document also specifie=
+s new requirements for TLS 1.2 implementations.</div><div><br></div><div>(2=
+) Rewrite the first sentence of S 1.4 to say:</div><div><div>=C2=A0 =C2=A0T=
+his document defines several changes that optionally affect</div><div>=C2=
+=A0 =C2=A0implementations of TLS 1.2, including those which do not also</di=
+v></div><div>=C2=A0 =C2=A0support TLS 1.3</div><div><br></div><div>(3) Stri=
+ke the following graf:</div><div><br></div><div><div>=C2=A0 =C2=A0An implem=
+entation of TLS 1.3 that also supports TLS 1.2 might need to</div><div>=C2=
+=A0 =C2=A0include changes to support these changes even when TLS 1.3 is not=
+ in</div><div>=C2=A0 =C2=A0use.=C2=A0 See the referenced sections for more =
+details.</div></div><div><br></div><div><br></div><div>=C2=A0=C2=A0</div><b=
+lockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-le=
+ft:1px solid rgb(204,204,204);padding-left:1ex"><br>
+------------------------------<wbr>------------------------------<wbr>-----=
+-----<br>
+COMMENT:<br>
+------------------------------<wbr>------------------------------<wbr>-----=
+-----<br>
+<br>
+1) On page 47:<br>
+=C2=A0The length of the salt MUST be equal to the length of the digest=C2=
+=A0 =C2=A0 =C2=A0 algorithm<br>
+<br>
+Length of algorithm?<br></blockquote><div><br></div><div>Right. Output of.<=
+/div><div><br></div><div>=C2=A0</div><blockquote class=3D"gmail_quote" styl=
+e=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);paddin=
+g-left:1ex">
+<br>
+2) DER need a Normative Reference on first use. There are some references o=
+n<br>
+2nd/3rd use.<br></blockquote><div><br></div><div>Thanks.</div><div>=C2=A0</=
+div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;bor=
+der-left:1px solid rgb(204,204,204);padding-left:1ex">
+<br>
+3) On page 57:<br>
+<br>
+=C2=A0 =C2=A0The<br>
+=C2=A0 =C2=A0server then ignores early data by attempting to decrypt receiv=
+ed<br>
+=C2=A0 =C2=A0records in the handshake traffic keys until it is able to rece=
+ive<br>
+=C2=A0 =C2=A0the client&#39;s second flight and complete an ordinary 1-RTT<=
+br>
+=C2=A0 =C2=A0handshake, skipping records that fail to decrypt, up to the<br=
+>
+=C2=A0 =C2=A0configured max_early_data_size.<br>
+<br>
+I read this several times and still don&#39;t understand what this is sayin=
+g. It is<br>
+saying &quot;ignores ... until it is able to receive&quot;. I think you eit=
+her don&#39;t mean<br>
+&quot;ignore&quot; (as in discard the rest) or I misunderstood. I clarifyin=
+g example or a<br>
+reference to another section (e.g. with the diagram) would be very helpful =
+here.<br></blockquote><div><br></div><div>We do mean discard. The idea here=
+ is that you try to decrypt those records</div><div>using the handshake key=
+s and if that fails you ignore them.</div><div><br></div><blockquote class=
+=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rg=
+b(204,204,204);padding-left:1ex">
+<br>
+4) On page 82:<br>
+<br>
+=C2=A0 =C2=A0When record protection has not yet been engaged, TLSPlaintext=
+=C2=A0 structures<br>
+=C2=A0 =C2=A0are written directly onto the wire.=C2=A0 Once record=C2=A0 pr=
+otection has started,<br>
+=C2=A0 =C2=A0TLSPlaintext records are protected and sent=C2=A0 =C2=A0as des=
+cribed in the following<br>
+=C2=A0 =C2=A0section<br>
+<br>
+Just to double check: are you saying that before the handshake TLS applicat=
+ion<br>
+layer effectively results in plain text messages (with some extra octets to=
+<br>
+signal record type)?<br></blockquote><div><br></div><div>No, you can&#39;t =
+write application data prior to this point, as stated in S 2.</div><div><br=
+></div><div><div>=C2=A0 =C2=A0Application data MUST NOT be sent prior to se=
+nding the Finished</div><div>=C2=A0 =C2=A0message and until the record laye=
+r starts using encryption keys.</div><div>=C2=A0 =C2=A0Note that while the =
+server may send application data prior to</div><div>=C2=A0 =C2=A0receiving =
+the client&#39;s Authentication messages, any data sent at that</div><div>=
+=C2=A0 =C2=A0point is, of course, being sent to an unauthenticated peer.</d=
+iv></div><div><br></div><div>It&#39;s non-application data (handshake, aler=
+ts, acks) which is sent in this fashion</div><div>prior to the handshake.</=
+div><div><br></div><div><br></div><div><br></div><blockquote class=3D"gmail=
+_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204=
+,204);padding-left:1ex">
+5) I am pretty sure that [RFC5116] is a Normative reference. It is required=
+ to<br>
+be understood to implemented TLS 1.3. Also, you have additional requirement=
+s on<br>
+AEADs, which again implies understanding of what they are:<br>
+<br>
+On page 84:<br>
+<br>
+=C2=A0 =C2=A0An AEAD algorithm used in TLS 1.3 MUST NOT produce an expansio=
+n=C2=A0 greater<br>
+=C2=A0 =C2=A0than 255 octets<br>
+<br>
+and<br>
+<br>
+=C2=A0 =C2=A0An AEAD algorithm where N_MAX is less than 8=C2=A0 bytes MUST =
+NOT be used with TLS<br></blockquote><div><br></div><div>I concur. Thanks.<=
+/div><div><br></div><div><br></div><div><br></div><blockquote class=3D"gmai=
+l_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,20=
+4,204);padding-left:1ex">
+6) The diagram in section 7.1 was a bit cryptic. Maybe explain that when yo=
+u<br>
+use &#39;0&#39; you mean as many bytes of 0s as needed for various function=
+s.<br></blockquote><div><br></div><div>This is in the first paragraph after=
+ the diagram. Would you prefer it elsewhere?</div><div><br></div><div><div>=
+=C2=A0 =C2=A0If a given secret is not available, then the 0-value consistin=
+g of a</div><div>=C2=A0 =C2=A0string of Hash.length bytes set to zeros is u=
+sed.=C2=A0 Note that this</div></div><div><br></div><div>-Ekr</div><div><br=
+></div></div><br></div></div>
+
+--94eb2c0627384b12360566d33563--
+

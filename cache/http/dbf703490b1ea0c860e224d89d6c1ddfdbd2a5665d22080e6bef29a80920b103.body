@@ -1,0 +1,135 @@
+Return-Path: <ietf-dane@dukhovni.org>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 0020412422F
+ for <tls@ietfa.amsl.com>; Mon, 22 May 2017 08:35:34 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: 0
+X-Spam-Level: 
+X-Spam-Status: No, score=0 tagged_above=-999 required=5
+ tests=[BAYES_40=-0.001, URIBL_BLOCKED=0.001]
+ autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id WgdYo818wGNY for <tls@ietfa.amsl.com>;
+ Mon, 22 May 2017 08:35:33 -0700 (PDT)
+Received: from mournblade.imrryr.org (mournblade.imrryr.org [108.5.242.66])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 0D6D51200CF
+ for <tls@ietf.org>; Mon, 22 May 2017 08:35:32 -0700 (PDT)
+Received: from vpro.lan (cpe-74-71-8-253.nyc.res.rr.com [74.71.8.253])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mournblade.imrryr.org (Postfix) with ESMTPSA id 16A4E7A32F1
+ for <tls@ietf.org>; Mon, 22 May 2017 15:35:32 +0000 (UTC)
+ (envelope-from ietf-dane@dukhovni.org)
+Content-Type: text/plain; charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+From: Viktor Dukhovni <ietf-dane@dukhovni.org>
+In-Reply-To: <20170522145008.GN10188@localhost>
+Date: Mon, 22 May 2017 11:35:31 -0400
+Content-Transfer-Encoding: quoted-printable
+Reply-To: TLS WG <tls@ietf.org>
+Message-Id: <2D45C128-BF84-481C-AC28-87A9793B5E00@dukhovni.org>
+References: <CAPZZOTgizE2n06V9wEtARFCXB7FP_eikW-K1k67bZG11kNhSAw@mail.gmail.com>
+ <44AED5C2-B21C-442A-8412-9134D1C10BCD@dukhovni.org>
+ <201705192143.19490.davemgarrett@gmail.com>
+ <20170520054117.GM10188@localhost>
+ <80AB5C55-41BA-471E-A55A-86E98299B652@dukhovni.org>
+ <20170522145008.GN10188@localhost>
+To: TLS WG <tls@ietf.org>
+X-Mailer: Apple Mail (2.3273)
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/TQeShPGf9iMlVNHj54hnIJm7_cA>
+Subject: Re: [TLS] AD Review of draft-ietf-tls-tls13
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Mon, 22 May 2017 15:35:35 -0000
+
+
+> On May 22, 2017, at 10:50 AM, Nico Williams <nico@cryptonector.com> =
+wrote:
+>=20
+>>> "When using TLS to authenticate the server, certificate signature
+>>> algorithms weaker than <list of weakest acceptable signature algs =
+here>
+>>> MUST NOT be used."
+>>=20
+>> Minor correction, perhaps you really mean to say "when using RFC5280 =
+(PKIX)
+>> to authenticate... (the [server or client?]).  TLS is just the =
+transport
+>> after all.
+>=20
+> No, I meant what I said, as in "as opposed to using TLS
+> opportunistically".
+
+While we are quibbling over terminology and not substance:
+
+Note that opportunistically !=3D unauthenticated.  Opportunistic DANE =
+TLS
+still authenticates when the peer has TLSA records, and even uses PKIX
+when the TLSA record certificate usage is DANE-TA(2).  And sufficiently
+strong algorithms are desirable even under those conditions:
+
+   =
+https://github.com/vdukhovni/postfix/blob/master/postfix/src/tls/tls_clien=
+t.c#L955
+
+So it seems the phrase "using TLS to authenticate" in fact means using
+RFC5280 (PKIX) to authenticate the peer via its signature over its
+Cerificate Verify message:
+
+	=
+https://tools.ietf.org/html/draft-ietf-tls-tls13-20#section-4.4.3
+
+The phrase used to describe the situation in that section of the draft =
+is
+"when authenticating via a certificate", which is part of the story, =
+what
+would need to be added to that to get the right context for setting a =
+floor
+on acceptable certificate signature algorithms is something along the =
+lines
+of "with PKIX chain verification".
+
+Still, all of this belongs in an update of RFC5280, but if we just can't
+resist saying something here along the lines you suggest then it might =
+be:
+
+"When peer authentication is via a certificate, with RFC5280 (PKIX) =
+chain
+verification, certificate signature algorithms weaker than <list of =
+weakest
+acceptable signature algs here> MUST NOT be trusted."
+
+I carefully say "MUST NOT be trusted" rather than "MUST NOT be used", it =
+is
+the relying party that decides what minimal algorithm strength is =
+acceptable.
+The peer may send whatever chain it has (lacking one that meets the =
+advertised
+supported signature algorithms).
+
+Peers that desire broadly interoperable RFC5280 authentication via their
+certificate chain should of course be configured to present chains that =
+avoid
+deprecated certificate signature algorithms (except in self-signatures =
+of
+trust-anchors).
+
+--=20
+	Viktor.
+

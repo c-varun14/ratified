@@ -1,0 +1,161 @@
+Return-Path: <ietf-dane@dukhovni.org>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 0C01E12944C
+ for <tls@ietfa.amsl.com>; Fri, 19 May 2017 19:15:39 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.9
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9] autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id BH6NsQ2wzEdS for <tls@ietfa.amsl.com>;
+ Fri, 19 May 2017 19:15:35 -0700 (PDT)
+Received: from mournblade.imrryr.org (mournblade.imrryr.org [108.5.242.66])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 1530E12778D
+ for <tls@ietf.org>; Fri, 19 May 2017 19:15:35 -0700 (PDT)
+Received: from [10.26.15.151] (214.sub-70-214-113.myvzw.com [70.214.113.214])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ by mournblade.imrryr.org (Postfix) with ESMTPSA id AB67B7A32F1
+ for <tls@ietf.org>; Sat, 20 May 2017 02:15:33 +0000 (UTC)
+ (envelope-from ietf-dane@dukhovni.org)
+Content-Type: text/plain; charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+From: Viktor Dukhovni <ietf-dane@dukhovni.org>
+In-Reply-To: <201705192143.19490.davemgarrett@gmail.com>
+Date: Fri, 19 May 2017 22:15:31 -0400
+Content-Transfer-Encoding: quoted-printable
+Reply-To: TLS WG <tls@ietf.org>
+Message-Id: <A2D38B2D-645A-4F8B-A3AE-5535B1D0CDB7@dukhovni.org>
+References: <CAPZZOTgizE2n06V9wEtARFCXB7FP_eikW-K1k67bZG11kNhSAw@mail.gmail.com>
+ <44AED5C2-B21C-442A-8412-9134D1C10BCD@dukhovni.org>
+ <201705192143.19490.davemgarrett@gmail.com>
+To: TLS WG <tls@ietf.org>
+X-Mailer: Apple Mail (2.3273)
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/GaaAsPCc4CZRoD7er5zdUaSml0A>
+Subject: Re: [TLS] AD Review of draft-ietf-tls-tls13
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Sat, 20 May 2017 02:15:39 -0000
+
+
+> On May 19, 2017, at 9:43 PM, Dave Garrett <davemgarrett@gmail.com> =
+wrote:
+>=20
+>> I note that TLS 1.3 does not have any language prohibiting MD2, =
+MDC2DES,
+>> MD4, RIPEMD160, private signature oids, ... that may be weaker than =
+SHA-1
+>> or even MD5.
+>=20
+> They're not listed as possible field values anywhere directly in the =
+TLS spec.
+> If someone wants to add a line to one of the "MUST NOT" lists =
+somewhere for
+> all hashes weaker than SHA-1, that sounds fine to me.
+
+That list was not intended to be take as a serious suggestion.  Note =
+that
+it is NOT the job of TLS to specify a comprehensive list of X.509 =
+certificate
+signature algorithm OIDS, which are MTI, which deprecated, and so on.  =
+The
+security floor you're looking for needs to be set in update to RFC5280
+via the "curdle" WG or wherever else such an update belongs.
+
+>=20
+>> Opportunistic unauthenticated TLS ignores the peer certificate and =
+should
+>> not have to fall back to cleartext just because some certificate in =
+the
+>> chain is not sufficiently sexy.  There are other legitimate use cases =
+where
+>> the restrictions above are inappropriate.
+>=20
+> Opportunistic unauthenticated TLS isn't the protocol we're defining =
+here.
+
+Actually, it very much is.  This WG defines TLS (period).  That includes
+opportunistic unauthenticated TLS, opportunistic DANE TLS, TLS with
+pre-shared public key fingerprints, TLS with TOFU key pinning and so on.
+
+One reason TLS is complicated is its versatility.
+
+> If your goal isn't authentication, then by all means violate the =
+requirements
+> laid out for authentication.
+
+There is no requirement for authentication.  There is only a mechanism
+to make it possible.  And opportunistic TLS is NOT a violation of the
+TLS specification.
+
+> I have no problem making that explicit, if desired,
+> however this is not the primary desired operating mode of TLS.
+
+Yes, the "primary mode" is authentication via a profusion of CAs,
+with most certificates being "DV" certificates, which are issued
+after perfunctory verification by the CA and memoized in the form
+of a certificate for the world to trust.  This means that the MiTM
+BGP route injection attack has to target the route between some
+trusted CA and the victim domain, rather than between the user
+and the victim domain.  It's not much better than opportunistic
+TLS, but yes, it does protect against low-tech attacks that only
+subvert the user's network (coffee-shop, airport WiFi, ...).
+
+So the X.509 PKI in TLS is not entirely a case of the emperor's new
+clothes, but we need to be a bit more realistic about the resulting
+security, and not forget that it is far from airtight, and that the
+non-mainstream use-cases sometimes yield more actual security than
+one might get from an all-or-nothing approach.
+
+>> I propose that the current draft language is just a landmine for TLS
+>> implementations, that addresses a non-problem (or more precisely a
+>> problem that is more properly and well addressed elsewhere).
+>=20
+> TLS is already a minefield of problems. Enumerating many of them =
+explicitly
+> is a step forward to avoiding them more easily in the future. In a =
+complex
+> system, just fixing something in one place is not enough. If we list =
+it as
+> a possible option in the spec, we should be _very_ clear when it is =
+crap.
+
+PKIX (RFC5280 via X.509) is already a minefield of problems.  The fixes
+and ratcheting up the associated security parameters belong there, and
+NOT in TLS.  The TLS 1.3 draft does a reasonabl job of improving the =
+actual
+TLS security design and parameters, and should properly stick to that.
+
+[ Yes, it also adds a potential pitfall in the form of 0-RTT, but that
+  is of course another thread. ]
+
+> I'm aware that this is unavoidably messy. Viktor, your input has =
+greatly
+> helped improve the language here to accommodate varying use-cases,
+> and I would personally prefer we work together to make the mess =
+correct,
+> rather than give up and delete the relevant text.
+
+I'd be  happy to review relevant changes in an RFC5280 update where this
+belongs, and would also benefit S/MIME, CMS, etc and not just TLS.
+
+--=20
+	Viktor.
+

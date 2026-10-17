@@ -1,0 +1,457 @@
+From nobody Sat Nov 21 23:33:17 2020
+Return-Path: <do_not_reply@mnot.net>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id A524F3A1229
+ for <tls@ietfa.amsl.com>; Sat, 21 Nov 2020 23:33:06 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.097
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.097 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, HTML_MESSAGE=0.001,
+ RCVD_IN_MSPIKE_H4=0.001, RCVD_IN_MSPIKE_WL=0.001, SPF_PASS=-0.001,
+ URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=mnot.net header.b=migXixXB;
+ dkim=pass (2048-bit key)
+ header.d=messagingengine.com header.b=ZnJmX4N0
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id q9gKBcLwLwtP for <tls@ietfa.amsl.com>;
+ Sat, 21 Nov 2020 23:33:04 -0800 (PST)
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com
+ [64.147.123.24])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 0215D3A1204
+ for <tls@ietf.org>; Sat, 21 Nov 2020 23:33:03 -0800 (PST)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+ by mailout.west.internal (Postfix) with ESMTP id 799A6769
+ for <tls@ietf.org>; Sun, 22 Nov 2020 02:33:03 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+ by compute1.internal (MEProxy); Sun, 22 Nov 2020 02:33:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mnot.net; h=
+ content-type:mime-version:from:to:subject:message-id:date; s=
+ fm1; bh=M+/KTZAgs4ZWzXnTgXlZzn1K1HCN2b5oJSYgtpUDqYs=; b=migXixXB
+ FQnS8d9Q988YIhT1UNxCvDRrgYvjLepT0HKhRWfLEFGHizb0JW02LcOhiJO4kJM9
+ IhQAYqbkA/U8CuWtsZIGYTmbU7P2dLQCH108hfePWkgovSrAvRVUblb4wiM74QJX
+ SWgfMtLYexRNY5qXMNhCmnEHWdGyZvKdTXWMwvOspBrUSkpYwHJnHbQK1DpXQLJt
+ 3nSrAYWnVuEa99JpErXzwYPxpSZCyCLy28zYijDvd8J1I2FWDZi8E0ibd0iUtMSd
+ c58rxFZQTRtvwKx6f/WL2KZQMbe3gsEEuslRA7EYNsuab/bMsSBHmcEjULCUALJ2
+ Ayje319y4w2ZkQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=content-type:date:from:message-id
+ :mime-version:subject:to:x-me-proxy:x-me-proxy:x-me-sender
+ :x-me-sender:x-sasl-enc; s=fm1; bh=M+/KTZAgs4ZWzXnTgXlZzn1K1HCN2
+ b5oJSYgtpUDqYs=; b=ZnJmX4N0A6fB7ENvRLsJ6FmFWWTHD0gS/aWT86bEznaJd
+ hZclBsSBOkJdI9TEWMrwB8I4Ozel4NA2/J3FlsTfnil0xwGT5DFmDcG1Ykp89A6d
+ aUwzlprtlShDBkqgO5DcbTbgB/fhSDqYlGtOx1+ULfookniyE8d58CllNhyCnbZL
+ PsUNUITACYFnfppUV1SdZjYUNZtisZwPsvgb7PzSkybwNAwYI9k4Ty3w0eNTc/YR
+ ByirqWLtL+8J5BWIejhmC+JmsZdyzekNsXXxaKZXR0EwBGtFAsBtPLbv+a+GM4Q3
+ DOCNI5QvP6yx7/3oUu+LJEISJ/GmQyaGkOUkN7o+A==
+X-ME-Sender: <xms:LhS6X2pOpnj_Jm_Oc8HHfAaMZFYHkR5sFxyTPYGdY7cTul43UJP_dg>
+ <xme:LhS6X0q78EaRB_-Gc6CTuXQpKDa_f6w5IRkzwMcCdUCDg0LJIRJlgc2HkkN4KUKGo
+ 3fPsYmuNrcl7t2NJw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudegfedguddutdcutefuodetggdotefrod
+ ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+ necuuegrihhlohhuthemuceftddtnecunecujfgurheptggghffvufesrgdttdertddtje
+ enucfhrhhomheptfgvphhoshhithhorhihucettghtihhvihhthicuufhumhhmrghrhicu
+ uehothcuoeguohgpnhhothgprhgvphhlhiesmhhnohhtrdhnvghtqeenucggtffrrghtth
+ gvrhhnpeekfedvudetjedvfeekheeiveeugfefhfetteevgeffkefffeetffdvleehudei
+ teenucffohhmrghinhepghhithhhuhgsrdgtohhmnecukfhppeehvddrudeijedrudeivd
+ druddtjeenucevlhhushhtvghrufhiiigvpedvnecurfgrrhgrmhepmhgrihhlfhhrohhm
+ peguohgpnhhothgprhgvphhlhiesmhhnohhtrdhnvght
+X-ME-Proxy: <xmx:LhS6X7OSXEg-wpmyHjQVLKuNWDTI8ofKOOvQfKskwAaf8A9WZ6LXPw>
+ <xmx:LhS6X160HrfwXMnLnkFlE0m-H8EGJ3hqGTf4qwrBBrjncOCHJ6nwvw>
+ <xmx:LhS6X14EC5Wa66gh2EmKi5fcX9Md2sECPiZwLj0yOOrmTbMihrxNZA>
+ <xmx:LxS6X3St6DuIXkkk4zsjESbrzELVLiAmIjfcAv2htqH3SmhU3uog7Q>
+Received: from fv-az12-368.internal.cloudapp.net (unknown [52.167.162.107])
+ by mail.messagingengine.com (Postfix) with ESMTPA id D26B03064AAA
+ for <tls@ietf.org>; Sun, 22 Nov 2020 02:33:02 -0500 (EST)
+Content-Type: multipart/alternative;
+ boundary="===============6862623664813914046=="
+MIME-Version: 1.0
+From: Repository Activity Summary Bot <do_not_reply@mnot.net>
+To: tls@ietf.org
+Message-Id: <20201122073302.D26B03064AAA@mailuser.nyi.internal>
+Date: Sun, 22 Nov 2020 02:33:02 -0500 (EST)
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/Ivh4xBBj4qEDra1o3v1B0YGP2cs>
+Subject: [TLS] Weekly github digest (TLS Working Group Drafts)
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Sun, 22 Nov 2020 07:33:13 -0000
+
+--===============6862623664813914046==
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+
+
+
+
+Issues
+------
+* tlswg/draft-ietf-tls-esni (+0/-5/=F0=9F=92=AC7)
+  3 issues received 7 new comments:
+  - #359 Transcript hash construction (1 by chris-wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/359 [ready-for-text=
+]=20
+  - #358 ECH contradicts second ClientHello consistency requirements in RFC=
+8446 (4 by davidben, ekr)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/358=20
+  - #348 Define separate codepoint (and name) for inner ECH extension (2 by=
+ chris-wood, ekr)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/348=20
+
+  5 issues closed:
+  - Trial decryption after HelloRetryRequest https://github.com/tlswg/draft=
+-ietf-tls-esni/issues/233=20
+  - Define separate codepoint (and name) for inner ECH extension https://gi=
+thub.com/tlswg/draft-ietf-tls-esni/issues/348=20
+  - Include ECH context in ClientHelloOuterAAD https://github.com/tlswg/dra=
+ft-ietf-tls-esni/issues/326=20
+  - Clients should send consistent GREASE ECH extensions between CH1 and CH=
+2 https://github.com/tlswg/draft-ietf-tls-esni/issues/356=20
+  - Avoid computing a new HPKE contexts on HRR? https://github.com/tlswg/dr=
+aft-ietf-tls-esni/issues/349=20
+
+* tlswg/draft-ietf-tls-external-psk-importer (+2/-0/=F0=9F=92=AC1)
+  2 issues created:
+  - OPSDIR review from Al Morton (by jsalowey)
+    https://github.com/tlswg/draft-ietf-tls-external-psk-importer/issues/39=
+=20
+  - Genart Review from Brian Carpenter (by jsalowey)
+    https://github.com/tlswg/draft-ietf-tls-external-psk-importer/issues/38=
+=20
+
+  1 issues received 1 new comments:
+  - #39 OPSDIR review from Al Morton (1 by jsalowey)
+    https://github.com/tlswg/draft-ietf-tls-external-psk-importer/issues/39=
+=20
+
+* tlswg/draft-ietf-tls-ticketrequest (+1/-0/=F0=9F=92=AC0)
+  1 issues created:
+  - IETF LC comments (by chris-wood)
+    https://github.com/tlswg/draft-ietf-tls-ticketrequest/issues/23=20
+
+* tlswg/dtls13-spec (+1/-0/=F0=9F=92=AC0)
+  1 issues created:
+  - Clarify dynamically changing length and sequence number (by hannestscho=
+fenig)
+    https://github.com/tlswg/dtls13-spec/issues/162=20
+
+
+
+Pull requests
+-------------
+* tlswg/draft-ietf-tls-esni (+6/-8/=F0=9F=92=AC5)
+  6 pull requests submitted:
+  - Quick editorial pass. (by dmcardle)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/365=20
+  - Remove backticks from empty string literal. (by dmcardle)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/364=20
+  - Move some text around in Server Behavior. (by davidben)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/363=20
+  - Authenticate the context handle to HPKE encryption (by cjpatton)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/362=20
+  - Copy the entire extension on HRR + GREASE for now. (by davidben)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/361=20
+  - Add is_client_hello_inner extension. (by cbartle891)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/360=20
+
+  3 pull requests received 5 new comments:
+  - #364 Remove backticks from empty string literal. (2 by chris-wood, dmca=
+rdle)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/364=20
+  - #360 Add is_client_hello_inner extension. (2 by chris-wood, cjpatton)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/360=20
+  - #353 Derive accept confirmation from the handshake secret  (1 by ekr)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/353=20
+
+  8 pull requests merged:
+  - Remove backticks from empty string literal.
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/364=20
+  - Move some text around in Server Behavior.
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/363=20
+  - Copy the entire extension on HRR + GREASE for now.
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/361=20
+  - Require HRR-sensitive parameters match in ClientHello(Outer|Inner).
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/316=20
+  - Add is_client_hello_inner extension.
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/360=20
+  - Bind the context handle to encrypted payload
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/362=20
+  - Use the same HPKE context between the two ClientHellos
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/352=20
+  - Derive accept confirmation from the handshake secret=20
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/353=20
+
+* tlswg/tls13-spec (+1/-0/=F0=9F=92=AC0)
+  1 pull requests submitted:
+  - Align TLS 1.2 terminology with this document (by davidben)
+    https://github.com/tlswg/tls13-spec/pull/1204=20
+
+
+Repositories tracked by this digest:
+-----------------------------------
+* https://github.com/tlswg/draft-ietf-tls-semistatic-dh
+* https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate
+* https://github.com/tlswg/draft-ietf-tls-esni
+* https://github.com/tlswg/certificate-compression
+* https://github.com/tlswg/draft-ietf-tls-external-psk-importer
+* https://github.com/tlswg/draft-ietf-tls-ticketrequest
+* https://github.com/tlswg/tls13-spec
+* https://github.com/tlswg/tls-flags
+* https://github.com/tlswg/dtls13-spec
+* https://github.com/tlswg/dtls-conn-id
+* https://github.com/tlswg/tls-subcerts
+* https://github.com/tlswg/oldversions-deprecate
+* https://github.com/tlswg/sniencryption
+* https://github.com/tlswg/tls-exported-authenticator
+* https://github.com/tlswg/draft-ietf-tls-ctls
+* https://github.com/tlswg/external-psk-design-team
+
+--===============6862623664813914046==
+Content-Type: text/html; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+
+<!doctype html>
+<html lang=3D"en">
+<head>
+<meta charset=3D"utf-8">
+<title>Weekly github digest (TLS Working Group Drafts)</title>
+<style>
+body { font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;=
+ font-size: 14px; }
+h2 { margin-top: 3em; color: #A52A2A; font-style: italic; font-weight: norm=
+al; }
+h3 { margin-bottom:0; margin-top: 2em; font-size: 1.2em; }
+h1+h2 { margin-top: 1em; }
+a { color: #bb6219; text-decoration: none; }
+li { margin-bottom: .35em; }
+.repos { margin-bottom: 0; margin-top:0; line-height: 1.2; }
+.new { color: red; }
+.label { display: inline;
+	padding: .2em .6em .3em;
+	font-size: 75%;
+	font-weight: 700;
+	line-height: 1;
+	color: #fff;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: baseline;
+	border-radius: .25em;
+}
+</style>
+</head>
+
+<body>
+<h1>Sunday November 22, 2020</h1>
+
+
+<h2>Issues</h2>
+
+<h3>tlswg/draft-ietf-tls-esni (+0/-5/=F0=9F=92=AC7)</h3>
+
+  <p>3 issues received 7 new comments:</p>
+  <ul>
+  <li>#359 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/3=
+59">Transcript hash construction</a> (1 by chris-wood) <span class=3D"label=
+" style=3D"background-color: #f9d0c4; color: #000000">ready-for-text</span>=
+ </li>
+ =20
+  <li>#358 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/3=
+58">ECH contradicts second ClientHello consistency requirements in RFC8446<=
+/a> (4 by davidben, ekr) </li>
+ =20
+  <li>#348 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/3=
+48">Define separate codepoint (and name) for inner ECH extension</a> (2 by =
+chris-wood, ekr) </li>
+  </ul>
+
+  <p>5 issues closed:</p>
+  <ul>
+  <li>#233 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/2=
+33">Trial decryption after HelloRetryRequest</a> </li>
+ =20
+  <li>#348 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/3=
+48">Define separate codepoint (and name) for inner ECH extension</a> </li>
+ =20
+  <li>#326 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/3=
+26">Include ECH context in ClientHelloOuterAAD</a> </li>
+ =20
+  <li>#356 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/3=
+56">Clients should send consistent GREASE ECH extensions between CH1 and CH=
+2</a> </li>
+ =20
+  <li>#349 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/3=
+49">Avoid computing a new HPKE contexts on HRR?</a> </li>
+  </ul>
+
+<h3>tlswg/draft-ietf-tls-external-psk-importer (+2/-0/=F0=9F=92=AC1)</h3>
+  <p class=3D"new">2 issues created:</p>
+  <ul>
+  <li>#39 <a href=3D"https://github.com/tlswg/draft-ietf-tls-external-psk-i=
+mporter/issues/39">OPSDIR review from Al Morton</a> (by jsalowey) </li>
+ =20
+  <li>#38 <a href=3D"https://github.com/tlswg/draft-ietf-tls-external-psk-i=
+mporter/issues/38">Genart Review from Brian Carpenter</a> (by jsalowey) </l=
+i>
+  </ul>
+
+  <p>1 issues received 1 new comments:</p>
+  <ul>
+  <li>#39 <a href=3D"https://github.com/tlswg/draft-ietf-tls-external-psk-i=
+mporter/issues/39">OPSDIR review from Al Morton</a> (1 by jsalowey) </li>
+  </ul>
+
+
+<h3>tlswg/draft-ietf-tls-ticketrequest (+1/-0/=F0=9F=92=AC0)</h3>
+  <p class=3D"new">1 issues created:</p>
+  <ul>
+  <li>#23 <a href=3D"https://github.com/tlswg/draft-ietf-tls-ticketrequest/=
+issues/23">IETF LC comments</a> (by chris-wood) </li>
+  </ul>
+
+
+
+<h3>tlswg/dtls13-spec (+1/-0/=F0=9F=92=AC0)</h3>
+  <p class=3D"new">1 issues created:</p>
+  <ul>
+  <li>#162 <a href=3D"https://github.com/tlswg/dtls13-spec/issues/162">Clar=
+ify dynamically changing length and sequence number</a> (by hannestschofeni=
+g) </li>
+  </ul>
+
+
+
+
+
+<h2>Pull requests</h2>
+<h3>tlswg/draft-ietf-tls-esni (+6/-8/=F0=9F=92=AC5)</h3>
+  <p class=3D"new">6 pull requests submitted:</p>
+  <ul>
+  <li>#365 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/365=
+">Quick editorial pass.</a> (by dmcardle) </li>
+ =20
+  <li>#364 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/364=
+">Remove backticks from empty string literal.</a> (by dmcardle) </li>
+ =20
+  <li>#363 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/363=
+">Move some text around in Server Behavior.</a> (by davidben) </li>
+ =20
+  <li>#362 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/362=
+">Authenticate the context handle to HPKE encryption</a> (by cjpatton) </li>
+ =20
+  <li>#361 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/361=
+">Copy the entire extension on HRR + GREASE for now.</a> (by davidben) </li>
+ =20
+  <li>#360 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/360=
+">Add is_client_hello_inner extension.</a> (by cbartle891) </li>
+  </ul>
+
+  <p>3 pull requests received 5 new comments:</p>
+  <ul>
+  <li>#364 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/364=
+">Remove backticks from empty string literal.</a> (2 by chris-wood, dmcardl=
+e) </li>
+ =20
+  <li>#360 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/360=
+">Add is_client_hello_inner extension.</a> (2 by chris-wood, cjpatton) </li>
+ =20
+  <li>#353 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/353=
+">Derive accept confirmation from the handshake secret </a> (1 by ekr) </li>
+  </ul>
+
+  <p>8 pull requests merged:</p>
+  <ul>
+  <li>#364 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/364=
+">Remove backticks from empty string literal.</a> </li>
+ =20
+  <li>#363 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/363=
+">Move some text around in Server Behavior.</a> </li>
+ =20
+  <li>#361 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/361=
+">Copy the entire extension on HRR + GREASE for now.</a> </li>
+ =20
+  <li>#316 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/316=
+">Require HRR-sensitive parameters match in ClientHello(Outer|Inner).</a> <=
+/li>
+ =20
+  <li>#360 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/360=
+">Add is_client_hello_inner extension.</a> </li>
+ =20
+  <li>#362 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/362=
+">Bind the context handle to encrypted payload</a> </li>
+ =20
+  <li>#352 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/352=
+">Use the same HPKE context between the two ClientHellos</a> </li>
+ =20
+  <li>#353 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/353=
+">Derive accept confirmation from the handshake secret </a> </li>
+  </ul>
+
+<h3>tlswg/tls13-spec (+1/-0/=F0=9F=92=AC0)</h3>
+  <p class=3D"new">1 pull requests submitted:</p>
+  <ul>
+  <li>#1204 <a href=3D"https://github.com/tlswg/tls13-spec/pull/1204">Align=
+ TLS 1.2 terminology with this document</a> (by davidben) </li>
+  </ul>
+
+
+
+
+<h2>Repositories tracked by this digest:</h2>
+<ul class=3D"repos">
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-semistatic-dh">htt=
+ps://github.com/tlswg/draft-ietf-tls-semistatic-dh</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate=
+">https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-esni">https://gith=
+ub.com/tlswg/draft-ietf-tls-esni</a></li>
+  <li><a href=3D"https://github.com/tlswg/certificate-compression">https://=
+github.com/tlswg/certificate-compression</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-external-psk-impor=
+ter">https://github.com/tlswg/draft-ietf-tls-external-psk-importer</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-ticketrequest">htt=
+ps://github.com/tlswg/draft-ietf-tls-ticketrequest</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls13-spec">https://github.com/tl=
+swg/tls13-spec</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-flags">https://github.com/tls=
+wg/tls-flags</a></li>
+  <li><a href=3D"https://github.com/tlswg/dtls13-spec">https://github.com/t=
+lswg/dtls13-spec</a></li>
+  <li><a href=3D"https://github.com/tlswg/dtls-conn-id">https://github.com/=
+tlswg/dtls-conn-id</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-subcerts">https://github.com/=
+tlswg/tls-subcerts</a></li>
+  <li><a href=3D"https://github.com/tlswg/oldversions-deprecate">https://gi=
+thub.com/tlswg/oldversions-deprecate</a></li>
+  <li><a href=3D"https://github.com/tlswg/sniencryption">https://github.com=
+/tlswg/sniencryption</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-exported-authenticator">https=
+://github.com/tlswg/tls-exported-authenticator</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-ctls">https://gith=
+ub.com/tlswg/draft-ietf-tls-ctls</a></li>
+  <li><a href=3D"https://github.com/tlswg/external-psk-design-team">https:/=
+/github.com/tlswg/external-psk-design-team</a></li>
+  </ul>
+</body>
+</html>
+
+--===============6862623664813914046==--
+

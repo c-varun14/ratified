@@ -1,0 +1,541 @@
+Return-Path: <davidben@google.com>
+X-Original-To: tls@mail2.ietf.org
+Delivered-To: tls@mail2.ietf.org
+Received: from localhost (localhost [127.0.0.1])
+	by mail2.ietf.org (Postfix) with ESMTP id 3F48327A3DF0
+	for <tls@mail2.ietf.org>; Mon, 12 May 2025 10:07:30 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at ietf.org
+X-Spam-Flag: NO
+X-Spam-Score: -9.499
+X-Spam-Level: 
+X-Spam-Status: No, score=-9.499 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIMWL_WL_HIGH=-0.001, DKIM_SIGNED=0.1,
+	DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1,
+	HEADER_FROM_DIFFERENT_DOMAINS=0.001, HTML_MESSAGE=0.001,
+	RCVD_IN_DNSWL_NONE=-0.0001, SPF_HELO_NONE=0.001, SPF_PASS=-0.001,
+	USER_IN_DEF_SPF_WL=-7.5] autolearn=ham autolearn_force=no
+Authentication-Results: mail2.ietf.org (amavisd-new); dkim=pass (1024-bit key)
+	header.d=chromium.org
+Received: from mail2.ietf.org ([166.84.6.31])
+	by localhost (mail2.ietf.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id KkM0ykUEx4yV for <tls@mail2.ietf.org>;
+	Mon, 12 May 2025 10:07:29 -0700 (PDT)
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com
+ [IPv6:2a00:1450:4864:20::536])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail2.ietf.org (Postfix) with ESMTPS id 15D4C27A3DE9
+	for <tls@ietf.org>; Mon, 12 May 2025 10:07:29 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id
+ 4fb4d7f45d1cf-5fd32c133ccso2271201a12.0
+        for <tls@ietf.org>; Mon, 12 May 2025 10:07:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1747069648; x=1747674448; darn=ietf.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=zHcfrLgVJ292FVHNTd16WLF7wMus5OzIxsDT9Gwh5PE=;
+        b=YopPrAwLnauznECh5t5oRRXxwszyJSFyQwvPrZbBMlljr78UoPdXe0Nvxes+e9G+z2
+         7uQMWTVIIgMRD/+hZ8o1TdT7LREzG8rQ61XPtif3qJWf0o7t/Cl3+DL3M9/vgojAqXw3
+         5TY/KPyZpitOKVyfo9YJUbGOy+cIdws4RUTP0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747069648; x=1747674448;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zHcfrLgVJ292FVHNTd16WLF7wMus5OzIxsDT9Gwh5PE=;
+        b=TWKp02TYM4XL6B4ZQikwwML3DCxjsgkktVdYNiH/lBhzB4rtmbUzheoJDyJqaO+7MU
+         z18DBD5m14TmJd5Lc376LgOCQarDs+9IYmuPVLDYyBepK7cLu05h9811fpw61jvlNY/R
+         KXyFEZeV6mdozg72rYviGT+rROHa7ebrlluUGK1g5q4j1tPUQatX6whucvmAYt6vaXZd
+         2ctI/vxdN4CI0kLvDPfMuLFV03LrLSBWzTa5VYZDJAx0vrpVcX3A3bZYa0tEMrom39Pm
+         dwFmMZkaP3sBwNgOjzFFErV0+dH2F922Ei42txWWFKECseRK3HBVqEBnZ2VftH++sl29
+         pd3Q==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCWNcRjNxwKInUQRnQogev3paZdhse+bx9vwlg1wEdcxpD7urlLDH84RQK/66rV7XgGbv54=@ietf.org
+X-Gm-Message-State: AOJu0YxgXNiMPLAiBPYMhAKrKV/MXxlRBGqQbzyHqG4bKI8TehIjakFG
+	brob9UX+bhkCFMRrkSdEgpASeQ8sncwjElRi3XJtkBmB7VHr2x/KeQj3Qkpy0ynlkOr4fWkH3sJ
+	2U7hOVdBWgyG1ZJpYUGwE0/6dTW4vT9xn0MI=
+X-Gm-Gg: ASbGncuRw2kDgVum4i/29U9hr9KVnzNj/NG/qrA0KT1UDpcDiDNVUyad/u7aDgI8N0R
+	0YYNANOPPG3QG9nGZLn3T4UKthsZrJ6TPgeLL+TwtlYrP5k2sTsSleRqxscJ2KAMK/Fkzlv7LZ7
+	A7JBTpGCfXZupnMIAmjJHfbYmXoZ5807sM14ewPEzpan/SunVuYRQYqsnZm/1sr/65haTrF1fI
+X-Google-Smtp-Source: 
+ AGHT+IEb8wy00uq5kyD0Yd5qIpodkq0uE+NWEa7pqbxxpjzFq10WxYDnjlw3O9AC1RNo/p9CAxasTi5fnqr5wcYQz3k=
+X-Received: by 2002:a05:6402:5256:b0:5f7:f52e:ec93 with SMTP id
+ 4fb4d7f45d1cf-5fca081aebbmr10963836a12.31.1747069647484; Mon, 12 May 2025
+ 10:07:27 -0700 (PDT)
+MIME-Version: 1.0
+References: <20250508080537.F18C21C9ED8@rfcpa.rfc-editor.org>
+ <B41886D4-708E-4567-B494-91F31A6AD023@sn3rd.com>
+ <CAF8qwaB-HyAAAbrQzT=LXL5miSRidG0eZwVi+s47R0xfAb0ODg@mail.gmail.com>
+ <09c4b40d-519a-4399-a72b-b417f8ea5671@redhat.com>
+In-Reply-To: <09c4b40d-519a-4399-a72b-b417f8ea5671@redhat.com>
+From: David Benjamin <davidben@chromium.org>
+Date: Mon, 12 May 2025 13:07:10 -0400
+X-Gm-Features: AX0GCFvtiNxW_lfsXypCAvX87Hikf2LkXJpmUo65EnNr5Gz6Vql4FHigx5C-AhI
+Message-ID: 
+ <CAF8qwaB0WXTKNgaR9u02+n9XB3LR6ujdjQAL-EU0c9Bd1D2kVQ@mail.gmail.com>
+To: Alicja Kario <hkario@redhat.com>
+Content-Type: multipart/alternative; boundary="000000000000bd37e10634f359c2"
+Message-ID-Hash: AP7D35NVGLRBP6QU4Y2DTN6J4ULV6JEQ
+X-Message-ID-Hash: AP7D35NVGLRBP6QU4Y2DTN6J4ULV6JEQ
+X-MailFrom: davidben@google.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+CC: Paul Wouters <paul.wouters@aiven.io>, TLS List <tls@ietf.org>
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Re=3A_=5BTechnical_Errata_Reported=5D_RFC8446_=288411=29?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/cbpaAoI99fh3NLYfp6ItXo1v1cw>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+--000000000000bd37e10634f359c2
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Yeah, there were a few rounds of people picking the worse-for-readers
+convention and it was wrong then too. :-)
+
+At the least, picking the other convention in one place is not an *error*
+because they both describe the exact same protocol. I.e. we should not
+declare this as an *error* in RFC 8446. Of course, it's not great to be
+inconsistent, so rfc8446bis should change something. As the whole point of
+specifications is to clearly describe a protocol and promote interop, I
+think the choice is clear and it is not this one.
+
+On Mon, May 12, 2025 at 4:59=E2=80=AFAM Alicja Kario <hkario@redhat.com> wr=
+ote:
+
+> Specifying tight bound is already how TLS 1.3 is defined:
+>
+> CipherSuite cipher_suites<2..2^16-2>;
+> SignatureScheme supported_signature_algorithms<2..2^16-2>;
+> struct {
+> ...
+> Extension extensions<0..2^16-2>;
+> } NewSessionTicket;
+>
+>
+> On Friday, 9 May 2025 19:22:03 CEST, David Benjamin wrote:
+> > FWIW, I don't think this is an error in the specification per
+> > se. Both 2^16-2 and 2^16-1 to describe the exact same
+> > structure, precisely because a length of 2^16-1 is impossible.
+> > One isn't inherently more correct than the other. The question
+> > is which is clearer, the loose bound or the tight bound.
+> >
+> > Indeed I would argue that the loose bound, 2^16-1, is a
+> > _better_ way to describe the structure than the tight bound,
+> > 2^16-2. (I would also argue that a minimum length of 1 is a
+> > better way to describe it than 2, but that's less crucial.) The
+> > bounds here communicate two things to the TLS implementor:
+> >
+> > 1. What size of length prefix to use, which is
+> > implicitly determined by the upper bound
+> > 2. What checks to apply on the length you've parsed out
+> >
+> > The key thing to keep in mind is that the size of the length
+> > prefix already bounds the lengths (here 0..2^16-1), so any
+> > checks you write from (2) are in addition to the bounds you get
+> > from the length prefix. When the written bounds are equal to the
+> > implicit bounds, you don't need to write a check. Where either
+> > upper or lower bound are different (e.g. opaque
+> > legacy_session_id<0..32>), you need to write an extra check.
+> >
+> > That is, you would parse opaque legacy_session_id<0..32> like this:
+> >
+> >   legacy_session_id =3D client_hello.read_u8_length_prefix()
+> >   if len(legacy_session_id) > 32:
+> >     raise DecodeError()
+> >
+> > But you would parse opaque extension_data<0..2^16-1> like this:
+> >
+> >   extension_data =3D extension.read_u16_length_prefix()
+> >   # No need to check additional bounds because u16 is already <0..2^16-=
+1>
+> >
+> > Now, the NamedGroup field is a u16-prefixed list of at least
+> > one NamedGroup. We actually just want to parse it like this:
+> >
+> >   named_group_list =3D extension_data.read_u16_length_prefix()
+> >   if len(named_group_list) =3D=3D 0:
+> >     raise DecodeError()
+> >
+> > But when we write it as NamedGroup named_group_list<2..2^16-2>,
+> > it *looks like* you have to parse it like:
+> >
+> >   named_group_list =3D extension_data.read_u16_length_prefix()
+> >   if len(named_group_list) < 2 or len(named_group_list) > 2**16 - 2:
+> >     raise DecodeError()
+> >
+> > To know that these do the same thing you have to observe that:
+> > 1. It is not possible to have a NamedGroup of length less than 2
+> > 2. NamedGroup is always exactly two bytes, so it is not
+> > possible to have a NamedGroup list of length 2^16-1.
+> >
+> > This is extra work for the implementer and makes it more likely
+> > that they'll misunderstand it. Or perhaps they'll get used to
+> > the TLSWG writing things in this weird way and miss a case when
+> > they *do* need to enforce an upper bound. This is particularly
+> > fraught because TLS structures are variable-length. Here is a
+> > contrived example to demonstrate the silliness of this
+> > convention:
+> >
+> > enum { len1000(1},  len30001(2) } Type;
+> > struct TwoPossibleLengths {
+> >     Type type;
+> >     select (type) {
+> >        case len1000: opaque padding[999];
+> >        case len30001: opaque padding[30000];
+> >     }
+> > };
+> >
+> > struct {
+> >   TwoPossibleLengths list<1000..65002>;
+> > } Confusing;
+> >
+> > If you look at this field, you might think that this is
+> > actually imposing some limit that is tighter than its length
+> > prefix, and that you need to check more things. In reality, it's
+> > not. It's fairly clear that the minimum length of
+> > a TwoPossibleLengths is 1000. It's much less obvious that the
+> > maximum length of a series of TwoPossibleLengths, constrained to
+> > be under 2^16-1, is 65002. So I think this is a far, far better
+> > way to write this same structure.
+> >
+> > struct {
+> >   TwoPossibleLengths list<1..2^16-1>;
+> > } MuchMuchClearer;
+> >
+> > It describes the exact same structure, but now it's obvious the
+> > intended parse was that you check the length is non-zero and
+> > leave the upper-bound set based on its length prefix. Now,
+> > obviously this is a contrived example and that instance of
+> > knapsack is quite a bit harder than the NamedGroup instance. But
+> > I think it demonstrates why the simpler loose bound convention
+> > is better for readers of the specification than the one that
+> > relies on the reader to do more math.
+> >
+> > David
+> >
+> >
+> > On Thu, May 8, 2025 at 8:54=E2=80=AFPM Sean Turner <sean@sn3rd.com> wro=
+te:
+> > Paul,
+> >
+> > You can marked this one as =E2=80=9Cverified" if you want. I submitted
+> > a PR to fix this in -rfc8446bis; see:
+> > https://github.com/tlswg/tls13-spec/pull/1380
+> >
+> > spt
+> >
+> > On May 8, 2025, at 4:05=E2=80=AFAM, RFC Errata System
+> > <rfc-editor@rfc-editor.org> wrote:
+> >
+> > The following errata report has been submitted for RFC8446,
+> > "The Transport Layer Security (TLS) Protocol Version 1.3".
+> >
+> > --------------------------------------
+> > You may review the report below and at:
+> > https://www.rfc-editor.org/errata/eid8411
+> >
+> > --------------------------------------
+> > Type: Technical
+> > Reported by: Albin Johansson <albin.johansson@vector.com>
+> >
+> > Section: 4.2.7
+> >
+> > Original Text
+> > -------------
+> > struct {
+> >    NamedGroup named_group_list<2..2^16-1>;
+> > } NamedGroupList;
+> >
+> > Corrected Text
+> > --------------
+> > struct {
+> >    NamedGroup named_group_list<2..2^16-2>;
+> > } NamedGroupList;
+> >
+> > Notes
+> > -----
+> > The specified maximum legal length of the named_group_list
+> > vector in the NamedGroupList structure is 2^16-1 bytes. This is
+> > invalid because NamedGroup is an enum that occupies two bytes,
+> > but 2^16-1 is not an exact multiple of the element size (2
+> > bytes), as required in Section 3.4. It appears that the intended
+> > upper bound should be 2^16-2 bytes instead.
+> >
+> > Instructions:
+> > -------------
+> > This erratum is currently posted as "Reported". (If it is spam, it
+> > will be removed shortly by the RFC Production Center.) Please
+> > use "Reply All" to discuss whether it should be verified or
+> > rejected. When a decision is reached, the verifying party
+> > will log in to change the status and edit the report, if necessary.
+> >
+> > --------------------------------------
+> > RFC8446 (draft-ietf-tls-tls13-28)
+> > --------------------------------------
+> > Title               : The Transport Layer Security (TLS)
+> > Protocol Version 1.3
+> > Publication Date    : August 2018
+> > Author(s)           : E. Rescorla
+> > Category            : PROPOSED STANDARD
+> > Source              : Transport Layer Security
+> > Stream              : IETF
+> > Verifying Party     : IESG
+> >
+>
+> --
+> Regards,
+> Alicja Kario
+> Principal Quality Engineer, RHEL Crypto team
+> Web: www.cz.redhat.com
+> Red Hat Czech s.r.o., Purky=C5=88ova 115, 612 00, Brno, Czech Republic
+>
+>
+
+--000000000000bd37e10634f359c2
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">Yeah, there were a few rounds of people picking the worse-=
+for-readers convention and it was wrong then too. :-)<div><br></div><div>At=
+ the least, picking the other convention in one place is not an *error* bec=
+ause they both describe the exact same protocol. I.e. we should not declare=
+ this as an *error* in RFC 8446. Of course, it&#39;s not great to be incons=
+istent, so rfc8446bis should change something. As the whole point of specif=
+ications is to clearly describe a protocol and promote interop, I think the=
+ choice is clear and it is not this one.</div></div><br><div class=3D"gmail=
+_quote gmail_quote_container"><div dir=3D"ltr" class=3D"gmail_attr">On Mon,=
+ May 12, 2025 at 4:59=E2=80=AFAM Alicja Kario &lt;<a href=3D"mailto:hkario@=
+redhat.com">hkario@redhat.com</a>&gt; wrote:<br></div><blockquote class=3D"=
+gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(20=
+4,204,204);padding-left:1ex">Specifying tight bound is already how TLS 1.3 =
+is defined:<br>
+<br>
+CipherSuite cipher_suites&lt;2..2^16-2&gt;;<br>
+SignatureScheme supported_signature_algorithms&lt;2..2^16-2&gt;;<br>
+struct {<br>
+...<br>
+Extension extensions&lt;0..2^16-2&gt;;<br>
+} NewSessionTicket;<br>
+<br>
+<br>
+On Friday, 9 May 2025 19:22:03 CEST, David Benjamin wrote:<br>
+&gt; FWIW, I don&#39;t think this is an error in the specification per <br>
+&gt; se. Both 2^16-2 and 2^16-1 to describe the exact same <br>
+&gt; structure, precisely because a length of 2^16-1 is impossible. <br>
+&gt; One isn&#39;t inherently more correct than the other. The question <br=
+>
+&gt; is which is clearer, the loose bound or the tight bound.<br>
+&gt;<br>
+&gt; Indeed I would argue that the loose bound, 2^16-1, is a <br>
+&gt; _better_ way to describe the structure than the tight bound, <br>
+&gt; 2^16-2. (I would also argue that a minimum length of 1 is a <br>
+&gt; better way to describe it than 2, but that&#39;s less crucial.) The <b=
+r>
+&gt; bounds here communicate two things to the TLS implementor:<br>
+&gt;<br>
+&gt; 1. What size of length prefix to use, which is <br>
+&gt; implicitly determined by the upper bound<br>
+&gt; 2. What checks to apply on the length you&#39;ve parsed out<br>
+&gt;<br>
+&gt; The key thing to keep in mind is that the size of the length <br>
+&gt; prefix already bounds the lengths (here 0..2^16-1), so any <br>
+&gt; checks you write from (2) are in addition to the bounds you get <br>
+&gt; from the length prefix. When the written bounds are equal to the <br>
+&gt; implicit bounds, you don&#39;t need to write a check. Where either <br=
+>
+&gt; upper or lower bound are different (e.g. opaque <br>
+&gt; legacy_session_id&lt;0..32&gt;), you need to write an extra check.<br>
+&gt;<br>
+&gt; That is, you would parse opaque legacy_session_id&lt;0..32&gt; like th=
+is:<br>
+&gt;<br>
+&gt;=C2=A0 =C2=A0legacy_session_id =3D client_hello.read_u8_length_prefix()=
+<br>
+&gt;=C2=A0 =C2=A0if len(legacy_session_id) &gt; 32:<br>
+&gt;=C2=A0 =C2=A0 =C2=A0raise DecodeError()<br>
+&gt;<br>
+&gt; But you would parse opaque extension_data&lt;0..2^16-1&gt; like this:<=
+br>
+&gt;<br>
+&gt;=C2=A0 =C2=A0extension_data =3D extension.read_u16_length_prefix()<br>
+&gt;=C2=A0 =C2=A0# No need to check additional bounds because u16 is alread=
+y &lt;0..2^16-1&gt;<br>
+&gt;<br>
+&gt; Now, the NamedGroup field is a u16-prefixed list of at least <br>
+&gt; one NamedGroup. We actually just want to parse it like this:<br>
+&gt;<br>
+&gt;=C2=A0 =C2=A0named_group_list =3D extension_data.read_u16_length_prefix=
+()<br>
+&gt;=C2=A0 =C2=A0if len(named_group_list) =3D=3D 0:<br>
+&gt;=C2=A0 =C2=A0 =C2=A0raise DecodeError()<br>
+&gt;<br>
+&gt; But when we write it as NamedGroup named_group_list&lt;2..2^16-2&gt;, =
+<br>
+&gt; it *looks like* you have to parse it like:<br>
+&gt;<br>
+&gt;=C2=A0 =C2=A0named_group_list =3D extension_data.read_u16_length_prefix=
+()<br>
+&gt;=C2=A0 =C2=A0if len(named_group_list) &lt; 2 or len(named_group_list) &=
+gt; 2**16 - 2:<br>
+&gt;=C2=A0 =C2=A0 =C2=A0raise DecodeError()<br>
+&gt;<br>
+&gt; To know that these do the same thing you have to observe that:<br>
+&gt; 1. It is not possible to have a NamedGroup of length less than 2<br>
+&gt; 2. NamedGroup is always exactly two bytes, so it is not <br>
+&gt; possible to have a NamedGroup list of length 2^16-1.<br>
+&gt;<br>
+&gt; This is extra work for the implementer and makes it more likely <br>
+&gt; that they&#39;ll misunderstand it. Or perhaps they&#39;ll get used to =
+<br>
+&gt; the TLSWG writing things in this weird way and miss a case when <br>
+&gt; they *do* need to enforce an upper bound. This is particularly <br>
+&gt; fraught because TLS structures are variable-length. Here is a <br>
+&gt; contrived example to demonstrate the silliness of this <br>
+&gt; convention:<br>
+&gt;<br>
+&gt; enum { len1000(1},=C2=A0 len30001(2) } Type;<br>
+&gt; struct TwoPossibleLengths {<br>
+&gt;=C2=A0 =C2=A0 =C2=A0Type type;<br>
+&gt;=C2=A0 =C2=A0 =C2=A0select (type) {<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 case len1000: opaque padding[999];<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 case len30001: opaque padding[30000];<br>
+&gt;=C2=A0 =C2=A0 =C2=A0} <br>
+&gt; };<br>
+&gt;<br>
+&gt; struct {<br>
+&gt;=C2=A0 =C2=A0TwoPossibleLengths list&lt;1000..65002&gt;;<br>
+&gt; } Confusing;<br>
+&gt;<br>
+&gt; If you look at this field, you might think that this is <br>
+&gt; actually imposing some limit that is tighter than its length <br>
+&gt; prefix, and that you need to check more things. In reality, it&#39;s <=
+br>
+&gt; not. It&#39;s fairly clear that the minimum length of <br>
+&gt; a TwoPossibleLengths is 1000. It&#39;s much less obvious that the <br>
+&gt; maximum length of a series of TwoPossibleLengths, constrained to <br>
+&gt; be under 2^16-1, is 65002. So I think this is a far, far better <br>
+&gt; way to write this same structure.<br>
+&gt;<br>
+&gt; struct {<br>
+&gt;=C2=A0 =C2=A0TwoPossibleLengths list&lt;1..2^16-1&gt;;<br>
+&gt; } MuchMuchClearer;<br>
+&gt;<br>
+&gt; It describes the exact same structure, but now it&#39;s obvious the <b=
+r>
+&gt; intended parse was that you check the length is non-zero and <br>
+&gt; leave the upper-bound set based on its length prefix. Now, <br>
+&gt; obviously this is a contrived example and that instance of <br>
+&gt; knapsack is quite a bit harder than the NamedGroup instance. But <br>
+&gt; I think it demonstrates why the simpler loose bound convention <br>
+&gt; is better for readers of the specification than the one that <br>
+&gt; relies on the reader to do more math.<br>
+&gt;<br>
+&gt; David<br>
+&gt;<br>
+&gt;<br>
+&gt; On Thu, May 8, 2025 at 8:54=E2=80=AFPM Sean Turner &lt;<a href=3D"mail=
+to:sean@sn3rd.com" target=3D"_blank">sean@sn3rd.com</a>&gt; wrote:<br>
+&gt; Paul,<br>
+&gt;<br>
+&gt; You can marked this one as =E2=80=9Cverified&quot; if you want. I subm=
+itted <br>
+&gt; a PR to fix this in -rfc8446bis; see:<br>
+&gt; <a href=3D"https://github.com/tlswg/tls13-spec/pull/1380" rel=3D"noref=
+errer" target=3D"_blank">https://github.com/tlswg/tls13-spec/pull/1380</a><=
+br>
+&gt;<br>
+&gt; spt<br>
+&gt;<br>
+&gt; On May 8, 2025, at 4:05=E2=80=AFAM, RFC Errata System <br>
+&gt; &lt;<a href=3D"mailto:rfc-editor@rfc-editor.org" target=3D"_blank">rfc=
+-editor@rfc-editor.org</a>&gt; wrote:<br>
+&gt;<br>
+&gt; The following errata report has been submitted for RFC8446,<br>
+&gt; &quot;The Transport Layer Security (TLS) Protocol Version 1.3&quot;.<b=
+r>
+&gt;<br>
+&gt; --------------------------------------<br>
+&gt; You may review the report below and at:<br>
+&gt; <a href=3D"https://www.rfc-editor.org/errata/eid8411" rel=3D"noreferre=
+r" target=3D"_blank">https://www.rfc-editor.org/errata/eid8411</a><br>
+&gt;<br>
+&gt; --------------------------------------<br>
+&gt; Type: Technical<br>
+&gt; Reported by: Albin Johansson &lt;<a href=3D"mailto:albin.johansson@vec=
+tor.com" target=3D"_blank">albin.johansson@vector.com</a>&gt;<br>
+&gt;<br>
+&gt; Section: 4.2.7<br>
+&gt;<br>
+&gt; Original Text<br>
+&gt; -------------<br>
+&gt; struct {<br>
+&gt;=C2=A0 =C2=A0 NamedGroup named_group_list&lt;2..2^16-1&gt;;<br>
+&gt; } NamedGroupList;<br>
+&gt;<br>
+&gt; Corrected Text<br>
+&gt; --------------<br>
+&gt; struct {<br>
+&gt;=C2=A0 =C2=A0 NamedGroup named_group_list&lt;2..2^16-2&gt;;<br>
+&gt; } NamedGroupList;<br>
+&gt;<br>
+&gt; Notes<br>
+&gt; -----<br>
+&gt; The specified maximum legal length of the named_group_list <br>
+&gt; vector in the NamedGroupList structure is 2^16-1 bytes. This is <br>
+&gt; invalid because NamedGroup is an enum that occupies two bytes, <br>
+&gt; but 2^16-1 is not an exact multiple of the element size (2 <br>
+&gt; bytes), as required in Section 3.4. It appears that the intended <br>
+&gt; upper bound should be 2^16-2 bytes instead.<br>
+&gt;<br>
+&gt; Instructions:<br>
+&gt; -------------<br>
+&gt; This erratum is currently posted as &quot;Reported&quot;. (If it is sp=
+am, it <br>
+&gt; will be removed shortly by the RFC Production Center.) Please<br>
+&gt; use &quot;Reply All&quot; to discuss whether it should be verified or<=
+br>
+&gt; rejected. When a decision is reached, the verifying party=C2=A0 <br>
+&gt; will log in to change the status and edit the report, if necessary.<br=
+>
+&gt;<br>
+&gt; --------------------------------------<br>
+&gt; RFC8446 (draft-ietf-tls-tls13-28)<br>
+&gt; --------------------------------------<br>
+&gt; Title=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0: The Tran=
+sport Layer Security (TLS) <br>
+&gt; Protocol Version 1.3<br>
+&gt; Publication Date=C2=A0 =C2=A0 : August 2018<br>
+&gt; Author(s)=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0: E. Rescorla<br>
+&gt; Category=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 : PROPOSED STANDARD<=
+br>
+&gt; Source=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 : Transport Lay=
+er Security<br>
+&gt; Stream=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 : IETF<br>
+&gt; Verifying Party=C2=A0 =C2=A0 =C2=A0: IESG<br>
+&gt;<br>
+<br>
+-- <br>
+Regards,<br>
+Alicja Kario<br>
+Principal Quality Engineer, RHEL Crypto team<br>
+Web: <a href=3D"http://www.cz.redhat.com" rel=3D"noreferrer" target=3D"_bla=
+nk">www.cz.redhat.com</a><br>
+Red Hat Czech s.r.o., Purky=C5=88ova 115, 612 00, Brno, Czech Republic<br>
+<br>
+</blockquote></div>
+
+--000000000000bd37e10634f359c2--
+

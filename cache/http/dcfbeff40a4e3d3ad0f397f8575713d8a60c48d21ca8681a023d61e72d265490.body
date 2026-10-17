@@ -1,0 +1,489 @@
+Return-Path: <ekr@rtfm.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+	by ietfa.amsl.com (Postfix) with ESMTP id A5FF0C169410
+	for <tls@ietfa.amsl.com>; Sat,  7 Dec 2024 03:43:42 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.904
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.904 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+	HTML_MESSAGE=0.001, SPF_HELO_NONE=0.001, SPF_NONE=0.001,
+	T_SCC_BODY_TEXT_LINE=-0.01, URIBL_BLOCKED=0.001,
+	URIBL_DBL_BLOCKED_OPENDNS=0.001, URIBL_ZEN_BLOCKED_OPENDNS=0.001]
+	autolearn=unavailable autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+	header.d=rtfm-com.20230601.gappssmtp.com
+Received: from mail.ietf.org ([50.223.129.194])
+	by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id Cg0zNTcTUBu5 for <tls@ietfa.amsl.com>;
+	Sat,  7 Dec 2024 03:43:38 -0800 (PST)
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com
+ [IPv6:2607:f8b0:4864:20::b2d])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by ietfa.amsl.com (Postfix) with ESMTPS id 784A0C14F695
+	for <tls@ietf.org>; Sat,  7 Dec 2024 03:43:38 -0800 (PST)
+Received: by mail-yb1-xb2d.google.com with SMTP id
+ 3f1490d57ef6-e3985aabf43so2357661276.3
+        for <tls@ietf.org>; Sat, 07 Dec 2024 03:43:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rtfm-com.20230601.gappssmtp.com; s=20230601; t=1733571817;
+ x=1734176617; darn=ietf.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=g4q7GN4jgR7oADadT3eXn2vk+O6FJBkucWf3+NE7dn0=;
+        b=gDcX7CTudzqv43Uac5H3oMzlxqrPuQF6oQXMsklS6m7M58nu6Abujjsjz2PXTHm0tg
+         xxzzpzqpYohx8PsFanJa41FYMI3rQeR5C4CYS+6twnJssSSQMwqzZptpOu3ucqXYllod
+         Of4fEas3ZE9m1hhqDmJ9pjIaWlMgfoc/mbhW1c0SzAavTPkRx1osbpnOvyK2nfIwe3rE
+         EUHEXj6j+E5o7ORmzG7WKbFnfNwkTcHS0D3tS3N3YCYDVO9gplBNbUnAoMSMeandQIUJ
+         Wgk7nvtTR62JHp8HDMcaeFPNqEIUbZDpX88TNGAizAZvKMqz5P0rjUY1TwFmqnEYvorB
+         GwPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733571817; x=1734176617;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=g4q7GN4jgR7oADadT3eXn2vk+O6FJBkucWf3+NE7dn0=;
+        b=j1f/lU94D77Cd00OSXYPJyl89YaZ/cqLAKLWNEYgP8O2SiATxbe2JmnoiDZhdjtiHZ
+         Nq/Za+GIArf/CNqAWJLqtFWNI5L6wUMa1pCngVIHxj7honuEsogeijElS9/REvbM5Pk6
+         k5dZm30By/tfYWeEDYiAtmLNylUTbtIUYVdY0u9r3TWKEUwbcXuUYBa8RBSScYox54ZH
+         a5BPKBOE1s1xETFmo4vM2243BjejKUAy1Xcdy783hkbkjc86i4Q1TevOgyTPztQqLjNQ
+         HiQTaWrrcU4Mj/NQUrjGQPVOOX3/1IlTf216nvoRPVOoygAOcx7aJFIzdWL8HxtW/LSJ
+         b45g==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCWc8kOe1stGHw2vFI+xhpGPRwLQYAeArTh+PuRPM8GgrI2P7Esh0NdC6E9y+aWYmTH9pIs=@ietf.org
+X-Gm-Message-State: AOJu0YwPrKP5j5st+qaQqh3yM4jkJ03vK8K4uyvwui8j9mkEByI4HRSy
+	BFMbwsrr16lfsyHElhbTf59zfmfPypwoc64ikfWYRYk3V6uXppFibmRs5DsT/hOfL9VX3UJJ5SF
+	TcEHHIiTM5z0TOsWjZfBSPhaOSu4Xdcg9JNPicA==
+X-Gm-Gg: ASbGncv4m+cW2syrV798r40Y5T3HOHm9gL3KkYilVoOPPznptfOM91w6ls865IQ5gX/
+	2q/n40AVYLsVYeyQrqlS7AIrSP8f3hwA=
+X-Google-Smtp-Source: 
+ AGHT+IHDoVOpa5ok7h1pe16Q0YrwOEMJ+IUl/g1pMI0jEe2VETYZZanpr4Q91qWBykJQywByoPyQKKw4w+vXqVnqG/c=
+X-Received: by 2002:a05:6902:138d:b0:e39:7b55:ff7d with SMTP id
+ 3f1490d57ef6-e3a0b6bbabfmr4275596276.49.1733571817369; Sat, 07 Dec 2024
+ 03:43:37 -0800 (PST)
+MIME-Version: 1.0
+References: <F98C87B7-B31D-4702-B694-0CB1A8FB38C5@sn3rd.com>
+ <07fa01db461a$b2f05330$18d0f990$@gmail.com>
+ <cc74d2fa-c452-4267-900f-41dee05dd9c6@tu-dresden.de>
+ <GVXPR07MB9678AE6A1DD7953668BE73DF89322@GVXPR07MB9678.eurprd07.prod.outlook.com>
+In-Reply-To: 
+ <GVXPR07MB9678AE6A1DD7953668BE73DF89322@GVXPR07MB9678.eurprd07.prod.outlook.com>
+From: Eric Rescorla <ekr@rtfm.com>
+Date: Sat, 7 Dec 2024 03:43:01 -0800
+Message-ID: 
+ <CABcZeBMCx+xxssw4iqYUsLp1Cr1XSxw1HXjrnP-yWq-VZA9AFw@mail.gmail.com>
+To: John Mattsson <john.mattsson=40ericsson.com@dmarc.ietf.org>
+Content-Type: multipart/alternative; boundary="0000000000005e0f5f0628aca424"
+Message-ID-Hash: UIMCQFUACNAYQNME6HMD3XNTSRLF66VC
+X-Message-ID-Hash: UIMCQFUACNAYQNME6HMD3XNTSRLF66VC
+X-MailFrom: ekr@rtfm.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+CC: TLS List <tls@ietf.org>
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Re=3A_Working_Group_Last_Call_for_TLS_1=2E2_is_in_Featur?=
+	=?utf-8?q?e_Freeze?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/r5iKOKXeHvDbubAP4uRXf5NnCbY>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+--0000000000005e0f5f0628aca424
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Sat, Dec 7, 2024 at 12:14=E2=80=AFAM John Mattsson <john.mattsson=3D
+40ericsson.com@dmarc.ietf.org> wrote:
+
+> Muhammad Usama Sardar wrote:
+>
+> >Do we have an I-D which defines how long do we consider as long-term
+> connections? or I-D which gives recommendations or best practices for how
+> long do we consider TLS 1.3 to provide excellent security?
+>
+>
+>
+> - One clear timepoint is when the server certicate expires. TLS 1.3
+> removed the ability to do server reauthentication.
+>
+- RFC 4253 recommends rekeying with PFS after each gigabyte of transmitted
+> data or after each hour of connection time.
+>
+- French ANSSI recommends periodic rekeying with PFS, e.g. every hour and
+> every 100 GB of data, in order to limit the impact of a key compromise.
+>
+> https://cyber.gouv.fr/sites/default/files/2015/09/NT_IPsec_EN.pdf
+>
+
+TLS 1.3 KeyUpdate provides forward security: if you recover key N+1, you do
+not get key N. What it does not provides is post-compromise security,
+namely, if you recover key N, then you also can recover key N+1, etc. PCS
+requires a new asymmetric exchange.
+
+
+-Ekr
+
+
+
+>
+>
+> >If the intention of draft was #2 above, cross-reading with this sentence=
+,
+> are we implying that PQC is not an urgent security issue?
+>
+>
+>
+> That is a very good point. I suggest changing this to
+>
+> OLD: =E2=80=9CThis document specifies that outside of urgent security fix=
+es, no
+> new features will be approved for TLS 1.2=E2=80=9D
+>
+> NEW: =E2=80=9CThis document specifies that, no new features will be appro=
+ved for
+> TLS 1.2=E2=80=9D
+>
+> (TLS WG can always make a future RFC overriding this anyway=E2=80=A6)
+>
+>
+>
+> >It looks like a more detailed version of tls12-frozen draft. Is there a
+> good reason not to merge the two documents?
+>
+>
+>
+> I had the same thought. I think they would be better as a single document=
+.
+> But I don=E2=80=99t care very much.
+>
+>
+>
+> >What does the capitalization of WILL NOT mean?
+>
+>
+>
+> Yes, and it is not in RFC 6919 either=E2=80=A6 ;)
+>
+>
+>
+> Cheers,
+> John
+>
+>
+>
+> *From: *Muhammad Usama Sardar <muhammad_usama.sardar@tu-dresden.de>
+> *Date: *Friday, 6 December 2024 at 18:33
+> *To: *Valery Smyslov <smyslov.ietf@gmail.com>, 'Sean Turner' <
+> sean@sn3rd.com>, 'TLS List' <tls@ietf.org>
+> *Subject: *[TLS] Re: Working Group Last Call for TLS 1.2 is in Feature
+> Freeze
+>
+> A few quick questions. Sorry if I am missing something obvious or some
+> background.
+>
+> On 04.12.24 08:04, Valery Smyslov wrote:
+>
+> note, that UTA WG has issued a WGLC for draft-ietf-uta-require-tls13-02 (=
+New Protocols Must Require TLS 1.3) [1].
+>
+>
+>
+>  [1] https://datatracker.ietf.org/doc/draft-ietf-uta-require-tls13/
+>
+> Thanks for pointer to this. It looks like a more detailed version of
+> tls12-frozen draft. Is there a good reason not to merge the two documents=
+?
+> Is it due to different WGs? or different intended status? or something
+> else?
+>
+>
+>
+>
+>
+> On 04.12.24 10:36, John Mattsson wrote:
+>
+> as-is, TLS 1.3 does not provide excellent security for long-term
+> connections.
+>
+> Do we have an I-D which defines *how long* do we consider as long-term
+> connections? or I-D which gives recommendations or best practices for *ho=
+w
+> long *do we consider TLS 1.3 to provide excellent security?
+>
+> ---
+>
+> Considering the following two statements in I-D, I have two questions:
+>
+> >   For TLS it is important to note that the focus of these efforts is
+>
+> >   TLS 1.3 or later.  Put bluntly, post-quantum cryptography for TLS 1.2
+>
+> >   WILL NOT be supported.
+>
+> To me the two sentences are contradicting. Which one of the following is
+> intended?
+>
+>    1. (My understanding from 1st sentence) Some PQC support for TLS 1.2
+>    will still continue but it will not be the focus.
+>    2. (My understanding from 2nd sentence) We will exclusively work on
+>    PQC for TLS 1.3 or later.
+>
+> What does the capitalization of WILL NOT mean? I did not find any such
+> capitalization in RFC 2119 and RFC 8174. Please add the relevant RFC in
+> section 2 or define it.
+>
+> >   This
+>
+> >   document specifies that outside of urgent security fixes, no new
+>
+> >   features will be approved for TLS 1.2.
+>
+> If the intention of draft was #2 above, cross-reading with this sentence,
+> are we implying that PQC is not an urgent security issue?
+> _______________________________________________
+> TLS mailing list -- tls@ietf.org
+> To unsubscribe send an email to tls-leave@ietf.org
+>
+
+--0000000000005e0f5f0628aca424
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><br></div><br><div class=3D"gmail_quote g=
+mail_quote_container"><div dir=3D"ltr" class=3D"gmail_attr">On Sat, Dec 7, =
+2024 at 12:14=E2=80=AFAM John Mattsson &lt;john.mattsson=3D<a href=3D"mailt=
+o:40ericsson.com@dmarc.ietf.org">40ericsson.com@dmarc.ietf.org</a>&gt; wrot=
+e:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0=
+.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div class=3D=
+"msg2114671976745388274">
+
+
+
+
+
+<div lang=3D"en-SE" style=3D"overflow-wrap: break-word;">
+<div class=3D"m_93925120048571889WordSection1">
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt">Muhammad Usama Sardar=
+ wrote:<u></u><u></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt">&gt;Do we have an I-D=
+ which defines how long do we consider as long-term connections? or I-D whi=
+ch gives recommendations or best practices for how long do we consider TLS =
+1.3 to provide
+ excellent security?<u></u><u></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt"><u></u>=C2=A0<u></u><=
+/span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;color:rgb(0,112,192)">=
+- One clear timepoint is when the server certicate expire</span><span lang=
+=3D"EN-US" style=3D"font-size:11pt;color:rgb(0,112,192)">s</span><span styl=
+e=3D"font-size:11pt;color:rgb(0,112,192)">.
+ TLS 1.3 removed the ability to do server reauthentication. </span></p></di=
+v></div></div></blockquote><blockquote class=3D"gmail_quote" style=3D"margi=
+n:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex=
+"><div class=3D"msg2114671976745388274"><div lang=3D"en-SE" style=3D"overfl=
+ow-wrap: break-word;"><div class=3D"m_93925120048571889WordSection1">
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;color:rgb(0,112,192)">=
+- RFC 4253 recommends rekeying with PFS after each gigabyte of transmitted =
+data or after each hour of connection time.</span></p></div></div></div></b=
+lockquote><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8=
+ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div class=3D"m=
+sg2114671976745388274"><div lang=3D"en-SE" style=3D"overflow-wrap: break-wo=
+rd;"><div class=3D"m_93925120048571889WordSection1">
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;color:rgb(0,112,192)">=
+- French ANSSI recommends periodic rekeying with PFS, e.g. every hour and e=
+very 100 GB of data, in order to limit the impact of a key compromise.<u></=
+u><u></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;color:rgb(0,112,192)">=
+<a href=3D"https://cyber.gouv.fr/sites/default/files/2015/09/NT_IPsec_EN.pd=
+f" target=3D"_blank">https://cyber.gouv.fr/sites/default/files/2015/09/NT_I=
+Psec_EN.pdf</a></span></p></div></div></div></blockquote><div><br></div><di=
+v>TLS 1.3 KeyUpdate provides forward security: if you recover key N+1, you =
+do not get key N. What it does not provides is post-compromise security, na=
+mely, if you recover key N, then you also can recover key N+1, etc. PCS req=
+uires a new asymmetric exchange.<div class=3D"msg2114671976745388274"><div =
+lang=3D"en-SE" style=3D"overflow-wrap: break-word;"><div class=3D"m_9392512=
+0048571889WordSection1"><p class=3D"MsoNormal"><br></p><p class=3D"MsoNorma=
+l">-Ekr</p><p class=3D"MsoNormal">=C2=A0<br></p></div></div></div></div><bl=
+ockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-lef=
+t:1px solid rgb(204,204,204);padding-left:1ex"><div class=3D"msg21146719767=
+45388274"><div lang=3D"en-SE" style=3D"overflow-wrap: break-word;"><div cla=
+ss=3D"m_93925120048571889WordSection1"><p class=3D"MsoNormal"><span lang=3D=
+"EN-US" style=3D"font-size:11pt;color:rgb(0,112,192)"></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt"><u></u>=C2=A0<u></u><=
+/span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt">&gt;If the intention =
+of draft was #2 above, cross-reading with this sentence, are we implying th=
+at PQC is not an urgent security issue?
+<u></u><u></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt"><u></u>=C2=A0<u></u><=
+/span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;color:rgb(0,112,192)">=
+That is a very good point. I suggest changing this to<u></u><u></u></span><=
+/p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;color:rgb(0,112,192)">=
+OLD: =E2=80=9CThis document specifies that outside of urgent security fixes=
+, no new features will be approved for TLS 1.2=E2=80=9D<u></u><u></u></span=
+></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;color:rgb(0,112,192)">=
+NEW: =E2=80=9CThis document specifies that, no new features will be approve=
+d for TLS 1.2=E2=80=9D<u></u><u></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;color:rgb(0,112,192)">=
+(TLS WG can always make a future RFC overriding this anyway=E2=80=A6)<u></u=
+><u></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt"><u></u>=C2=A0<u></u><=
+/span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt">&gt;It looks like a m=
+ore detailed version of tls12-frozen draft. Is there a good reason not to m=
+erge the two documents?<u></u><u></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt"><u></u>=C2=A0<u></u><=
+/span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;color:rgb(0,112,192)">=
+I had the same thought. I think they would be better as a single document. =
+But I don=E2=80=99t care very much.<u></u><u></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt"><u></u>=C2=A0<u></u><=
+/span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt">&gt;What does the cap=
+italization of WILL NOT mean?
+<u></u><u></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt"><u></u>=C2=A0<u></u><=
+/span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;color:rgb(0,112,192)">=
+Yes, and it is not in RFC 6919 either=E2=80=A6</span><span style=3D"font-si=
+ze:11pt;color:rgb(0,112,192)">
+<span lang=3D"EN-US">;)<u></u><u></u></span></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;color:rgb(0,112,192)">=
+<u></u>=C2=A0<u></u></span></p>
+<p class=3D"MsoNormal"><span lang=3D"SV" style=3D"font-size:11pt;color:rgb(=
+0,112,192)">Cheers,<br>
+John<u></u><u></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt"><u></u>=C2=A0<u></u><=
+/span></p>
+<div id=3D"m_93925120048571889mail-editor-reference-message-container">
+<div>
+<div>
+<div style=3D"border-width:1pt medium medium;border-style:solid none none;b=
+order-color:rgb(181,196,223) currentcolor currentcolor;padding:3pt 0cm 0cm"=
+>
+<p class=3D"MsoNormal" style=3D"margin-bottom:12pt"><b><span style=3D"color=
+:black">From:
+</span></b><span style=3D"color:black">Muhammad Usama Sardar &lt;<a href=3D=
+"mailto:muhammad_usama.sardar@tu-dresden.de" target=3D"_blank">muhammad_usa=
+ma.sardar@tu-dresden.de</a>&gt;<br>
+<b>Date: </b>Friday, 6 December 2024 at 18:33<br>
+<b>To: </b>Valery Smyslov &lt;<a href=3D"mailto:smyslov.ietf@gmail.com" tar=
+get=3D"_blank">smyslov.ietf@gmail.com</a>&gt;, &#39;Sean Turner&#39; &lt;<a=
+ href=3D"mailto:sean@sn3rd.com" target=3D"_blank">sean@sn3rd.com</a>&gt;, &=
+#39;TLS List&#39; &lt;<a href=3D"mailto:tls@ietf.org" target=3D"_blank">tls=
+@ietf.org</a>&gt;<br>
+<b>Subject: </b>[TLS] Re: Working Group Last Call for TLS 1.2 is in Feature=
+ Freeze<u></u><u></u></span></p>
+</div>
+<p>A few quick questions. Sorry if I am missing something obvious or some b=
+ackground.<u></u><u></u></p>
+<p class=3D"MsoNormal">On 04.12.24 08:04, Valery Smyslov wrote: <u></u><u><=
+/u></p>
+<blockquote style=3D"margin-top:5pt;margin-bottom:5pt">
+<pre>note, that UTA WG has issued a WGLC for draft-ietf-uta-require-tls13-0=
+2 (New Protocols Must Require TLS 1.3) [1].<u></u><u></u></pre>
+<pre><u></u>=C2=A0<u></u></pre>
+<pre> [1] <a href=3D"https://datatracker.ietf.org/doc/draft-ietf-uta-requir=
+e-tls13/" target=3D"_blank">https://datatracker.ietf.org/doc/draft-ietf-uta=
+-require-tls13/</a><u></u><u></u></pre>
+</blockquote>
+<p class=3D"MsoNormal">Thanks for pointer to this. It looks like a more det=
+ailed version of tls12-frozen draft. Is there a good reason not to merge th=
+e two documents? Is it due to different WGs? or different intended status? =
+or something else?
+<u></u><u></u></p>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">On 04.12.24 10:36, John Mattsson wrote:<u></u><u></u=
+></p>
+</div>
+<blockquote style=3D"margin-top:5pt;margin-bottom:5pt">
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt">as-is, TLS 1.3 does n=
+ot provide excellent security for long-term connections.</span><u></u><u></=
+u></p>
+</blockquote>
+<p>Do we have an I-D which defines <i>how long</i> do we consider as long-t=
+erm connections? or I-D which gives recommendations or best practices for
+<i>how long </i>do we consider TLS 1.3 to provide excellent security?<u></u=
+><u></u></p>
+<p>---<u></u><u></u></p>
+<p>Considering the following two statements in I-D, I have two questions: <=
+u></u><u></u></p>
+<pre style=3D"background:white;box-sizing:border-box;white-space:pre-wrap;f=
+ont-variant-ligatures:normal;font-variant-caps:normal;text-align:start;text=
+-decoration-style:initial;text-decoration-color:initial;overflow:auto;word-=
+spacing:0px"><span style=3D"font-size:10.5pt;color:rgb(33,37,41)">&gt;=C2=
+=A0=C2=A0 For TLS it is important to note that the focus of these efforts i=
+s<u></u><u></u></span></pre>
+<pre style=3D"background:white"><span style=3D"font-size:10.5pt;color:rgb(3=
+3,37,41)">&gt;=C2=A0=C2=A0 TLS 1.3 or later.=C2=A0 Put bluntly, post-quantu=
+m cryptography for TLS 1.2<u></u><u></u></span></pre>
+<pre style=3D"background:white"><span style=3D"font-size:10.5pt;color:rgb(3=
+3,37,41)">&gt;=C2=A0=C2=A0 WILL NOT be supported.<u></u><u></u></span></pre=
+>
+<p>To me the two sentences are contradicting. Which one of the following is=
+ intended?
+<u></u><u></u></p>
+<ol start=3D"1" type=3D"1">
+<li class=3D"MsoNormal">
+(My understanding from 1st sentence) Some PQC support for TLS 1.2 will stil=
+l continue but it will not be the focus.=C2=A0
+<u></u><u></u></li><li class=3D"MsoNormal">
+(My understanding from 2nd sentence) We will exclusively work on PQC for TL=
+S 1.3 or later.
+<u></u><u></u></li></ol>
+<p>What does the capitalization of WILL NOT mean? I did not find any such c=
+apitalization in RFC 2119 and RFC 8174. Please add the relevant RFC in sect=
+ion 2 or define it.
+<u></u><u></u></p>
+<pre style=3D"background:white;box-sizing:border-box;white-space:pre-wrap;f=
+ont-variant-ligatures:normal;font-variant-caps:normal;text-align:start;text=
+-decoration-style:initial;text-decoration-color:initial;overflow:auto;word-=
+spacing:0px"><span style=3D"font-size:10.5pt;color:rgb(33,37,41)">&gt;=C2=
+=A0=C2=A0 This<u></u><u></u></span></pre>
+<pre style=3D"background:white"><span style=3D"font-size:10.5pt;color:rgb(3=
+3,37,41)">&gt;=C2=A0=C2=A0 document specifies that outside of urgent securi=
+ty fixes, no new<u></u><u></u></span></pre>
+<pre style=3D"background:white"><span style=3D"font-size:10.5pt;color:rgb(3=
+3,37,41)">&gt;=C2=A0=C2=A0 features will be approved for TLS 1.2.<u></u><u>=
+</u></span></pre>
+<p class=3D"MsoNormal">If the intention of draft was #2 above, cross-readin=
+g with this sentence, are we implying that PQC is not an urgent security is=
+sue?
+<u></u><u></u></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+_______________________________________________<br>
+TLS mailing list -- <a href=3D"mailto:tls@ietf.org" target=3D"_blank">tls@i=
+etf.org</a><br>
+To unsubscribe send an email to <a href=3D"mailto:tls-leave@ietf.org" targe=
+t=3D"_blank">tls-leave@ietf.org</a><br>
+</div></blockquote></div></div>
+
+--0000000000005e0f5f0628aca424--
+

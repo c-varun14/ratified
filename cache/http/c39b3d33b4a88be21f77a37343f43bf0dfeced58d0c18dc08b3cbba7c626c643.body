@@ -1,0 +1,882 @@
+Return-Path: <neried7@gmail.com>
+X-Original-To: tls@mail2.ietf.org
+Delivered-To: tls@mail2.ietf.org
+Received: from localhost (localhost [127.0.0.1])
+	by mail2.ietf.org (Postfix) with ESMTP id E75F8BDC2DD7
+	for <tls@mail2.ietf.org>; Wed, 25 Feb 2026 01:23:49 -0800 (PST)
+X-Virus-Scanned: amavisd-new at ietf.org
+X-Spam-Flag: NO
+X-Spam-Score: -1.848
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.848 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+	DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1,
+	FREEMAIL_ENVFROM_END_DIGIT=0.25, FREEMAIL_FROM=0.001,
+	HTML_MESSAGE=0.001, RCVD_IN_DNSWL_NONE=-0.0001, SPF_HELO_NONE=0.001,
+	SPF_PASS=-0.001] autolearn=unavailable autolearn_force=no
+Authentication-Results: mail2.ietf.org (amavisd-new); dkim=pass (2048-bit key)
+	header.d=gmail.com
+Received: from mail2.ietf.org ([166.84.6.31])
+	by localhost (mail2.ietf.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id PTyWzw4soT_G for <tls@mail2.ietf.org>;
+	Wed, 25 Feb 2026 01:23:49 -0800 (PST)
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com
+ [IPv6:2607:f8b0:4864:20::f33])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail2.ietf.org (Postfix) with ESMTPS id 306D2BDC2DD0
+	for <tls@ietf.org>; Wed, 25 Feb 2026 01:23:49 -0800 (PST)
+Received: by mail-qv1-xf33.google.com with SMTP id
+ 6a1803df08f44-89549b2f538so86502456d6.2
+        for <tls@ietf.org>; Wed, 25 Feb 2026 01:23:49 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1772011423; cv=none;
+        d=google.com; s=arc-20240605;
+        b=fLaBGeJyBKpswGK76MK0i87NvtaSabO78N+S5YoHBAQBtxsr5sWp2H0MGFL1WdJYGE
+         8TyJf8Wu4kTxGcrK+TuWKfqOujIZ0RCeLBN5ocR5Irw1KcSLiq69J5tJeF/ls9Ch85dQ
+         l+OCKMip412yVRdqI6DfRP4yUd3md/621xT99eVorRZJyRFKGQI6F6cdRuE31sT0aIMT
+         UognXQCbYmrivsc0htIQrBmV4BCs8x4zprcSSJyAVD+9hgeg57w3mMj0tQjG9maGDZdI
+         RW6AoV9VD9lC32hKMX5IanQ1akp8R3LCfKkpVrRA9RTuYxfapcUiPprxOut4BI+C7cRw
+         W/+A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20240605;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=/bns+RVeXkds8syulMOFT30k1tsDsWzyT/+k59Sb3x8=;
+        fh=P0X6SC8+xJQ2Uhfoicu47vOWw4magnN7HA45/W176YQ=;
+        b=W1/TosLPqknG5Bf0+l2IB4LtD2BfPJoIVvRsBlxIvj1CB2nV6XuWGh2ryPbeXPODvo
+         Hbsvoy0TCnW5s+G2KJKOTntBP0+Qjb+ynaCiE2K9hlrcpdHpqyP4vGQVIaO1DtJCM39l
+         UvIpPhiE4e5Hmaq4LnPWVVNqKfKZkKRkVH/lMFFh2ArHaOFfE1UhogC8IMFbu+YMRDH0
+         +kH2FlUw8PdxKKz1LAh5Bm0o0CGambx3f8v8nMvZlLkTaGJmRM3EicJq+dq0GRyoQWdc
+         wIJKqlvZa5Xh+w4oQl6RCmZcgY71xslPoBAaOgfk42xoiOXW6kmbrkDDNIvGFnjZxP1A
+         DKjQ==;
+        darn=ietf.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1772011423; x=1772616223; darn=ietf.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=/bns+RVeXkds8syulMOFT30k1tsDsWzyT/+k59Sb3x8=;
+        b=AtSxXmUGqo93ekz+VczUjrL5uhzlVZ1HPT6wX22Vr9R5JlURuGugk6w52RVehRJJim
+         T6LmuqvkmIEDgTnUc9l2tyH497T6VB66MdNJF8C+iisF8LYhXp5lsJ/05qoOhM0/RolR
+         nKZe6VhzsbpOm5NcxijRXndXiIpwoYkWk5I4X+5rWa0Z6sqQj/oAEvychei8fzH5momG
+         vnOqml17i/Xe4cWhO3Qg+x/pjx1Vv+cvhRdRfMIQmGTDydihRwuHO/PsQTSi5njXeJ7U
+         PIK4S3m0E7rvEoCswKCmYwIBOAMuGZWjwowZ8GmmfJWwc523lq5Bht6QAF9/2EgZKgFL
+         7apg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772011423; x=1772616223;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/bns+RVeXkds8syulMOFT30k1tsDsWzyT/+k59Sb3x8=;
+        b=BOY7ahYnaf+XIzB9KaP/vI73auGGWOvhj0Cb40ytXUcrRlhHhrwxXZLIMETelnLbtX
+         oE9GJLDmmoUaDr+0WD0mjDonLkEXOj1/ZIIEgTApzT+PaGdK9LRISFempNd4yzgRjVGT
+         qvC7ijo52F1qySl9I+RQQ5qc9d7uQLvjNXp/CO6UCVnQRV+WLOmgTPiMbuHp9Ug4r9iF
+         JrOqD8xD4ABZIYPua0goR3HqSYi2WKtckV46KEX5Kz+W7oWL9rU4pHUtOWTdwshDSoqv
+         sePsLJI576aQyxYM0/u06MbpTowU0NhuC+pXBAdM3Ym2eChaZvUM4fiatpa+jADGl7zL
+         tykg==
+X-Gm-Message-State: AOJu0YzQhOHbulFuQpdZg5qDBM2UyeZuma7qJVhEpBskcUHaTtPwXcTi
+	vjiQY1sHK2IDzTn9ickuJYG8j2OWsyMir+6WAUCgIhVQvgiPs3k5RhkHn8vde5TC/fJZiEleucJ
+	6eVH38cTAXd2UuYQtRBBEB+X/fdE7Pz99Mg==
+X-Gm-Gg: ATEYQzybYPyjXMbQebBq7+H8R/uS1SWFK4LV1joZsBT/B9KibqNxWMcUEOO3ocfc+TZ
+	gQDIrf07yw083i/T4SeHM1rzZLwLBaYPNUxeeAEkp5FEfYCDRBcGjmukWPpKoQ4Y3lN6PFxGkeX
+	/TU91PFERPWK7c3MUVb/Gdl+nIR4/u7a6KeuTecmWKYa3r+4Kr2IsUdtEDK7hvSzyc44u5xlYek
+	7nUYUmyP+oe/1vPwrZdC+i62vNQBxKavea1JbLT7fg4Csegy4dtSddK29YHs/GLiHTgx7uAZQmb
+	GDEt3Nf2Sg==
+X-Received: by 2002:a05:6214:e85:b0:895:24bf:d16d with SMTP id
+ 6a1803df08f44-899b8a12621mr18601686d6.31.1772011422777; Wed, 25 Feb 2026
+ 01:23:42 -0800 (PST)
+MIME-Version: 1.0
+References: 
+ <CAOgPGoDLVqAVesWjrrD9ZR8HMkqQVLMp69vOkXPkk87MzcsOSw@mail.gmail.com>
+ <AS5PR07MB10596FC9D182E975AA0E11F8E8960A@AS5PR07MB10596.eurprd07.prod.outlook.com>
+ <1050A0B9-9F8D-4762-BAF6-1BD290249F90@vigilsec.com>
+ <AS5PR07MB1059644BD0CB1E2DBCEC0A5378975A@AS5PR07MB10596.eurprd07.prod.outlook.com>
+In-Reply-To: 
+ <AS5PR07MB1059644BD0CB1E2DBCEC0A5378975A@AS5PR07MB10596.eurprd07.prod.outlook.com>
+From: Deirdre Connolly <durumcrustulum@gmail.com>
+Date: Wed, 25 Feb 2026 04:23:29 -0500
+X-Gm-Features: AaiRm53kSIWgD00pOEa8aH9G3cmwUnvihfGeXD3puSLU9H5vnkSa4kvREuDHYAk
+Message-ID: 
+ <CAFR824xDNb65j6RaGvkoFeTj840daSLStLp+r3+Qg-YEhrRNsA@mail.gmail.com>
+To: John Mattsson <john.mattsson=40ericsson.com@dmarc.ietf.org>
+Content-Type: multipart/alternative; boundary="0000000000006487ae064ba28fb6"
+Message-ID-Hash: EZSCST7KFWUMXNUAHRMQM4ETRICSZGFR
+X-Message-ID-Hash: EZSCST7KFWUMXNUAHRMQM4ETRICSZGFR
+X-MailFrom: neried7@gmail.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+CC: "<tls@ietf.org>" <tls@ietf.org>
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Re=3A_WG_Last_Call=3A_draft-ietf-tls-mlkem-05_=28Ends_20?=
+	=?utf-8?q?26-02-27=29?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/tQ4Ye5KijZAhU_QbrXyxYO-GxJc>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+--0000000000006487ae064ba28fb6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+> My constructive suggestion is to remove all text regarding static keys,
+as there is no reason for this draft to include them
+
+This document cannot override RFC 8446, which allows key reuse. We
+currently do not have a good citation with numbers on how many is too many
+reuses for ML-KEM as specified in FIPS 203 (not for generic Ring-LWE
+schemes as done in prior work, which ML-KEM isn't=E2=80=94 it is a Module-L=
+WE
+scheme with the FO transform applied). We currently gesture at any future
+analyses that come out.
+
+ML-KEM is of course designed to be IND-CCA, but the multi-target security
+(specifically multi-ciphertext, or multi-challenge) is a distinct property
+that is relevant to a reused keypair, where the collision-resistsnce in the
+KEM/PKE  message space is pertinent. https://eprint.iacr.org/2025/343.pdf
+has some nice analysis of such security of salted-FO KEMs (Ml-KEM is not
+salted) but also include a quick analysis of ML-KEM, saying:
+
+"Targeting 256 bits of security: ML-KEM has 3 variants, targeting 128, 192,
+or 256 bits of security, but all of these use 256-bit messages [Nat24]. We
+note that the parameter nc should not change for the various targeted
+security levels, as it represents a threshold on the amount of times the
+same public key will be used for encapsulation in practical deployments. We
+observe that,
+if one targets 256 bits of security, collision finding attacks become
+relevant again, since an adversary generating 2^128 ciphertexts will find a
+collision with one of 2^64 challenge ciphertexts with probability about
+2^=E2=88=9264. Thus without salting, even ML-KEM-1024 can only achieve 192 =
+bits of
+multi-target security in the random oracle model."
+
+This appears to indicate an upper bound of reuses for all ML-KEM parameter
+sets to 2^64 (if I'm parsing this wrong someone correct me).
+
+*Do people want to omit any mention of key reuse, implicitly relying on
+8446, or include this bounds analysis in some succinct way?*
+
+On Wed, Feb 25, 2026, 2:31=E2=80=AFAM John Mattsson <john.mattsson=3D
+40ericsson.com@dmarc.ietf.org> wrote:
+
+> Hi
+>
+>
+>
+> I received an offline comment from a senior IETF participant suggesting
+> that I had misunderstood the draft and that the key reuse in question
+> referred to reuse within a single session. That is not accurate. The draf=
+t
+> talks about static keys, i.e., keys used in more than one key-establishme=
+nt.
+>
+>
+>
+> Given the apparent confusion between 1. reuse of ephemeral keys within a
+> session, 2. reuse of ephemeral keys across sessions, and 3. static keys,
+> each of which carries distinct privacy and security implications, I
+> recommend that the AD ensure that all not yet published drafts use very
+> precise terminology. Specifically, a key used in more than one
+> key-establishment should use the well-established term =E2=80=9Cstatic ke=
+y=E2=80=9D.
+>
+>
+>
+> ---
+>
+>
+>
+> 1. Reuse of ephemeral keys within a session:
+>
+>
+>
+> - Session A: ClientHello with MLKEM768 KeyShareEntry1 and X25519MLKEM768
+> KeyShareEntry2 both containing the same ML-KEM public key.
+>
+>
+>
+> 2. Reuse of ephemeral keys across sessions:
+>
+>
+>
+> - Session B1. ClientHello with MLKEM768 KeyShareEntry3 and X25519
+> KeyShareEntry4. Sever picks X25519 KeyShareEntry4.
+>
+>
+>
+> - Session B2. ClientHello with MLKEM768 KeyShareEntry3 and X25519
+> KeyShareEntry5.
+>
+>
+>
+> 3. Static keys
+>
+>
+>
+> - Session C1. ClientHello with MLKEM768 KeyShareEntry6. Sever picks
+> MLKEM768 KeyShareEntry6
+>
+>
+>
+> - Session C2. ClientHello with MLKEM768 KeyShareEntry6. Sever picks
+> MLKEM768 KeyShareEntry6
+>
+>
+>
+> ---
+>
+>
+>
+> Issues with the text on static keys were clearly raised during the first
+> WGLC and should have been addressed before the second. Having to repeat t=
+he
+> same issues is both frustrating and a waste of time.
+>
+> The major issues, that the draft lacks proper security considerations for
+> the use of static keys (they should be quite negative), and that it does
+> not explain how an implementation using static keys can be conformant wit=
+h
+> NIST specifications, were raised during the first WGLC and have not been
+> addressed. During the second WGLC, it was identified that conformance is
+> intrinsically linked to the patent license.
+>
+>
+>
+> My constructive suggestion is to remove all text regarding static keys, a=
+s
+> there is no reason for this draft to include them. I do not believe
+> comparisons with draft-ietf-tls-hybrid-design are relevant, since that
+> document serves a completely different purpose and does not register code
+> points.
+>
+>
+>
+> If the draft intends to retain any text on static keys, NIST SP 1800-37, =
+*Addressing
+> Visibility Challenges with TLS 1.3 within the Enterprise*, is a useful
+> reference regarding the negative privacy and security implications of
+> static keys. I do not have specific guidance on how to achieve conformanc=
+e
+> with NIST specifications when using static keys, but that issue must
+> clearly be resolved.
+>
+>
+>
+> I do not find any text in RFC 8446 that allows the use of static keys. If
+> the TLS WG intends to explicitly permit static keys again, their use shou=
+ld
+> be explicitly negotiated, as done in TLS 1.2 or
+> draft-rhrd-tls-tls13-visibility.
+>
+>
+>
+> As I have seen no response from the authors indicating that they plan to
+> address this issue, I am opposed to publishing this document.
+>
+>
+>
+> Cheers,
+>
+> John
+>
+> *From: *Russ Housley <housley@vigilsec.com>
+> *Date: *Thursday, 12 February 2026 at 22:38
+> *To: *Joseph Salowey <joe@salowey.net>
+> *Cc: *
+> <tls@ietf.org>, John Mattsson <john.mattsson@ericsson.com>
+> *Subject: *Re: [TLS] WG Last Call: draft-ietf-tls-mlkem-05 (Ends
+> 2026-02-27)
+>
+> I support the publication of this document as an RFC.  I would prefer to
+> have the clarity about ephemeral vs. static ML-KEM keys as posted by John
+> Mattsson, but I can live with it as-is.
+>
+> Russ
+>
+>
+> On Feb 12, 2026, at 3:08=E2=80=AFPM, John Mattsson <john.mattsson=3D
+> 40ericsson.com@dmarc.ietf.org> wrote:
+>
+> Hi,
+>
+> I support publication iff all text related to =E2=80=9Ckey reuse=E2=80=9D=
+ is removed. In
+> its current form, I do not believe -07 should be published.
+>
+> Major Comments:
+>
+> - FIPS 203 states that:
+>
+> =E2=80=9Cthe licensed patents be freely available to be practiced by any
+> implementer of the ML-KEM algorithm as published by NIST.=E2=80=9D
+>
+> =E2=80=9Crequirements for the secure use of KEMs in applications, see SP =
+800-227.=E2=80=9D
+>
+> A reused key is, by definition, a static key. SP 800-227 imposes
+> additional requirements for static keys compared to ephemeral keys. The
+> draft does not explain how an implementer can satisfy these requirements.
+> This creates potential non-conformance with NIST specifications.
+>
+> -  The draft does not describe the significant security and privacy
+> problems associated with key reuse. IND-CCA is a theoretical property of
+> the algorithm. However, the security and privacy problems are related to
+> the reuse of keys in the TLS 1.3 protocol in deployments.
+>
+> Minor Comments:
+>
+> - The discussion of randomness reuse in ciphertexts and references to SP
+> 800-227 do not belong in a =E2=80=9Ckey reuse=E2=80=9D section. Ciphertex=
+ts are not keys,
+> and SP 800-227 contains broader guidelines and requirements beyond static
+> keys.
+>
+> - =E2=80=9CThe client's shares are listed in descending order of client
+> preference; the server selects one algorithm and sends its corresponding
+> share.=E2=80=9D
+>
+> The server may also select no share and respond with a handshake_failure
+> or a HelloRetryRequest (HRR). Since this is already specified in RFC 8446=
+,
+> it would be better to remove this text and simply reference RFC 8446.
+>
+> - Section 5.1 appears to =E2=80=8Bmix different concepts: hybrids, PQ/T h=
+ybrids,
+> and lattice-based PQ/T hybrids. I assume the person asking for this secti=
+on
+> wanted a comparison with [ECDHE-MLKEM]. I suggest doing that. In the
+> future, PQ/T hybrids will likely become less common, but it is unclear
+> whether other hybrids (e.g., ML-KEM + HQC-KEM) will gain adoption.
+>
+> Cheers,
+> John
+>
+> *From: *Joseph Salowey <joe@salowey.net>
+> *Date: *Thursday, 12 February 2026 at 20:06
+> *To:*
+> <tls@ietf.org>
+> *Subject: *[TLS] WG Last Call: draft-ietf-tls-mlkem-05 (Ends 2026-02-27)
+>
+> This message starts the second Working Group Last Call for the pure ML-KE=
+M
+> document (draft-ietf-tls-mlkem-07).
+>
+> The file can be retrieved from:
+> https://datatracker.ietf.org/doc/draft-ietf-tls-mlkem/
+>
+> The diff with the previous WGLC draft (-05) is here:
+>
+>
+> https://author-tools.ietf.org/iddiff?url1=3Ddraft-ietf-tls-mlkem-05&url2=
+=3Ddraft-ietf-tls-mlkem-07&difftype=3D--html
+> <https://author-tools.ietf.org/iddiff?url1=3Ddraft-ietf-tls-mlkem-05&url2=
+=3Ddraft-ietf-tls-mlkem-06&difftype=3D--html>
+>
+> The main focus of this WGLC is to review new text providing more context
+> around the use of pure ML-KEM.  For those who indicated they wanted this
+> text, please let us know if the new text satisfies you and if you support
+> publication. This working group last call will end on February 27, 2026.
+>
+> Thank You.
+> _______________________________________________
+> TLS mailing list -- tls@ietf.org
+> To unsubscribe send an email to tls-leave@ietf.org
+>
+>
+> _______________________________________________
+> TLS mailing list -- tls@ietf.org
+> To unsubscribe send an email to tls-leave@ietf.org
+>
+
+--0000000000006487ae064ba28fb6
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"auto">&gt;=C2=A0My constructive suggestion is to remove all tex=
+t regarding static keys, as there is no reason for this draft to include th=
+em<div dir=3D"auto"><br></div><div dir=3D"auto">This document cannot overri=
+de RFC 8446, which allows key reuse. We currently do not have a good citati=
+on with numbers on how many is too many reuses for ML-KEM as specified in F=
+IPS 203 (not for generic Ring-LWE schemes as done in prior work, which ML-K=
+EM isn&#39;t=E2=80=94 it is a Module-LWE scheme with the FO transform appli=
+ed). We currently gesture at any future analyses that come out.=C2=A0</div>=
+<div dir=3D"auto"><br></div><div dir=3D"auto">ML-KEM is of course designed =
+to be IND-CCA, but the multi-target security (specifically multi-ciphertext=
+, or multi-challenge) is a distinct property that is relevant to a reused k=
+eypair, where the collision-resistsnce in the KEM/PKE=C2=A0 message space i=
+s pertinent. <a href=3D"https://eprint.iacr.org/2025/343.pdf">https://eprin=
+t.iacr.org/2025/343.pdf</a> has some nice analysis of such security of salt=
+ed-FO KEMs (Ml-KEM is not salted) but also include a quick analysis of ML-K=
+EM, saying:</div><div dir=3D"auto"><br></div><div dir=3D"auto">&quot;Target=
+ing 256 bits of security: ML-KEM has 3 variants, targeting 128, 192, or 256=
+ bits of security, but all of these use 256-bit messages [Nat24]. We</div><=
+div dir=3D"auto">note that the parameter nc should not change for the vario=
+us targeted security levels, as it represents a threshold on the amount of =
+times the same public key will be used for encapsulation in practical deplo=
+yments. We observe that,</div><div dir=3D"auto">if one targets 256 bits of =
+security, collision finding attacks become relevant again, since an adversa=
+ry generating 2^128 ciphertexts will find a collision with one of 2^64 chal=
+lenge ciphertexts with probability about 2^=E2=88=9264. Thus without saltin=
+g, even ML-KEM-1024 can only achieve 192 bits of multi-target security in t=
+he random oracle model.&quot;</div><div dir=3D"auto"><br></div><div dir=3D"=
+auto">This appears to indicate an upper bound of reuses for all ML-KEM para=
+meter sets to 2^64 (if I&#39;m parsing this wrong someone correct me).=C2=
+=A0</div><div dir=3D"auto"><br></div><div dir=3D"auto"><b>Do people want to=
+ omit any mention of key reuse, implicitly relying on 8446, or include this=
+ bounds analysis in some succinct way?</b></div></div><br><div class=3D"gma=
+il_quote gmail_quote_container"><div dir=3D"ltr" class=3D"gmail_attr">On We=
+d, Feb 25, 2026, 2:31=E2=80=AFAM John Mattsson &lt;john.mattsson=3D<a href=
+=3D"mailto:40ericsson.com@dmarc.ietf.org">40ericsson.com@dmarc.ietf.org</a>=
+&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0 0 =
+0 .8ex;border-left:1px #ccc solid;padding-left:1ex">
+
+
+
+<div>
+<p class=3D"MsoNormal" style=3D"direction:ltr;text-align:left;text-indent:0=
+px;text-transform:none;margin:0cm">
+<span style=3D"font-family:Aptos,sans-serif;font-size:12pt;color:rgb(0,0,0)=
+">Hi</span></p>
+<p class=3D"MsoNormal" style=3D"text-align:left;text-indent:0px;text-transf=
+orm:none;margin:0cm">
+<span style=3D"font-family:Aptos,sans-serif;font-size:12pt;color:rgb(0,0,0)=
+">=C2=A0</span></p>
+<p class=3D"MsoNormal" style=3D"text-align:left;text-indent:0px;text-transf=
+orm:none;margin:0cm">
+<span style=3D"font-family:Aptos,sans-serif;font-size:12pt;color:rgb(0,0,0)=
+">I received an offline comment from a senior IETF participant suggesting t=
+hat I had misunderstood the draft and that the key reuse in question referr=
+ed to reuse within a single
+ session. That is not accurate. The draft talks about static keys, i.e., ke=
+ys used in more than one key-establishment.</span></p>
+<p class=3D"MsoNormal" style=3D"text-align:left;text-indent:0px;text-transf=
+orm:none;margin:0cm">
+<span style=3D"font-family:Aptos,sans-serif;font-size:12pt;color:rgb(0,0,0)=
+">=C2=A0</span></p>
+<p class=3D"MsoNormal" style=3D"text-align:left;text-indent:0px;text-transf=
+orm:none;margin:0cm">
+<span style=3D"font-family:Aptos,sans-serif;font-size:12pt;color:rgb(0,0,0)=
+">Given the apparent confusion between 1. reuse of ephemeral keys within a =
+session, 2. reuse of ephemeral keys across sessions, and 3. static keys, ea=
+ch of which carries distinct
+ privacy and security implications, I recommend that the AD ensure that all=
+ not yet published drafts use very precise terminology. Specifically, a key=
+ used in more than one key-establishment should use the well-established te=
+rm =E2=80=9Cstatic key=E2=80=9D.</span></p>
+<p class=3D"MsoNormal" style=3D"text-align:left;text-indent:0px;text-transf=
+orm:none;margin:0cm">
+<span style=3D"font-family:Aptos,sans-serif;font-size:12pt;color:rgb(0,0,0)=
+">=C2=A0</span></p>
+<p class=3D"MsoNormal" style=3D"text-align:left;text-indent:0px;text-transf=
+orm:none;margin:0cm">
+<span style=3D"font-family:Aptos,sans-serif;font-size:12pt;color:rgb(0,0,0)=
+">---</span></p>
+<p class=3D"MsoNormal" style=3D"text-align:left;text-indent:0px;text-transf=
+orm:none;margin:0cm">
+<span style=3D"font-family:Aptos,sans-serif;font-size:12pt;color:rgb(0,0,0)=
+">=C2=A0</span></p>
+<p class=3D"MsoNormal" style=3D"text-align:left;text-indent:0px;text-transf=
+orm:none;margin:0cm">
+<span style=3D"font-family:Aptos,sans-serif;font-size:12pt;color:rgb(0,0,0)=
+">1. Reuse of ephemeral keys within a session:</span></p>
+<p class=3D"MsoNormal" style=3D"text-align:left;text-indent:0px;text-transf=
+orm:none;margin:0cm">
+<span style=3D"font-family:Aptos,sans-serif;font-size:12pt;color:rgb(0,0,0)=
+">=C2=A0</span></p>
+<p class=3D"MsoNormal" style=3D"text-align:left;text-indent:0px;text-transf=
+orm:none;margin:0cm">
+<span style=3D"font-family:Aptos,sans-serif;font-size:12pt;color:rgb(0,0,0)=
+">- Session A: ClientHello with MLKEM768 KeyShareEntry1 and X25519MLKEM768 =
+KeyShareEntry2 both containing the same ML-KEM public key.</span></p>
+<p class=3D"MsoNormal" style=3D"text-align:left;text-indent:0px;text-transf=
+orm:none;margin:0cm">
+<span style=3D"font-family:Aptos,sans-serif;font-size:12pt;color:rgb(0,0,0)=
+">=C2=A0</span></p>
+<p class=3D"MsoNormal" style=3D"text-align:left;text-indent:0px;text-transf=
+orm:none;margin:0cm">
+<span style=3D"font-family:Aptos,sans-serif;font-size:12pt;color:rgb(0,0,0)=
+">2. Reuse of ephemeral keys across sessions:</span></p>
+<p class=3D"MsoNormal" style=3D"text-align:left;text-indent:0px;text-transf=
+orm:none;margin:0cm">
+<span style=3D"font-family:Aptos,sans-serif;font-size:12pt;color:rgb(0,0,0)=
+">=C2=A0</span></p>
+<p class=3D"MsoNormal" style=3D"text-align:left;text-indent:0px;text-transf=
+orm:none;margin:0cm">
+<span style=3D"font-family:Aptos,sans-serif;font-size:12pt;color:rgb(0,0,0)=
+">- Session B1. ClientHello with MLKEM768 KeyShareEntry3 and X25519 KeyShar=
+eEntry4. Sever picks X25519 KeyShareEntry4.</span></p>
+<p class=3D"MsoNormal" style=3D"text-align:left;text-indent:0px;text-transf=
+orm:none;margin:0cm">
+<span style=3D"font-family:Aptos,sans-serif;font-size:12pt;color:rgb(0,0,0)=
+">=C2=A0</span></p>
+<p class=3D"MsoNormal" style=3D"text-align:left;text-indent:0px;text-transf=
+orm:none;margin:0cm">
+<span style=3D"font-family:Aptos,sans-serif;font-size:12pt;color:rgb(0,0,0)=
+">- Session B2. ClientHello with MLKEM768 KeyShareEntry3 and X25519 KeyShar=
+eEntry5.</span></p>
+<p class=3D"MsoNormal" style=3D"text-align:left;text-indent:0px;text-transf=
+orm:none;margin:0cm">
+<span style=3D"font-family:Aptos,sans-serif;font-size:12pt;color:rgb(0,0,0)=
+">=C2=A0</span></p>
+<p class=3D"MsoNormal" style=3D"text-align:left;text-indent:0px;text-transf=
+orm:none;margin:0cm">
+<span style=3D"font-family:Aptos,sans-serif;font-size:12pt;color:rgb(0,0,0)=
+">3. Static keys</span></p>
+<p class=3D"MsoNormal" style=3D"text-align:left;text-indent:0px;text-transf=
+orm:none;margin:0cm">
+<span style=3D"font-family:Aptos,sans-serif;font-size:12pt;color:rgb(0,0,0)=
+">=C2=A0</span></p>
+<p class=3D"MsoNormal" style=3D"text-align:left;text-indent:0px;text-transf=
+orm:none;margin:0cm">
+<span style=3D"font-family:Aptos,sans-serif;font-size:12pt;color:rgb(0,0,0)=
+">- Session C1. ClientHello with MLKEM768 KeyShareEntry6. Sever picks MLKEM=
+768 KeyShareEntry6</span></p>
+<p class=3D"MsoNormal" style=3D"text-align:left;text-indent:0px;text-transf=
+orm:none;margin:0cm">
+<span style=3D"font-family:Aptos,sans-serif;font-size:12pt;color:rgb(0,0,0)=
+">=C2=A0</span></p>
+<p class=3D"MsoNormal" style=3D"text-align:left;text-indent:0px;text-transf=
+orm:none;margin:0cm">
+<span style=3D"font-family:Aptos,sans-serif;font-size:12pt;color:rgb(0,0,0)=
+">- Session C2. ClientHello with MLKEM768 KeyShareEntry6. Sever picks MLKEM=
+768 KeyShareEntry6</span></p>
+<p class=3D"MsoNormal" style=3D"text-align:left;text-indent:0px;text-transf=
+orm:none;margin:0cm">
+<span style=3D"font-family:Aptos,sans-serif;font-size:12pt;color:rgb(0,0,0)=
+">=C2=A0</span></p>
+<p class=3D"MsoNormal" style=3D"text-align:left;text-indent:0px;text-transf=
+orm:none;margin:0cm">
+<span style=3D"font-family:Aptos,sans-serif;font-size:12pt;color:rgb(0,0,0)=
+">---</span></p>
+<p class=3D"MsoNormal" style=3D"text-align:left;text-indent:0px;text-transf=
+orm:none;margin:0cm">
+<span style=3D"font-family:Aptos,sans-serif;font-size:12pt;color:rgb(0,0,0)=
+">=C2=A0</span></p>
+<p class=3D"MsoNormal" style=3D"text-align:left;text-indent:0px;text-transf=
+orm:none;margin:0cm">
+<span style=3D"font-family:Aptos,sans-serif;font-size:12pt;color:rgb(0,0,0)=
+">Issues with the text on static keys were clearly raised during the first =
+WGLC and should have been addressed before the second. Having to repeat the=
+ same issues is both frustrating
+ and a waste of time.<br>
+<br>
+The major issues, that the draft lacks proper security considerations for t=
+he use of static keys (they should be quite negative), and that it does not=
+ explain how an implementation using static keys can be conformant with NIS=
+T specifications, were raised during
+ the first WGLC and have not been addressed. During the second WGLC, it was=
+ identified that conformance is intrinsically linked to the patent license.=
+</span></p>
+<p class=3D"MsoNormal" style=3D"text-align:left;text-indent:0px;text-transf=
+orm:none;margin:0cm">
+<span style=3D"font-family:Aptos,sans-serif;font-size:12pt;color:rgb(0,0,0)=
+">=C2=A0</span></p>
+<p class=3D"MsoNormal" style=3D"text-align:left;text-indent:0px;text-transf=
+orm:none;margin:0cm">
+<span style=3D"font-family:Aptos,sans-serif;font-size:12pt;color:rgb(0,0,0)=
+">My constructive suggestion is to remove all text regarding static keys, a=
+s there is no reason for this draft to include them. I do not believe compa=
+risons with draft-ietf-tls-hybrid-design
+ are relevant, since that document serves a completely different purpose an=
+d does not register code points.</span></p>
+<p class=3D"MsoNormal" style=3D"text-align:left;text-indent:0px;text-transf=
+orm:none;margin:0cm">
+<span style=3D"font-family:Aptos,sans-serif;font-size:12pt;color:rgb(0,0,0)=
+">=C2=A0</span></p>
+<p class=3D"MsoNormal" style=3D"text-align:left;text-indent:0px;text-transf=
+orm:none;margin:0cm">
+<span style=3D"font-family:Aptos,sans-serif;font-size:12pt;color:rgb(0,0,0)=
+">If the draft intends to retain any text on static keys, NIST SP 1800-37,
+<i>Addressing Visibility Challenges with TLS 1.3 within the Enterprise</i>,=
+ is a useful reference regarding the negative privacy and security implicat=
+ions of static keys. I do not have specific guidance on how to achieve conf=
+ormance with NIST specifications
+ when using static keys, but that issue must clearly be resolved.</span></p=
+>
+<p class=3D"MsoNormal" style=3D"text-align:left;text-indent:0px;text-transf=
+orm:none;margin:0cm">
+<span style=3D"font-family:Aptos,sans-serif;font-size:12pt;color:rgb(0,0,0)=
+">=C2=A0</span></p>
+<p class=3D"MsoNormal" style=3D"text-align:left;text-indent:0px;text-transf=
+orm:none;margin:0cm">
+<span style=3D"font-family:Aptos,sans-serif;font-size:12pt;color:rgb(0,0,0)=
+">I do not find any text in RFC 8446 that allows the use of static keys. If=
+ the TLS WG intends to explicitly permit static keys again, their use shoul=
+d be explicitly negotiated,
+ as done in TLS 1.2 or draft-rhrd-tls-tls13-visibility.</span></p>
+<p class=3D"MsoNormal" style=3D"text-align:left;text-indent:0px;text-transf=
+orm:none;margin:0cm">
+<span style=3D"font-family:Aptos,sans-serif;font-size:12pt;color:rgb(0,0,0)=
+">=C2=A0</span></p>
+<p class=3D"MsoNormal" style=3D"text-align:left;text-indent:0px;text-transf=
+orm:none;margin:0cm">
+<span style=3D"font-family:Aptos,sans-serif;font-size:12pt;color:rgb(0,0,0)=
+">As I have seen no response from the authors indicating that they plan to =
+address this issue, I am opposed to publishing this document.</span></p>
+<p class=3D"MsoNormal" style=3D"text-align:left;text-indent:0px;text-transf=
+orm:none;margin:0cm">
+<span style=3D"font-family:Aptos,sans-serif;font-size:12pt;color:rgb(0,0,0)=
+">=C2=A0</span></p>
+<p class=3D"MsoNormal" style=3D"text-align:left;text-indent:0px;text-transf=
+orm:none;margin:0cm">
+<span style=3D"font-family:Aptos,sans-serif;font-size:12pt;color:rgb(0,0,0)=
+">Cheers,</span></p>
+<p class=3D"MsoNormal" style=3D"text-align:left;text-indent:0px;text-transf=
+orm:none;margin:0cm">
+<span style=3D"font-family:Aptos,sans-serif;font-size:12pt;color:rgb(0,0,0)=
+">John</span></p>
+<div style=3D"direction:ltr;font-family:Aptos,Arial,Helvetica,sans-serif;fo=
+nt-size:12pt;color:rgb(0,0,0)">
+<br>
+</div>
+<div id=3D"m_-5050180461578459232mail-editor-reference-message-container">
+<div style=3D"direction:ltr">
+</div>
+<div style=3D"text-align:left;padding:3pt 0in 0in;border-width:1pt medium m=
+edium;border-style:solid none none;border-color:rgb(181,196,223) currentcol=
+or currentcolor;font-family:Aptos;font-size:12pt;color:black">
+<b>From: </b>Russ Housley &lt;<a href=3D"mailto:housley@vigilsec.com" targe=
+t=3D"_blank" rel=3D"noreferrer">housley@vigilsec.com</a>&gt;<br>
+<b>Date: </b>Thursday, 12 February 2026 at 22:38<br>
+<b>To: </b>Joseph Salowey &lt;<a href=3D"mailto:joe@salowey.net" target=3D"=
+_blank" rel=3D"noreferrer">joe@salowey.net</a>&gt;<br>
+<b>Cc: </b><u></u>
+<div style=3D"text-align:left">
+&lt;<a href=3D"mailto:tls@ietf.org" target=3D"_blank" rel=3D"noreferrer">tl=
+s@ietf.org</a>&gt;, John Mattsson &lt;<a href=3D"mailto:john.mattsson@erics=
+son.com" target=3D"_blank" rel=3D"noreferrer">john.mattsson@ericsson.com</a=
+>&gt;<br>
+<b>Subject: </b>Re: [TLS] WG Last Call: draft-ietf-tls-mlkem-05 (Ends 2026-=
+02-27)<br>
+<br>
+</div>
+<u></u></div>
+<div style=3D"direction:ltr">
+I support the publication of this document as an RFC.=C2=A0 I would prefer =
+to have the clarity about ephemeral vs. static ML-KEM keys as posted by Joh=
+n Mattsson, but I can live with it as-is.</div>
+<div style=3D"direction:ltr">
+<br>
+</div>
+<div style=3D"direction:ltr">
+Russ</div>
+<div style=3D"direction:ltr">
+<br>
+</div>
+<div style=3D"direction:ltr">
+<br>
+</div>
+<blockquote>
+<div>On Feb 12, 2026, at 3:08=E2=80=AFPM, John Mattsson &lt;john.mattsson=
+=3D<a href=3D"mailto:40ericsson.com@dmarc.ietf.org" target=3D"_blank" rel=
+=3D"noreferrer">40ericsson.com@dmarc.ietf.org</a>&gt; wrote:</div>
+<div style=3D"direction:ltr">
+<br>
+</div>
+<div style=3D"direction:ltr;font-family:Aptos,Arial,Helvetica,sans-serif;fo=
+nt-size:12pt">
+Hi,</div>
+<div style=3D"direction:ltr;font-family:Aptos,Arial,Helvetica,sans-serif;fo=
+nt-size:12pt">
+<br>
+</div>
+<div style=3D"direction:ltr;font-family:Aptos,Arial,Helvetica,sans-serif;fo=
+nt-size:12pt">
+I support publication iff all text related to =E2=80=9Ckey reuse=E2=80=9D i=
+s removed. In its current form, I do not believe -07 should be published.</=
+div>
+<div style=3D"direction:ltr;font-family:Aptos,Arial,Helvetica,sans-serif;fo=
+nt-size:12pt">
+<br>
+</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt">
+Major Comments:</div>
+<div style=3D"direction:ltr;font-family:Aptos,Arial,Helvetica,sans-serif;fo=
+nt-size:12pt">
+<br>
+</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt">
+- FIPS 203 states that:</div>
+<div style=3D"direction:ltr;font-family:Aptos,Arial,Helvetica,sans-serif;fo=
+nt-size:12pt">
+<br>
+</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt">
+=E2=80=9Cthe licensed patents be freely available to be practiced by any im=
+plementer of the ML-KEM algorithm as published by NIST.=E2=80=9D</div>
+<div style=3D"direction:ltr;font-family:Aptos,Arial,Helvetica,sans-serif;fo=
+nt-size:12pt">
+<br>
+</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt">
+=E2=80=9Crequirements for the secure use of KEMs in applications, see SP 80=
+0-227.=E2=80=9D</div>
+<div style=3D"direction:ltr;font-family:Aptos,Arial,Helvetica,sans-serif;fo=
+nt-size:12pt">
+<br>
+</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt">
+A reused key is, by definition, a static key. SP 800-227 imposes additional=
+ requirements for static keys compared to ephemeral keys. The draft does no=
+t explain how an implementer can satisfy these requirements. This creates p=
+otential non-conformance with NIST
+ specifications.</div>
+<div style=3D"direction:ltr;font-family:Aptos,Arial,Helvetica,sans-serif;fo=
+nt-size:12pt">
+<br>
+</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt">
+- =C2=A0The draft does not describe the significant security and privacy pr=
+oblems associated with key reuse. IND-CCA is a theoretical property of the =
+algorithm. However, the security and privacy problems=C2=A0are related to t=
+he reuse of keys in the TLS 1.3 protocol in
+ deployments.</div>
+<div style=3D"direction:ltr;font-family:Aptos,Arial,Helvetica,sans-serif;fo=
+nt-size:12pt">
+<br>
+</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt">
+Minor Comments:</div>
+<div style=3D"direction:ltr;font-family:Aptos,Arial,Helvetica,sans-serif;fo=
+nt-size:12pt">
+<br>
+</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt">
+- The discussion of randomness reuse in ciphertexts and references to SP 80=
+0-227 do not belong in a =E2=80=9Ckey reuse=E2=80=9D section. Ciphertexts a=
+re not keys, and SP 800-227 contains broader guidelines and requirements be=
+yond static keys.</div>
+<div style=3D"direction:ltr;font-family:Aptos,Arial,Helvetica,sans-serif;fo=
+nt-size:12pt">
+<br>
+</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt">
+- =E2=80=9CThe client&#39;s shares are listed in descending order of client=
+ preference; the server selects one algorithm and sends its corresponding s=
+hare.=E2=80=9D</div>
+<div style=3D"direction:ltr;font-family:Aptos,Arial,Helvetica,sans-serif;fo=
+nt-size:12pt">
+<br>
+</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt">
+The server may also select no share and respond with a handshake_failure or=
+ a HelloRetryRequest (HRR). Since this is already specified in RFC 8446, it=
+ would be better to remove this text and simply reference RFC 8446.</div>
+<div style=3D"direction:ltr;font-family:Aptos,Arial,Helvetica,sans-serif;fo=
+nt-size:12pt">
+<br>
+</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt">
+- Section 5.1 appears to =E2=80=8Bmix different concepts: hybrids, PQ/T hyb=
+rids, and lattice-based PQ/T hybrids. I assume the person asking for this s=
+ection wanted a comparison with [ECDHE-MLKEM]. I suggest doing that. In the=
+ future, PQ/T hybrids will likely become
+ less common, but it is unclear whether other hybrids (e.g., ML-KEM + HQC-K=
+EM) will gain adoption.</div>
+<div style=3D"direction:ltr;font-family:Aptos,Arial,Helvetica,sans-serif;fo=
+nt-size:12pt">
+<br>
+</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt">
+Cheers,</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt">
+John</div>
+<div style=3D"direction:ltr;font-family:Aptos,Arial,Helvetica,sans-serif;fo=
+nt-size:12pt">
+<br>
+</div>
+<div id=3D"m_-5050180461578459232mail-editor-reference-message-container">
+<div style=3D"padding:3pt 0in 0in;border-width:1pt medium medium;border-sty=
+le:solid none none;border-color:rgb(181,196,223) currentcolor currentcolor"=
+>
+<div style=3D"text-align:left;font-family:Aptos;font-size:12pt">
+<b>From: </b>Joseph Salowey &lt;<a href=3D"mailto:joe@salowey.net" target=
+=3D"_blank" rel=3D"noreferrer">joe@salowey.net</a>&gt;<br>
+<b>Date: </b>Thursday, 12 February 2026 at 20:06<br>
+<b>To:</b></div>
+<div style=3D"text-align:left;font-family:Aptos;font-size:12pt">
+&lt;<a href=3D"mailto:tls@ietf.org" target=3D"_blank" rel=3D"noreferrer">tl=
+s@ietf.org</a>&gt;<br>
+<b>Subject: </b>[TLS] WG Last Call: draft-ietf-tls-mlkem-05 (Ends 2026-02-2=
+7)<br>
+<br>
+</div>
+</div>
+<div style=3D"direction:ltr;line-height:normal;margin:0px;font-family:&quot=
+;Helvetica Neue&quot;;font-size:13px">
+This message starts the second Working Group Last Call for the pure ML-KEM =
+document (draft-ietf-tls-mlkem-07).</div>
+<div style=3D"direction:ltr;line-height:normal;margin:0px;min-height:15px;f=
+ont-family:&quot;Helvetica Neue&quot;;font-size:13px">
+<br>
+</div>
+<div style=3D"direction:ltr;line-height:normal;margin:0px;font-family:&quot=
+;Helvetica Neue&quot;;font-size:13px">
+The file can be retrieved from:</div>
+<div style=3D"direction:ltr;line-height:normal;margin:0px;font-family:&quot=
+;Helvetica Neue&quot;;font-size:13px">
+<a href=3D"https://datatracker.ietf.org/doc/draft-ietf-tls-mlkem/" style=3D=
+"margin-top:0px;margin-bottom:0px" target=3D"_blank" rel=3D"noreferrer">htt=
+ps://datatracker.ietf.org/doc/draft-ietf-tls-mlkem/</a><br>
+<br>
+The diff with the previous WGLC draft (-05) is here:</div>
+<div style=3D"direction:ltr;line-height:normal;margin:0px;min-height:15px;f=
+ont-family:&quot;Helvetica Neue&quot;;font-size:13px">
+<br>
+</div>
+<div style=3D"direction:ltr;line-height:normal;margin:0px;font-family:&quot=
+;Helvetica Neue&quot;;font-size:13px">
+<a href=3D"https://author-tools.ietf.org/iddiff?url1=3Ddraft-ietf-tls-mlkem=
+-05&amp;url2=3Ddraft-ietf-tls-mlkem-06&amp;difftype=3D--html" style=3D"marg=
+in-top:0px;margin-bottom:0px" target=3D"_blank" rel=3D"noreferrer">https://=
+author-tools.ietf.org/iddiff?url1=3Ddraft-ietf-tls-mlkem-05&amp;url2=3Ddraf=
+t-ietf-tls-mlkem-07&amp;difftype=3D--html</a></div>
+<div style=3D"direction:ltr;line-height:normal;margin:0px;min-height:15px;f=
+ont-family:&quot;Helvetica Neue&quot;;font-size:13px">
+<br>
+</div>
+<div style=3D"direction:ltr;line-height:normal;margin:0px;font-family:&quot=
+;Helvetica Neue&quot;;font-size:13px">
+The main focus of this WGLC is to review new text providing more context ar=
+ound the use of pure ML-KEM.=C2=A0 For those who indicated they wanted this=
+ text, please let us know if the new text satisfies you and if you support =
+publication. This working group last
+ call will end on February 27, 2026.=C2=A0</div>
+<div style=3D"direction:ltr;line-height:normal;margin:0px;min-height:15px;f=
+ont-family:&quot;Helvetica Neue&quot;;font-size:13px">
+<br>
+</div>
+<div style=3D"direction:ltr;line-height:normal;margin:0px;font-family:&quot=
+;Helvetica Neue&quot;;font-size:13px">
+Thank You.</div>
+</div>
+<div>_______________________________________________<br>
+TLS mailing list -- <a href=3D"mailto:tls@ietf.org" target=3D"_blank" rel=
+=3D"noreferrer">tls@ietf.org</a><br>
+To unsubscribe send an email to <a href=3D"mailto:tls-leave@ietf.org" targe=
+t=3D"_blank" rel=3D"noreferrer">tls-leave@ietf.org</a></div>
+</blockquote>
+<div style=3D"direction:ltr">
+<br>
+</div>
+</div>
+</div>
+
+_______________________________________________<br>
+TLS mailing list -- <a href=3D"mailto:tls@ietf.org" target=3D"_blank" rel=
+=3D"noreferrer">tls@ietf.org</a><br>
+To unsubscribe send an email to <a href=3D"mailto:tls-leave@ietf.org" targe=
+t=3D"_blank" rel=3D"noreferrer">tls-leave@ietf.org</a><br>
+</blockquote></div>
+
+--0000000000006487ae064ba28fb6--
+

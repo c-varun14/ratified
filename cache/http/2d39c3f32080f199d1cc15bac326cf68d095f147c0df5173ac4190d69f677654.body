@@ -1,0 +1,491 @@
+Return-Path: <colm@allcosts.net>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id D8A77126C0F
+ for <tls@ietfa.amsl.com>; Mon, 19 Feb 2018 11:13:48 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.899
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.899 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_NONE=-0.0001]
+ autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=allcosts-net.20150623.gappssmtp.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id DCCaqICSr7Pr for <tls@ietfa.amsl.com>;
+ Mon, 19 Feb 2018 11:13:46 -0800 (PST)
+Received: from mail-yb0-x233.google.com (mail-yb0-x233.google.com
+ [IPv6:2607:f8b0:4002:c09::233])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id E0E09124BFA
+ for <tls@ietf.org>; Mon, 19 Feb 2018 11:13:45 -0800 (PST)
+Received: by mail-yb0-x233.google.com with SMTP id v135-v6so3169706ybe.2
+ for <tls@ietf.org>; Mon, 19 Feb 2018 11:13:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=allcosts-net.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+ :cc; bh=lrJQsq/53eA9bboOiOJoG0W6KaoIUstIZBShcmDqPu4=;
+ b=lRmgnvLYP31Er5h4j2a8uwxQDt65IjqbMAiR6Riwf/bI9lZlNPOC6Tf7h9RATSCIcS
+ NsEdNyRrnFCJVD+X9LVYazvDqnrs7B5BlcItAK6aSoUzRggGw3s7bep2wP56vWGsklj7
+ DkwOCPb0qNMhsLZIzdisXdtayjqeIHBsyvEaNU2Lt6w0R+SS6MWtJY4XB9YSiUykGIIT
+ PpBzhkBI1koUt900jNnP+i9YEzCKOHJawtobXJF1tvbJ2ZzNdKrjbiodou+b5eZRW823
+ py6tVXKru/Ef8Ho2g3mL6jZrZSxrqjJBsptqua2z/+1qcSPQGw/YLO/AVuFzmG4G1cg3
+ Klpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+ :message-id:subject:to:cc;
+ bh=lrJQsq/53eA9bboOiOJoG0W6KaoIUstIZBShcmDqPu4=;
+ b=H2sL8XQnGimZks1hRIRe+FzuOjKHPCOvlpUkNlA9+L3/GGOwQW9U08qc3nMfOMhNwC
+ 9BbMaBkOeJEp3iL7ZH9Gq2Jgmu18XpPWWReSI0N5HVtAxC54ZzdDeJsjR/b8hpld0GKP
+ FLrzgyPmLvqjEJPVT4/UzBtsSf6gTC/gvinF5S89VuhTc03/9dThRPmkomJAHZv0a2rx
+ 0LX3knKXcMPMhr1y9hKESnOAb+cJjivryKjiF3eG+fzuKM1Cx9h4UUkOjYYUojeNN/4m
+ VbATrO6a3zSo1Xa07lHYe71PeKgZYaF1ZiKSH98/LPBW0kfca7+CAgMIVZ0EhFzna4YH
+ TtNQ==
+X-Gm-Message-State: APf1xPBvFKRl2s2o/nykszUadwEbRkM7Gtmckadwlu2S7KYseBHU3USt
+ RYeTFMCc8A40soyl+C3h1hYgBwCOf323P/82yXjhVA==
+X-Google-Smtp-Source: AH8x225MJQmpu7uq/DCFAita+CRlWs7Ih+LBQ6TM+Fh0fyF3i4ozbeA/b886MX/jP708ODRMxoDsLo8Rqca+81xz6zE=
+X-Received: by 10.37.174.92 with SMTP id g28mr7501521ybe.269.1519067624880;
+ Mon, 19 Feb 2018 11:13:44 -0800 (PST)
+MIME-Version: 1.0
+Received: by 10.129.116.8 with HTTP; Mon, 19 Feb 2018 11:13:44 -0800 (PST)
+In-Reply-To: <CAHbuEH45PYDuhwFPhv-ybDY6LyzsBhfdEwhJPFLQg9b+ndNK9w@mail.gmail.com>
+References: <CAHbuEH45PYDuhwFPhv-ybDY6LyzsBhfdEwhJPFLQg9b+ndNK9w@mail.gmail.com>
+From: =?UTF-8?Q?Colm_MacC=C3=A1rthaigh?= <colm@allcosts.net>
+Date: Mon, 19 Feb 2018 11:13:44 -0800
+Message-ID: <CAAF6GDdsHW4ynWm15cMgL3BRkJw5xFshhQVO3S47MQD8fVMMag@mail.gmail.com>
+To: Kathleen Moriarty <kathleen.moriarty.ietf@gmail.com>
+Cc: Yuhong Bao <yuhongbao_386@hotmail.com>, "tls@ietf.org" <tls@ietf.org>, 
+ "draft-ietf-tls-tls13@ietf.org" <draft-ietf-tls-tls13@ietf.org>,
+ "ietf@ietf.org" <ietf@ietf.org>, IETF-Announce <ietf-announce@ietf.org>,
+ "tls-chairs@ietf.org" <tls-chairs@ietf.org>
+Content-Type: multipart/alternative; boundary="f403045ecde02bd3b80565957eaa"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/XQaMg5PQigtLx6wWVJWrbRGFccM>
+Subject: Re: [TLS] Last Call: <draft-ietf-tls-tls13-24.txt> (The Transport
+ Layer Security (TLS) Protocol Version 1.3) to Proposed Standard
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Mon, 19 Feb 2018 19:13:49 -0000
+
+--f403045ecde02bd3b80565957eaa
+Content-Type: text/plain; charset="UTF-8"
+
+Since this IETF-LC/IESG process is a good chance to get a sanity check, I'd
+like to boil down what I think are the nits and risks with 0-RTT, and if
+others want to weigh in they can. I'll state my own position at the bottom.
+
+Broadly, I think there are three issues with 0-RTT:
+
+   1) The TLS 1.3 draft allows for 0-RTT data, including things like
+requests and headers, to be replayed by attackers.
+
+   2) 0-RTT data, again including requests and headers, has no
+cryptographic guarantee of forward-secrecy and will likely be protected by
+symmetric session ticket encryption keys (STEK) that can be used quite
+broadly with no limits on re-use, rotation, and rely on vendors being able
+to share and revoke keys frequently and securely. Basically: If a vendors
+STEK is compromised, than an unbounded number of end-user requests and
+headers can be decrypted. This obviously defeats the goal of achieving
+forward secrecy.
+
+  3) While no working attack has been found, some cryptographers and
+protocol experts believe that the 0-RTT exchange is overly-complex and a
+source of risk. Kenny Paterson made the most prominent statement (
+http://bristolcrypto.blogspot.com/2017/03/pkc-2017-kenny-paterson-accepting-bets.html
+), but I've heard it echoed at several IACR events. It is definitely true
+that 0-RTT resumption complicates the TLS state machine and creates unusual
+conditions such as needing to restart messaging sequences.
+
+The TLS-WG was chartered with "aiming for one roundtrip for a full
+handshake and one or zero roundtrip for repeated handshakes. The aim is
+also to maintain current security features" (
+https://datatracker.ietf.org/wg/tls/charter/).  But with these 3 issues,
+there is a clearly a trade-off between security (the S in TLS) and speed.
+
+Issue 3 is matter of judgment; my personal judgement is that we will see
+implementation bugs due to state machine complexity, but there's no
+evidence that the cryptographic and protocol semantics are not robust.
+
+With regards to issues 1, and 2, the latest TLS draft makes it possible to
+achieve both of these aims. Through the use of single-use session tickets,
+it is possible to provide anti-replay and forward-secrecy properties for
+0-RTT data. I'm grateful for the changes that were introduced for this.
+
+At the same time though, most vendors have stated that they don't plan to
+do that and instead have designed around limited replay time windows,
+non-transactional strike registers, and non-forward secure tickets. This is
+what I expect to see deployed, and already see with some TLS1.3 deployment
+experiments.  TLS1.3 could be more restrictive here; limiting the size of
+session tickets to smaller than the size of session state would effectively
+forbid any kind of session encoding which would force the issue, but
+several vendors are against it because it doesn't align with current
+practices and it incurs the cost of server-size caching. For balance, in
+the last year I have heard from most vendors that they do plan to implement
+some anti-replay mitigation though, beyond the simple time-windowing, which
+goes a way to protecting users from throttle limits.
+
+I am disappointed by the unfortunate preference for cost-saving over robust
+security. Good cryptography usually costs money, or else we'd still be
+using RC4. I do think that we will see security and correctness issues due
+to replays interacting with non-idempotent services and throttling
+configurations. While it's true that browsers can be made to replay
+requests already, there are many web and non-HTTP services that are
+certainly not tolerant of replays. Secondly, I think that it is inevitable
+that vendor security compromises will disclose troves of user requests,
+passwords, credit cards to decryption; but this is perhaps more of a
+nation-state-adversary level risk. Some more detail on attacks related to
+issues 1/ and 2/ is available in the security review of 0-RTT data:
+https://github.com/tlswg/tls13-spec/issues/1001 .
+
+
+After all of that, here's my own position:
+
+I strongly support the current TLS1.3 draft progressing to RFC status. I
+work at Amazon, where one of our leadership principles is "Disagree and
+Commit" (https://www.amazon.jobs/principles); the idea is that it's
+important to make yourself heard, but also to move forward and not be
+endlessly bogged down. I've been vocal about 0-RTT risks, and certainly
+heard and understood, and those concerns have been reflected in generous
+changes to the draft. I'm happy that it's possible to build a
+forward-secret, non-repayable 0-RTT implementation and that's what I'm
+doing. I wish everyone else would too, but that's not consensus; others
+have a different weighting for the trade-offs between speed, security and
+cost and those views are also legitimate.
+
+But my more important reason for supporting is that overall TLS1.3 is much
+much better than TLS1.2, including in regards to forward-secrecy, which is
+now guaranteed for all non-0RTT data. I still believe that it will
+meaningfully increase the overall security posture for the internet, and
+I'm super excited to get it out and for users to be getting the benefits.
+TLS has always been a bit of a mess, it's not as clean as something
+designed by a single voice focused on modern cryptographic best-practices,
+but 1.3 does a lot of good cleaning up. Shipping 1.3 doesn't mean things
+can't be improved further, and delay inflicts 1.2 and lower versions on
+users for even longer. So let's go!
+
+
+On Mon, Feb 19, 2018 at 7:58 AM, Kathleen Moriarty <
+kathleen.moriarty.ietf@gmail.com> wrote:
+
+> Dear Yuhong,
+>
+> As the sponsoring Area Director, my job is to take the draft forward
+> as was determined by working group consensus.  Like Stephen, I'm also
+> not particularly happy about the choice to leave in 0-RTT, but I have
+> to support it as a WG decision.  Whatever the version number in the
+> ServerHello decision is from the WG, I will support that decision.
+> The ServerHello decision doesn't really fall into the, "arms race" as
+> you put it.  More on that in another thread.
+>
+> Best regards,
+> Kathleen
+>
+> On Thu, Feb 15, 2018 at 9:04 PM, Yuhong Bao <yuhongbao_386@hotmail.com>
+> wrote:
+> > I wonder what is IESG's opinion on the TLS arms race with middleboxes.
+> > Yes, I am talking about moving the version number in the ServerHello.
+> >
+> > ________________________________________
+> > From: TLS <tls-bounces@ietf.org> on behalf of The IESG <
+> iesg-secretary@ietf.org>
+> > Sent: Thursday, February 15, 2018 1:13:48 PM
+> > To: IETF-Announce
+> > Cc: draft-ietf-tls-tls13@ietf.org; tls-chairs@ietf.org; tls@ietf.org
+> > Subject: [TLS] Last Call: <draft-ietf-tls-tls13-24.txt> (The Transport
+> Layer Security (TLS) Protocol Version 1.3) to Proposed Standard
+> >
+> >
+> > The IESG has received a request from the Transport Layer Security WG
+> (tls) to
+> > consider the following document: - 'The Transport Layer Security (TLS)
+> > Protocol Version 1.3'
+> >   <draft-ietf-tls-tls13-24.txt> as Proposed Standard
+> >
+> > The IESG plans to make a decision in the next few weeks, and solicits
+> final
+> > comments on this action. Please send substantive comments to the
+> > ietf@ietf.org mailing lists by 2018-03-01. Exceptionally, comments may
+> be
+> > sent to iesg@ietf.org instead. In either case, please retain the
+> beginning of
+> > the Subject line to allow automated sorting.
+> >
+> > Abstract
+> >
+> >
+> >    This document specifies version 1.3 of the Transport Layer Security
+> >    (TLS) protocol.  TLS allows client/server applications to communicate
+> >    over the Internet in a way that is designed to prevent eavesdropping,
+> >    tampering, and message forgery.
+> >
+> >
+> >
+> >
+> > The file can be obtained via
+> > https://datatracker.ietf.org/doc/draft-ietf-tls-tls13/
+> >
+> > IESG discussion can be tracked via
+> > https://datatracker.ietf.org/doc/draft-ietf-tls-tls13/ballot/
+> >
+> > The following IPR Declarations may be related to this I-D:
+> >
+> >    https://datatracker.ietf.org/ipr/2900/
+> >
+> >
+> >
+> > The document contains these normative downward references.
+> > See RFC 3967 for additional information:
+> >     rfc8017: PKCS #1: RSA Cryptography Specifications Version 2.2
+> (Informational - IETF stream)
+> >
+> >
+> >
+> > _______________________________________________
+> > TLS mailing list
+> > TLS@ietf.org
+> > https://www.ietf.org/mailman/listinfo/tls
+> >
+> > _______________________________________________
+> > TLS mailing list
+> > TLS@ietf.org
+> > https://www.ietf.org/mailman/listinfo/tls
+>
+>
+>
+> --
+>
+> Best regards,
+> Kathleen
+>
+>
+
+
+-- 
+Colm
+
+--f403045ecde02bd3b80565957eaa
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div><br></div><div>Since this IETF-LC/IESG process is a g=
+ood chance to get a sanity check, I&#39;d like to boil down what I think ar=
+e the nits and risks with 0-RTT, and if others want to weigh in they can. I=
+&#39;ll state my own position at the bottom.</div><div><br></div><div>Broad=
+ly, I think there are three issues with 0-RTT:</div><div><br></div><div>=C2=
+=A0 =C2=A01) The TLS 1.3 draft allows for 0-RTT data, including things like=
+ requests and headers, to be replayed by attackers.</div><div><br></div><di=
+v>=C2=A0 =C2=A02) 0-RTT data, again including requests and headers, has no =
+cryptographic guarantee of forward-secrecy and will likely be protected by =
+symmetric session ticket encryption keys (STEK) that can be used quite broa=
+dly with no limits on re-use, rotation, and rely on vendors being able to s=
+hare and revoke keys frequently and securely. Basically: If a vendors STEK =
+is compromised, than an unbounded number of end-user requests and headers c=
+an be decrypted. This obviously defeats the goal of achieving forward secre=
+cy.=C2=A0</div><div><br></div><div>=C2=A0 3) While no working attack has be=
+en found, some cryptographers and protocol experts believe that the 0-RTT e=
+xchange is overly-complex and a source of risk. Kenny Paterson made the mos=
+t prominent statement ( <a href=3D"http://bristolcrypto.blogspot.com/2017/0=
+3/pkc-2017-kenny-paterson-accepting-bets.html">http://bristolcrypto.blogspo=
+t.com/2017/03/pkc-2017-kenny-paterson-accepting-bets.html</a> ), but I&#39;=
+ve heard it echoed at several IACR events. It is definitely true that 0-RTT=
+ resumption complicates the TLS state machine and creates unusual condition=
+s such as needing to restart messaging sequences.=C2=A0</div><div><br></div=
+><div>The TLS-WG was chartered with &quot;aiming for one roundtrip for a fu=
+ll handshake and one or zero roundtrip for repeated handshakes. The aim is =
+also to maintain current security features&quot; (<a href=3D"https://datatr=
+acker.ietf.org/wg/tls/charter/">https://datatracker.ietf.org/wg/tls/charter=
+/</a>).=C2=A0 But with these 3 issues, there is a clearly a trade-off betwe=
+en security (the S in TLS) and speed.=C2=A0</div><div><br></div><div>Issue =
+3 is matter of judgment; my personal judgement is that we will see implemen=
+tation bugs due to state machine complexity, but there&#39;s no evidence th=
+at the cryptographic and protocol semantics are not robust.=C2=A0</div><div=
+><br></div><div>With regards to issues 1, and 2, the latest TLS draft makes=
+ it possible to achieve both of these aims. Through the use of single-use s=
+ession tickets, it is possible to provide anti-replay and forward-secrecy p=
+roperties for 0-RTT data. I&#39;m grateful for the changes that were introd=
+uced for this. =C2=A0</div><div><br></div><div>At the same time though, mos=
+t vendors have stated that they don&#39;t plan to do that and instead have =
+designed around limited replay time windows, non-transactional strike regis=
+ters, and non-forward secure tickets. This is what I expect to see deployed=
+, and already see with some TLS1.3 deployment experiments.=C2=A0 TLS1.3 cou=
+ld be more restrictive here; limiting the size of session tickets to smalle=
+r than the size of session state would effectively forbid any kind of sessi=
+on encoding which would force the issue, but several vendors are against it=
+ because it doesn&#39;t align with current practices and it incurs the cost=
+ of server-size caching. For balance, in the last year I have heard from mo=
+st vendors that they do plan to implement some anti-replay mitigation thoug=
+h, beyond the simple time-windowing, which goes a way to protecting users f=
+rom throttle limits.</div><div><br></div><div>I am disappointed by the unfo=
+rtunate preference for cost-saving over robust security. Good cryptography =
+usually costs money, or else we&#39;d still be using RC4. I do think that w=
+e will see security and correctness issues due to replays interacting with =
+non-idempotent services and throttling configurations. While it&#39;s true =
+that browsers can be made to replay requests already, there are many web an=
+d non-HTTP services that are certainly not tolerant of replays. Secondly, I=
+ think that it is inevitable that vendor security compromises will disclose=
+ troves of user requests, passwords, credit cards to decryption; but this i=
+s perhaps more of a nation-state-adversary level risk. Some more detail on =
+attacks related to issues 1/ and 2/ is available in the security review of =
+0-RTT data: <a href=3D"https://github.com/tlswg/tls13-spec/issues/1001">htt=
+ps://github.com/tlswg/tls13-spec/issues/1001</a> .=C2=A0</div><div><br></di=
+v><div><br></div><div>After all of that, here&#39;s my own position:</div><=
+div><br></div><div>I strongly support the current TLS1.3 draft progressing =
+to RFC status. I work at Amazon, where one of our leadership principles is =
+&quot;Disagree and Commit&quot; (<a href=3D"https://www.amazon.jobs/princip=
+les">https://www.amazon.jobs/principles</a>); the idea is that it&#39;s imp=
+ortant to make yourself heard, but also to move forward and not be endlessl=
+y bogged down. I&#39;ve been vocal about 0-RTT risks, and certainly heard a=
+nd understood, and those concerns have been reflected in generous changes t=
+o the draft. I&#39;m happy that it&#39;s possible to build a forward-secret=
+, non-repayable 0-RTT implementation and that&#39;s what I&#39;m doing. I w=
+ish everyone else would too, but that&#39;s not consensus; others have a di=
+fferent weighting for the trade-offs between speed, security and cost and t=
+hose views are also legitimate.=C2=A0</div><div><br></div><div>But my more =
+important reason for supporting is that overall TLS1.3 is much much better =
+than TLS1.2, including in regards to forward-secrecy, which is now guarante=
+ed for all non-0RTT data. I still believe that it will meaningfully increas=
+e the overall security posture for the internet, and I&#39;m super excited =
+to get it out and for users to be getting the benefits. TLS has always been=
+ a bit of a mess, it&#39;s not as clean as something designed by a single v=
+oice focused on modern cryptographic best-practices, but 1.3 does a lot of =
+good cleaning up. Shipping 1.3 doesn&#39;t mean things can&#39;t be improve=
+d further, and delay inflicts 1.2 and lower versions on users for even long=
+er. So let&#39;s go!</div><div><br></div><div><br></div><div class=3D"gmail=
+_extra"><div class=3D"gmail_quote">On Mon, Feb 19, 2018 at 7:58 AM, Kathlee=
+n Moriarty <span dir=3D"ltr">&lt;<a href=3D"mailto:kathleen.moriarty.ietf@g=
+mail.com" target=3D"_blank">kathleen.moriarty.ietf@gmail.com</a>&gt;</span>=
+ wrote:<br><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.=
+8ex;border-left-width:1px;border-left-style:solid;border-left-color:rgb(204=
+,204,204);padding-left:1ex">Dear Yuhong,<br>
+<br>
+As the sponsoring Area Director, my job is to take the draft forward<br>
+as was determined by working group consensus.=C2=A0 Like Stephen, I&#39;m a=
+lso<br>
+not particularly happy about the choice to leave in 0-RTT, but I have<br>
+to support it as a WG decision.=C2=A0 Whatever the version number in the<br=
+>
+ServerHello decision is from the WG, I will support that decision.<br>
+The ServerHello decision doesn&#39;t really fall into the, &quot;arms race&=
+quot; as<br>
+you put it.=C2=A0 More on that in another thread.<br>
+<br>
+Best regards,<br>
+Kathleen<br>
+<span class=3D"gmail-"><br>
+On Thu, Feb 15, 2018 at 9:04 PM, Yuhong Bao &lt;<a href=3D"mailto:yuhongbao=
+_386@hotmail.com">yuhongbao_386@hotmail.com</a>&gt; wrote:<br>
+&gt; I wonder what is IESG&#39;s opinion on the TLS arms race with middlebo=
+xes.<br>
+&gt; Yes, I am talking about moving the version number in the ServerHello.<=
+br>
+&gt;<br>
+&gt; ______________________________<wbr>__________<br>
+&gt; From: TLS &lt;<a href=3D"mailto:tls-bounces@ietf.org">tls-bounces@ietf=
+.org</a>&gt; on behalf of The IESG &lt;<a href=3D"mailto:iesg-secretary@iet=
+f.org">iesg-secretary@ietf.org</a>&gt;<br>
+&gt; Sent: Thursday, February 15, 2018 1:13:48 PM<br>
+&gt; To: IETF-Announce<br>
+&gt; Cc: <a href=3D"mailto:draft-ietf-tls-tls13@ietf.org">draft-ietf-tls-tl=
+s13@ietf.org</a>; <a href=3D"mailto:tls-chairs@ietf.org">tls-chairs@ietf.or=
+g</a>; <a href=3D"mailto:tls@ietf.org">tls@ietf.org</a><br>
+</span>&gt; Subject: [TLS] Last Call: &lt;draft-ietf-tls-tls13-24.txt&gt; (=
+The Transport Layer Security (TLS) Protocol Version 1.3) to Proposed Standa=
+rd<br>
+<div class=3D"gmail-HOEnZb"><div class=3D"gmail-h5">&gt;<br>
+&gt;<br>
+&gt; The IESG has received a request from the Transport Layer Security WG (=
+tls) to<br>
+&gt; consider the following document: - &#39;The Transport Layer Security (=
+TLS)<br>
+&gt; Protocol Version 1.3&#39;<br>
+&gt;=C2=A0 =C2=A0&lt;draft-ietf-tls-tls13-24.txt&gt; as Proposed Standard<b=
+r>
+&gt;<br>
+&gt; The IESG plans to make a decision in the next few weeks, and solicits =
+final<br>
+&gt; comments on this action. Please send substantive comments to the<br>
+&gt; <a href=3D"mailto:ietf@ietf.org">ietf@ietf.org</a> mailing lists by 20=
+18-03-01. Exceptionally, comments may be<br>
+&gt; sent to <a href=3D"mailto:iesg@ietf.org">iesg@ietf.org</a> instead. In=
+ either case, please retain the beginning of<br>
+&gt; the Subject line to allow automated sorting.<br>
+&gt;<br>
+&gt; Abstract<br>
+&gt;<br>
+&gt;<br>
+&gt;=C2=A0 =C2=A0 This document specifies version 1.3 of the Transport Laye=
+r Security<br>
+&gt;=C2=A0 =C2=A0 (TLS) protocol.=C2=A0 TLS allows client/server applicatio=
+ns to communicate<br>
+&gt;=C2=A0 =C2=A0 over the Internet in a way that is designed to prevent ea=
+vesdropping,<br>
+&gt;=C2=A0 =C2=A0 tampering, and message forgery.<br>
+&gt;<br>
+&gt;<br>
+&gt;<br>
+&gt;<br>
+&gt; The file can be obtained via<br>
+&gt; <a href=3D"https://datatracker.ietf.org/doc/draft-ietf-tls-tls13/" rel=
+=3D"noreferrer" target=3D"_blank">https://datatracker.ietf.org/<wbr>doc/dra=
+ft-ietf-tls-tls13/</a><br>
+&gt;<br>
+&gt; IESG discussion can be tracked via<br>
+&gt; <a href=3D"https://datatracker.ietf.org/doc/draft-ietf-tls-tls13/ballo=
+t/" rel=3D"noreferrer" target=3D"_blank">https://datatracker.ietf.org/<wbr>=
+doc/draft-ietf-tls-tls13/<wbr>ballot/</a><br>
+&gt;<br>
+&gt; The following IPR Declarations may be related to this I-D:<br>
+&gt;<br>
+&gt;=C2=A0 =C2=A0 <a href=3D"https://datatracker.ietf.org/ipr/2900/" rel=3D=
+"noreferrer" target=3D"_blank">https://datatracker.ietf.org/<wbr>ipr/2900/<=
+/a><br>
+&gt;<br>
+&gt;<br>
+&gt;<br>
+&gt; The document contains these normative downward references.<br>
+&gt; See RFC 3967 for additional information:<br>
+&gt;=C2=A0 =C2=A0 =C2=A0rfc8017: PKCS #1: RSA Cryptography Specifications V=
+ersion 2.2 (Informational - IETF stream)<br>
+&gt;<br>
+&gt;<br>
+&gt;<br>
+&gt; ______________________________<wbr>_________________<br>
+&gt; TLS mailing list<br>
+&gt; <a href=3D"mailto:TLS@ietf.org">TLS@ietf.org</a><br>
+&gt; <a href=3D"https://www.ietf.org/mailman/listinfo/tls" rel=3D"noreferre=
+r" target=3D"_blank">https://www.ietf.org/mailman/<wbr>listinfo/tls</a><br>
+&gt;<br>
+&gt; ______________________________<wbr>_________________<br>
+&gt; TLS mailing list<br>
+&gt; <a href=3D"mailto:TLS@ietf.org">TLS@ietf.org</a><br>
+&gt; <a href=3D"https://www.ietf.org/mailman/listinfo/tls" rel=3D"noreferre=
+r" target=3D"_blank">https://www.ietf.org/mailman/<wbr>listinfo/tls</a><br>
+<br>
+<br>
+<br>
+</div></div><span class=3D"gmail-HOEnZb"><font color=3D"#888888">--<br>
+<br>
+Best regards,<br>
+Kathleen<br>
+<br>
+</font></span></blockquote></div><br><br clear=3D"all"><div><br></div>-- <b=
+r><div class=3D"gmail_signature">Colm</div>
+</div></div>
+
+--f403045ecde02bd3b80565957eaa--
+

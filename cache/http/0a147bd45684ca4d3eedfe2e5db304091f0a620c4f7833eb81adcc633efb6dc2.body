@@ -1,0 +1,171 @@
+Return-Path: <ekr@rtfm.com>
+X-Original-To: tls@mail2.ietf.org
+Delivered-To: tls@mail2.ietf.org
+Received: from localhost (localhost [127.0.0.1])
+	by mail2.ietf.org (Postfix) with ESMTP id D5CCECEDEAA1
+	for <tls@mail2.ietf.org>; Fri, 20 Mar 2026 12:21:22 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at ietf.org
+X-Spam-Flag: NO
+X-Spam-Score: -1.897
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.897 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+	HTML_MESSAGE=0.001, RCVD_IN_DNSWL_NONE=-0.0001, SPF_HELO_NONE=0.001,
+	SPF_NONE=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: mail2.ietf.org (amavisd-new); dkim=pass (2048-bit key)
+	header.d=rtfm-com.20230601.gappssmtp.com
+Received: from mail2.ietf.org ([166.84.6.31])
+	by localhost (mail2.ietf.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id nq0koBOKrO9O for <tls@mail2.ietf.org>;
+	Fri, 20 Mar 2026 12:21:22 -0700 (PDT)
+Received: from mail-yx1-xb131.google.com (mail-yx1-xb131.google.com
+ [IPv6:2607:f8b0:4864:20::b131])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail2.ietf.org (Postfix) with ESMTPS id 344B3CEDEA9A
+	for <tls@ietf.org>; Fri, 20 Mar 2026 12:21:22 -0700 (PDT)
+Received: by mail-yx1-xb131.google.com with SMTP id
+ 956f58d0204a3-649278a69c5so1651482d50.3
+        for <tls@ietf.org>; Fri, 20 Mar 2026 12:21:22 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1774034476; cv=none;
+        d=google.com; s=arc-20240605;
+        b=lIHloJg+kpMtyGh3gD5gnBnX/zITAlt37y2c9BpqObkIRqqZxh8dsyAUufS9NaQCkl
+         oifxK8Ahn2HMb4tn3gtRaQfCHyDBqK+Iyj5SW1MHHhGR/LK9Sl0D1bE9/bk3vKEk47w5
+         6T5fsa+NA7ZSoUGaK8BYMZ2PD7aaB9ppkJM8UxzYXCxpFcU9H1qfxCchNQqFSgRNMl/t
+         qTbG14Uxx3ZrH2drUsJrNyNf4n71eUpGqNqQUPKW+wGV7XpVnD42cXDdneF7VAT0BWcV
+         Qg0s0HjK1s9sSBUtOSb4HacB4kBSQRH82VmrqVR7n4nyfG+ot3UlHLV7EEvyXBDppTB3
+         46Xw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20240605;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=8s+1+Vj+KglUTjOVx5PhLZknGCmjzcy6SN94HDY9O1I=;
+        fh=qHJ/9ZP/Cuaf2xSHZfsV6xR/Ql1H2Xti4q+4UCsHLBM=;
+        b=jD3N5RK6wJgdGN0uohALfzv9fhlk5fNzLHqjLFxEHj0y9PbkL25FItDhmO+O3uMRTg
+         unzoNPDEvgpARBWs1/bh2fM0xVS885+D4h0876y9I1xm+P6MtTZog+AFqfuMWVbsEKon
+         6fjhjA2ICnFrBjM2WQMPl7+TwO+eBIZ+pcsx/NRXVtjKbFh0KEmyYBho6+X/Emu1JXJm
+         i2JgJeGd4aGOv+NaABjSVkw+HlEbKm9inVa1YZQx3931bCN9D0fchecnkOy1VcTnWKpG
+         Z/3pYPaUMKq59nsU8RtupbBTrmkSKenKcHZ4mXf4vkBmuBDOn23KlxN5VSWu8UVd5x5f
+         nqoQ==;
+        darn=ietf.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rtfm-com.20230601.gappssmtp.com; s=20230601; t=1774034476;
+ x=1774639276; darn=ietf.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=8s+1+Vj+KglUTjOVx5PhLZknGCmjzcy6SN94HDY9O1I=;
+        b=d4cwCivN3aDPKDYUFokXqIuQ5MAybkQ/69gcsVGmgcw8Qo8zJIBGojFAHoDxw+gjBn
+         H5QmkD3B1tQo3qq0HRszJ3DAQTCfJqlMwHaItHi/eeAIMTn88IW74X+TObGckSO+vW09
+         nrBgciSMkFp5DO61AiuZUERCHh6xjS0DhE1z9lqYybQ8KTmNti5s0VIehd1KTtSWNv4k
+         tWkMv/SiGefEmNbrCNCvGdK6p0+VAeBhfsjTKM4hScMLPWr5R6zaLUeuMJMal7CmSI9D
+         KB8YA7LCjX+2+PEkONH9LdUDU0gCHjknGBhnvBiO/L64Q+V1flBuLOql1tV2eYqGj4dv
+         BG+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1774034476; x=1774639276;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8s+1+Vj+KglUTjOVx5PhLZknGCmjzcy6SN94HDY9O1I=;
+        b=L+t/6eaNehapYxeYE1JD05lFLbWWnPbBEfizpNqh2+3s89RhIXy7IY6rdtuSfBk+no
+         NUtS+M1yW0NCTIc1p1cNm8N3iurRen2C5kh9Kzozm0Ot/OR1FnhFNx+4asF1X3j+SSws
+         h5A325HNWeZAmS7p98M0LBgq2kXUgONKLg4tM7nRXmEcRdu4O2djcaB4j1N2Gpx+VbnK
+         6LNAQEfKF9B1BhSKYS5xIlFQo60LwrsTgVcwsNY7j1FEv27KoGXUKbs9fE93BRLVPHc0
+         ugpI0D250zV8IV1N+zbRi2zafJkxR3S5O7w1HeDFHBaYidaGMtgyLLc8a/tPKUCZplhx
+         +KiQ==
+X-Gm-Message-State: AOJu0Yx84vRAaeS+vhONuocXEBIeQbk/N/zI2Mbx/7TPgaxAS6E9/17/
+	a0R5KOI/FqxXHAXGMXTDhEAh1WKQe1CRswsP6DOzogDmufjI8KTXU8twdXDvT2rppc+rUnq/UFd
+	Ij+QiqYw5u1nb168emFho+UrIc/QLTA2ZLe6ayohCXS0ofDQoy+QXw1i3bA==
+X-Gm-Gg: ATEYQzwxOYkkLystEXyQNJwVVUJm+UX8y8AhwrC8yBdDHD0EKpWjd3OyazM0yGMYHiG
+	TvK4AWbxWDHAvgBgZIFRlm5Zz3I24mfEdh7qlGFmibnxUronxYGLyIH0l/4aBv6duSQA2a8NosT
+	ciUaf+UoVbsJI3/ZNuI2NgjR5gOL20oWGwxBAytmNjmXfBfXLPEXov9gWPOx0p1RlY7lgzHPlkE
+	ZMoCmiKzcjVpRqz1wBX7xgaOtdp5rhwVhIh6GTXWkMbVd64A9UG73b2e1EYySq9y/YVVlc08ILg
+	Ys60HEWON9IygdxiG19XOyQn6ctw17jhrQeTYnapjjBnUntQLwuPYQEsKsgtDUFxE3sXMJqMUl+
+	Mz9DWCMIJHVudhiYBTyG1CPvdMNgChdW9
+X-Received: by 2002:a53:b442:0:b0:64e:a119:cb50 with SMTP id
+ 956f58d0204a3-64eaa6843f8mr3455498d50.3.1774034476221; Fri, 20 Mar 2026
+ 12:21:16 -0700 (PDT)
+MIME-Version: 1.0
+References: 
+ <CAChr6SyrNFOW1hoCUmH7ZfzE8vhh9SQ6=boz40mXeZzJuBLN1Q@mail.gmail.com>
+In-Reply-To: 
+ <CAChr6SyrNFOW1hoCUmH7ZfzE8vhh9SQ6=boz40mXeZzJuBLN1Q@mail.gmail.com>
+From: Eric Rescorla <ekr@rtfm.com>
+Date: Fri, 20 Mar 2026 12:20:40 -0700
+X-Gm-Features: AaiRm50f2tyBhde9rI3vD3veKMpLeSU_znk5ixptkJUnnF307qLaCXC8r2IA0-Y
+Message-ID: 
+ <CABcZeBOuSBtGE9_wEhtongsiQ2UnfuQdYiosXNCUyn=A2ierXQ@mail.gmail.com>
+To: Rob Sayre <sayrer@gmail.com>
+Content-Type: multipart/alternative; boundary="000000000000c6629a064d7996b0"
+Message-ID-Hash: VEIKL7QG4J4YCV3PG5TIFDM4HN6VGGOD
+X-Message-ID-Hash: VEIKL7QG4J4YCV3PG5TIFDM4HN6VGGOD
+X-MailFrom: ekr@rtfm.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+CC: "TLS@ietf.org" <tls@ietf.org>
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Re=3A_rfc8446bis_status?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/zWP2Q4fAjL6KdX2pOX3ekduOQOU>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+--000000000000c6629a064d7996b0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Mar 20, 2026 at 12:19=E2=80=AFPM Rob Sayre <sayrer@gmail.com> wrote=
+:
+
+> Hi,
+>
+> https://datatracker.ietf.org/doc/draft-ietf-tls-rfc8446bis/history/
+>
+> has been in AUTH48 for 3 months now. What's the holdup?
+>
+
+The holdup is that we're working through some last minute issues, such as
+https://github.com/tlswg/tls13-spec/pull/1410
+
+
+
+> I need to cite it.
+>
+
+Cite 8446.
+
+-Ekr
+
+--000000000000c6629a064d7996b0
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">On Fri, Mar 20, 2026 at 12:19=E2=80=AFPM Rob Sayre &lt;<a =
+href=3D"mailto:sayrer@gmail.com">sayrer@gmail.com</a>&gt; wrote:<div class=
+=3D"gmail_quote gmail_quote_container"><blockquote class=3D"gmail_quote" st=
+yle=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padd=
+ing-left:1ex"><div dir=3D"ltr">Hi,<div><br></div><div><a href=3D"https://da=
+tatracker.ietf.org/doc/draft-ietf-tls-rfc8446bis/history/" target=3D"_blank=
+">https://datatracker.ietf.org/doc/draft-ietf-tls-rfc8446bis/history/</a></=
+div><div><br></div><div>has been in AUTH48 for 3 months now. What&#39;s the=
+ holdup?</div></div></blockquote><div><br></div><div>The holdup is that we&=
+#39;re working through some last minute issues, such as=C2=A0<a href=3D"htt=
+ps://github.com/tlswg/tls13-spec/pull/1410">https://github.com/tlswg/tls13-=
+spec/pull/1410</a></div><div><br></div><div>=C2=A0</div><blockquote class=
+=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rg=
+b(204,204,204);padding-left:1ex"><div dir=3D"ltr"><div> I need to cite it.<=
+/div></div></blockquote><div><br></div><div>Cite 8446.=C2=A0</div><div><br>=
+</div><div>-Ekr</div><br></div></div>
+
+--000000000000c6629a064d7996b0--
+

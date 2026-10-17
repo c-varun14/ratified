@@ -1,0 +1,289 @@
+Return-Path: <ekr@rtfm.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id A153D129B2C
+ for <tls@ietfa.amsl.com>; Sat, 22 Apr 2017 04:54:33 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.599
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.599 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_LOW=-0.7]
+ autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=rtfm-com.20150623.gappssmtp.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id YnSXNgMI6vYb for <tls@ietfa.amsl.com>;
+ Sat, 22 Apr 2017 04:54:31 -0700 (PDT)
+Received: from mail-yw0-x235.google.com (mail-yw0-x235.google.com
+ [IPv6:2607:f8b0:4002:c05::235])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 71A611294CD
+ for <tls@ietf.org>; Sat, 22 Apr 2017 04:54:31 -0700 (PDT)
+Received: by mail-yw0-x235.google.com with SMTP id 203so59446061ywe.0
+ for <tls@ietf.org>; Sat, 22 Apr 2017 04:54:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=rtfm-com.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+ :cc; bh=y9HF6dIlClFA17FAynh24ufmUBFchalOTV0l1ADt024=;
+ b=UxOkowzzrCvH+R1LcZA9STh5eeWR1gCJCST9OPfbukePk+gVT7AeYbBAtvYRg66qNT
+ 0X/ZafcFeveHjFO8o6Oxoo0c1u0CpuzMF1874m9T07JM2x+sHWCSyzUYVD2u/ot1pjt8
+ cEcAbDjbOsTmkznmFtU9zYxtz86+MqwBdArc1m/uHPfNVcXBnkMi6k6N38Km1e03jYLN
+ mPT9ZP69cy5khJaGLke2FAiXBHEIcuSQACJgeo/1aBYvnH+hooKzc4qv/9zHH9zH4gF/
+ ZliOwPacUE0EHhWvB0bVdfuKsXPba1BwzRenVyMHOWPNir8kyzPUpyBSptu9RK71I0UQ
+ whrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+ :message-id:subject:to:cc;
+ bh=y9HF6dIlClFA17FAynh24ufmUBFchalOTV0l1ADt024=;
+ b=GIjola73JAK58frANOkXCMKlsTo6pJOSMm7Q+Gs1cmaJnG3q/1nisYIt0cqRjtHUWl
+ TV2RC4sWaI1gSFvEcSAVPeWpoNtcJRNnijOA8OPajlWPtF9mrMYvdTQIk+bB/IBVq/5M
+ Z92SUmKX+HXF1IoSX0V9A0eBl5gZWfzZWZNoYXcNK8XnTux1sgCvZcuN/O9Cym42b7Gw
+ zTOvNAP7WoD3jkm4ly3+R+dJm1wNg44IPKheywMFGqlw3wwMR3NZxR2TsOdJAkqazP4u
+ PyM9P10sxH3ir2Ncjt+VMS9a6P1yIYz8tgNu3DCnHtXnXBCPrAYDSsn7gjIJCIa92OQE
+ nYIw==
+X-Gm-Message-State: AN3rC/5eNW0M3qCMVKOMZNs8tPrebgyiGaTt85MgF4tXGSphVLnmacBc
+ WZxrk/yaBeRYYGQdc/QMIFIBDcGRge0r
+X-Received: by 10.129.172.93 with SMTP id z29mr830241ywj.125.1492862070752;
+ Sat, 22 Apr 2017 04:54:30 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 10.129.113.7 with HTTP; Sat, 22 Apr 2017 04:53:50 -0700 (PDT)
+In-Reply-To: <1492786351.14070.2.camel@redhat.com>
+References: <1490797726.28079.18.camel@redhat.com>
+ <1490797957.28079.20.camel@redhat.com>
+ <CABcZeBMCZrVKM959F3ycKN_WAky2NAZTy9OOetnC+KJAj3L+Pw@mail.gmail.com>
+ <1492786351.14070.2.camel@redhat.com>
+From: Eric Rescorla <ekr@rtfm.com>
+Date: Sat, 22 Apr 2017 07:53:50 -0400
+Message-ID: <CABcZeBOe4-yEW8r15fsOtHJbQrnqGJ6oUaGYjoUwYS0MQE-rHQ@mail.gmail.com>
+To: Nikos Mavrogiannopoulos <nmav@redhat.com>
+Cc: "tls@ietf.org" <tls@ietf.org>
+Content-Type: multipart/alternative; boundary=f403045f285c6d31bd054dc009a9
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/Ia-qSMyidVPBR-LJblDbdvWNqpk>
+Subject: Re: [TLS] comments on draft-ietf-tls-tls13-19
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Sat, 22 Apr 2017 11:54:34 -0000
+
+--f403045f285c6d31bd054dc009a9
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Apr 21, 2017 at 10:52 AM, Nikos Mavrogiannopoulos <nmav@redhat.com>
+wrote:
+
+> On Tue, 2017-04-11 at 13:47 -0700, Eric Rescorla wrote:
+>
+> > > 4.1.1. HelloRetryRequest how many times can it be re-sent by the
+> > > server? I assume only a single one, but it maybe good to make it
+> > > explicit.
+> >
+> > This is forbidden in S 4.1.4.
+> > https://tlswg.github.io/tls13-spec/#hello-retry-request
+> >
+> >    If a client receives a second HelloRetryRequest in the same
+> >    connection (i.e., where the ClientHello was itself in response to
+> > a
+> >    HelloRetryRequest), it MUST abort the handshake with an
+> >    =E2=80=9Cunexpected_message=E2=80=9D alert.
+> >
+> > Does this seem sufficient?
+>
+> I must have missed it. Yes, it seems fine.
+>
+> > > 4.4.2.1.  OCSP Status and SCT Extensions
+> > > This is a very nice addition to TLS 1.3. Something that I miss as
+> > an
+> > > implementer is guidelines on how to determine the (time) validity
+> > of an
+> > > OCSP stapled response. Here my point is that OCSP responses have
+> > > several fields optional (e.g., nextUpdate), which make a validation
+> > to
+> > > be hand-wavy. It would be nice to have a profile of OCSP responses
+> > that
+> > > would be recommended for use in TLS, as well or a recommendation of
+> > > what constitutes a "fresh" response for use in TLS.
+> >
+> > Do you have any thoughts on what text we should insert here? I admit
+> > to being not that familiar with the practical matters of OCSP
+> > stapling.
+>
+> My issue with OCSP when used under TLS was how to determine the
+> validity of the response when the nextUpdate field is missing. I've
+> added some text for that introducing an (arbitrary) upper limit at:
+> https://github.com/tlswg/tls13-spec/pull/974
+
+
+This text looks good to me, but it is is a normative change and we've
+been through WGLC so I'd like to hear from a few other people that they're
+OK
+with it (or have the chairs tell me that silence is consent). David
+Benjamin?
+Richard Barnes? Ryan Sleevi?
+
+Thanks,
+-Ekr
+
+
+>
+>
+> > > 5.1. I miss a maximum number of alerts received per session, or
+> > some
+> > > other alert limiting mechanism (having CVE-2016-8610 in mind).
+> >
+> > All alerts now result in connection termination, so the limit
+> > seems to implicitly be 1.
+>
+> Nice.
+>
+> >
+> >
+> > > 7.5. There is no definition of early_exporter_secret, and it is
+> > unclear
+> > > why it is even mentioned. In short how is this supposed to be used,
+> > and
+> > > why should implementations consider adding an interface to it?
+> >
+> > It is defined in:
+> > https://tlswg.github.io/tls13-spec/#key-schedule
+> >
+> > I added some text to explain why you would want it.
+>
+> Thanks. There is a typo on that description "is define for use" -> "is
+> defined for use".
+>
+>
+> regards,
+> Nikos
+>
+>
+
+--f403045f285c6d31bd054dc009a9
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><br><div class=3D"gmail_extra"><br><div class=3D"gmail_quo=
+te">On Fri, Apr 21, 2017 at 10:52 AM, Nikos Mavrogiannopoulos <span dir=3D"=
+ltr">&lt;<a href=3D"mailto:nmav@redhat.com" target=3D"_blank">nmav@redhat.c=
+om</a>&gt;</span> wrote:<br><blockquote class=3D"gmail_quote" style=3D"marg=
+in:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex"><span class=3D""=
+>On Tue, 2017-04-11 at 13:47 -0700, Eric Rescorla wrote:<br>
+<br>
+&gt; &gt; 4.1.1. HelloRetryRequest how many times can it be re-sent by the<=
+br>
+&gt; &gt; server? I assume only a single one, but it maybe good to make it<=
+br>
+&gt; &gt; explicit.<br>
+&gt;<br>
+&gt; This is forbidden in S 4.1.4.<br>
+&gt; <a href=3D"https://tlswg.github.io/tls13-spec/#hello-retry-request" re=
+l=3D"noreferrer" target=3D"_blank">https://tlswg.github.io/tls13-<wbr>spec/=
+#hello-retry-request</a><br>
+&gt;<br>
+&gt; =C2=A0 =C2=A0If a client receives a second HelloRetryRequest in the sa=
+me<br>
+&gt; =C2=A0 =C2=A0connection (i.e., where the ClientHello was itself in res=
+ponse to<br>
+&gt; a<br>
+&gt; =C2=A0 =C2=A0HelloRetryRequest), it MUST abort the handshake with an<b=
+r>
+&gt; =C2=A0 =C2=A0=E2=80=9Cunexpected_message=E2=80=9D alert.<br>
+&gt; =C2=A0 =C2=A0<br>
+&gt; Does this seem sufficient?<br>
+<br>
+</span>I must have missed it. Yes, it seems fine.<br>
+<span class=3D""><br>
+&gt; &gt; 4.4.2.1.=C2=A0 OCSP Status and SCT Extensions<br>
+&gt; &gt; This is a very nice addition to TLS 1.3. Something that I miss as=
+<br>
+&gt; an<br>
+&gt; &gt; implementer is guidelines on how to determine the (time) validity=
+<br>
+&gt; of an<br>
+&gt; &gt; OCSP stapled response. Here my point is that OCSP responses have<=
+br>
+&gt; &gt; several fields optional (e.g., nextUpdate), which make a validati=
+on<br>
+&gt; to<br>
+&gt; &gt; be hand-wavy. It would be nice to have a profile of OCSP response=
+s<br>
+&gt; that<br>
+&gt; &gt; would be recommended for use in TLS, as well or a recommendation =
+of<br>
+&gt; &gt; what constitutes a &quot;fresh&quot; response for use in TLS.<br>
+&gt;<br>
+&gt; Do you have any thoughts on what text we should insert here? I admit<b=
+r>
+&gt; to being not that familiar with the practical matters of OCSP<br>
+&gt; stapling.<br>
+<br>
+</span>My issue with OCSP when used under TLS was how to determine the<br>
+validity of the response when the nextUpdate field is missing. I&#39;ve<br>
+added some text for that introducing an (arbitrary) upper limit at:<br>
+<a href=3D"https://github.com/tlswg/tls13-spec/pull/974" rel=3D"noreferrer"=
+ target=3D"_blank">https://github.com/tlswg/<wbr>tls13-spec/pull/974</a></b=
+lockquote><div><br></div><div>This text looks good to me, but it is is a no=
+rmative change and we&#39;ve</div><div>been through WGLC so I&#39;d like to=
+ hear from a few other people that they&#39;re OK</div><div>with it (or hav=
+e the chairs tell me that silence is consent). David Benjamin?</div><div>Ri=
+chard Barnes? Ryan Sleevi?</div><div><br></div><div>Thanks,</div><div>-Ekr<=
+/div><div><br></div><blockquote class=3D"gmail_quote" style=3D"margin:0 0 0=
+ .8ex;border-left:1px #ccc solid;padding-left:1ex"><br>
+<span class=3D""><br>
+<br>
+&gt; &gt; 5.1. I miss a maximum number of alerts received per session, or<b=
+r>
+&gt; some<br>
+&gt; &gt; other alert limiting mechanism (having CVE-2016-8610 in mind).<br=
+>
+&gt;<br>
+&gt; All alerts now result in connection termination, so the limit<br>
+&gt; seems to implicitly be 1.<br>
+<br>
+</span>Nice.<br>
+<span class=3D""><br>
+&gt;<br>
+&gt;<br>
+&gt; &gt; 7.5. There is no definition of early_exporter_secret, and it is<b=
+r>
+&gt; unclear<br>
+&gt; &gt; why it is even mentioned. In short how is this supposed to be use=
+d,<br>
+&gt; and<br>
+&gt; &gt; why should implementations consider adding an interface to it?<br=
+>
+&gt;<br>
+&gt; It is defined in:<br>
+&gt; <a href=3D"https://tlswg.github.io/tls13-spec/#key-schedule" rel=3D"no=
+referrer" target=3D"_blank">https://tlswg.github.io/tls13-<wbr>spec/#key-sc=
+hedule</a><br>
+&gt;<br>
+&gt; I added some text to explain why you would want it.<br>
+<br>
+</span>Thanks. There is a typo on that description &quot;is define for use&=
+quot; -&gt; &quot;is<br>
+defined for use&quot;.<br>
+<br>
+=C2=A0<br>
+regards,<br>
+Nikos<br>
+<br>
+</blockquote></div><br></div></div>
+
+--f403045f285c6d31bd054dc009a9--
+

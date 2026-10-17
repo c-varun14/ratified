@@ -1,0 +1,264 @@
+From nobody Thu Jan 28 15:57:24 2021
+Return-Path: <jovergar@microsoft.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id A349B3A17FF;
+ Thu, 28 Jan 2021 15:57:22 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.35
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.35 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIMWL_WL_HIGH=-0.25, DKIM_SIGNED=0.1,
+ DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1,
+ RCVD_IN_DNSWL_BLOCKED=0.001, RCVD_IN_MSPIKE_H2=-0.001,
+ SPF_PASS=-0.001, URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=microsoft.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id HrhEfFnmIjBa; Thu, 28 Jan 2021 15:57:21 -0800 (PST)
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com
+ (mail-co1nam11on2123.outbound.protection.outlook.com [40.107.220.123])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 01A3C3A17FC;
+ Thu, 28 Jan 2021 15:57:20 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kyZz6W+7H/ymTbQVN+EX6yySLbVRqQWFqpgxvnJh/vvCb+oWg2G3WmI7k+4erc6ADCHcSJ9GgVzjOKLJuUmRyn4ziaRpkn6oOg5065Jtl53bHMf9QYJfovapEwRjghjYoLEW0MfD5Bk8moHbzdKyyigoewBB18No5MFhT6TsIZHfc1hFGy1iAnNbz7sKZDnXe9sz9B+XDFsY0zMzNQtGCj76Z/537TmhYywLfa+smAcjbzV1fJi1SiPwyRKKaq+31Syjyw2Jtzk6RZ15cjAlaOvywYYbImhcVsuK91yM8g2fIqWPS6rdTduD7Utu+6RRyx1qpNeJdRX/xvVbvX8R5w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2x/ty5xSjPgGNG1zegoIZ6r+klMFbAJD99RDaO9Ukfc=;
+ b=LgFT+dmLg5TtOgVHS+CAHsJ5eG81XPc5ighv+6PckJPUGC7BCnxdy/GFnh+lH7LlJ4T9BZoOTFB9rvBYWVyR4L6gboQDnKVzixFxq9qW6dmsbE7WJkowjcZ4QWrBBmsZFzZ1DroZV0wvNWJD+gfqrlQxUGodAHfrwgYnTinA1DEz9vDOOaysP/wBRQ+8zZDF39kUxsOuzHh1iTUDgjghiy6FvJhkGaWPnscuVzV9x4FA3SkS9RHINA9GmydPZviafpQG5k/i/dru1Y+GPwMjrR5wDj5JZFK+f2P8YRJxYOIJahKGhT3oROO59KLKZZ8h4zSg0I38YZaR81hjexQ8yA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2x/ty5xSjPgGNG1zegoIZ6r+klMFbAJD99RDaO9Ukfc=;
+ b=eYZRLUF5IzH77JCQjp5PrM9pJssT1TP910+eE1RjTtTcDxF5ii94tZNgWrWngbLh5+GAXgh94I5rvKQHxtZugc7v/Tumzq8bSS8USbRBBZ1ROtlxKai9nv2d4GBdt3S17v5c5sJHThzrwXH5yNDC+Ywfp84Yf/uuFoVTzHCKcbw=
+Received: from (2603:10b6:302:10::31) by
+ MWHPR2101MB0732.namprd21.prod.outlook.com (2603:10b6:301:81::38) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.1; Thu, 28 Jan
+ 2021 23:57:19 +0000
+Received: from MW2PR2101MB0923.namprd21.prod.outlook.com
+ ([fe80::70e4:503d:86f9:e543]) by MW2PR2101MB0923.namprd21.prod.outlook.com
+ ([fe80::70e4:503d:86f9:e543%7]) with mapi id 15.20.3825.006; Thu, 28 Jan 2021
+ 23:57:19 +0000
+From: Jorge Vergara <jovergar@microsoft.com>
+To: Alan DeKok <aland@deployingradius.com>, Martin Thomson <mt@lowentropy.net>
+CC: "<tls@ietf.org>" <tls@ietf.org>, EMU WG <emu@ietf.org>
+Thread-Topic: [Emu] [TLS] Fwd: Benjamin Kaduk's Discuss on
+ draft-ietf-emu-eap-tls13-13: (with DISCUSS and COMMENT)
+Thread-Index: AQHW6Pa5MNxmyeoa40yTtc4U35tSYqo13CEAgAfzgcA=
+Date: Thu, 28 Jan 2021 23:57:19 +0000
+Message-ID: <MW2PR2101MB0923A68A9D7560D14D7A8C89D1BA9@MW2PR2101MB0923.namprd21.prod.outlook.com>
+References: <160815821055.25925.15897627611548078426@ietfa.amsl.com>
+ <20201216223842.GR64351@kduck.mit.edu>
+ <0f2b05db-5c98-43d4-aae3-cf620814bacc@www.fastmail.com>
+ <A4BBA31B-8754-4D8C-B0F1-D1C6C859F6AE@deployingradius.com>
+ <CAOgPGoBvBzhA0q4gFqpFSm2HkAs6NoyLc6RVZYLtTYsNd02i8A@mail.gmail.com>
+ <e669002f-caff-1e6e-e28b-d09157eb0c07@ericsson.com>
+ <6241F0B6-C722-449E-AC3A-183DE330E7B5@deployingradius.com>
+ <9ddd1593-3131-f5cc-d0db-74bf3db697bf@ericsson.com>
+ <3CB58153-8CCA-4B1E-B530-BA67A6035310@deployingradius.com>
+ <CAOgPGoA3U+XpZMY7J+KGovNx6MtAdEzRaGW33xVJdQNWSi4LVg@mail.gmail.com>
+ <770e6a49-52fc-4e8b-91af-48f85e581fbb@www.fastmail.com>
+ <CAOgPGoBGOMXH-kMhQSujWxnACdmBL845u0ouE0fUYc4rWtUrZg@mail.gmail.com>
+ <ca4c526e-79a0-4fa7-abda-2b626795f068@www.fastmail.com>
+ <3409F71E-4CE4-46BB-8079-BFBE9BE83C9A@deployingradius.com>
+ <66157321-55DC-4831-8EF2-D75934D9024C@deployingradius.com>
+In-Reply-To: <66157321-55DC-4831-8EF2-D75934D9024C@deployingradius.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=2f31426e-70ae-4afe-90f9-7ebcd95c318c;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-01-28T23:53:31Z; 
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: deployingradius.com; dkim=none (message not signed)
+ header.d=none;deployingradius.com; dmarc=none action=none
+ header.from=microsoft.com;
+x-originating-ip: [2001:4898:80e8:7:29be:695b:f2fc:1b71]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 58b983f8-98fc-4431-ab4e-08d8c3e8728b
+x-ms-traffictypediagnostic: MWHPR2101MB0732:
+x-microsoft-antispam-prvs: <MWHPR2101MB073235D442F1B64A1865F3D3D1BA9@MWHPR2101MB0732.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: /KLQKLOK9BoeFJtSaLw+bOsLnXfLx2OLU/XxdUXEaxSdV2eexUm8JC4RlREJnFeeC0xD32YzsP9ItUXk4jcClMiWPFN/1AU1qSaDbYUx+uMRwCLfl50xf1kXMvnOwNluzkOlXXNUqxXqyC2LAY+C8YtG6gJ4Evm0bSTYuiP9F6pC0/H5U4iuUKqIBl58gyuKtu381n8Xh0C/1NFTwcCqCBY1XZMEDMKcL3Cs2qeKQmwps1Iqql84keeG5zxpF8fvHGF9+2WYhieBjTaBHoztWJEfFJ92QB41hvBaLrDwQoRjuSmWtQQ8m3kcdSxPFyVsHW7JdaAWLX2nzTqGQqoOZAd22MvepIzRyDR0L6n5Xpk+gFTGRi+x0gse2ZcAjakAeJ5zYi7WXFGhnVFda1rTd6+z1/86CnRT6QfZSSbGs0ZGEa433yQoNkmaZwvHubFGMpxmbbvc6HLjDxqTiiI7Ti59c5BB9/biGe1d9KyoICkmc+udGSRwxXsmfLmf1kRIJWVrUXCmiomM1wZEl6mrpRMzjvdbwej4i61lG0DHN2XxiKozHLv5UomqbP3gdi0Efp2+IdUvoEcqQJ8MUC1CjGriNGkwSexG0T2ArYff+u8=
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:; 
+ IPV:NLI; SFV:NSPM;
+ H:MW2PR2101MB0923.namprd21.prod.outlook.com; PTR:; CAT:NONE; 
+ SFS:(4636009)(366004)(376002)(39860400002)(346002)(136003)(396003)(66446008)(33656002)(66476007)(5660300002)(76116006)(66556008)(966005)(10290500003)(9686003)(71200400001)(55016002)(83380400001)(82960400001)(66946007)(53546011)(316002)(52536014)(4326008)(2906002)(7696005)(478600001)(110136005)(186003)(6506007)(8990500004)(86362001)(8676002)(82950400001)(64756008)(8936002);
+ DIR:OUT; SFP:1102; 
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?RhchnZA8L3KY8s65Dt6n4in/OHQGcVAkyO0J60iuCaYDfelAvUnYfVCkU7VA?=
+ =?us-ascii?Q?bADJCh8ZShSzsPR+hkfPrJZzoxhcQIr0x11LVEN0jQNEaT2HOjiswN6K9/+y?=
+ =?us-ascii?Q?swzjEz0xOoFbIUmD/hpjX699oKUjKftMpmdXyK83jR02dBXnfR2TxgXc5Xyt?=
+ =?us-ascii?Q?GLcXqUuUW5Pf65m3M0D2KYv00yKqAbtpD3hQ/uLI+HjzcLb628ExVFeaGjZa?=
+ =?us-ascii?Q?6qGDqug8+oxEwrQoHMV+G0iuk3/nlFWdKQEqSZAja5DmfNCKJySIhwBbUjvN?=
+ =?us-ascii?Q?+5A3coESpEPqLbSKSUVtB0T9uXHXJmhhf+WhQ19fu7P/OUBP+qlMfxU0lzV8?=
+ =?us-ascii?Q?h0yR4lOpGeeOX1AGURXhxor3q/mCjgTMS4jw0fl6VjPhJN2qk50fXpapn6/3?=
+ =?us-ascii?Q?80etBV1YmGMgP/9M1WlNJxplmDZ4kw+4gndr9+WbJH77fqXlSXbRloDfqKu1?=
+ =?us-ascii?Q?d44l235whDB8yqkioq1AOwWNl1guNG1LgL1VnWQgOBZ9nnp/1WDIUD4OFnop?=
+ =?us-ascii?Q?9qIq/zoT4Zdr3e9xWXSZaQKUt5lJbjPEatlduxh0kf+e5fG+tze3J8TIu9UO?=
+ =?us-ascii?Q?ja8gAGCBh9H4srtpSG4pt07+aqIzgufqytmfQxPlmXD6CEKCWtrINX85O3Ho?=
+ =?us-ascii?Q?lGjOmsh5pjMaB0tNdGEEar1yKqW2fXw5WZ86zAL3ca82YscxYa/fqRvBOJmb?=
+ =?us-ascii?Q?qvfVpD2LZfMvqnS5PUxuA1f4gHD1wqT6m0hswRxDE5umc+ha2hC2ZmtBJJOX?=
+ =?us-ascii?Q?IFRNTSB+75XmuNDq2/Tx1ULG9uofsqQ1e1yC5uefz1gHXOSkCep3QwQbBli8?=
+ =?us-ascii?Q?4NlRUWIEfk1MGmez+dgMem3gUfnmXZ8ChXIp4gsZReux3yqwPOMKZ3unMm6W?=
+ =?us-ascii?Q?krRodIO87eKDswAmkPIl7xgkFwh47CWHiYzhBqdaBxgp1hH9gP2xUY4Kmo9A?=
+ =?us-ascii?Q?iBg8gaSYJgs4hm5lsLEFG9Z1jZy+euVczE+96OGZ6pDDwMA/IrwEa54YIpv/?=
+ =?us-ascii?Q?8/bFCpud+PKReeL6Z4WZoTCy0cQErffG2Yj24UIdN/H2AYTHUw5+W8bsfC1I?=
+ =?us-ascii?Q?PrdgF2+UzGgkHvg5Of2vEqaANdz/emZQinCgEoJXQ/897BZ8DfALHlA+rZ9G?=
+ =?us-ascii?Q?VbmwEYkggzGy?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW2PR2101MB0923.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 58b983f8-98fc-4431-ab4e-08d8c3e8728b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jan 2021 23:57:19.3370 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: w3FmEk0doM+agUKjwTsVNTzpMmcqRWfIARPah586qalRr2wIgL50UNfpMKQcqM6KhMpmrcYrKZlB4MGVPWOC4Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR2101MB0732
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/VzIkdc_T_i7Sg7j36NmybUulgkI>
+Subject: Re: [TLS] [Emu] Fwd: Benjamin Kaduk's Discuss on
+ draft-ietf-emu-eap-tls13-13: (with DISCUSS and COMMENT)
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Thu, 28 Jan 2021 23:57:23 -0000
+
+I am in favor of sticking to draft-13. There was some discussion about whet=
+her draft-13 contained a TLS layering violation, but I believe that discuss=
+ion concluded that it does not. As noted, discussion has mostly stalled sin=
+ce then with a few additional ideas surfacing that have added round trips. =
+Other threads are now popping up expressing dissatisfaction with the extra =
+round trip.
+
+Alan mentions that betas may be months out for his product line - for Micro=
+soft and Windows, the situation is much tighter. If we cannot reach consens=
+us quickly we will need to push this out of our 2021 release cycle. Seeing =
+as we're sitting on draft-13 with multiple implementations available, I wou=
+ld really prefer to reach consensus to finalize draft-13 and get this into =
+the hands of customers this calendar year.
+
+Jorge Vergara
+
+-----Original Message-----
+From: Emu <emu-bounces@ietf.org> On Behalf Of Alan DeKok
+Sent: Saturday, January 23, 2021 2:28 PM
+To: Martin Thomson <mt@lowentropy.net>
+Cc: <tls@ietf.org> <tls@ietf.org>; EMU WG <emu@ietf.org>
+Subject: Re: [Emu] [TLS] Fwd: Benjamin Kaduk's Discuss on draft-ietf-emu-ea=
+p-tls13-13: (with DISCUSS and COMMENT)
+
+  We're approaching 2 weeks since the last discussion of this topic.  This =
+document has been in development for 3 years.  We desperately need to finis=
+h it.  IMHO waiting another 6 months is not an option.  Even 3 would be wor=
+rying.
+
+  We have multiple inter-operable implementations which have implemented dr=
+aft-13.  That work over the last few months have resulted in implementors m=
+aking plans to do beta testing in the next few weeks.  Those plans have bee=
+n put on indefinite hold, due to the recent request for changes.
+
+  I understand getting feedback from the TLS WG is useful.  But I would pre=
+fer to have consensus on a *solution*. Right now, we just have a series of =
+proposed changes, with little to no discussion.
+
+  We're getting to the point where we have to ship code as promised to cust=
+omers soon (weeks, not months).  We therefore need consensus, as soon as po=
+ssible.
+
+  My preference is to implement draft-13.  We know the code works.  People =
+are ready to ship it.  Any changes will add not just more months of standar=
+d discussion, but more months of interoperability testing.
+
+  If there is no progress in EMU, we're looking at September for first beta=
+s.  With no guarantee that there won't be further changes made after that.
+
+  So the question is:
+
+* are the draft-13 0x00 byte and exporter *terrible* enough to delay the st=
+andard another 6 months?
+
+* if the answer is "no", then we can ship now.
+
+* if the answer is 'yes", then the next question is "when can we get this f=
+inalized?"  "March" would be late.  "July" is a major problem.
+
+> On Jan 12, 2021, at 10:22 AM, Alan DeKok <aland@deployingradius.com> wrot=
+e:
+>=20
+> On Jan 11, 2021, at 7:08 PM, Martin Thomson <mt@lowentropy.net> wrote:
+>> I was not exactly.  I was thinking that EAP-TLS uses the unadorned strin=
+g and other usages (that need a different MSK) define their own string as n=
+eeded.
+>=20
+>  Which is largely what was done for <=3D TLS 1.2.
+>=20
+>  That choice made implementations more difficult.  Not impossible, but an=
+noying.  The other TLS-based EAP types are generally implemented as variant=
+s of EAP-TLS.  They re-use much of the EAP-TLS code.  So every difference i=
+s more code, and more things to test.
+>=20
+>> Though what you describe would scale more, if the ordinality of that sca=
+le is bounded by RFC numbers, defining the extra strings would not be that =
+hard.  You could provide some sort of infrastructure in the form of a recom=
+mended label prefix if you are concerned about misuse.
+>=20
+>  I'm not sure EAP-TLS is the place to make recommendations for other EAP =
+types.  There is a draft to deal with other EAP types:
+>=20
+> https://nam06.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Ftools=
+.ietf.org%2Fhtml%2Fdraft-dekok-emu-tls-eap-types-00&amp;data=3D04%7C01%7Cjo=
+vergar%40microsoft.com%7Cb558b067ea62444150d008d8bfee5b6a%7C72f988bf86f141a=
+f91ab2d7cd011db47%7C1%7C0%7C637470377753309597%7CUnknown%7CTWFpbGZsb3d8eyJW=
+IjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;s=
+data=3DeTBptf92iMhYupJv9kRLl%2FzAV75fZXSbDjTI9sKu%2Bvs%3D&amp;reserved=3D0
+>=20
+>  It's pretty trivial.  Adding more complexity is annoying, but not much w=
+orse than that.
+>=20
+>  My preference is to remain with the EAP type as the context.  The code i=
+s simple, and it's easy to understand.  But if it causes issues with TLS re=
+view, we can change it.
+>=20
+>  Alan DeKok.
+>=20
+
+_______________________________________________
+Emu mailing list
+Emu@ietf.org
+https://nam06.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fwww.iet=
+f.org%2Fmailman%2Flistinfo%2Femu&amp;data=3D04%7C01%7Cjovergar%40microsoft.=
+com%7Cb558b067ea62444150d008d8bfee5b6a%7C72f988bf86f141af91ab2d7cd011db47%7=
+C1%7C0%7C637470377753319592%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJ=
+QIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=3DJQCtoTOMTzou=
+ZnJ0ILj%2B8%2BtIpJW8t04HbSlDDGYf8VQ%3D&amp;reserved=3D0
+

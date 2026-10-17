@@ -1,0 +1,376 @@
+Return-Path: <joe@salowey.net>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id A3B1F129C4D
+ for <tls@ietfa.amsl.com>; Tue, 11 Apr 2017 08:22:04 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.899
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.899 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_NONE=-0.0001, SPF_PASS=-0.001,
+ URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=salowey-net.20150623.gappssmtp.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id vB-LSTNM8Ysn for <tls@ietfa.amsl.com>;
+ Tue, 11 Apr 2017 08:22:02 -0700 (PDT)
+Received: from mail-pg0-x22b.google.com (mail-pg0-x22b.google.com
+ [IPv6:2607:f8b0:400e:c05::22b])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 2DBC912EAAB
+ for <tls@ietf.org>; Tue, 11 Apr 2017 08:22:02 -0700 (PDT)
+Received: by mail-pg0-x22b.google.com with SMTP id 81so170701pgh.2
+ for <tls@ietf.org>; Tue, 11 Apr 2017 08:22:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=salowey-net.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+ :cc; bh=6zGLa2a1dMKbRjGqlY7/tEFjEO8oBKmnJ4xWmH0DN9A=;
+ b=vdEojxMZTfzAKrg8MsKR71ZTWcYS63TDrSMGjce+swNVhl0F1Rr5B7BfSuoHULk3i2
+ 0iEuHBl6SF/ggq2kuz/ac2xU2iy3cRUFqQBiR5mi57A5MakQRtgjWD/cH0Z4rMXIxJMm
+ +bZOw0KwZCgBlN8t/O4ZkXuusI9A5pm9J/J59cTrFk+pCdbUgFH6YtzcVLrr3ejv0LB+
+ AhzY/OuQ+JMj6r67j7HmV9RlPQI86EHJ5uNUyZvQ6TarTAjV2+fMQ1UhCVYhpf/1CrNZ
+ 4IyVPmkgc8QxB6txO0zIivMEFD4FGorhAqIcwGEqUcYbK9wd1l1byXz+vJmg8dAqM9sP
+ Z12g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+ :message-id:subject:to:cc;
+ bh=6zGLa2a1dMKbRjGqlY7/tEFjEO8oBKmnJ4xWmH0DN9A=;
+ b=unMquTQf1zzrGft6N6H0NzZkDPZKYxnpr5whr6/DhcZPZLZ4hN4Oji6QlXNRJwXq4K
+ 5tXd24iGBRxF+Pz5LE5FH7c0y4L3Loh8fmKKl7zss2LL8uuDDt8g/7weyqP1OrZ+bFWU
+ umMMu4z0k6Q1TLeyy9GjO3AaP4+VjzC8tuEu5yGCGFMszYPu6rNfGIC1fyLzz6pRO4ll
+ 08zOlYbVroD9GIcSzKGJr/pw4ZQPAKmjOsHME5Zvh54Ng+1DPOlIOPV2V6UyxcFMXuMt
+ Y/hhpLTx4Zkfu8uzoP5e6jaSWK8RjiKB8/Nypstj+5ZhmEPxqdaetixfmQ2ZuEx4ApUW
+ 5LyA==
+X-Gm-Message-State: AFeK/H37tWLlB3vZ/1+2ENOe/rnCKIFQILWFdd55yanxQWi3DiH2PgRztTmdLUKFCrPUyHINYU/Cq5nk3EzZ9g==
+X-Received: by 10.99.97.77 with SMTP id v74mr62580690pgb.76.1491924121757;
+ Tue, 11 Apr 2017 08:22:01 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 10.100.183.7 with HTTP; Tue, 11 Apr 2017 08:21:41 -0700 (PDT)
+In-Reply-To: <CADZyTkm4YnrTFwLJcf3Zw2XxKBO0wBuyqQ0c_MqWZVjPE-zUdw@mail.gmail.com>
+References: <CAOgPGoA0tTmwkcC3CPdgUd=6QNTpTxRT8pkXLD-Yezzh05b+KA@mail.gmail.com>
+ <CADZyTkm4YnrTFwLJcf3Zw2XxKBO0wBuyqQ0c_MqWZVjPE-zUdw@mail.gmail.com>
+From: Joseph Salowey <joe@salowey.net>
+Date: Tue, 11 Apr 2017 08:21:41 -0700
+Message-ID: <CAOgPGoCoiVjpMgyBkW7HqFgW+aEDK5PyMWC+02eTpuX8ikSBkA@mail.gmail.com>
+To: Daniel Migault <daniel.migault@ericsson.com>
+Cc: "tls@ietf.org" <tls@ietf.org>, draft-ietf-tls-ecdhe-psk-aead@tools.ietf.org
+Content-Type: multipart/alternative; boundary=94eb2c0cc37a4f3f1b054ce5a70b
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/liAj1MH8wrRfSj1-bjXPw1RoE9E>
+Subject: Re: [TLS] Last call comments and WG Chair review of
+ draft-ietf-tls-ecdhe-psk-aead
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Tue, 11 Apr 2017 15:22:04 -0000
+
+--94eb2c0cc37a4f3f1b054ce5a70b
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+Hi Daniel,
+
+Please submit a revised draft with the changes below.
+
+Thanks,
+
+Joe
+
+On Tue, Mar 21, 2017 at 11:08 AM, Daniel Migault <
+daniel.migault@ericsson.com> wrote:
+
+> Hi,
+>
+> Thank you for the review and comments received. Given the discussion our
+> understanding was that the consensus was to remove CCM-256 so that suites
+> defined by the document apply both for TLS1.2 as well as for TLS1.3. The
+> draft available on github [1
+> <https://github.com/mglt/draft-ietf-tls-ecdhe-psk-aead/blob/master/draft-=
+ietf-tls-ecdhe-psk-aead>]
+> has been updated as follows:
+>
+>
+> 1.  Why does TLS_ECDHE_PSK_WITH_AES_256_CCM_8_SHA256 use SHA256 instead
+> of SHA384 like the other 256 bit cipher suites? (From Russ Housley)
+>
+> MGLT: This was a mistake in the IANA section. The cypher suite was correc=
+t
+> in the remaining text. However, the current version does not  consider
+> anymore CCM-256* which also solves this issue.
+>
+> 2.  Since the security considerations mention passwords (human chosen
+> secrets) it should mention dictionary attacks. (From Russ Housley)
+>
+> MGLT: The issue of human chosen passwords and dictionary attacks has been
+> mentioned in the security consideration with the following text:
+>
+> """
+>    Use of Pre-Shared Keys of limited entropy may allow an active
+>    attacker attempts to connect to the server and tries different keys.
+>    For example, limited entropy may be provided by using short PSK in
+>    which case an attacker may perform a brute-force attack.  Other
+>    example includes the use of a PSK chosen by a human and thus may be
+>    exposed to dictionary attacks.
+> """
+>
+>
+> 3.  Section 2 and 3 of the document contains more detail about TLS 1.3
+> than necessary.
+>
+> Section 2: This document only defines cipher suites for TLS 1.2, not TLS
+> 1.2 or later.  A subset of equivalent cipher suites is defined in the TLS
+> 1.3 specification.
+>
+> MGLT: CCM-256 has been removed from the specification so that suites can
+> be defined for TLS 1.2 as well as TLS1.3. The following text is considere=
+d.
+>
+> """
+>    This document defines new cipher suites that provide Pre-Shared Key
+>    (PSK) authentication, Perfect Forward Secrecy (PFS), and
+>    Authenticated Encryption with Associated Data (AEAD).  The cipher
+>    suites are defined for version 1.2 of the Transport Layer Security
+>    (TLS) [RFC5246] protocol, version 1.2 of the Datagram Transport Layer
+>    Security (DTLS) protocol [RFC6347], as well as version 1.3 of TLS
+>    [I-D.ietf-tls-tls13].
+> """
+>
+> Section 3 and 4: Maybe replace the last 2 paragraphs with an addition to
+> section 4 that states:
+>
+> "TLS 1.3 and above name, negotiate and support a subset of these cipher
+> suites in a different way."  (TLS 1.3 does not support
+> TLS_ECDHE_PSK_WITH_AES_256_CCM_SHA384 and TLS_ECDHE_PSK_WITH_AES_256_
+> CCM_8_SHA256)
+>
+> MGLT: As CCM-256 has been removed, we do not have to deal with the
+> situation where TLS1.3 only considers a subset of the suites defined for
+> TLS1.2.
+>
+> The following sentence in section 3 clarifies that codes points are only
+> defined for TLS1.2: =E2=80=9C=E2=80=9D=E2=80=9DThe assigned code points c=
+an only be used for TLS
+> 1.2.=E2=80=9D=E2=80=9D=E2=80=9D. The description of the TLS1.3 negotiatio=
+n has been limited in
+> section 4 to the following sentence: =E2=80=9C=E2=80=9D=E2=80=9DTLS 1.3 a=
+nd above version,
+> negotiate and support these cipher suites in a different way.=E2=80=9D=E2=
+=80=9D=E2=80=9D
+>
+> 4. Section 3 should contain a bit more detail about relationship to 4492
+> bis and RFC 4279:
+>
+> Something like the following may be enough.
+>
+> "This messages and pre-master secret construction in this document are
+> based on [RFC4279].  The elliptic curve parameters used in in the
+> Diffie-Hellman parameters are negotiated using extensions defined in
+> [4492-bis]."
+>
+> MGLT: The sentence mentioned above has been added with [4492-bis]
+> mentioned as normative.
+> =E2=80=9C=E2=80=9D=E2=80=9D
+>     Messages and pre-master secret construction in this document are
+>    based on [RFC4279].  The elliptic curve parameters used in in the
+>    Diffie-Hellman parameters are negotiated using extensions defined in
+>    [I-D.ietf-tls-rfc4492bis].
+> =E2=80=9C=E2=80=9D=E2=80=9D
+>
+> [1] https://github.com/mglt/draft-ietf-tls-ecdhe-psk-aead/blob/
+> master/draft-ietf-tls-ecdhe-psk-aead
+>
+> Yours,
+> Daniel and John
+>
+>
+> On Tue, Feb 21, 2017 at 1:22 PM, Joseph Salowey <joe@salowey.net> wrote:
+>
+>> Here are the open issues for draft-ietf-tls-ecdhe-psk-aead
+>>
+>> 1.  Why does TLS_ECDHE_PSK_WITH_AES_256_CCM_8_SHA256 use SHA256 instead
+>> of SHA384 like the other 256 bit cipher suites? (From Russ Housley)
+>>
+>> 2.  Since the security considerations mention passwords (human chosen
+>> secrets) it should mention dictionary attacks. (From Russ Housley)
+>>
+>> 3.  Section 2 and 3 of the document contains more detail about TLS 1.3
+>> than necessary.
+>>
+>> Section 2: This document only defines cipher suites for TLS 1.2, not TLS
+>> 1.2 or later.  A subset of equivalent cipher suites is defined in the TL=
+S
+>> 1.3 specification.
+>>
+>> Section 3 and 4: Maybe replace the last 2 paragraphs with an addition to
+>> section 4 that states:
+>>
+>> "TLS 1.3 and above name, negotiate and support a subset of these cipher
+>> suites in a different way."  (TLS 1.3 does not support
+>> TLS_ECDHE_PSK_WITH_AES_256_CCM_SHA384 and TLS_ECDHE_PSK_WITH_AES_256
+>> _CCM_8_SHA256)
+>>
+>> 4. Section 3 should contain a bit more detail about relationship to 4492
+>> bis and RFC 4279:
+>>
+>> Something like the following may be enough.
+>>
+>> "This messages and pre-master secret construction in this document are
+>> based on [RFC4279].  The elliptic curve parameters used in in the
+>> Diffie-Hellman parameters are negotiated using extensions defined in
+>> [4492-bis]."
+>>
+>> Thanks,
+>>
+>> Joe
+>>
+>>
+>>
+>>
+>> _______________________________________________
+>> TLS mailing list
+>> TLS@ietf.org
+>> https://www.ietf.org/mailman/listinfo/tls
+>>
+>>
+>
+
+--94eb2c0cc37a4f3f1b054ce5a70b
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">Hi Daniel,<div><br></div><div>Please submit a revised draf=
+t with the changes below.</div><div><br></div><div>Thanks,</div><div><br></=
+div><div>Joe<br><div class=3D"gmail_extra"><br><div class=3D"gmail_quote">O=
+n Tue, Mar 21, 2017 at 11:08 AM, Daniel Migault <span dir=3D"ltr">&lt;<a hr=
+ef=3D"mailto:daniel.migault@ericsson.com" target=3D"_blank">daniel.migault@=
+ericsson.com</a>&gt;</span> wrote:<br><blockquote class=3D"gmail_quote" sty=
+le=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex"><div d=
+ir=3D"ltr"><div><div>Hi,<br><br>Thank you for the review and comments recei=
+ved. Given the discussion our understanding was that the consensus was to r=
+emove CCM-256 so that suites defined by the document apply both for TLS1.2 =
+as well as for TLS1.3. The draft available on github [<a href=3D"https://gi=
+thub.com/mglt/draft-ietf-tls-ecdhe-psk-aead/blob/master/draft-ietf-tls-ecdh=
+e-psk-aead" target=3D"_blank">1</a>]=C2=A0 has been updated as follows:=C2=
+=A0 <br><span class=3D""><br><br>1.=C2=A0 Why does TLS_ECDHE_PSK_WITH_AES_2=
+56_<wbr>CCM_8_SHA256 use SHA256 instead of SHA384 like the other 256 bit ci=
+pher suites? (From Russ Housley)<br><br></span>MGLT: This was a mistake in =
+the IANA section. The cypher suite was correct in the remaining text. Howev=
+er, the current version does not=C2=A0 consider anymore CCM-256* which also=
+ solves this issue.<span class=3D""><br>=C2=A0<br>2.=C2=A0 Since the securi=
+ty considerations mention passwords (human chosen secrets) it should mentio=
+n dictionary attacks. (From Russ Housley)<br>=C2=A0<br></span>MGLT: The iss=
+ue of human chosen passwords and dictionary attacks has been mentioned in t=
+he security consideration with the following text:<br><br>&quot;&quot;&quot=
+; <br>=C2=A0=C2=A0 Use of Pre-Shared Keys of limited entropy may allow an a=
+ctive<br>=C2=A0=C2=A0 attacker attempts to connect to the server and tries =
+different keys.<br>=C2=A0=C2=A0 For example, limited entropy may be provide=
+d by using short PSK in<br>=C2=A0=C2=A0 which case an attacker may perform =
+a brute-force attack.=C2=A0 Other<br>=C2=A0=C2=A0 example includes the use =
+of a PSK chosen by a human and thus may be<br>=C2=A0=C2=A0 exposed to dicti=
+onary attacks.<span class=3D""><br>&quot;&quot;&quot;<br><br>=C2=A0 <br>3.=
+=C2=A0 Section 2 and 3 of the document contains more detail about TLS 1.3 t=
+han necessary.=C2=A0 <br>=C2=A0<br>Section 2: This document only defines ci=
+pher suites for TLS 1.2, not TLS 1.2 or later.=C2=A0 A subset of equivalent=
+ cipher suites is defined in the TLS 1.3 specification.=C2=A0 <br>=C2=A0<br=
+></span>MGLT: CCM-256 has been removed from the specification so that suite=
+s can be defined for TLS 1.2 as well as TLS1.3. The following text is consi=
+dered. <br><br>&quot;&quot;&quot; <br>=C2=A0=C2=A0 This document defines ne=
+w cipher suites that provide Pre-Shared Key<br>=C2=A0=C2=A0 (PSK) authentic=
+ation, Perfect Forward Secrecy (PFS), and<br>=C2=A0=C2=A0 Authenticated Enc=
+ryption with Associated Data (AEAD).=C2=A0 The cipher<br>=C2=A0=C2=A0 suite=
+s are defined for version 1.2 of the Transport Layer Security<br>=C2=A0=C2=
+=A0 (TLS) [RFC5246] protocol, version 1.2 of the Datagram Transport Layer<b=
+r>=C2=A0=C2=A0 Security (DTLS) protocol [RFC6347], as well as version 1.3 o=
+f TLS<br>=C2=A0=C2=A0 [I-D.ietf-tls-tls13].<span class=3D""><br>&quot;&quot=
+;&quot;<br>=C2=A0<br>Section 3 and 4: Maybe replace the last 2 paragraphs w=
+ith an addition to section 4 that states:<br>=C2=A0<br>&quot;TLS 1.3 and ab=
+ove name, negotiate and support a subset of these cipher suites in a differ=
+ent way.&quot;=C2=A0 (TLS 1.3 does not support TLS_ECDHE_PSK_WITH_AES_256_<=
+wbr>CCM_SHA384 and TLS_ECDHE_PSK_WITH_AES_256_<wbr>CCM_8_SHA256)<br>=C2=A0<=
+br></span>MGLT: As CCM-256 has been removed, we do not have to deal with th=
+e situation where TLS1.3 only considers a subset of the suites defined for =
+TLS1.2. <br><br>The following sentence in section 3 clarifies that codes po=
+ints are only defined for TLS1.2: =E2=80=9C=E2=80=9D=E2=80=9DThe assigned c=
+ode points can only be used for TLS 1.2.=E2=80=9D=E2=80=9D=E2=80=9D. The de=
+scription of the TLS1.3 negotiation has been limited in section 4 to the fo=
+llowing sentence: =E2=80=9C=E2=80=9D=E2=80=9DTLS 1.3 and above version, neg=
+otiate and support these cipher suites in a different way.=E2=80=9D=E2=80=
+=9D=E2=80=9D<span class=3D""><br>=C2=A0<br>4. Section 3 should contain a bi=
+t more detail about relationship to 4492 bis and RFC 4279:<br>=C2=A0<br>Som=
+ething like the following may be enough.=C2=A0 <br><br>&quot;This messages =
+and pre-master secret construction in this document are based on [RFC4279].=
+=C2=A0 The elliptic curve parameters used in in the Diffie-Hellman paramete=
+rs are negotiated using extensions defined in [4492-bis].&quot;<br>=C2=A0<b=
+r></span>MGLT: The sentence mentioned above has been added with [4492-bis] =
+mentioned as normative.<br>=E2=80=9C=E2=80=9D=E2=80=9D<br>=C2=A0=C2=A0=C2=
+=A0 Messages and pre-master secret construction in this document are<span c=
+lass=3D""><br>=C2=A0=C2=A0 based on [RFC4279].=C2=A0 The elliptic curve par=
+ameters used in in the<br>=C2=A0=C2=A0 Diffie-Hellman parameters are negoti=
+ated using extensions defined in<br></span>=C2=A0=C2=A0 [I-D.ietf-tls-rfc44=
+92bis].<br>=E2=80=9C=E2=80=9D=E2=80=9D <br><br>[1] <a href=3D"https://githu=
+b.com/mglt/draft-ietf-tls-ecdhe-psk-aead/blob/master/draft-ietf-tls-ecdhe-p=
+sk-aead" target=3D"_blank">https://github.com/mglt/draft-<wbr>ietf-tls-ecdh=
+e-psk-aead/blob/<wbr>master/draft-ietf-tls-ecdhe-<wbr>psk-aead</a><br><br><=
+/div>Yours, <br></div>Daniel and John<br><br><div><div><div class=3D"gmail_=
+extra"><br><div class=3D"gmail_quote"><div><div class=3D"h5">On Tue, Feb 21=
+, 2017 at 1:22 PM, Joseph Salowey <span dir=3D"ltr">&lt;<a href=3D"mailto:j=
+oe@salowey.net" target=3D"_blank">joe@salowey.net</a>&gt;</span> wrote:<br>=
+</div></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0=
+.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div><div cla=
+ss=3D"h5"><div dir=3D"ltr">Here are the open issues for=C2=A0draft-ietf-tls=
+-ecdhe-psk-a<wbr>ead<div><br></div><div>1.=C2=A0 Why does=C2=A0<span style=
+=3D"font-size:12.8px">TLS_ECDHE_PSK_WITH_AES_25<wbr>6_</span><span style=3D=
+"font-size:12.8px">CCM_8_SHA256 use SHA256 instead of SHA384 like the other=
+ 256 bit cipher suites? (From Russ Housley)</span></div><div><span style=3D=
+"font-size:12.8px"><br></span></div><div>2.=C2=A0 Since the security consid=
+erations mention passwords (human chosen secrets) it should mention diction=
+ary attacks. (From Russ Housley)</div><div><br></div><div>3.=C2=A0 Section =
+2 and 3 of the document contains more detail about TLS 1.3 than necessary. =
+=C2=A0</div><div><br></div><div>Section 2: This document only defines ciphe=
+r suites for TLS 1.2, not TLS 1.2 or later.=C2=A0 A subset of equivalent ci=
+pher suites is defined in the TLS 1.3 specification. =C2=A0</div><div><br><=
+/div><div>Section 3 and 4: Maybe replace the last 2 paragraphs with an addi=
+tion to section 4 that states:</div><div><br></div><div>&quot;TLS 1.3 and a=
+bove name, negotiate and support a subset of these cipher suites in a diffe=
+rent way.&quot; =C2=A0(TLS 1.3 does not support=C2=A0<span style=3D"color:r=
+gb(0,0,0);font-size:13.3333px">TLS_ECDHE_PSK_WITH_AES<wbr>_256_CCM_SHA384 a=
+nd=C2=A0</span><span style=3D"color:rgb(0,0,0);font-size:13.3333px">TLS_ECD=
+HE_PSK_WITH_AES_256<wbr>_CCM_8_SHA256)</span><br></div><div><br></div><div>=
+4. Section 3 should contain a bit more detail about relationship to 4492 bi=
+s and RFC 4279:</div><div><br></div><div>Something like the following may b=
+e enough. =C2=A0</div><div><br class=3D"m_4817739475757529262gmail-m_-52362=
+77041567721078gmail-Apple-interchange-newline"><span style=3D"font-size:12.=
+8px">&quot;This messages and pre-master secret construction in this documen=
+t are based on [RFC4279].=C2=A0 The elliptic curve parameters used in in th=
+e Diffie-Hellman parameters are negotiated using extensions defined in [449=
+2-bis].&quot;</span><br></div><div><span style=3D"font-size:12.8px"><br></s=
+pan></div><div><span style=3D"font-size:12.8px">Thanks,</span></div><div><s=
+pan style=3D"font-size:12.8px"><br></span></div><div><span style=3D"font-si=
+ze:12.8px">Joe</span></div><div><br></div><div><span style=3D"font-size:12.=
+8px"><br></span></div><div><span style=3D"font-size:12.8px"><br></span></di=
+v></div>
+<br></div></div><span class=3D"">______________________________<wbr>_______=
+__________<br>
+TLS mailing list<br>
+<a href=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.org</a><br>
+<a href=3D"https://www.ietf.org/mailman/listinfo/tls" rel=3D"noreferrer" ta=
+rget=3D"_blank">https://www.ietf.org/mailman/l<wbr>istinfo/tls</a><br>
+<br></span></blockquote></div><br></div></div></div></div>
+</blockquote></div><br></div></div></div>
+
+--94eb2c0cc37a4f3f1b054ce5a70b--
+

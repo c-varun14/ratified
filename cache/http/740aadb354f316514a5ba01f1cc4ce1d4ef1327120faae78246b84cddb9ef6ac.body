@@ -1,0 +1,783 @@
+Return-Path: <michael@metaparadigm.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (ietfa.amsl.com [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 8A3FE1A6EDC
+ for <tls@ietfa.amsl.com>; Tue,  6 Jan 2015 05:23:49 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: 1.622
+X-Spam-Level: *
+X-Spam-Status: No, score=1.622 tagged_above=-999 required=5
+ tests=[BAYES_50=0.8, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ DKIM_VALID_AU=-0.1, IP_NOT_FRIENDLY=0.334, J_CHICKENPOX_56=0.6,
+ SPF_HELO_PASS=-0.001, SPF_PASS=-0.001, T_RP_MATCHES_RCVD=-0.01]
+ autolearn=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id j3ZKC_Ng1M2c for <tls@ietfa.amsl.com>;
+ Tue,  6 Jan 2015 05:23:43 -0800 (PST)
+Received: from klaatu.metaparadigm.com (klaatu.metaparadigm.com
+ [67.207.128.90])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id B65561A6EF8
+ for <tls@ietf.org>; Tue,  6 Jan 2015 05:23:43 -0800 (PST)
+Received: from monty.local (unknown.maxonline.com.sg [58.182.90.50] (may be
+ forged)) (authenticated bits=0)
+ by klaatu.metaparadigm.com (8.14.4/8.14.4/Debian-4) with ESMTP id
+ t06Dj44U002668
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES128-SHA bits=128 verify=NOT)
+ for <tls@ietf.org>; Tue, 6 Jan 2015 13:45:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=metaparadigm.com;
+ s=klaatu; t=1420551911;
+ bh=PDfILhWFUY7mof8qQTtaAYuV1DWoEve8OpAw1LxAEZQ=;
+ h=Date:From:To:Subject:References:In-Reply-To:From;
+ b=Nmfmz+eT5ozgWtnBW9jhjmLjICV14s0KT9D13pWv+kYEjitTx0BiYRVhBeJJDukAN
+ I5AfkJMypMYhKuRaBaCPGQbEfoipvLKMyog27HxcZEGJldkEfeeJ5neusrhTzV1xkA
+ 9htM1zFizpfVCou9oKcgYa4ix3OYU9x/Nra+RAB0=
+Message-ID: <54ABE1D2.7090601@metaparadigm.com>
+Date: Tue, 06 Jan 2015 21:23:30 +0800
+From: Michael Clark <michael@metaparadigm.com>
+Organization: Metaparadigm Pte Ltd
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10;
+ rv:31.0) Gecko/20100101 Thunderbird/31.3.0
+MIME-Version: 1.0
+To: tls@ietf.org
+References: <CACsn0cmD=YA4i889f--e_b-OahUVoYdKyQUaiUN--QKOmqn8uA@mail.gmail.com>
+ <54A252EA.1010905@iki.fi> <2348107.Lj21YcAO1u@pintsize.usersys.redhat.com>
+ <DF638EB0-A163-4DBD-B095-43EEDA4D9DB1@gmail.com>
+In-Reply-To: <DF638EB0-A163-4DBD-B095-43EEDA4D9DB1@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: clamav-milter 0.98.4 at klaatu.metaparadigm.com
+X-Virus-Status: Clean
+Archived-At: http://mailarchive.ietf.org/arch/msg/tls/LS4jkp4-urAfuIwsKL65gqdEhJU
+Subject: [TLS] Spec tls13 comments, handshake tampering, mitigation,
+ counter/seq_no predictability: WAS: Do we need DH?
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.15
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <http://www.ietf.org/mail-archive/web/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Tue, 06 Jan 2015 13:23:49 -0000
+
+On 2/1/15 9:08 pm, Yoav Nir wrote:
+> 
+>> On Jan 2, 2015, at 2:46 PM, Hubert Kario <hkario@redhat.com> wrote:
+>>
+>> On Tuesday 30 December 2014 09:23:22 Tapio Sokura wrote:
+>>> With regards to all eggs being in the same basket, AES is also something
+>>> that really should have a realistic alternative standardized and
+>>> deployed _before_ (/if) AES is broken. Like SHA-3 is coming around the
+>>> corner while SHA-2 is still well alive and kicking.
+>>
+>>
+>> We do have Camellia ciphers defined, PFS AEAD included (RFC 6367).
+> 
+> That, and the ChaCha20+Poly1305 AEAD will be defined when http://tools.ietf.org/html/draft-mavrogiannopoulos-chacha-tls-04 is adopted.
+
+Sharing some comments. Perhaps some are for TLSv2.0 :-D
+
+I think adding SHA-3 is a testable idea as it was designed to mitigate
+future attacks on SHA-2. If we were proactive, we would have the
+mitigation in place. i.e. a choice of alternative hash algorithms,
+choice of alternative ciphers. We are getting down to one safe AEAD
+algorithm (AES-GCM) and one safe key exchange algorithm (ECDHE). I have
+also made comments regarding an alternative system of composition of
+cipher primitives that could be used as part of a "design for
+mitigation". See Replacement idea for CipherSpec and CipherSuites later
+in this mail. Maybe this is TLSv1.4 material (or TLS 2.0). I don't know
+the time-frame. We ideally want to have the cryptographic primitive
+alternatives available to mitigate via configuration changes versus
+patches, from an operational perspective. As an operator it's better if
+you can push out config changes versus having to perform package updates.
+
+Apologies in advance if I am duplicating comments that have already been
+shared... also note these are draft comments for consideration... and
+are based on my developing understanding of TLSv1.2 and of my reading of
+the current draft-ietf-tls-tls13. Please read and consider.
+
+===
+Comment: the draft should change SHA-2 constants to include the 2.
+tls_prf_sha256 -> tls_prf_sha2_256, SHA256, SHA384 should be changed to
+SHA2_256, SHA2_384, so that implementations can use alternative hash and
+MAC functions as a mitigation strategy, even if not introducing SHA-3,
+the constants could be renamed in the spec to keep it consistent if
+SHA-3 is added later.
+===
+
+I see it is already mentioned in the spec that static RSA and DH key
+exchange are removed. Certificates can be tampered with by a MiFi, at
+least with TLSv1.2 I believe it is still feasible based on the current
+spec. TLSv1.3 should use DHE, FFDHE and ECDHE with Ephemeral Forward
+Secrecy, use named parameters and/or contain guidance on how to check
+for weak DH parameters. DHE is okay if implementations have guidance on
+how to check for weak DH parameters. TLSv1.3 should authenticates Hello,
+KEX parameters, CertificateShares and all other handshake messages to
+prevent them from being tampered with in transit by a MITM (ISP
+transparent proxy) like they presently do with TLSv1.2 and below.
+
+TLSv1.3 should eliminate handshake rewriting by authenticating handshake
+messages. The issue is someone who can do layer 2/3 rewriting and may be
+friends with a CA or have a big database of DH pairs can break TLSv1.2
+as the public now is patently aware of. It seems we are only as strong
+as the weakest KEX and cipher we offer and an implementation needs to
+check for weak DH parameters, and in TLSv1.2 they are not necessarily
+the parameters you expose if someone in the middle (ISP transparent
+proxy, versus simple eavesdropping) tries to downgrade your CipherSuite
+or substitutes DH parameters and certificate shares by rewriting
+handshake messages. TLSv1.2 handshake messages are trivially rewritable
+by a MITM as there is no authentication of handshake messages e.g.
+Currently we could potentially be downgraded to TLS_RSA_WITH_RC4_128_MD5
+with some clients and servers or our certificate DH parameters could be
+tampered with by rewriting the handshake to negotiate a KEX that helps a
+MITM learn the pre master secret.
+
+>From TLSv1.2
+
+   -  The connection is reliable.  Message transport includes a message
+      integrity check using a keyed MAC.  Secure hash functions (e.g.,
+      SHA-1, etc.) are used for MAC computations.  The Record Protocol
+      can operate without a MAC, but is generally only used in this mode
+      while another protocol is using the Record Protocol as a transport
+      for negotiating security parameters.
+
+
+===
+Comment: NULL_NULL AEAD for handshake messages should be changed to
+NULL_HMAC_SHA2_256 AEAD, null cipher, mandatory HMAC using
+(client|server)_random for AD for all handshake messages. The initial
+(client|server)_random needs to be included verbatim as the AD and HMAC
+on all subsequent handshake messages. If it specified that
+(client|server)_random is included in all handshake messages and is a
+verbatim repetition of the (client|server)_random in the initial
+ClientHello/ServerHello and is included as AD for HMAC in the record
+protocol for every handshake messages, e.g.
+Encrypt-then-Mac[null,hmac_sha2_256].  The implementation must check
+that (client|server)_random in subsequent handshake messages matches
+that from the initial ClientHello/ServerHello and that the HMAC on each
+handshake message is verified with the initial (client|server)_random as
+AD.This will make all handshake messages tamper-resistant because
+(client|server)_random is used for pre-master key derivation. It is no
+longer possible for a MITM to alter a ClientHello/ServerHello or any
+subsequent handshake message unless they can forge the HMAC. If a MITM
+changes the (client|server)_random in any handshake message (for example
+to alter ciphers offered in ClientHello) then the pre-master secret
+derivation will fail. I can't see any wording in the spec to this
+effect. This is a biggie.
+
+If you fix the choice of HMAC used for handshake messages in the spec,
+then you can't mitigate by changing to a stronger hash later if a hash
+algorithm becomes compromised, so we should have a mandatory set of HMAC
+algorithms: HMAC_SHA2_256, HMAC_SHA2_384 and HMAC_SHA2_512 and include
+the HMAC enum in the record protocol to indicate which one is used at
+the record layer. This approach is symmetrical with an Encrypt-then-Mac
+meta AEAD referred to later as ETM-AEAD[aead-cipher,hmac], to
+(optionally) extend the message integrity check on application data
+messages.
+===
+
+I can't see any handshake record protection in TLSv1.2 spec or in
+Wireshark? Tell me what I am missing? I note the current draft uses
+NULL_NULL AEAD for handshake messages. This is the status quo. I may be
+misunderstanding something and client and server random are in fact part
+of the AD for handshake messages and NULL_NULL AEAD, but my read of the
+spec and indications are that the handshake can be tampered with. I
+can't see it in the spec where the handshake MAC and AD is defined, just
+NULL_NULL AEAD for the handshake messages. The TLSv1.3 has misleading
+comments regarding record protection. The handshake is not protected. I
+might be missing something. I believe handshake messages can still be
+rewritten by a proxy with the TLSv1.3 draft as it stands? I'm working on
+writing a proxy so I can test... but I can't see any authentication of
+handshake in Wireshark decodes of TLSv1.2 handshaking. I was a little
+surprised. The client and/or server random must be included verbatim in
+every handshake message and used as part of the handshake AD and there
+needs to be a MAC on all handshake messages. SHA2-384? otherwise anyone
+who cap tap layer 2/3 will still be able to rewrite TLSv1.3 handshake
+messages.
+
+===
+Comment: The spec also needs to advise and reference DHE parameter
+bounds checking requirements or used named parameters (rfc5114). It
+reads like it is moving in this direction. Named parameters have their
+own problems if they are well known and a MITM records lots of traffic
+then they become vulnerable. Today, if you only expose ECDHE you are
+relatively safe from most wiretappers as it uses named curves
+(secp256r1, secp384r1, secp521r1). Worst case with TLSv1.2 and ECDHE
+exposed as the lowest KEX is that you could be downgraded to secp256r1
+(by rewriting extensions in ClientHello) which has known twist
+vulnerabilities (DJB safe curves) and is vulnerable to side-channel
+attacks (collocation, timing, FLUSH+RELOAD, non-constant time math).
+Much harder than DHE tampering. TLSv1.2 DH is vulnerable if the spec
+doesn't advise implementations how to check for weak DH parameters and
+TLSv1.2 suffers from handshake rewriting problems i.e. those who can win
+friends and influence CAs and can get warrants to tap ISPs. DH hides a
+shared secret from eavesdroppers but is vulnerable to MITM i.e. so is
+not trustworthy unless CA has public audit records, that would show
+evidence of certificate tampering. The problem is anyone who can
+influence a regional CA can break DH and TLS handshake records are not
+authenticated and there are still cipher downgrade and parameter
+modification attacks that are possible if handshake protocol isn't AEAD
+authenticated with an HMAC and null cipher before the handshake is complete.
+===
+
+===
+Comment: It is also a very testable idea to have several AEAD ciphers,
+MAC algorithms, key exchange methods and cipher primitives to mitigate
+future attacks on individual primitives for the same reasoning behind
+the development of SHA-3. SHA-3 was designed based on the principle of
+mitigating against future attacks on SHA-2 even though no complete
+attacks are currently known. It is also testable reasoning to base
+cryptographic primitive selection on a system of composition versus the
+current CipherSpec system. See my sketch/comments on overhauling
+CipherSpecs with a "design for mitigation" strategy.
+===
+
+The current TLSv1.3 draft wording retires MAC-then-Encrypt and depends
+entirely on AEAD cipher authentication tags for message integrity (see
+draft-ietf-tls-tls13 / Record Payload Protection). I have no technical
+issue with the requirement for AEAD ciphers and retiring MAC-then-Encrypt.
+
+Here are six well known AEAD ciphers, however all have 128-bit message
+authentication tags. The first four have IETF specs or drafts:
+
+ - ChaCha20+Poly1305
+   http://tools.ietf.org/html/draft-mavrogiannopoulos-chacha-tls-04
+ - Camellia-GCM
+   http://tools.ietf.org/html/draft-kanno-tls-camellia-gcm-00.html
+ - AES-GCM
+   https://tools.ietf.org/html/rfc5288
+ - AES-CCM
+   https://tools.ietf.org/html/rfc6655
+ - AES-EAX
+   (NIST candidate)
+ - AES-OCB
+   (Patented in the US with exemption for any OSI source license)
+
+These all fit within the TLSv1.3 draft Record Payload Protection
+requirements which states exclusive use of AEAD ciphers
+(draft-ietf-tls-tls13 / Record Payload Protection) and providing at
+least three would provide exploit mitigation capabilities.
+
+===
+Observation: From reading the current TLSv1.3 draft, it seems CBC and
+the non GCM version of Camelia are removed by omission which means they
+would be supported in implementations via backwards compatibility with
+TLSv1.2.
+===
+
+The issue is the current AEAD ciphers reduce all message authentication
+to 128-bits due to properties of the current AEAD ciphers. The
+probability of a forgery is 1 / n<=112 with 16KB messages but this could
+be reduced with a large dictionary. It is well known that authentication
+strength is independent from the tag size and GCM weak keys could
+potentially be exploited. SHA2-256 theoretically  provides 128 bits
+security, SHA2-384, 192 bits security  and SHA2-512, 256 bits security.
+SHA2-384 with 192 bits security strength was available with earlier
+non-AEAD cipher suites in the deprecated MAC-then-Encrypt scheme in
+TLSv1.2. There is a *notional* drop in payload integrity protection in
+the current draft of TLS1.3 due to the requirement for AEAD ciphers and
+the current AEAD cipher authentication limitations (128-bit tags) with
+the removal of MAC-then-Encrypt, which offered SHA384 tags with 256 bit
+ciphers, or 192 bits of message authentication (MAC-then-Encrypt
+technical issues aside). The choices for the new TLS version should be
+made not just for those with high performance requirements, but also for
+those with high security requirements. i.e. 256 bit ciphers and > 192
+security bits for message integrity. This is not provided by the current
+AEAD only wording.
+
+AES-CCM (referred to in the current draft) fits the draft Record Payload
+Protection requirements for AEAD ciphers. CCM is worth retaining and EAX
+or OCB may be worth reconsidering; for the same mitigation reasoning
+behind SHA-3 as an alternative to SHA-2. CCM, EAX and OCB all have more
+entropy in the IV than AES-GCM, and their tags and IV are computed using
+complimentary approaches (security by diversity). None are as fast as
+AES-GCM as they don't benefit from GHASH parallelization (useful for a
+plausible probabilistic integrity attack). The intent is not to use
+these slower algos as the plaintext replacement for the Internet
+(AES_128_GCM) rather to mitigate future attacks. We are down to one
+cipher. It is a very testable idea to have AEAD ciphers with a GHASH
+alternative to mitigate forgery attacks on GHASH. Someone with lots of
+resources could probabilistically forge GCM auth tags (or any of the
+schemes) and substitute bogus data; sometime in the near future. If we
+are limited to 128-bits content authentication in TLS, then higher
+layers than TLS will have to add message integrity security due to TLS
+layer limits in current AEAD ciphers. This is a backwards step from
+HMAC_SHA384 in the old MAC-then-Encrypt mode (with fixed padding).
+HMAC_SHA384 offers 192 security bits for message authentication.
+
+Also of note is the GCM counter scheme (modified from CTR) was designed
+to allow 32-bit adders in hardware. The counter starts at 0x0000001 and
+the entropy in the IV prefix is 96-bits expanded from the nonce. The 32
+bits of the IV is predictable. This is not a good property. gcm-spec
+states this design was to avoid the overhead of 128-bit adders for the
+counter (adder logic, carry propagation, etc). AES-EAX nonce expands to
+full 128-bits of entropy in the IV/CTR but requires 128-bit adders as it
+layers authentication on top of CTR mode. It is slower than GCM but
+performs similarly to CCM. Someone might be able to comment on the IV
+entropy for CCM. I think it xors the previous block similarly to CBC so
+IV doesn't contain predictable components like GCM however it doesn't
+benefit from single stream parallelization (AES-GCM with GHASH).
+
+The issue is raising the message authentication integrity back to
+TLSv1.2 levels (at least notionally) or higher; given all AEAD ciphers
+have 128 bit tags (and a lower forgery bound). There is the
+Encrypt-then-MAC (RFC 7366) extension that if modified in relation to
+TLSv1.3 could be rephrased as a parameterizable meta-AEAD cipher that
+meets the Record Payload Protection requirements in the TLSv1.3 draft,
+as ETM-AEAD[aead-cipher,hmac] and ETM-AEAD[null,hmac] that could be used
+for handshake messages with (client|server)_random used as AD in all
+TLSv1.3 handshake messages, and ETM-AEAD[aead-cipher,null] for security
+levels where 128-bit tags are acceptable. This kind of approach would
+keep the spec simple and symmetrical.
+
+* An AEAD cipher's 128-bit tag plus HMAC_SHA256 would returning the
+message integrity security bounds to the order of 192 bits (above
+quantum scale).
+
+* An AEAD cipher's 128-bit tag plus HMAC_SHA384 would raise the order
+above 256 bits.
+
+===
+Comment: Adding AEAD NULL HMAC_SHA2_256, HMAC_SHA2_384 and HMAC_SHA2_512
+in an Encrypt-then-MAC scheme for tamper resistant handshake messages in
+the record protocol ETM-AEAD[null,hmac] and optionally for the
+application data ETM-AEAD[aead-cipher,hmac] would be symmetrical with
+handshake rewriting mitigation; which is essentially Encrypt-then-MAC
+with a NULL cipher e.g. ETM-AEAD[null,hmac] for handshake messages, or a
+ETM-AEAD[aead-cipher,null] for application data in the case where
+128-bit tags from the AEAD cipher are sufficient. The spec would define
+the AD for handshake messages as (client|server)_random to be repeated
+verbatim in all handshake messages instead of (seq_num +
+TLSPlaintext.type + TLSPlaintext.version) as is used for AD construction
+for application data.
+===
+
+===
+Probabilistic integrity attack on 128-bit AEAD auth tags - downgrade
+from HMAC_SHA384 192 bits strength authentication - (Snoopy vs Loki) ===
+
+The primary issue is that all AEAD ciphers have 128 bit authentication
+tags. The prevailing argument is that this is sufficient given the nonce
+lifespan however there is a reasonable argument to provide more
+integrity protection and this has been mentioned by others. I've done
+some more research and reasoning. A MITM attacker could find collisions
+probabilistically for known message lengths with a partial database of
+tagged AD + bogus data, and bulk data transfer in TLS is likely to have
+a known size of 16KB less TLS struct overhead, unless message sizes were
+randomized with message size blinding. Lots of traffic with bulk
+transfers and 16KB messages (i.e. the Internet) could be vulnerable and
+opens up the possibility of a probabilistic integrity attacks that could
+substitute good messages with forged messages by matching AD and 128-bit
+tag (a very small lookup key) for the same size message.
+
+Numbers. 16K message size, n Exabytes (~n ⋅260) dictionary and n
+Exabytes (~n ⋅260) of traffic and you could probabilistically inject bit
+errors with a certain probability. The probability is small but is
+approachable with quantum computing. We need to quantify the computation
+and storage required to find sizeof(struct(AD) + (16KB -
+sizeof(ContentType) - sizeof(ProtocolVersion) - sizeof(uint16)) blocks
+and calculate the probability of finding matching AD plus auth tags
+given a large DHT and some large pre-computation. AD and tag are
+visible. The integrity attacker would need a database of AD (seq_num +
+TLSPlaintext.type + TLSPlaintext.version) at the typical bulk transfer
+block size of a known TLS implementations to forge AEAD tags and
+substitute good data with bogus data. This seems a feasible attack on
+"the Internet" in the very near future (tractable in 10-20 years) with
+quantum computing and quantum storage (2150) given the orders we are
+dealing with. This would be infeasible with 256 bits of security. CCM-8
+tags at 64-bit could be attacked today with Exascale so shouldn't be
+used in a modern TLS AEAD suite. It seems from the literature that GHASH
+forgery probability is (214)/(2128) for 16KB blocks. The 128-bit tag and
+ADs (seq_num + TLSPlaintext.type + TLSPlaintext.version) are visible.
+Note this is a  not an eavesdropping attack.
+===
+
+===
+Comment: I noted an earlier TLSv1.3 draft hinted that the initial
+seq_num should be derived according to (RFC1948) however the wording has
+changed in the latest draft. TLSv1.2 has predictable sequence number
+which lowers the order of certain types of attack. Initial sequence
+number if randomized would need to be included in (Client|Server)Hello
+and authenticated with the HMAC so they cannot be tampered with. This
+would increase the order of certain types of attacks.
+===
+
+The current TLSv1.3 draft says this which is:
+
+    sequence number
+    : Each connection state contains a sequence number, which is
+      maintained separately for read and write states.  The sequence
+      number MUST be set to zero whenever a connection state is made the
+      active state.  Sequence numbers are of type uint64 and may not
+      exceed 2^64-1.  Sequence numbers do not wrap.  If a TLS
+      implementation would need to wrap a sequence number, it must
+      terminate the connection.  A sequence number is incremented after
+      each record: specifically, the first record transmitted under a
+      particular connection state MUST use sequence number 0.
+
+
+===
+Comment: Given sequence numbers are 64 bit, randomizing the lower
+48-bits of the sequence number would not limit data transfer
+capabilities or introduce any significant wrap problems. Consider
+randomizing the lower n-bits of the sequence number.
+===
+
+An Encrypt-then-MAC (RFC 7366) derived meta-AEAD i.e.
+ETM-AEAD[aead-cipher,hmac] with higher strength authentication tags
+(AEAD tag combined with HMAC) and randomized initial sequence numbers
+included in the Hello would mitigate forgery attacks for application
+data. AEAD ciphers with > 128 bit tags are perhaps impracticable in the
+short-term because they don't exist so  ETM-AEAD[aead-cipher,hmac] would
+be a practical approach and also fix the handshake authentication issues
+ETM-AEAD[null,hmac]. Given the amount of Internet data transferred,
+storage capacity predictions and so forth, the (lack of) entropy in the
+AD sequence numbers and the tag sizes, it seems that this type of attack
+could easily be mounted in the next 10 years (maybe sooner). It would be
+interesting to quantify the probability of bogus block injection rate
+given predicted storage. From pencil calculation it seems feasible at
+lower than quantum scale i.e. way less than a Googol ;-).
+
+GCM + HMAC_SHA256 for 384 bits authentication would provide > 192
+security bits and render this infeasible at quantum scale. A small
+overhead for a 16KB message. However this is a minor issue compared to
+the ability for transparent proxies rewriting handshake messages however
+it is addressed in a similar way. ETM-AEAD[null,hmac] for handshake and
+ETM-AEAD[aead-cipher,null] or ETM-AEAD[aead-cipher,hmac] for application
+data.
+
+  "
+  ###  Record Payload Protection
+
+  The record protection functions translate a TLSPlaintext structure
+  into a TLSCiphertext. The deprotection functions reverse the process.
+  In TLS 1.3 as opposed to previous versions of TLS, all ciphers are
+  modelled as "Authenticated Encryption with Additional Data" (AEAD)
+  {{RFC5116}}. AEAD functions provide a unified encryption and
+  authentication operation which turns plaintext into authenticated
+  ciphertext and back again.
+
+  AEAD ciphers take as input a single key, a nonce, a plaintext, and
+  "additional data" to be included in the authentication check, as
+  described in Section 2.1 of {{RFC5116}}. The key is either the
+  client_write_key or the server_write_key.
+
+           struct {
+               ContentType type;
+               ProtocolVersion version;
+               uint16 length;
+               opaque nonce_explicit[SecurityParameters.record_iv_length];
+               aead-ciphered struct {
+                  opaque content[TLSPlaintext.length];
+               } fragment;
+           } TLSCiphertext;
+    "
+
+
+In July 2012, NIST revised SP800-57, which provides guidance for
+cryptographic key management. The publication disallows creation of
+digital signatures with a hash security lower than 112-bits after 2013.
+The previous revision from 2007 specified the cutoff to be the end of
+2010. I would say that 128-bit AEAD tags with 16KB block message
+authentication tags are in the order of <=112 bits security and count as
+signatures and are subject to this new minimum? so it makes sense to
+find a way to raise it back to 192 (as with SHA2-384).
+
+
+===
+Comment: CipherSpecs. I think removing CipherSpecs and replacing them
+with a composition based approach may reduce both spec and
+implementation complexity and allow better expression of security
+strength factor (ssf) that could be used as a tag to specify acceptable
+combinations of cryptographic primitives in ClientHello and ServerHello,
+rather than have a combinatorial explosion of CipherSpecs. Propose to
+remove CipherSpec and replace it with a simpler system based on
+composition of various cryptographic primitives at the expense of a few
+more bytes in the (Client|Server)Hello. Here is a sketch of a possible
+CipherSuite replacement for a TLSv1.x (Client|Server)Hello. Note, it is
+just a sketch.
+
+===
+Replacement idea for CipherSpec and CipherSuites section of
+ClientHello/ServerHello { 4, 0 }
+===
+
+
+enum SpecComponent {
+  tls_security_strength,
+  tls_key_exchange_algorithm,
+  tls_verify_algorithm,
+  tls_prf_algorithm,
+  tls_record_protection_algorithm
+};
+
+enum SecurityStrengthFactor {
+  tls_ssf_null, tls_ssf_56, tls_ssf_112, tls_ssf_168
+};
+
+enum KeyExchangeAlgorithm {
+  tls_kex_null, tls_kex_FFDHE, tls_kex_ECDHE
+};
+
+enum VerifyAlgorithm {
+  tls_verify_null, tls_verify_RSA, tls_verify_EdDSA
+};
+
+enum SignatureAlgorithm {
+  rsa2048, rsa3072, rsa4096, rsa6072, rsa8192, ed25519, ed41417
+};
+
+enum PRFAlgorithm {
+  tls_prf_sha2_256
+};
+
+enum AuthenticationAlgorithm {
+ tls_hmac_null, tls_hmac_sha2_256, tls_hmac_sha2_384, tls_hmac_sha2_512,
+ tls_hmac_sha3_256, tls_hmac_sha3_384, tls_hmac_sha3_512
+};
+
+enum ProtectionType {
+  tls_aead_null_hmac, tls_aead_aead_null, tls_aead_aead_etm
+};
+
+enum ProtectionAlgorithm {
+  aes_gcm, aes_ccm, camellia_gcm, chacha20_poly1305
+};
+
+struct SecurityStrengthList {
+  SecurityStrengthFactor security_strength_list<1...n>
+};
+
+struct KeyExchangeAlgorithmSpec {
+  KeyExchangeAlgorithm key_exchange_algorithm,
+  SecurityStrengthFactor ssf;
+  NamedGroup group
+};
+
+struct KeyExchangeAlgorithmList {
+  KeyExchangeAlgorithmSpec key_exchange_algorithm_list<1...n>
+};
+
+struct VerifyAlgorithmSpec {
+  VerifyAlgorithm verify_algorithm,
+  SecurityStrengthFactor ssf;
+  SignatureAlgorithm signature_algorithm;
+};
+
+struct VerifyAlgorithmList {
+  VerifyAlgorithmSpec verify_algorithm_list<1...n>
+};
+
+struct RecordProtectionAlgorithmSpec {
+  ProtectionType protection_type;
+  SecurityStrengthFactor ssf;
+  ProtectionAlgorithm protection_algorithm;
+  uint16 key_bits;
+  AuthenticationAlgorithm additional_authentication_algorithm;
+};
+
+struct RecordProtectionAlgorithmList {
+  RecordProtectionAlgorithmSpec record_protection_algorithm_list<1...n>
+};
+
+
+/*
+ * This is just an example...
+ *
+ * Note: ssf tag value is notional and its purpose is to tag
+ * compatible combinations of primitives.
+ * AEAD 128 bit ciphers with 128 tags and current algorithms
+ * labeled notional tls_ssf_56
+ * Note: AEAD 256-bit ciphers using ETM[aead-cipher,hmac_sha2_256]
+ * labeled notional tls_ssf_168
+ * Note: ssf tag value would need to be pinned to each cryptographic
+ * primitive in the spec so that during protocol negotiation, a
+ * primitive can only be downgraded. This improves the status quo
+ * and give operators an active mitigation strategy. The ssf is
+ * protected by the tamper resistance of the handshake record protocol
+ * assuming NULL_NULL AEAD is replaced by NULL_HMAC_SHA2_256 AEAD.
+ *
+ *   tls_security_strength  = sizeof(uint16) * (3 * 1 + 2)  = 10 bytes
+ *   tls_key_exchange       = sizeof(uint16) * (7 * 3 + 2)  = 46 bytes
+ *   tls_verify_algorithm   = sizeof(uint16) * (5 * 4 + 2)  = 44 bytes
+ *   tls_prf_algorithm      = sizeof(uint16) * (2 * 1 + 2)  = 8 bytes
+ *   tls_record_protection  = sizeof(uint16) * (11 * 5 + 2) = 114 bytes
+ *   total                  = a measly 140 bytes
+ */
+
+{
+ tls_security_strength, length=3
+   tls_ssf_56,
+   tls_ssf_112,
+   tls_ssf_168,
+
+ tls_key_exchange_algorithm, length=7
+   tls_kex_FFDHE    tls_ssf_56,   ffdhe2048,
+   tls_kex_FFDHE,   tls_ssf_112,  ffdhe4096,
+   tls_kex_FFDHE,   tls_ssf_168,  ffdhe8192,
+   tls_kex_ECDHE,   tls_ssf_56,   secp256r1,
+   tls_kex_ECDHE,   tls_ssf_112,  secp521r1,
+   tls_kex_ECDHE,   tls_ssf_112,  curve25519,
+   tls_kex_ECDHE,   tls_ssf_168,  curve41417,
+
+ tls_verify_algorithm, length=5
+   tls_verify_RSA,   tls_ssf_56,  rsa2048, sha2_128,
+   tls_verify_RSA,   tls_ssf_112, rsa4096, sha2_256,
+   tls_verify_RSA,   tls_ssf_168, rsa8192, sha2_512,
+   tls_verify_EdDSA, tls_ssf_112, ed25519, sha2_512,
+   tls_verify_EdDSA, tls_ssf_168, ed41417, sha2_512,
+
+ tls_prf_algorithm, length=2
+   tls_prf_sha2_256,
+   tls_prf_sha3_256,
+
+ tls_record_protection_algorithm, length=11
+   tls_aead_aead_null, tls_ssf56,  aes_gcm, 128, hmac_null,
+   tls_aead_aead_null, tls_ssf56,  aes_ccm, 128, hmac_null,
+   tls_aead_aead_null, tls_ssf56,  camellia_gcm, 128, hmac_null,
+   tls_aead_aead_null, tls_ssf112, aes_gcm, 256, hmac_null,
+   tls_aead_aead_null, tls_ssf112, aes_ccm, 256, hmac_null,
+   tls_aead_aead_null, tls_ssf112, camellia_gcm, 256, hmac_null,
+   tls_aead_aead_null, tls_ssf112, chacha20_poly1305, 256, hmac_null,
+   tls_aead_aead_etm, tls_ssf168, aes_gcm, 256, hmac_sha2_256,
+   tls_aead_aead_etm, tls_ssf168, aes_ccm, 256, hmac_sha2_256,
+   tls_aead_aead_etm, tls_ssf168, camellia_gcm, 256, hmac_sha2_256,
+   tls_aead_aead_etm, tls_ssf168, chacha20_poly1305, 256, hmac_sha2_256,
+}
+
+This type of composition scheme makes more sense than a combinatorial
+explosion of CipherSpecs with security and integrity levels inflexibly
+tied together, that do not necessarily accurately represent their
+respective strengths, such as in the case of AES_256_GCM_SHA384 where
+authentication is limited to 128 bits. CipherSpecs also further limit
+the policy combination of security components as an attack mitigation
+strategy that allows substitution of individual cryptographic primitives.
+
+A simple constraints solver could pick a combination of primitives that
+satisfies a mutual minimum or maximum ssf based on order.
+
+===
+Comment: add This proposal would allow 384bit message authentication
+such as the 128-bit AEAD tag plus optionally using
+ETM-AEAD[aead-cipher,hmac_sha2_256] which passes the AD to an HMAC as
+well as the AEAD cipher, and this would be consistent with using
+ETM-AEAD[null,hmac_sha2_256] with (client|server)_random to make the
+handshake messages tamper resistant. i.e. prevent handshake from being
+be re-written by proxies as (client|server)_random is used for
+pre-master key derivation.
+===
+
+The reason to allow specification of the HMAC for an ETM_AEAD in a
+revised compositional approach to protection algorithms is to avoid
+explosion of AEAD ciphers definitions with variants that have stronger
+authentication tags. This would quickly become problematic with the
+current CipherSpec scheme.
+
+Note what I have sketched out above is quite pessimistic with respect to
+the security strength of present algorithms given a review of recent
+literature. Consider it more of an engineering perspective with a
+relative knowledge of the security parameters of the underlying
+cryptographic primitives. Consider the ssf the margin of attack reach,
+i.e. a notional strength.
+
+And yes, the MAC in the current Cipher Specs at present is a little
+misleading (AES_256_GCM_SHA384) and I see elsewhere that it was
+mentioned that it should be removed. A composition based approach adds
+clarity.Does TLSv1.3 (or TLSv2.0) even need CipherSpecs given they could
+be supported via backwards compatibility in an implementations offering
+TLSv1.2? An implementations needs tables internally to expand to the
+various cryptographic primitives from the selected CipherSuites and the
+spec and extensions seem to be moving towards a compositional approach
+in other areas (named groups), so it may make things simpler. Should
+TLSv1.3 (Client/Server)Hello be re-designed to remove CipherSpec and use
+a simple system based on composition of cryptographic components linked
+by notional security strength tags?
+
+===
+Comment: I note that ChangeCipherSpec is mentioned as removed in the
+introductory notes but is still listed later in the spec
+(draft-ietf-tls-tls13 / Change Cipher Specs Message):
+===
+
+    ##  Change Cipher Specs Message
+
+        struct {
+            enum { change_cipher_spec(1), (255) } type;
+        } ChangeCipherSpec;
+
+
+Conclusions
+
+* Adding sha3_ and using sha2_ prefixes on the existing SHA2 and new
+SHA3 constants adds mitigation capabilities to mitigate vulnerabilities
+in hashes as per the reasoning behind SHA-3. SHA-2 hashes can be
+specified as mandatory.
+* All handshake messages should use AEAD NULL_HMAC_SHA2_256 AEAD using
+(client|server)_random as AD to mitigate MITM handshake message tampering
+
+* Adding a meta AEAD using cipher AEAD tag plus HMAC to extend message
+authentication integrity is practical with the present cryptographic
+primitives and could meet the AEAD requirements in Record Payload
+Protection section, by abstraction, and increase authentication bits
+beyond 128 for application data.
+
+* Current CipherSpec and CipherSuites could be revisited to avoid the
+combinatorial explosion that exists with the current scheme. Design for
+composition.
+
+* Current CipherSpec and CipherSuites limits flexibility for attack
+mitigation by limiting the ability to substitute or downgrade a compromi
+sed cryptographic primitive if it becomes vulnerable due to how they are
+currently tied together in CipherSuites. Design for mitigation.
+
+* A composition based cipher spec in the ClientHello and ServerHello
+adds mitigation capabilities to operators via configuration (downgrade
+cryptographic primitives) and might reduce implementation complexity for
+a TLSv1.3 (or TLSv2.0) that favors security over backwards compatibility.
+
+* Randomizing lower 48 bits of sequence number would lower the
+predictability of AD in content messages and not add wrap issues.
+Initial sequence number would need to be shared in the signed
+(Client|Server)Hello handshake messages
+
+* Add the ability for blinding countermeasures. e.g. allow adding 32
+random bytes to AD in record protocol. ~0.1% of 16KB blocks to thwart AD
+dictionary attacks for message forgery. It could be designed
+symmetrically with the handshake random data and HMAC to prevent
+handshake tampering. i.e. make a provision for 32 random data bytes in
+the record protocol, then the same framing could be used for
+(client|server)_random to authenticate handshake messages. i.e.
+ETM-AEAD[null,hmac_sha2_256] for handshake messages. Packet length
+blinding to consider too?
+
+Just putting my comments out there. Many of these issues have been
+mentioned elsewhere and in academic papers. I though I would share a
+compilation of my own analysis as it might be useful. I believe that
+handshake rewriting via proxy is well-known public knowledge. Big-IP's
+SSL proxy does part of this already and could be augmented with
+assistance from a friendly neighborhood CA (without public audit
+records). Google "implementing proxy ssl". A perfect place to drop-in
+online attacks on RSA keys, DH parameters, or downgrading clients to
+TLS_RSA_WITH_RC4_128_MD5 (many clients and servers still support this)
+to record streams and work on cracking them offline, etc... I think it
+is a biggie.
+
+Otherwise someone tell me how a layer 2/3 transparent proxy can't fiddle
+with cipher advertisements in a ClientHello in TLSv1.2? What am I
+missing? There is no AD and HMAC on handshake messages in the spec and I
+can't see them in Wireshark.
+
+I guess I'll have to finish my proxy and try rewriting ClientHellos and
+see for myself...
+
+Michael.
+

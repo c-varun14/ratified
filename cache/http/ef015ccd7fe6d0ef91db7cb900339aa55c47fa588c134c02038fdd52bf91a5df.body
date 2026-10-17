@@ -1,0 +1,327 @@
+Return-Path: <ekr@rtfm.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (ietfa.amsl.com [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id BA0FC1B28A3
+ for <tls@ietfa.amsl.com>; Fri, 20 Jun 2014 11:30:35 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.977
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.977 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, FM_FORGED_GMAIL=0.622, HTML_MESSAGE=0.001,
+ RCVD_IN_DNSWL_LOW=-0.7] autolearn=ham
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id d-jeRoAKraSc for <tls@ietfa.amsl.com>;
+ Fri, 20 Jun 2014 11:30:28 -0700 (PDT)
+Received: from mail-wi0-f181.google.com (mail-wi0-f181.google.com
+ [209.85.212.181])
+ (using TLSv1 with cipher ECDHE-RSA-RC4-SHA (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 8B27B1B28A6
+ for <tls@ietf.org>; Fri, 20 Jun 2014 11:30:27 -0700 (PDT)
+Received: by mail-wi0-f181.google.com with SMTP id n3so1276309wiv.2
+ for <tls@ietf.org>; Fri, 20 Jun 2014 11:30:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20130820;
+ h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+ :message-id:subject:to:cc:content-type;
+ bh=SlF5hfNtBsOZYJzes9QlXji9Akx2KhUUyO6YSkFiQH0=;
+ b=SYFuYo9udz9YQlFodhPEsuRhXvPlxsKI+pqgKkK1n+xB2sdKAYn6Ws7MFEesGYNGgo
+ pI360XPO1OhlTKHlx+J9CTPrhLh7Jd3T16sNLA0D6Yiplb5gxh9wY6cJo4Yi/Zue9MRP
+ wnHAoA1St1fXQkwTlu+Lyi6HwSAJTsG0UX7EvKE+umcXi5lpIZCwyZvv3QGUKpxd7rw+
+ BNL+bWyeaO9lZludwI6EufHvaRy1WYY33Gii7WhTGDemGp5l8gPlJn/M1Ur0p8MYfhe1
+ JU6RLTeE+yyYdmXDSo1Qg8b8jC2kl3AZrDVrI6XBHjaisNz8ZYaDvxrIKmzhahXIa80L
+ s2gw==
+X-Gm-Message-State: ALoCoQmJccSVhxeCm0X0AslvwSzJxBxSyA/8hkWEcOkZowBlfAgaMS8f/RyhrPqBUqx24Kb37Hah
+X-Received: by 10.194.87.200 with SMTP id ba8mr6551241wjb.28.1403289025962;
+ Fri, 20 Jun 2014 11:30:25 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 10.216.218.198 with HTTP; Fri, 20 Jun 2014 11:29:45 -0700 (PDT)
+X-Originating-IP: [2620:101:80fc:232:682a:acf8:fd1d:56ee]
+In-Reply-To: <87k38bzc0h.fsf@alice.fifthhorseman.net>
+References: <87k38bzc0h.fsf@alice.fifthhorseman.net>
+From: Eric Rescorla <ekr@rtfm.com>
+Date: Fri, 20 Jun 2014 11:29:45 -0700
+Message-ID: <CABcZeBNKJ7F4C39NYPZ1h2UH61C0gj2kMOSgkB0P2OP6PwtjNQ@mail.gmail.com>
+To: Daniel Kahn Gillmor <dkg@fifthhorseman.net>
+Content-Type: multipart/alternative; boundary=089e010d8afee90f4404fc48af76
+Archived-At: http://mailarchive.ietf.org/arch/msg/tls/gAe2QTnQvSVP9PDc7rY7QG-ilvw
+Cc: IETF TLS Working Group <tls@ietf.org>
+Subject: Re: [TLS] On the possibility of AEAD modes that require padding
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.15
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <http://www.ietf.org/mail-archive/web/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Fri, 20 Jun 2014 18:30:35 -0000
+
+--089e010d8afee90f4404fc48af76
+Content-Type: text/plain; charset=UTF-8
+
+Daniel,
+
+Thanks for your post:
+
+You're right that this is an issue (which has been raised by several people
+in the past). The two solutions seem to be:
+
+- As you propose, compute the integrity tag over the padded length.
+
+- Simply remove the length field from the additional_data on the theory
+that the AEAD mode itself must verify the length (or as AGL proposed
+a few minutes ago, set it to 0 for any modes which pad)
+
+If we decide to take the second direction, we might remove the length
+for any AEAD algorithms which take padding in TLS 1.2 and then remove
+the length for all AEAD algorithms in TLS 1.3.
+
+I have created a github issue to track this:
+https://github.com/tlswg/tls13-spec/issues/47
+
+-Ekr
+
+
+On Fri, Jun 20, 2014 at 11:11 AM, Daniel Kahn Gillmor <dkg@fifthhorseman.net
+> wrote:
+
+> hi IETF folks--
+>
+> If an AEAD mode is ever defined that must pad its input to a blocksize
+> before encrypting, the current spec seems like it will break.
+>
+> This is a currently-theoretical concern, since (fixed authentication tag
+> notwithstanding) GCM does not pad its input, and OCB and
+> chacha20-poly1305 (and other AEAD modes i could find data on) also don't
+> pad their input.
+>
+> (note that this question is independent of the various proposals for
+> explicitly introducing padding into TLS, which i don't go into here)
+>
+> The 1.3 draft currently says:
+>
+> > The additional authenticated data, which we denote as additional_data, is
+> > defined as follows:
+> >
+> >        additional_data = seq_num + TLSPlaintext.type +
+> >                          TLSPlaintext.version + TLSPlaintext.length;
+> >
+> > where "+" denotes concatenation.
+> >
+> > The aead_output consists of the ciphertext output by the AEAD encryption
+> > operation. The length will generally be larger than TLSPlaintext.length,
+> but
+> > by an amount that varies with the AEAD cipher. Since the ciphers might
+> > incorporate padding, the amount of overhead could vary with different
+> > TLSPlaintext.length values. Each AEAD cipher MUST NOT produce an
+> expansion of
+> > greater than 1024 bytes.
+>
+> It goes on to define AEAD-Decrypt this way:
+>
+> >       TLSPlaintext.fragment = AEAD-Decrypt(write_key, nonce,
+> >                                            AEADEncrypted,
+> >                                            additional_data)
+>
+> Consider the decryption step.  The decryptor knows:
+>
+>  * the AEAD mode (including the taglength)
+>  * the nonce
+>  * the write key
+>  * the sequence number
+>  * the record type
+>  * the TLS version
+>  * the ciphertext (including its length)
+>
+> To create additional_data, it must be able to derive TLSPlaintext.length
+> From the above information.
+>
+> All the AEAD modes i know about have a ciphertext expansion of a
+> fixed-length tag.  so:
+>
+>  TLSPlaintext.length = TLSCiphertext.length - AEADmode.taglength
+>
+> But if an AEAD mode were to additionally pad its input ("Since the
+> ciphers might incorporate padding, the amount of overhead could vary
+> with different TLSPlaintext.length values"), there would be no clear way
+> to derive additional_data because the length of the plaintext is unknown
+> before doing the decryption.
+>
+> So i think the fix is to specify that additional_data should be derived
+> From the padded length of the TLSPlaintext.fragment, not from
+> TLSPlaintext.length.  For GCM (and other AEAD modes i know of) these
+> values are of course identical.
+>
+> Making this explicit seems like it would require a bit of gymnastics in
+> the spec, all for the sake of holding open the door for future modes
+> with variable-length ciphertext expansion.  I can try to make a patch
+> for this change, but i want to know if we think it's necessary.
+>
+> Alternately, we could decide that we won't accept modes that require
+> this kind of padding (maybe stripping out the sentence about "might
+> incorporate padding").
+>
+> Have i missed an obvious solution or misunderstood the situation?  What
+> do people think we should do here?
+>
+>      --dkg
+>
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+>
+>
+
+--089e010d8afee90f4404fc48af76
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">Daniel,<div><br></div><div>Thanks for your post:</div><div=
+><br></div><div>You&#39;re right that this is an issue (which has been rais=
+ed by several people</div><div>in the past). The two solutions seem to be:<=
+/div>
+
+<div><br></div>
+<div>- As you propose, compute the integrity tag over the padded length.</d=
+iv><div><br></div><div>- Simply remove the length field from the additional=
+_data on the theory</div><div>that the AEAD mode itself must verify the len=
+gth (or as AGL proposed</div>
+
+<div>a few minutes ago, set it to 0 for any modes which pad)</div><div><br>=
+</div><div>If we decide to take the second direction, we might remove the l=
+ength</div><div>for any AEAD algorithms which take padding in TLS 1.2 and t=
+hen remove</div>
+
+<div>the length for all AEAD algorithms in TLS 1.3.</div><div><br></div><di=
+v>I have created a github issue to track this:</div><div><a href=3D"https:/=
+/github.com/tlswg/tls13-spec/issues/47">https://github.com/tlswg/tls13-spec=
+/issues/47</a><br>
+
+</div><div><br></div><div>-Ekr<br></div><div><br></div><div><div class=3D"g=
+mail_extra"><br><div class=3D"gmail_quote">On Fri, Jun 20, 2014 at 11:11 AM=
+, Daniel Kahn Gillmor <span dir=3D"ltr">&lt;<a href=3D"mailto:dkg@fifthhors=
+eman.net" target=3D"_blank">dkg@fifthhorseman.net</a>&gt;</span> wrote:<br>
+
+
+<blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-=
+left-width:1px;border-left-color:rgb(204,204,204);border-left-style:solid;p=
+adding-left:1ex">hi IETF folks--<br>
+<br>
+If an AEAD mode is ever defined that must pad its input to a blocksize<br>
+before encrypting, the current spec seems like it will break.<br>
+<br>
+This is a currently-theoretical concern, since (fixed authentication tag<br=
+>
+notwithstanding) GCM does not pad its input, and OCB and<br>
+chacha20-poly1305 (and other AEAD modes i could find data on) also don&#39;=
+t<br>
+pad their input.<br>
+<br>
+(note that this question is independent of the various proposals for<br>
+explicitly introducing padding into TLS, which i don&#39;t go into here)<br=
+>
+<br>
+The 1.3 draft currently says:<br>
+<br>
+&gt; The additional authenticated data, which we denote as additional_data,=
+ is<br>
+&gt; defined as follows:<br>
+&gt;<br>
+&gt; =C2=A0 =C2=A0 =C2=A0 =C2=A0additional_data =3D seq_num + TLSPlaintext.=
+type +<br>
+&gt; =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0TLSPlaintext.version + TLSPlaintext.length;<br>
+&gt;<br>
+&gt; where &quot;+&quot; denotes concatenation.<br>
+&gt;<br>
+&gt; The aead_output consists of the ciphertext output by the AEAD encrypti=
+on<br>
+&gt; operation. The length will generally be larger than TLSPlaintext.lengt=
+h, but<br>
+&gt; by an amount that varies with the AEAD cipher. Since the ciphers might=
+<br>
+&gt; incorporate padding, the amount of overhead could vary with different<=
+br>
+&gt; TLSPlaintext.length values. Each AEAD cipher MUST NOT produce an expan=
+sion of<br>
+&gt; greater than 1024 bytes.<br>
+<br>
+It goes on to define AEAD-Decrypt this way:<br>
+<br>
+&gt; =C2=A0 =C2=A0 =C2=A0 TLSPlaintext.fragment =3D AEAD-Decrypt(write_key,=
+ nonce,<br>
+&gt; =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0AEADEncrypted,<br>
+&gt; =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0additional_data)<br>
+<br>
+Consider the decryption step. =C2=A0The decryptor knows:<br>
+<br>
+=C2=A0* the AEAD mode (including the taglength)<br>
+=C2=A0* the nonce<br>
+=C2=A0* the write key<br>
+=C2=A0* the sequence number<br>
+=C2=A0* the record type<br>
+=C2=A0* the TLS version<br>
+=C2=A0* the ciphertext (including its length)<br>
+<br>
+To create additional_data, it must be able to derive TLSPlaintext.length<br=
+>
+>From the above information.<br>
+<br>
+All the AEAD modes i know about have a ciphertext expansion of a<br>
+fixed-length tag. =C2=A0so:<br>
+<br>
+=C2=A0TLSPlaintext.length =3D TLSCiphertext.length - AEADmode.taglength<br>
+<br>
+But if an AEAD mode were to additionally pad its input (&quot;Since the<br>
+ciphers might incorporate padding, the amount of overhead could vary<br>
+with different TLSPlaintext.length values&quot;), there would be no clear w=
+ay<br>
+to derive additional_data because the length of the plaintext is unknown<br=
+>
+before doing the decryption.<br>
+<br>
+So i think the fix is to specify that additional_data should be derived<br>
+>From the padded length of the TLSPlaintext.fragment, not from<br>
+TLSPlaintext.length. =C2=A0For GCM (and other AEAD modes i know of) these<b=
+r>
+values are of course identical.<br>
+<br>
+Making this explicit seems like it would require a bit of gymnastics in<br>
+the spec, all for the sake of holding open the door for future modes<br>
+with variable-length ciphertext expansion. =C2=A0I can try to make a patch<=
+br>
+for this change, but i want to know if we think it&#39;s necessary.<br>
+<br>
+Alternately, we could decide that we won&#39;t accept modes that require<br=
+>
+this kind of padding (maybe stripping out the sentence about &quot;might<br=
+>
+incorporate padding&quot;).<br>
+<br>
+Have i missed an obvious solution or misunderstood the situation? =C2=A0Wha=
+t<br>
+do people think we should do here?<br>
+<span><font color=3D"#888888"><br>
+=C2=A0 =C2=A0 =C2=A0--dkg<br>
+</font></span><br>_______________________________________________<br>
+TLS mailing list<br>
+<a href=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.org</a><br>
+<a href=3D"https://www.ietf.org/mailman/listinfo/tls" target=3D"_blank">htt=
+ps://www.ietf.org/mailman/listinfo/tls</a><br>
+<br></blockquote></div><br></div></div></div>
+
+--089e010d8afee90f4404fc48af76--
+

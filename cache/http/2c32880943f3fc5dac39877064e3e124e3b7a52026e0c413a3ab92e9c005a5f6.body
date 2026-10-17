@@ -1,0 +1,472 @@
+Return-Path: <davidben@google.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 06B1E130F9A
+ for <tls@ietfa.amsl.com>; Wed, 13 Jun 2018 14:22:22 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -9.951
+X-Spam-Level: 
+X-Spam-Status: No, score=-9.951 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ DKIM_VALID_AU=-0.1, HEADER_FROM_DIFFERENT_DOMAINS=0.249,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_LOW=-0.7, SPF_PASS=-0.001,
+ USER_IN_DEF_SPF_WL=-7.5] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=chromium.org
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id hXlUcZG014OF for <tls@ietfa.amsl.com>;
+ Wed, 13 Jun 2018 14:22:19 -0700 (PDT)
+Received: from mail-qk0-x229.google.com (mail-qk0-x229.google.com
+ [IPv6:2607:f8b0:400d:c09::229])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 0F7C8130F83
+ for <tls@ietf.org>; Wed, 13 Jun 2018 14:22:19 -0700 (PDT)
+Received: by mail-qk0-x229.google.com with SMTP id k86-v6so2421738qkh.13
+ for <tls@ietf.org>; Wed, 13 Jun 2018 14:22:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=pOBlHPd9+SzUtWVd+BKcIWfOd5G+JOjAUqEwWIqNXF4=;
+ b=D9/5sQWEGFybfybxtIXAAzVXkIdH/cmbGgz1qwF5JjUs4F7FB7ybgga9lxH4VFbfpo
+ Zqwa29FMSFl/iQeiM3zFHW1YBYIx9JnATR/GLh76isuu5LchKgjYDEnE0ghMszhQG87W
+ grKd/49wrNAt3UGDpG3q/X4uz5e6ZlA5GU9+s=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=pOBlHPd9+SzUtWVd+BKcIWfOd5G+JOjAUqEwWIqNXF4=;
+ b=EckCDDEZx7m+suELHTfg0CXD9VIB2SgueRI7Im+4Y+OmehVCKDq7d3hzhNsBD1tmip
+ YxZ+amSk2wTePR7wpNU4A/GiuwQJqWr/XZ9z0iSHMjDFZbBODfCWghCWxSNeUxH3/Nf0
+ VPhVAEWz+yLeHP515kpYUzlawgz8fXx1RlM8Ro5+uhoKCqVci48uybxcC/fbkj5qMDtV
+ zHGFeK/o1Wb8RaoJQb5e9XQBXVEmK91+izemEIN94P+3s6m3EoMgLr2cH1wSUt1a4Z8f
+ Y9aRG3SXqbxWSvaF8JCCPR7mOLjtn4SYrBqGjpGRdYgie39Ecra4njJp7FMQvCE0uH41
+ r48A==
+X-Gm-Message-State: APt69E270R9h1pwgzmdewqHoee74DkRX0t2wJIEHM0MeXBUkNxCULmIJ
+ UIuDywGBlcJ5nnSoUiDmp9Fu7fqOCT0tCt7fFC0Bm8g=
+X-Google-Smtp-Source: ADUXVKKJJfmWF7Tugi+b6oezotX2LEIsrx1Z3bTo2gVmI9Qr4QanmOIc8PpLoJZU8r8uRVot2dhE40hezhAap3tIq1I=
+X-Received: by 2002:a37:a608:: with SMTP id p8-v6mr5789386qke.82.1528924937936; 
+ Wed, 13 Jun 2018 14:22:17 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAF8qwaBfG2aQTMCTQ9=8Uj1yRB7PRAaZNeNQnTPtvboxfAh6HQ@mail.gmail.com>
+ <20180613180603.GA27662@mandy>
+ <CAO8oSXnT-5_oudcU-Msf+ZrPbJ6bCZtGBXhe+HkVue+4bL_Ksg@mail.gmail.com>
+In-Reply-To: <CAO8oSXnT-5_oudcU-Msf+ZrPbJ6bCZtGBXhe+HkVue+4bL_Ksg@mail.gmail.com>
+From: David Benjamin <davidben@chromium.org>
+Date: Wed, 13 Jun 2018 17:22:05 -0400
+Message-ID: <CAF8qwaDBbwvMTN=h_1Xoq7LZQ3A=T+Ygkgjq2qXDa26WULiEGA@mail.gmail.com>
+To: Christopher Wood <christopherwood07@gmail.com>
+Cc: alessandro@ghedini.me, "<tls@ietf.org>" <tls@ietf.org>
+Content-Type: multipart/alternative; boundary="000000000000d0df57056e8c937c"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/eOKDnj3E1ykCzu9P9Hidy3y13mU>
+Subject: Re: [TLS] Enforcing Protocol Invariants
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.26
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Wed, 13 Jun 2018 21:22:23 -0000
+
+--000000000000d0df57056e8c937c
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Jun 13, 2018 at 5:04 PM Christopher Wood <
+christopherwood07@gmail.com> wrote:
+
+> On Wed, Jun 13, 2018 at 11:06 AM Alessandro Ghedini
+> <alessandro@ghedini.me> wrote:
+> >
+> > On Tue, Jun 12, 2018 at 12:27:39PM -0400, David Benjamin wrote:
+> > > Hi all,
+> > >
+> > > Now that TLS 1.3 is about done, perhaps it is time to reflect on the
+> > > ossification problems.
+> > >
+> > > TLS is an extensible protocol. TLS 1.3 is backwards-compatible and ma=
+y
+> be
+> > > incrementally rolled out in an existing compliant TLS 1.2 deployment.
+> Yet
+> > > we had problems. Widespread non-compliant servers broke on the TLS 1.=
+3
+> > > ClientHello, so versioning moved to supported_versions. Widespread
+> > > non-compliant middleboxes attempted to parse someone else=E2=80=99s
+> ServerHellos,
+> > > so the protocol was further hacked to weave through their many defect=
+s.
+> > >
+> > > I think I can speak for the working group that we do not want to repe=
+at
+> > > this adventure again. In general, I think the response to ossificatio=
+n
+> is
+> > > two-fold:
+> > >
+> > > 1. It=E2=80=99s already happened, so how do we progress today?
+> > > 2. How do we avoid more of this tomorrow?
+> > >
+> > > The workarounds only answer the first question. For the second, TLS
+> 1.3 has
+> > > a section which spells out a few protocol invariants
+> > > <
+> https://tlswg.github.io/tls13-spec/draft-ietf-tls-tls13.html#rfc.section.=
+9..3
+> >.
+> > > It is all corollaries of existing TLS specification text, but hopeful=
+ly
+> > > documenting it explicitly will help. But experience has shown
+> specification
+> > > text is only necessary, not sufficient.
+> > >
+> > > For extensibility problems in servers, we have GREASE
+> > > <https://tools.ietf.org/html/draft-ietf-tls-grease-01>. This enforces
+> the
+> > > key rule in ClientHello processing: ignore unrecognized parameters.
+> GREASE
+> > > enforces this by filling the ecosystem with them. TLS 1.3=E2=80=99s m=
+iddlebox
+> woes
+> > > were different. The key rule is: if you did not produce a ClientHello=
+,
+> you
+> > > cannot assume that you can parse the response. Analogously, we should
+> fill
+> > > the ecosystem with such responses. We have an idea, but it is more
+> involved
+> > > than GREASE, so we are very interested in the TLS community=E2=80=99s=
+ feedback.
+> > >
+> > > In short, we plan to regularly mint new TLS versions (and likely othe=
+r
+> > > sensitive parameters such as extensions), roughly every six weeks
+> matching
+> > > Chrome=E2=80=99s release cycle. Chrome, Google servers, and any other
+> deployment
+> > > that wishes to participate, would support two (or more) versions of T=
+LS
+> > > 1.3: the standard stable 0x0304, and a rolling alternate version.
+> Every six
+> > > weeks, we would randomly pick a new code point. These versions will
+> > > otherwise be identical to TLS 1.3, save maybe minor details to separa=
+te
+> > > keys and exercise allowed syntax changes. The goal is to pave the way
+> for
+> > > future versions of TLS by simulating them (=E2=80=9Cdraft negative on=
+e=E2=80=9D).
+> > >
+> > > Of course, this scheme has some risk. It grabs code points everywhere=
+.
+> Code
+> > > points are plentiful, but we do sometimes have collisions (e.g. 26 an=
+d
+> 40).
+> > > The entire point is to serve and maintain TLS=E2=80=99s extensibility=
+, so we
+> > > certainly do not wish to hamper it! Thus we have some safeguards in
+> mind:
+> > >
+> > > * We will document every code point we use and what it refers to. (If
+> the
+> > > volume is fine, we can email them to the list each time.) New
+> allocations
+> > > can always avoid the lost numbers. At a rate of one every 6 weeks, it
+> will
+> > > take over 7,000 years to exhaust everything.
+> > >
+> > > * We will avoid picking numbers that the IETF is likely to allocate, =
+to
+> > > reduce the chance of collision. Rolling versions will not start with
+> 0x03,
+> > > rolling cipher suites or extensions will not be contiguous with
+> existing
+> > > blocks, etc.
+> > >
+> > > * BoringSSL will not enable this by default. We will only enable it
+> where
+> > > we can shut it back off. On our servers, we of course regularly deplo=
+y
+> > > changes. Chrome is also regularly updated and, moreover, we will gate
+> it on
+> > > our server-controlled field trials
+> > > <https://textslashplain.com/2017/10/18/chrome-field-trials/>
+> mechanism. We
+> > > hope that, in practice, only the last several code points will be in
+> use at
+> > > a time.
+> > >
+> > > * Our clients would only support the most recent set of rolling
+> parameters,
+> > > and our servers the last handful. As each value will be short-lived,
+> the
+> > > ecosystem is unlikely to rely on them as de facto standards.
+> Conversely,
+> > > like other extensions, implementations without them will still
+> interoperate
+> > > fine. We would never offer a rolling parameter without the
+> corresponding
+> > > stable one.
+> > >
+> > > * If this ultimately does not work, we can stop at any time and only
+> have
+> > > wasted a small portion of code points.
+> > >
+> > > * Finally, if the working group is open to it, these values could be
+> > > summarized in regular documents to reserve them, so that they are
+> > > ultimately reflected in the registries. A new document every six week=
+s
+> is
+> > > probably impractical, but we can batch them up.
+> > >
+> > > We are interested in the community=E2=80=99s feedback on this proposa=
+l=E2=80=94anyone
+> who
+> > > might participate, better safeguards, or thoughts on the mechanism as=
+ a
+> > > whole. We hope it will help the working group evolve its protocols mo=
+re
+> > > smoothly in the future.
+> >
+> > This looks interesting and I very much agree that we should do
+> *somthing* to
+> > try to avoid the pain we've seen with deploying TLS 1.3 for future
+> versions.
+> >
+> > We (Cloudflare) would be happy to help with developing and deploying it=
+,
+> and
+> > see how the experiment goes (and maybe even help put a draft together i=
+f
+> needed,
+> > if that is the form this proposal will take).
+>
+> +1
+>
+> We (Apple) are interested in experimenting with this as well. Would it
+> be possible for
+> participating servers to support multiple random versions
+> simultaneously? That would
+> help address potentially longer release cycles.
+
+
+That's great to hear (both of you)!
+
+Supporting multiple values should be easy. Any participating stack already
+must support two variants of TLS 1.3, the standard one and this rolling
+version. Going from two to several is an easy step, on client or server.
+(For us, this machinery is all a remnant of the middlebox experiments we
+ran.) We were expecting our servers to support a handful of values anyway
+to account for our own release cycles. We can experiment with the exact
+cadence and code point lifetimes based on who all wishes to do this and
+what works.
+
+(At the worst case, mismatch is fine as both sides will just negotiate the
+standard TLS 1.3. But an individual connection only exercises the
+ServerHello when both sides match, so we'll want to maximize matches.)
+
+David
+
+--000000000000d0df57056e8c937c
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div class=3D"gmail_quote"><div dir=3D"ltr">On Wed, Jun 13=
+, 2018 at 5:04 PM Christopher Wood &lt;<a href=3D"mailto:christopherwood07@=
+gmail.com">christopherwood07@gmail.com</a>&gt; wrote:<br></div><blockquote =
+class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid=
+;padding-left:1ex">On Wed, Jun 13, 2018 at 11:06 AM Alessandro Ghedini<br>
+&lt;<a href=3D"mailto:alessandro@ghedini.me" target=3D"_blank">alessandro@g=
+hedini.me</a>&gt; wrote:<br>
+&gt;<br>
+&gt; On Tue, Jun 12, 2018 at 12:27:39PM -0400, David Benjamin wrote:<br>
+&gt; &gt; Hi all,<br>
+&gt; &gt;<br>
+&gt; &gt; Now that TLS 1.3 is about done, perhaps it is time to reflect on =
+the<br>
+&gt; &gt; ossification problems.<br>
+&gt; &gt;<br>
+&gt; &gt; TLS is an extensible protocol. TLS 1.3 is backwards-compatible an=
+d may be<br>
+&gt; &gt; incrementally rolled out in an existing compliant TLS 1.2 deploym=
+ent. Yet<br>
+&gt; &gt; we had problems. Widespread non-compliant servers broke on the TL=
+S 1.3<br>
+&gt; &gt; ClientHello, so versioning moved to supported_versions. Widesprea=
+d<br>
+&gt; &gt; non-compliant middleboxes attempted to parse someone else=E2=80=
+=99s ServerHellos,<br>
+&gt; &gt; so the protocol was further hacked to weave through their many de=
+fects.<br>
+&gt; &gt;<br>
+&gt; &gt; I think I can speak for the working group that we do not want to =
+repeat<br>
+&gt; &gt; this adventure again. In general, I think the response to ossific=
+ation is<br>
+&gt; &gt; two-fold:<br>
+&gt; &gt;<br>
+&gt; &gt; 1. It=E2=80=99s already happened, so how do we progress today?<br=
+>
+&gt; &gt; 2. How do we avoid more of this tomorrow?<br>
+&gt; &gt;<br>
+&gt; &gt; The workarounds only answer the first question. For the second, T=
+LS 1.3 has<br>
+&gt; &gt; a section which spells out a few protocol invariants<br>
+&gt; &gt; &lt;<a href=3D"https://tlswg.github.io/tls13-spec/draft-ietf-tls-=
+tls13.html#rfc.section.9..3" rel=3D"noreferrer" target=3D"_blank">https://t=
+lswg.github.io/tls13-spec/draft-ietf-tls-tls13.html#rfc.section.9..3</a>&gt=
+;.<br>
+&gt; &gt; It is all corollaries of existing TLS specification text, but hop=
+efully<br>
+&gt; &gt; documenting it explicitly will help. But experience has shown spe=
+cification<br>
+&gt; &gt; text is only necessary, not sufficient.<br>
+&gt; &gt;<br>
+&gt; &gt; For extensibility problems in servers, we have GREASE<br>
+&gt; &gt; &lt;<a href=3D"https://tools.ietf.org/html/draft-ietf-tls-grease-=
+01" rel=3D"noreferrer" target=3D"_blank">https://tools.ietf.org/html/draft-=
+ietf-tls-grease-01</a>&gt;. This enforces the<br>
+&gt; &gt; key rule in ClientHello processing: ignore unrecognized parameter=
+s. GREASE<br>
+&gt; &gt; enforces this by filling the ecosystem with them. TLS 1.3=E2=80=
+=99s middlebox woes<br>
+&gt; &gt; were different. The key rule is: if you did not produce a ClientH=
+ello, you<br>
+&gt; &gt; cannot assume that you can parse the response. Analogously, we sh=
+ould fill<br>
+&gt; &gt; the ecosystem with such responses. We have an idea, but it is mor=
+e involved<br>
+&gt; &gt; than GREASE, so we are very interested in the TLS community=E2=80=
+=99s feedback.<br>
+&gt; &gt;<br>
+&gt; &gt; In short, we plan to regularly mint new TLS versions (and likely =
+other<br>
+&gt; &gt; sensitive parameters such as extensions), roughly every six weeks=
+ matching<br>
+&gt; &gt; Chrome=E2=80=99s release cycle. Chrome, Google servers, and any o=
+ther deployment<br>
+&gt; &gt; that wishes to participate, would support two (or more) versions =
+of TLS<br>
+&gt; &gt; 1.3: the standard stable 0x0304, and a rolling alternate version.=
+ Every six<br>
+&gt; &gt; weeks, we would randomly pick a new code point. These versions wi=
+ll<br>
+&gt; &gt; otherwise be identical to TLS 1.3, save maybe minor details to se=
+parate<br>
+&gt; &gt; keys and exercise allowed syntax changes. The goal is to pave the=
+ way for<br>
+&gt; &gt; future versions of TLS by simulating them (=E2=80=9Cdraft negativ=
+e one=E2=80=9D).<br>
+&gt; &gt;<br>
+&gt; &gt; Of course, this scheme has some risk. It grabs code points everyw=
+here. Code<br>
+&gt; &gt; points are plentiful, but we do sometimes have collisions (e.g. 2=
+6 and 40).<br>
+&gt; &gt; The entire point is to serve and maintain TLS=E2=80=99s extensibi=
+lity, so we<br>
+&gt; &gt; certainly do not wish to hamper it! Thus we have some safeguards =
+in mind:<br>
+&gt; &gt;<br>
+&gt; &gt; * We will document every code point we use and what it refers to.=
+ (If the<br>
+&gt; &gt; volume is fine, we can email them to the list each time.) New all=
+ocations<br>
+&gt; &gt; can always avoid the lost numbers. At a rate of one every 6 weeks=
+, it will<br>
+&gt; &gt; take over 7,000 years to exhaust everything.<br>
+&gt; &gt;<br>
+&gt; &gt; * We will avoid picking numbers that the IETF is likely to alloca=
+te, to<br>
+&gt; &gt; reduce the chance of collision. Rolling versions will not start w=
+ith 0x03,<br>
+&gt; &gt; rolling cipher suites or extensions will not be contiguous with e=
+xisting<br>
+&gt; &gt; blocks, etc.<br>
+&gt; &gt;<br>
+&gt; &gt; * BoringSSL will not enable this by default. We will only enable =
+it where<br>
+&gt; &gt; we can shut it back off. On our servers, we of course regularly d=
+eploy<br>
+&gt; &gt; changes. Chrome is also regularly updated and, moreover, we will =
+gate it on<br>
+&gt; &gt; our server-controlled field trials<br>
+&gt; &gt; &lt;<a href=3D"https://textslashplain.com/2017/10/18/chrome-field=
+-trials/" rel=3D"noreferrer" target=3D"_blank">https://textslashplain.com/2=
+017/10/18/chrome-field-trials/</a>&gt; mechanism. We<br>
+&gt; &gt; hope that, in practice, only the last several code points will be=
+ in use at<br>
+&gt; &gt; a time.<br>
+&gt; &gt;<br>
+&gt; &gt; * Our clients would only support the most recent set of rolling p=
+arameters,<br>
+&gt; &gt; and our servers the last handful. As each value will be short-liv=
+ed, the<br>
+&gt; &gt; ecosystem is unlikely to rely on them as de facto standards. Conv=
+ersely,<br>
+&gt; &gt; like other extensions, implementations without them will still in=
+teroperate<br>
+&gt; &gt; fine. We would never offer a rolling parameter without the corres=
+ponding<br>
+&gt; &gt; stable one.<br>
+&gt; &gt;<br>
+&gt; &gt; * If this ultimately does not work, we can stop at any time and o=
+nly have<br>
+&gt; &gt; wasted a small portion of code points.<br>
+&gt; &gt;<br>
+&gt; &gt; * Finally, if the working group is open to it, these values could=
+ be<br>
+&gt; &gt; summarized in regular documents to reserve them, so that they are=
+<br>
+&gt; &gt; ultimately reflected in the registries. A new document every six =
+weeks is<br>
+&gt; &gt; probably impractical, but we can batch them up.<br>
+&gt; &gt;<br>
+&gt; &gt; We are interested in the community=E2=80=99s feedback on this pro=
+posal=E2=80=94anyone who<br>
+&gt; &gt; might participate, better safeguards, or thoughts on the mechanis=
+m as a<br>
+&gt; &gt; whole. We hope it will help the working group evolve its protocol=
+s more<br>
+&gt; &gt; smoothly in the future.<br>
+&gt;<br>
+&gt; This looks interesting and I very much agree that we should do *somthi=
+ng* to<br>
+&gt; try to avoid the pain we&#39;ve seen with deploying TLS 1.3 for future=
+ versions.<br>
+&gt;<br>
+&gt; We (Cloudflare) would be happy to help with developing and deploying i=
+t, and<br>
+&gt; see how the experiment goes (and maybe even help put a draft together =
+if needed,<br>
+&gt; if that is the form this proposal will take).<br>
+<br>
++1<br>
+<br>
+We (Apple) are interested in experimenting with this as well. Would it<br>
+be possible for<br>
+participating servers to support multiple random versions<br>
+simultaneously? That would<br>
+help address potentially longer release cycles.</blockquote><div><br></div>=
+<div>That&#39;s great to hear (both of you)!</div><div><br></div><div>Suppo=
+rting multiple values should be easy.=C2=A0Any participating stack already =
+must support two variants of TLS 1.3, the standard one and this rolling ver=
+sion. Going from two to several is an easy step, on client or server. (For =
+us, this machinery is all a remnant of the middlebox experiments we ran.) W=
+e were expecting our servers to support a handful of values anyway to accou=
+nt for our own release cycles. We can experiment with the exact cadence and=
+ code point lifetimes based on who all wishes to do this and what works.</d=
+iv><div><br></div><div>(At the worst case, mismatch is fine as both sides w=
+ill just negotiate the standard TLS 1.3.=C2=A0But an individual connection =
+only exercises the ServerHello when both sides match, so we&#39;ll want to =
+maximize matches.)<br></div><div><br></div><div>David</div></div></div>
+
+--000000000000d0df57056e8c937c--
+

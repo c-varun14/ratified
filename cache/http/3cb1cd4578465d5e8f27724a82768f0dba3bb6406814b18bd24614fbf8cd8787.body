@@ -1,0 +1,402 @@
+Return-Path: <ekr@rtfm.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 7A505120183
+ for <tls@ietfa.amsl.com>; Thu,  2 May 2019 19:12:16 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.899
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.899 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_NONE=-0.0001]
+ autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=rtfm-com.20150623.gappssmtp.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id KrzCXgIYGquH for <tls@ietfa.amsl.com>;
+ Thu,  2 May 2019 19:12:14 -0700 (PDT)
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com
+ [IPv6:2a00:1450:4864:20::236])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id C09DA12016E
+ for <tls@ietf.org>; Thu,  2 May 2019 19:12:13 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id y8so3754720ljd.3
+ for <tls@ietf.org>; Thu, 02 May 2019 19:12:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=rtfm-com.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=rNJSLMVKwL5GpMyrDsxXe0YFbXfHYKCOYorBiZiSQA8=;
+ b=qkIc+0+YobIM3bYZrfXra24E1yeP0lq1NtvHacUnp3tvk0DF1Y1f9psvjjELJ+bfB/
+ gULD3eMUDriJolKpDX7d6D6oL/kELivIFIrp8saYuFltHL6FQpS/88JtXpuMRT2y/i2b
+ LCi1omtafMo4Mtk6btA54y8vobQvRFBc/xeOiY8uHQteqgqw+nkBoi3tpVF9E8lcgr0m
+ VM858P6KlXGqWZERN8VhE/EUHTNR8WbRPW4YJZrii7zcH40F1O3CyPV/7gUkGSjn3dda
+ HT++l2Up8u5fhAxJGPrPiOe61YbpAbwxYSlge0ZdpwEiBhO26xU3PRSw0O1RCcKpGrZf
+ trEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=rNJSLMVKwL5GpMyrDsxXe0YFbXfHYKCOYorBiZiSQA8=;
+ b=sL96Tkirz0nFmnrDDKuR0O70rCHxfx+hLKGvGYdZjO9/OODIQXcXjVBEDnZcfHAi9P
+ mTXNbYmb+BiAAcdo8n4qrTJq4sH0knqr6JdDx6Xt6tLVn+j/Tf2SFg75YvlHyx7Ck+l+
+ PpuTodue7faAFmm2NpuFeYR/CkGNcO+3tKiy0Q86aYng1UjrCxN67BKqwR1WES1KqGXs
+ PkU2btfoK2i45MYZWxbLocgldQvfWxH7KLkVxm44pij2JtwxnOiaSvjHfLptjhmkEzjT
+ lDY6aELHyXqSdmvCoUst6mhWeKb6U2ANhYS/msEHr3fkrfhHQukk+CEFNVrZIetLx8Eh
+ Qlgg==
+X-Gm-Message-State: APjAAAVP6mZwKIkKCXkHxj2+TdyOvIql250eqUo+L5m5X2nsszGBTFht
+ eYVo6OpdQ9m0cujrJT5hroZGMcEspqHTcYFDXSjMi55f
+X-Google-Smtp-Source: APXvYqzZJFUkmP4uTN2kLclmKfnWxJUiDQoJxnJD6wQN+l7TMn61KFX3imeUf3QlrawDY/71fewfkIOJbvrFeXti9Mw=
+X-Received: by 2002:a2e:5d1:: with SMTP id 200mr3294993ljf.59.1556849531883;
+ Thu, 02 May 2019 19:12:11 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190503010413.1B044B81E0A@rfc-editor.org>
+ <1079aa6b-7f8d-4855-aac6-d5ea99f07ee7@www.fastmail.com>
+In-Reply-To: <1079aa6b-7f8d-4855-aac6-d5ea99f07ee7@www.fastmail.com>
+From: Eric Rescorla <ekr@rtfm.com>
+Date: Thu, 2 May 2019 19:11:33 -0700
+Message-ID: <CABcZeBObeuKWugVOCXAXWtY6FeKS6zveY+g_HQ=DEPsdYhWpGg@mail.gmail.com>
+To: Martin Thomson <mt@lowentropy.net>
+Cc: "<tls@ietf.org>" <tls@ietf.org>
+Content-Type: multipart/alternative; boundary="0000000000005127ca0587f247eb"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/MKmvfDc6lpNZvTttmtwNASPZuNY>
+Subject: Re: [TLS] [Editorial Errata Reported] RFC8446 (5717)
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Fri, 03 May 2019 02:12:16 -0000
+
+--0000000000005127ca0587f247eb
+Content-Type: text/plain; charset="UTF-8"
+
+MT: why do you not think "confirmed"?
+
+-Ekr
+
+
+On Thu, May 2, 2019 at 6:56 PM Martin Thomson <mt@lowentropy.net> wrote:
+
+> Two fixes required, but then I think HFDU is appropriate:
+>
+> 1. Misspelling of names.
+>
+> 2. The pre_shared_key extension requires the use of the
+> psk_key_exchange_modes extension.
+>
+> On Fri, May 3, 2019, at 11:04, RFC Errata System wrote:
+> > The following errata report has been submitted for RFC8446,
+> > "The Transport Layer Security (TLS) Protocol Version 1.3".
+> >
+> > --------------------------------------
+> > You may review the report below and at:
+> > http://www.rfc-editor.org/errata/eid5717
+> >
+> > --------------------------------------
+> > Type: Editorial
+> > Reported by: Daniel Migault <daniel.migault@ericsson.com>
+> >
+> > Section: 2.2.
+> >
+> > Original Text
+> > -------------
+> >
+> >  Figure 3 shows a pair of handshakes in which the first handshake
+> >    establishes a PSK and the second handshake uses it:
+> >
+> >           Client                                               Server
+> >
+> >    Initial Handshake:
+> >           ClientHello
+> >           + key_share               -------->
+> >                                                           ServerHello
+> >                                                           + key_share
+> >                                                 {EncryptedExtensions}
+> >                                                 {CertificateRequest*}
+> >                                                        {Certificate*}
+> >                                                  {CertificateVerify*}
+> >                                                            {Finished}
+> >                                     <--------     [Application Data*]
+> >           {Certificate*}
+> >           {CertificateVerify*}
+> >           {Finished}                -------->
+> >                                     <--------      [NewSessionTicket]
+> >           [Application Data]        <------->      [Application Data]
+> >
+> >
+> >    Subsequent Handshake:
+> >           ClientHello
+> >           + key_share*
+> >           + pre_shared_key          -------->
+> >                                                           ServerHello
+> >                                                      + pre_shared_key
+> >                                                          + key_share*
+> >                                                 {EncryptedExtensions}
+> >                                                            {Finished}
+> >                                     <--------     [Application Data*]
+> >           {Finished}                -------->
+> >           [Application Data]        <------->      [Application Data]
+> >
+> >                Figure 3: Message Flow for Resumption and PSK
+> >
+> >
+> > Corrected Text
+> > --------------
+> >
+> >  Figure 3 shows a pair of handshakes in which the first handshake
+> >    establishes a PSK and the second handshake uses it:
+> >
+> >           Client                                               Server
+> >
+> >    Initial Handshake:
+> >           ClientHello
+> >           + key_share               -------->
+> >                                                           ServerHello
+> >                                                           + key_share
+> >                                                 {EncryptedExtensions}
+> >                                                 {CertificateRequest*}
+> >                                                        {Certificate*}
+> >                                                  {CertificateVerify*}
+> >                                                            {Finished}
+> >                                     <--------     [Application Data*]
+> >           {Certificate*}
+> >           {CertificateVerify*}
+> >           {Finished}                -------->
+> >                                     <--------      [NewSessionTicket]
+> >           [Application Data]        <------->      [Application Data]
+> >
+> >
+> >    Subsequent Handshake:
+> >           ClientHello
+> >           + key_share*
+> >           + psk_key_exchange_modes
+> >           + pre_shared_key          -------->
+> >
+> >                                                           ServerHello
+> >                                                      + pre_shared_key
+> >                                                          + key_share*
+> >                                                 {EncryptedExtensions}
+> >                                                            {Finished}
+> >                                     <--------     [Application Data*]
+> >           {Finished}                -------->
+> >           [Application Data]        <------->      [Application Data]
+> >
+> >                Figure 3: Message Flow for Resumption and PSK
+> >
+> >
+> > Notes
+> > -----
+> > The pre_shared_key requires the pre_share_key extension. As mentioned
+> > by Martin Thompson figures do not necessarily guarantee all extensions
+> > to be mentioned. However in this case, that would be clarifying to have
+> > both extensions mentioned on the figure.
+> >
+> > Instructions:
+> > -------------
+> > This erratum is currently posted as "Reported". If necessary, please
+> > use "Reply All" to discuss whether it should be verified or
+> > rejected. When a decision is reached, the verifying party
+> > can log in to change the status and edit the report, if necessary.
+> >
+> > --------------------------------------
+> > RFC8446 (draft-ietf-tls-tls13-28)
+> > --------------------------------------
+> > Title               : The Transport Layer Security (TLS) Protocol
+> Version 1.3
+> > Publication Date    : August 2018
+> > Author(s)           : E. Rescorla
+> > Category            : PROPOSED STANDARD
+> > Source              : Transport Layer Security
+> > Area                : Security
+> > Stream              : IETF
+> > Verifying Party     : IESG
+> >
+> > _______________________________________________
+> > TLS mailing list
+> > TLS@ietf.org
+> > https://www.ietf.org/mailman/listinfo/tls
+> >
+>
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+>
+
+--0000000000005127ca0587f247eb
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: base64
+
+PGRpdiBkaXI9Imx0ciI+PGRpdj5NVDogd2h5IGRvIHlvdSBub3QgdGhpbmsgJnF1b3Q7Y29uZmly
+bWVkJnF1b3Q7PzwvZGl2PjxkaXY+PGJyPjwvZGl2PjxkaXY+LUVrcjwvZGl2PjxkaXY+PGJyPjwv
+ZGl2PjwvZGl2Pjxicj48ZGl2IGNsYXNzPSJnbWFpbF9xdW90ZSI+PGRpdiBkaXI9Imx0ciIgY2xh
+c3M9ImdtYWlsX2F0dHIiPk9uIFRodSwgTWF5IDIsIDIwMTkgYXQgNjo1NiBQTSBNYXJ0aW4gVGhv
+bXNvbiAmbHQ7PGEgaHJlZj0ibWFpbHRvOm10QGxvd2VudHJvcHkubmV0Ij5tdEBsb3dlbnRyb3B5
+Lm5ldDwvYT4mZ3Q7IHdyb3RlOjxicj48L2Rpdj48YmxvY2txdW90ZSBjbGFzcz0iZ21haWxfcXVv
+dGUiIHN0eWxlPSJtYXJnaW46MHB4IDBweCAwcHggMC44ZXg7Ym9yZGVyLWxlZnQ6MXB4IHNvbGlk
+IHJnYigyMDQsMjA0LDIwNCk7cGFkZGluZy1sZWZ0OjFleCI+VHdvIGZpeGVzIHJlcXVpcmVkLCBi
+dXQgdGhlbiBJIHRoaW5rIEhGRFUgaXMgYXBwcm9wcmlhdGU6PGJyPg0KPGJyPg0KMS4gTWlzc3Bl
+bGxpbmcgb2YgbmFtZXMuPGJyPg0KPGJyPg0KMi4gVGhlIHByZV9zaGFyZWRfa2V5IGV4dGVuc2lv
+biByZXF1aXJlcyB0aGUgdXNlIG9mIHRoZSBwc2tfa2V5X2V4Y2hhbmdlX21vZGVzIGV4dGVuc2lv
+bi48YnI+DQo8YnI+DQpPbiBGcmksIE1heSAzLCAyMDE5LCBhdCAxMTowNCwgUkZDIEVycmF0YSBT
+eXN0ZW0gd3JvdGU6PGJyPg0KJmd0OyBUaGUgZm9sbG93aW5nIGVycmF0YSByZXBvcnQgaGFzIGJl
+ZW4gc3VibWl0dGVkIGZvciBSRkM4NDQ2LDxicj4NCiZndDsgJnF1b3Q7VGhlIFRyYW5zcG9ydCBM
+YXllciBTZWN1cml0eSAoVExTKSBQcm90b2NvbCBWZXJzaW9uIDEuMyZxdW90Oy48YnI+DQomZ3Q7
+IDxicj4NCiZndDsgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS08YnI+DQom
+Z3Q7IFlvdSBtYXkgcmV2aWV3IHRoZSByZXBvcnQgYmVsb3cgYW5kIGF0Ojxicj4NCiZndDsgPGEg
+aHJlZj0iaHR0cDovL3d3dy5yZmMtZWRpdG9yLm9yZy9lcnJhdGEvZWlkNTcxNyIgcmVsPSJub3Jl
+ZmVycmVyIiB0YXJnZXQ9Il9ibGFuayI+aHR0cDovL3d3dy5yZmMtZWRpdG9yLm9yZy9lcnJhdGEv
+ZWlkNTcxNzwvYT48YnI+DQomZ3Q7IDxicj4NCiZndDsgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS08YnI+DQomZ3Q7IFR5cGU6IEVkaXRvcmlhbDxicj4NCiZndDsgUmVwb3J0
+ZWQgYnk6IERhbmllbCBNaWdhdWx0ICZsdDs8YSBocmVmPSJtYWlsdG86ZGFuaWVsLm1pZ2F1bHRA
+ZXJpY3Nzb24uY29tIiB0YXJnZXQ9Il9ibGFuayI+ZGFuaWVsLm1pZ2F1bHRAZXJpY3Nzb24uY29t
+PC9hPiZndDs8YnI+DQomZ3Q7IDxicj4NCiZndDsgU2VjdGlvbjogMi4yLjxicj4NCiZndDsgPGJy
+Pg0KJmd0OyBPcmlnaW5hbCBUZXh0PGJyPg0KJmd0OyAtLS0tLS0tLS0tLS0tPGJyPg0KJmd0OyA8
+YnI+DQomZ3Q7wqAgRmlndXJlIDMgc2hvd3MgYSBwYWlyIG9mIGhhbmRzaGFrZXMgaW4gd2hpY2gg
+dGhlIGZpcnN0IGhhbmRzaGFrZTxicj4NCiZndDvCoCDCoCBlc3RhYmxpc2hlcyBhIFBTSyBhbmQg
+dGhlIHNlY29uZCBoYW5kc2hha2UgdXNlcyBpdDo8YnI+DQomZ3Q7wqAgPGJyPg0KJmd0O8KgIMKg
+IMKgIMKgIMKgIMKgQ2xpZW50wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBTZXJ2ZXI8YnI+DQomZ3Q7wqAgPGJyPg0K
+Jmd0O8KgIMKgIEluaXRpYWwgSGFuZHNoYWtlOjxicj4NCiZndDvCoCDCoCDCoCDCoCDCoCDCoENs
+aWVudEhlbGxvPGJyPg0KJmd0O8KgIMKgIMKgIMKgIMKgIMKgKyBrZXlfc2hhcmXCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoC0tLS0tLS0tJmd0Ozxicj4NCiZndDvCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoFNlcnZlckhlbGxvPGJyPg0KJmd0O8KgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgKyBrZXlfc2hhcmU8YnI+DQomZ3Q7wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqB7RW5jcnlwdGVkRXh0
+ZW5zaW9uc308YnI+DQomZ3Q7wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqB7Q2VydGlmaWNhdGVSZXF1ZXN0Kn08
+YnI+DQomZ3Q7wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAge0NlcnRpZmljYXRlKn08YnI+DQom
+Z3Q7wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAge0NlcnRpZmljYXRlVmVyaWZ5Kn08YnI+DQomZ3Q7wqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAge0ZpbmlzaGVkfTxicj4NCiZndDvCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCZsdDstLS0tLS0t
+LcKgIMKgIMKgW0FwcGxpY2F0aW9uIERhdGEqXTxicj4NCiZndDvCoCDCoCDCoCDCoCDCoCDCoHtD
+ZXJ0aWZpY2F0ZSp9PGJyPg0KJmd0O8KgIMKgIMKgIMKgIMKgIMKge0NlcnRpZmljYXRlVmVyaWZ5
+Kn08YnI+DQomZ3Q7wqAgwqAgwqAgwqAgwqAgwqB7RmluaXNoZWR9wqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgLS0tLS0tLS0mZ3Q7PGJyPg0KJmd0O8KgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgJmx0Oy0tLS0tLS0twqAgwqAgwqAgW05ld1Nlc3Np
+b25UaWNrZXRdPGJyPg0KJmd0O8KgIMKgIMKgIMKgIMKgIMKgW0FwcGxpY2F0aW9uIERhdGFdwqAg
+wqAgwqAgwqAgJmx0Oy0tLS0tLS0mZ3Q7wqAgwqAgwqAgW0FwcGxpY2F0aW9uIERhdGFdPGJyPg0K
+Jmd0O8KgIDxicj4NCiZndDvCoCA8YnI+DQomZ3Q7wqAgwqAgU3Vic2VxdWVudCBIYW5kc2hha2U6
+PGJyPg0KJmd0O8KgIMKgIMKgIMKgIMKgIMKgQ2xpZW50SGVsbG88YnI+DQomZ3Q7wqAgwqAgwqAg
+wqAgwqAgwqArIGtleV9zaGFyZSo8YnI+DQomZ3Q7wqAgwqAgwqAgwqAgwqAgwqArIHByZV9zaGFy
+ZWRfa2V5wqAgwqAgwqAgwqAgwqAgLS0tLS0tLS0mZ3Q7PGJyPg0KJmd0O8KgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgU2VydmVySGVsbG88YnI+DQomZ3Q7wqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgKyBwcmVfc2hhcmVkX2tleTxicj4NCiZndDvCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCArIGtleV9zaGFyZSo8YnI+DQomZ3Q7wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqB7RW5jcnlwdGVkRXh0
+ZW5zaW9uc308YnI+DQomZ3Q7wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAge0Zpbmlz
+aGVkfTxicj4NCiZndDvCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCZsdDstLS0tLS0tLcKgIMKgIMKgW0FwcGxpY2F0aW9uIERhdGEqXTxicj4N
+CiZndDvCoCDCoCDCoCDCoCDCoCDCoHtGaW5pc2hlZH3CoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCAt
+LS0tLS0tLSZndDs8YnI+DQomZ3Q7wqAgwqAgwqAgwqAgwqAgwqBbQXBwbGljYXRpb24gRGF0YV3C
+oCDCoCDCoCDCoCAmbHQ7LS0tLS0tLSZndDvCoCDCoCDCoCBbQXBwbGljYXRpb24gRGF0YV08YnI+
+DQomZ3Q7wqAgPGJyPg0KJmd0O8KgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIEZpZ3VyZSAzOiBNZXNz
+YWdlIEZsb3cgZm9yIFJlc3VtcHRpb24gYW5kIFBTSzxicj4NCiZndDsgPGJyPg0KJmd0OyA8YnI+
+DQomZ3Q7IENvcnJlY3RlZCBUZXh0PGJyPg0KJmd0OyAtLS0tLS0tLS0tLS0tLTxicj4NCiZndDsg
+PGJyPg0KJmd0O8KgIEZpZ3VyZSAzIHNob3dzIGEgcGFpciBvZiBoYW5kc2hha2VzIGluIHdoaWNo
+IHRoZSBmaXJzdCBoYW5kc2hha2U8YnI+DQomZ3Q7wqAgwqAgZXN0YWJsaXNoZXMgYSBQU0sgYW5k
+IHRoZSBzZWNvbmQgaGFuZHNoYWtlIHVzZXMgaXQ6PGJyPg0KJmd0O8KgIDxicj4NCiZndDvCoCDC
+oCDCoCDCoCDCoCDCoENsaWVudMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgU2VydmVyPGJyPg0KJmd0O8KgIDxicj4N
+CiZndDvCoCDCoCBJbml0aWFsIEhhbmRzaGFrZTo8YnI+DQomZ3Q7wqAgwqAgwqAgwqAgwqAgwqBD
+bGllbnRIZWxsbzxicj4NCiZndDvCoCDCoCDCoCDCoCDCoCDCoCsga2V5X3NoYXJlwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAtLS0tLS0tLSZndDs8YnI+DQomZ3Q7wqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqBTZXJ2ZXJIZWxsbzxicj4NCiZndDvCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCsga2V5X3NoYXJlPGJyPg0KJmd0O8KgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKge0VuY3J5cHRlZEV4
+dGVuc2lvbnN9PGJyPg0KJmd0O8KgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKge0NlcnRpZmljYXRlUmVxdWVzdCp9
+PGJyPg0KJmd0O8KgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHtDZXJ0aWZpY2F0ZSp9PGJyPg0K
+Jmd0O8KgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIHtDZXJ0aWZpY2F0ZVZlcmlmeSp9PGJyPg0KJmd0O8KgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHtGaW5pc2hlZH08YnI+DQomZ3Q7wqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAmbHQ7LS0tLS0t
+LS3CoCDCoCDCoFtBcHBsaWNhdGlvbiBEYXRhKl08YnI+DQomZ3Q7wqAgwqAgwqAgwqAgwqAgwqB7
+Q2VydGlmaWNhdGUqfTxicj4NCiZndDvCoCDCoCDCoCDCoCDCoCDCoHtDZXJ0aWZpY2F0ZVZlcmlm
+eSp9PGJyPg0KJmd0O8KgIMKgIMKgIMKgIMKgIMKge0ZpbmlzaGVkfcKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIC0tLS0tLS0tJmd0Ozxicj4NCiZndDvCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCZsdDstLS0tLS0tLcKgIMKgIMKgIFtOZXdTZXNz
+aW9uVGlja2V0XTxicj4NCiZndDvCoCDCoCDCoCDCoCDCoCDCoFtBcHBsaWNhdGlvbiBEYXRhXcKg
+IMKgIMKgIMKgICZsdDstLS0tLS0tJmd0O8KgIMKgIMKgIFtBcHBsaWNhdGlvbiBEYXRhXTxicj4N
+CiZndDvCoCA8YnI+DQomZ3Q7wqAgPGJyPg0KJmd0O8KgIMKgIFN1YnNlcXVlbnQgSGFuZHNoYWtl
+Ojxicj4NCiZndDvCoCDCoCDCoCDCoCDCoCDCoENsaWVudEhlbGxvPGJyPg0KJmd0O8KgIMKgIMKg
+IMKgIMKgIMKgKyBrZXlfc2hhcmUqPGJyPg0KJmd0O8KgIMKgIMKgIMKgIMKgIMKgKyBwc2tfa2V5
+X2V4Y2hhbmdlX21vZGVzwqAgwqAgwqAgwqAgPGJyPg0KJmd0O8KgIMKgIMKgIMKgIMKgIMKgKyBw
+cmVfc2hhcmVkX2tlecKgIMKgIMKgIMKgIMKgIC0tLS0tLS0tJmd0Ozxicj4NCiZndDsgPGJyPg0K
+Jmd0O8KgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgU2VydmVySGVsbG88YnI+DQomZ3Q7
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgKyBwcmVfc2hhcmVkX2tleTxicj4NCiZndDvCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCArIGtleV9zaGFyZSo8YnI+DQomZ3Q7wqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqB7RW5jcnlwdGVkRXh0ZW5zaW9uc308YnI+DQomZ3Q7wqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAge0ZpbmlzaGVkfTxicj4NCiZndDvCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCZsdDstLS0tLS0tLcKgIMKgIMKgW0FwcGxp
+Y2F0aW9uIERhdGEqXTxicj4NCiZndDvCoCDCoCDCoCDCoCDCoCDCoHtGaW5pc2hlZH3CoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCAtLS0tLS0tLSZndDs8YnI+DQomZ3Q7wqAgwqAgwqAgwqAgwqAgwqBb
+QXBwbGljYXRpb24gRGF0YV3CoCDCoCDCoCDCoCAmbHQ7LS0tLS0tLSZndDvCoCDCoCDCoCBbQXBw
+bGljYXRpb24gRGF0YV08YnI+DQomZ3Q7wqAgPGJyPg0KJmd0O8KgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIEZpZ3VyZSAzOiBNZXNzYWdlIEZsb3cgZm9yIFJlc3VtcHRpb24gYW5kIFBTSzxicj4NCiZn
+dDsgPGJyPg0KJmd0OyA8YnI+DQomZ3Q7IE5vdGVzPGJyPg0KJmd0OyAtLS0tLTxicj4NCiZndDsg
+VGhlIHByZV9zaGFyZWRfa2V5IHJlcXVpcmVzIHRoZSBwcmVfc2hhcmVfa2V5IGV4dGVuc2lvbi4g
+QXMgbWVudGlvbmVkIDxicj4NCiZndDsgYnkgTWFydGluIFRob21wc29uIGZpZ3VyZXMgZG8gbm90
+IG5lY2Vzc2FyaWx5IGd1YXJhbnRlZSBhbGwgZXh0ZW5zaW9ucyA8YnI+DQomZ3Q7IHRvIGJlIG1l
+bnRpb25lZC4gSG93ZXZlciBpbiB0aGlzIGNhc2UsIHRoYXQgd291bGQgYmUgY2xhcmlmeWluZyB0
+byBoYXZlIDxicj4NCiZndDsgYm90aCBleHRlbnNpb25zIG1lbnRpb25lZCBvbiB0aGUgZmlndXJl
+Ljxicj4NCiZndDsgPGJyPg0KJmd0OyBJbnN0cnVjdGlvbnM6PGJyPg0KJmd0OyAtLS0tLS0tLS0t
+LS0tPGJyPg0KJmd0OyBUaGlzIGVycmF0dW0gaXMgY3VycmVudGx5IHBvc3RlZCBhcyAmcXVvdDtS
+ZXBvcnRlZCZxdW90Oy4gSWYgbmVjZXNzYXJ5LCBwbGVhc2U8YnI+DQomZ3Q7IHVzZSAmcXVvdDtS
+ZXBseSBBbGwmcXVvdDsgdG8gZGlzY3VzcyB3aGV0aGVyIGl0IHNob3VsZCBiZSB2ZXJpZmllZCBv
+cjxicj4NCiZndDsgcmVqZWN0ZWQuIFdoZW4gYSBkZWNpc2lvbiBpcyByZWFjaGVkLCB0aGUgdmVy
+aWZ5aW5nIHBhcnR5wqAgPGJyPg0KJmd0OyBjYW4gbG9nIGluIHRvIGNoYW5nZSB0aGUgc3RhdHVz
+IGFuZCBlZGl0IHRoZSByZXBvcnQsIGlmIG5lY2Vzc2FyeS4gPGJyPg0KJmd0OyA8YnI+DQomZ3Q7
+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tPGJyPg0KJmd0OyBSRkM4NDQ2
+IChkcmFmdC1pZXRmLXRscy10bHMxMy0yOCk8YnI+DQomZ3Q7IC0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tPGJyPg0KJmd0OyBUaXRsZcKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+OiBUaGUgVHJhbnNwb3J0IExheWVyIFNlY3VyaXR5IChUTFMpIFByb3RvY29sIFZlcnNpb24gMS4z
+PGJyPg0KJmd0OyBQdWJsaWNhdGlvbiBEYXRlwqAgwqAgOiBBdWd1c3QgMjAxODxicj4NCiZndDsg
+QXV0aG9yKHMpwqAgwqAgwqAgwqAgwqAgwqA6IEUuIFJlc2NvcmxhPGJyPg0KJmd0OyBDYXRlZ29y
+ecKgIMKgIMKgIMKgIMKgIMKgIDogUFJPUE9TRUQgU1RBTkRBUkQ8YnI+DQomZ3Q7IFNvdXJjZcKg
+IMKgIMKgIMKgIMKgIMKgIMKgIDogVHJhbnNwb3J0IExheWVyIFNlY3VyaXR5PGJyPg0KJmd0OyBB
+cmVhwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgOiBTZWN1cml0eTxicj4NCiZndDsgU3RyZWFtwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgOiBJRVRGPGJyPg0KJmd0OyBWZXJpZnlpbmcgUGFydHnCoCDCoCDC
+oDogSUVTRzxicj4NCiZndDsgPGJyPg0KJmd0OyBfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXzxicj4NCiZndDsgVExTIG1haWxpbmcgbGlzdDxicj4NCiZndDsg
+PGEgaHJlZj0ibWFpbHRvOlRMU0BpZXRmLm9yZyIgdGFyZ2V0PSJfYmxhbmsiPlRMU0BpZXRmLm9y
+ZzwvYT48YnI+DQomZ3Q7IDxhIGhyZWY9Imh0dHBzOi8vd3d3LmlldGYub3JnL21haWxtYW4vbGlz
+dGluZm8vdGxzIiByZWw9Im5vcmVmZXJyZXIiIHRhcmdldD0iX2JsYW5rIj5odHRwczovL3d3dy5p
+ZXRmLm9yZy9tYWlsbWFuL2xpc3RpbmZvL3RsczwvYT48YnI+DQomZ3Q7PGJyPg0KPGJyPg0KX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX188YnI+DQpUTFMgbWFp
+bGluZyBsaXN0PGJyPg0KPGEgaHJlZj0ibWFpbHRvOlRMU0BpZXRmLm9yZyIgdGFyZ2V0PSJfYmxh
+bmsiPlRMU0BpZXRmLm9yZzwvYT48YnI+DQo8YSBocmVmPSJodHRwczovL3d3dy5pZXRmLm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL3RscyIgcmVsPSJub3JlZmVycmVyIiB0YXJnZXQ9Il9ibGFuayI+aHR0
+cHM6Ly93d3cuaWV0Zi5vcmcvbWFpbG1hbi9saXN0aW5mby90bHM8L2E+PGJyPg0KPC9ibG9ja3F1
+b3RlPjwvZGl2Pg0K
+--0000000000005127ca0587f247eb--
+

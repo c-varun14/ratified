@@ -1,0 +1,106 @@
+Return-Path: <pgut001@cs.auckland.ac.nz>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 627B5130F44
+ for <tls@ietfa.amsl.com>; Thu,  9 Aug 2018 01:07:37 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -4.199
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.199 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ RCVD_IN_DNSWL_MED=-2.3, URIBL_BLOCKED=0.001]
+ autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=auckland.ac.nz
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id jan9wC68rSdU for <tls@ietfa.amsl.com>;
+ Thu,  9 Aug 2018 01:07:35 -0700 (PDT)
+Received: from mx4-int.auckland.ac.nz (mx4-int.auckland.ac.nz
+ [130.216.125.246])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id A6B74130DC6
+ for <tls@ietf.org>; Thu,  9 Aug 2018 01:07:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=auckland.ac.nz; i=@auckland.ac.nz; q=dns/txt; s=mail;
+ t=1533802054; x=1565338054;
+ h=from:to:cc:subject:date:message-id:references:
+ in-reply-to:content-transfer-encoding:mime-version;
+ bh=txYVCZoStYvCcgbSTxjmTJ/9J83zsq8LIQoe3dGqcdk=;
+ b=S67OoVoWH30Z3IcZHwSrJtJhKP4buyvQOZwrJaIuzyTX50yMKUrp1P6q
+ yUmaulRjWjJ7jZwQZuDBmn2FwHDpJeR55LfE0UB+XV/4BkEycNRLV2F/P
+ 1CuiBGIICCUpITvBef7uhvHPAD0RVCzMfDNjSom9zU6YhrsoykABqufoF
+ c6+CIxdp7/Z8DXUI3UYARrvzyz7/yAMR4J9uk/HgR8HbKnZM4+z6vwwU+
+ Lowwpw+my0QQJBUCeLTszub9cq/eN8q2bSxdUYtN4aAGdTk4pWvoaFGX3
+ s+jc0P0KaiqZ9Da7RUcW8uvEpP9M+gZzvtF6y42VoLwaGjVCFIXj/L61G g==;
+X-IronPort-AV: E=Sophos;i="5.53,214,1531742400"; d="scan'208";a="25462926"
+X-Ironport-HAT: MAIL-SERVERS - $RELAYED
+X-Ironport-Source: 10.6.3.4 - Outgoing - Outgoing
+Received: from exchangemx.uoa.auckland.ac.nz (HELO
+ uxcn13-tdc-c.UoA.auckland.ac.nz) ([10.6.3.4])
+ by mx4-int.auckland.ac.nz with ESMTP/TLS/AES256-SHA; 09 Aug 2018 20:07:27 +1200
+Received: from uxcn13-ogg-d.UoA.auckland.ac.nz (10.6.2.5) by
+ uxcn13-tdc-c.UoA.auckland.ac.nz (10.6.3.24) with Microsoft SMTP Server (TLS)
+ id 15.0.1263.5; Thu, 9 Aug 2018 20:07:26 +1200
+Received: from uxcn13-ogg-d.UoA.auckland.ac.nz ([10.6.2.25]) by
+ uxcn13-ogg-d.UoA.auckland.ac.nz ([10.6.2.25]) with mapi id 15.00.1263.000;
+ Thu, 9 Aug 2018 20:07:26 +1200
+From: Peter Gutmann <pgut001@cs.auckland.ac.nz>
+To: Eric Rescorla <ekr@rtfm.com>, Benjamin Kaduk <bkaduk@akamai.com>
+CC: "tls@ietf.org" <tls@ietf.org>
+Thread-Topic: [TLS] inappropriate_fallback
+Thread-Index: AQHULxh+rHxlHWndvUmdM8wCvcYKyaS1Di2AgAABSgCAAAVYAIAAAeqAgAACqoCAAAEgAIAB9yYd
+Date: Thu, 9 Aug 2018 08:07:26 +0000
+Message-ID: <1533802033644.1196@cs.auckland.ac.nz>
+References: <2fd24f64-bee5-18ed-cf0d-0fc999add395@openssl.org>
+ <20180808132151.GQ28516@akamai.com>
+ <4fe1cef1-2dd2-3838-9019-a97dd4dbe776@openssl.org>
+ <CABcZeBM2Fmo03S=acb=ouZcyV=5-H5dV3is6TJjAJj-SDeRmBw@mail.gmail.com>
+ <b18313b5-ca58-cf66-be72-46ad9ffb4ae0@openssl.org>
+ <20180808140159.GR28516@akamai.com>,
+ <CABcZeBOgg0=1G4ENBF+wqZNFLfD6Q60674_G8cJqPZr7oQ9FMw@mail.gmail.com>
+In-Reply-To: <CABcZeBOgg0=1G4ENBF+wqZNFLfD6Q60674_G8cJqPZr7oQ9FMw@mail.gmail.com>
+Accept-Language: en-NZ, en-GB, en-US
+Content-Language: en-NZ
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [130.216.158.4]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/NnzS5ZvOMmpMxJEPhuewNchLL8I>
+Subject: Re: [TLS] inappropriate_fallback
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.27
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Thu, 09 Aug 2018 08:07:37 -0000
+
+4oCLRXJpYyBSZXNjb3JsYSA8ZWtyQHJ0Zm0uY29tPiB3cml0ZXM6Cgo+VGhlIHNwZWMgaXMgYWN0
+dWFsbHkgZXh0cmVtZWx5IGNsZWFyIG9uIHRoaXMgcG9pbnQKPmh0dHBzOi8vdG9vbHMuaWV0Zi5v
+cmcvaHRtbC9kcmFmdC1pZXRmLXRscy10bHMxMy0yOCNzZWN0aW9uLTQuMS4zCgpJIGhhZG4ndCBs
+b29rZWQgYXQgdGhpcyBiaXQgdG9vIGNsb3NlbHkgYmVmb3JlLCBidXQgc2luY2UgaXQgc2F5czoK
+CiAgIElmIG5lZ290aWF0aW5nIFRMUyAxLjEgb3IgYmVsb3csIFRMUyAxLjMgc2VydmVycyBNVVNU
+IGFuZCBUTFMgMS4yCiAgIHNlcnZlcnMgU0hPVUxEIHNldCB0aGUgbGFzdCBlaWdodCBieXRlcyBv
+ZiB0aGVpciBSYW5kb20gdmFsdWUgLi4uCiAgIAogICBbc2Vjb25kIHZhbHVlXQoKWy4uLl0KCiAg
+IFRMUyAxLjIgY2xpZW50cyBTSE9VTEQgYWxzbyBjaGVjayB0aGF0IHRoZSBsYXN0IGVpZ2h0IGJ5
+dGVzCiAgIGFyZSBub3QgZXF1YWwgdG8gdGhlIHNlY29uZCB2YWx1ZSBpZiB0aGUgU2VydmVySGVs
+bG8gaW5kaWNhdGVzIFRMUwogICAxLjEgb3IgYmVsb3cuICBJZiBhIG1hdGNoIGlzIGZvdW5kLCB0
+aGUgY2xpZW50IE1VU1QgYWJvcnQgdGhlCiAgIGhhbmRzaGFrZQoKRG9lc24ndCB0aGlzIG1lYW4g
+dGhhdCBuby1vbmUgY2FuIGV2ZXIgdXNlIFRMUyAxLjEgb3IgYmVsb3cgYW55IG1vcmU/IFRoZQpz
+ZXJ2ZXIgaGFzIHRvIHNldCBpdHMgUmFuZG9tIHNpZ25hbGxpbmcgYnl0ZXMgdG8gWCBpZiBpdCB3
+YW50cyBUTFMgMS4xIG9yCmJlbG93LCBhbmQgdGhlbiB0aGUgY2xpZW50IGhhcyB0byBhYm9ydCB0
+aGUgaGFuZHNoYWtlIGlmIGl0IGZpbmRzIHRob3NlIGJ5dGVzLgoKUGV0ZXIuCg==
+

@@ -1,0 +1,92 @@
+Return-Path: <ilariliusvaara@welho.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id DC5F7127342
+ for <tls@ietfa.amsl.com>; Tue, 13 Mar 2018 08:18:54 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.91
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.91 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, RCVD_IN_DNSWL_NONE=-0.0001,
+ T_RP_MATCHES_RCVD=-0.01] autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id wtodaE6-4lQ1 for <tls@ietfa.amsl.com>;
+ Tue, 13 Mar 2018 08:18:53 -0700 (PDT)
+Received: from welho-filter2.welho.com (welho-filter2.welho.com [83.102.41.24])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id CE21B126C22
+ for <tls@ietf.org>; Tue, 13 Mar 2018 08:18:52 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+ by welho-filter2.welho.com (Postfix) with ESMTP id 36F1647B57;
+ Tue, 13 Mar 2018 17:18:51 +0200 (EET)
+X-Virus-Scanned: Debian amavisd-new at pp.htv.fi
+Received: from welho-smtp1.welho.com ([IPv6:::ffff:83.102.41.84])
+ by localhost (welho-filter2.welho.com [::ffff:83.102.41.24]) (amavisd-new,
+ port 10024)
+ with ESMTP id T1ufLW5HDlDG; Tue, 13 Mar 2018 17:18:50 +0200 (EET)
+Received: from LK-Perkele-VII (87-92-19-27.bb.dnainternet.fi [87.92.19.27])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by welho-smtp1.welho.com (Postfix) with ESMTPSA id D90AC27F;
+ Tue, 13 Mar 2018 17:18:48 +0200 (EET)
+Date: Tue, 13 Mar 2018 17:18:48 +0200
+From: Ilari Liusvaara <ilariliusvaara@welho.com>
+To: Hubert Kario <hkario@redhat.com>
+Cc: TLS WG <tls@ietf.org>
+Message-ID: <20180313151848.GA26250@LK-Perkele-VII>
+References: <6112806.hxzZ6NivhB@pintsize.usersys.redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <6112806.hxzZ6NivhB@pintsize.usersys.redhat.com>
+User-Agent: Mutt/1.9.3 (2018-01-21)
+Sender: ilariliusvaara@welho.com
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/xyaYdj97BZzkmRfoV6jk7BA1Opg>
+Subject: Re: [TLS] draft-ietf-tls-tls13-26 is vulnerable to externally set
+ PSK identity enumeration
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Tue, 13 Mar 2018 15:18:55 -0000
+
+On Mon, Mar 12, 2018 at 04:27:46PM +0100, Hubert Kario wrote:
+> When the server supports externally set PSKs that use human readable 
+> identities (or, in general, guessable identities), the current text makes it 
+> trivial to perform enumeration attack.
+
+What would be impact of such enumeration attack? It seems to me that
+not disclosing identities is to make weak passwords more difficult to
+attack, but here there are no weak passwords.
+
+
+Note that:
+
+- There is no protection for the PSK identity, so putting anything
+  sensitive in it is a bad idea.
+- The identity can not be used without the associated secret, which
+  needs to withstand serious offline cracking attempts anyway.
+- Passive attack gives attacker not only a valid PSK identity, but
+  enough information to mount high-speed offline cracking attack on the
+  PSK secret. Only one captured key exchange is needed, and (EC)DHE
+  does not help.
+
+The last point is why PSK secrets need to have enough entropy to resist
+high-speed offline cracking.
+
+
+
+-Ilari
+

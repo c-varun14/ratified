@@ -1,0 +1,570 @@
+From nobody Fri Nov  5 08:34:26 2021
+Return-Path: <jonathan.hoyland@gmail.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id BF85F3A10CA;
+ Fri,  5 Nov 2021 08:34:16 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.097
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.097 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, FREEMAIL_FROM=0.001,
+ HTML_MESSAGE=0.001, SPF_HELO_NONE=0.001, SPF_PASS=-0.001,
+ URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=gmail.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id bbqjz0xaUWuh; Fri,  5 Nov 2021 08:34:14 -0700 (PDT)
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com
+ [IPv6:2607:f8b0:4864:20::82f])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 84B253A10EF;
+ Fri,  5 Nov 2021 08:34:13 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id o12so7485123qtv.4;
+ Fri, 05 Nov 2021 08:34:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112; 
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=GpF1GDD6Ii8oF/LfDKZhdTaV4m+RASNs0nASNo6HR74=;
+ b=faG22hewV3fGPOTROIdBpiNTXmQ7lhq9ClRpDUsElB2BVyDjFO9+AwIyVx7m2YObfV
+ ypyFhZLTMgYfGVgb09bMStGe/m1GWUdwCLR2HiPV1bC36jFRb2M5YJKrSTnaR8ABEAqv
+ Zttga1mfZF7hk5u3wP7HiNpsd8LsUJm3M+d6lFtZP7Wge2xWidqCQmIjaPcbnq0gVaHS
+ sbMwlPH9/j4ZNl2G74GFqill+l50T+q/6/1P3sydqno0irfi7y/y62/1T+qVUg5Px04M
+ +PfXkMZ/xoiqWKuoruNom/P1nC4ufzKwW+2fqHfbWtdcdUSSwRZIe7ML+MdRcZLiwBUC
+ Re+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=GpF1GDD6Ii8oF/LfDKZhdTaV4m+RASNs0nASNo6HR74=;
+ b=XfylhfqwgxAA7WGp9+m0iM26td+S/KElJ/YVpb5U1i7yYzfW8zH2P9rH2orb6gW/qO
+ 5g/AvSzrWOGmb+0RfDAr7p50HsHWTG6nsTDyIua6+QYhaWFP+YJI30wN/tWoAmAXe6mV
+ 3SchJVeyv4C+8lgD3J/sPSW85F/R8yG/Lfy8zLGF1Id0QsXz6G8YITGG4daAsUQoYZEa
+ zWshr0CCXgzZxaR3Nkl2xhs+SHhfuys6ezKkLdePb5/Ox1kpwEmULhSFDBeJB9AeqS2T
+ uV1XKlWGMldDp5M5vIYvYyGFYBao8OMLHZtF2awTECCS23p2aaK0/AVWxnOdPkVttl3T
+ yZ6A==
+X-Gm-Message-State: AOAM533CeguFy0dKTaP22I57/7gSegDHkaty9fPpL9Bx4rMIk0UjFT/l
+ vu1rttne8M2tt+IQvKd8YJyAV20kf/q623zBSTo=
+X-Google-Smtp-Source: ABdhPJz4Ahpee6Q7yCB+ceb6Rf/fLYTQopnxiWs8+MRp1rOITH4ZDDCTLHHEhdvtJu77GjLVGaFSduRQwzWj+yELO+Y=
+X-Received: by 2002:ac8:5f4d:: with SMTP id y13mr62363838qta.16.1636126451252; 
+ Fri, 05 Nov 2021 08:34:11 -0700 (PDT)
+MIME-Version: 1.0
+References: <163311243544.13917.11736165165419008870@ietfa.amsl.com>
+ <20211001190002.GC98042@kduck.mit.edu>
+ <CABcZeBPQG82xJdwMrmj4-=9aJymo1xts=D6VZedBW5X9k+34cQ@mail.gmail.com>
+ <92ed26c1-bfde-43c1-93f4-2bbdbd4f6ec1@www.fastmail.com>
+ <CAChr6Sw6Rs42DfS8KgD3qasPcWM_gGZhWN5C4b7W7JsPy0wDzw@mail.gmail.com>
+ <8796f867-12b8-41f8-b124-82b3ab0e2d32@www.fastmail.com>
+ <CAChr6SyKAnBcE9t68coGGXFt9WPLuDuWtVKoCXrK+QrwAVtPXw@mail.gmail.com>
+ <f1bcd676-13ad-49b3-a8e8-8a272e0124e3@www.fastmail.com>
+ <CABcZeBNo0gKjNZOKPYJYraioaw6G=z5ibTqh-o9GkWsDkfDmSQ@mail.gmail.com>
+ <c4d6f2e5-0712-42a6-aef5-0cbada7e149e@www.fastmail.com>
+ <CABcZeBM6y-6ZqaLGZ=8qr+uBnWOOgczhcx=ruy5S=n-YrHweKg@mail.gmail.com>
+ <ca676a77-b2c9-4926-9842-d1d6587206ed@www.fastmail.com>
+ <CACykbs11rHUweXmR1NSU0N2rRjcQ8Sf1S+DY2LO7T+e6cLt+5w@mail.gmail.com>
+ <e9570c02c4f703780a4e317b26607ac124a3b595.camel@ruff.mobi>
+ <CACykbs3v0FC50WQHNqq-oXwKDE=Jha-o0P=Mgr92OgyeKPS6Ug@mail.gmail.com>
+ <7e862904cee5f86e4b77fce23c451c2abe0dc720.camel@ruff.mobi>
+ <CACykbs2V0mgxDz_MK2EiqSDBGWWfvq0TAX+UpLSEZKwOoFc8HQ@mail.gmail.com>
+ <e682da42c5ccd32d1d184970db631624eb6ee507.camel@redhat.com>
+In-Reply-To: <e682da42c5ccd32d1d184970db631624eb6ee507.camel@redhat.com>
+From: Jonathan Hoyland <jonathan.hoyland@gmail.com>
+Date: Fri, 5 Nov 2021 15:34:00 +0000
+Message-ID: <CACykbs1biupGfYaxrBykYk+=cFZxqVLVbFvcynnjCUzxLh4pmg@mail.gmail.com>
+To: Simo Sorce <simo@redhat.com>
+Cc: "Ruslan N. Marchenko" <rufferson@gmail.com>,
+ KITTEN Working Group <kitten@ietf.org>, "<tls@ietf.org>" <tls@ietf.org>
+Content-Type: multipart/alternative; boundary="000000000000ef452705d00c5f14"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/iTFtcmahF_jW5VBOjKOppsLZ_jI>
+Subject: Re: [TLS] [kitten] Fwd: Last Call:
+ <draft-ietf-kitten-tls-channel-bindings-for-tls13-09.txt> (Channel Bindings
+ for TLS 1.3) to Proposed Standard
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Fri, 05 Nov 2021 15:34:21 -0000
+
+--000000000000ef452705d00c5f14
+Content-Type: text/plain; charset="UTF-8"
+
+Hi Simo,
+
+As I said in my email to Sam, my language here was sloppy, I meant that the
+channel binding is included in the key derivation process, and thus the
+output keys will be related to each other.
+The term channel bindings has two different meanings using in very similar
+contexts, which leads to great confusion and is why I prefer the term
+compound authentication (see Chapter 4.4 of my thesis)
+<https://pure.royalholloway.ac.uk/portal/files/33074422/2018HoylandJGPhD.pdf>.
+
+A channel binding is a "name" of a channel as you say, but it is also used
+to mean using one channel to authenticate another.
+Very specifically if channel `a` is bound to channel `b` then that means
+that if channel `b` is securely authenticated then channel `a` was formed
+honestly (i.e. even if all of the long term key material for channel `a`
+has been leaked, I can be sure that my channel `a` peer is the same actor
+as my channel `b` peer.)
+
+Channel bindings that aren't bound to a specific session are less secure
+than ones that are, so yes, you can use them, but that doesn't mean they
+have the security properties you need.
+The purpose of binding a protocol to an underlying TLS session is to
+leverage some of the security guarantees offered by the TLS layer.
+If those guarantees are never necessary because the over-the-top protocol
+is always perfectly secure, just run the protocol on the wire and drop the
+TLS complication.
+If those guarantees are at least sometimes necessary then you need to
+securely bind the two channels together.
+
+Channel binding does more than simply guarantee that the messages were the
+same, it also guarantees that the identity of the actors at each layer
+remains the same, and that the keys derived in each layer match.
+With an appropriately designed channel binding you can use TLS's protection
+against MITM attacks to protect insecure protocols run over the top.
+Having now looked at SCRAM a little bit, using the TLS channel binding
+guarantees that some malicious server isn't passing the client's messages
+off to another server and performing a malicious authentication there.
+Using a unique string from SCRAM means that messages from some other
+protocol won't be compatible.
+If you don't require a unique string I could write a new protocol SCRAM++
+with cross-compatible messages, but different security guarantees, and use
+that to compromise SCRAM clients.
+Obviously that's a patently malicious example, but it's perfectly possible
+that some new version of SCRAM produces messages that an old version of
+SCRAM misinterprets.
+It's even highly likely that a server that supports old versions of SCRAM
+for backwards compatibility would use the same key material for all
+versions.
+
+Requiring a unique string makes the messages totally unrelated.
+
+I don't find the arguments "It's always been insecure in the past" or "We
+have bad APIs" especially compelling.
+
+Regards,
+
+Jonathan
+
+
+On Fri, 29 Oct 2021 at 14:55, Simo Sorce <simo@redhat.com> wrote:
+
+> Hi Jonathan,
+>
+> On Thu, 2021-10-28 at 18:46 +0100, Jonathan Hoyland wrote:
+> > Hi Ruslan,
+> >
+> > Yes, two distinct TLS connections having the same exporter key would be
+> > really bad, but I'm specifically talking about two runs of some protocol
+> > bound to a single TLS session.
+> > A single TLS session will return the same key (modulo rekeying,
+> resumption
+> > etc.) if you call the Exporter API with the same label.
+> > This means that the channel bindings it produces, which will then be used
+> > to derive the keys of the higher layer protocol, will produce related
+> keys.
+> >
+> > The key reason for making the binding retrieval context-specific is to
+> make
+> > sure that different protocols run in the same TLS session produce
+> disjoint
+> > keys.
+>
+> Note, Channel Bindings are *not* a key and should never used as such,
+> so I think you are using a false premise here.
+> Channel Bindings are, at most, a unique value associated with a session
+> (keep in mind that often Channel Bindings do not even bind to a
+> specific session, see 'tls-server-end-point' which is used in
+> preference in many cases within HTTPS endpoints because of the way
+> server termination is built in some scalable architectures).
+>
+> > When someone tries to copy a message from a SCRAM handshake into some
+> > GSS-API run on a single TLS connection I want to be sure that it will be
+> > rejected, without having to understand exactly how every version of SCRAM
+> > and GSS-API ever (including ones that will be drafted in the future)
+> works
+> > (not to mention every other protocol past, present, and future that uses
+> > the same string.)
+>
+> Both SCRAM and GSS-API are authentication mechanisms that use shared
+> keys for authentication. Both protocols are inherently resistant to
+> message swapping because the chances of producing a message on one
+> protocol that can be successfully decrypted/HMACed on the other are
+> astronomically low (they must be or the protocols are broken).
+>
+> Channel bindings are just a way to tie those authentications to the
+> specific channel used underneath. I can't see how using the same value
+> for both protocols can lead to any compromise (see again 'tls-server-
+> end-point', where there isn't even a "same" channel guarantee, or
+> previous CBs where the binding was done to an IP address or other clear
+> text session value).
+>
+> If passing an arbitrary channel binding values could suddenly (and
+> predictably?) allow one protocol to be swapped for the other or have
+> one protocol generate derived session keys that are usable with the
+> other, it would mean those authentication mechanisms (SCRAM,GSS-
+> API,...) are completely broken, as that would mean the keys and
+> derivations used in those protocols are not providing the necessary
+> security guarantees.
+>
+> > In the same way that we include strings in the TLS key schedule to ensure
+> > that handshake messages can't be confused with each other or with earlier
+> > versions of TLS, or even with Exported Authenticators, or MLS, or any
+> other
+> > protocol that uses keys, we should use channel bindings to separate
+> > protocols run over the top of TLS.
+>
+> Yes, this is done because those messages are not further confounded
+> with additional private keys, but the situation is substantially
+> different when you talk about authentication mechanism that already use
+> additional key material, key derivation and random challenges.
+>
+> HTH,
+> Simo.
+>
+> > Regards,
+> >
+> > Jonathan
+> >
+> > On Wed, 27 Oct 2021 at 19:39, Ruslan N. Marchenko <rufferson@gmail.com>
+> > wrote:
+> >
+> > > Hi Jonathan,
+> > >
+> > > Am Mittwoch, dem 27.10.2021 um 18:02 +0100 schrieb Jonathan Hoyland:
+> > > > Hi Ruslan,
+> > > >
+> > > > Without digging into the guts of GSS-API and SCRAM I can't give you a
+> > > > concrete attack, the issue is that all our assumptions about protocol
+> > > > security assume that different protocols use totally separate key
+> > > > material.
+> > > > For example if I have one protocol that signs arbitrary blobs and
+> > > > another that requires me to sign a challenge to prove I know a
+> private
+> > > > key then even if they're both perfectly secure on their own they are
+> > > > totally broken in composition.
+> > > > This separation of keys is one of the core reasons for the use of
+> > > > HKDFs, it lets us take some source randomness and use it to generate
+> > > > independent keys.
+> > > >
+> > > > Designing a channel binding that explicitly suggests people use the
+> > > > same key material for different things is bad practice and poor
+> > > > protocol design.
+> > > > Pretty much every attack is on the table if you have multiple
+> protocols
+> > > > using the same keys, message forgery, improper authentication, key
+> > > > leakage, etc.
+> > > > The reason for separation of keys is to simply rule out this entire
+> > > > class of vulnerability.
+> > >
+> > > Sorry maybe I'm missing something but why would two unrelated protocols
+> > > have same key? The binding is derived from TLS session key, if two
+> > > unrelated TLS sessions are having the same key this is the problem by
+> > > itself, and binding material is not amplifying it, just falling to the
+> > > same problem bucket. And if they are related (eg resumed) then protocol
+> > > muxing should perhaps be part of applicaiton stack and it should still
+> > > be happy with a common security context.
+> > >
+> > > > If you don't separate the keys then whenever you make any change to
+> any
+> > > > protocol you have to consider its security in composition with every
+> > > > other protocol, including ones that you don't know about or that
+> > > > haven't been written yet.
+> > > >
+> > > > Using different labels for different purposes shouldn't require
+> > > > anything complicated, as it's just changing the input literals to the
+> > > > API call.
+> > > >
+> > > There's a difference in telling TLS stack "give me binding of that
+> > > type" - which is pretty much high level abstract call, and asking TLS
+> > > to perform key derivation (export) for specific label - which requires
+> > > speaking native TLS implementation api. Now that we have a bunch of TLS
+> > > implementations and several abstractions and all other binding types
+> > > are independent of the higher protocol - it may be challenging changing
+> > > the API to make the binding retrieval context-specific. Not that it is
+> > > impossible to make such change, but why?
+> > >
+> > >
+> > >
+> > >
+> > _______________________________________________
+> > Kitten mailing list
+> > Kitten@ietf.org
+> > https://www.ietf.org/mailman/listinfo/kitten
+>
+> --
+> Simo Sorce
+> RHEL Crypto Team
+> Red Hat, Inc
+>
+>
+>
+>
+>
+
+--000000000000ef452705d00c5f14
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><div>Hi Simo,</div><div><br></div><div>As=
+ I said in my email to Sam, my language here was sloppy, I meant that the c=
+hannel binding is included in the key derivation process, and thus the outp=
+ut keys will be related to each other.</div><div>The term channel bindings =
+has two different meanings using in very similar contexts, which leads to g=
+reat confusion and is why I prefer the term compound authentication <a href=
+=3D"https://pure.royalholloway.ac.uk/portal/files/33074422/2018HoylandJGPhD=
+.pdf">(see Chapter 4.4 of my thesis)</a>. <br></div><div>A channel binding =
+is a &quot;name&quot; of a channel as you say, but it is also used to mean =
+using one channel to authenticate another. <br></div><div>Very specifically=
+ if channel `a` is bound to channel `b` then that means that if channel `b`=
+ is securely authenticated then channel `a` was formed honestly (i.e. even =
+if all of the long term key material for channel `a` has been leaked, I can=
+ be sure that my channel `a` peer is the same actor as my channel `b` peer.=
+)</div><div><br></div><div>Channel bindings that aren&#39;t bound to a spec=
+ific session are less secure than ones that are, so yes, you can use them, =
+but that doesn&#39;t mean they have the security properties you need.</div>=
+<div>The purpose of binding a protocol to an underlying TLS session is to l=
+everage some of the security guarantees offered by the TLS layer. <br></div=
+><div>If those guarantees are never necessary because the over-the-top prot=
+ocol is always perfectly secure, just run the protocol on the wire and drop=
+ the TLS complication.</div><div>If those guarantees are at least sometimes=
+ necessary then you need to securely bind the two channels together.</div><=
+div><br></div><div>Channel binding does more than simply guarantee that the=
+ messages were the same, it also guarantees that the identity of the actors=
+ at each layer remains the same, and that the keys derived in each layer ma=
+tch. <br></div><div>With an appropriately designed channel binding you can =
+use TLS&#39;s protection against MITM attacks to protect insecure protocols=
+ run over the top. <br></div><div>Having now looked at SCRAM a little bit, =
+using the TLS channel binding guarantees that some malicious server isn&#39=
+;t passing the client&#39;s messages off to another server and performing a=
+ malicious authentication there.</div><div>Using a unique string from SCRAM=
+ means that messages from some other protocol won&#39;t be compatible.</div=
+><div>If you don&#39;t require a unique string I could write a new protocol=
+ SCRAM++ with cross-compatible messages, but different security guarantees,=
+ and use that to compromise SCRAM clients. <br></div><div>Obviously that&#3=
+9;s a patently malicious example, but it&#39;s perfectly possible that some=
+ new version of SCRAM produces messages that an old version of SCRAM misint=
+erprets. <br></div><div>It&#39;s even highly likely that a server that supp=
+orts old versions of SCRAM for backwards compatibility would use the same k=
+ey material for all versions. <br></div><div><br></div><div>Requiring a uni=
+que string makes the messages totally unrelated. <br></div><div><br></div><=
+div>I don&#39;t find the arguments &quot;It&#39;s always been insecure in t=
+he past&quot; or &quot;We have bad APIs&quot; especially compelling. <br></=
+div><div><br></div><div>Regards,</div><div><br></div><div>Jonathan<br></div=
+><div><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=
+=3D"gmail_attr">On Fri, 29 Oct 2021 at 14:55, Simo Sorce &lt;<a href=3D"mai=
+lto:simo@redhat.com">simo@redhat.com</a>&gt; wrote:<br></div><blockquote cl=
+ass=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid=
+ rgb(204,204,204);padding-left:1ex">Hi Jonathan,<br>
+<br>
+On Thu, 2021-10-28 at 18:46 +0100, Jonathan Hoyland wrote:<br>
+&gt; Hi Ruslan,<br>
+&gt; <br>
+&gt; Yes, two distinct TLS connections having the same exporter key would b=
+e<br>
+&gt; really bad, but I&#39;m specifically talking about two runs of some pr=
+otocol<br>
+&gt; bound to a single TLS session.<br>
+&gt; A single TLS session will return the same key (modulo rekeying, resump=
+tion<br>
+&gt; etc.) if you call the Exporter API with the same label.<br>
+&gt; This means that the channel bindings it produces, which will then be u=
+sed<br>
+&gt; to derive the keys of the higher layer protocol, will produce related =
+keys.<br>
+&gt; <br>
+&gt; The key reason for making the binding retrieval context-specific is to=
+ make<br>
+&gt; sure that different protocols run in the same TLS session produce disj=
+oint<br>
+&gt; keys.<br>
+<br>
+Note, Channel Bindings are *not* a key and should never used as such,<br>
+so I think you are using a false premise here.<br>
+Channel Bindings are, at most, a unique value associated with a session<br>
+(keep in mind that often Channel Bindings do not even bind to a<br>
+specific session, see &#39;tls-server-end-point&#39; which is used in<br>
+preference in many cases within HTTPS endpoints because of the way<br>
+server termination is built in some scalable architectures).<br>
+<br>
+&gt; When someone tries to copy a message from a SCRAM handshake into some<=
+br>
+&gt; GSS-API run on a single TLS connection I want to be sure that it will =
+be<br>
+&gt; rejected, without having to understand exactly how every version of SC=
+RAM<br>
+&gt; and GSS-API ever (including ones that will be drafted in the future) w=
+orks<br>
+&gt; (not to mention every other protocol past, present, and future that us=
+es<br>
+&gt; the same string.)<br>
+<br>
+Both SCRAM and GSS-API are authentication mechanisms that use shared<br>
+keys for authentication. Both protocols are inherently resistant to<br>
+message swapping because the chances of producing a message on one<br>
+protocol that can be successfully decrypted/HMACed on the other are<br>
+astronomically low (they must be or the protocols are broken).<br>
+<br>
+Channel bindings are just a way to tie those authentications to the<br>
+specific channel used underneath. I can&#39;t see how using the same value<=
+br>
+for both protocols can lead to any compromise (see again &#39;tls-server-<b=
+r>
+end-point&#39;, where there isn&#39;t even a &quot;same&quot; channel guara=
+ntee, or<br>
+previous CBs where the binding was done to an IP address or other clear<br>
+text session value).<br>
+<br>
+If passing an arbitrary channel binding values could suddenly (and<br>
+predictably?) allow one protocol to be swapped for the other or have<br>
+one protocol generate derived session keys that are usable with the<br>
+other, it would mean those authentication mechanisms (SCRAM,GSS-<br>
+API,...) are completely broken, as that would mean the keys and<br>
+derivations used in those protocols are not providing the necessary<br>
+security guarantees.<br>
+<br>
+&gt; In the same way that we include strings in the TLS key schedule to ens=
+ure<br>
+&gt; that handshake messages can&#39;t be confused with each other or with =
+earlier<br>
+&gt; versions of TLS, or even with Exported Authenticators, or MLS, or any =
+other<br>
+&gt; protocol that uses keys, we should use channel bindings to separate<br=
+>
+&gt; protocols run over the top of TLS.<br>
+<br>
+Yes, this is done because those messages are not further confounded<br>
+with additional private keys, but the situation is substantially<br>
+different when you talk about authentication mechanism that already use<br>
+additional key material, key derivation and random challenges.<br>
+<br>
+HTH,<br>
+Simo.<br>
+<br>
+&gt; Regards,<br>
+&gt; <br>
+&gt; Jonathan<br>
+&gt; <br>
+&gt; On Wed, 27 Oct 2021 at 19:39, Ruslan N. Marchenko &lt;<a href=3D"mailt=
+o:rufferson@gmail.com" target=3D"_blank">rufferson@gmail.com</a>&gt;<br>
+&gt; wrote:<br>
+&gt; <br>
+&gt; &gt; Hi Jonathan,<br>
+&gt; &gt; <br>
+&gt; &gt; Am Mittwoch, dem 27.10.2021 um 18:02 +0100 schrieb Jonathan Hoyla=
+nd:<br>
+&gt; &gt; &gt; Hi Ruslan,<br>
+&gt; &gt; &gt; <br>
+&gt; &gt; &gt; Without digging into the guts of GSS-API and SCRAM I can&#39=
+;t give you a<br>
+&gt; &gt; &gt; concrete attack, the issue is that all our assumptions about=
+ protocol<br>
+&gt; &gt; &gt; security assume that different protocols use totally separat=
+e key<br>
+&gt; &gt; &gt; material.<br>
+&gt; &gt; &gt; For example if I have one protocol that signs arbitrary blob=
+s and<br>
+&gt; &gt; &gt; another that requires me to sign a challenge to prove I know=
+ a private<br>
+&gt; &gt; &gt; key then even if they&#39;re both perfectly secure on their =
+own they are<br>
+&gt; &gt; &gt; totally broken in composition.<br>
+&gt; &gt; &gt; This separation of keys is one of the core reasons for the u=
+se of<br>
+&gt; &gt; &gt; HKDFs, it lets us take some source randomness and use it to =
+generate<br>
+&gt; &gt; &gt; independent keys.<br>
+&gt; &gt; &gt; <br>
+&gt; &gt; &gt; Designing a channel binding that explicitly suggests people =
+use the<br>
+&gt; &gt; &gt; same key material for different things is bad practice and p=
+oor<br>
+&gt; &gt; &gt; protocol design.<br>
+&gt; &gt; &gt; Pretty much every attack is on the table if you have multipl=
+e protocols<br>
+&gt; &gt; &gt; using the same keys, message forgery, improper authenticatio=
+n, key<br>
+&gt; &gt; &gt; leakage, etc.<br>
+&gt; &gt; &gt; The reason for separation of keys is to simply rule out this=
+ entire<br>
+&gt; &gt; &gt; class of vulnerability.<br>
+&gt; &gt; <br>
+&gt; &gt; Sorry maybe I&#39;m missing something but why would two unrelated=
+ protocols<br>
+&gt; &gt; have same key? The binding is derived from TLS session key, if tw=
+o<br>
+&gt; &gt; unrelated TLS sessions are having the same key this is the proble=
+m by<br>
+&gt; &gt; itself, and binding material is not amplifying it, just falling t=
+o the<br>
+&gt; &gt; same problem bucket. And if they are related (eg resumed) then pr=
+otocol<br>
+&gt; &gt; muxing should perhaps be part of applicaiton stack and it should =
+still<br>
+&gt; &gt; be happy with a common security context.<br>
+&gt; &gt; <br>
+&gt; &gt; &gt; If you don&#39;t separate the keys then whenever you make an=
+y change to any<br>
+&gt; &gt; &gt; protocol you have to consider its security in composition wi=
+th every<br>
+&gt; &gt; &gt; other protocol, including ones that you don&#39;t know about=
+ or that<br>
+&gt; &gt; &gt; haven&#39;t been written yet.<br>
+&gt; &gt; &gt; <br>
+&gt; &gt; &gt; Using different labels for different purposes shouldn&#39;t =
+require<br>
+&gt; &gt; &gt; anything complicated, as it&#39;s just changing the input li=
+terals to the<br>
+&gt; &gt; &gt; API call.<br>
+&gt; &gt; &gt; <br>
+&gt; &gt; There&#39;s a difference in telling TLS stack &quot;give me bindi=
+ng of that<br>
+&gt; &gt; type&quot; - which is pretty much high level abstract call, and a=
+sking TLS<br>
+&gt; &gt; to perform key derivation (export) for specific label - which req=
+uires<br>
+&gt; &gt; speaking native TLS implementation api. Now that we have a bunch =
+of TLS<br>
+&gt; &gt; implementations and several abstractions and all other binding ty=
+pes<br>
+&gt; &gt; are independent of the higher protocol - it may be challenging ch=
+anging<br>
+&gt; &gt; the API to make the binding retrieval context-specific. Not that =
+it is<br>
+&gt; &gt; impossible to make such change, but why?<br>
+&gt; &gt; <br>
+&gt; &gt; <br>
+&gt; &gt; <br>
+&gt; &gt; <br>
+&gt; _______________________________________________<br>
+&gt; Kitten mailing list<br>
+&gt; <a href=3D"mailto:Kitten@ietf.org" target=3D"_blank">Kitten@ietf.org</=
+a><br>
+&gt; <a href=3D"https://www.ietf.org/mailman/listinfo/kitten" rel=3D"norefe=
+rrer" target=3D"_blank">https://www.ietf.org/mailman/listinfo/kitten</a><br=
+>
+<br>
+-- <br>
+Simo Sorce<br>
+RHEL Crypto Team<br>
+Red Hat, Inc<br>
+<br>
+<br>
+<br>
+<br>
+</blockquote></div></div>
+
+--000000000000ef452705d00c5f14--
+

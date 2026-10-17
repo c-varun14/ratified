@@ -1,0 +1,291 @@
+From nobody Sun Jul 31 00:37:49 2022
+Return-Path: <do_not_reply@mnot.net>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 8B6FEC16ED00
+ for <tls@ietfa.amsl.com>; Sun, 31 Jul 2022 00:37:47 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.429
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.429 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_INVALID=0.1, DKIM_SIGNED=0.1,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_LOW=-0.7, RCVD_IN_MSPIKE_H3=-0.01,
+ RCVD_IN_MSPIKE_WL=-0.01, SPF_PASS=-0.001, T_SCC_BODY_TEXT_LINE=-0.01,
+ URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=fail (2048-bit key)
+ reason="fail (message has been altered)"
+ header.d=mnot.net
+ header.b=kyCGH5+b; dkim=fail (2048-bit key)
+ reason="fail (message has been altered)" header.d=messagingengine.com
+ header.b=pxwFg9uA
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id bpz0mAWEMkDv for <tls@ietfa.amsl.com>;
+ Sun, 31 Jul 2022 00:37:42 -0700 (PDT)
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
+ [66.111.4.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id AFEE4C16ECCD
+ for <tls@ietf.org>; Sun, 31 Jul 2022 00:37:42 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+ by mailout.nyi.internal (Postfix) with ESMTP id 1C5715C0086
+ for <tls@ietf.org>; Sun, 31 Jul 2022 03:37:40 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+ by compute2.internal (MEProxy); Sun, 31 Jul 2022 03:37:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mnot.net; h=cc
+ :content-type:date:from:from:in-reply-to:mime-version:reply-to
+ :sender:subject:subject:to:to; s=fm1; t=1659253060; x=
+ 1659339460; bh=7L1LCsXmNhqfd3lEJQV4Y9BhE3z8+8aAuZWhULCj1ks=; b=k
+ yCGH5+b9QJYvze/Kt3LvTEvJk0xMG0ZPIDJgTOLRQ0GwT6nRYM1BWgQCLGB4IJ29
+ LWc5PHt6HISdL5G3mckWlatgyouzng1QPMaWyb/Sep/NL/oozatEv/vLXlJslN0Y
+ Lr/gdThZMIT3EaMHXOqlBjMasHOsogGD11ZSioalTg6If69q3E2kZ0lox6i1F2M1
+ vOJSk80iTE79ky2PThe6VhE5RUNX8bOcYXXXajbkqXVGULgrRzf7eF0CDb/a1gKE
+ I86YUpb06UzM+2EbGlufkFVW1fMrEReK6NsyDlOAYBfCDfVuXZEMFkHANzRsA7dy
+ aO9e/yErhFLLP1s8GdCgQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-type:date:feedback-id
+ :feedback-id:from:from:in-reply-to:mime-version:reply-to:sender
+ :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
+ :x-me-sender:x-sasl-enc; s=fm3; t=1659253060; x=1659339460; bh=7
+ L1LCsXmNhqfd3lEJQV4Y9BhE3z8+8aAuZWhULCj1ks=; b=pxwFg9uALCASEIC+I
+ YRnF6j+vR+2N6T69RVEQ2oUIZOqvt/csF6eBWtr0A+5lXE7LQBzZswfq+2j7PTXu
+ lsPzq40P1/wzyKQstGRXjP1BABLXngmP9vcpjg8gfxZgb2yk656ljLZPFHjjrrCH
+ mz5JYxwY5CJuyIGOSRkHuiI91UoSIVifUy/WLcLy7/jU0fXdUoq0QZvAsnSN1AWC
+ qHYQfGfyOHrJ4OTthC0r33glNEAxwDvn0iP2fjrLKnMubFLm2EWn+s5ol294Ix4I
+ qTAYQq7SWpWkApazfPZvDtBh0zvJmb7T0jdKmU9npVF+s14BGD/S+xrIb91OZ8HD
+ vz4hw==
+X-ME-Sender: <xms:QzHmYnuFESeWZVUeTOq-HltWBGHrWlWqpqxjfc3vmQEUa9azPln94A>
+ <xme:QzHmYodzvF83IRmt4OAo-3hPibbrgRmPNGNOpguAWkOaCU-ofV9VH5YvVnv-EF3CE
+ IXiFrJAMVIhWbVSyw>
+X-ME-Received: <xmr:QzHmYqzS3JxCBflulB5AV-_652KBz1FjKUVTtEIYfFx2FVxazQ9kOK-1FeuBJyGKtl3rQCP0uMZRRQ_4HHSDy0KPepumVCh5fC6mRxQl-cHT2N2ir-_i_9IO--lyowEtdEk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvddvtddguddvvdcutefuodetggdotefrod
+ ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+ necuuegrihhlohhuthemuceftddtnecupfhoucgurghtvgcufhhivghlugculdegledmne
+ cujfgurheptggghffvufesrgdttdertddtjeenucfhrhhomheptfgvphhoshhithhorhih
+ ucettghtihhvihhthicuufhumhhmrghrhicuuehothcuoeguohgpnhhothgprhgvphhlhi
+ esmhhnohhtrdhnvghtqeenucggtffrrghtthgvrhhnpeekfedvudetjedvfeekheeiveeu
+ gfefhfetteevgeffkefffeetffdvleehudeiteenucffohhmrghinhepghhithhhuhgsrd
+ gtohhmnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhep
+ ughopghnohhtpghrvghplhihsehmnhhothdrnhgvth
+X-ME-Proxy: <xmx:QzHmYmOnv9LgW0_UvgTuQvkBaZfcEqn95Z9mtzprVfXYPlOiTDspEA>
+ <xmx:QzHmYn_7hFFTPQy9MI2jBP9z6uDrYENDwIzPTNLBg1hRecMuLITUhQ>
+ <xmx:QzHmYmXLjaspHeMfItlfp7v-HbLoNGNe-E7AS41yfBZAP-5RNYYpfw>
+ <xmx:RDHmYkEZec5B7k0a8HOOPMbG0jS03nZovOmQti1TtX9PUvRCiGDFMA>
+Feedback-ID: i1c3946f2:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA for <tls@ietf.org>; 
+ Sun, 31 Jul 2022 03:37:39 -0400 (EDT)
+Content-Type: multipart/alternative;
+ boundary="===============8039636964849582738=="
+MIME-Version: 1.0
+From: Repository Activity Summary Bot <do_not_reply@mnot.net>
+To: tls@ietf.org
+Message-Id: <20220731073742.AFEE4C16ECCD@ietfa.amsl.com>
+Date: Sun, 31 Jul 2022 00:37:42 -0700 (PDT)
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/u2OexctAa3YjinTS7yU3IEzplHA>
+Subject: [TLS] Weekly github digest (TLS Working Group Drafts)
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Sun, 31 Jul 2022 07:37:47 -0000
+
+--===============8039636964849582738==
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+
+
+
+
+Issues
+------
+* tlswg/tls13-spec (+0/-0/=F0=9F=92=AC1)
+  1 issues received 1 new comments:
+  - #1224 HRR server behavior is underspecified (1 by davidben)
+    https://github.com/tlswg/tls13-spec/issues/1224 [discuss-vienna]=20
+
+* tlswg/draft-ietf-tls-ctls (+2/-0/=F0=9F=92=AC0)
+  2 issues created:
+  - Remove discussion of compressed elliptic curve representations (by bema=
+sc)
+    https://github.com/tlswg/draft-ietf-tls-ctls/issues/74=20
+  - Omitting empty messages seems unlikely to be safe (by bemasc)
+    https://github.com/tlswg/draft-ietf-tls-ctls/issues/73=20
+
+
+
+Pull requests
+-------------
+* tlswg/tls-flags (+0/-1/=F0=9F=92=AC1)
+  1 pull requests received 1 new comments:
+  - #22 Prohibit response with content (1 by ekr)
+    https://github.com/tlswg/tls-flags/pull/22=20
+
+  1 pull requests merged:
+  - Prohibit response with content
+    https://github.com/tlswg/tls-flags/pull/22=20
+
+
+Repositories tracked by this digest:
+-----------------------------------
+* https://github.com/tlswg/draft-ietf-tls-semistatic-dh
+* https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate
+* https://github.com/tlswg/draft-ietf-tls-esni
+* https://github.com/tlswg/certificate-compression
+* https://github.com/tlswg/draft-ietf-tls-external-psk-importer
+* https://github.com/tlswg/draft-ietf-tls-ticketrequest
+* https://github.com/tlswg/tls13-spec
+* https://github.com/tlswg/tls-flags
+* https://github.com/tlswg/dtls13-spec
+* https://github.com/tlswg/dtls-conn-id
+* https://github.com/tlswg/tls-subcerts
+* https://github.com/tlswg/oldversions-deprecate
+* https://github.com/tlswg/sniencryption
+* https://github.com/tlswg/tls-exported-authenticator
+* https://github.com/tlswg/draft-ietf-tls-ctls
+* https://github.com/tlswg/external-psk-design-team
+
+--===============8039636964849582738==
+Content-Type: text/html; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+
+<!doctype html>
+<html lang=3D"en">
+<head>
+<meta charset=3D"utf-8">
+<title>Weekly github digest (TLS Working Group Drafts)</title>
+<style>
+body { font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;=
+ font-size: 14px; }
+h2 { margin-top: 3em; color: #A52A2A; font-style: italic; font-weight: norm=
+al; }
+h3 { margin-bottom:0; margin-top: 2em; font-size: 1.2em; }
+h1+h2 { margin-top: 1em; }
+a { color: #bb6219; text-decoration: none; }
+li { margin-bottom: .35em; }
+.repos { margin-bottom: 0; margin-top:0; line-height: 1.2; }
+.new { color: red; }
+.label { display: inline;
+	padding: .2em .6em .3em;
+	font-size: 75%;
+	font-weight: 700;
+	line-height: 1;
+	color: #fff;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: baseline;
+	border-radius: .25em;
+}
+details {
+	margin-top: 8em;
+	}
+summary {
+	margin-bottom: 1em;
+	cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+<h1>Sunday July 31, 2022</h1>
+
+
+<h2>Issues</h2>
+
+<h3>tlswg/tls13-spec (+0/-0/=F0=9F=92=AC1)</h3>
+
+  <p>1 issues received 1 new comments:</p>
+  <ul>
+  <li>#1224 <a href=3D"https://github.com/tlswg/tls13-spec/issues/1224">HRR=
+ server behavior is underspecified</a> (1 by davidben) <span class=3D"label=
+" style=3D"background-color: #c5def5; color: #000000">discuss-vienna</span>=
+ </li>
+  </ul>
+
+
+<h3>tlswg/draft-ietf-tls-ctls (+2/-0/=F0=9F=92=AC0)</h3>
+  <p class=3D"new">2 issues created:</p>
+  <ul>
+  <li>#74 <a href=3D"https://github.com/tlswg/draft-ietf-tls-ctls/issues/74=
+">Remove discussion of compressed elliptic curve representations</a> (by be=
+masc) </li>
+ =20
+  <li>#73 <a href=3D"https://github.com/tlswg/draft-ietf-tls-ctls/issues/73=
+">Omitting empty messages seems unlikely to be safe</a> (by bemasc) </li>
+  </ul>
+
+
+
+
+
+<h2>Pull requests</h2>
+<h3>tlswg/tls-flags (+0/-1/=F0=9F=92=AC1)</h3>
+
+  <p>1 pull requests received 1 new comments:</p>
+  <ul>
+  <li>#22 <a href=3D"https://github.com/tlswg/tls-flags/pull/22">Prohibit r=
+esponse with content</a> (1 by ekr) </li>
+  </ul>
+
+  <p>1 pull requests merged:</p>
+  <ul>
+  <li>#22 <a href=3D"https://github.com/tlswg/tls-flags/pull/22">Prohibit r=
+esponse with content</a> </li>
+  </ul>
+
+
+  <details>
+    <summary>Repositories tracked by this digest:</summary>
+<ul class=3D"repos">
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-semistatic-dh">htt=
+ps://github.com/tlswg/draft-ietf-tls-semistatic-dh</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate=
+">https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-esni">https://gith=
+ub.com/tlswg/draft-ietf-tls-esni</a></li>
+  <li><a href=3D"https://github.com/tlswg/certificate-compression">https://=
+github.com/tlswg/certificate-compression</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-external-psk-impor=
+ter">https://github.com/tlswg/draft-ietf-tls-external-psk-importer</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-ticketrequest">htt=
+ps://github.com/tlswg/draft-ietf-tls-ticketrequest</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls13-spec">https://github.com/tl=
+swg/tls13-spec</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-flags">https://github.com/tls=
+wg/tls-flags</a></li>
+  <li><a href=3D"https://github.com/tlswg/dtls13-spec">https://github.com/t=
+lswg/dtls13-spec</a></li>
+  <li><a href=3D"https://github.com/tlswg/dtls-conn-id">https://github.com/=
+tlswg/dtls-conn-id</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-subcerts">https://github.com/=
+tlswg/tls-subcerts</a></li>
+  <li><a href=3D"https://github.com/tlswg/oldversions-deprecate">https://gi=
+thub.com/tlswg/oldversions-deprecate</a></li>
+  <li><a href=3D"https://github.com/tlswg/sniencryption">https://github.com=
+/tlswg/sniencryption</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-exported-authenticator">https=
+://github.com/tlswg/tls-exported-authenticator</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-ctls">https://gith=
+ub.com/tlswg/draft-ietf-tls-ctls</a></li>
+  <li><a href=3D"https://github.com/tlswg/external-psk-design-team">https:/=
+/github.com/tlswg/external-psk-design-team</a></li>
+</ul>
+</details>
+</body>
+</html>
+
+--===============8039636964849582738==--
+

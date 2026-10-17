@@ -1,0 +1,781 @@
+Return-Path: <ekr@rtfm.com>
+X-Original-To: tls@mail2.ietf.org
+Delivered-To: tls@mail2.ietf.org
+Received: from localhost (localhost [127.0.0.1])
+	by mail2.ietf.org (Postfix) with ESMTP id 119D2EA0EDAB
+	for <tls@mail2.ietf.org>; Wed,  6 May 2026 09:57:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1778086654; bh=77DjshpdE7Ndp4BQ6ilkbm29dI993T2rywIShNqZ7gg=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc;
+	b=NDTUy5DriCWBpnafxejkk3wGO7iqSXsIbFlWkjMToe4Nt0J9FuSYugFTNaQtfl9I+
+	 p+vGiMtwirONojeEG+9ufXHDa4xUioLAExFYqyq2ZoKql6LW/ELRqvl7Jzre7JOj3J
+	 iD0k4EJyt+eUZ6sTUAXmfX/yXulxtlDs9CUTVQVI=
+X-Virus-Scanned: amavisd-new at ietf.org
+X-Spam-Flag: NO
+X-Spam-Score: -1.897
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.897 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+	HTML_MESSAGE=0.001, SPF_HELO_NONE=0.001, SPF_NONE=0.001]
+	autolearn=ham autolearn_force=no
+Authentication-Results: mail2.ietf.org (amavisd-new); dkim=pass (2048-bit key)
+	header.d=rtfm-com.20251104.gappssmtp.com
+Received: from mail2.ietf.org ([166.84.6.31])
+	by localhost (mail2.ietf.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id HzJr0QrnB8gc for <tls@mail2.ietf.org>;
+	Wed,  6 May 2026 09:57:27 -0700 (PDT)
+Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com
+ [IPv6:2607:f8b0:4864:20::1132])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail2.ietf.org (Postfix) with ESMTPS id 7104DEA0E7BD
+	for <tls@ietf.org>; Wed,  6 May 2026 09:56:48 -0700 (PDT)
+Received: by mail-yw1-x1132.google.com with SMTP id
+ 00721157ae682-7bd65714dcaso58728857b3.3
+        for <tls@ietf.org>; Wed, 06 May 2026 09:56:48 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1778086602; cv=none;
+        d=google.com; s=arc-20240605;
+        b=QcALnA9c6Hhppl0zl4kjAzIKxXSxZTjsmlyQDEc2pbcDMk4k0hnhz5O9uZzB1t0EwA
+         D3nIx7+bh7j9er+al9GjeVa5G5/zceNG8EMUSZsyqhihRaWv22800Oio/lGh0pZNYn11
+         5W4H1eJDOEMlOBnoZj4x7nCt5RxnccQ4umlFlswDLe7/nCZ6EoR4IUF5PV6c2OhaIU/Z
+         zRPbHwvCohu3nLolQ4Vk57GS8xvSabu2dnsoP20u5h1ef2WBSEmpnFVDPaseUFJrx+qj
+         TwMQPUz7+5itzKyg9wC3m5dPU8dfiTZmZ83bd4llbUno1oBBBjDt9IK5Ip6bjAQMPQkL
+         HnWg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20240605;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=UD3DSg3R1dGqhhh7iwZODoBTcZ7x8E0ey3yuHWmbMY4=;
+        fh=l2QGesb47ehZP4dfEQmHXEQask3poI2KuypvPluhPNk=;
+        b=LSrFXMhkHu66WZkadv7uAodt4OJmNfANaHqdgvU4+/YDuxvULLtcxEkJRMrThD7XSB
+         JT4VwS39bCbHDpaPjclyZfmbbOsevxO050VMtojTQOQyfsJqbh0SSd0fCJZJbLeJFbAV
+         Bb/eOjwHK3+VXrHDNbUZ7nV/DZEWl5zI4i1Rcasaz+KIthJ5eF7PtIOsSuRohBlwE4XM
+         RqRaDmcUlRU53hevI3L46kQrQD1JlHjnKJwze9qQjtrhDC3SerVTbe1jfc28Bfl+Hvsx
+         SaHJPeld4RsYLW/aRrUhtYlkKkX4KTfPUpQhc6e5ymG/NBU+8w3KuOiefIR1VCXmFpj6
+         +wIQ==;
+        darn=ietf.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rtfm-com.20251104.gappssmtp.com; s=20251104; t=1778086602;
+ x=1778691402; darn=ietf.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=UD3DSg3R1dGqhhh7iwZODoBTcZ7x8E0ey3yuHWmbMY4=;
+        b=c86kBMFKtlQT953KINaWyZmGTiv7CEk+QqDqIUtENqxXgBvsoNMCPLypXd+LRQCrA3
+         Zobv6jYoTNomgeoaDrvjKa/JdLe4RUwLya6Ft/TaHysAux4ZUIURjH+9SNYUtFJ8d7Nl
+         OkKHx+4o6fV6K/cmvUSHxO8ABLa50aTkv7Er8oGOdvsVrZuPtBt9qtIBUX+Q2YLRTXJc
+         Ly99QTt4hTTkkIlrA/U3+Ze5NQRsUkqH5q3HHEESB8Vn4VVkUghyFaPbsWOfB4kH5CY+
+         7WvXI6dskpHvf4K09l+A62dKAcHJu1E7b51BQKov+1K47KA2EAzpnwLeqUrzS6Amxkae
+         rGQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1778086602; x=1778691402;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UD3DSg3R1dGqhhh7iwZODoBTcZ7x8E0ey3yuHWmbMY4=;
+        b=lCMjOgU5C8+MyEJ+KIz/JFgJL02unEynBh6cLfGoTcpvoN/yImpSmkbDDuu1AO2l07
+         7QclA1ONF/Q9M+P0m6yDBfcI2zVCNSQ61LQSsVUd1QvySbQP0vdllML7V6tC46nKDkFR
+         xmc/5oj6WI3lLui1/JQFTzlFXBoy4OVmOzpuiXfHeB7J/VRbVi/Hq1mfQVzVDb0qlqhb
+         4pnNBZOjCf9tCBupQ3MG4pd2jYNE0+dYb1R29ha3mayvwTD+Hawa1lJqouoIGELNUFT7
+         g+ARTLLij9MxzedN86YcJIbfNb3VhhB49lnH0Z6hKAAIRPphovo0Bsf+W00eJwN+iJNc
+         rbqg==
+X-Gm-Message-State: AOJu0YzLzCNkWFOpNYwVt98JVY7glLRO6yI3jFfDBeMIx9Anxd2EY7mP
+	ibRFHfENhFFcrlZ6JtkriJxdbwHAWymPcrUFXpa9i3Z4UU65p/h41UuBkwWCoVc7AZI1ZfTCgZc
+	dfulUXYQQ2BEdGUpaLJxNLVvih+UV9vg8SO/2UMvo+hpA2UlZ6KRS
+X-Gm-Gg: AeBDiethmRIUnXnMRfl2oztK0o9aNPUhF8XLrHXs8Ug++DaN/Bp+B2wkpvVbQ7n8Xz2
+	vWihZdAfv0lgmk9hiIug+/f4OG59KguMczNJikX/X8iL59D2NllzlJ2B79xsWZHgVMiS8HI5UyF
+	rvtGLpY4o21wnC2E5sCzHZqNclQQ39sUAKjUbreSbfVDtgvj+SptTVZt9qJJwFZQlCYJhiOqwA6
+	8GK7cU7UM4vtbukMqh1wcFpcRVa2qeqIL50RvdB7j3flps/a5adALwD3HN/jUXEmWAiPJQr7Z9H
+	OOzkWEukfn2piqeYN8Z2QG2ODfYKTDqOTODT2ccXIKV0F9DGZqs2ZPk2+ovR1UtxY8FjombhQyi
+	OhrcfduI6Cn4EVBBARxFz4Rp/5KHEs8/t
+X-Received: by 2002:a05:690c:46c2:b0:7bd:9391:b602 with SMTP id
+ 00721157ae682-7bdf5dabc6amr49497427b3.19.1778086601879; Wed, 06 May 2026
+ 09:56:41 -0700 (PDT)
+MIME-Version: 1.0
+References: 
+ <AS4PR07MB8825673B27A6CCED92F48E18893E2@AS4PR07MB8825.eurprd07.prod.outlook.com>
+ <CABcZeBPGeG7s5GcCmPW_4xVM7qioFZjkELH04Xjj7F01nxAP3g@mail.gmail.com>
+ <AS4PR07MB8825F75E271907108957EB5F893F2@AS4PR07MB8825.eurprd07.prod.outlook.com>
+In-Reply-To: 
+ <AS4PR07MB8825F75E271907108957EB5F893F2@AS4PR07MB8825.eurprd07.prod.outlook.com>
+From: Eric Rescorla <ekr@rtfm.com>
+Date: Wed, 6 May 2026 09:56:04 -0700
+X-Gm-Features: AVHnY4J9PKnbWu-wXNyhnBKnG5PSyYsFDSIuWSEBVI-po5fLiU8NyEeTUiaqh-o
+Message-ID: 
+ <CABcZeBNw9-bhL3HYUC1RQbvPi6=Y-45iLPDC+m-gJVD5Rd_pag@mail.gmail.com>
+To: John Mattsson <john.mattsson@ericsson.com>
+Content-Type: multipart/alternative; boundary="00000000000048ff850651290c2c"
+Message-ID-Hash: HCC4E77DM3XN2WKXNYUHVQCR635JHMEX
+X-Message-ID-Hash: HCC4E77DM3XN2WKXNYUHVQCR635JHMEX
+X-MailFrom: ekr@rtfm.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+CC: "tls@ietf.org" <tls@ietf.org>
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Re=3A_rfc8446bis_status?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/VnNWmmR-kPlXb0RSeuYVHW0h8UQ>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+--00000000000048ff850651290c2c
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Thanks for the PR. I'll take it you're in favor of this change. Anyone else
+want to weigh in?
+
+-Ekr
+
+
+
+On Wed, May 6, 2026 at 3:41=E2=80=AFAM John Mattsson <john.mattsson@ericsso=
+n.com>
+wrote:
+
+> I tried to make an PR fixing the inconsistencies between abstract and
+> header:
+> - Adding all obsolete drafts from the abstract to the heading
+> - fixing that 8422 is not both updated and obsoleted
+> - Changed "Negotiated Groups" to "Supported Groups". The term "Negotiated
+> Groups"
+> is only used once and never again.
+>
+> https://mailarchive.ietf.org/arch/msg/tls/Raci4Lxm1Tk9IxrCpyQgJHMlXBw/
+>
+> Eric Rescorla wrote:
+> >I'm now trying to recall why we did this. ISTM that given that we are
+> >obsoleting 5246 (already done in 8446), we should obsolete all the
+> >other specs that only meaningfully apply to 5246. Here's the
+> >list:
+> >
+> > * RFC 5077: Transport Layer Security (TLS) Session Resumption without
+> >Server-Side State
+> > * RFC 5246: The Transport Layer Security (TLS) Protocol Version 1.2
+> > * RFC 5705: Keying Material Exporters for Transport Layer Security (TLS=
+)
+> > * RFC 6066: Transport Layer Security (TLS) Extensions: Extension
+> >Definitions
+> > * RFC 6961: The Transport Layer Security (TLS) Multiple Certificate
+> Status
+> >Request Extension
+> > * RFC 7627: Transport Layer Security (TLS) Session Hash and Extended
+> >Master Secret Extension
+> > * RFC 8422: Elliptic Curve Cryptography (ECC) Cipher Suites for Transpo=
+rt
+> >Layer Security (TLS)
+> >   Versions 1.2 and Earlier
+>
+> Note that 5705, 6066, and 7627 are listed as updated and not obsoleted
+>
+> Cheers,
+> John Preu=C3=9F Mattsson
+>
+>
+> *From: *Eric Rescorla <ekr@rtfm.com>
+> *Date: *Wednesday, 6 May 2026 at 01:30
+> *To: *John Mattsson <john.mattsson@ericsson.com>
+> *Cc: *tls@ietf.org <tls@ietf.org>
+> *Subject: *Re: [TLS] Re: rfc8446bis status
+>
+>
+>
+> On Tue, May 5, 2026 at 2:21=E2=80=AFAM John Mattsson <john.mattsson@erics=
+son.com>
+> wrote:
+>
+> Hi,
+>
+> I looked at  https://tlswg.org/tls13-spec/rfc9846.txt
+> and found some things that I think should be fixed in AUTH48.
+> I made a PR for the two easy editorial corrections
+> https://github.com/tlswg/tls13-spec/pull/1416/changes
+>
+> Cheers,
+> John Preu=C3=9F Mattsson
+>
+> ----
+>
+> The heading and abstract are not aligned.
+> - The heading says it only obsoletes 8446, while the abstract says 5077,
+> 5246, 6961, 8422, and 8446
+> - The heading says 8422 is updates, while the abstract says obsoleted.
+>
+> "Obsoletes: 8446 (if approved)"
+> "Updates: 5705, 6066, 7627, 8422 (if approved)=E2=80=9D
+>
+> "This document updates RFCs 5705, 6066, 7627, and 8422 and obsoletes RFCs
+> 5077, 5246, 6961, 8422, and 8446."
+>
+>
+> I'm now trying to recall why we did this. ISTM that given that we are
+> obsoleting 5246 (already done in 8446), we should obsolete all the
+> other specs that only meaningfully apply to 5246. Here's the
+> list:
+>
+>  * RFC 5077: Transport Layer Security (TLS) Session Resumption without
+> Server-Side State
+>  * RFC 5246: The Transport Layer Security (TLS) Protocol Version 1.2
+>  * RFC 5705: Keying Material Exporters for Transport Layer Security (TLS)
+>  * RFC 6066: Transport Layer Security (TLS) Extensions: Extension
+> Definitions
+>  * RFC 6961: The Transport Layer Security (TLS) Multiple Certificate
+> Status Request Extension
+>  * RFC 7627: Transport Layer Security (TLS) Session Hash and Extended
+> Master Secret Extension
+>  * RFC 8422: Elliptic Curve Cryptography (ECC) Cipher Suites for Transpor=
+t
+> Layer Security (TLS)
+>    Versions 1.2 and Earlier
+>
+> ISTM that this standard applies to all of them, so we should just mark
+> them all Obsoletes.
+>
+>
+>
+> OLD: record_size_limit [RFC8849]
+> NEW: record_size_limit [RFC8449]
+>
+>
+> Fixed in auth48 branch.
+>
+>
+>
+> ---
+>
+> OLD: as described in Section 4.1.4).
+> NEW:  as described in Section 4.1.4.
+>
+>
+> Fixed in auth48 branch.
+>
+>
+>
+> ---
+>
+> "A client sending a ClientHello MUST support all parameters advertised in
+> it"
+>
+> Shouldn't this be "MUST support all non-GREASE [RFC8701] parameters"
+>
+>
+> See:
+> https://github.com/tlswg/tls13-spec/pull/1421
+>
+> -Ekr
+>
+>
+>
+> ---
+>
+>
+>
+>
+> *From: *Rob Sayre <sayrer@gmail.com>
+> *Date: *Friday, 20 March 2026 at 20:27
+> *To: *Eric Rescorla <ekr@rtfm.com>
+> *Cc: *TLS@ietf.org <tls@ietf.org>
+> *Subject: *[TLS] Re: rfc8446bis status
+>
+> --
+>
+>
+>
+> On Fri, Mar 20, 2026 at 12:21=E2=80=AFPM Eric Rescorla <ekr@rtfm.com> wro=
+te:
+>
+> On Fri, Mar 20, 2026 at 12:19=E2=80=AFPM Rob Sayre <sayrer@gmail.com> wro=
+te:
+>
+> Hi,
+>
+> https://datatracker.ietf.org/doc/draft-ietf-tls-rfc8446bis/history/
+>
+> has been in AUTH48 for 3 months now. What's the holdup?
+>
+>
+> The holdup is that we're working through some last minute issues, such as
+> https://github.com/tlswg/tls13-spec/pull/1410
+>
+>
+>
+> I need to cite it.
+>
+>
+> Cite 8446.
+>
+>
+>
+> Oh I would, but I need to say the equivalent of "master secret".
+>
+> thanks,
+> Rob
+>
+>
+
+--00000000000048ff850651290c2c
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div>Thanks for the PR. I&#39;ll take it you&#39;re in fav=
+or of this change. Anyone else want to weigh in?</div><div><br></div><div>-=
+Ekr</div><div><br></div><div><br></div></div><br><div class=3D"gmail_quote =
+gmail_quote_container"><div dir=3D"ltr" class=3D"gmail_attr">On Wed, May 6,=
+ 2026 at 3:41=E2=80=AFAM John Mattsson &lt;<a href=3D"mailto:john.mattsson@=
+ericsson.com">john.mattsson@ericsson.com</a>&gt; wrote:<br></div><blockquot=
+e class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px s=
+olid rgb(204,204,204);padding-left:1ex">
+
+
+
+<div>
+<div style=3D"direction:ltr;font-family:Aptos,Arial,Helvetica,sans-serif;fo=
+nt-size:12pt;color:rgb(0,0,0)">
+I tried to make an PR fixing the inconsistencies between abstract and heade=
+r:</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt;c=
+olor:rgb(0,0,0)">
+- Adding all obsolete drafts from the abstract to the heading</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt;c=
+olor:rgb(0,0,0)">
+- fixing that 8422 is not both updated and obsoleted</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt;c=
+olor:rgb(0,0,0)">
+- Changed &quot;Negotiated Groups&quot; to &quot;Supported Groups&quot;. Th=
+e term &quot;Negotiated Groups&quot;</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt;c=
+olor:rgb(0,0,0)">
+is only used once and never again.</div>
+<div style=3D"direction:ltr;font-family:Aptos,Arial,Helvetica,sans-serif;fo=
+nt-size:12pt;color:rgb(0,0,0)">
+<br>
+</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt;c=
+olor:rgb(0,0,0)">
+<a href=3D"https://mailarchive.ietf.org/arch/msg/tls/Raci4Lxm1Tk9IxrCpyQgJH=
+MlXBw/" target=3D"_blank">https://mailarchive.ietf.org/arch/msg/tls/Raci4Lx=
+m1Tk9IxrCpyQgJHMlXBw/</a></div>
+<div style=3D"direction:ltr;font-family:Aptos,Arial,Helvetica,sans-serif;fo=
+nt-size:12pt;color:rgb(0,0,0)">
+<br>
+</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt;c=
+olor:rgb(0,0,0)">
+Eric Rescorla wrote:</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt;c=
+olor:rgb(0,0,0)">
+&gt;I&#39;m now trying to recall why we did this. ISTM that given that we a=
+re</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt;c=
+olor:rgb(0,0,0)">
+&gt;obsoleting 5246 (already done in 8446), we should obsolete all the</div=
+>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt;c=
+olor:rgb(0,0,0)">
+&gt;other specs that only meaningfully apply to 5246. Here&#39;s the</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt;c=
+olor:rgb(0,0,0)">
+&gt;list:</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt;c=
+olor:rgb(0,0,0)">
+&gt;</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt;c=
+olor:rgb(0,0,0)">
+&gt; * RFC 5077: Transport Layer Security (TLS) Session Resumption without<=
+/div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt;c=
+olor:rgb(0,0,0)">
+&gt;Server-Side State</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt;c=
+olor:rgb(0,0,0)">
+&gt; * RFC 5246: The Transport Layer Security (TLS) Protocol Version 1.2</d=
+iv>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt;c=
+olor:rgb(0,0,0)">
+&gt; * RFC 5705: Keying Material Exporters for Transport Layer Security (TL=
+S)</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt;c=
+olor:rgb(0,0,0)">
+&gt; * RFC 6066: Transport Layer Security (TLS) Extensions: Extension</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt;c=
+olor:rgb(0,0,0)">
+&gt;Definitions</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt;c=
+olor:rgb(0,0,0)">
+&gt; * RFC 6961: The Transport Layer Security (TLS) Multiple Certificate St=
+atus</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt;c=
+olor:rgb(0,0,0)">
+&gt;Request Extension</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt;c=
+olor:rgb(0,0,0)">
+&gt; * RFC 7627: Transport Layer Security (TLS) Session Hash and Extended</=
+div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt;c=
+olor:rgb(0,0,0)">
+&gt;Master Secret Extension</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt;c=
+olor:rgb(0,0,0)">
+&gt; * RFC 8422: Elliptic Curve Cryptography (ECC) Cipher Suites for Transp=
+ort</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt;c=
+olor:rgb(0,0,0)">
+&gt;Layer Security (TLS)</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt;c=
+olor:rgb(0,0,0)">
+&gt; =C2=A0 Versions 1.2 and Earlier</div>
+<div style=3D"direction:ltr;font-family:Aptos,Arial,Helvetica,sans-serif;fo=
+nt-size:12pt;color:rgb(0,0,0)">
+<br>
+</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt;c=
+olor:rgb(0,0,0)">
+Note that 5705, 6066, and 7627 are listed as updated and not obsoleted</div=
+>
+<div style=3D"direction:ltr;font-family:Aptos,Arial,Helvetica,sans-serif;fo=
+nt-size:12pt;color:rgb(0,0,0)">
+<br>
+</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt;c=
+olor:rgb(0,0,0)">
+Cheers,</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt;c=
+olor:rgb(0,0,0)">
+John Preu=C3=9F Mattsson</div>
+<div style=3D"direction:ltr;font-family:Aptos,Arial,Helvetica,sans-serif;fo=
+nt-size:12pt;color:rgb(0,0,0)">
+<br>
+</div>
+<div id=3D"m_2334713287240284463ms-outlook-mobile-signature" dir=3D"ltr">
+<div style=3D"direction:ltr"><br>
+</div>
+</div>
+<div id=3D"m_2334713287240284463mail-editor-reference-message-container">
+<div style=3D"direction:ltr">
+</div>
+<div style=3D"padding:3pt 0in 0in;border-width:1pt medium medium;border-sty=
+le:solid none none;border-color:rgb(181,196,223) currentcolor currentcolor"=
+>
+<div style=3D"text-align:left;font-family:Aptos;font-size:12pt;color:black"=
+>
+<b>From: </b>Eric Rescorla &lt;<a href=3D"mailto:ekr@rtfm.com" target=3D"_b=
+lank">ekr@rtfm.com</a>&gt;<br>
+<b>Date: </b>Wednesday, 6 May 2026 at 01:30<br>
+<b>To: </b>John Mattsson &lt;<a href=3D"mailto:john.mattsson@ericsson.com" =
+target=3D"_blank">john.mattsson@ericsson.com</a>&gt;<br>
+<b>Cc: </b><a href=3D"mailto:tls@ietf.org" target=3D"_blank">tls@ietf.org</=
+a> &lt;<a href=3D"mailto:tls@ietf.org" target=3D"_blank">tls@ietf.org</a>&g=
+t;<br>
+<b>Subject: </b>Re: [TLS] Re: rfc8446bis status<br>
+<br>
+</div>
+</div>
+<div style=3D"direction:ltr">
+<br>
+</div>
+<div style=3D"direction:ltr">
+<br>
+</div>
+<div class=3D"gmail_attr" style=3D"direction:ltr">On Tue, May 5, 2026 at 2:=
+21=E2=80=AFAM John Mattsson &lt;<a href=3D"mailto:john.mattsson@ericsson.co=
+m" target=3D"_blank">john.mattsson@ericsson.com</a>&gt; wrote:</div>
+<blockquote style=3D"margin:0px 0px 0px 0.8ex;padding-left:1ex;border-left:=
+1px solid rgb(204,204,204)">
+<div class=3D"gmail_quote" style=3D"direction:ltr;font-family:Aptos,Arial,H=
+elvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+Hi,</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr;font-family:Aptos,Arial,H=
+elvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+<br>
+</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr;font-family:Aptos,Arial,H=
+elvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+I looked at =C2=A0<a href=3D"https://tlswg.org/tls13-spec/rfc9846.txt" targ=
+et=3D"_blank">https://tlswg.org/tls13-spec/rfc9846.txt</a></div>
+<div class=3D"gmail_quote" style=3D"direction:ltr;font-family:Aptos,Arial,H=
+elvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+and found some things that I think should be fixed in AUTH48.</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr;font-family:Aptos,Arial,H=
+elvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+I made a PR for the two easy editorial corrections <a href=3D"https://githu=
+b.com/tlswg/tls13-spec/pull/1416/changes" target=3D"_blank">
+https://github.com/tlswg/tls13-spec/pull/1416/changes</a></div>
+<div class=3D"gmail_quote" style=3D"direction:ltr;font-family:Aptos,Arial,H=
+elvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+<br>
+</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr;font-family:Aptos,Arial,H=
+elvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+Cheers,<br>
+John Preu=C3=9F Mattsson</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr;font-family:Aptos,Arial,H=
+elvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+<br>
+</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr;font-family:Aptos,Arial,H=
+elvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+----</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr;font-family:Aptos,Arial,H=
+elvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+<br>
+</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr;font-family:Aptos,Arial,H=
+elvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+The heading and abstract are not aligned.</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr;font-family:Aptos,Arial,H=
+elvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+- The heading says it only obsoletes 8446, while the abstract says 5077, 52=
+46, 6961, 8422, and 8446</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr;font-family:Aptos,Arial,H=
+elvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+- The heading says 8422 is updates, while the abstract says obsoleted.</div=
+>
+<div class=3D"gmail_quote" style=3D"direction:ltr;font-family:Aptos,Arial,H=
+elvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+<br>
+</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr;font-family:Aptos,Arial,H=
+elvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+&quot;Obsoletes: 8446 (if approved)&quot;</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr;font-family:Aptos,Arial,H=
+elvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+&quot;Updates: 5705, 6066, 7627, 8422 (if approved)=E2=80=9D</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr;font-family:Aptos,Arial,H=
+elvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+<br>
+</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr;font-family:Aptos,Arial,H=
+elvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+&quot;This document updates RFCs 5705, 6066, 7627, and 8422 and obsoletes R=
+FCs 5077, 5246, 6961, 8422, and 8446.&quot;</div>
+</blockquote>
+<div class=3D"gmail_quote" style=3D"direction:ltr"><br>
+I&#39;m now trying to recall why we did this. ISTM that given that we are<b=
+r>
+obsoleting 5246 (already done in 8446), we should obsolete all the<br>
+other specs that only meaningfully apply to 5246. Here&#39;s the<br>
+list:<br>
+<br>
+=C2=A0* RFC 5077: Transport Layer Security (TLS) Session Resumption without=
+ Server-Side State<br>
+=C2=A0* RFC 5246: The Transport Layer Security (TLS) Protocol Version 1.2<b=
+r>
+=C2=A0* RFC 5705: Keying Material Exporters for Transport Layer Security (T=
+LS)<br>
+=C2=A0* RFC 6066: Transport Layer Security (TLS) Extensions: Extension Defi=
+nitions<br>
+=C2=A0* RFC 6961: The Transport Layer Security (TLS) Multiple Certificate S=
+tatus Request Extension<br>
+=C2=A0* RFC 7627: Transport Layer Security (TLS) Session Hash and Extended =
+Master Secret Extension<br>
+=C2=A0* RFC 8422: Elliptic Curve Cryptography (ECC) Cipher Suites for Trans=
+port Layer Security (TLS)<br>
+=C2=A0 =C2=A0Versions 1.2 and Earlier<br>
+<br>
+ISTM that this standard applies to all of them, so we should just mark<br>
+them all Obsoletes.<br>
+<br>
+<br>
+</div>
+<blockquote style=3D"margin:0px 0px 0px 0.8ex;padding-left:1ex;border-left:=
+1px solid rgb(204,204,204)">
+<div class=3D"gmail_quote" style=3D"direction:ltr;font-family:Aptos,Arial,H=
+elvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+<br>
+</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr;font-family:Aptos,Arial,H=
+elvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+OLD: record_size_limit [RFC8849]=C2=A0</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr;font-family:Aptos,Arial,H=
+elvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+NEW: record_size_limit [RFC8449]</div>
+</blockquote>
+<div class=3D"gmail_quote" style=3D"direction:ltr"><br>
+</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr">Fixed in auth48 branch.<=
+/div>
+<div class=3D"gmail_quote" style=3D"direction:ltr">=C2=A0</div>
+<blockquote style=3D"margin:0px 0px 0px 0.8ex;padding-left:1ex;border-left:=
+1px solid rgb(204,204,204)">
+<div class=3D"gmail_quote" style=3D"direction:ltr;font-family:Aptos,Arial,H=
+elvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+<br>
+</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr;font-family:Aptos,Arial,H=
+elvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+---</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr;font-family:Aptos,Arial,H=
+elvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+<br>
+</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr;font-family:Aptos,Arial,H=
+elvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+OLD: as described in Section 4.1.4).</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr;font-family:Aptos,Arial,H=
+elvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+NEW: =C2=A0as described in Section 4.1.4.</div>
+</blockquote>
+<div class=3D"gmail_quote" style=3D"direction:ltr"><br>
+</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr">Fixed in auth48 branch.<=
+/div>
+<div class=3D"gmail_quote" style=3D"direction:ltr">=C2=A0</div>
+<blockquote style=3D"margin:0px 0px 0px 0.8ex;padding-left:1ex;border-left:=
+1px solid rgb(204,204,204)">
+<div class=3D"gmail_quote" style=3D"direction:ltr;font-family:Aptos,Arial,H=
+elvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+<br>
+</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr;font-family:Aptos,Arial,H=
+elvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+---</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr;font-family:Aptos,Arial,H=
+elvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+<br>
+</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr;font-family:Aptos,Arial,H=
+elvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+&quot;A client sending a ClientHello MUST support all parameters advertised=
+ in it&quot;</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr;font-family:Aptos,Arial,H=
+elvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+<br>
+</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr;font-family:Aptos,Arial,H=
+elvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+Shouldn&#39;t this be &quot;MUST support all non-GREASE [RFC8701] parameter=
+s&quot;=C2=A0</div>
+</blockquote>
+<div class=3D"gmail_quote" style=3D"direction:ltr"><br>
+</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr">See:=C2=A0</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr"><a href=3D"https://githu=
+b.com/tlswg/tls13-spec/pull/1421" target=3D"_blank">https://github.com/tlsw=
+g/tls13-spec/pull/1421</a></div>
+<div class=3D"gmail_quote" style=3D"direction:ltr"><br>
+</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr">-Ekr</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr">=C2=A0</div>
+<blockquote style=3D"margin:0px 0px 0px 0.8ex;padding-left:1ex;border-left:=
+1px solid rgb(204,204,204)">
+<div class=3D"gmail_quote" style=3D"direction:ltr;font-family:Aptos,Arial,H=
+elvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+<br>
+</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr;font-family:Aptos,Arial,H=
+elvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+---</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr;font-family:Aptos,Arial,H=
+elvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+<br>
+</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr;font-family:Aptos,Arial,H=
+elvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+<br>
+</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr;font-family:Aptos,Arial,H=
+elvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+<br>
+</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr;font-family:Aptos,Arial,H=
+elvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+<br>
+</div>
+<div style=3D"padding:3pt 0in 0in;border-width:1pt medium medium;border-sty=
+le:solid none none;border-color:rgb(181,196,223) currentcolor currentcolor"=
+>
+<div class=3D"gmail_quote" style=3D"direction:ltr;text-align:left;font-fami=
+ly:Aptos;font-size:12pt;color:black">
+<b>From: </b>Rob Sayre &lt;<a href=3D"mailto:sayrer@gmail.com" target=3D"_b=
+lank">sayrer@gmail.com</a>&gt;<br>
+<b>Date: </b>Friday, 20 March 2026 at 20:27<br>
+<b>To: </b>Eric Rescorla &lt;<a href=3D"mailto:ekr@rtfm.com" target=3D"_bla=
+nk">ekr@rtfm.com</a>&gt;<br>
+<b>Cc: </b><a href=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.org</=
+a>=C2=A0&lt;<a href=3D"mailto:tls@ietf.org" target=3D"_blank">tls@ietf.org<=
+/a>&gt;<br>
+<b>Subject: </b>[TLS] Re: rfc8446bis status<br>
+<br>
+</div>
+</div>
+<div id=3D"m_2334713287240284463m_-5978268945915852482ms-outlook-mobile-sig=
+nature">
+<div>--=C2=A0</div>
+<div style=3D"direction:ltr"><br>
+</div>
+</div>
+<div id=3D"m_2334713287240284463m_-5978268945915852482mail-editor-reference=
+-message-container">
+<div style=3D"direction:ltr"><br>
+</div>
+<div style=3D"direction:ltr"><br>
+</div>
+<div class=3D"gmail_attr" style=3D"direction:ltr">On Fri, Mar 20, 2026 at 1=
+2:21=E2=80=AFPM Eric Rescorla &lt;<a href=3D"mailto:ekr@rtfm.com" target=3D=
+"_blank">ekr@rtfm.com</a>&gt; wrote:</div>
+<blockquote style=3D"margin:0px 0px 0px 0.8ex;padding-left:1ex;border-left:=
+1px solid rgb(204,204,204)">
+<div class=3D"gmail_quote" style=3D"direction:ltr">On Fri, Mar 20, 2026 at =
+12:19=E2=80=AFPM Rob Sayre &lt;<a href=3D"mailto:sayrer@gmail.com" target=
+=3D"_blank">sayrer@gmail.com</a>&gt; wrote:</div>
+<blockquote style=3D"margin:0px 0px 0px 0.8ex;padding-left:1ex;border-left:=
+1px solid rgb(204,204,204)">
+<div class=3D"gmail_quote" style=3D"direction:ltr">Hi,</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr"><br>
+</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr"><a href=3D"https://datat=
+racker.ietf.org/doc/draft-ietf-tls-rfc8446bis/history/" target=3D"_blank">h=
+ttps://datatracker.ietf.org/doc/draft-ietf-tls-rfc8446bis/history/</a></div=
+>
+<div class=3D"gmail_quote" style=3D"direction:ltr"><br>
+</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr">has been in AUTH48 for 3=
+ months now. What&#39;s the holdup?</div>
+</blockquote>
+<div class=3D"gmail_quote" style=3D"direction:ltr"><br>
+</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr">The holdup is that we&#3=
+9;re working through some last minute issues, such as
+<a href=3D"https://github.com/tlswg/tls13-spec/pull/1410" target=3D"_blank"=
+>
+https://github.com/tlswg/tls13-spec/pull/1410</a></div>
+<div class=3D"gmail_quote" style=3D"direction:ltr"><br>
+</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr">=C2=A0</div>
+<blockquote style=3D"margin:0px 0px 0px 0.8ex;padding-left:1ex;border-left:=
+1px solid rgb(204,204,204)">
+<div class=3D"gmail_quote" style=3D"direction:ltr">I need to cite it.</div>
+</blockquote>
+<div class=3D"gmail_quote" style=3D"direction:ltr"><br>
+</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr">Cite 8446.=C2=A0</div>
+</blockquote>
+<div class=3D"gmail_quote" style=3D"direction:ltr"><br>
+</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr"><br>
+</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr">Oh I would, but I need t=
+o say the equivalent of &quot;master secret&quot;.</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr"><br>
+</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr">thanks,</div>
+<div class=3D"gmail_quote" style=3D"direction:ltr">Rob</div>
+</div>
+</blockquote>
+</div>
+</div>
+
+</blockquote></div>
+
+--00000000000048ff850651290c2c--
+

@@ -1,0 +1,421 @@
+Return-Path: <rstruik.ext@gmail.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id D112412008D
+ for <tls@ietfa.amsl.com>; Fri, 16 Aug 2019 07:58:19 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.997
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.997 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ DKIM_VALID_AU=-0.1, FREEMAIL_FROM=0.001, HTML_MESSAGE=0.001,
+ RCVD_IN_DNSWL_NONE=-0.0001, SPF_HELO_NONE=0.001, SPF_PASS=-0.001,
+ URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=gmail.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id GZx8eAB0IQKA for <tls@ietfa.amsl.com>;
+ Fri, 16 Aug 2019 07:58:17 -0700 (PDT)
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com
+ [IPv6:2607:f8b0:4864:20::d35])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id DCCDF12083C
+ for <tls@ietf.org>; Fri, 16 Aug 2019 07:58:16 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id t6so6750775ios.7
+ for <tls@ietf.org>; Fri, 16 Aug 2019 07:58:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025; 
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language;
+ bh=y1urM1WMpx4+JNZ2UcsUTq055h/98fL9InNMgCahoYY=;
+ b=I1SK4wMYhmNrioe9mZ68/wpHJdAzzxdph+Dh2mnMLNXRanldmYusGe/wEp+dvhAOIU
+ AWxAjouMdDcTpw5mcMWr7gvCftUItraez1sr5bO6OU9pBxKB7mrhdxzUOtX+quk+8TLt
+ Bj/6YP4Gum3kJQFSiHFYtEEIu1eHh3rygLraD22P+qsHLPDGULPuU4DrnPf2/hx+7ico
+ MSi5NryO3fP9pCsfcPh1HTM7WjzuUgUc20sx91q0kXmb69XoO3jWqBofbtvQKXt5FgHR
+ oRDFY5Aiu5lvd246cITHWGKshbjg7vQlpKhXgJ78/QAR2hf0Bh017AHH762IYn3eKFoY
+ 38bA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language;
+ bh=y1urM1WMpx4+JNZ2UcsUTq055h/98fL9InNMgCahoYY=;
+ b=UhyVYhuAVCHUa+aJvu34UnKHWiUI/BznljgBKkO1OkC/49y4rmkZdxWeiHDHG6v9YV
+ 71A4gqYWaGxGJshK/sZND5Y3aZdIGTDVSa8gffpBLJuWg12Xujk/6/DqzJyywGTKppuG
+ SeyqVmnonAVF1SKeyhe6TZEnPmixCGAlVlQEsLTxbFbvwfRxmEPrCK2H1hvpKQxyYFfg
+ 3zkzcCe7ZWdOmlKHApScZcYZFfp55kn8E1E4BnXobe0S1qDGH2T2reqMR8qssk+Y1OVr
+ mkBjferuP/eboGMiH2+Ybz2exsy0VkomxAOnGxtlLde7kflbGjuzxv6BBCX2URDeXNgy
+ GvLQ==
+X-Gm-Message-State: APjAAAU8K+X8J0y4hxof9Uw7x/vadvhL1Y+bJBFouJWHWDMV795aN5Cu
+ XEE80yiLtkbJrxTpD4WoZq0=
+X-Google-Smtp-Source: APXvYqy71pVFYLLSUUVl9M41xWZYUdiapp12TYHfDPeOkbF5DTcZP/ulb6NHN0Tkli1Eso9DLXwYSg==
+X-Received: by 2002:a02:c916:: with SMTP id t22mr11146770jao.24.1565967496212; 
+ Fri, 16 Aug 2019 07:58:16 -0700 (PDT)
+Received: from ?IPv6:2607:fea8:69f:f5eb:8c17:f632:dc51:32cb?
+ ([2607:fea8:69f:f5eb:8c17:f632:dc51:32cb])
+ by smtp.gmail.com with ESMTPSA id u17sm4449625iob.57.2019.08.16.07.58.14
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Fri, 16 Aug 2019 07:58:15 -0700 (PDT)
+To: Kepeng Li <kepeng.lkp@alibaba-inc.com>
+Cc: "'tls@ietf.org'" <tls@ietf.org>, =?UTF-8?B?5p2o5rSLKOWHr+eUsyk=?=
+ <kaishen.yy@antfin.com>
+References: <3350587b-f768-425f-a759-3ed7ce2e6b27.kepeng.lkp@alibaba-inc.com>
+From: Rene Struik <rstruik.ext@gmail.com>
+Message-ID: <1e07a7cc-b316-6a1d-6f59-b352ffbd74b8@gmail.com>
+Date: Fri, 16 Aug 2019 10:58:13 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+MIME-Version: 1.0
+In-Reply-To: <3350587b-f768-425f-a759-3ed7ce2e6b27.kepeng.lkp@alibaba-inc.com>
+Content-Type: multipart/alternative;
+ boundary="------------0577005CD90846E02168E06F"
+Content-Language: en-US
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/nwe0YPgU6mdNYnXTGEHAjDDgadU>
+Subject: [TLS] (offline) Re:  Draft for SM cipher suites used in TLS1.3
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Fri, 16 Aug 2019 14:58:20 -0000
+
+This is a multi-part message in MIME format.
+--------------0577005CD90846E02168E06F
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+
+Arguably, "national" crypto specifications garnish more stature if these 
+are made available to the pubic by that standard-setting body itself 
+(who, thereby, acts as its authoritative source), without deference to a 
+third party (that may, independently from the originator, enforce 
+document control [e.g., by effectuating technical changes or enforcing 
+controlled dissemination]).
+
+Since your draft introducing SM cipher suites with TLS1.3 appeals to the 
+authority of a standard-setting authority, easy availability of the full 
+and accredited technical documentation to the IETF community helps in 
+scrutiny and, e.g., evaluating claims in the security considerations 
+section.
+
+On 8/16/2019 3:06 AM, Kepeng Li wrote:
+> Hi Rene and all,
+>
+> > Since the ISO documents are not available to the general > public without payment, it would be helpful to have a freely 
+> available > document (in English) from an authoritative source. Having 
+> such a > reference available would be helpful to the IETF community 
+> (and > researchers).
+> About the references to ISO documens, I think it is a general issue 
+> for IETF drafts.
+>
+> How does the other IETF drafts make the references to ISO documents? 
+> ISO documents are often referenced by IETF drafts.
+>
+> Thanks,
+>
+> Kind Regards
+> Kepeng
+> ——————————————————————————————————————————————————————————————————
+>
+>
+>       Re: [TLS] Draft for SM cipher suites used in TLS1.3
+>
+> Rene Struik <rstruik.ext@gmail.com <mailto:rstruik.ext@gmail.com>>Thu, 
+> 15 August 2019 15:34 UTCShow header 
+> <https://mailarchive.ietf.org/arch/browse/tls/?index=NHbHOGtsR1S5cCr9nWN9_sdyTgg&gbt=1#>
+>
+> Hi Paul:
+>
+> I tried and look up the documents GMT.0009-2012 and GBT.32918.5-2016 on
+> the (non-secured) websites you referenced, but only found Chinese
+> versions (and Chinese website navigation panels [pardon my poor language
+> skills here]). Since the ISO documents are not available to the general
+> public without payment, it would be helpful to have a freely available
+> document (in English) from an authoritative source. Having such a
+> reference available would be helpful to the IETF community (and
+> researchers). Please note that BSI provides its specifications in German
+> and English, so as to foster use/study by the community. If the Chinese
+> national algorithms would be available in similar form, this would serve
+> a similar purpose.
+>
+> FYI - I am interested in full details and some time last year I tried to
+> download specs, but only Parts 2, 4, and 5 were available [1], [2], [3],
+> not Parts 1 and 3.
+>
+> Best regards, Rene
+>
+> [1] China ECC - Public Key Cryptographic Algorithm SM2 Based on ECC -
+> Part 5 - Parameter Definition (SEMB, July 24, 2018)
+> [2] China ECC - Public Key Cryptographic Algorithm SM2 Based on ECC -
+> Part 2 - Digital Signature Algorithm (SEMB, July 24, 2018)
+> [3] China ECC - Public Key Cryptographic Algorithm SM2 Based on ECC -
+> Part 4 - Public Key Encryption Algorithm (SEMB, July 24, 2018)
+>
+> On 8/15/2019 10:16 AM, Paul Yang wrote:
+> > Hi all,
+> >
+> > I have submitted a new internet draft to introduce the SM cipher 
+> > suites into TLS 1.3 protocol.
+> >
+> > https://tools.ietf.org/html/draft-yang-tls-tls13-sm-suites-00
+> >
+> > SM cryptographic algorithms are originally a set of Chinese national 
+> > algorithms and now have been (or being) accepted by ISO as 
+> > international standards, including SM2 signature algorithm, SM3 hash 
+> > function and SM4 block cipher. These algorithms have already been 
+> > supported some time ago by several widely used open source 
+> > cryptographic libraries including OpenSSL, BouncyCastle, Botan, etc.
+> >
+> > Considering TLS1.3 is being gradually adopted in China's internet 
+> > industry, it's important to have a normative definition on how to use 
+> > the SM algorithms with TLS1.3, especially for the mobile internet 
+> > scenario. Ant Financial is the company who develops the market leading 
+> > mobile app 'Alipay' and supports payment services for Alibaba 
+> > e-commerce business. We highly are depending on the new TLS1.3 
+> > protocol for both performance and security purposes. We expect to have 
+> > more deployment of TLS1.3 capable applications in China's internet 
+> > industry by this standardization attempts.
+> >
+> > It's very appreciated to have comments from the IETF TLS list :-)
+> >
+> > Many thanks!
+> >
+> > _______________________________________________
+> > TLS mailing list
+> > TLS@ietf.org  <mailto:TLS@ietf.org>
+> > https://www.ietf.org/mailman/listinfo/tls
+>
+
+-- 
+email: rstruik.ext@gmail.com | Skype: rstruik
+cell: +1 (647) 867-5658 | US: +1 (415) 690-7363
+
+
+--------------0577005CD90846E02168E06F
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+  <body text="#000000" bgcolor="#FFFFFF">
+    <div class="moz-cite-prefix">Arguably, "national" crypto
+      specifications garnish more stature if these are made available to
+      the pubic by that standard-setting body itself (who, thereby, acts
+      as its authoritative source), without deference to a third party
+      (that may, independently from the originator, enforce document
+      control [e.g., by effectuating technical changes or enforcing
+      controlled dissemination]). <br>
+    </div>
+    <div class="moz-cite-prefix"><br>
+    </div>
+    <div class="moz-cite-prefix">Since your draft introducing SM cipher
+      suites with TLS1.3 appeals to the authority of a standard-setting
+      authority, easy availability of the full and accredited technical
+      documentation to the IETF community helps in scrutiny and, e.g.,
+      evaluating claims in the security considerations section.<br>
+    </div>
+    <div class="moz-cite-prefix"><br>
+    </div>
+    <div class="moz-cite-prefix">On 8/16/2019 3:06 AM, Kepeng Li wrote:<br>
+    </div>
+    <blockquote type="cite"
+cite="mid:3350587b-f768-425f-a759-3ed7ce2e6b27.kepeng.lkp@alibaba-inc.com">
+      <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+      <div class="__aliyun_email_body_block">
+        <div style="clear:both;">
+          <div
+style="font-variant-ligatures:normal;font-variant-caps:normal;text-align:start;text-indent:.0px;widows:2;background-color:#ffffff;text-decoration-style:initial;text-decoration-color:initial;clear:both;"><span
+style="color:#000000;font-size:14.0px;font-style:normal;font-weight:400;text-transform:none;font-family:arial;">Hi
+              Rene and all,</span></div>
+        </div>
+        <div style="clear:both;">
+          <div
+style="font-variant-ligatures:normal;font-variant-caps:normal;text-align:start;text-indent:.0px;widows:2;background-color:#ffffff;text-decoration-style:initial;text-decoration-color:initial;clear:both;"><span
+style="color:#000000;font-size:14.0px;font-style:normal;font-weight:400;text-transform:none;font-family:arial;"><br>
+            </span></div>
+        </div>
+        <div style="clear:both;">
+          <div
+style="font-variant-ligatures:normal;font-variant-caps:normal;text-align:start;text-indent:.0px;widows:2;background-color:#ffffff;text-decoration-style:initial;text-decoration-color:initial;clear:both;"><span
+style="color:#000000;font-size:14.0px;font-style:normal;font-weight:400;text-transform:none;font-family:arial;"></span></div>
+          <div
+style="font-variant-ligatures:normal;font-variant-caps:normal;text-align:start;text-indent:.0px;widows:2;background-color:#ffffff;text-decoration-style:initial;text-decoration-color:initial;clear:both;">
+            <pre class="wordwrap" style="line-height:20.7px;font-variant-ligatures:normal;font-variant-caps:normal;text-align:left;text-indent:.0px;widows:2;text-decoration-style:initial;text-decoration-color:initial;box-sizing:border-box;margin-top:.0px;margin-bottom:1.0rem;overflow:auto;display:block;overflow-wrap:normal;word-break:normal;padding:.0px;"><span style="color:#212529;font-style:normal;font-weight:400;text-transform:none;font-family:arial;font-size:14.0px;">&gt; Since the ISO documents are not available to the general 
+&gt; public without payment, it would be helpful to have a freely available 
+&gt; document (in English) from an authoritative source. Having such a 
+&gt; reference available would be helpful to the IETF community (and 
+&gt; researchers).</span></pre>
+          </div>
+          <div
+style="font-variant-ligatures:normal;font-variant-caps:normal;text-align:start;text-indent:.0px;widows:2;background-color:#ffffff;text-decoration-style:initial;text-decoration-color:initial;clear:both;"><span
+style="font-style:normal;font-weight:400;text-transform:none;font-size:14.0px;color:#000000;font-family:arial;">About
+              the references to ISO documens, I think it is a general
+              issue for IETF drafts.</span></div>
+        </div>
+        <div style="clear:both;">
+          <div
+style="font-variant-ligatures:normal;font-variant-caps:normal;text-align:start;text-indent:.0px;widows:2;background-color:#ffffff;text-decoration-style:initial;text-decoration-color:initial;clear:both;"><span
+style="font-style:normal;font-weight:400;text-transform:none;font-size:14.0px;color:#000000;font-family:arial;"><br>
+            </span></div>
+        </div>
+        <div style="clear:both;">
+          <div
+style="font-variant-ligatures:normal;font-variant-caps:normal;text-align:start;text-indent:.0px;widows:2;background-color:#ffffff;text-decoration-style:initial;text-decoration-color:initial;clear:both;"><span
+style="font-style:normal;font-weight:400;text-transform:none;font-size:14.0px;color:#000000;font-family:arial;"></span></div>
+          <div
+style="font-variant-ligatures:normal;font-variant-caps:normal;text-align:start;text-indent:.0px;widows:2;background-color:#ffffff;text-decoration-style:initial;text-decoration-color:initial;clear:both;"><span
+style="font-style:normal;font-weight:400;text-transform:none;font-size:14.0px;color:#000000;font-family:arial;">How
+              does the other IETF drafts make the references to ISO
+              documents? ISO documents are often referenced by IETF
+              drafts.</span></div>
+          <div
+style="font-variant-ligatures:normal;font-variant-caps:normal;text-align:start;text-indent:.0px;widows:2;background-color:#ffffff;text-decoration-style:initial;text-decoration-color:initial;clear:both;"><span
+style="font-style:normal;font-weight:400;text-transform:none;font-size:14.0px;color:#000000;font-family:arial;"></span></div>
+        </div>
+        <div style="clear:both;">
+          <div
+style="font-variant-ligatures:normal;font-variant-caps:normal;text-align:start;text-indent:.0px;widows:2;background-color:#ffffff;text-decoration-style:initial;text-decoration-color:initial;clear:both;"><span
+style="font-style:normal;font-weight:400;text-transform:none;font-size:14.0px;color:#000000;font-family:arial;"><br>
+            </span></div>
+        </div>
+        <div style="clear:both;">
+          <div
+style="font-variant-ligatures:normal;font-variant-caps:normal;text-align:start;text-indent:.0px;widows:2;background-color:#ffffff;text-decoration-style:initial;text-decoration-color:initial;clear:both;"><span
+style="font-style:normal;font-weight:400;text-transform:none;font-size:14.0px;color:#000000;font-family:arial;">Thanks,</span></div>
+        </div>
+        <div style="clear:both;">
+          <div
+style="font-variant-ligatures:normal;font-variant-caps:normal;text-align:start;text-indent:.0px;widows:2;background-color:#ffffff;text-decoration-style:initial;text-decoration-color:initial;clear:both;"><span
+style="font-style:normal;font-weight:400;text-transform:none;font-size:14.0px;color:#000000;font-family:arial;"><br>
+            </span></div>
+        </div>
+        <div style="clear:both;">
+          <div
+style="font-variant-ligatures:normal;font-variant-caps:normal;text-align:start;text-indent:.0px;widows:2;background-color:#ffffff;text-decoration-style:initial;text-decoration-color:initial;clear:both;"><span
+style="font-style:normal;font-weight:400;text-transform:none;font-size:14.0px;color:#000000;font-family:arial;"></span></div>
+          <div
+style="font-variant-ligatures:normal;font-variant-caps:normal;text-align:start;text-indent:.0px;widows:2;background-color:#ffffff;text-decoration-style:initial;text-decoration-color:initial;clear:both;"><span
+style="font-style:normal;font-weight:400;text-transform:none;font-size:14.0px;color:#000000;font-family:arial;">Kind
+              Regards</span></div>
+          <div
+style="font-variant-ligatures:normal;font-variant-caps:normal;text-align:start;text-indent:.0px;widows:2;background-color:#ffffff;text-decoration-style:initial;text-decoration-color:initial;clear:both;"><span
+style="font-style:normal;font-weight:400;text-transform:none;font-size:14.0px;color:#000000;font-family:arial;">Kepeng</span></div>
+          <div
+style="font-variant-ligatures:normal;font-variant-caps:normal;text-align:start;text-indent:.0px;widows:2;background-color:#ffffff;text-decoration-style:initial;text-decoration-color:initial;clear:both;"><span
+style="font-style:normal;font-weight:400;text-transform:none;font-family:Tahoma,Arial,STHeiti,SimSun;font-size:14.0px;color:#000000;">——————————————————————————————————————————————————————————————————</span></div>
+          <div
+style="font-variant-ligatures:normal;font-variant-caps:normal;text-align:start;text-indent:.0px;widows:2;background-color:#ffffff;text-decoration-style:initial;text-decoration-color:initial;clear:both;">
+            <h3 style="margin:2.0px
+.0px;box-sizing:border-box;line-height:1.2;font-variant-ligatures:normal;font-variant-caps:normal;text-align:left;text-indent:.0px;widows:2;background-color:#ffffff;text-decoration-style:initial;text-decoration-color:initial;"><span
+                style="font-family:lucida
+Grande,Verdana;font-size:18.0px;font-weight:normal;color:#212529;font-style:normal;text-transform:none;">Re:
+                [TLS] Draft for SM cipher suites used in TLS1.3</span></h3>
+            <p class="msg-header" id="msg-info"
+              style="line-height:23.8px;box-sizing:border-box;margin:.0px
+              .0px
+20.0px;font-variant-ligatures:normal;font-variant-caps:normal;text-align:left;text-indent:.0px;widows:2;background-color:#ffffff;text-decoration-style:initial;text-decoration-color:initial;"><span
+                class="pipe" id="msg-from" style="font-family:lucida
+Grande,Verdana;color:#808080;font-size:14.0px;font-style:normal;font-weight:400;text-transform:none;box-sizing:border-box;">Rene
+                Struik &lt;<a href="mailto:rstruik.ext@gmail.com"
+                  rel="noopener" target="_blank"
+                  style="outline:none;text-decoration:underline;color:#1e5494;"
+                  moz-do-not-send="true">rstruik.ext@<wbr>gmail.com</a>&gt;</span><span
+                style="font-family:lucida
+Grande,Verdana;color:#808080;font-size:14.0px;font-style:normal;font-weight:400;text-transform:none;"> </span><span
+                class="pipe" id="msg-date" style="font-family:lucida
+Grande,Verdana;color:#808080;font-size:14.0px;font-style:normal;font-weight:400;text-transform:none;box-sizing:border-box;">Thu,
+                15 August 2019 15:34 UTC</span><a class="toggle"
+href="https://mailarchive.ietf.org/arch/browse/tls/?index=NHbHOGtsR1S5cCr9nWN9_sdyTgg&amp;gbt=1#"
+                id="toggle-msg-header" rel="noopener" target="_blank"
+                style="font-family:lucida
+Grande,Verdana;font-size:14.0px;font-style:normal;font-weight:400;text-transform:none;outline:none;text-decoration:none;color:#337ab7;box-sizing:border-box;background-color:transparent;"
+                moz-do-not-send="true">Show header</a></p>
+            <div class="msg-payload"
+style="box-sizing:border-box;font-variant-ligatures:normal;font-variant-caps:normal;text-align:left;text-indent:.0px;widows:2;background-color:#ffffff;text-decoration-style:initial;text-decoration-color:initial;">
+              <pre class="wordwrap" style="font-style:normal;font-weight:400;text-transform:none;line-height:20.7px;box-sizing:border-box;font-family:SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-size:12.2px;margin-top:.0px;margin-bottom:1.0rem;overflow:auto;display:block;color:#212529;overflow-wrap:normal;word-break:normal;padding:.0px;">Hi Paul:
+
+I tried and look up the documents GMT.0009-2012 and GBT.32918.5-2016 on 
+the (non-secured) websites you referenced, but only found Chinese 
+versions (and Chinese website navigation panels [pardon my poor language 
+skills here]). Since the ISO documents are not available to the general 
+public without payment, it would be helpful to have a freely available 
+document (in English) from an authoritative source. Having such a 
+reference available would be helpful to the IETF community (and 
+researchers). Please note that BSI provides its specifications in German 
+and English, so as to foster use/study by the community. If the Chinese 
+national algorithms would be available in similar form, this would serve 
+a similar purpose.
+
+FYI - I am interested in full details and some time last year I tried to 
+download specs, but only Parts 2, 4, and 5 were available [1], [2], [3], 
+not Parts 1 and 3.
+
+Best regards, Rene
+
+[1] China ECC - Public Key Cryptographic Algorithm SM2 Based on ECC - 
+Part 5 - Parameter Definition (SEMB, July 24, 2018)
+[2] China ECC - Public Key Cryptographic Algorithm SM2 Based on ECC - 
+Part 2 - Digital Signature Algorithm (SEMB, July 24, 2018)
+[3] China ECC - Public Key Cryptographic Algorithm SM2 Based on ECC - 
+Part 4 - Public Key Encryption Algorithm (SEMB, July 24, 2018)
+
+On 8/15/2019 10:16 AM, Paul Yang wrote:
+&gt; Hi all,
+&gt;
+&gt; I have submitted a new internet draft to introduce the SM cipher 
+&gt; suites into TLS 1.3 protocol.
+&gt;
+&gt; <a href="https://tools.ietf.org/html/draft-yang-tls-tls13-sm-suites-00" rel="noopener" target="_blank" style="outline:none;text-decoration:none;color:#337ab7;box-sizing:border-box;background-color:transparent;" moz-do-not-send="true">https://tools.ietf.org/html/draft-yang-tls-tls13-sm-suites-00</a>
+&gt;
+&gt; SM cryptographic algorithms are originally a set of Chinese national 
+&gt; algorithms and now have been (or being) accepted by ISO as 
+&gt; international standards, including SM2 signature algorithm, SM3 hash 
+&gt; function and SM4 block cipher. These algorithms have already been 
+&gt; supported some time ago by several widely used open source 
+&gt; cryptographic libraries including OpenSSL, BouncyCastle, Botan, etc.
+&gt;
+&gt; Considering TLS1.3 is being gradually adopted in China's internet 
+&gt; industry, it's important to have a normative definition on how to use 
+&gt; the SM algorithms with TLS1.3, especially for the mobile internet 
+&gt; scenario. Ant Financial is the company who develops the market leading 
+&gt; mobile app 'Alipay' and supports payment services for Alibaba 
+&gt; e-commerce business. We highly are depending on the new TLS1.3 
+&gt; protocol for both performance and security purposes. We expect to have 
+&gt; more deployment of TLS1.3 capable applications in China's internet 
+&gt; industry by this standardization attempts.
+&gt;
+&gt; It's very appreciated to have comments from the IETF TLS list :-)
+&gt;
+&gt; Many thanks!
+&gt;
+&gt; _______________________________________________
+&gt; TLS mailing list
+&gt; <a href="mailto:TLS@ietf.org" rel="noopener" target="_blank" style="outline:none;text-decoration:none;color:#337ab7;box-sizing:border-box;background-color:transparent;" moz-do-not-send="true">TLS@ietf.org</a>
+&gt; <a href="https://www.ietf.org/mailman/listinfo/tls" rel="noopener" target="_blank" style="outline:none;text-decoration:none;color:#337ab7;box-sizing:border-box;background-color:transparent;" moz-do-not-send="true">https://www.ietf.org/mailman/listinfo/tls</a></pre>
+            </div>
+          </div>
+          <span
+style="font-family:Tahoma,Arial,STHeiti,SimSun;font-size:14.0px;color:#000000;"><br>
+          </span></div>
+      </div>
+    </blockquote>
+    <p><br>
+    </p>
+    <pre class="moz-signature" cols="72">-- 
+email: <a class="moz-txt-link-abbreviated" href="mailto:rstruik.ext@gmail.com">rstruik.ext@gmail.com</a> | Skype: rstruik
+cell: +1 (647) 867-5658 | US: +1 (415) 690-7363</pre>
+  </body>
+</html>
+
+--------------0577005CD90846E02168E06F--
+

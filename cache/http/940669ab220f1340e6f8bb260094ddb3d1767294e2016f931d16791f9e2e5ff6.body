@@ -1,0 +1,114 @@
+Return-Path: <ilariliusvaara@welho.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id D11DA1299D2
+ for <tls@ietfa.amsl.com>; Mon, 31 Oct 2016 12:28:18 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -3.397
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.397 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, RCVD_IN_DNSWL_NONE=-0.0001,
+ RP_MATCHES_RCVD=-1.497] autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id ekuTQ4-P2vL8 for <tls@ietfa.amsl.com>;
+ Mon, 31 Oct 2016 12:28:16 -0700 (PDT)
+Received: from welho-filter3.welho.com (welho-filter3.welho.com [83.102.41.25])
+ by ietfa.amsl.com (Postfix) with ESMTP id A5CC5129421
+ for <tls@ietf.org>; Mon, 31 Oct 2016 12:28:16 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+ by welho-filter3.welho.com (Postfix) with ESMTP id AC82BF3D2;
+ Mon, 31 Oct 2016 21:28:15 +0200 (EET)
+X-Virus-Scanned: Debian amavisd-new at pp.htv.fi
+Received: from welho-smtp3.welho.com ([IPv6:::ffff:83.102.41.86])
+ by localhost (welho-filter3.welho.com [::ffff:83.102.41.25]) (amavisd-new,
+ port 10024)
+ with ESMTP id j8ymt4GHtt8t; Mon, 31 Oct 2016 21:28:15 +0200 (EET)
+Received: from LK-Perkele-V2 (87-92-51-204.bb.dnainternet.fi [87.92.51.204])
+ (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by welho-smtp3.welho.com (Postfix) with ESMTPSA id 3F2562310;
+ Mon, 31 Oct 2016 21:28:15 +0200 (EET)
+Date: Mon, 31 Oct 2016 21:28:13 +0200
+From: Ilari Liusvaara <ilariliusvaara@welho.com>
+To: Watson Ladd <watsonbladd@gmail.com>
+Message-ID: <20161031192813.GB23357@LK-Perkele-V2.elisa-laajakaista.fi>
+References: <CACsn0ckbKRRy0sQ+i8bNLSqh-mqAb0UMHY13CyzmonGj8cL-qQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CACsn0ckbKRRy0sQ+i8bNLSqh-mqAb0UMHY13CyzmonGj8cL-qQ@mail.gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
+Sender: ilariliusvaara@welho.com
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/ZKs0kZBHmeEgXDgikTIhiHy9pMs>
+Cc: "tls@ietf.org" <tls@ietf.org>
+Subject: Re: [TLS] Comments on draft-ietf-tls-tls13-18
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.17
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Mon, 31 Oct 2016 19:28:19 -0000
+
+On Mon, Oct 31, 2016 at 11:41:46AM -0700, Watson Ladd wrote:
+
+> ECDSA cannot be used with x25519 or x448, but the draft seems to
+> require support in TLS 1.2 for this as a consequence of its
+> description of the fallback mode. The mandated use of uncompressed
+> points invites easy wrong-curve attacks: mandating support and use for
+> compressed points would solve this problem. I think at minimum we
+> should fix the text to make clear what we mean about TLS 1.2.
+
+Just as note: Point compression does not completely fix wrong-curve
+attacks.
+
+The reason is that for Weierstrass curves and the usual square square
+root algorithm, the "square roots" for QNRs, if the code does not check,
+don't result points on the twist, but all sorts of strange points, on
+variety of different curves.
+
+(With one-coordinate Montgomery ladder on montgomery curves, the invalid
+points all map to the twist, which is a single curve and can be arranged
+to have a large prime factor in its order).
+
+Oh, and thanks to different message order in TLS 1.3 compared to TLS
+1.2, wrong-curve attacks look more exploitable.
+
+ 
+> ALPN, resumption, and 0-RTT remain problematic. For instance we see
+> that 0-RTT data is sent with the same ALPN state when the PSK was
+> derived, but this could be different from the ALPN transmitted and
+> negotiated during the handshake, which is explicitly allowed later in
+> the document. I do not understand what is supposed to happen in this
+> scenario.
+
+Well, the spec prohibits accepting 0-RTT data if ALPN does not match,
+but this looks bit error prone to me.
+
+I proposed forcing the ALP to the previous value, and not allowing it
+to be negotiated via any method. This would eliminate this sort of
+edge case check.
+
+> There is still a note about needing a channel binding mechanism in the
+> text. I think this should be resolved soon so it can be analyzed,
+> probably built on top of the exporter mechanism. Either that, or we
+> consciously punt and remove the note and replace with something else.
+
+I think this is a replacement for the tls-unique channel binding. While
+the definition of tls-unique does still make sense for TLS 1.3, the
+definition has security problems with TLS 1.2.
+
+Thus, need for replacment.
+
+
+-Ilari
+

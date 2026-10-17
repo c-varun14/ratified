@@ -1,0 +1,364 @@
+Return-Path: <mglt.ietf@gmail.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id BCFF712955F;
+ Fri, 19 May 2017 09:25:56 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.399
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.399 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ FREEMAIL_FORGED_FROMDOMAIN=0.199, FREEMAIL_FROM=0.001,
+ HEADER_FROM_DIFFERENT_DOMAINS=0.001, HTML_MESSAGE=0.001,
+ RCVD_IN_DNSWL_LOW=-0.7, SPF_PASS=-0.001]
+ autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=gmail.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id R5W5i34hUVr6; Fri, 19 May 2017 09:25:54 -0700 (PDT)
+Received: from mail-lf0-x232.google.com (mail-lf0-x232.google.com
+ [IPv6:2a00:1450:4010:c07::232])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id A8C441294F3;
+ Fri, 19 May 2017 09:25:53 -0700 (PDT)
+Received: by mail-lf0-x232.google.com with SMTP id y126so3711035lfc.2;
+ Fri, 19 May 2017 09:25:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025; 
+ h=mime-version:sender:in-reply-to:references:from:date:message-id
+ :subject:to:cc;
+ bh=bE8IPZygLAJ0pGuNryzThjkvrgswGRp2YcsgJ+gq/Rw=;
+ b=iBczSge/YhesrK4a3UJvGU4UHTlmhhzglARpMLvX/+TDV7JuP4sGmK/8hvdcpRMgc7
+ OTOvCJ/oM5v+JdmmFxGKoL/5ImGrIaC3iKJ2+8QjBQBayrfz1i7FVvrNo0+laugh0ZrZ
+ kOSi8txkxz7IbpMe2RFhaWhtS1nsQ4Er5kDMkCIDLfRiwE/xIEWjaAg2bZoQT3MvNlnb
+ yGondVLxCcJ7ZJqBqYzC9HtzCXf8UA+WGcskSH9cmQ4En9dmJPmBTjCBIg3GiHSxpreM
+ ucJcnwm7smgOIDNwPUtrNW5aJgO0DFn+pBskjGQvAVUBo8Eya9LHTpjKCW71jP78ng0D
+ bBLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:sender:in-reply-to:references:from
+ :date:message-id:subject:to:cc;
+ bh=bE8IPZygLAJ0pGuNryzThjkvrgswGRp2YcsgJ+gq/Rw=;
+ b=m/n42gDzlb3okWAzofhnc4nXIMYgO6GB3IxUWBri8M+tnqJRSdTpPvrDsAsPBSeeul
+ ger5hE2H++WEHPhmLjMdJzV4i1EW36a00eDCiHHdoYH/GLYDGfx6wf5y4kPG6GHwc2/o
+ XnGa9GvJb/biZfho8YSVe2MeciDziiQuBs3Fhwo+XuatF/8c0OHYNJcG7eFC0oI1XyqS
+ DLt4KGx1mx1blGiCixHN5MH+EdSpWdDtKtDCmeKGA5Rri8PcGqIjMvBP0u3zjXwMBWwu
+ jX0qjzHMFvGmkhTCtbbZ+cGe1IqQSDfs7dBHL8VdT+Iyc/lU1NbpFI/jh7sdqOC3dalb
+ pcTA==
+X-Gm-Message-State: AODbwcCBSP/jpEaaINwznvPwwiGzuoEh5N7VbglxFiplsfTfKGxgUxcO
+ 1ZedHvywuQxWKsRa8SP2+Zmy/gpDdA==
+X-Received: by 10.25.229.69 with SMTP id c66mr2783915lfh.102.1495211151786;
+ Fri, 19 May 2017 09:25:51 -0700 (PDT)
+MIME-Version: 1.0
+Sender: mglt.ietf@gmail.com
+Received: by 10.46.0.14 with HTTP; Fri, 19 May 2017 09:25:51 -0700 (PDT)
+In-Reply-To: <20170519141712.84D9A1A6A1@ld9781.wdf.sap.corp>
+References: <20170519043827.GL39245@kduck.kaduk.org>
+ <20170519141712.84D9A1A6A1@ld9781.wdf.sap.corp>
+From: Daniel Migault <daniel.migault@ericsson.com>
+Date: Fri, 19 May 2017 12:25:51 -0400
+X-Google-Sender-Auth: WPgY13FdGIvJnTffCNRBub0cj_Q
+Message-ID: <CADZyTkkU0pyJtoZXmnC6WwPZ_6oQfpYU8Ax77-8WPK4cE1UJ7w@mail.gmail.com>
+To: mrex@sap.com
+Cc: Benjamin Kaduk <kaduk@mit.edu>, tls <tls@ietf.org>, 
+ draft-ietf-tls-ecdhe-psk-aead.all@ietf.org, "ietf@ietf.org" <ietf@ietf.org>, 
+ The IESG <iesg@ietf.org>, secdir@ietf.org
+Content-Type: multipart/alternative; boundary="001a113c0cb2910d10054fe2f9e6"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/YAdmIi0O1IrdRfUrTG0hLWGhR5A>
+Subject: Re: [TLS] secdir review of draft-ietf-tls-ecdhe-psk-aead-03
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Fri, 19 May 2017 16:25:57 -0000
+
+--001a113c0cb2910d10054fe2f9e6
+Content-Type: text/plain; charset="UTF-8"
+
+Hi Martin,
+
+Thank you for the proposed text. It was very clear and I took it entirely,
+just changing s/TLSv1/TLS 1/.
+
+Yours,
+Daniel
+
+
+The current text is as follows:
+<section title="Applicable TLS Versions">
+
+
+<t> The cipher suites defined in this document MUST NOT be negotiated
+for any version of (D)TLS other than TLS 1.2.</t>
+
+<t> TLS version 1.3 and later negotiate these features in a different
+manner. Unlike TLS 1.2, TLS 1.3 separates authentication and cipher suite
+negotiation <xref target="I-D.ietf-tls-tls13"/> Section 1.2. TLS 1.3
+supports PSK with ECDHE key exchange and the cipher suites
+TLS_AES_128_GCM_SHA256, TLS_AES_256_GCM_SHA384, TLS_AES_128_CCM_8_SHA256
+and  TLS_AES_128_CCM_SHA256 are part of the specification. As a result,
+TLS 1.3 and higher versions, negotiate and support these cipher suites
+in a different way. </t>
+
+<t>The cipher suites defined in this document make use of the
+authenticated encryption with additional data (AEAD) defined in TLS 1.2
+<xref target="RFC5246"/> and DTLS 1.2 <xref target="RFC6347" />.
+Earlier versions of TLS do not have support for AEAD and consequently,
+the cipher suites defined in this document MUST NOT be negotiated in TLS
+versions prior to 1.2.  In addition, it is worth noting that TLS 1.0
+<xref target="RFC2246"/> and TL1.2 <xref target="RFC4346"/> splits the
+pre-master in two parts. The PRF results of mixing the two pseudorandom
+streams with distinct hash functions (MD5 and SHA-1) by exclusive-ORing
+them together. In the case of ECDHE_PSK authentication, the PSK and
+pre-master are treated by distinct hash function with distinct
+properties. This may introduce vulnerabilities over the expected
+security provided by the constructed pre-master. As such TLS 1.0 and
+TLS 1.1 SHOULD NOT be used with ECDHE_PSK.</t>
+
+<t>A client that offers the cipher suites from this document in
+ClientHello.cipher_suites in combination with (3,1) "TLS 1.0" or (3,2)
+"TLS 1.1" in ClientHello.client_version MUST support TLS 1.2 and MUST
+accept the server to negotiate TLS 1.2 for the current session.  If the
+client does not support TLS 1.2 or is not willing to negotiate TLS 1.2,
+then this client MUST NOT offer any of these cipher suites with a lower
+protocol version than (3,3) "TLS 1.2" in ClientHello.client_version.</t>
+
+<t>A server receiving a ClientHello and a client_version indicating
+(3,1) "TLS 1.0" or (3,2) "TLS 1.1" and any of the cipher suites from
+this document in ClientHello.cipher_suites can safely assume that the
+client supports TLS 1.2 and is willing to use it. The server MUST NOT
+negotiate these cipher suites with TLS protocol versions earlier than
+TLS 1.2. Not requiring clients to indicate their support for TLS 1.2
+cipher suites exclusively through ClientHello.client_hello improves the
+interoperability in the installed base and use of TLS 1.2 AEAD cipher
+suites without upsetting the installed base of version-intolerant TLS
+servers, results in more TLS handshakes succeeding and obviates fallback
+mechanisms.</t>
+
+
+On Fri, May 19, 2017 at 10:17 AM, Martin Rex <mrex@sap.com> wrote:
+
+> Benjamin Kaduk wrote:
+> >
+> > Some other editorial nits follow.
+> >
+> > In section 4, "these cipher suites MUST NOT be negotiated in TLS
+> > versions prior to 1.2" should probably clarify that "these" cipher
+> > suites are the new ones specified by this document.
+>
+>
+> This reminds me of the specification goofs in several TLSv1.2-related
+> documents about AEAD cipher suites which are responsible for the viability
+> of the POODLE attack and other exploitable fallback hacks.
+>
+> It would be much preferable to avoid/fix those problems and facilitate
+> the migration to and use of TLSv1.2 without failing TLS handshakes and
+> band aids such as TLS_FALLBACK_SCSV
+>
+>
+> Suggested improvement:
+>
+>    The cipher suites defined in this document make use of the
+>    authenticated encryption with additional data (AEAD) defined in TLS
+>    1.2 [RFC5246] and DTLS 1.2 [RFC6347].  Earlier versions of TLS do not
+>    have support for AEAD and consequently, these cipher suites MUST NOT
+> -  be negotiated in TLS versions prior to 1.2.  Clients MUST NOT offer
+> -  these cipher suites if they do not offer TLS 1.2 or later.  Servers,
+> -  which select an earlier version of TLS MUST NOT select one of these
+> -  cipher suites.  A client MUST treat the selection of these cipher
+> -  suites in combination with a version of TLS that does not support
+> -  AEAD (i.e., TLS 1.1 or earlier) as an error and generate a fatal
+> -  'illegal_parameter' TLS alert.
+> +                                               A client that offers
+> +  the cipher suites from this document in ClientHello.cipher_suites
+> +  in combination with (3,1) "TLSv1.0" or (3,2) "TLSv1.1" in
+> +  ClientHello.client_version MUST support TLSv1.2 and MUST accept
+> +  the server to negotiate TLSv1.2 for the current session.  If the
+> +  client does not support TLSv1.2 or is not willing to negotiate TLSv1.2,
+> +  then this client MUST NOT offer any of these cipher suites with a
+> +  lower protocol version than (3,3) "TLSv1.2" in
+> ClientHello.client_version.
+> +  A server receiving a ClientHello and a client_version indicating
+> +  (3,1) "TLSv1.0" or (3,2) "TLSv1.1" and any of the cipher suites from
+> +  this document in ClientHello.cipher_suites can safely assume that the
+> +  client supports TLSv1.2 and is willing to use it.  The server MUST
+> +  NOT negotiate these cipher suites with TLS protocol versions earlier
+> +  than TLSv1.2.
+> +
+> +  Not requiring clients to indicate their support for TLSv1.2 cipher
+> +  suites exclusively through ClientHello.client_hello improves the
+> +  interoperability in the installed base and use of TLSv1.2 AEAD
+> +  cipher suites without upsetting the installed base of version-intolerant
+> +  TLS servers, results in more TLS handshakes succeeding and obviates
+> +  fallback mechanisms.
+>
+>
+> -Martin
+>
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+>
+
+--001a113c0cb2910d10054fe2f9e6
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div><div><div><div>Hi Martin, <br><br></div>Thank you for=
+ the proposed text. It was very clear and I took it entirely, just changing=
+ s/TLSv1/TLS 1/. <br><br></div>Yours, <br></div>Daniel<br><br><br></div>The=
+ current text is as follows:<br>&lt;section title=3D&quot;Applicable TLS Ve=
+rsions&quot;&gt;<br><br><br>&lt;t&gt; The cipher suites defined in this doc=
+ument MUST NOT be negotiated<br>for any version of (D)TLS other than TLS 1.=
+2.&lt;/t&gt;<br><br>&lt;t&gt; TLS version 1.3 and later negotiate these fea=
+tures in a different<br>manner. Unlike TLS 1.2, TLS 1.3 separates authentic=
+ation and cipher suite<br>negotiation &lt;xref target=3D&quot;I-D.ietf-tls-=
+tls13&quot;/&gt; Section 1.2. TLS 1.3<br>supports PSK with ECDHE key exchan=
+ge and the cipher suites<br>TLS_AES_128_GCM_SHA256, TLS_AES_256_GCM_SHA384,=
+ TLS_AES_128_CCM_8_SHA256<br>and=C2=A0 TLS_AES_128_CCM_SHA256 are part of t=
+he specification. As a result,<br>TLS 1.3 and higher versions, negotiate an=
+d support these cipher suites<br>in a different way. &lt;/t&gt;<br><br>&lt;=
+t&gt;The cipher suites defined in this document make use of the<br>authenti=
+cated encryption with additional data (AEAD) defined in TLS 1.2<br>&lt;xref=
+ target=3D&quot;RFC5246&quot;/&gt; and DTLS 1.2 &lt;xref target=3D&quot;RFC=
+6347&quot; /&gt;.<br>Earlier versions of TLS do not have support for AEAD a=
+nd consequently,<br>the cipher suites defined in this document MUST NOT be =
+negotiated in TLS<br>versions prior to 1.2.=C2=A0 In addition, it is worth =
+noting that TLS 1.0<br>&lt;xref target=3D&quot;RFC2246&quot;/&gt; and TL1.2=
+ &lt;xref target=3D&quot;RFC4346&quot;/&gt; splits the<br>pre-master in two=
+ parts. The PRF results of mixing the two pseudorandom<br>streams with dist=
+inct hash functions (MD5 and SHA-1) by exclusive-ORing<br>them together. In=
+ the case of ECDHE_PSK authentication, the PSK and<br>pre-master are treate=
+d by distinct hash function with distinct<br>properties. This may introduce=
+ vulnerabilities over the expected<br>security provided by the constructed =
+pre-master. As such TLS 1.0 and<br>TLS 1.1 SHOULD NOT be used with ECDHE_PS=
+K.&lt;/t&gt;<br><br>&lt;t&gt;A client that offers the cipher suites from th=
+is document in<br>ClientHello.cipher_suites in combination with (3,1) &quot=
+;TLS 1.0&quot; or (3,2)<br>&quot;TLS 1.1&quot; in ClientHello.client_versio=
+n MUST support TLS 1.2 and MUST<br>accept the server to negotiate TLS 1.2 f=
+or the current session.=C2=A0 If the<br>client does not support TLS 1.2 or =
+is not willing to negotiate TLS 1.2,<br>then this client MUST NOT offer any=
+ of these cipher suites with a lower<br>protocol version than (3,3) &quot;T=
+LS 1.2&quot; in ClientHello.client_version.&lt;/t&gt;<br><br>&lt;t&gt;A ser=
+ver receiving a ClientHello and a client_version indicating<br>(3,1) &quot;=
+TLS 1.0&quot; or (3,2) &quot;TLS 1.1&quot; and any of the cipher suites fro=
+m<br>this document in ClientHello.cipher_suites can safely assume that the<=
+br>client supports TLS 1.2 and is willing to use it. The server MUST NOT<br=
+>negotiate these cipher suites with TLS protocol versions earlier than<br>T=
+LS 1.2. Not requiring clients to indicate their support for TLS 1.2<br>ciph=
+er suites exclusively through ClientHello.client_hello improves the<br>inte=
+roperability in the installed base and use of TLS 1.2 AEAD cipher<br>suites=
+ without upsetting the installed base of version-intolerant TLS<br>servers,=
+ results in more TLS handshakes succeeding and obviates fallback<br>mechani=
+sms.&lt;/t&gt;<br><br></div><div class=3D"gmail_extra"><br><div class=3D"gm=
+ail_quote">On Fri, May 19, 2017 at 10:17 AM, Martin Rex <span dir=3D"ltr">&=
+lt;<a href=3D"mailto:mrex@sap.com" target=3D"_blank">mrex@sap.com</a>&gt;</=
+span> wrote:<br><blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8e=
+x;border-left:1px #ccc solid;padding-left:1ex"><span class=3D"">Benjamin Ka=
+duk wrote:<br>
+&gt;<br>
+&gt; Some other editorial nits follow.<br>
+&gt;<br>
+</span><span class=3D"">&gt; In section 4, &quot;these cipher suites MUST N=
+OT be negotiated in TLS<br>
+&gt; versions prior to 1.2&quot; should probably clarify that &quot;these&q=
+uot; cipher<br>
+&gt; suites are the new ones specified by this document.<br>
+<br>
+<br>
+</span>This reminds me of the specification goofs in several TLSv1.2-relate=
+d<br>
+documents about AEAD cipher suites which are responsible for the viability<=
+br>
+of the POODLE attack and other exploitable fallback hacks.<br>
+<br>
+It would be much preferable to avoid/fix those problems and facilitate<br>
+the migration to and use of TLSv1.2 without failing TLS handshakes and<br>
+band aids such as TLS_FALLBACK_SCSV<br>
+<br>
+<br>
+Suggested improvement:<br>
+<br>
+=C2=A0 =C2=A0The cipher suites defined in this document make use of the<br>
+<span class=3D"">=C2=A0 =C2=A0authenticated encryption with additional data=
+ (AEAD) defined in TLS<br>
+</span>=C2=A0 =C2=A01.2 [RFC5246] and DTLS 1.2 [RFC6347].=C2=A0 Earlier ver=
+sions of TLS do not<br>
+=C2=A0 =C2=A0have support for AEAD and consequently, these cipher suites MU=
+ST NOT<br>
+-=C2=A0 be negotiated in TLS versions prior to 1.2.=C2=A0 Clients MUST NOT =
+offer<br>
+-=C2=A0 these cipher suites if they do not offer TLS 1.2 or later.=C2=A0 Se=
+rvers,<br>
+-=C2=A0 which select an earlier version of TLS MUST NOT select one of these=
+<br>
+-=C2=A0 cipher suites.=C2=A0 A client MUST treat the selection of these cip=
+her<br>
+-=C2=A0 suites in combination with a version of TLS that does not support<b=
+r>
+-=C2=A0 AEAD (i.e., TLS 1.1 or earlier) as an error and generate a fatal<br=
+>
+-=C2=A0 &#39;illegal_parameter&#39; TLS alert.<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0A client that offers<br>
++=C2=A0 the cipher suites from this document in ClientHello.cipher_suites<b=
+r>
++=C2=A0 in combination with (3,1) &quot;TLSv1.0&quot; or (3,2) &quot;TLSv1.=
+1&quot; in<br>
++=C2=A0 ClientHello.client_version MUST support TLSv1.2 and MUST accept<br>
++=C2=A0 the server to negotiate TLSv1.2 for the current session.=C2=A0 If t=
+he<br>
++=C2=A0 client does not support TLSv1.2 or is not willing to negotiate TLSv=
+1.2,<br>
++=C2=A0 then this client MUST NOT offer any of these cipher suites with a<b=
+r>
++=C2=A0 lower protocol version than (3,3) &quot;TLSv1.2&quot; in ClientHell=
+o.client_version.<br>
++=C2=A0 A server receiving a ClientHello and a client_version indicating<br=
+>
++=C2=A0 (3,1) &quot;TLSv1.0&quot; or (3,2) &quot;TLSv1.1&quot; and any of t=
+he cipher suites from<br>
++=C2=A0 this document in ClientHello.cipher_suites can safely assume that t=
+he<br>
++=C2=A0 client supports TLSv1.2 and is willing to use it.=C2=A0 The server =
+MUST<br>
++=C2=A0 NOT negotiate these cipher suites with TLS protocol versions earlie=
+r<br>
++=C2=A0 than TLSv1.2.<br>
++<br>
++=C2=A0 Not requiring clients to indicate their support for TLSv1.2 cipher<=
+br>
++=C2=A0 suites exclusively through ClientHello.client_hello improves the<br=
+>
++=C2=A0 interoperability in the installed base and use of TLSv1.2 AEAD<br>
++=C2=A0 cipher suites without upsetting the installed base of version-intol=
+erant<br>
++=C2=A0 TLS servers, results in more TLS handshakes succeeding and obviates=
+<br>
++=C2=A0 fallback mechanisms.<br>
+<span class=3D"HOEnZb"><font color=3D"#888888"><br>
+<br>
+-Martin<br>
+</font></span><div class=3D"HOEnZb"><div class=3D"h5"><br>
+______________________________<wbr>_________________<br>
+TLS mailing list<br>
+<a href=3D"mailto:TLS@ietf.org">TLS@ietf.org</a><br>
+<a href=3D"https://www.ietf.org/mailman/listinfo/tls" rel=3D"noreferrer" ta=
+rget=3D"_blank">https://www.ietf.org/mailman/<wbr>listinfo/tls</a><br>
+</div></div></blockquote></div><br></div>
+
+--001a113c0cb2910d10054fe2f9e6--
+

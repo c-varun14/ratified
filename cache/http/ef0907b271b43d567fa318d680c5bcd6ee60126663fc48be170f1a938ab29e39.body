@@ -1,0 +1,310 @@
+Return-Path: <hkario@redhat.com>
+X-Original-To: tls@mail2.ietf.org
+Delivered-To: tls@mail2.ietf.org
+Received: from localhost (localhost [127.0.0.1])
+	by mail2.ietf.org (Postfix) with ESMTP id 1035D27771A3
+	for <tls@mail2.ietf.org>; Mon, 12 May 2025 01:59:10 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at ietf.org
+X-Spam-Flag: NO
+X-Spam-Score: -2.095
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.095 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIMWL_WL_HIGH=-0.001, DKIM_SIGNED=0.1,
+	DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1,
+	RCVD_IN_DNSWL_NONE=-0.0001, RCVD_IN_MSPIKE_H5=0.001,
+	RCVD_IN_MSPIKE_WL=0.001, RCVD_IN_VALIDITY_RPBL_BLOCKED=0.001,
+	RCVD_IN_VALIDITY_SAFE_BLOCKED=0.001, SPF_HELO_NONE=0.001,
+	SPF_NONE=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: mail2.ietf.org (amavisd-new); dkim=pass (1024-bit key)
+	header.d=redhat.com
+Received: from mail2.ietf.org ([166.84.6.31])
+	by localhost (mail2.ietf.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id ZhbhU5ZVXw-D for <tls@mail2.ietf.org>;
+	Mon, 12 May 2025 01:59:09 -0700 (PDT)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail2.ietf.org (Postfix) with ESMTPS id 718ED277719E
+	for <tls@ietf.org>; Mon, 12 May 2025 01:59:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1747040349;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Axjl0ih9NIOGdubBTYlUVGlZrVZuhByqTUq159zSepw=;
+	b=dYrlNog4Bk3ZYuTgv/qJVob+poH6X8ZEiUaJqSfAWTPNsqkN9gwopFuKCc12YwGtMFK3Bk
+	Pt9mjvfMHEDanAXSmxK7oat6hZV3d5N1CwA3HpPqf0bd2jNup7x8WcuRmJy6QwHVkGQJti
+	Uj9wgyX6ruqCX4n0F3mpWRX920aOoDQ=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-136-fKizVVnFP8CzVB4ymSarTg-1; Mon, 12 May 2025 04:59:07 -0400
+X-MC-Unique: fKizVVnFP8CzVB4ymSarTg-1
+X-Mimecast-MFC-AGG-ID: fKizVVnFP8CzVB4ymSarTg_1747040346
+Received: by mail-wr1-f69.google.com with SMTP id
+ ffacd0b85a97d-3a20257c758so848487f8f.0
+        for <tls@ietf.org>; Mon, 12 May 2025 01:59:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747040346; x=1747645146;
+        h=content-transfer-encoding:user-agent:organization:references
+         :in-reply-to:message-id:mime-version:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Idk0jSB1yneSeVqLbIrABmi2F71ewwHwpt0rR19Hcsc=;
+        b=FWea0Q2IY+C9BJKvmxpK294NrE+tfEDU/5PN69Dd33jqNnrtc3ql0Vsnx3j2QZUADN
+         Vo3r9G9M0nKe9hhT2qx2ayIKvxlRVhn8Gff9cnQ2tcG3iObNFzYQp9QVZkgwf45BNbU4
+         YwCHwQ9KjKHSoRv+zuVcf6CtrGIjwLX7sq33rcrjN7JTxQ+M3OMOsoIA7Zq+Ua2d4yci
+         xUT5LbLqrUPmOOJHhxNAoxVtGhRP2qSu/c8tKEVSyFSKT3w2M11qASbjNE4sd5yh9lkN
+         WjDfB1TX+IGAj0EmiVik8F4xzOEQNvC74ZwgYUpbZ6sXcQrUUwQunnTe63dPCdV+OGzf
+         A2XA==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCUM3aCkLL31K4ENlmu2+lurb6OTJx+KmRNUIDgb2qN9XFSPwzHK1AqVr3vH7lhEbTLOPXk=@ietf.org
+X-Gm-Message-State: AOJu0YzJ5lYXtj7h3E80JJxJdYx/s5mz2aGVwup94sr88V6BHGP054fw
+	AiJ+e8h5e0aTKq/RW7uvng5eXVWdPxvmSQQHu+qv3Anih/+/95S+qfs0Jff6dNKOjl0tTxOGtx7
+	oSVirAIDu0ujrXFCDZkN6J295Xexu0h0LPa1biWvv
+X-Gm-Gg: ASbGncsybvCj9cvacggyrb0osN3BIjpYfklrwzvrj8Yy38QtcQDavtYmGP7L8k7zo3H
+	NiJGqtMxi9jpXRskfR1k7cmiiU28czULQ04r5bOHG5J4WKd/lUM9kFqPBAEmWVC0vcsHqQns3U+
+	Qp632VtNp8hNQ35w953tPyvNjSUuLWpr5nhxFWZLBhfN+3m/eJWzqIIb4p/1MdGNWBO9j+dbzph
+	Cq9TnThloqQjr/x+uSjIN+KEJkRtTcEUqbuj8ByMklFvurS8liswL50oiVEjs62nZQ54VlRJF1K
+	ugtIklFViN0sncNe7QbD8XSqFVuzuA==
+X-Received: by 2002:a5d:64a8:0:b0:39c:f0d:9146 with SMTP id
+ ffacd0b85a97d-3a1f64b5aefmr10015946f8f.45.1747040346084;
+        Mon, 12 May 2025 01:59:06 -0700 (PDT)
+X-Google-Smtp-Source: 
+ AGHT+IHa84tSAGkagYQVu2pqjxUE3a4pKkUOMndlsm05E/amA/FEm4XP1qoy9H9r5Lq+U0ZdEuF3zA==
+X-Received: by 2002:a5d:64a8:0:b0:39c:f0d:9146 with SMTP id
+ ffacd0b85a97d-3a1f64b5aefmr10015926f8f.45.1747040345604;
+        Mon, 12 May 2025 01:59:05 -0700 (PDT)
+Received: from localhost (nat-pool-brq-u.redhat.com. [213.175.37.12])
+        by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-3a1f58ebec4sm11950048f8f.36.2025.05.12.01.59.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 May 2025 01:59:05 -0700 (PDT)
+From: Alicja Kario <hkario@redhat.com>
+To: David Benjamin <davidben@chromium.org>
+Date: Mon, 12 May 2025 10:58:59 +0200
+MIME-Version: 1.0
+Message-ID: <09c4b40d-519a-4399-a72b-b417f8ea5671@redhat.com>
+In-Reply-To: 
+ <CAF8qwaB-HyAAAbrQzT=LXL5miSRidG0eZwVi+s47R0xfAb0ODg@mail.gmail.com>
+References: <20250508080537.F18C21C9ED8@rfcpa.rfc-editor.org>
+ <B41886D4-708E-4567-B494-91F31A6AD023@sn3rd.com>
+ <CAF8qwaB-HyAAAbrQzT=LXL5miSRidG0eZwVi+s47R0xfAb0ODg@mail.gmail.com>
+Organization: Red Hat
+User-Agent: Trojita/0.7-git; Qt/5.15.15; wayland; Linux;
+ Fedora release 41 (Forty One)
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: uSuWJMs8AdBF1mqJQ4MnCfD89KlYF96o7ELHVDL-CIo_1747040346
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Message-ID-Hash: AEZ7KYZOUPIFJWRSYGFVS46QNAN5R2IL
+X-Message-ID-Hash: AEZ7KYZOUPIFJWRSYGFVS46QNAN5R2IL
+X-MailFrom: hkario@redhat.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+CC: Paul Wouters <paul.wouters@aiven.io>, TLS List <tls@ietf.org>
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Re=3A_=5BTechnical_Errata_Reported=5D_RFC8446_=288411=29?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/s3OVheSO2j9Y6GWtqGBKCxwt61w>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+Specifying tight bound is already how TLS 1.3 is defined:
+
+CipherSuite cipher_suites<2..2^16-2>;
+SignatureScheme supported_signature_algorithms<2..2^16-2>;
+struct {
+...
+Extension extensions<0..2^16-2>;
+} NewSessionTicket;
+
+
+On Friday, 9 May 2025 19:22:03 CEST, David Benjamin wrote:
+> FWIW, I don't think this is an error in the specification per=20
+> se. Both 2^16-2 and 2^16-1 to describe the exact same=20
+> structure, precisely because a length of 2^16-1 is impossible.=20
+> One isn't inherently more correct than the other. The question=20
+> is which is clearer, the loose bound or the tight bound.
+>
+> Indeed I would argue that the loose bound, 2^16-1, is a=20
+> _better_ way to describe the structure than the tight bound,=20
+> 2^16-2. (I would also argue that a minimum length of 1 is a=20
+> better way to describe it than 2, but that's less crucial.) The=20
+> bounds here communicate two things to the TLS implementor:
+>
+> 1. What size of length prefix to use, which is=20
+> implicitly determined by the upper bound
+> 2. What checks to apply on the length you've parsed out
+>
+> The key thing to keep in mind is that the size of the length=20
+> prefix already bounds the lengths (here 0..2^16-1), so any=20
+> checks you write from (2) are in addition to the bounds you get=20
+> from the length prefix. When the written bounds are equal to the=20
+> implicit bounds, you don't need to write a check. Where either=20
+> upper or lower bound are different (e.g. opaque=20
+> legacy_session_id<0..32>), you need to write an extra check.
+>
+> That is, you would parse opaque legacy_session_id<0..32> like this:
+>
+>   legacy_session_id =3D client_hello.read_u8_length_prefix()
+>   if len(legacy_session_id) > 32:
+>     raise DecodeError()
+>
+> But you would parse opaque extension_data<0..2^16-1> like this:
+>
+>   extension_data =3D extension.read_u16_length_prefix()
+>   # No need to check additional bounds because u16 is already <0..2^16-1>
+>
+> Now, the NamedGroup field is a u16-prefixed list of at least=20
+> one NamedGroup. We actually just want to parse it like this:
+>
+>   named_group_list =3D extension_data.read_u16_length_prefix()
+>   if len(named_group_list) =3D=3D 0:
+>     raise DecodeError()
+>
+> But when we write it as NamedGroup named_group_list<2..2^16-2>,=20
+> it *looks like* you have to parse it like:
+>
+>   named_group_list =3D extension_data.read_u16_length_prefix()
+>   if len(named_group_list) < 2 or len(named_group_list) > 2**16 - 2:
+>     raise DecodeError()
+>
+> To know that these do the same thing you have to observe that:
+> 1. It is not possible to have a NamedGroup of length less than 2
+> 2. NamedGroup is always exactly two bytes, so it is not=20
+> possible to have a NamedGroup list of length 2^16-1.
+>
+> This is extra work for the implementer and makes it more likely=20
+> that they'll misunderstand it. Or perhaps they'll get used to=20
+> the TLSWG writing things in this weird way and miss a case when=20
+> they *do* need to enforce an upper bound. This is particularly=20
+> fraught because TLS structures are variable-length. Here is a=20
+> contrived example to demonstrate the silliness of this=20
+> convention:
+>
+> enum { len1000(1},  len30001(2) } Type;
+> struct TwoPossibleLengths {
+>     Type type;
+>     select (type) {
+>        case len1000: opaque padding[999];
+>        case len30001: opaque padding[30000];
+>     }=20
+> };
+>
+> struct {
+>   TwoPossibleLengths list<1000..65002>;
+> } Confusing;
+>
+> If you look at this field, you might think that this is=20
+> actually imposing some limit that is tighter than its length=20
+> prefix, and that you need to check more things. In reality, it's=20
+> not. It's fairly clear that the minimum length of=20
+> a TwoPossibleLengths is 1000. It's much less obvious that the=20
+> maximum length of a series of TwoPossibleLengths, constrained to=20
+> be under 2^16-1, is 65002. So I think this is a far, far better=20
+> way to write this same structure.
+>
+> struct {
+>   TwoPossibleLengths list<1..2^16-1>;
+> } MuchMuchClearer;
+>
+> It describes the exact same structure, but now it's obvious the=20
+> intended parse was that you check the length is non-zero and=20
+> leave the upper-bound set based on its length prefix. Now,=20
+> obviously this is a contrived example and that instance of=20
+> knapsack is quite a bit harder than the NamedGroup instance. But=20
+> I think it demonstrates why the simpler loose bound convention=20
+> is better for readers of the specification than the one that=20
+> relies on the reader to do more math.
+>
+> David
+>
+>
+> On Thu, May 8, 2025 at 8:54=E2=80=AFPM Sean Turner <sean@sn3rd.com> wrote=
+:
+> Paul,
+>
+> You can marked this one as =E2=80=9Cverified" if you want. I submitted=20
+> a PR to fix this in -rfc8446bis; see:
+> https://github.com/tlswg/tls13-spec/pull/1380
+>
+> spt
+>
+> On May 8, 2025, at 4:05=E2=80=AFAM, RFC Errata System=20
+> <rfc-editor@rfc-editor.org> wrote:
+>
+> The following errata report has been submitted for RFC8446,
+> "The Transport Layer Security (TLS) Protocol Version 1.3".
+>
+> --------------------------------------
+> You may review the report below and at:
+> https://www.rfc-editor.org/errata/eid8411
+>
+> --------------------------------------
+> Type: Technical
+> Reported by: Albin Johansson <albin.johansson@vector.com>
+>
+> Section: 4.2.7
+>
+> Original Text
+> -------------
+> struct {
+>    NamedGroup named_group_list<2..2^16-1>;
+> } NamedGroupList;
+>
+> Corrected Text
+> --------------
+> struct {
+>    NamedGroup named_group_list<2..2^16-2>;
+> } NamedGroupList;
+>
+> Notes
+> -----
+> The specified maximum legal length of the named_group_list=20
+> vector in the NamedGroupList structure is 2^16-1 bytes. This is=20
+> invalid because NamedGroup is an enum that occupies two bytes,=20
+> but 2^16-1 is not an exact multiple of the element size (2=20
+> bytes), as required in Section 3.4. It appears that the intended=20
+> upper bound should be 2^16-2 bytes instead.
+>
+> Instructions:
+> -------------
+> This erratum is currently posted as "Reported". (If it is spam, it=20
+> will be removed shortly by the RFC Production Center.) Please
+> use "Reply All" to discuss whether it should be verified or
+> rejected. When a decision is reached, the verifying party =20
+> will log in to change the status and edit the report, if necessary.
+>
+> --------------------------------------
+> RFC8446 (draft-ietf-tls-tls13-28)
+> --------------------------------------
+> Title               : The Transport Layer Security (TLS)=20
+> Protocol Version 1.3
+> Publication Date    : August 2018
+> Author(s)           : E. Rescorla
+> Category            : PROPOSED STANDARD
+> Source              : Transport Layer Security
+> Stream              : IETF
+> Verifying Party     : IESG
+>
+
+--=20
+Regards,
+Alicja Kario
+Principal Quality Engineer, RHEL Crypto team
+Web: www.cz.redhat.com
+Red Hat Czech s.r.o., Purky=C5=88ova 115, 612 00, Brno, Czech Republic
+

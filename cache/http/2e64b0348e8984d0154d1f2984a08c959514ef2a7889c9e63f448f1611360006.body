@@ -1,0 +1,345 @@
+Return-Path: <paul.wouters@aiven.io>
+X-Original-To: tls@mail2.ietf.org
+Delivered-To: tls@mail2.ietf.org
+Received: from localhost (localhost [127.0.0.1])
+	by mail2.ietf.org (Postfix) with ESMTP id 53342C25BC51
+	for <tls@mail2.ietf.org>; Mon,  2 Mar 2026 09:52:11 -0800 (PST)
+X-Virus-Scanned: amavisd-new at ietf.org
+X-Spam-Flag: NO
+X-Spam-Score: -2.099
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.099 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+	DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, HTML_MESSAGE=0.001,
+	RCVD_IN_DNSWL_NONE=-0.0001, SPF_HELO_NONE=0.001, SPF_PASS=-0.001]
+	autolearn=unavailable autolearn_force=no
+Authentication-Results: mail2.ietf.org (amavisd-new); dkim=pass (1024-bit key)
+	header.d=aiven.io
+Received: from mail2.ietf.org ([166.84.6.31])
+	by localhost (mail2.ietf.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id z0o6jxRXju71 for <tls@mail2.ietf.org>;
+	Mon,  2 Mar 2026 09:52:09 -0800 (PST)
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com
+ [IPv6:2a00:1450:4864:20::52f])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail2.ietf.org (Postfix) with ESMTPS id 5EAD6C25B65E
+	for <tls@ietf.org>; Mon,  2 Mar 2026 09:50:54 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id
+ 4fb4d7f45d1cf-65f980cea07so6746531a12.0
+        for <tls@ietf.org>; Mon, 02 Mar 2026 09:50:54 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1772473853; cv=none;
+        d=google.com; s=arc-20240605;
+        b=G4cBIYLF5Ml5nNiICL/L0UfPAHb9tU3FpkxRhmQQMKMBe9P1edEPUrPIOjNSv2hVUy
+         ghs9g2gb1y+tWkMJOytq0cUk8dOlcoexYMv1alDP6am4rekn36jIjsf0hfWLHB1MsMMt
+         GqpKVw3Ddz9FMwk2SL4h5wu3IohItzlVVtbssAV9wD5pBQmGHMIVV5nqc5IOOy/fJmrD
+         IRHv+1dlZBo6rRqTNDhWf0TLY3XYCNMRg4fQcvo4YGGbf3QebVOoEAmcKMqRZVuxL5QG
+         n8EhL7AAVtzvB/Wt1rlR3HgYRgQR+h3Pc2hb2uQayTFE+xrLYXZKPDme/OayB6nOUGZK
+         22Ow==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20240605;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=1Tu/kOfQW1FipgEiofHGeDH3CSJ0MIdTMDqzekrjUzk=;
+        fh=EZUTTviYelxLVFndVVUFr4owhC8OECLfL+EpATZ3Q1Y=;
+        b=REpHUrGzEuA1UIaKLuWSRGy3e/FsNq2H+htTnjYGQtI3HHhRwbJOAU4/63iJeIWUMV
+         qUyQJchVLkGKCeV+7RaQu9hkdu/AUFNxRrjpGkc10vrw7iQ60Q1/NRLp8EHG/aqlzGou
+         VZv3pruq6oEdSWFxA80UT157f1W1DiQ1KKvYlnFhgp//MryXzlykBOx5Kdbn0CrF3dAM
+         GNqL4H9pkbvBv+uMvjKMram7YLxzGUdGfutieioyNiLvVHSvr6Mj4iSo86g4EOufDzJC
+         zzIF5hjaK7a3G4TcMUaH4NyY6L6nwmPi7k7b7tZOMyQ0y+r1aJt6ankmw2JyNTfODRT+
+         176g==;
+        darn=ietf.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=aiven.io; s=google; t=1772473853; x=1773078653; darn=ietf.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=1Tu/kOfQW1FipgEiofHGeDH3CSJ0MIdTMDqzekrjUzk=;
+        b=n9vHF20rIEJLqvS2Df/+pLbb92BTRIdRqmFfSPFfwEMX8n8LnF2GCl9tcJgs5uksyB
+         g3gNWeV/ORuvAD8JYnKBmzB2s81luUKqIXOc7H4iWhhmN+zxR0WfwGu1l4+xKBH5Yz5x
+         C/J8ZCKzAWBf+6F9Vls9jlDBOEkpQBW4ZFAPc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772473853; x=1773078653;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1Tu/kOfQW1FipgEiofHGeDH3CSJ0MIdTMDqzekrjUzk=;
+        b=fB/t+ifk3c9FF/7GqdBre51IYxWHfuHBGEszzHs5VG64qYmrBm9uGduGVFzSacwPEP
+         otlHmarfXceceykZ6Tc+nkoyi5wxMAfD++/BIj7yJKlnhJKt6TnwbZc1cKJjp2+dBOD4
+         4OnBywWFNHsbjExELIvmC5zVUq9dHSXZrgVJlpmp0R2nRM8XTaIXk5Y7MFnNRbh6LuMT
+         HIylbyqDG5VAcvBnu7QU+uuYrNvcrgUTJGUY4nG+RPs5/I4aN+RZVMay6wGovKRxWHNW
+         pOKZqqXVsxNXcVwn6xsLIqDhVMJKD3o6XKF3MrJv1fD/Gi70oDi+CxiUyKS02034s1b5
+         nVyA==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCVAijnUjNyQPxDdCw5mwaifSGZ1amodhLZ3M/jWhxT1yD0GD6C1bjoMcfUA2OzYqCbPCwA=@ietf.org
+X-Gm-Message-State: AOJu0YygCZWnSxgOafNxWaSxAO0kDZCIpPU153yBOd2kaXzfK4FqBiX6
+	NWpNF2plaHSSGCv1fMcMU16WvhaHoa4u6X3XN68cXc/Tl9cknWAJqX7HSaOlCRqu5IjBBFbBhNq
+	YOemt6J7v4uH6p6Hc/Fb0VJGVr0NZL442RmSx5FTDsg==
+X-Gm-Gg: ATEYQzwC2rQSTByWLWe9V39MPAwaVUABDkeppsgyCiQpBOfTtS4yJg6yUU/Q2d/ZpnR
+	xxP8elvNVeIWZWZKWVDW8KIhZLs2sRnFYYgogbRita3kYs6IYnI1jAQ+hk2xAPL+geyY3Cmd/84
+	0F/CSjD2a/V6OXhoYj5l//g+G7ijFM+HI23E6YLlo9BE4j+/fm4FNizNVHgEPlxAmTT5c2GM/IV
+	fJRzMz6pu+NYRMZgZFq59nNikXjf/LkOYRLB+mQfXPaWeegb7r3AtvAdpkJuFLOm9nzEWBGBR1R
+	nSKiw7uoQhLw6CzISnHMk7pxob1ZOURDfb7CwNCMNcecE/MZT12NFNNsnhrWo/sdk3A=
+X-Received: by 2002:a17:907:7fac:b0:b93:cae3:5832 with SMTP id
+ a640c23a62f3a-b93cae3ae31mr59580066b.22.1772473853192; Mon, 02 Mar 2026
+ 09:50:53 -0800 (PST)
+MIME-Version: 1.0
+References: <20260302161747.5FDD7C000CC4@rfcpa.rfc-editor.org>
+ <3e2daf63-16e1-4824-b742-aafc7608dcaf@app.fastmail.com>
+In-Reply-To: <3e2daf63-16e1-4824-b742-aafc7608dcaf@app.fastmail.com>
+From: Paul Wouters <paul.wouters@aiven.io>
+Date: Mon, 2 Mar 2026 12:50:42 -0500
+X-Gm-Features: AaiRm53kx2_qfBGrTS9r1t3Sm48C0yfz2oyntOdIRvUoiOosBVUrHE4AzUTVnYM
+Message-ID: 
+ <CAGL5yWb9qr_jhZNt3rM0Bd=j28yPW==3V4__iomp6EY7dPTGhQ@mail.gmail.com>
+To: Martin Thomson <mt@lowentropy.net>
+Content-Type: multipart/alternative; boundary="00000000000064cf5f064c0e3af6"
+Message-ID-Hash: L72H23DHB7U73YVLSKJYXDGB2OZG5D5X
+X-Message-ID-Hash: L72H23DHB7U73YVLSKJYXDGB2OZG5D5X
+X-MailFrom: paul.wouters@aiven.io
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+CC: rfc-editor <rfc-editor@rfc-editor.org>, sean+ietf@sn3rd.com, tls@ietf.org
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Re=3A_=5BTechnical_Errata_Reported=5D_RFC8446_=288794=29?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/sJAyQGtxHWnMkplisuMI08kOxXA>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+--00000000000064cf5f064c0e3af6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Mar 2, 2026 at 12:36=E2=80=AFPM Martin Thomson <mt@lowentropy.net> =
+wrote:
+
+> This seems right.  I've opened
+> https://github.com/tlswg/tls13-spec/issues/1409 for the -bis.
+>
+
+Thanks. Marked with Hold For Document Update with the link to github.
+
+Paul
+
+
+>
+> On Mon, Mar 2, 2026, at 16:17, RFC Errata System wrote:
+> > The following errata report has been submitted for RFC8446,
+> > "The Transport Layer Security (TLS) Protocol Version 1.3".
+> >
+> > --------------------------------------
+> > You may review the report below and at:
+> > https://www.rfc-editor.org/errata/eid8794
+> >
+> > --------------------------------------
+> > Type: Technical
+> > Reported by: Lo=C3=AFc Ferreira <loic.ferreira@orange.com>
+> >
+> > Section: 2.3
+> >
+> > Original Text
+> > -------------
+> >
+> >          Client                                               Server
+> >
+> >          ClientHello
+> >          + early_data
+> >          + key_share*
+> >          + psk_key_exchange_modes
+> >          + pre_shared_key
+> >          (Application Data*)     -------->
+> >                                                          ServerHello
+> >                                                     + pre_shared_key
+> >                                                         + key_share*
+> >                                                {EncryptedExtensions}
+> >                                                        + early_data*
+> >                                                           {Finished}
+> >                                  <--------       [Application Data*]
+> >          (EndOfEarlyData)
+> >          {Finished}              -------->
+> >          [Application Data]      <------->        [Application Data]
+> >
+> > Corrected Text
+> > --------------
+> >
+> >          Client                                               Server
+> >
+> >          ClientHello
+> >          + early_data
+> >          + key_share*
+> >          + psk_key_exchange_modes
+> >          + pre_shared_key
+> >          (Application Data*)     -------->
+> >                                                          ServerHello
+> >                                                     + pre_shared_key
+> >                                                         + key_share*
+> >                                                {EncryptedExtensions}
+> >                                                        + early_data*
+> >                                                           {Finished}
+> >                                  <--------       [Application Data*]
+> >          (EndOfEarlyData*)
+> >          {Finished}              -------->
+> >          [Application Data]      <------->        [Application Data]
+> >
+> > Notes
+> > -----
+> > Section 4.5 reads: "If the server sent an "early_data" extension in
+> > EncryptedExtensions, the client MUST send an EndOfEarlyData message
+> > after receiving the server Finished.  If the server does not send an
+> > "early_data" extension in EncryptedExtensions, then the client MUST NOT
+> > send an EndOfEarlyData message."
+> > Therefore, EndOfEarlyData is sent only if the server sends an
+> > "early_data" extension and should be marked as situation-dependent.
+> >
+> > Instructions:
+> > -------------
+> > This erratum is currently posted as "Reported". (If it is spam, it
+> > will be removed shortly by the RFC Production Center.) Please
+> > use "Reply All" to discuss whether it should be verified or
+> > rejected. When a decision is reached, the verifying party
+> > will log in to change the status and edit the report, if necessary.
+> >
+> > --------------------------------------
+> > RFC8446 (draft-ietf-tls-tls13-28)
+> > --------------------------------------
+> > Title               : The Transport Layer Security (TLS) Protocol
+> Version 1.3
+> > Publication Date    : August 2018
+> > Author(s)           : E. Rescorla
+> > Category            : PROPOSED STANDARD
+> > Source              : Transport Layer Security
+> > Stream              : IETF
+> > Verifying Party     : IESG
+> >
+> > _______________________________________________
+> > TLS mailing list -- tls@ietf.org
+> > To unsubscribe send an email to tls-leave@ietf.org
+>
+
+--00000000000064cf5f064c0e3af6
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: base64
+
+PGRpdiBkaXI9Imx0ciI+PGRpdiBkaXI9Imx0ciI+PGJyPjwvZGl2PjxkaXYgY2xhc3M9ImdtYWls
+X3F1b3RlIGdtYWlsX3F1b3RlX2NvbnRhaW5lciI+PGRpdiBkaXI9Imx0ciIgY2xhc3M9ImdtYWls
+X2F0dHIiPk9uIE1vbiwgTWFyIDIsIDIwMjYgYXQgMTI6MzbigK9QTSBNYXJ0aW4gVGhvbXNvbiAm
+bHQ7PGEgaHJlZj0ibWFpbHRvOm10QGxvd2VudHJvcHkubmV0Ij5tdEBsb3dlbnRyb3B5Lm5ldDwv
+YT4mZ3Q7IHdyb3RlOjxicj48L2Rpdj48YmxvY2txdW90ZSBjbGFzcz0iZ21haWxfcXVvdGUiIHN0
+eWxlPSJtYXJnaW46MHB4IDBweCAwcHggMC44ZXg7Ym9yZGVyLWxlZnQ6MXB4IHNvbGlkIHJnYigy
+MDQsMjA0LDIwNCk7cGFkZGluZy1sZWZ0OjFleCI+VGhpcyBzZWVtcyByaWdodC7CoCBJJiMzOTt2
+ZSBvcGVuZWQgPGEgaHJlZj0iaHR0cHM6Ly9naXRodWIuY29tL3Rsc3dnL3RsczEzLXNwZWMvaXNz
+dWVzLzE0MDkiIHJlbD0ibm9yZWZlcnJlciIgdGFyZ2V0PSJfYmxhbmsiPmh0dHBzOi8vZ2l0aHVi
+LmNvbS90bHN3Zy90bHMxMy1zcGVjL2lzc3Vlcy8xNDA5PC9hPiBmb3IgdGhlIC1iaXMuPGJyPjwv
+YmxvY2txdW90ZT48ZGl2Pjxicj48L2Rpdj48ZGl2PlRoYW5rcy4gTWFya2VkIHdpdGggSG9sZCBG
+b3IgRG9jdW1lbnQgVXBkYXRlIHdpdGggdGhlIGxpbmsgdG8gZ2l0aHViLjwvZGl2PjxkaXY+PGJy
+PjwvZGl2PjxkaXY+UGF1bDwvZGl2PjxkaXY+wqDCoDwvZGl2PjxibG9ja3F1b3RlIGNsYXNzPSJn
+bWFpbF9xdW90ZSIgc3R5bGU9Im1hcmdpbjowcHggMHB4IDBweCAwLjhleDtib3JkZXItbGVmdDox
+cHggc29saWQgcmdiKDIwNCwyMDQsMjA0KTtwYWRkaW5nLWxlZnQ6MWV4Ij4NCjxicj4NCk9uIE1v
+biwgTWFyIDIsIDIwMjYsIGF0IDE2OjE3LCBSRkMgRXJyYXRhIFN5c3RlbSB3cm90ZTo8YnI+DQom
+Z3Q7IFRoZSBmb2xsb3dpbmcgZXJyYXRhIHJlcG9ydCBoYXMgYmVlbiBzdWJtaXR0ZWQgZm9yIFJG
+Qzg0NDYsPGJyPg0KJmd0OyAmcXVvdDtUaGUgVHJhbnNwb3J0IExheWVyIFNlY3VyaXR5IChUTFMp
+IFByb3RvY29sIFZlcnNpb24gMS4zJnF1b3Q7Ljxicj4NCiZndDs8YnI+DQomZ3Q7IC0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tPGJyPg0KJmd0OyBZb3UgbWF5IHJldmlldyB0
+aGUgcmVwb3J0IGJlbG93IGFuZCBhdDo8YnI+DQomZ3Q7IDxhIGhyZWY9Imh0dHBzOi8vd3d3LnJm
+Yy1lZGl0b3Iub3JnL2VycmF0YS9laWQ4Nzk0IiByZWw9Im5vcmVmZXJyZXIiIHRhcmdldD0iX2Js
+YW5rIj5odHRwczovL3d3dy5yZmMtZWRpdG9yLm9yZy9lcnJhdGEvZWlkODc5NDwvYT48YnI+DQom
+Z3Q7PGJyPg0KJmd0OyAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLTxicj4N
+CiZndDsgVHlwZTogVGVjaG5pY2FsPGJyPg0KJmd0OyBSZXBvcnRlZCBieTogTG/Dr2MgRmVycmVp
+cmEgJmx0OzxhIGhyZWY9Im1haWx0bzpsb2ljLmZlcnJlaXJhQG9yYW5nZS5jb20iIHRhcmdldD0i
+X2JsYW5rIj5sb2ljLmZlcnJlaXJhQG9yYW5nZS5jb208L2E+Jmd0Ozxicj4NCiZndDs8YnI+DQom
+Z3Q7IFNlY3Rpb246IDIuMzxicj4NCiZndDs8YnI+DQomZ3Q7IE9yaWdpbmFsIFRleHQ8YnI+DQom
+Z3Q7IC0tLS0tLS0tLS0tLS08YnI+DQomZ3Q7PGJyPg0KJmd0O8KgIMKgIMKgIMKgIMKgIENsaWVu
+dMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgU2VydmVyPGJyPg0KJmd0Ozxicj4NCiZndDvCoCDCoCDCoCDCoCDCoCBD
+bGllbnRIZWxsbzxicj4NCiZndDvCoCDCoCDCoCDCoCDCoCArIGVhcmx5X2RhdGE8YnI+DQomZ3Q7
+wqAgwqAgwqAgwqAgwqAgKyBrZXlfc2hhcmUqPGJyPg0KJmd0O8KgIMKgIMKgIMKgIMKgICsgcHNr
+X2tleV9leGNoYW5nZV9tb2Rlczxicj4NCiZndDvCoCDCoCDCoCDCoCDCoCArIHByZV9zaGFyZWRf
+a2V5PGJyPg0KJmd0O8KgIMKgIMKgIMKgIMKgIChBcHBsaWNhdGlvbiBEYXRhKinCoCDCoCDCoC0t
+LS0tLS0tJmd0Ozxicj4NCiZndDvCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBTZXJ2ZXJI
+ZWxsbzxicj4NCiZndDvCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCsgcHJlX3NoYXJlZF9rZXk8YnI+
+DQomZ3Q7wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqArIGtleV9zaGFyZSo8YnI+DQomZ3Q7
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAge0VuY3J5cHRlZEV4dGVuc2lvbnN9PGJyPg0KJmd0O8KgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgICsgZWFybHlfZGF0YSo8YnI+DQomZ3Q7wqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqB7RmluaXNoZWR9PGJyPg0KJmd0O8KgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgICZsdDstLS0tLS0tLcKgIMKgIMKgIMKgW0FwcGxp
+Y2F0aW9uIERhdGEqXTxicj4NCiZndDvCoCDCoCDCoCDCoCDCoCAoRW5kT2ZFYXJseURhdGEpPGJy
+Pg0KJmd0O8KgIMKgIMKgIMKgIMKgIHtGaW5pc2hlZH3CoCDCoCDCoCDCoCDCoCDCoCDCoCAtLS0t
+LS0tLSZndDs8YnI+DQomZ3Q7wqAgwqAgwqAgwqAgwqAgW0FwcGxpY2F0aW9uIERhdGFdwqAgwqAg
+wqAgJmx0Oy0tLS0tLS0mZ3Q7wqAgwqAgwqAgwqAgW0FwcGxpY2F0aW9uIERhdGFdPGJyPg0KJmd0
+Ozxicj4NCiZndDsgQ29ycmVjdGVkIFRleHQ8YnI+DQomZ3Q7IC0tLS0tLS0tLS0tLS0tPGJyPg0K
+Jmd0Ozxicj4NCiZndDvCoCDCoCDCoCDCoCDCoCBDbGllbnTCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoFNlcnZlcjxi
+cj4NCiZndDs8YnI+DQomZ3Q7wqAgwqAgwqAgwqAgwqAgQ2xpZW50SGVsbG88YnI+DQomZ3Q7wqAg
+wqAgwqAgwqAgwqAgKyBlYXJseV9kYXRhPGJyPg0KJmd0O8KgIMKgIMKgIMKgIMKgICsga2V5X3No
+YXJlKjxicj4NCiZndDvCoCDCoCDCoCDCoCDCoCArIHBza19rZXlfZXhjaGFuZ2VfbW9kZXM8YnI+
+DQomZ3Q7wqAgwqAgwqAgwqAgwqAgKyBwcmVfc2hhcmVkX2tleTxicj4NCiZndDvCoCDCoCDCoCDC
+oCDCoCAoQXBwbGljYXRpb24gRGF0YSopwqAgwqAgwqAtLS0tLS0tLSZndDs8YnI+DQomZ3Q7wqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgU2VydmVySGVsbG88YnI+DQomZ3Q7wqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqArIHByZV9zaGFyZWRfa2V5PGJyPg0KJmd0O8KgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgKyBrZXlfc2hhcmUqPGJyPg0KJmd0O8KgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHtFbmNyeXB0
+ZWRFeHRlbnNpb25zfTxicj4NCiZndDvCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCArIGVhcmx5
+X2RhdGEqPGJyPg0KJmd0O8KgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKge0ZpbmlzaGVk
+fTxicj4NCiZndDvCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCAmbHQ7LS0tLS0tLS3CoCDCoCDCoCDCoFtBcHBsaWNhdGlvbiBEYXRhKl08YnI+DQomZ3Q7
+wqAgwqAgwqAgwqAgwqAgKEVuZE9mRWFybHlEYXRhKik8YnI+DQomZ3Q7wqAgwqAgwqAgwqAgwqAg
+e0ZpbmlzaGVkfcKgIMKgIMKgIMKgIMKgIMKgIMKgIC0tLS0tLS0tJmd0Ozxicj4NCiZndDvCoCDC
+oCDCoCDCoCDCoCBbQXBwbGljYXRpb24gRGF0YV3CoCDCoCDCoCAmbHQ7LS0tLS0tLSZndDvCoCDC
+oCDCoCDCoCBbQXBwbGljYXRpb24gRGF0YV08YnI+DQomZ3Q7PGJyPg0KJmd0OyBOb3Rlczxicj4N
+CiZndDsgLS0tLS08YnI+DQomZ3Q7IFNlY3Rpb24gNC41IHJlYWRzOiAmcXVvdDtJZiB0aGUgc2Vy
+dmVyIHNlbnQgYW4gJnF1b3Q7ZWFybHlfZGF0YSZxdW90OyBleHRlbnNpb24gaW4gPGJyPg0KJmd0
+OyBFbmNyeXB0ZWRFeHRlbnNpb25zLCB0aGUgY2xpZW50IE1VU1Qgc2VuZCBhbiBFbmRPZkVhcmx5
+RGF0YSBtZXNzYWdlIDxicj4NCiZndDsgYWZ0ZXIgcmVjZWl2aW5nIHRoZSBzZXJ2ZXIgRmluaXNo
+ZWQuwqAgSWYgdGhlIHNlcnZlciBkb2VzIG5vdCBzZW5kIGFuIDxicj4NCiZndDsgJnF1b3Q7ZWFy
+bHlfZGF0YSZxdW90OyBleHRlbnNpb24gaW4gRW5jcnlwdGVkRXh0ZW5zaW9ucywgdGhlbiB0aGUg
+Y2xpZW50IE1VU1QgTk9UIDxicj4NCiZndDsgc2VuZCBhbiBFbmRPZkVhcmx5RGF0YSBtZXNzYWdl
+LiZxdW90Ozxicj4NCiZndDsgVGhlcmVmb3JlLCBFbmRPZkVhcmx5RGF0YSBpcyBzZW50IG9ubHkg
+aWYgdGhlIHNlcnZlciBzZW5kcyBhbiA8YnI+DQomZ3Q7ICZxdW90O2Vhcmx5X2RhdGEmcXVvdDsg
+ZXh0ZW5zaW9uIGFuZCBzaG91bGQgYmUgbWFya2VkIGFzIHNpdHVhdGlvbi1kZXBlbmRlbnQuPGJy
+Pg0KJmd0Ozxicj4NCiZndDsgSW5zdHJ1Y3Rpb25zOjxicj4NCiZndDsgLS0tLS0tLS0tLS0tLTxi
+cj4NCiZndDsgVGhpcyBlcnJhdHVtIGlzIGN1cnJlbnRseSBwb3N0ZWQgYXMgJnF1b3Q7UmVwb3J0
+ZWQmcXVvdDsuIChJZiBpdCBpcyBzcGFtLCBpdCA8YnI+DQomZ3Q7IHdpbGwgYmUgcmVtb3ZlZCBz
+aG9ydGx5IGJ5IHRoZSBSRkMgUHJvZHVjdGlvbiBDZW50ZXIuKSBQbGVhc2U8YnI+DQomZ3Q7IHVz
+ZSAmcXVvdDtSZXBseSBBbGwmcXVvdDsgdG8gZGlzY3VzcyB3aGV0aGVyIGl0IHNob3VsZCBiZSB2
+ZXJpZmllZCBvcjxicj4NCiZndDsgcmVqZWN0ZWQuIFdoZW4gYSBkZWNpc2lvbiBpcyByZWFjaGVk
+LCB0aGUgdmVyaWZ5aW5nIHBhcnR5wqAgPGJyPg0KJmd0OyB3aWxsIGxvZyBpbiB0byBjaGFuZ2Ug
+dGhlIHN0YXR1cyBhbmQgZWRpdCB0aGUgcmVwb3J0LCBpZiBuZWNlc3NhcnkuPGJyPg0KJmd0Ozxi
+cj4NCiZndDsgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS08YnI+DQomZ3Q7
+IFJGQzg0NDYgKGRyYWZ0LWlldGYtdGxzLXRsczEzLTI4KTxicj4NCiZndDsgLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS08YnI+DQomZ3Q7IFRpdGxlwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqA6IFRoZSBUcmFuc3BvcnQgTGF5ZXIgU2VjdXJpdHkgKFRMUykgUHJvdG9jb2wgVmVy
+c2lvbiAxLjM8YnI+DQomZ3Q7IFB1YmxpY2F0aW9uIERhdGXCoCDCoCA6IEF1Z3VzdCAyMDE4PGJy
+Pg0KJmd0OyBBdXRob3IocynCoCDCoCDCoCDCoCDCoCDCoDogRS4gUmVzY29ybGE8YnI+DQomZ3Q7
+IENhdGVnb3J5wqAgwqAgwqAgwqAgwqAgwqAgOiBQUk9QT1NFRCBTVEFOREFSRDxicj4NCiZndDsg
+U291cmNlwqAgwqAgwqAgwqAgwqAgwqAgwqAgOiBUcmFuc3BvcnQgTGF5ZXIgU2VjdXJpdHk8YnI+
+DQomZ3Q7IFN0cmVhbcKgIMKgIMKgIMKgIMKgIMKgIMKgIDogSUVURjxicj4NCiZndDsgVmVyaWZ5
+aW5nIFBhcnR5wqAgwqAgwqA6IElFU0c8YnI+DQomZ3Q7PGJyPg0KJmd0OyBfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXzxicj4NCiZndDsgVExTIG1haWxpbmcg
+bGlzdCAtLSA8YSBocmVmPSJtYWlsdG86dGxzQGlldGYub3JnIiB0YXJnZXQ9Il9ibGFuayI+dGxz
+QGlldGYub3JnPC9hPjxicj4NCiZndDsgVG8gdW5zdWJzY3JpYmUgc2VuZCBhbiBlbWFpbCB0byA8
+YSBocmVmPSJtYWlsdG86dGxzLWxlYXZlQGlldGYub3JnIiB0YXJnZXQ9Il9ibGFuayI+dGxzLWxl
+YXZlQGlldGYub3JnPC9hPjxicj4NCjwvYmxvY2txdW90ZT48L2Rpdj48L2Rpdj4NCg==
+--00000000000064cf5f064c0e3af6--
+

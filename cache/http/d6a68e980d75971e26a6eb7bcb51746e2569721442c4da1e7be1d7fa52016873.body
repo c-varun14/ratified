@@ -1,0 +1,187 @@
+Return-Path: <mt@lowentropy.net>
+X-Original-To: tls@mail2.ietf.org
+Delivered-To: tls@mail2.ietf.org
+Received: from localhost (localhost [127.0.0.1])
+	by mail2.ietf.org (Postfix) with ESMTP id 9186AC2578AF
+	for <tls@mail2.ietf.org>; Mon,  2 Mar 2026 09:39:14 -0800 (PST)
+X-Virus-Scanned: amavisd-new at ietf.org
+X-Spam-Flag: NO
+X-Spam-Score: -2.799
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.799 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+	DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, RCVD_IN_DNSWL_LOW=-0.7,
+	RCVD_IN_VALIDITY_CERTIFIED_BLOCKED=0.001,
+	RCVD_IN_VALIDITY_RPBL_BLOCKED=0.001, SPF_PASS=-0.001]
+	autolearn=ham autolearn_force=no
+Authentication-Results: mail2.ietf.org (amavisd-new); dkim=pass (2048-bit key)
+	header.d=lowentropy.net header.b="lUB4rI8n"; dkim=pass (2048-bit key)
+	header.d=messagingengine.com header.b="DUUAyVJ3"
+Received: from mail2.ietf.org ([166.84.6.31])
+	by localhost (mail2.ietf.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id m48UD2dBivlW for <tls@mail2.ietf.org>;
+	Mon,  2 Mar 2026 09:39:14 -0800 (PST)
+Received: from fout-a7-smtp.messagingengine.com
+ (fout-a7-smtp.messagingengine.com [103.168.172.150])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-256))
+	(No client certificate requested)
+	by mail2.ietf.org (Postfix) with ESMTPS id BF111C257852
+	for <tls@ietf.org>; Mon,  2 Mar 2026 09:39:06 -0800 (PST)
+Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
+	by mailfout.phl.internal (Postfix) with ESMTP id A8B5AEC05CA;
+	Mon,  2 Mar 2026 12:39:06 -0500 (EST)
+Received: from phl-imap-15 ([10.202.2.104])
+  by phl-compute-04.internal (MEProxy); Mon, 02 Mar 2026 12:39:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lowentropy.net;
+	 h=cc:cc:content-transfer-encoding:content-type:content-type
+	:date:date:from:from:in-reply-to:in-reply-to:message-id
+	:mime-version:references:reply-to:subject:subject:to:to; s=fm2;
+	 t=1772473146; x=1772559546; bh=xWTm4khYTk4zs7oyw/FGnzaHDNkFzsGh
+	qNPQDIqV4gI=; b=lUB4rI8nDuJTp4OwWbqimUnfzcVxZQxrg8lziWaqGg/qomnF
+	yj7fcwtDwcwSQkKJsrNOMLiTUzsTGSX9dh202ptzoH33p6n1T9drOyye+mZJaCul
+	qzyfv251FRGj/MKC3elFMyCmaFc2W9mXYctUwtIBKIT4hyYv9YaHZ5Kf3+wj/yiv
+	g6/TktE4Xhifq2nSHKg5b5oRyR7KCKI1yZ9zyx5mliZTss5ZPeKYpEwCsap8BDlJ
+	8t49x1wkVdvjpMOzjnrq2+WRW0pR1FhAWlR6CFGdMEFHZu/vg+58TE0yVvtHeI0Z
+	CR3gLWtGwY/0HRkLYFFMBzUAiUJINNXVClRYHQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1772473146; x=
+	1772559546; bh=xWTm4khYTk4zs7oyw/FGnzaHDNkFzsGhqNPQDIqV4gI=; b=D
+	UUAyVJ3UbAD+2ShbkUgCtGh7fa586rxZDgK0V4RPmes9cgUjuHynZfihh4BUZSXT
+	puuurOhbux66piUpicziEQ2Vgrn0C57pAl5m8AE0eYnyXeSpBKZ9pTq+9uOY/ax8
+	f/rg5ext1FeJVRR9mARmE+FY2PZpMxRX0OBOj9N54mb9anwcqBfI+LTn1ApH1Ztz
+	qHQTBrlsfYLkZeFrYUhJUzY8QbZoDPf7eR1ImzhvVkkIcsnbBYpo5ZiQ6CanbpxF
+	QiYkBf9mJkvyua0GA8+qqMTnlhTFtGA0BPg1k4M14DVVxbsCWmB/tY56O2ACpyQk
+	KLCSsl3Kor2mcey9NCPoQ==
+X-ME-Sender: <xms:OsulaUgS20tkI8JuP5bNeHhShwAoaEqiV8Jm0a_tPftUIVFYU8hGHg>
+    <xme:OsulaX1MokQMvujMIW3r7kirFvGri6uIh-iJToAebzUR1K7gSd4i1556Et-9ix70u
+    QherGA5B3ZijtMGbaRMCyniVRYPBjt3P_TXaYAg-NgpsUJ7-5Dtilo>
+X-ME-Proxy-Cause: 
+ gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddvheekfedtucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucenucfjughrpefoggffhffvvefkjghfufgtgfesthhqre
+    dtredtjeenucfhrhhomhepfdforghrthhinhcuvfhhohhmshhonhdfuceomhhtsehlohif
+    vghnthhrohhphidrnhgvtheqnecuggftrfgrthhtvghrnhepvdevvdethffggffgieekke
+    eugffhfffgveetieevudegjedugfffieekkeeigeeinecuffhomhgrihhnpehrfhgtqdgv
+    ughithhorhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpehmtheslhhofigvnhhtrhhophihrdhnvghtpdhnsggprhgtphhtthhopedv
+    pdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehtlhhssehivghtfhdrohhrghdprh
+    gtphhtthhopehrfhgtqdgvughithhorhesrhhftgdqvgguihhtohhrrdhorhhg
+X-ME-Proxy: <xmx:OsulaWB5z4M9HVBxMrkWkLziCs5CHSPW3vWw50cV5bC4Vyf0TscfMg>
+    <xmx:OsulaWiNdoMJSB3otOx_dEnZYuC31G03gowchudZe1sE3hIE79vxgg>
+    <xmx:OsulaXObrjzYpeEr1wxfboy5wgvrmXLVG5UFIu1Oc4JbeIaSZuNsKQ>
+    <xmx:Osulaf7K3-XyVo1ZqaybRWx8mWeL7-V_S17JNXZQaC9jjNMEh9BYTw>
+    <xmx:OsulaY-16e2DtZGS8ziMhKdn4NqYS-T1zydvjAnoMP8tZyoej9EclMaw>
+Feedback-ID: ic129442d:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id 73630780070; Mon,  2 Mar 2026 12:39:06 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+MIME-Version: 1.0
+X-ThreadId: AWEeScDFRagk
+Date: Mon, 02 Mar 2026 17:38:46 +0000
+From: "Martin Thomson" <mt@lowentropy.net>
+To: rfc-editor <rfc-editor@rfc-editor.org>
+Message-Id: <1feb7ab4-ef96-49d9-bf81-14d7dc4b9d81@app.fastmail.com>
+In-Reply-To: <20260302164434.0645CC000CC4@rfcpa.rfc-editor.org>
+References: <20260302164434.0645CC000CC4@rfcpa.rfc-editor.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Message-ID-Hash: XEGIPHE72LSSWIXM3O5HNLMMQLYEJHMU
+X-Message-ID-Hash: XEGIPHE72LSSWIXM3O5HNLMMQLYEJHMU
+X-MailFrom: mt@lowentropy.net
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+CC: tls@ietf.org
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Re=3A_=5BEditorial_Errata_Reported=5D_RFC8446_=288795=29?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/fPjjY4w83cw7sIuepE7QzVxdq3E>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+I'm so-so on this one.  Context makes it clear what this means, but I do=
+ agree that this is potentially confusing - especially if taken out of c=
+ontext.
+
+I would suggest instead:
+
+> After completing the handshake,=20
+> a client that receives a CertificateRequest message without having sen=
+t=20
+> the "post_handshake_auth" extension MUST send an "unexpected_message"=20
+> fatal alert.
+
+On Mon, Mar 2, 2026, at 16:44, RFC Errata System wrote:
+> The following errata report has been submitted for RFC8446,
+> "The Transport Layer Security (TLS) Protocol Version 1.3".
+>
+> --------------------------------------
+> You may review the report below and at:
+> https://www.rfc-editor.org/errata/eid8795
+>
+> --------------------------------------
+> Type: Editorial
+> Reported by: Lo=C3=AFc Ferreira <loic.ferreira@orange.com>
+>
+> Section: 4.6.2
+>
+> Original Text
+> -------------
+> A client that receives a CertificateRequest message without having sen=
+t=20
+> the "post_handshake_auth" extension MUST send an "unexpected_message"=20
+> fatal alert.
+>
+> Corrected Text
+> --------------
+> A client that receives a CertificateRequest message encrypted with the=20
+> server_application_traffic_secret_N without having sent the=20
+> "post_handshake_auth" extension MUST send an "unexpected_message" fata=
+l=20
+> alert.
+>
+> Notes
+> -----
+> This sentence is to be understood in the context of a possible=20
+> post-handshake authentication. During a main handshake, a=20
+> CertificateRequest message (encrypted with the=20
+> server_handshake_traffic_secret) may be sent by the server (without=20
+> need for the client to send a "post_handshake_auth" extension).
+>
+> Instructions:
+> -------------
+> This erratum is currently posted as "Reported". (If it is spam, it=20
+> will be removed shortly by the RFC Production Center.) Please
+> use "Reply All" to discuss whether it should be verified or
+> rejected. When a decision is reached, the verifying party =20
+> will log in to change the status and edit the report, if necessary.
+>
+> --------------------------------------
+> RFC8446 (draft-ietf-tls-tls13-28)
+> --------------------------------------
+> Title               : The Transport Layer Security (TLS) Protocol Vers=
+ion 1.3
+> Publication Date    : August 2018
+> Author(s)           : E. Rescorla
+> Category            : PROPOSED STANDARD
+> Source              : Transport Layer Security
+> Stream              : IETF
+> Verifying Party     : IESG
+>
+> _______________________________________________
+> TLS mailing list -- tls@ietf.org
+> To unsubscribe send an email to tls-leave@ietf.org
+

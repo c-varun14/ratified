@@ -1,0 +1,412 @@
+From nobody Sat Dec 17 09:25:29 2022
+Return-Path: <davidben@google.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 1A4BBC1516F2
+ for <tls@ietfa.amsl.com>; Sat, 17 Dec 2022 09:25:28 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -9.246
+X-Spam-Level: 
+X-Spam-Status: No, score=-9.246 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIMWL_WL_HIGH=-0.001, DKIM_SIGNED=0.1,
+ DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1,
+ HEADER_FROM_DIFFERENT_DOMAINS=0.25, HTML_MESSAGE=0.001,
+ RCVD_IN_DNSWL_NONE=-0.0001, RCVD_IN_ZEN_BLOCKED_OPENDNS=0.001,
+ SPF_HELO_NONE=0.001, SPF_PASS=-0.001, URIBL_BLOCKED=0.001,
+ URIBL_DBL_BLOCKED_OPENDNS=0.001, URIBL_ZEN_BLOCKED_OPENDNS=0.001,
+ USER_IN_DEF_SPF_WL=-7.5] autolearn=no autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=chromium.org
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id dH35rFkTsax8 for <tls@ietfa.amsl.com>;
+ Sat, 17 Dec 2022 09:25:23 -0800 (PST)
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com
+ [IPv6:2607:f8b0:4864:20::b2c])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id A6542C14F74E
+ for <tls@ietf.org>; Sat, 17 Dec 2022 09:25:23 -0800 (PST)
+Received: by mail-yb1-xb2c.google.com with SMTP id e141so5535811ybh.3
+ for <tls@ietf.org>; Sat, 17 Dec 2022 09:25:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=dgFCTwgX/rXPEfNNp60WhpsN+PkSjFpZH/X8Sc96Pqw=;
+ b=JWNjYU9i+VYb4V+Wn8xWq6LTOWyJivjauIAVnIb3oFAyD96cOErWUnkQIcVWbV9WlJ
+ hdCb3tHKBxwVh9S97ewJ0K7SZAkvEn23UYGbwE8t/92etgdZ0mUeKamqg8/Sg9w94Z74
+ /qdu+Yf+hS75vYpdepIVyZFiczAAp+lx3rKLc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=dgFCTwgX/rXPEfNNp60WhpsN+PkSjFpZH/X8Sc96Pqw=;
+ b=DJI+jae99yd8ApEFGYC3FSsrjMXUeTNpzlGOV6AOVPxb9FWjnubxWColLaQb6AjCNH
+ O10n3Ep4MNODBgbfAquHFJLyeAgmtFaGl2mylhwXJocMi0cTY+ny2KItCz5mQ+oaBhiS
+ JFxFl51Ti2nmyXscSxMpgweKiU4+UuFXD2jIS6zdD7MPfCL78aBxoN8doY2/oIlg2a1h
+ JhnDgLs+pQ1OVzKNohp0yHAEBXUcg6NoB2IyUJ1D3RnDEy+efarKMsb4R3aqEa70aock
+ jDsUtqzOpsDT9jv+lVXLlrv59LWDDEoxp8YQHJiBHh0Gm+Nwo26pAM59Z0o8AyCsVMUm
+ wA/w==
+X-Gm-Message-State: ANoB5pnRzyibmfRDgv8Z6TDiyXq68zshv10t28FkO0Ir/6dB1dEKE/2L
+ ZS9tmssHYL23kNoU7cf5bvlKH1HuVokr0ceKUmYB
+X-Google-Smtp-Source: AA0mqf65CVPR4ghRo0XsV3BGh0EGDr9TGrYwP/9BSOEDcbwOfJM25NN21yyYPyBHLBbXaAjfx6YJNrTcpHf0cQdDnrQ=
+X-Received: by 2002:a25:ac8:0:b0:6fa:678a:7623 with SMTP id
+ 191-20020a250ac8000000b006fa678a7623mr35126559ybk.577.1671297922370; Sat, 17
+ Dec 2022 09:25:22 -0800 (PST)
+MIME-Version: 1.0
+References: <AAEB9108-0EFA-4F77-81FB-8767927428E9@sn3rd.com>
+ <CAF8qwaCEU+FJ6Gi55G5L5TdNjNKsL6QXb978UUyE6_z6hQhd8w@mail.gmail.com>
+ <CAEudp+uAWYs6NUAa=rX2TKqaPRc1XOs_nAUtm3=u-Thys96g+g@mail.gmail.com>
+ <C8D5F23B-DC1F-49DE-AA2E-C568658D8890@gmail.com>
+In-Reply-To: <C8D5F23B-DC1F-49DE-AA2E-C568658D8890@gmail.com>
+From: David Benjamin <davidben@chromium.org>
+Date: Sat, 17 Dec 2022 12:25:05 -0500
+Message-ID: <CAF8qwaCo0tc_uAhCjE3ghDMkhrBRvyZOCCdgL3oAn7mdaoS4xA@mail.gmail.com>
+To: Yaron Sheffer <yaronf.ietf@gmail.com>
+Cc: Carrick Bartle <cbartle266@gmail.com>, TLS List <tls@ietf.org>
+Content-Type: multipart/alternative; boundary="000000000000fac0e705f0095ef0"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/ppVdRnB05KyAJROwPn4dBk_i7Yk>
+Subject: Re: [TLS] consensus call: deprecate all FFDHE cipher suites
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Sat, 17 Dec 2022 17:25:28 -0000
+
+--000000000000fac0e705f0095ef0
+Content-Type: text/plain; charset="UTF-8"
+
+It is, however, mentioned throughout the actual text of the document,
+assuming we're both looking at draft-ietf-tls-deprecate-obsolete-kex-01. I
+think the document describes its current change just fine. I asked only
+because I wasn't sure which the consensus call was about, since that isn't
+yet reflected in the document. (The document just says the group size must
+be at least 2048 bits in TLS 1.2, and then notes that TLS 1.3 satisfies
+that already. We're now talking here about deprecating the DHE ciphers
+altogether because, without negotiation, constraining group size isn't
+actually viable.)
+
+It sounds like this consensus call was indeed just about TLS 1.2,
+the more narrowly-scoped option, so I consider my question satisfied. :-)
+
+On Sat, Dec 17, 2022 at 12:03 PM Yaron Sheffer <yaronf.ietf@gmail.com>
+wrote:
+
+> Hi Carrick,
+>
+>
+>
+> While this is clear to the authors, it is not very clear in the document.
+> Even though the document only applies to TLS 1.2, TLS 1.2 (the version
+> number) is not mentioned in the doc title, in the abstract or in the
+> introduction.
+>
+>
+>
+> Thanks,
+>
+>                 Yaron
+>
+>
+>
+> *From: *TLS <tls-bounces@ietf.org> on behalf of Carrick Bartle <
+> cbartle266@gmail.com>
+> *Date: *Thursday, 15 December 2022 at 20:15
+> *To: *David Benjamin <davidben@chromium.org>
+> *Cc: *TLS List <tls@ietf.org>
+> *Subject: *Re: [TLS] consensus call: deprecate all FFDHE cipher suites
+>
+>
+>
+> Hi David,
+>
+>
+>
+> My understanding is that we're only discussing deprecating DHE for 1.2.
+> 1.3 is out of scope for this document.
+>
+>
+>
+> Carrick
+>
+>
+>
+>
+>
+> On Tue, Dec 13, 2022 at 10:06 AM David Benjamin <davidben@chromium.org>
+> wrote:
+>
+> Small clarification question: is this about just FFDHE in TLS 1.2, i.e.
+> the TLS_DHE_* cipher suites, or also the ffdhe* NamedGroup values as used
+> in TLS 1.3?
+>
+> I support deprecating the TLS_DHE_* ciphers in TLS 1.2. Indeed, we removed
+> them from Chrome back in 2016
+> <https://groups.google.com/a/chromium.org/g/blink-dev/c/ShRaCsYx4lk/m/46rD81AsBwAJ> and
+> from BoringSSL not too long afterwards.
+>
+>
+>
+> The DHE construction in TLS 1.2 was flawed in failing to negotiate groups.
+> The Logjam <https://weakdh.org/> attack should not have mattered and
+> instead was very difficult to mitigate without just dropping DHE entirely.
+> The lack of negotiation also exacerbates the DoS risks with DHE in much the
+> same way. It is also why the client text in the current draft
+> <https://www.ietf.org/archive/id/draft-ietf-tls-deprecate-obsolete-kex-01.html#section-3-2.2>
+> ("The group size is at least 2048 bits"), and the previous one
+> <https://www.ietf.org/archive/id/draft-ietf-tls-deprecate-obsolete-kex-00.html#section-3-2.2>
+> ("The group is one of the following well-known groups described in
+> [RFC7919]: ffdhe2048, ffdhe3072, ffdhe4096, ffdhe6144, ffdhe8192") are not
+> easily implementable. By the time we've gotten an unsatisfying group from
+> the server, it's too late to change parameters. Trying with a new
+> connection and different parameters is also problematic because of
+> downgrade attacks. A correct scheme would have been defined to only use
+> NamedGroup values, and so the server could pick another option if no groups
+> were in common.
+>
+>
+>
+> RFC 7919 should have fixed this, but it too was flawed: it reused the
+> cipher suites before, making it impossible to filter out old servers. See
+> these discussions:
+>
+> https://mailarchive.ietf.org/arch/msg/tls/I3hATzFWwkc2GZqt3hB8QX4c-CA/
+>
+> https://mailarchive.ietf.org/arch/msg/tls/DzazUXCUZDUpVgBPVHOwatb65dA/
+>
+> https://mailarchive.ietf.org/arch/msg/tls/bAOJD281iGc2HuEVq0uUlpYL2Mo/
+>
+>
+>
+> Additionally, the shared secret drops leading zeros, which leaks a timing
+> side channel as a result. Secrets should be fixed-width. See
+> https://raccoon-attack.com/ and
+> https://github.com/tlswg/tls13-spec/pull/462
+>
+>
+>
+> At this point, fixing all this with a protocol change no longer makes
+> sense. Any change we make now won't affect existing deployments. Any update
+> that picks up the protocol change may as well pick up TLS 1.3 with the ECDH
+> groups. Thus the best option is to just deprecate them, so deployments can
+> know this is not the direction to go.
+>
+>
+>
+> Of course, some deployments may have different needs. I'm sure there are
+> still corners of the world that still need to carry SSL 3.0 with RC4
+> despite RFC 7465 and RFC 7568. For instance, during the meeting, we
+> discussed how opportunistic encryption needs are sometimes different, which
+> is already generically covered by RFC 7435
+> <https://www.rfc-editor.org/rfc/rfc7435#section-3> ("OSS protocols may
+> employ more liberal settings than would be best practice [...]"). All that
+> is fine and does not conflict with deprecating. These modes do not meet the
+> overall standard expected for TLS modes, so this WG should communicate that.
+>
+>
+>
+> I'm somewhere between supportive and ambivalent on the ffdhe* NamedGroup
+> values in TLS 1.3. We do not expect to ever implement them in BoringSSL,
+> and their performance would be quite a DoS concern if we ever did. But that
+> construction is not as deeply flawed as the TLS 1.2 construction.
+>
+>
+>
+> On Tue, Dec 13, 2022 at 9:46 AM Sean Turner <sean@sn3rd.com> wrote:
+>
+> During the tls@IETF 115 session topic covering
+> draft-ietd-tls-deprecate-obsolete-kex, the sense of the room was that there
+> was support to deprecate all FFDHE cipher suites including well-known
+> groups. This message starts the process to judge whether there is consensus
+> to deprecate all FFDHE cipher suites including those well-known groups.
+> Please indicate whether you do or do not support deprecation of FFDHE
+> cipher suites by 2359UTC on 6 January 2023. If do not support deprecation,
+> please indicate why.
+>
+> NOTE: We had an earlier consensus call on this topic when adopting
+> draft-ietd-tls-deprecate-obsolete-kex, but the results were inconclusive.
+> If necessary, we will start consensus calls on other issues in separate
+> threads.
+>
+> Cheers,
+> Chris, Joe, and Sean
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+>
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+>
+> _______________________________________________ TLS mailing list
+> TLS@ietf.org https://www.ietf.org/mailman/listinfo/tls
+>
+
+--000000000000fac0e705f0095ef0
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr">It is, however, mentioned throughout=C2=
+=A0the actual text of the document, assuming=C2=A0we&#39;re both looking at=
+=C2=A0draft-ietf-tls-deprecate-obsolete-kex-01. I think the=C2=A0document d=
+escribes its=C2=A0current change just fine. I asked only because=C2=A0I was=
+n&#39;t sure which the consensus call was about, since that isn&#39;t yet r=
+eflected in the document. (The document just says the group size must be at=
+ least 2048 bits in TLS 1.2, and then notes that TLS 1.3 satisfies that alr=
+eady. We&#39;re now talking here about deprecating the DHE ciphers altogeth=
+er because, without negotiation, constraining group size isn&#39;t actually=
+ viable.)</div><div dir=3D"ltr"><br></div><div>It sounds like this consensu=
+s call was indeed just about TLS 1.2, the=C2=A0more=C2=A0narrowly-scoped op=
+tion, so I consider my question satisfied. :-)</div><br><div class=3D"gmail=
+_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Sat, Dec 17, 2022 at 12:03=
+ PM Yaron Sheffer &lt;<a href=3D"mailto:yaronf.ietf@gmail.com" target=3D"_b=
+lank">yaronf.ietf@gmail.com</a>&gt; wrote:<br></div><blockquote class=3D"gm=
+ail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,=
+204,204);padding-left:1ex"><div><div lang=3D"en-IL"><div><p class=3D"MsoNor=
+mal"><span lang=3D"EN-US">Hi Carrick,<u></u><u></u></span></p><p class=3D"M=
+soNormal"><span lang=3D"EN-US"><u></u>=C2=A0<u></u></span></p><p class=3D"M=
+soNormal"><span lang=3D"EN-US">While this is clear to the authors, it is no=
+t very clear in the document. Even though the document only applies to TLS =
+1.2, TLS 1.2 (the version number) is not mentioned in the doc title, in the=
+ abstract or in the introduction.<u></u><u></u></span></p><p class=3D"MsoNo=
+rmal"><span lang=3D"EN-US"><u></u>=C2=A0<u></u></span></p><p class=3D"MsoNo=
+rmal"><span lang=3D"EN-US">Thanks,<u></u><u></u></span></p><p class=3D"MsoN=
+ormal"><span lang=3D"EN-US">=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Yaron<u></u><u></u></span></p=
+><p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p><div style=3D"border-right:=
+none;border-bottom:none;border-left:none;border-top:1pt solid rgb(181,196,2=
+23);padding:3pt 0cm 0cm"><p class=3D"MsoNormal"><b><span style=3D"font-size=
+:12pt;color:black">From: </span></b><span style=3D"font-size:12pt;color:bla=
+ck">TLS &lt;<a href=3D"mailto:tls-bounces@ietf.org" target=3D"_blank">tls-b=
+ounces@ietf.org</a>&gt; on behalf of Carrick Bartle &lt;<a href=3D"mailto:c=
+bartle266@gmail.com" target=3D"_blank">cbartle266@gmail.com</a>&gt;<br><b>D=
+ate: </b>Thursday, 15 December 2022 at 20:15<br><b>To: </b>David Benjamin &=
+lt;<a href=3D"mailto:davidben@chromium.org" target=3D"_blank">davidben@chro=
+mium.org</a>&gt;<br><b>Cc: </b>TLS List &lt;<a href=3D"mailto:tls@ietf.org"=
+ target=3D"_blank">tls@ietf.org</a>&gt;<br><b>Subject: </b>Re: [TLS] consen=
+sus call: deprecate all FFDHE cipher suites<u></u><u></u></span></p></div><=
+div><p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p></div><div><p class=3D"M=
+soNormal">Hi David,<u></u><u></u></p><div><p class=3D"MsoNormal"><u></u>=C2=
+=A0<u></u></p></div><div><p class=3D"MsoNormal">My understanding is that we=
+&#39;re only discussing deprecating DHE for 1.2. 1.3 is out of scope for th=
+is document.<u></u><u></u></p></div><div><p class=3D"MsoNormal"><u></u>=C2=
+=A0<u></u></p></div><div><p class=3D"MsoNormal">Carrick<u></u><u></u></p></=
+div><div><p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p></div></div><p clas=
+s=3D"MsoNormal"><u></u>=C2=A0<u></u></p><div><div><p class=3D"MsoNormal">On=
+ Tue, Dec 13, 2022 at 10:06 AM David Benjamin &lt;<a href=3D"mailto:davidbe=
+n@chromium.org" target=3D"_blank">davidben@chromium.org</a>&gt; wrote:<u></=
+u><u></u></p></div><blockquote style=3D"border-top:none;border-right:none;b=
+order-bottom:none;border-left:1pt solid rgb(204,204,204);padding:0cm 0cm 0c=
+m 6pt;margin-left:4.8pt;margin-right:0cm"><div><p class=3D"MsoNormal">Small=
+ clarification question: is this about just FFDHE in TLS 1.2, i.e. the TLS_=
+DHE_* cipher suites, or also the ffdhe* NamedGroup values as used in TLS 1.=
+3?<br><br>I support deprecating the TLS_DHE_* ciphers in TLS 1.2. Indeed, w=
+e removed them from Chrome back in <a href=3D"https://groups.google.com/a/c=
+hromium.org/g/blink-dev/c/ShRaCsYx4lk/m/46rD81AsBwAJ" target=3D"_blank">201=
+6</a>=C2=A0and from BoringSSL not too long afterwards.<u></u><u></u></p><di=
+v><p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p></div><div><p class=3D"Mso=
+Normal">The DHE construction in TLS 1.2 was flawed in failing to negotiate =
+groups. The <a href=3D"https://weakdh.org/" target=3D"_blank">Logjam</a> at=
+tack should=C2=A0not have mattered and instead was very difficult to mitiga=
+te without just dropping DHE entirely. The lack of negotiation also exacerb=
+ates the DoS risks with DHE in much the same way. It is also why the client=
+ text in the <a href=3D"https://www.ietf.org/archive/id/draft-ietf-tls-depr=
+ecate-obsolete-kex-01.html#section-3-2.2" target=3D"_blank">current draft</=
+a> (&quot;The group size is at least 2048 bits&quot;), and the <a href=3D"h=
+ttps://www.ietf.org/archive/id/draft-ietf-tls-deprecate-obsolete-kex-00.htm=
+l#section-3-2.2" target=3D"_blank">previous one</a> (&quot;The group is one=
+ of the following well-known groups described in [RFC7919]: ffdhe2048, ffdh=
+e3072, ffdhe4096, ffdhe6144, ffdhe8192&quot;) are not easily implementable.=
+ By the time we&#39;ve gotten an unsatisfying group from the server, it&#39=
+;s too late to change parameters. Trying with a new connection and differen=
+t parameters is also problematic because of downgrade attacks. A correct sc=
+heme would have been defined to only use NamedGroup values, and so the serv=
+er could pick another option if no groups were in common.<u></u><u></u></p>=
+</div><div><div><p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p></div><div><=
+p class=3D"MsoNormal">RFC 7919 should have fixed this, but it too was flawe=
+d: it reused the cipher suites before,=C2=A0making it impossible to filter =
+out old servers. See these discussions:<u></u><u></u></p></div><div><p clas=
+s=3D"MsoNormal"><a href=3D"https://mailarchive.ietf.org/arch/msg/tls/I3hATz=
+FWwkc2GZqt3hB8QX4c-CA/" target=3D"_blank">https://mailarchive.ietf.org/arch=
+/msg/tls/I3hATzFWwkc2GZqt3hB8QX4c-CA/</a><u></u><u></u></p></div><div><p cl=
+ass=3D"MsoNormal"><a href=3D"https://mailarchive.ietf.org/arch/msg/tls/Dzaz=
+UXCUZDUpVgBPVHOwatb65dA/" target=3D"_blank">https://mailarchive.ietf.org/ar=
+ch/msg/tls/DzazUXCUZDUpVgBPVHOwatb65dA/</a><u></u><u></u></p></div><div><p =
+class=3D"MsoNormal"><a href=3D"https://mailarchive.ietf.org/arch/msg/tls/bA=
+OJD281iGc2HuEVq0uUlpYL2Mo/" target=3D"_blank">https://mailarchive.ietf.org/=
+arch/msg/tls/bAOJD281iGc2HuEVq0uUlpYL2Mo/</a><u></u><u></u></p></div><div><=
+p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p></div><div><div><p class=3D"M=
+soNormal">Additionally, the shared secret drops leading zeros, which leaks =
+a timing side channel as a result. Secrets should be fixed-width. See=C2=A0=
+<a href=3D"https://raccoon-attack.com/" target=3D"_blank">https://raccoon-a=
+ttack.com/</a>=C2=A0and=C2=A0<a href=3D"https://github.com/tlswg/tls13-spec=
+/pull/462" target=3D"_blank">https://github.com/tlswg/tls13-spec/pull/462</=
+a><u></u><u></u></p></div></div><div><p class=3D"MsoNormal"><u></u>=C2=A0<u=
+></u></p></div><div><p class=3D"MsoNormal">At this point, fixing all this w=
+ith a protocol change no longer makes sense. Any change we make now won&#39=
+;t affect existing deployments. Any update that picks up the protocol chang=
+e may as well pick up TLS 1.3 with the ECDH groups. Thus the best option is=
+ to just deprecate them, so deployments can know this is not the direction =
+to go.<u></u><u></u></p></div><div><p class=3D"MsoNormal"><u></u>=C2=A0<u><=
+/u></p></div><div><p class=3D"MsoNormal">Of course, some deployments may ha=
+ve different needs. I&#39;m sure there are still corners of the world that =
+still need to carry SSL 3.0 with RC4 despite RFC 7465 and RFC=C2=A07568. Fo=
+r instance, during the meeting, we discussed how opportunistic encryption n=
+eeds are sometimes different, which is already generically covered by <a hr=
+ef=3D"https://www.rfc-editor.org/rfc/rfc7435#section-3" target=3D"_blank">R=
+FC 7435</a> (&quot;OSS protocols may employ more liberal settings than woul=
+d be best practice [...]&quot;). All that is fine and does not conflict wit=
+h deprecating. These modes do not meet the overall standard expected for TL=
+S modes, so this WG should communicate that.<u></u><u></u></p></div><div><d=
+iv><p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p></div><div><p class=3D"Ms=
+oNormal">I&#39;m somewhere between=C2=A0supportive and ambivalent on the ff=
+dhe* NamedGroup values in TLS 1.3. We do not expect to ever implement them =
+in BoringSSL, and their performance would be quite a DoS concern if we ever=
+ did. But that construction is not as deeply flawed as the TLS 1.2 construc=
+tion.<u></u><u></u></p></div></div><p class=3D"MsoNormal"><u></u>=C2=A0<u><=
+/u></p><div><div><p class=3D"MsoNormal">On Tue, Dec 13, 2022 at 9:46 AM Sea=
+n Turner &lt;<a href=3D"mailto:sean@sn3rd.com" target=3D"_blank">sean@sn3rd=
+.com</a>&gt; wrote:<u></u><u></u></p></div><blockquote style=3D"border-top:=
+none;border-right:none;border-bottom:none;border-left:1pt solid rgb(204,204=
+,204);padding:0cm 0cm 0cm 6pt;margin-left:4.8pt;margin-right:0cm"><p class=
+=3D"MsoNormal">During the tls@IETF 115 session topic covering draft-ietd-tl=
+s-deprecate-obsolete-kex, the sense of the room was that there was support =
+to deprecate all FFDHE cipher suites including well-known groups. This mess=
+age starts the process to judge whether there is consensus to deprecate all=
+ FFDHE cipher suites including those well-known groups. Please indicate whe=
+ther you do or do not support deprecation of FFDHE cipher suites by 2359UTC=
+ on 6 January 2023. If do not support deprecation, please indicate why.<br>=
+<br>NOTE: We had an earlier consensus call on this topic when adopting draf=
+t-ietd-tls-deprecate-obsolete-kex, but the results were inconclusive. If ne=
+cessary, we will start consensus calls on other issues in separate threads.=
+<br><br>Cheers,<br>Chris, Joe, and Sean<br>________________________________=
+_______________<br>TLS mailing list<br><a href=3D"mailto:TLS@ietf.org" targ=
+et=3D"_blank">TLS@ietf.org</a><br><a href=3D"https://www.ietf.org/mailman/l=
+istinfo/tls" target=3D"_blank">https://www.ietf.org/mailman/listinfo/tls<br=
+></a><u></u><u></u></p></blockquote></div></div></div><p class=3D"MsoNormal=
+">_______________________________________________<br>TLS mailing list<br><a=
+ href=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.org</a><br><a href=
+=3D"https://www.ietf.org/mailman/listinfo/tls" target=3D"_blank">https://ww=
+w.ietf.org/mailman/listinfo/tls</a><u></u><u></u></p></blockquote></div><p =
+class=3D"MsoNormal">_______________________________________________ TLS mai=
+ling list <a href=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.org</a=
+> <a href=3D"https://www.ietf.org/mailman/listinfo/tls" target=3D"_blank">h=
+ttps://www.ietf.org/mailman/listinfo/tls</a> <u></u><u></u></p></div></div>
+</div></blockquote></div></div>
+
+--000000000000fac0e705f0095ef0--
+

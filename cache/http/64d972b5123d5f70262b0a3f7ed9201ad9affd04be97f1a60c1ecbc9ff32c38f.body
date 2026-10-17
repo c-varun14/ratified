@@ -1,0 +1,255 @@
+From bbe@google.com  Tue Nov  7 01:10:08 2023
+Return-Path: <bbe@google.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id E4871C18E54B
+ for <tls@ietfa.amsl.com>; Tue,  7 Nov 2023 01:10:08 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -22.606
+X-Spam-Level: 
+X-Spam-Status: No, score=-22.606 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIMWL_WL_MED=-0.001, DKIM_SIGNED=0.1,
+ DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1,
+ ENV_AND_HDR_SPF_MATCH=-0.5, HTML_MESSAGE=0.001, RCVD_IN_DNSWL_HI=-5,
+ RCVD_IN_ZEN_BLOCKED_OPENDNS=0.001, SPF_HELO_NONE=0.001,
+ SPF_PASS=-0.001, T_SCC_BODY_TEXT_LINE=-0.01, URIBL_BLOCKED=0.001,
+ URIBL_DBL_BLOCKED_OPENDNS=0.001, URIBL_ZEN_BLOCKED_OPENDNS=0.001,
+ USER_IN_DEF_DKIM_WL=-7.5, USER_IN_DEF_SPF_WL=-7.5]
+ autolearn=unavailable autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=google.com
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id ykLists4G4iv for <tls@ietfa.amsl.com>;
+ Tue,  7 Nov 2023 01:10:08 -0800 (PST)
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com
+ [IPv6:2607:f8b0:4864:20::831])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 3BEFDC1519B6
+ for <tls@ietf.org>; Tue,  7 Nov 2023 01:10:08 -0800 (PST)
+Received: by mail-qt1-x831.google.com with SMTP id
+ d75a77b69052e-41ea9c5e83cso273221cf.0
+ for <tls@ietf.org>; Tue, 07 Nov 2023 01:10:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=google.com; s=20230601; t=1699348207; x=1699953007; darn=ietf.org;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=oLQ01FxW3y79WSsnYVcES9ftirzRUXVa10Kg3/hdBBM=;
+ b=EteA5b0HKNQ/lE+VX6pd59Z7C0GFqvng/iLGCfdCaZx8ApnrToXgGU0bROe5iuMbgG
+ sDWxh1fHLRs2LJ5A6YQh0nc13kX72szMM/0sPF0kPxbIxejCvdK5Y0YQ1RWsgUifDZzY
+ 7IDFmzFw+UYX0dwX395faP2Ow/hhlTi58qn2F9WCbgu6YNL1rsyOBzcDDK+M9NHukaPs
+ 7ZR8w0idH6S8VaQisgDEVWFgG8kDbaHYifyfoNoQUwsv3M7Bgm3HiCayRgeyBkxJViPS
+ Q5OAyM1ji7lpzk8BipwuYEz0lmLyre5tlbZTl1en/ryJeA325X+GAU0QgiZZLhH96qIJ
+ TkfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1699348207; x=1699953007;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=oLQ01FxW3y79WSsnYVcES9ftirzRUXVa10Kg3/hdBBM=;
+ b=BPcr3LwLLtOy1Gr9VGzdCK2pQSqwvvCy2Kura1yJksfGgyC2c2KEnLxbUKTaqU8NfG
+ dvjVtSVVWk0EwWrWnDS/NYhRZrIHVVkR4+MqBgN1/1jX5M6gI0dmJDi0mk6pkRVvPLQa
+ lE9EaL81H6viRSNjTSMFRMkld1idwj87apV8iUaM7aSrSeFs38kI4hDvX9sds3A27DFS
+ Dh2qaTiZnMHxyFowYc8M621qHqEILsbP/Wn+JhcocfM9bxZe9h6IOliQX6rllGIYW/A3
+ DCVD0qGeJltdEn1A4/D2VPAMzdO0+tL81sMURBFoKtw9rk4O1HJgQvTBMhe7+o8/2u9l
+ JH+w==
+X-Gm-Message-State: AOJu0YyOvFwxnwxxu0nXF7uN0CicMEgU/82dGTZRQntaDaqFNHJypKzy
+ T3ZJBcHyMUhoH47kg9p95cJTHeby8HamEcrLfAGkBw==
+X-Google-Smtp-Source: AGHT+IHoagrzAZJiw6RvtAWRCnLAmK6Jj+8RS0cIf/bPShUnvh42wZ1aKG0BlgJV7z6TJGspWHQwrSTgE3SaaTJBCFo=
+X-Received: by 2002:a05:622a:6f82:b0:41e:397b:7c2f with SMTP id
+ iw2-20020a05622a6f8200b0041e397b7c2fmr236945qtb.28.1699348206804; Tue, 07 Nov
+ 2023 01:10:06 -0800 (PST)
+MIME-Version: 1.0
+References: <CAOgPGoDiSRno_3QPgyEyY4K2TvFg9RxqXhi10RZRT7tL2cRdQw@mail.gmail.com>
+ <CAF8qwaDPfc3_pQsZUjRGwi4v9e5Bd+wuPyAQcTMquSyPKSaGRQ@mail.gmail.com>
+ <DM8PR00MB140708349E20CCECCAD5379E8CAAA@DM8PR00MB1407.namprd00.prod.outlook.com>
+In-Reply-To: <DM8PR00MB140708349E20CCECCAD5379E8CAAA@DM8PR00MB1407.namprd00.prod.outlook.com>
+From: Bob Beck <bbe@google.com>
+Date: Tue, 7 Nov 2023 10:09:54 +0100
+Message-ID: <CALA6n3FFO=TC2vPavc3MqdAkWpZ4kHmWUegiMk8KjG8+-+-K8g@mail.gmail.com>
+To: Andrei Popov <Andrei.Popov=40microsoft.com@dmarc.ietf.org>
+Cc: David Benjamin <davidben@chromium.org>, Joseph Salowey <joe@salowey.net>, 
+ "<tls@ietf.org>" <tls@ietf.org>
+Content-Type: multipart/alternative; boundary="00000000000037ace406098c569a"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/41ByNZZ-Fh3uoP4O2t7uFQWzlbw>
+Subject: Re: [TLS] [EXTERNAL] Re: Adoption call for Legacy RSASSA-PKCS1-v1_5
+ codepoints for TLS 1.3
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Tue, 07 Nov 2023 09:10:09 -0000
+
+--00000000000037ace406098c569a
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+I also support adoption, and am willing to contribute to text and
+implementation efforts.
+
+On Mon, Nov 6, 2023 at 6:50=E2=80=AFPM Andrei Popov <Andrei.Popov=3D
+40microsoft.com@dmarc.ietf.org> wrote:
+
+> Likewise, I support adoption, willing to contribute text and
+> implementation.
+>
+> Cheers,
+>
+> Andrei
+>
+> ------------------------------
+> *From:* TLS <tls-bounces@ietf.org> on behalf of David Benjamin <
+> davidben@chromium.org>
+> *Sent:* Monday, November 6, 2023 9:26 AM
+> *To:* Joseph Salowey <joe@salowey.net>
+> *Cc:* <tls@ietf.org> <tls@ietf.org>
+> *Subject:* [EXTERNAL] Re: [TLS] Adoption call for Legacy
+> RSASSA-PKCS1-v1_5 codepoints for TLS 1.3
+>
+> I support adoption and am willing to contribute text, but this is perhaps
+> not surprising. :-)
+>
+> On Mon, Nov 6, 2023 at 12:25=E2=80=AFPM Joseph Salowey <joe@salowey.net> =
+wrote:
+>
+> At the TLS meeting at IETF 118 there was significant support for the
+> draft  Legacy RSASSA-PKCS1-v1_5 codepoints for TLS 1.3
+> <https://datatracker.ietf.org/doc/draft-davidben-tls13-pkcs1/01/> (
+> https://datatracker.ietf.org/doc/draft-davidben-tls13-pkcs1/01/)  This
+> call is to confirm this on the list.  Please indicate if you support the
+> adoption of this draft and are willing to review and contribute text.  If
+> you do not support adoption of this draft please indicate why.  This call
+> will close on November 27, 2023.
+>
+> Thanks,
+>
+> Sean, Chris and Joe
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+>
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+>
+
+--00000000000037ace406098c569a
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">I also support adoption, and am willing to contribute to t=
+ext and implementation efforts.=C2=A0</div><br><div class=3D"gmail_quote"><=
+div dir=3D"ltr" class=3D"gmail_attr">On Mon, Nov 6, 2023 at 6:50=E2=80=AFPM=
+ Andrei Popov &lt;Andrei.Popov=3D<a href=3D"mailto:40microsoft.com@dmarc.ie=
+tf.org" target=3D"_blank">40microsoft.com@dmarc.ietf.org</a>&gt; wrote:<br>=
+</div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;b=
+order-left:1px solid rgb(204,204,204);padding-left:1ex"><div>
+
+
+
+
+<div dir=3D"ltr">
+<div style=3D"font-family:Aptos,Aptos_EmbeddedFont,Aptos_MSFontService,Cali=
+bri,Helvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+Likewise, I support adoption, willing to contribute text and implementation=
+.</div>
+<div style=3D"font-family:Aptos,Aptos_EmbeddedFont,Aptos_MSFontService,Cali=
+bri,Helvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+<br>
+</div>
+<div style=3D"font-family:Aptos,Aptos_EmbeddedFont,Aptos_MSFontService,Cali=
+bri,Helvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+Cheers,</div>
+<div style=3D"font-family:Aptos,Aptos_EmbeddedFont,Aptos_MSFontService,Cali=
+bri,Helvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+<br>
+</div>
+<div style=3D"font-family:Aptos,Aptos_EmbeddedFont,Aptos_MSFontService,Cali=
+bri,Helvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+Andrei</div>
+<div id=3D"m_8658967302264193269m_5302002152791125123Signature"></div>
+<div id=3D"m_8658967302264193269m_5302002152791125123appendonsend"></div>
+<div style=3D"font-family:Aptos,Aptos_EmbeddedFont,Aptos_MSFontService,Cali=
+bri,Helvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+<br>
+</div>
+<hr style=3D"display:inline-block;width:98%">
+<div id=3D"m_8658967302264193269m_5302002152791125123divRplyFwdMsg" dir=3D"=
+ltr"><span style=3D"font-family:Calibri,sans-serif;font-size:11pt;color:rgb=
+(0,0,0)"><b>From:</b>=C2=A0TLS &lt;<a href=3D"mailto:tls-bounces@ietf.org" =
+target=3D"_blank">tls-bounces@ietf.org</a>&gt; on behalf of David Benjamin =
+&lt;<a href=3D"mailto:davidben@chromium.org" target=3D"_blank">davidben@chr=
+omium.org</a>&gt;<br>
+<b>Sent:</b>=C2=A0Monday, November 6, 2023 9:26 AM<br>
+<b>To:</b>=C2=A0Joseph Salowey &lt;<a href=3D"mailto:joe@salowey.net" targe=
+t=3D"_blank">joe@salowey.net</a>&gt;<br>
+<b>Cc:</b>=C2=A0&lt;<a href=3D"mailto:tls@ietf.org" target=3D"_blank">tls@i=
+etf.org</a>&gt; &lt;<a href=3D"mailto:tls@ietf.org" target=3D"_blank">tls@i=
+etf.org</a>&gt;<br>
+<b>Subject:</b>=C2=A0[EXTERNAL] Re: [TLS] Adoption call for Legacy RSASSA-P=
+KCS1-v1_5 codepoints for TLS 1.3</span>
+<div>=C2=A0</div>
+</div>
+<div style=3D"direction:ltr">I support adoption and am willing to contribut=
+e text, but this is perhaps not surprising. :-)</div>
+<br>
+<div style=3D"direction:ltr">On Mon, Nov 6, 2023 at 12:25=E2=80=AFPM Joseph=
+ Salowey &lt;<a href=3D"mailto:joe@salowey.net" id=3D"m_8658967302264193269=
+m_5302002152791125123OWA361f8656-954d-9756-52b3-40d8401cbfeb" target=3D"_bl=
+ank">joe@salowey.net</a>&gt; wrote:</div>
+<blockquote style=3D"margin:0px 0px 0px 0.8ex;padding-left:1ex;border-left:=
+1px solid rgb(204,204,204)">
+<div style=3D"direction:ltr">At the TLS meeting at IETF 118 there was signi=
+ficant support for the draft=C2=A0
+<a href=3D"https://datatracker.ietf.org/doc/draft-davidben-tls13-pkcs1/01/"=
+ id=3D"m_8658967302264193269m_5302002152791125123OWA87d37627-1438-1b1a-8db5=
+-2d62e28051f9" target=3D"_blank">
+Legacy RSASSA-PKCS1-v1_5 codepoints for TLS 1.3</a>=C2=A0(<a href=3D"https:=
+//datatracker.ietf.org/doc/draft-davidben-tls13-pkcs1/01/" id=3D"m_86589673=
+02264193269m_5302002152791125123OWAca6276ea-163d-7b37-fa18-5b5cf7c4ec68" ta=
+rget=3D"_blank">https://datatracker.ietf.org/doc/draft-davidben-tls13-pkcs1=
+/01/</a>)=C2=A0
+ This call is to confirm this on the list.=C2=A0 Please indicate if you sup=
+port the adoption of this draft and are willing to review and contribute te=
+xt.=C2=A0 If you do not support adoption of this draft please indicate why.=
+=C2=A0 This call will close on November 27, 2023.=C2=A0</div>
+<div style=3D"direction:ltr"><br>
+</div>
+<div style=3D"direction:ltr">Thanks,</div>
+<div style=3D"direction:ltr"><br>
+</div>
+<div style=3D"direction:ltr">Sean, Chris and Joe</div>
+_______________________________________________<br>
+TLS mailing list<br>
+<a href=3D"mailto:TLS@ietf.org" id=3D"m_8658967302264193269m_53020021527911=
+25123OWA850cbc9f-3264-f01d-4572-356fec599368" target=3D"_blank">TLS@ietf.or=
+g</a><br>
+<a href=3D"https://www.ietf.org/mailman/listinfo/tls" id=3D"m_8658967302264=
+193269m_5302002152791125123OWAf7e85025-7a00-d532-4bb9-499b926f7b86" target=
+=3D"_blank">https://www.ietf.org/mailman/listinfo/tls</a><br>
+</blockquote>
+</div>
+
+_______________________________________________<br>
+TLS mailing list<br>
+<a href=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.org</a><br>
+<a href=3D"https://www.ietf.org/mailman/listinfo/tls" rel=3D"noreferrer" ta=
+rget=3D"_blank">https://www.ietf.org/mailman/listinfo/tls</a><br>
+</div></blockquote></div>
+
+--00000000000037ace406098c569a--
+

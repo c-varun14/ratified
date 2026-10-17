@@ -1,0 +1,158 @@
+Return-Path: <cpatton@cloudflare.com>
+X-Original-To: tls@mail2.ietf.org
+Delivered-To: tls@mail2.ietf.org
+Received: from localhost (localhost [127.0.0.1])
+	by mail2.ietf.org (Postfix) with ESMTP id C152A4CC6B48
+	for <tls@mail2.ietf.org>; Tue, 29 Jul 2025 07:13:50 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at ietf.org
+X-Spam-Flag: NO
+X-Spam-Score: -2.098
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.098 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIMWL_WL_MED=-0.001, DKIM_SIGNED=0.1,
+	DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1,
+	HTML_MESSAGE=0.001, RCVD_IN_DNSWL_NONE=-0.0001, SPF_HELO_NONE=0.001,
+	SPF_NONE=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: mail2.ietf.org (amavisd-new); dkim=pass (2048-bit key)
+	header.d=cloudflare.com
+Received: from mail2.ietf.org ([166.84.6.31])
+	by localhost (mail2.ietf.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id ZJhwjtGQD_CI for <tls@mail2.ietf.org>;
+	Tue, 29 Jul 2025 07:13:50 -0700 (PDT)
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com
+ [IPv6:2607:f8b0:4864:20::82d])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail2.ietf.org (Postfix) with ESMTPS id 526954CC6B40
+	for <tls@ietf.org>; Tue, 29 Jul 2025 07:13:50 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id
+ d75a77b69052e-4a9bff7fc6dso10570021cf.1
+        for <tls@ietf.org>; Tue, 29 Jul 2025 07:13:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google09082023; t=1753798430; x=1754403230;
+ darn=ietf.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=eLk03Weq1aE/hgyg4EXNlHLmTr/H+SqRsBYgUZKlrq0=;
+        b=e8spE111Bc2DrNkbXOeKuxUFNSRRD6bRLHgXx59jyAmyQJxXPRAw5xkpZDiNHaTaAl
+         ExbXMm7L9cx/sgDn2LMXtbclL1Ze9o/rikrWp9wBm1YDipDoIOH22v9lpV0KlHLgns9I
+         LiByU3la7JBUSLbCpwhXj8Sgla4mC66bMViin+6JtOLni32cUf4cak5KDFniApRA+8uL
+         97k/GjBfUx4RP5mQVS9XOOHJMJjdLwQVyHS4s9pdDGu9JZwdc/oi8dAuzMm2iHdWo2FZ
+         9xD87895nWk31u4rQruoQesNuiwT1/Qer5vpRslwYj9KOBegor9QqiiWu45GqsETVcnE
+         tqKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753798430; x=1754403230;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eLk03Weq1aE/hgyg4EXNlHLmTr/H+SqRsBYgUZKlrq0=;
+        b=mnMKtXQld7xGwOH/UPjKSyDmsxTdVHO0XGG/HsZivIgd9CBojEKlsEAn9cUKcAPAMv
+         2K7roybfkaLi1Y+6HKkfVvE8nliwGsyczWe4Jv4NxRJ2wbLj5ZOidfD/Vk60zjsrJJo+
+         vrdqgSVud37xhY6rFNWpWKreZ5rypORlIl8it3cQ0MQDaTz23T4HcasoS0O0W/Th7OzS
+         nlO3OY8zctlY4WCDGskXcQYeWLEv040ogrSZKHVHw5NVhLGSkjsH4s3o0rgGCoQ7zZH3
+         2SYGyDhh+fyraSFiPXR0OF9PLWJfjiG8/tE3MKRfP5Kv/qwSDwMWSiS9r8lKgZNFEedV
+         emAw==
+X-Gm-Message-State: AOJu0Yw4oDrPBysNSnkEKs2fLr5M/MSwX/+Bwm5DJMM+ZEY4teeaLJNe
+	A7xJLyjhUXzmbwPzHjJiFjz77H0mh/yOmaCsaVGBVEM2URvOi6enR1y+oegl1waJAvKopv2THNQ
+	/CJD+kwVjMT05Emte/Xy/lCVzbwLwiN5I4ViefriOMoVyDAjWzHzqQdY=
+X-Gm-Gg: ASbGncv/JXGX+RFIkn1PMIuVD88LMU5nApsCK1aaJ9/Cd1yISLSNUtRDz5FLdL7a4lI
+	Y7Gz+CdekmduzE3MoxEa8Hxye3xy4/26WIG1DecjV0Zb8YEcvfjciTjHJAah6gDZGQ6Nc4s57Nm
+	2cepml56EN1G+ad9N6qWHfzJRx3Z/Z8pVTCREFzDJVpo2XEAAtp1q3Adv+NYuYQGFGHKn7rnL2s
+	sOb1yu205Z6UhatZYDVAWNhzLU0+6RJCiPrPeO4RhD0aN+wHpA=
+X-Google-Smtp-Source: 
+ AGHT+IGX3GZ22FPbJE6VVska8zgWcRVOvMgfRFZ8wPPCA/MKtSI7klt8qR1cf5h4Ao9+x2FlaH0Ab4fOplBG5RDZy9o=
+X-Received: by 2002:ac8:5951:0:b0:4ab:6923:ecc with SMTP id
+ d75a77b69052e-4aecc8d5d72mr42721601cf.25.1753798429377; Tue, 29 Jul 2025
+ 07:13:49 -0700 (PDT)
+MIME-Version: 1.0
+References: <A729C01D-2CFA-48DD-B709-70D3DBB41250@sn3rd.com>
+In-Reply-To: <A729C01D-2CFA-48DD-B709-70D3DBB41250@sn3rd.com>
+From: Christopher Patton <cpatton@cloudflare.com>
+Date: Tue, 29 Jul 2025 10:13:38 -0400
+X-Gm-Features: Ac12FXyXUgXoD_SGIhcXROEtMyoRU94P1bokpfLDgv_hJ2OPeJJ3yKQWY7ABbVg
+Message-ID: 
+ <CAG2Zi23TXLcSGK7m695=J_0d3pcJb1DnkjO3mZENu8NWeOU7iQ@mail.gmail.com>
+To: Sean Turner <sean@sn3rd.com>
+Content-Type: multipart/alternative; boundary="000000000000644676063b120443"
+Message-ID-Hash: J5I7MUDHSPN4IYV2D72OBA6Q7TX4CL5T
+X-Message-ID-Hash: J5I7MUDHSPN4IYV2D72OBA6Q7TX4CL5T
+X-MailFrom: cpatton@cloudflare.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+CC: TLS List <tls@ietf.org>
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Re=3A_Working_Group_Last_Call_for_Legacy_RSASSA-PKCS1-v1?=
+ =?utf-8?q?=5F5_codepoints_for_TLS_1=2E3?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/M25hcz9qfxoAK6Ucw44yVelY0b0>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+--000000000000644676063b120443
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Looks good to me! Ship.
+
+Chris P.
+
+On Thu, Jul 24, 2025 at 3:01=E2=80=AFAM Sean Turner <sean@sn3rd.com> wrote:
+
+> This is the working group last call for Legacy RSASSA-PKCS1-v1_5
+> codepoints for TLS 1.3. Please review draft-ietf-tls-tls13-pkcs1 [1] and
+> reply to this thread indicating if you think it is ready for publication =
+or
+> not.  If you do not think it is ready please indicate why.  This call wil=
+l
+> end on at 2359 UTC on 07 August 2024.
+>
+> Cheers,
+> spt
+>
+> [1] https://datatracker.ietf.org/doc/draft-ietf-tls-tls13-pkcs1-03/
+> _______________________________________________
+> TLS mailing list -- tls@ietf.org
+> To unsubscribe send an email to tls-leave@ietf.org
+>
+
+--000000000000644676063b120443
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div>Looks good to me! Ship.</div><div><br></div><div>Chri=
+s P.</div></div><br><div class=3D"gmail_quote gmail_quote_container"><div d=
+ir=3D"ltr" class=3D"gmail_attr">On Thu, Jul 24, 2025 at 3:01=E2=80=AFAM Sea=
+n Turner &lt;<a href=3D"mailto:sean@sn3rd.com">sean@sn3rd.com</a>&gt; wrote=
+:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.=
+8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">This is the wo=
+rking group last call for Legacy RSASSA-PKCS1-v1_5 codepoints for TLS 1.3. =
+Please review draft-ietf-tls-tls13-pkcs1 [1] and reply to this thread indic=
+ating if you think it is ready for publication or not.=C2=A0 If you do not =
+think it is ready please indicate why.=C2=A0 This call will end on at 2359 =
+UTC on 07 August 2024.<br>
+<br>
+Cheers,<br>
+spt<br>
+<br>
+[1] <a href=3D"https://datatracker.ietf.org/doc/draft-ietf-tls-tls13-pkcs1-=
+03/" rel=3D"noreferrer" target=3D"_blank">https://datatracker.ietf.org/doc/=
+draft-ietf-tls-tls13-pkcs1-03/</a><br>
+_______________________________________________<br>
+TLS mailing list -- <a href=3D"mailto:tls@ietf.org" target=3D"_blank">tls@i=
+etf.org</a><br>
+To unsubscribe send an email to <a href=3D"mailto:tls-leave@ietf.org" targe=
+t=3D"_blank">tls-leave@ietf.org</a><br>
+</blockquote></div>
+
+--000000000000644676063b120443--
+

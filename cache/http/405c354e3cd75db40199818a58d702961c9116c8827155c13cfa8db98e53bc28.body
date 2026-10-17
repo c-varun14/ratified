@@ -1,0 +1,133 @@
+Return-Path: <ilari.liusvaara@elisanet.fi>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (ietfa.amsl.com [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 808601A879B
+ for <tls@ietfa.amsl.com>; Tue, 10 Mar 2015 03:54:29 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.901
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.901 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, RCVD_IN_DNSWL_NONE=-0.0001, SPF_PASS=-0.001]
+ autolearn=ham
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id A1ZkQ2sDRjsQ for <tls@ietfa.amsl.com>;
+ Tue, 10 Mar 2015 03:54:26 -0700 (PDT)
+Received: from emh07.mail.saunalahti.fi (emh07.mail.saunalahti.fi
+ [62.142.5.117])
+ (using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 80B561A0111
+ for <tls@ietf.org>; Tue, 10 Mar 2015 03:54:26 -0700 (PDT)
+Received: from LK-Perkele-VII (a88-112-44-140.elisa-laajakaista.fi
+ [88.112.44.140])
+ by emh07.mail.saunalahti.fi (Postfix) with ESMTP id 78C234019
+ for <tls@ietf.org>; Tue, 10 Mar 2015 12:54:24 +0200 (EET)
+Date: Tue, 10 Mar 2015 12:54:23 +0200
+From: Ilari Liusvaara <ilari.liusvaara@elisanet.fi>
+To: tls@ietf.org
+Message-ID: <20150310105423.GA1658@LK-Perkele-VII>
+References: <20150309200017.7516.45761.idtracker@ietfa.amsl.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20150309200017.7516.45761.idtracker@ietfa.amsl.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
+Sender: Ilari Liusvaara <ilari.liusvaara@elisanet.fi>
+Archived-At: <http://mailarchive.ietf.org/arch/msg/tls/RD8xcVPgjltRHznAy5nS3sc6bBI>
+Subject: Re: [TLS] I-D Action: draft-ietf-tls-tls13-05.txt
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.15
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <http://www.ietf.org/mail-archive/web/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Tue, 10 Mar 2015 10:54:29 -0000
+
+On Mon, Mar 09, 2015 at 01:00:17PM -0700, internet-drafts@ietf.org wrote:
+> 
+> A New Internet-Draft is available from the on-line Internet-Drafts directories.
+>  This draft is a work item of the Transport Layer Security Working Group of the IETF.
+> 
+>         Title           : The Transport Layer Security (TLS) Protocol Version 1.3
+>         Author          : Eric Rescorla
+> 	Filename        : draft-ietf-tls-tls13-05.txt
+> 	Pages           : 92
+> 	Date            : 2015-03-09
+
+Looked over the diff, some comments:
+
+> [[OPEN ISSUE: This needs to be revised.  See
+> https://github.com/tlswg/tls13-spec/issues/5]]
+
+I get a bad feeling about this...
+
+Also, I don't know a reason the problem (as far as I understand it) can't
+be fixed by just by internally changing the encryption primitives a bit in
+fully wire-compatible way (no protocol change required).
+
+I.e. treat initial "IVs" as sensitive as keying material, and have the
+encryptor/decryptor (which is obviously highly trusted due to having primary
+keys) internally expand the nonces (which is deterministic process).
+
+
+NamedGroup list:
+
+I would like weak groups (1-5 and 15-19) to be deprecated (MNU). Those
+look quite a bit weaker than anything else (with exception of MD5[1]).
+
+Additionally, the private-use block could be named private_use or
+somesuch (so it stands out from other reserved identifiers).
+
+
+Key derivation:
+
+The spec uses hMS for TLS-Extractor. I think this is cryptographically
+suspect, and TE should have its own MS, derived from hMS after
+EncryptedExtensions (but before ServerFinished).
+
+Also, if MS for data in both directions are split from each other
+(needed for update-rekey), I think keys for directions should be derived
+at respective Finished messages.
+
+- Allow server to send early data, even with pending authentication[2]
+  (note: The client is _unidentified_, not just unauthenticated)[3]
+- Not having "not yet" keys around to potentially abuse[4].
+
+
+Handshake protocol:
+
+Looks still to be SMACK-trap (duplicating information endpoint already
+needs to know and now also check).
+
+And yes, I think that recent events have shown that "what stupid things
+one can easily do with this?" is quite legimate concern (whitness 
+multiple TLS implementations with the same types of issues as soon
+as anybody goes looking).[5]
+
+
+[1] I think MD5 should be deprecated (MNU) from HashAlgorithm and
+SHA-256 be promoted to default (AFAIK, currently SHA-1).
+
+[2] Useful for protocol banners and such (ALPN does not scale!)
+
+[3] Unidentified peer seemingly makes it quite a bit harder to do
+anything stupid than unauthenticated.
+
+[4] Deriving just before finished does create such "not yet" keys.
+
+[5] Also update-auth, even allowed just once can be accidentially
+used in very bad ways in certain kinds of protocols and environments.
+
+
+
+-Ilari
+

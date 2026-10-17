@@ -1,0 +1,328 @@
+From nobody Tue Feb 23 16:54:26 2021
+Return-Path: <martin.h.duke@gmail.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id E96013A12AE;
+ Tue, 23 Feb 2021 16:54:20 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.097
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.097 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, FREEMAIL_FROM=0.001,
+ HTML_MESSAGE=0.001, SPF_HELO_NONE=0.001, SPF_PASS=-0.001,
+ URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=gmail.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id dyOHGa-Ee_aT; Tue, 23 Feb 2021 16:54:19 -0800 (PST)
+Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com
+ [IPv6:2607:f8b0:4864:20::e32])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 6A0EE3A12AC;
+ Tue, 23 Feb 2021 16:54:18 -0800 (PST)
+Received: by mail-vs1-xe32.google.com with SMTP id x198so206482vsc.12;
+ Tue, 23 Feb 2021 16:54:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025; 
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=lkgkhbgBCJ1Y4GRX0TYhuZwfP2ZEaQ1dBwrdJ6sZAPM=;
+ b=OFcqQvp6TWGL1u/d+GJPt3pJ1zWJtlAPs45ZWGCOJLYRhDFDb7N94sdZZcIgOk9gG8
+ UShxJsSLY5A8lm0En2slmUCyYqUCM7T+oARsclGBtLERGVf13HcJSW80ZPMjkgIo5KmI
+ lqx4rFPCrcp1hGssv/fJKeC065Zx6r5Q9pqhqZqKAmF2Q7xMcBHX3wexv/4lYGt5Q5jY
+ 303gFdMk0G8X1OdQArABXV6cF1vjdyQA3j0LbGmV9ckGvpQqjLRyK8hdVfD123eMTKa8
+ eN30SXcuz4RO7yUq4JMk9g1WJ75H9SsTjRyyx5ikGaKxj3nIhb9FkWu6nI9RU4/V+tW0
+ z+4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=lkgkhbgBCJ1Y4GRX0TYhuZwfP2ZEaQ1dBwrdJ6sZAPM=;
+ b=R9OvNG/ntbQVyUf6csxzY3RcvMKzoyQlAD5THa6EsW3N0IV3vDQFtkCnsbj+u5CE2t
+ cdrKKvUxmDf7qqU65xJjDtxDpADWbMi5DaRqVYS3cbrVDYaOhPChnvB2Hm/yoN4c1Tao
+ +nMq9C5zj5F93KWlqpxM0DPnhXtx9X4m6t1rG+uwhIt5JaHczbpZm9c21B8jrQD/re2F
+ bQBG38XDh08Wfe0HWwfBSK7UnxIDF7FSjHKTxUFL9H480AUJPwD3a15DF9dbuPYWriC+
+ uuiDBTWOjhhaPiwfL5HCSmx0zp6gwIrWLKVJ7pnHmN/ydeYVNkcAmt11bSxdPwTdo86D
+ YfYw==
+X-Gm-Message-State: AOAM533cmobTP6iDfyGJU6MbBPGfmxhICWHGg2DGTnFXvsC2NFiDVTYV
+ L3WItBbVKQXhEAXGPMZS60HvVLO+MTXWYWm8eTc=
+X-Google-Smtp-Source: ABdhPJyusNurdWKg/wSRlmvXXjHeiQSqu0p9OiAZgB8IZX4iK0ovKbIkxRzti1DP06UHpM78H7WgxZIyM5dffZYWM+Y=
+X-Received: by 2002:a67:fd07:: with SMTP id f7mr3173890vsr.22.1614128057375;
+ Tue, 23 Feb 2021 16:54:17 -0800 (PST)
+MIME-Version: 1.0
+References: <160980363454.20851.10184061700085456941@ietfa.amsl.com>
+ <20210108003928.GR93151@kduck.mit.edu>
+ <CABcZeBNpip-ue7iyx-K-u3eOC52TQ5sqpOHQb+moE=urxJYGSQ@mail.gmail.com>
+ <CAM4esxRq5aJkWMWbqoxR_HF=v2XrWMgN6N849-gm_RR6WjEB_Q@mail.gmail.com>
+ <CAM4esxR97geh3Y=cNDECVXvY_uv6yTbhy6gxEigvy8EQV=j7Kg@mail.gmail.com>
+ <c7824032-4020-4409-94b5-022382326450@www.fastmail.com>
+In-Reply-To: <c7824032-4020-4409-94b5-022382326450@www.fastmail.com>
+From: Martin Duke <martin.h.duke@gmail.com>
+Date: Tue, 23 Feb 2021 16:54:06 -0800
+Message-ID: <CAM4esxRLa-ybPBPPpeXGSGP1N9NJE5RVUW9CgEaV-zWszxQNSQ@mail.gmail.com>
+To: Christopher Wood <caw@heapingbits.net>
+Cc: Eric Rescorla <ekr@rtfm.com>, Benjamin Kaduk <kaduk@mit.edu>,
+ "TLS@ietf.org" <tls@ietf.org>, 
+ draft-ietf-tls-external-psk-importer@ietf.org, The IESG <iesg@ietf.org>, 
+ TLS Chairs <tls-chairs@ietf.org>
+Content-Type: multipart/alternative; boundary="0000000000007b5d8405bc0a799b"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/YWsA7FPegtNLu5XQCgLFuE3m1LE>
+Subject: Re: [TLS] Martin Duke's Discuss on
+ draft-ietf-tls-external-psk-importer-06: (with DISCUSS)
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Wed, 24 Feb 2021 00:54:21 -0000
+
+--0000000000007b5d8405bc0a799b
+Content-Type: text/plain; charset="UTF-8"
+
+done: https://github.com/tlswg/tls13-spec/issues/1219
+
+On Tue, Feb 23, 2021 at 4:36 PM Christopher Wood <caw@heapingbits.net>
+wrote:
+
+> Thanks, Martin! Perhaps we can file an issue and track this as part of
+> rfc8446bis?
+>
+>    https://github.com/tlswg/tls13-spec/issues
+>
+> Best,
+> Chris
+>
+> On Tue, Feb 23, 2021, at 4:32 PM, Martin Duke wrote:
+> > After further consideration, the problem at hand is best resolved by
+> > 8446, which has a generalized problem with subfield lengths that don't
+> > add up to the field length. I will remove the DISCUSS
+> >
+> > Nevertheless, here's a PR that may help implementers avoid a problem:
+> > https://github.com/tlswg/draft-ietf-tls-external-psk-importer/pull/41
+> >
+> >
+> >
+> > On Tue, Jan 19, 2021 at 10:40 AM Martin Duke <martin.h.duke@gmail.com>
+> wrote:
+> > > Ekr,
+> > >
+> > > I appreciate that this is hard to represent in 8446 notation. Would it
+> be possible to add some text in 4.1 that says "Due to the maximum size of
+> the PSK extension, the external_identity and context fields MUST sum to a
+> length of 2^16-5", or something to that effect?
+> > >
+> > > IMO, it would be unfortunate if the PSK Importer interface allowed
+> parameters that result in undefined behavior on the wire.
+> > >
+> > > If this is unworkable or very very dumb for some other reason, I am
+> willing to accept that feedback.
+> > >
+> > > Martin
+> > >
+> > > On Thu, Jan 7, 2021 at 4:57 PM Eric Rescorla <ekr@rtfm.com> wrote:
+> > >>
+> > >>
+> > >> On Thu, Jan 7, 2021 at 4:39 PM Benjamin Kaduk <kaduk@mit.edu> wrote:
+> > >>> On Mon, Jan 04, 2021 at 03:40:34PM -0800, Martin Duke via
+> Datatracker wrote:
+> > >>> > Martin Duke has entered the following ballot position for
+> > >>> > draft-ietf-tls-external-psk-importer-06: Discuss
+> > >>> >
+> > >>> > When responding, please keep the subject line intact and reply to
+> all
+> > >>> > email addresses included in the To and CC lines. (Feel free to cut
+> this
+> > >>> > introductory paragraph, however.)
+> > >>> >
+> > >>> >
+> > >>> > Please refer to
+> https://www.ietf.org/iesg/statement/discuss-criteria.html
+> > >>> > for more information about IESG DISCUSS and COMMENT positions.
+> > >>> >
+> > >>> >
+> > >>> > The document, along with other ballot positions, can be found here:
+> > >>> >
+> https://datatracker.ietf.org/doc/draft-ietf-tls-external-psk-importer/
+> > >>> >
+> > >>> >
+> > >>> >
+> > >>> >
+> ----------------------------------------------------------------------
+> > >>> > DISCUSS:
+> > >>> >
+> ----------------------------------------------------------------------
+> > >>> >
+> > >>> > This is probably just my own ignorance, but I see two potential
+> problems in Sec
+> > >>> > 4.1.
+> > >>> >
+> > >>> > - 'The identity of "ipskx" as sent on the wire is
+> ImportedIdentity, i.e., the
+> > >>> > serialized content of ImportedIdentity is used as the  content of
+> > >>> > PskIdentity.identity in the PSK extension.' IIUC ImportedIdentity
+> has a maximum
+> > >>> > length of 2^17 + 2. But the Identity field in the PSK option has a
+> maximum
+> > >>> > length of 2^16-1. I presume this never actually happens, but the
+> spec should
+> > >>> > handle the boundary condition, perhaps by limiting the first two
+> fields of
+> > >>> > Imported Identity to sum to 2^16-5 bytes or something.
+> > >>>
+> > >>> I'll leave this one for the authors.
+> > >>
+> > >> I can see how someone would want this, but in practice that's not how
+> it's
+> > >> generally done in TLS. Trying to compute the precise upper bounds gets
+> > >> complicated very fast when there are multiple fields. We do generally
+> > >> try to get the lower bound right, though even then there have been
+> > >> mistakes:
+> > >>
+> > >> https://github.com/ekr/tls13-spec/pull/56/files
+> > >>
+> > >> -Ekr
+>
+
+--0000000000007b5d8405bc0a799b
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">done: <a href=3D"https://github.com/tlswg/tls13-spec/issue=
+s/1219">https://github.com/tlswg/tls13-spec/issues/1219</a></div><br><div c=
+lass=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Tue, Feb 23, =
+2021 at 4:36 PM Christopher Wood &lt;<a href=3D"mailto:caw@heapingbits.net"=
+>caw@heapingbits.net</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quo=
+te" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204=
+);padding-left:1ex">Thanks, Martin! Perhaps we can file an issue and track =
+this as part of rfc8446bis?<br>
+<br>
+=C2=A0 =C2=A0<a href=3D"https://github.com/tlswg/tls13-spec/issues" rel=3D"=
+noreferrer" target=3D"_blank">https://github.com/tlswg/tls13-spec/issues</a=
+><br>
+<br>
+Best,<br>
+Chris<br>
+<br>
+On Tue, Feb 23, 2021, at 4:32 PM, Martin Duke wrote:<br>
+&gt; After further consideration, the problem at hand is best resolved by <=
+br>
+&gt; 8446, which has a generalized problem with subfield lengths that don&#=
+39;t <br>
+&gt; add up to the field length. I will remove the DISCUSS<br>
+&gt; <br>
+&gt; Nevertheless, here&#39;s a PR that may help implementers avoid a probl=
+em:<br>
+&gt; <a href=3D"https://github.com/tlswg/draft-ietf-tls-external-psk-import=
+er/pull/41" rel=3D"noreferrer" target=3D"_blank">https://github.com/tlswg/d=
+raft-ietf-tls-external-psk-importer/pull/41</a><br>
+&gt; <br>
+&gt; <br>
+&gt; <br>
+&gt; On Tue, Jan 19, 2021 at 10:40 AM Martin Duke &lt;<a href=3D"mailto:mar=
+tin.h.duke@gmail.com" target=3D"_blank">martin.h.duke@gmail.com</a>&gt; wro=
+te:<br>
+&gt; &gt; Ekr,<br>
+&gt; &gt; <br>
+&gt; &gt; I appreciate that this is hard to represent in 8446 notation. Wou=
+ld it be possible to add some text in 4.1 that says &quot;Due to the maximu=
+m size of the PSK extension, the external_identity and context fields MUST =
+sum to a length of 2^16-5&quot;, or something to that effect?<br>
+&gt; &gt;=C2=A0 <br>
+&gt; &gt; IMO, it would be unfortunate if the PSK Importer interface allowe=
+d parameters that result in undefined behavior on the wire.<br>
+&gt; &gt; <br>
+&gt; &gt; If this is unworkable or very very dumb for some other reason, I =
+am willing to accept that feedback.<br>
+&gt; &gt; <br>
+&gt; &gt; Martin<br>
+&gt; &gt; <br>
+&gt; &gt; On Thu, Jan 7, 2021 at 4:57 PM Eric Rescorla &lt;<a href=3D"mailt=
+o:ekr@rtfm.com" target=3D"_blank">ekr@rtfm.com</a>&gt; wrote:<br>
+&gt; &gt;&gt; <br>
+&gt; &gt;&gt; <br>
+&gt; &gt;&gt; On Thu, Jan 7, 2021 at 4:39 PM Benjamin Kaduk &lt;<a href=3D"=
+mailto:kaduk@mit.edu" target=3D"_blank">kaduk@mit.edu</a>&gt; wrote:<br>
+&gt; &gt;&gt;&gt; On Mon, Jan 04, 2021 at 03:40:34PM -0800, Martin Duke via=
+ Datatracker wrote:<br>
+&gt; &gt;&gt;&gt; &gt; Martin Duke has entered the following ballot positio=
+n for<br>
+&gt; &gt;&gt;&gt; &gt; draft-ietf-tls-external-psk-importer-06: Discuss<br>
+&gt; &gt;&gt;&gt; &gt; <br>
+&gt; &gt;&gt;&gt; &gt; When responding, please keep the subject line intact=
+ and reply to all<br>
+&gt; &gt;&gt;&gt; &gt; email addresses included in the To and CC lines. (Fe=
+el free to cut this<br>
+&gt; &gt;&gt;&gt; &gt; introductory paragraph, however.)<br>
+&gt; &gt;&gt;&gt; &gt; <br>
+&gt; &gt;&gt;&gt; &gt; <br>
+&gt; &gt;&gt;&gt; &gt; Please refer to <a href=3D"https://www.ietf.org/iesg=
+/statement/discuss-criteria.html" rel=3D"noreferrer" target=3D"_blank">http=
+s://www.ietf.org/iesg/statement/discuss-criteria.html</a><br>
+&gt; &gt;&gt;&gt; &gt; for more information about IESG DISCUSS and COMMENT =
+positions.<br>
+&gt; &gt;&gt;&gt; &gt; <br>
+&gt; &gt;&gt;&gt; &gt; <br>
+&gt; &gt;&gt;&gt; &gt; The document, along with other ballot positions, can=
+ be found here:<br>
+&gt; &gt;&gt;&gt; &gt; <a href=3D"https://datatracker.ietf.org/doc/draft-ie=
+tf-tls-external-psk-importer/" rel=3D"noreferrer" target=3D"_blank">https:/=
+/datatracker.ietf.org/doc/draft-ietf-tls-external-psk-importer/</a><br>
+&gt; &gt;&gt;&gt; &gt; <br>
+&gt; &gt;&gt;&gt; &gt; <br>
+&gt; &gt;&gt;&gt; &gt; <br>
+&gt; &gt;&gt;&gt; &gt; ----------------------------------------------------=
+------------------<br>
+&gt; &gt;&gt;&gt; &gt; DISCUSS:<br>
+&gt; &gt;&gt;&gt; &gt; ----------------------------------------------------=
+------------------<br>
+&gt; &gt;&gt;&gt; &gt; <br>
+&gt; &gt;&gt;&gt; &gt; This is probably just my own ignorance, but I see tw=
+o potential problems in Sec<br>
+&gt; &gt;&gt;&gt; &gt; 4.1.<br>
+&gt; &gt;&gt;&gt; &gt; <br>
+&gt; &gt;&gt;&gt; &gt; - &#39;The identity of &quot;ipskx&quot; as sent on =
+the wire is ImportedIdentity, i.e., the<br>
+&gt; &gt;&gt;&gt; &gt; serialized content of ImportedIdentity is used as th=
+e=C2=A0 content of<br>
+&gt; &gt;&gt;&gt; &gt; PskIdentity.identity in the PSK extension.&#39; IIUC=
+ ImportedIdentity has a maximum<br>
+&gt; &gt;&gt;&gt; &gt; length of 2^17 + 2. But the Identity field in the PS=
+K option has a maximum<br>
+&gt; &gt;&gt;&gt; &gt; length of 2^16-1. I presume this never actually happ=
+ens, but the spec should<br>
+&gt; &gt;&gt;&gt; &gt; handle the boundary condition, perhaps by limiting t=
+he first two fields of<br>
+&gt; &gt;&gt;&gt; &gt; Imported Identity to sum to 2^16-5 bytes or somethin=
+g.<br>
+&gt; &gt;&gt;&gt; <br>
+&gt; &gt;&gt;&gt; I&#39;ll leave this one for the authors.<br>
+&gt; &gt;&gt; <br>
+&gt; &gt;&gt; I can see how someone would want this, but in practice that&#=
+39;s not how it&#39;s<br>
+&gt; &gt;&gt; generally done in TLS. Trying to compute the precise upper bo=
+unds gets<br>
+&gt; &gt;&gt; complicated very fast when there are multiple fields. We do g=
+enerally<br>
+&gt; &gt;&gt; try to get the lower bound right, though even then there have=
+ been<br>
+&gt; &gt;&gt; mistakes:<br>
+&gt; &gt;&gt; <br>
+&gt; &gt;&gt; <a href=3D"https://github.com/ekr/tls13-spec/pull/56/files" r=
+el=3D"noreferrer" target=3D"_blank">https://github.com/ekr/tls13-spec/pull/=
+56/files</a><br>
+&gt; &gt;&gt; <br>
+&gt; &gt;&gt; -Ekr<br>
+</blockquote></div>
+
+--0000000000007b5d8405bc0a799b--
+

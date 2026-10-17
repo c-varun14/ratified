@@ -1,0 +1,718 @@
+From nobody Fri Dec 30 09:47:49 2022
+Return-Path: <john.mattsson@ericsson.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 1CF5FC1516EE
+ for <tls@ietfa.amsl.com>; Fri, 30 Dec 2022 09:47:48 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.097
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.097 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIMWL_WL_HIGH=-0.001, DKIM_SIGNED=0.1,
+ DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_BLOCKED=0.001,
+ RCVD_IN_MSPIKE_H2=-0.001, RCVD_IN_ZEN_BLOCKED_OPENDNS=0.001,
+ SPF_PASS=-0.001, URIBL_BLOCKED=0.001, URIBL_DBL_BLOCKED_OPENDNS=0.001,
+ URIBL_ZEN_BLOCKED_OPENDNS=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=ericsson.com
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id lacJw0wq2oaG for <tls@ietfa.amsl.com>;
+ Fri, 30 Dec 2022 09:47:43 -0800 (PST)
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com
+ (mail-he1eur04on2082.outbound.protection.outlook.com [40.107.7.82])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 89484C14CF1D
+ for <tls@ietf.org>; Fri, 30 Dec 2022 09:47:43 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PsbOoRoXJtmcHoHwDV02GECOng/dK5EZ0W1QnnJE2/THzYFwZLkyzfVF3hK1jwdnz+wdrufYGYLpO5wgV8adI29D3brmf+noo78ZdO52ki+U65FusIHaPO850j6u91gJapQHUixsnm5f+lx5gYgqpOiNM+ejuR4PZUdZ8dmA2x+6RnUFWfN5IT1zJGQFnvFWkwnXMRuEi0/QODPRVxfOrXQY4z1HXb2AKooTQHWYUINe+iwe169GQ91Q+kk/nhPOsOmA0RIxFX01QT8p+mbdgbqME0EEg8DSCuNkqvoa4Xg5u6wW+Zhs6jrUKs7bGef4kVbwEBc7ZhuPYL43lttROg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=wUKmhuwcz12ZznUEvWkgn0hw7fhNA9az27bMufRayEw=;
+ b=NFNMKnZJiJXJk0Hp0YZ6EhLQl43c3l16VWBkYWjOAx+Y+aaza1GK+SmKGIiiPzbwRzg1OwwvklTkpggox/pSrYpXzcVn7RRzBjiAQDPccQF77VMzJC3reCCKnXICkvi8FhBOKPuANWj1/LLdcpdNBmRNqHlkzCmhBaPuWk2ug+WSCRbGB7dNB020ktFPBCjvUDbIKtSeOgsT99c/UxqGArkw77wFn+s+3y09DB1cUwYIWFlA5ma1SOvid0svG5oXINMy6L/9vqFX1uQDin2dMEqjFsBa7ksh2qoFJJ+UQMdxgCfo9NIZUUmff5hVI/+Ptb5Wtkn9Wc404PKbJPTXWQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=ericsson.com; dmarc=pass action=none header.from=ericsson.com;
+ dkim=pass header.d=ericsson.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ericsson.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wUKmhuwcz12ZznUEvWkgn0hw7fhNA9az27bMufRayEw=;
+ b=lQNvyHXHk41uELy0wYjbgiS2QgW4qAcVjkPpUuIQ91MVi/ZGxOZdRQ+AHKV2BxUTxgdjdyn9k3m0toAxkheRo+HlN6RLmiZnUHO9pClnc9MA3yFhwFeQBjK/92xM0MLG4z2T52IRRcrv/82WI6LLkQAFaB0JD6t17EhWvOHR3Rk=
+Received: from HE1PR0701MB3050.eurprd07.prod.outlook.com (2603:10a6:3:4b::8)
+ by DBAPR07MB6487.eurprd07.prod.outlook.com (2603:10a6:10:178::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5944.16; Fri, 30 Dec
+ 2022 17:47:38 +0000
+Received: from HE1PR0701MB3050.eurprd07.prod.outlook.com
+ ([fe80::fc77:42d2:1bc6:ec49]) by HE1PR0701MB3050.eurprd07.prod.outlook.com
+ ([fe80::fc77:42d2:1bc6:ec49%12]) with mapi id 15.20.5944.016; Fri, 30 Dec
+ 2022 17:47:38 +0000
+From: John Mattsson <john.mattsson@ericsson.com>
+To: Achim Kraus <achimkraus@gmx.net>
+CC: "TLS@ietf.org" <tls@ietf.org>
+Thread-Topic: [TLS] FW: New Version Notification for
+ draft-ietf-lwig-security-protocol-comparison-06.txt
+Thread-Index: AQHZGJIagSB7Milyc02dKYExDmMtL65++Y1XgAc9lD6AAHDugIAAAru6
+Date: Fri, 30 Dec 2022 17:47:38 +0000
+Message-ID: <HE1PR0701MB3050138A685BAE3C5EE537D989F09@HE1PR0701MB3050.eurprd07.prod.outlook.com>
+References: <167199435332.48869.2750058961451487057@ietfa.amsl.com>
+ <HE1PR0701MB3050A14F7DBE9C8C460928F489EF9@HE1PR0701MB3050.eurprd07.prod.outlook.com>
+ <HE1PR0701MB3050F0C32BF4ADA1596C1D1C89F09@HE1PR0701MB3050.eurprd07.prod.outlook.com>
+ <19ed79c0-b8fd-656d-e904-098581c407d8@gmx.net>
+In-Reply-To: <19ed79c0-b8fd-656d-e904-098581c407d8@gmx.net>
+Accept-Language: en-US
+Content-Language: en-GB
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=ericsson.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: HE1PR0701MB3050:EE_|DBAPR07MB6487:EE_
+x-ms-office365-filtering-correlation-id: 1fe9cb5a-0d01-4ceb-c550-08daea8df124
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: D4B6CgUc2uxogGBBXp2iMh4JEM6RTOxPjAFyJLrFWV8P7XvGmkNGb5knsqa29rTZOL1mQA4rCfMtxd57DQTH5PWxCeIwkSZ/U33zfnHjenZa9JTivVaGoFd98c+RlNHJ9P7o76oG/7QDyuue2VRZu/kjW+ygfaSYz1cK+bK79Hg8VRMD1xdancp3i+wcriineXoe5QHWTEsuWjk3dKFO3FVs3f86Ws3rFQaN4gtrmSQNgC+qAyjMuysEh8T/luo/4amYtopy2QpeLepWm1lHoGc3ZCCi5P6NIHugcQf05VLCFZmdR6MmTyyRibpjitZ9semBhWzDmJqyab6tgPY8VzL0TX5e5SWYkynyQIIFfGuuTgynJAhYuFckmj0NOHbyPxJhmhqTJTaxy97Wvpm7cUJPFEjspV2EZemyTMP0lT7tVjQOAMbj6+neJE+q0K7QMLmux1XsS0REFPnFdE8m3NqQohpYiO/8KY892KXPffeTHuTAKgalm7aB34GciqNEa/pZJ1VMkj5vJ5ikvM8eLU6lHdbBuSlbkkgQvRfHgzl2tKreMpqDy37iW9piIj7L5G5dXXpqnVcTWYAUFfTIpuvwPmJ6F5eanWkq4oSNKj8g/8fgNaiBKb2N4ESpZpCQp6Gd3WBy6LojII8LXHmX2Ppppn0tYrwF5k351zwmfKo9I6v338AKNz9Tns/BQDAAYxJNT1urzyEePfOc1jt6BgZmPCfeBBF0XePeCIFScAKNLs9YCk0tkuC453mLGZc3gMkcqa0nt47EeNBIYb8rVQj0DMug2qUhOX93nmpRulKGZKFUOouy+qCebg606A9S
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:; 
+ IPV:NLI; SFV:NSPM;
+ H:HE1PR0701MB3050.eurprd07.prod.outlook.com; PTR:; CAT:NONE; 
+ SFS:(13230022)(4636009)(366004)(136003)(396003)(376002)(39860400002)(346002)(451199015)(66574015)(5660300002)(44832011)(66446008)(4001150100001)(7696005)(15650500001)(8936002)(52536014)(2906002)(83380400001)(21615005)(38100700002)(82960400001)(66476007)(8676002)(91956017)(66556008)(4326008)(76116006)(122000001)(64756008)(66946007)(6506007)(966005)(478600001)(53546011)(38070700005)(9686003)(166002)(86362001)(71200400001)(41300700001)(186003)(33656002)(55016003)(6916009)(316002)(26005);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?windows-1250?Q?dx++ZDKjXH8r+x/TOo1xuBch7sFq+jvp57bQoUSBIALvn3s3/IgEsKmb?=
+ =?windows-1250?Q?z81Nts71WSCQcx/NWaZXl7B06ukJYMSONgaDY1Voq5cA0Br/rdpl03BS?=
+ =?windows-1250?Q?ROFrWl8F5pPmILFjePx/WhAIY8K03sSj2fvV/KPrfUKKz+Fjpy4th/kx?=
+ =?windows-1250?Q?+NyZpE0ZdHSVWxTfDqw/zhJbpU41wSYFmKOcCPeW3BXwaABeJ6Dg2g5o?=
+ =?windows-1250?Q?s86kqoLP+WR2Hr9wABkUPgK+D/0lHhW4fCk+HuH7KNow8UWmHaTjCdzk?=
+ =?windows-1250?Q?Z82hn4xZ/PZ22Zn00a9knQTODHK5iF19GL2W1lCKCPbxIp4K7+j01Y23?=
+ =?windows-1250?Q?HgH2vLECjoH6o+y3prhM/Tf9892d3X5e9J25dSFsN24rb2h2GUbzNTvv?=
+ =?windows-1250?Q?ysdym/pGcFH20fiiuwOxMjooK4o8hl6yrhkriag4+44GQWA+QjSHNBPv?=
+ =?windows-1250?Q?GjlMwMh8yq5/UZLE1OLdNU493fdCOq00NqdYTFchMBDXpks15gEO8X6w?=
+ =?windows-1250?Q?UgYz4QzvH/hWstxI7iBCo06Uf+67tJxwXO6Pkr2F14nFuPvdnDcuBkgm?=
+ =?windows-1250?Q?qB43GtZlcEzPpC9+ZWvJ4wWUQ9DBJGQYX/XUgAD1wb71EMW/Iyy/bFZy?=
+ =?windows-1250?Q?kXE5KNr+r0pWCa7fpcSZBTYA75udPsSVm+959+SL1adsMPJN+ounWwb3?=
+ =?windows-1250?Q?V+1Qes2qasUm0ZPGSe/kZP7JGQVThH7OArfD/rBMxyEL9h1sklqmLCva?=
+ =?windows-1250?Q?I2bpwevYGpdrwIA5zChxp5HbRPWeanKMum+EwkGYh5IfpojCRQ0R0UBV?=
+ =?windows-1250?Q?jIA8FLYYl8oOJ5r8mtQuLmC9Vc4iCP476LCorAYj6VKTh2g13aS5Ysou?=
+ =?windows-1250?Q?ySI2gTg1gq51CEfbiOdtWBl+/UZJtzWYhzp+vP4ms2zQh+Lozf21rwrq?=
+ =?windows-1250?Q?0Osfbje5zEPAkycvQrqye3p74q5fwKGMskFy29fGhwsufQ1dEdgzO+hk?=
+ =?windows-1250?Q?WU5VXqvMCsEp8uRBLcq/zYSymTyWy8od7FN60RmvrohrMQe5fTN1mdJ6?=
+ =?windows-1250?Q?n3vvLqpj6qOPSIqSzgwp5u7YTIB7VefTVfAu2IcaTbaXWrGEX4NvwN4x?=
+ =?windows-1250?Q?4e/of20L7dCSA+NXqUqvMcAZiA+3GU2wF6WoywvHlxmoKkW5IxMQiSr4?=
+ =?windows-1250?Q?qZjClG5zvNuIl/SpKyFAVpiPyolSYaLtzZZAqlKYKSLJW8P3nhSoDlmz?=
+ =?windows-1250?Q?pYCX+kS7E6y+ip23NoFwc0g8FuSfVullIAz3VZfdELFhi0OeAdzF+0TJ?=
+ =?windows-1250?Q?92QblopDLYfcTUWzfEn9Dz/9wzUmNUd/kqK3O5IXwzDffw9QmvIE4RkB?=
+ =?windows-1250?Q?+e0+1SuVOIlrRuPazO+j6hMVOH40zg12ReEMJW2k5WP+A0uiLkkGQoFc?=
+ =?windows-1250?Q?gC2fte9h1JkkSeLkQOomJS4j4n9Gee50TuhUtVbDlBXG1dTRDAkceyUH?=
+ =?windows-1250?Q?2IN+DDRqzO1NRfZRjzys9sN80+J1VAj91IloqhbxhnwnoNk64D6pg04r?=
+ =?windows-1250?Q?yIoV3V17Q1g17AzDu52IqqPc5kZkFRG/T9hkUmo78ypKoqUc9pmXadsn?=
+ =?windows-1250?Q?jNLc/B5v9PbF6pJo2bbopBu6Z2IfH+GeBd9LzQncZPt5GNR9kl2Aa7/t?=
+ =?windows-1250?Q?YOegmW34iL0oxiZ2NBktneUYghkaYyAv81LT3JlAYJCBPPtyLnMjA2HZ?=
+ =?windows-1250?Q?cSx3ZgQFcYAEQ0TG3Z8=3D?=
+Content-Type: multipart/alternative;
+ boundary="_000_HE1PR0701MB3050138A685BAE3C5EE537D989F09HE1PR0701MB3050_"
+MIME-Version: 1.0
+X-OriginatorOrg: ericsson.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: HE1PR0701MB3050.eurprd07.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1fe9cb5a-0d01-4ceb-c550-08daea8df124
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Dec 2022 17:47:38.2728 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 92e84ceb-fbfd-47ab-be52-080c6b87953f
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: qm7bji7nHOa6QXT4+EuIZEPpl9ykHLZFVvCErxfloWbT1oVgi4c3njJXyG0nZZ511AcCartmzK73a3ejklnnMykvUFvg56K/M7P1Pe3HL5c=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR07MB6487
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/2aod6KL2bN60NHXzHCJ2iBe_V5A>
+Subject: Re: [TLS] FW: New Version Notification for
+ draft-ietf-lwig-security-protocol-comparison-06.txt
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Fri, 30 Dec 2022 17:47:48 -0000
+
+--_000_HE1PR0701MB3050138A685BAE3C5EE537D989F09HE1PR0701MB3050_
+Content-Type: text/plain; charset="windows-1250"
+Content-Transfer-Encoding: quoted-printable
+
+Hi Achim,
+
+Thanks. Good suggestions.
+
+Last time I looked at the process behind the suggested CCM8 deprecation it =
+seemed like nonsense (using a single-key limits to suggest rekeying which d=
+id not improve security). I have not been following this topic during my pa=
+rental leave. I think I need to have a look at draft-irtf-cfrg-aead-limits =
+again.
+
+Right now, CCM with 8-byte tags seems to completely dominate IoT in general=
+. draft-ietf-uta-tls13-iot-profile<https://datatracker.ietf.org/doc/draft-i=
+etf-uta-tls13-iot-profile/> seems to still have it as the MUST implement ci=
+pher suite for (D)TLS 1.3 but it probably makes sense to add numbers for 16=
+-bit tags as well. draft-ietf-uta-tls13-iot-profile<https://datatracker.iet=
+f.org/doc/draft-ietf-uta-tls13-iot-profile/> seems to suggest TLS_CHACHA20_=
+POLY1305_SHA256 as a potential future cipher suite but for this document on=
+ly the tag length matters.
+
+>I would appreciate, if the comparison DTLS vs. TLS mentions also the
+>difference of UDP vs. TCP (8 vs. 24 bytes). And just a short sentence
+>about some more bytes for additional messages used in TCP internally?
+
+That=92s a very good suggestion that it definitely missing from the documen=
+t. We will add that to the next version.
+
+Cheers,
+John
+
+
+From: Achim Kraus <achimkraus@gmx.net>
+Date: Friday, 30 December 2022 at 17:34
+To: John Mattsson <john.mattsson@ericsson.com>
+Cc: TLS@ietf.org <tls@ietf.org>
+Subject: Re: [TLS] FW: New Version Notification for draft-ietf-lwig-securit=
+y-protocol-comparison-06.txt
+Hi John,
+
+just to mention, the CCM8 is also considered to be not recommended in
+the future (see
+https://mailarchive.ietf.org/arch/msg/core/WnRInwF-j0uZmLggFh37ySljnwE/).
+Wouldn't it make more sense to use then CCM
+instead (16 bytes tag length)?
+
+I would appreciate, if the comparison DTLS vs. TLS mentions also the
+difference of UDP vs. TCP (8 vs. 24 bytes). And just a short sentence
+about some more bytes for additional messages used in TCP internally?
+
+best regards
+Achim
+
+Am 30.12.22 um 10:58 schrieb John Mattsson:
+> Hi,
+>
+> We feel that draft-ietf-lwig-security-protocol-comparisonis getting
+> quite ready now that the included protocols are published or at least
+> stable.
+>
+> We would love to have more examples of cTLS. Are there any more examples
+> available? We currently included the example in the draft.
+>
+> Review by people in the TLS WG would be great as the draft covers TLS
+> 1.2, DTLS 1.2, TLS 1.3, DTLS 1.3, and cTLS.
+>
+> Cheers,
+>
+> John
+>
+> *From: *John Mattsson <john.mattsson@ericsson.com>
+> *Date: *Sunday, 25 December 2022 at 20:19
+> *To: *lwip@ietf.org <lwip@ietf.org>
+> *Subject: *Re: New Version Notification for
+> draft-ietf-lwig-security-protocol-comparison-06.txt
+>
+> Hi,
+>
+> We submitted a new version of
+> draft-ietf-lwig-security-protocol-comparison. This document has been
+> dormant for a while as several of the referenced protocols were not
+> stable, which lead to a lot of work in earlier versions. All of the
+> protocols now seem to be stable and publishedor close to being
+> published. This version fixes all the comments we have received. We
+> think it is close to being ready for WGLC.
+>
+> This is obviously needed information for a lot of people. The draft
+> already has 17 citations.
+>
+> https://protect2.fireeye.com/v1/url?k=3D31323334-501d5122-313273af-454445=
+555731-180c89c9eb242a8e&q=3D1&e=3D8969b10d-8a34-412a-a74e-44a29964cef8&u=3D=
+https%3A%2F%2Fscholar.google.com%2Fscholar%3Fhl%3Den%26as_sdt%3D0%2C5%26clu=
+ster%3D11841781769013384442 <https://protect2.fireeye.com/v1/url?k=3D313233=
+34-501d5122-313273af-454445555731-180c89c9eb242a8e&q=3D1&e=3D8969b10d-8a34-=
+412a-a74e-44a29964cef8&u=3Dhttps%3A%2F%2Fscholar.google.com%2Fscholar%3Fhl%=
+3Den%26as_sdt%3D0%2C5%26cluster%3D11841781769013384442>
+>
+> The need for compact formats and protocols has also gained attention
+> outside of IoT. In the IAB workshop on Environmental Impact of Internet
+> Applications and Systems, compact formats and protocols were discussed
+> as a way to reduce the energy consumption of the Internet as a whole.
+>
+> https://protect2.fireeye.com/v1/url?k=3D31323334-501d5122-313273af-454445=
+555731-028386883e0a910d&q=3D1&e=3D8969b10d-8a34-412a-a74e-44a29964cef8&u=3D=
+https%3A%2F%2Fwww.iab.org%2Factivities%2Fworkshops%2Fe-impact%2F
+> <https://protect2.fireeye.com/v1/url?k=3D31323334-501d5122-313273af-45444=
+5555731-028386883e0a910d&q=3D1&e=3D8969b10d-8a34-412a-a74e-44a29964cef8&u=
+=3Dhttps%3A%2F%2Fwww.iab.org%2Factivities%2Fworkshops%2Fe-impact%2F>
+>
+> Changes in -06:
+>
+> - Added more context to abstract and introduction
+>
+> - Added high level comparison of the number of bytes in TLS 1.2 and TLS
+> 1.3 handshakes
+>
+> - Added Compact TLS 1.3 (cTLS)
+>
+> - Added some more clarification on (D)TLS choices
+>
+> - Added text that CoAP needs to be added to the EDHOC figures to be
+> directly comparable to DTLS.
+>
+> - Added more DTLS and EDHOC alternatives to the summary table.
+>
+> - Added ECDSA keys without point compression as that does not seem to be
+> supported.
+>
+> - Corrected DTLS calculation where 10 was used instead of 12 (thanks to
+> Stephan Koch for reporting this)
+>
+> - Updated DTLS 1.3 records to align with the RFC.
+>
+> - Updated EDHOC numbers to align with latest drafts.
+>
+> - Added numbers for Group OSCORE pairwise mode.
+>
+> - Added that DTLS and OSCORE numbers might not be directly comparable as
+> requirements on CoAP Token reuse are different.
+>
+> - Changed names to Unicode
+>
+> - Added SVG figures and tables with the help of aasvg
+>
+> Cheers,
+>
+> John Preu=DF Mattsson
+>
+> *From: *internet-drafts@ietf.org <internet-drafts@ietf.org>
+> *Date: *Sunday, 25 December 2022 at 19:52
+> *To: *Mali=9Aa Vu=E8ini=E6 <malisa.vucinic@inria.fr>, John Mattsson
+> <john.mattsson@ericsson.com>, Francesca Palombini
+> <francesca.palombini@ericsson.com>, John Mattsson
+> <john.mattsson@ericsson.com>, Malisa Vucinic <malisa.vucinic@inria.fr>
+> *Subject: *New Version Notification for
+> draft-ietf-lwig-security-protocol-comparison-06.txt
+>
+>
+> A new version of I-D, draft-ietf-lwig-security-protocol-comparison-06.txt
+> has been successfully submitted by John Preu=DF Mattsson and posted to th=
+e
+> IETF repository.
+>
+> Name:           draft-ietf-lwig-security-protocol-comparison
+> Revision:       06
+> Title:          Comparison of CoAP Security Protocols
+> Document date:  2022-12-25
+> Group:          lwig
+> Pages:          45
+> URL:
+> https://www.ietf.org/archive/id/draft-ietf-lwig-security-protocol-compari=
+son-06.txt <https://www.ietf.org/archive/id/draft-ietf-lwig-security-protoc=
+ol-comparison-06.txt>
+> Status:
+> https://datatracker.ietf.org/doc/draft-ietf-lwig-security-protocol-compar=
+ison/ <https://datatracker.ietf.org/doc/draft-ietf-lwig-security-protocol-c=
+omparison/>
+> Html:
+> https://www.ietf.org/archive/id/draft-ietf-lwig-security-protocol-compari=
+son-06.html <https://www.ietf.org/archive/id/draft-ietf-lwig-security-proto=
+col-comparison-06.html>
+> Htmlized:
+> https://datatracker.ietf.org/doc/html/draft-ietf-lwig-security-protocol-c=
+omparison <https://datatracker.ietf.org/doc/html/draft-ietf-lwig-security-p=
+rotocol-comparison>
+> Diff:
+> https://author-tools.ietf.org/iddiff?url2=3Ddraft-ietf-lwig-security-prot=
+ocol-comparison-06 <https://author-tools.ietf.org/iddiff?url2=3Ddraft-ietf-=
+lwig-security-protocol-comparison-06>
+>
+> Abstract:
+>     This document analyzes and compares the sizes of key exchange flights
+>     and the per-packet message size overheads when using different
+>     security protocols to secure CoAP.  Small message sizes are very
+>     important for reducing energy consumption, latency, and time to
+>     completion in constrained radio network such as Low-Power Wide Area
+>     Networks (LPWANs).  The analyzed security protocols are DTLS 1.2,
+>     DTLS 1.3, TLS 1.2, TLS 1.3, cTLS, EDHOC, OSCORE, and Group OSCORE.
+>     The DTLS and TLS record layers are analyzed with and without 6LoWPAN-
+>     GHC compression.  DTLS is analyzed with and without Connection ID.
+>
+>
+>
+>
+> The IETF Secretariat
+>
+>
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+
+--_000_HE1PR0701MB3050138A685BAE3C5EE537D989F09HE1PR0701MB3050_
+Content-Type: text/html; charset="windows-1250"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" xmlns:w=3D"urn:sc=
+hemas-microsoft-com:office:word" xmlns:m=3D"http://schemas.microsoft.com/of=
+fice/2004/12/omml" xmlns=3D"http://www.w3.org/TR/REC-html40">
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dwindows-1=
+250">
+<meta name=3D"Generator" content=3D"Microsoft Word 15 (filtered medium)">
+<style><!--
+/* Font Definitions */
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	font-size:10.0pt;
+	font-family:"Calibri",sans-serif;}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:blue;
+	text-decoration:underline;}
+span.EmailStyle19
+	{mso-style-type:personal-reply;
+	font-family:"Calibri",sans-serif;
+	color:windowtext;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	font-size:10.0pt;}
+@page WordSection1
+	{size:612.0pt 792.0pt;
+	margin:72.0pt 72.0pt 72.0pt 72.0pt;}
+div.WordSection1
+	{page:WordSection1;}
+--></style>
+</head>
+<body lang=3D"en-SE" link=3D"blue" vlink=3D"purple" style=3D"word-wrap:brea=
+k-word">
+<div class=3D"WordSection1">
+<p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"font-size:11.0pt;mso-f=
+areast-language:EN-US">Hi Achim,<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"font-size:11.0pt;mso-f=
+areast-language:EN-US"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"font-size:11.0pt;mso-f=
+areast-language:EN-US">Thanks. Good suggestions.<br>
+<br>
+Last time I looked at the process behind the suggested CCM8 deprecation it =
+seemed like nonsense (using a single-key limits to suggest rekeying which d=
+id not improve security). I have not been following this topic during my pa=
+rental leave. I think I need to
+ have a look at draft-irtf-cfrg-aead-limits again.<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"font-size:11.0pt;mso-f=
+areast-language:EN-US"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"font-size:11.0pt;mso-f=
+areast-language:EN-US">Right now, CCM with 8-byte tags seems to completely =
+dominate IoT in general.
+<a href=3D"https://datatracker.ietf.org/doc/draft-ietf-uta-tls13-iot-profil=
+e/">draft-ietf-uta-tls13-iot-profile</a> seems to still have it as the MUST=
+ implement cipher suite for (D)TLS 1.3 but it probably makes sense to add n=
+umbers for 16-bit tags as well.
+<a href=3D"https://datatracker.ietf.org/doc/draft-ietf-uta-tls13-iot-profil=
+e/">draft-ietf-uta-tls13-iot-profile</a> seems to suggest TLS_CHACHA20_POLY=
+1305_SHA256 as a potential future cipher suite but for this document only t=
+he tag length matters.<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"font-size:11.0pt;mso-f=
+areast-language:EN-US"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"font-size:11.0pt">&gt;=
+</span><span style=3D"font-size:11.0pt">I would appreciate, if the comparis=
+on DTLS vs. TLS mentions also the<br>
+</span><span lang=3D"EN-US" style=3D"font-size:11.0pt">&gt;</span><span sty=
+le=3D"font-size:11.0pt">difference of UDP vs. TCP (8 vs. 24 bytes). And jus=
+t a short sentence<br>
+</span><span lang=3D"EN-US" style=3D"font-size:11.0pt">&gt;</span><span sty=
+le=3D"font-size:11.0pt">about some more bytes for additional messages used =
+in TCP internally?<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt"><o:p>&nbsp;</o:p></=
+span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"font-size:11.0pt">That=
+=92s a very good suggestion that it definitely missing from the document. W=
+e will add that to the next version.<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"font-size:11.0pt"><o:p=
+>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"font-size:11.0pt">Chee=
+rs,<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"font-size:11.0pt">John=
+</span><span style=3D"font-size:11.0pt"><br>
+<br>
+</span><span style=3D"font-size:11.0pt;mso-fareast-language:EN-US"><o:p></o=
+:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;mso-fareast-language=
+:EN-US"><o:p>&nbsp;</o:p></span></p>
+<div style=3D"border:none;border-top:solid #B5C4DF 1.0pt;padding:3.0pt 0cm =
+0cm 0cm">
+<p class=3D"MsoNormal" style=3D"margin-bottom:12.0pt"><b><span style=3D"fon=
+t-size:12.0pt;color:black">From:
+</span></b><span style=3D"font-size:12.0pt;color:black">Achim Kraus &lt;ach=
+imkraus@gmx.net&gt;<br>
+<b>Date: </b>Friday, 30 December 2022 at 17:34<br>
+<b>To: </b>John Mattsson &lt;john.mattsson@ericsson.com&gt;<br>
+<b>Cc: </b>TLS@ietf.org &lt;tls@ietf.org&gt;<br>
+<b>Subject: </b>Re: [TLS] FW: New Version Notification for draft-ietf-lwig-=
+security-protocol-comparison-06.txt<o:p></o:p></span></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt">Hi John,<br>
+<br>
+just to mention, the CCM8 is also considered to be not recommended in<br>
+the future (see<br>
+<a href=3D"https://mailarchive.ietf.org/arch/msg/core/WnRInwF-j0uZmLggFh37y=
+SljnwE/)">https://mailarchive.ietf.org/arch/msg/core/WnRInwF-j0uZmLggFh37yS=
+ljnwE/)</a>.<br>
+Wouldn't it make more sense to use then CCM<br>
+instead (16 bytes tag length)?<br>
+<br>
+I would appreciate, if the comparison DTLS vs. TLS mentions also the<br>
+difference of UDP vs. TCP (8 vs. 24 bytes). And just a short sentence<br>
+about some more bytes for additional messages used in TCP internally?<br>
+<br>
+best regards<br>
+Achim<br>
+<br>
+Am 30.12.22 um 10:58 schrieb John Mattsson:<br>
+&gt; Hi,<br>
+&gt;<br>
+&gt; We feel that draft-ietf-lwig-security-protocol-comparisonis getting<br=
+>
+&gt; quite ready now that the included protocols are published or at least<=
+br>
+&gt; stable.<br>
+&gt;<br>
+&gt; We would love to have more examples of cTLS. Are there any more exampl=
+es<br>
+&gt; available? We currently included the example in the draft.<br>
+&gt;<br>
+&gt; Review by people in the TLS WG would be great as the draft covers TLS<=
+br>
+&gt; 1.2, DTLS 1.2, TLS 1.3, DTLS 1.3, and cTLS.<br>
+&gt;<br>
+&gt; Cheers,<br>
+&gt;<br>
+&gt; John<br>
+&gt;<br>
+&gt; *From: *John Mattsson &lt;john.mattsson@ericsson.com&gt;<br>
+&gt; *Date: *Sunday, 25 December 2022 at 20:19<br>
+&gt; *To: *lwip@ietf.org &lt;lwip@ietf.org&gt;<br>
+&gt; *Subject: *Re: New Version Notification for<br>
+&gt; draft-ietf-lwig-security-protocol-comparison-06.txt<br>
+&gt;<br>
+&gt; Hi,<br>
+&gt;<br>
+&gt; We submitted a new version of<br>
+&gt; draft-ietf-lwig-security-protocol-comparison. This document has been<b=
+r>
+&gt; dormant for a while as several of the referenced protocols were not<br=
+>
+&gt; stable, which lead to a lot of work in earlier versions. All of the<br=
+>
+&gt; protocols now seem to be stable and publishedor close to being<br>
+&gt; published. This version fixes all the comments we have received. We<br=
+>
+&gt; think it is close to being ready for WGLC.<br>
+&gt;<br>
+&gt; This is obviously needed information for a lot of people. The draft<br=
+>
+&gt; already has 17 citations.<br>
+&gt;<br>
+&gt; <a href=3D"https://protect2.fireeye.com/v1/url?k=3D31323334-501d5122-3=
+13273af-454445555731-180c89c9eb242a8e&amp;q=3D1&amp;e=3D8969b10d-8a34-412a-=
+a74e-44a29964cef8&amp;u=3Dhttps%3A%2F%2Fscholar.google.com%2Fscholar%3Fhl%3=
+Den%26as_sdt%3D0%2C5%26cluster%3D11841781769013384442">
+https://protect2.fireeye.com/v1/url?k=3D31323334-501d5122-313273af-45444555=
+5731-180c89c9eb242a8e&amp;q=3D1&amp;e=3D8969b10d-8a34-412a-a74e-44a29964cef=
+8&amp;u=3Dhttps%3A%2F%2Fscholar.google.com%2Fscholar%3Fhl%3Den%26as_sdt%3D0=
+%2C5%26cluster%3D11841781769013384442</a> &lt;<a href=3D"https://protect2.f=
+ireeye.com/v1/url?k=3D31323334-501d5122-313273af-454445555731-180c89c9eb242=
+a8e&amp;q=3D1&amp;e=3D8969b10d-8a34-412a-a74e-44a29964cef8&amp;u=3Dhttps%3A=
+%2F%2Fscholar.google.com%2Fscholar%3Fhl%3Den%26as_sdt%3D0%2C5%26cluster%3D1=
+1841781769013384442">https://protect2.fireeye.com/v1/url?k=3D31323334-501d5=
+122-313273af-454445555731-180c89c9eb242a8e&amp;q=3D1&amp;e=3D8969b10d-8a34-=
+412a-a74e-44a29964cef8&amp;u=3Dhttps%3A%2F%2Fscholar.google.com%2Fscholar%3=
+Fhl%3Den%26as_sdt%3D0%2C5%26cluster%3D11841781769013384442</a>&gt;<br>
+&gt;<br>
+&gt; The need for compact formats and protocols has also gained attention<b=
+r>
+&gt; outside of IoT. In the IAB workshop on Environmental Impact of Interne=
+t<br>
+&gt; Applications and Systems, compact formats and protocols were discussed=
+<br>
+&gt; as a way to reduce the energy consumption of the Internet as a whole.<=
+br>
+&gt;<br>
+&gt; <a href=3D"https://protect2.fireeye.com/v1/url?k=3D31323334-501d5122-3=
+13273af-454445555731-028386883e0a910d&amp;q=3D1&amp;e=3D8969b10d-8a34-412a-=
+a74e-44a29964cef8&amp;u=3Dhttps%3A%2F%2Fwww.iab.org%2Factivities%2Fworkshop=
+s%2Fe-impact%2F">
+https://protect2.fireeye.com/v1/url?k=3D31323334-501d5122-313273af-45444555=
+5731-028386883e0a910d&amp;q=3D1&amp;e=3D8969b10d-8a34-412a-a74e-44a29964cef=
+8&amp;u=3Dhttps%3A%2F%2Fwww.iab.org%2Factivities%2Fworkshops%2Fe-impact%2F<=
+/a><br>
+&gt; &lt;<a href=3D"https://protect2.fireeye.com/v1/url?k=3D31323334-501d51=
+22-313273af-454445555731-028386883e0a910d&amp;q=3D1&amp;e=3D8969b10d-8a34-4=
+12a-a74e-44a29964cef8&amp;u=3Dhttps%3A%2F%2Fwww.iab.org%2Factivities%2Fwork=
+shops%2Fe-impact%2F">https://protect2.fireeye.com/v1/url?k=3D31323334-501d5=
+122-313273af-454445555731-028386883e0a910d&amp;q=3D1&amp;e=3D8969b10d-8a34-=
+412a-a74e-44a29964cef8&amp;u=3Dhttps%3A%2F%2Fwww.iab.org%2Factivities%2Fwor=
+kshops%2Fe-impact%2F</a>&gt;<br>
+&gt;<br>
+&gt; Changes in -06:<br>
+&gt;<br>
+&gt; - Added more context to abstract and introduction<br>
+&gt;<br>
+&gt; - Added high level comparison of the number of bytes in TLS 1.2 and TL=
+S<br>
+&gt; 1.3 handshakes<br>
+&gt;<br>
+&gt; - Added Compact TLS 1.3 (cTLS)<br>
+&gt;<br>
+&gt; - Added some more clarification on (D)TLS choices<br>
+&gt;<br>
+&gt; - Added text that CoAP needs to be added to the EDHOC figures to be<br=
+>
+&gt; directly comparable to DTLS.<br>
+&gt;<br>
+&gt; - Added more DTLS and EDHOC alternatives to the summary table.<br>
+&gt;<br>
+&gt; - Added ECDSA keys without point compression as that does not seem to =
+be<br>
+&gt; supported.<br>
+&gt;<br>
+&gt; - Corrected DTLS calculation where 10 was used instead of 12 (thanks t=
+o<br>
+&gt; Stephan Koch for reporting this)<br>
+&gt;<br>
+&gt; - Updated DTLS 1.3 records to align with the RFC.<br>
+&gt;<br>
+&gt; - Updated EDHOC numbers to align with latest drafts.<br>
+&gt;<br>
+&gt; - Added numbers for Group OSCORE pairwise mode.<br>
+&gt;<br>
+&gt; - Added that DTLS and OSCORE numbers might not be directly comparable =
+as<br>
+&gt; requirements on CoAP Token reuse are different.<br>
+&gt;<br>
+&gt; - Changed names to Unicode<br>
+&gt;<br>
+&gt; - Added SVG figures and tables with the help of aasvg<br>
+&gt;<br>
+&gt; Cheers,<br>
+&gt;<br>
+&gt; John Preu=DF Mattsson<br>
+&gt;<br>
+&gt; *From: *internet-drafts@ietf.org &lt;internet-drafts@ietf.org&gt;<br>
+&gt; *Date: *Sunday, 25 December 2022 at 19:52<br>
+&gt; *To: *Mali=9Aa Vu=E8ini=E6 &lt;malisa.vucinic@inria.fr&gt;, John Matts=
+son<br>
+&gt; &lt;john.mattsson@ericsson.com&gt;, Francesca Palombini<br>
+&gt; &lt;francesca.palombini@ericsson.com&gt;, John Mattsson<br>
+&gt; &lt;john.mattsson@ericsson.com&gt;, Malisa Vucinic &lt;malisa.vucinic@=
+inria.fr&gt;<br>
+&gt; *Subject: *New Version Notification for<br>
+&gt; draft-ietf-lwig-security-protocol-comparison-06.txt<br>
+&gt;<br>
+&gt;<br>
+&gt; A new version of I-D, draft-ietf-lwig-security-protocol-comparison-06.=
+txt<br>
+&gt; has been successfully submitted by John Preu=DF Mattsson and posted to=
+ the<br>
+&gt; IETF repository.<br>
+&gt;<br>
+&gt; Name:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; draf=
+t-ietf-lwig-security-protocol-comparison<br>
+&gt; Revision:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 06<br>
+&gt; Title:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Compariso=
+n of CoAP Security Protocols<br>
+&gt; Document date:&nbsp; 2022-12-25<br>
+&gt; Group:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lwig<br>
+&gt; Pages:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 45<br>
+&gt; URL:<br>
+&gt; <a href=3D"https://www.ietf.org/archive/id/draft-ietf-lwig-security-pr=
+otocol-comparison-06.txt">
+https://www.ietf.org/archive/id/draft-ietf-lwig-security-protocol-compariso=
+n-06.txt</a> &lt;<a href=3D"https://www.ietf.org/archive/id/draft-ietf-lwig=
+-security-protocol-comparison-06.txt">https://www.ietf.org/archive/id/draft=
+-ietf-lwig-security-protocol-comparison-06.txt</a>&gt;<br>
+&gt; Status:<br>
+&gt; <a href=3D"https://datatracker.ietf.org/doc/draft-ietf-lwig-security-p=
+rotocol-comparison/">
+https://datatracker.ietf.org/doc/draft-ietf-lwig-security-protocol-comparis=
+on/</a> &lt;<a href=3D"https://datatracker.ietf.org/doc/draft-ietf-lwig-sec=
+urity-protocol-comparison/">https://datatracker.ietf.org/doc/draft-ietf-lwi=
+g-security-protocol-comparison/</a>&gt;<br>
+&gt; Html:<br>
+&gt; <a href=3D"https://www.ietf.org/archive/id/draft-ietf-lwig-security-pr=
+otocol-comparison-06.html">
+https://www.ietf.org/archive/id/draft-ietf-lwig-security-protocol-compariso=
+n-06.html</a> &lt;<a href=3D"https://www.ietf.org/archive/id/draft-ietf-lwi=
+g-security-protocol-comparison-06.html">https://www.ietf.org/archive/id/dra=
+ft-ietf-lwig-security-protocol-comparison-06.html</a>&gt;<br>
+&gt; Htmlized:<br>
+&gt; <a href=3D"https://datatracker.ietf.org/doc/html/draft-ietf-lwig-secur=
+ity-protocol-comparison">
+https://datatracker.ietf.org/doc/html/draft-ietf-lwig-security-protocol-com=
+parison</a> &lt;<a href=3D"https://datatracker.ietf.org/doc/html/draft-ietf=
+-lwig-security-protocol-comparison">https://datatracker.ietf.org/doc/html/d=
+raft-ietf-lwig-security-protocol-comparison</a>&gt;<br>
+&gt; Diff:<br>
+&gt; <a href=3D"https://author-tools.ietf.org/iddiff?url2=3Ddraft-ietf-lwig=
+-security-protocol-comparison-06">
+https://author-tools.ietf.org/iddiff?url2=3Ddraft-ietf-lwig-security-protoc=
+ol-comparison-06</a> &lt;<a href=3D"https://author-tools.ietf.org/iddiff?ur=
+l2=3Ddraft-ietf-lwig-security-protocol-comparison-06">https://author-tools.=
+ietf.org/iddiff?url2=3Ddraft-ietf-lwig-security-protocol-comparison-06</a>&=
+gt;<br>
+&gt;<br>
+&gt; Abstract:<br>
+&gt;&nbsp; &nbsp;&nbsp; This document analyzes and compares the sizes of ke=
+y exchange flights<br>
+&gt;&nbsp; &nbsp;&nbsp; and the per-packet message size overheads when usin=
+g different<br>
+&gt;&nbsp; &nbsp;&nbsp; security protocols to secure CoAP.&nbsp; Small mess=
+age sizes are very<br>
+&gt;&nbsp; &nbsp;&nbsp; important for reducing energy consumption, latency,=
+ and time to<br>
+&gt;&nbsp; &nbsp;&nbsp; completion in constrained radio network such as Low=
+-Power Wide Area<br>
+&gt;&nbsp; &nbsp;&nbsp; Networks (LPWANs).&nbsp; The analyzed security prot=
+ocols are DTLS 1.2,<br>
+&gt;&nbsp; &nbsp;&nbsp; DTLS 1.3, TLS 1.2, TLS 1.3, cTLS, EDHOC, OSCORE, an=
+d Group OSCORE.<br>
+&gt;&nbsp; &nbsp;&nbsp; The DTLS and TLS record layers are analyzed with an=
+d without 6LoWPAN-<br>
+&gt;&nbsp; &nbsp;&nbsp; GHC compression.&nbsp; DTLS is analyzed with and wi=
+thout Connection ID.<br>
+&gt;<br>
+&gt;<br>
+&gt;<br>
+&gt;<br>
+&gt; The IETF Secretariat<br>
+&gt;<br>
+&gt;<br>
+&gt; _______________________________________________<br>
+&gt; TLS mailing list<br>
+&gt; TLS@ietf.org<br>
+&gt; <a href=3D"https://www.ietf.org/mailman/listinfo/tls">https://www.ietf=
+.org/mailman/listinfo/tls</a><o:p></o:p></span></p>
+</div>
+</div>
+</body>
+</html>
+
+--_000_HE1PR0701MB3050138A685BAE3C5EE537D989F09HE1PR0701MB3050_--
+

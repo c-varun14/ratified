@@ -1,0 +1,144 @@
+Return-Path: <pgut001@cs.auckland.ac.nz>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 53973126C83
+ for <tls@ietfa.amsl.com>; Sat,  7 Apr 2018 17:40:36 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.91
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.91 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ T_RP_MATCHES_RCVD=-0.01] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=auckland.ac.nz
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id jh8N4Y3axn3P for <tls@ietfa.amsl.com>;
+ Sat,  7 Apr 2018 17:40:34 -0700 (PDT)
+Received: from mx4-int.auckland.ac.nz (mx4-int.auckland.ac.nz
+ [130.216.125.246])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 69452124D68
+ for <tls@ietf.org>; Sat,  7 Apr 2018 17:40:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=auckland.ac.nz; i=@auckland.ac.nz; q=dns/txt; s=mail;
+ t=1523148034; x=1554684034;
+ h=from:to:cc:subject:date:message-id:references:
+ in-reply-to:content-transfer-encoding:mime-version;
+ bh=DDNQLFOn6ERG7qK8bGKEfOorjupgHQomi8Kn9WVH7Jg=;
+ b=Yee3glARSvkDHP2faJWwweSaTLzlBBLJyYECiGm7wFIO1xB1pYC7BU5Y
+ +GigAfIavdaRVkMVKGugGiOKhWVt9PVJuBqqjo/955bF/KO9jE7lpiJTb
+ uThFM1ChEWhzCIM4g5oIehvyG9Yg2t8cLhRMSDP83wURG9vu4oj7H8DZI
+ TSCgITKy6Usz7SOrWWo+bMHCh1jpnSG8ujNV7VH3HchBjAyM9CBpUGZBZ
+ urk+Ejqjnp/l9HS+aqOM2P9zN5vrNbuxBjs6T4kIOH9Kj8sqJb9xDJtQA
+ GaUzLULARvTmjhYEe1ArOGy/IoxbNi7HSj1maOO4fQD26jj57swFV+zZo w==;
+X-IronPort-AV: E=Sophos;i="5.48,421,1517828400"; 
+   d="scan'208";a="6670438"
+X-Ironport-HAT: MAIL-SERVERS - $RELAYED
+X-Ironport-Source: 10.6.2.2 - Outgoing - Outgoing
+Received: from exchangemx.uoa.auckland.ac.nz (HELO
+ uxcn13-ogg-a.UoA.auckland.ac.nz) ([10.6.2.2])
+ by mx4-int.auckland.ac.nz with ESMTP/TLS/AES256-SHA; 08 Apr 2018 12:40:32 +1200
+Received: from uxcn13-ogg-d.UoA.auckland.ac.nz (10.6.2.5) by
+ uxcn13-ogg-a.UoA.auckland.ac.nz (10.6.2.2) with Microsoft SMTP Server (TLS)
+ id 15.0.1263.5; Sun, 8 Apr 2018 12:40:32 +1200
+Received: from uxcn13-ogg-d.UoA.auckland.ac.nz ([10.6.2.25]) by
+ uxcn13-ogg-d.UoA.auckland.ac.nz ([10.6.2.25]) with mapi id 15.00.1263.000;
+ Sun, 8 Apr 2018 12:40:32 +1200
+From: Peter Gutmann <pgut001@cs.auckland.ac.nz>
+To: Ion Larranaga Azcue <ilarra@s21sec.com>
+CC: "tls@ietf.org" <tls@ietf.org>
+Thread-Topic: [TLS] Genart last call review of draft-ietf-tls-tls13-24
+Thread-Index: AQHTyXh+/Lp+FYBJG0WUfSNMD3DC66PzGXCC///K/YCAACmygIAAV/MAgAA7NYCAAnAVGw==
+Date: Sun, 8 Apr 2018 00:40:31 +0000
+Message-ID: <1523147980074.75304@cs.auckland.ac.nz>
+References: <1522377304060.20682@cs.auckland.ac.nz>
+ <r470Ps-10133i-7B3DEB3D7CF1410DB2E2FF250A811BB1@Williams-MacBook-Pro.local>
+ <CABcZeBMFrnSUddraBps-b=CujitVfaQuqBFHD9WCAcCKg9M7Tw@mail.gmail.com>
+ <CDC57F65-C88C-43BB-B4DB-77AEE9B437EF@gmail.com>
+ <1522462562850.29528@cs.auckland.ac.nz>
+ <2C1F7A14-45B0-49DE-98B1-897223F7A1B0@akamai.com>
+ <1522559738688.99197@cs.auckland.ac.nz>
+ <7EBF2F91-6FEA-4705-BB1A-3FB5D7E33949@akamai.com>
+ <2DA08233-1EC4-4371-943B-E41BF5D8DA8C@dukhovni.org>
+ <109337BE-3299-46B5-A2F8-9583107AB537@akamai.com>
+ <1523025589.2651530.1328912616.6FC37C86@webmail.messagingengine.com>
+ <1523044476527.20197@s21sec.com>,
+ <1523057191.3844723.1329421696.7A2BAE27@webmail.messagingengine.com>
+In-Reply-To: <1523057191.3844723.1329421696.7A2BAE27@webmail.messagingengine.com>
+Accept-Language: en-NZ, en-GB, en-US
+Content-Language: en-NZ
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [130.216.158.4]
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/RmtjQLZ8YyL_V3QcpE-WHAzCF6Y>
+Subject: Re: [TLS] Genart last call review of draft-ietf-tls-tls13-24
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Sun, 08 Apr 2018 00:40:36 -0000
+
+Stan Kalisch <stan@glyphein.mailforce.net> writes:=0A=
+=0A=
+>On Fri, Apr 6, 2018, at 3:54 PM, Ion Larranaga Azcue wrote:=0A=
+>>=0A=
+>> My opinion is that if we are going to have extended error codes, it's=0A=
+>> better to use numeric ones and not text based errors.=0A=
+>=0A=
+>That was my own gut feeling on the least painful way to go, but I'm open t=
+o=0A=
+>the possibility that gut feeling was woefully naive.=0A=
+=0A=
+To see why this won't work, you just need to think one step further: Try=0A=
+sitting down and defining the numeric error codes you're proposing.=0A=
+=0A=
+If it's still not obvious: The reason why we need free-form strings is beca=
+use=0A=
+the numeric codes we already have provide insufficient detail.  To provide =
+the=0A=
+required detail, you'd need to define numeric codes for every error conditi=
+on=0A=
+and failed check that every TLS and PKI library (because lots of handshake=
+=0A=
+failures are due to problems with certs) could wish to communicate.  To tak=
+e a=0A=
+PKI example, there's "Certificate chain with length %d has a path constrain=
+t=0A=
+of length %d", which for reasonable values of the two %d leads to, say, aro=
+und=0A=
+a hundred error codes just for that one condition.  Then take every single=
+=0A=
+type of error that would need to be communicated and you're into at least 1=
+6-=0A=
+bit values, or 32- or 64-bit if you take cases like "Packet length of %d=0A=
+indicated but only %d bytes were sent".=0A=
+=0A=
+Even if someone came up with the massive codebook of thousands or tens of=
+=0A=
+thousands of error codes, which TLS author would want to spend hours paging=
+=0A=
+through them to find the right code for each situation?=0A=
+=0A=
+Conversely, if you limit the number of error codes to, say, 5,000, how are =
+you=0A=
+going to convince TLS library authors to check for and report only those=0A=
+errors?  What happens if new error types are defined?=0A=
+=0A=
+Peter.=
+

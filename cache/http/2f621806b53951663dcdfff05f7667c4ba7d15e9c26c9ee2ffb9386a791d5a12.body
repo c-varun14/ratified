@@ -1,0 +1,486 @@
+From nobody Mon Feb  1 11:48:55 2021
+Return-Path: <jovergar@microsoft.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 44CC03A143D;
+ Mon,  1 Feb 2021 11:48:44 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.25
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.25 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIMWL_WL_HIGH=-0.25, DKIM_SIGNED=0.1,
+ DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1,
+ HTML_MESSAGE=0.001, HTTPS_HTTP_MISMATCH=0.1, RCVD_IN_MSPIKE_H2=-0.001,
+ SPF_PASS=-0.001, URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=microsoft.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id CaAzJ6PDPDDP; Mon,  1 Feb 2021 11:48:42 -0800 (PST)
+Received: from NAM02-CY1-obe.outbound.protection.outlook.com
+ (mail-eopbgr760093.outbound.protection.outlook.com [40.107.76.93])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id DD0513A1423;
+ Mon,  1 Feb 2021 11:48:41 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fcy0mot+K6qhBEX4C0lBekShzbt1ItaampgggZK55rMODKeSg9E1B9mS7+oGTJzu9IiSIB6ujbPnPQDN6x5o1D0RsaR/eEOF7iil6pIUZtqSVOueBKj/iMCs8rE1bKtTgkgYaRDF8E4/q696DjoLpQ1whvcDXIsrSmWTb5T8wjrAxO0xpDEGJkda5AqwGe+wr7Z+URLZl5U3qIsqU+MwtYSOijCVIChrkF72qWjd3typu5YuXbn0BoMxm8atof+eG0jDY/g9A4CoAPfh5MHD8BsZdORo+v1JPop/gtNSev844RthaEM1hF1zpLf+GqUEZfwN1XWFNAiOF4XPiGKx1A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VjjyGHNgtN6HE2XTUlZDfpw4uP3qVzNgZ/1cGGan5lA=;
+ b=AiNL+ZtNoKmzoYTb68oBAPvM9hZOC5UY0SROJFkdaSebY0sZotnkrSVKltHjL5X6Aw0HotRcVbozOdsn3oDqvJAKaDu2nQmVCyr6UhTPUtnvAN9W++pCG8iHKQ+9TK9EQC1lFQSPBsxvF0jU+8CRyTNlUtDV5MiN89ONeMEzylRZx479Cyc0PF6vvQPr66ItbXhCNHnN0tvAL5/05P9R943DJbMWV3n0wb7r9BAepNVKk+LWeSQ2Z1kFOzG6SSZ8jdADizT5C6nYlMvFfo+Ne6iC2mRFwP3xrRWxQ6gUD1JJuyDqLwwOk6QC/fk6aK7wLnvt+hmFgcy4NnOuw+qyGQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VjjyGHNgtN6HE2XTUlZDfpw4uP3qVzNgZ/1cGGan5lA=;
+ b=JWneBa1CDZIX0AenT8trORyjXedJvFIif6IoehGNMykCEVpi/e1lu9HQWHXSpNy9EHNXSuW8C070r8olqzJHbKuxopAGThSwCeXo5ZK9ljdayN5f0ycuC0Kx0Gt6XRHzbB2kySkWyBEK+tBUeo501chvUD2Yo59xmDaFa0Ze5kA=
+Received: from (2603:10b6:302:10::31) by
+ MW4PR21MB2003.namprd21.prod.outlook.com (2603:10b6:303:68::19) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3846.3; Mon, 1 Feb 2021 19:48:39 +0000
+Received: from MW2PR2101MB0923.namprd21.prod.outlook.com
+ ([fe80::70e4:503d:86f9:e543]) by MW2PR2101MB0923.namprd21.prod.outlook.com
+ ([fe80::70e4:503d:86f9:e543%8]) with mapi id 15.20.3825.006; Mon, 1 Feb 2021
+ 19:48:39 +0000
+From: Jorge Vergara <jovergar@microsoft.com>
+To: Joseph Salowey <joe@salowey.net>, Alan DeKok <aland@deployingradius.com>
+CC: "<tls@ietf.org>" <tls@ietf.org>, EMU WG <emu@ietf.org>, Benjamin Kaduk
+ <kaduk@mit.edu>
+Thread-Topic: [Emu] [TLS] Fwd: Benjamin Kaduk's Discuss on
+ draft-ietf-emu-eap-tls13-13: (with DISCUSS and COMMENT)
+Thread-Index: AQHW6Pa5MNxmyeoa40yTtc4U35tSYqo13CEAgAksGQCAABi7gIAEYZ+AgAANHgCAAAd/AIAAA8gAgAABCoCAADHdgIAAAhiAgAAAh5A=
+Date: Mon, 1 Feb 2021 19:48:39 +0000
+Message-ID: <MW2PR2101MB092375CABDC99B8A240F224AD1B69@MW2PR2101MB0923.namprd21.prod.outlook.com>
+References: <e669002f-caff-1e6e-e28b-d09157eb0c07@ericsson.com>
+ <6241F0B6-C722-449E-AC3A-183DE330E7B5@deployingradius.com>
+ <9ddd1593-3131-f5cc-d0db-74bf3db697bf@ericsson.com>
+ <3CB58153-8CCA-4B1E-B530-BA67A6035310@deployingradius.com>
+ <CAOgPGoA3U+XpZMY7J+KGovNx6MtAdEzRaGW33xVJdQNWSi4LVg@mail.gmail.com>
+ <770e6a49-52fc-4e8b-91af-48f85e581fbb@www.fastmail.com>
+ <CAOgPGoBGOMXH-kMhQSujWxnACdmBL845u0ouE0fUYc4rWtUrZg@mail.gmail.com>
+ <ca4c526e-79a0-4fa7-abda-2b626795f068@www.fastmail.com>
+ <3409F71E-4CE4-46BB-8079-BFBE9BE83C9A@deployingradius.com>
+ <66157321-55DC-4831-8EF2-D75934D9024C@deployingradius.com>
+ <20210129183220.GI21@kduck.mit.edu>
+ <1A830492-3404-4BCC-844B-D7D950458BD9@deployingradius.com>
+ <CABcZeBMAtmPfG0rctvO8UvnhPqY1etk=SxnonP_t6ysNxH7hVA@mail.gmail.com>
+ <D6AAF668-86C8-4C5D-AF1E-B37F106A4D1C@deployingradius.com>
+ <CABcZeBPES99+xo16=aSDJQbGpzM_Q+k-pWtg424Gu4UAcFbo9Q@mail.gmail.com>
+ <FFE1B807-B055-45DF-84FA-A0D63C058729@deployingradius.com>
+ <CABcZeBMeR-kH_P_Lq9X8sOCvZ=u8_tGEOE2QErKX--Tk3cEg=Q@mail.gmail.com>
+ <9E25ADFC-16F2-4719-B223-E34598633D2B@deployingradius.com>
+ <CAOgPGoCANLd0hisu5cLtb=FKa-TKy2ixrSvJ0dAUVLef9F1L0A@mail.gmail.com>
+In-Reply-To: <CAOgPGoCANLd0hisu5cLtb=FKa-TKy2ixrSvJ0dAUVLef9F1L0A@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=592a1f90-5016-414e-bd5a-d004019d6b4c;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-02-01T19:34:10Z; 
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: salowey.net; dkim=none (message not signed)
+ header.d=none;salowey.net; dmarc=none action=none header.from=microsoft.com;
+x-originating-ip: [2001:4898:80e8:1:61d2:b08e:e1e2:2f8]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 54c5369b-911b-495c-cfd9-08d8c6ea5f57
+x-ms-traffictypediagnostic: MW4PR21MB2003:
+x-microsoft-antispam-prvs: <MW4PR21MB2003A6175577A3E8059036F2D1B69@MW4PR21MB2003.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: WyzLquJRYHLs3laRirSdFSt11Q4z6JZH2bhSKp1KITUMv6x+9IJln+dtuZ/dGL/nmUXxiUthhpzr9OEqX+S8+FyEdZHrA+ZYtoxtZ+uSZVCpLHuvbpqwdMENonhfQpevDd1rMWldTxKVwKgPGAzxc8d+b46q/smdK3AkRckQtbGOG+tDlxn+OVsVOdc7MJYFxg8qB64DwLvgA5EqNgJgL0K7bqWDVdjHhiW85GR1NKkS8F+jnxfp4Ls/nbd8OnYGWv8UihOOCNxVR+hKxICw5jtE9TnIJ/50OVvSIVkbBms8BLbg65fvAweNXMimtGvqRmnqZ5o5YeUh80t/m+RoSOroHxKYKlZvcJmPlEqwNwv2XFt38bf96zQxmK8ES46b/U3nMOkaCjktxkCjrKOGvwxTXRjOOTgWSdDeYwF5BUvo9BXc5llgh6mt5SJvbqSGGDPXcG15Y35Lgt62IUPyftYIxiEpvD+tpd6ct25aCh5gnmM3A2vxKEkRM7ZW60+Ua2lZMmmC1thX+33YR8fMnf12eAIrEeoPiOKG/atVQ5WXCyuo4KIj04OfZ+ZfhVSiaTsKLKwpIXMJr95Pn1YVsIFkMq88YQ4Q6XYy3agsHag=
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:; 
+ IPV:NLI; SFV:NSPM;
+ H:MW2PR2101MB0923.namprd21.prod.outlook.com; PTR:; CAT:NONE; 
+ SFS:(4636009)(39860400002)(346002)(376002)(396003)(366004)(136003)(82950400001)(82960400001)(8990500004)(186003)(6506007)(478600001)(10290500003)(55016002)(166002)(5660300002)(86362001)(83380400001)(7696005)(4326008)(33656002)(53546011)(316002)(966005)(110136005)(2906002)(71200400001)(8676002)(76116006)(66556008)(64756008)(66446008)(66946007)(66476007)(8936002)(9686003)(52536014);
+ DIR:OUT; SFP:1102; 
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?0fJlPKXfVg7p8sMHa571aooPgF7hknJmdNvRp/J+IM+CGAAkCKUOM5H9Gq8D?=
+ =?us-ascii?Q?rYjpqZDQ5aP0Z20i3iLeN2DRmO/d5vMrsZhwgnDRdFgowiPBMVCNU0Yq14mE?=
+ =?us-ascii?Q?KuD6RwRWDazGXLYSDHn/36Xhs09oBpIeQGg6rpXhDOgVp2ei8knX9MD16Df8?=
+ =?us-ascii?Q?O1P3ycVO6B+949VuBCGIhzu7QIit4ANiQJKGHoeo2ghr+VNP9SvfxiScjDnX?=
+ =?us-ascii?Q?65EyT/1kQhi6+Pd90DUlGjgZDL3np7q5rZvQwuzlpDwleF4pvB27GJwg/kC4?=
+ =?us-ascii?Q?VLVhbU2T6zXCKR46uad2T3sOsUw2OBMaJNtGAJWf364JNXhTHAIxBNw6uAHm?=
+ =?us-ascii?Q?BWS5QP8TxLs7h2Ml5cLO/40vDiDwyCTfDgNCrY+Lli2R9hh/3GXlM0KGBoTT?=
+ =?us-ascii?Q?oDXCebLNZJckg8g/f4rsucfEgXcVSuZV8H2svTdgBBKqpRvlKay5guhaqn1t?=
+ =?us-ascii?Q?a04s4Hfac8YSn+h0wXl/1XBgDM/yheTyGhGgpHMtqNz3rM7anb10eXLHn+Ns?=
+ =?us-ascii?Q?QzFLOoKln8FylEeMig++y8Yw2u3jeTgoZlid6oOqiKTIQJ/pxsz8EMtBWbYB?=
+ =?us-ascii?Q?uXYVjurwQPyPa8iX9MtckfmpWkyA4xzIxT/gQPQEuDldePUl1K3tTKzWlgOf?=
+ =?us-ascii?Q?YonWHMieWG8bae2oLRHoKDI21O8+Cip4yGrxUB8pIg+WWIq6PO0rruo8Y0kC?=
+ =?us-ascii?Q?c4TnYh+RidhPrtVWNFCmu+3eiaVV4NCPGqnBqDZBbX5xT443+RWnDi6Ee3Am?=
+ =?us-ascii?Q?oXRvZIwU9oQhLJtNpegrKANF4aUrDjiw4hDSHcaoK+b6KhMmAuK7X0fXTF6n?=
+ =?us-ascii?Q?9GRUS24ZZBgqe0fjY/PRFErnq/5Eu0y2Dj2kbCWPBdTAviYIg2RiFAvGCe7R?=
+ =?us-ascii?Q?NKtVw5iFtLsckW+sOECUSJHXH0l09M9Sp2eYijzBRnWmTr0qZeuBmXWdudj8?=
+ =?us-ascii?Q?4f43i9sy2sX0nZRE4yYXT+3AUdJREe+tenh+PWF0PRy5tSKf6/jeNJtlIdvh?=
+ =?us-ascii?Q?yK3tGAgU9VEi4cFfPd7V2BeshPRbwMyKhtppPEaF4buwQ+/jY7yV/8m56DgN?=
+ =?us-ascii?Q?9DadMaSAV6IB97yJJSTmzY2xlVkJbuCePA3FYGzwWhRnfzBS2UOdwHWzyuF5?=
+ =?us-ascii?Q?xSRTxGNYGsaEpCMx7cZg1FgjARoM7H3s95VRIvHb6vG0i9GeRxr3X5eg9GAd?=
+ =?us-ascii?Q?Lq09vbKzerEHIhgdmL4n4HcAUZrVjHtKGNKdSIB7hmXdqqy191DSIGrOSbWp?=
+ =?us-ascii?Q?YvIq5MvcQjajKy+9mJoHVL97m4JV+JdaqmRV7jZB+X/KlQjd3PCrmXPymgrU?=
+ =?us-ascii?Q?3vsqVEKgmIy96aygAppxyPCFDDqT1yQpJAWYqnLv0QUqx5fcKpaG/q8SCCBD?=
+ =?us-ascii?Q?rDWfUnI=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: multipart/alternative;
+ boundary="_000_MW2PR2101MB092375CABDC99B8A240F224AD1B69MW2PR2101MB0923_"
+MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW2PR2101MB0923.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 54c5369b-911b-495c-cfd9-08d8c6ea5f57
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Feb 2021 19:48:39.6153 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: DCgh9n6SjFfpaIzlHjlx4AGCRWpa9obifl5LGQpKDHhMUEkrbGeRpN09ASokAaYmjQg/s7G4xthMxoZwKY60RA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR21MB2003
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/aElpHqf2Ra9_QELm8rz7hQA_P0M>
+Subject: Re: [TLS] [Emu] Fwd: Benjamin Kaduk's Discuss on
+ draft-ietf-emu-eap-tls13-13: (with DISCUSS and COMMENT)
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Mon, 01 Feb 2021 19:48:50 -0000
+
+--_000_MW2PR2101MB092375CABDC99B8A240F224AD1B69MW2PR2101MB0923_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+There has been a lot of discussion on the ending of the handshake that I ho=
+pe I have parsed. Here is my perspective as an client implementor (not an a=
+uthor):
+
+
+
+1. I don't see a strict requirement for an authenticated signal at the end =
+of the handshake. No prior version of EAP-TLS needed this and I don't neces=
+sarily see the need now. An EAP-TLS client should wait until it has satisfi=
+ed all of its server validation policies and completes TLS before accepting=
+ a connection to the server, even if a "rogue" server starts sending EAP-Su=
+ccess all the time. Any client which blindly connects in this case is a bro=
+ken client.
+
+
+
+2. Although I don't see any security benefit, such a signal *may* be conven=
+ient to help EAP-TLS implementations update their state machines to support=
+ TLS 1.3. For example, if an EAP-TLS state machine previously used to assum=
+e that a "TLS complete" signal from its TLS library was sufficient to advan=
+ce to a new state where it will no longer accept TLS payload might break wh=
+en TLS 1.3 is used. Such a state machine would not necessarily know when to=
+ advance to this state with some similar sort of signal that the server is =
+done.
+
+
+
+A different state machine which simply will always process TLS payload even=
+ after a "TLS complete" signal from its TLS library may not need any update=
+s at all to work with TLS 1.3. I believe such a state machine would be able=
+ to handle a NewSessionTicket after TLS completion without issues even with=
+out a signal.
+
+
+
+Windows currently happens to fall into the first camp, where a signal is co=
+nvenient. It seems to me that using close_notify is more semantically corre=
+ct, but has some tradeoffs.
+
+
+
+A. In some cases, where the commitment message may be able to allow for a s=
+horter handshake, using close_notify doesn't allow the client to send an al=
+ert, which is a non-starter in my opinion.
+
+B. If we settle for an extra round trip, we can use close_notify and make s=
+ure the client always has at least 1 chance to send an alert.
+
+
+
+This seems to me to be roughly where we started the discussion. Perhaps I h=
+ave some of the theoretical details regarding the authenticated end signal =
+incorrect as my perception is definitely colored by being mainly a client i=
+mplementor. I happen to prefer the draft-13 commitment message because it s=
+eems to allow one less round trip in some cases. I'm happy to see discussio=
+n occurring either way and hope my perspective as an implementor is useful =
+in driving toward a resolution.
+
+
+
+Jorge Vergara
+
+
+From: Emu <emu-bounces@ietf.org> On Behalf Of Joseph Salowey
+Sent: Monday, February 1, 2021 11:32 AM
+To: Alan DeKok <aland@deployingradius.com>
+Cc: <tls@ietf.org> <tls@ietf.org>; EMU WG <emu@ietf.org>; Benjamin Kaduk <k=
+aduk@mit.edu>
+Subject: Re: [Emu] [TLS] Fwd: Benjamin Kaduk's Discuss on draft-ietf-emu-ea=
+p-tls13-13: (with DISCUSS and COMMENT)
+
+
+
+On Mon, Feb 1, 2021 at 11:25 AM Alan DeKok <aland@deployingradius.com<mailt=
+o:aland@deployingradius.com>> wrote:
+On Feb 1, 2021, at 11:26 AM, Eric Rescorla <ekr@rtfm.com<mailto:ekr@rtfm.co=
+m>> wrote:
+> Yes, this is what I have in mind. So, maybe there's never any need for th=
+e server to say "I won't say anything more" after just one round trip?
+
+  I think so, yes.
+
+  That means of course EAP-TLS will always require 4.5 round trips.
+
+[Joe] I don't follow why this means 4.5 round trips would be required.
+
+  Alan DeKok.
+
+_______________________________________________
+TLS mailing list
+TLS@ietf.org<mailto:TLS@ietf.org>
+https://www.ietf.org/mailman/listinfo/tls<https://nam06.safelinks.protectio=
+n.outlook.com/?url=3Dhttps%3A%2F%2Fwww.ietf.org%2Fmailman%2Flistinfo%2Ftls&=
+data=3D04%7C01%7Cjovergar%40microsoft.com%7Cd91c71b48e0c4b698fbc08d8c6e850b=
+b%7C72f988bf86f141af91ab2d7cd011db47%7C1%7C0%7C637478048391997828%7CUnknown=
+%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6=
+Mn0%3D%7C1000&sdata=3Dy8w56%2BgJwrxEOi%2B%2FgFCeQpZnA8%2FjPqslXFEngbk8dKE%3=
+D&reserved=3D0>
+
+--_000_MW2PR2101MB092375CABDC99B8A240F224AD1B69MW2PR2101MB0923_
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-micr=
+osoft-com:office:office" xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" xmlns=3D"http:=
+//www.w3.org/TR/REC-html40">
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dus-ascii"=
+>
+<meta name=3D"Generator" content=3D"Microsoft Word 15 (filtered medium)">
+<style><!--
+/* Font Definitions */
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:blue;
+	text-decoration:underline;}
+p.MsoPlainText, li.MsoPlainText, div.MsoPlainText
+	{mso-style-priority:99;
+	mso-style-link:"Plain Text Char";
+	margin:0in;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+span.PlainTextChar
+	{mso-style-name:"Plain Text Char";
+	mso-style-priority:99;
+	mso-style-link:"Plain Text";
+	font-family:"Calibri",sans-serif;}
+span.EmailStyle20
+	{mso-style-type:personal-reply;
+	font-family:"Calibri",sans-serif;
+	color:windowtext;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	font-size:10.0pt;}
+@page WordSection1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.0in 1.0in 1.0in;}
+div.WordSection1
+	{page:WordSection1;}
+--></style><!--[if gte mso 9]><xml>
+<o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
+</xml><![endif]--><!--[if gte mso 9]><xml>
+<o:shapelayout v:ext=3D"edit">
+<o:idmap v:ext=3D"edit" data=3D"1" />
+</o:shapelayout></xml><![endif]-->
+</head>
+<body lang=3D"EN-US" link=3D"blue" vlink=3D"purple" style=3D"word-wrap:brea=
+k-word">
+<div class=3D"WordSection1">
+<p class=3D"MsoPlainText"><font size=3D"2" face=3D"Calibri"><span style=3D"=
+font-size:11.0pt">There has been a lot of discussion on the ending of the h=
+andshake that I hope I have parsed. Here is my perspective as an client imp=
+lementor (not an author):<o:p></o:p></span></font></p>
+<p class=3D"MsoPlainText"><font size=3D"2" face=3D"Calibri"><span style=3D"=
+font-size:10.0pt"><o:p>&nbsp;</o:p></span></font></p>
+<p class=3D"MsoPlainText"><font size=3D"2" face=3D"Calibri"><span style=3D"=
+font-size:11.0pt">1. I don't see a strict requirement for an authenticated =
+signal at the end of the handshake. No prior version of EAP-TLS needed this=
+ and I don't necessarily see the need now.
+ An EAP-TLS client should wait until it has satisfied all of its server val=
+idation policies and completes TLS before accepting a connection to the ser=
+ver, even if a &quot;rogue&quot; server starts sending EAP-Success all the =
+time. Any client which blindly connects in
+ this case is a broken client.<o:p></o:p></span></font></p>
+<p class=3D"MsoPlainText"><font size=3D"2" face=3D"Calibri"><span style=3D"=
+font-size:10.0pt"><o:p>&nbsp;</o:p></span></font></p>
+<p class=3D"MsoPlainText"><font size=3D"2" face=3D"Calibri"><span style=3D"=
+font-size:11.0pt">2. Although I don't see any security benefit, such a sign=
+al *may* be convenient to help EAP-TLS implementations update their state m=
+achines to support TLS 1.3. For example,
+ if an EAP-TLS state machine previously used to assume that a &#8220;TLS co=
+mplete&#8221; signal from its TLS library was sufficient to advance to a ne=
+w state where it will no longer accept TLS payload might break when TLS 1.3=
+ is used. Such a state machine would not necessarily
+ know when to advance to this state with some similar sort of signal that t=
+he server is done.<o:p></o:p></span></font></p>
+<p class=3D"MsoPlainText"><font size=3D"2" face=3D"Calibri"><span style=3D"=
+font-size:10.0pt"><o:p>&nbsp;</o:p></span></font></p>
+<p class=3D"MsoPlainText"><font size=3D"2" face=3D"Calibri"><span style=3D"=
+font-size:11.0pt">A different state machine which simply will always proces=
+s TLS payload even after a &#8220;TLS complete&#8221; signal from its TLS l=
+ibrary may not need any updates at all to work with
+ TLS 1.3. I believe such a state machine would be able to handle a NewSessi=
+onTicket after TLS completion without issues even without a signal.<o:p></o=
+:p></span></font></p>
+<p class=3D"MsoPlainText"><font size=3D"2" face=3D"Calibri"><span style=3D"=
+font-size:10.0pt"><o:p>&nbsp;</o:p></span></font></p>
+<p class=3D"MsoPlainText"><font size=3D"2" face=3D"Calibri"><span style=3D"=
+font-size:11.0pt">Windows currently happens to fall into the first camp, wh=
+ere a signal is convenient. It seems to me that using close_notify is more =
+semantically correct, but has some tradeoffs.<o:p></o:p></span></font></p>
+<p class=3D"MsoPlainText"><font size=3D"2" face=3D"Calibri"><span style=3D"=
+font-size:10.0pt"><o:p>&nbsp;</o:p></span></font></p>
+<p class=3D"MsoPlainText"><font size=3D"2" face=3D"Calibri"><span style=3D"=
+font-size:11.0pt">A. In some cases, where the commitment message may be abl=
+e to allow for a shorter handshake, using close_notify doesn&#8217;t allow =
+the client to send an alert, which is a non-starter
+ in my opinion.<o:p></o:p></span></font></p>
+<p class=3D"MsoPlainText"><font size=3D"2" face=3D"Calibri"><span style=3D"=
+font-size:11.0pt">B. If we settle for an extra round trip, we can use close=
+_notify and make sure the client always has at least 1 chance to send an al=
+ert.<o:p></o:p></span></font></p>
+<p class=3D"MsoPlainText"><font size=3D"2" face=3D"Calibri"><span style=3D"=
+font-size:10.0pt"><o:p>&nbsp;</o:p></span></font></p>
+<p class=3D"MsoPlainText"><font size=3D"2" face=3D"Calibri"><span style=3D"=
+font-size:11.0pt">This seems to me to be roughly where we started the discu=
+ssion. Perhaps I have some of the theoretical details regarding the authent=
+icated end signal incorrect as my perception
+ is definitely colored by being mainly a client implementor. I happen to pr=
+efer the draft-13 commitment message because it seems to allow one less rou=
+nd trip in some cases. I&#8217;m happy to see discussion occurring either w=
+ay and hope my perspective as an implementor
+ is useful in driving toward a resolution.<o:p></o:p></span></font></p>
+<p class=3D"MsoPlainText"><font size=3D"2" face=3D"Calibri"><span style=3D"=
+font-size:10.0pt"><o:p>&nbsp;</o:p></span></font></p>
+<p class=3D"MsoPlainText"><font size=3D"2" face=3D"Calibri"><span style=3D"=
+font-size:11.0pt">Jorge Vergara<o:p></o:p></span></font></p>
+<p class=3D"MsoPlainText"><font size=3D"2" face=3D"Calibri"><span style=3D"=
+font-size:11.0pt"><o:p>&nbsp;</o:p></span></font></p>
+<div style=3D"border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0in =
+0in 0in">
+<p class=3D"MsoNormal"><b><font size=3D"2" face=3D"Calibri"><span style=3D"=
+font-size:11.0pt;font-weight:bold">From:</span></font></b> Emu &lt;emu-boun=
+ces@ietf.org&gt;
+<b><span style=3D"font-weight:bold">On Behalf Of </span></b>Joseph Salowey<=
+br>
+<b><span style=3D"font-weight:bold">Sent:</span></b> Monday, February 1, 20=
+21 11:32 AM<br>
+<b><span style=3D"font-weight:bold">To:</span></b> Alan DeKok &lt;aland@dep=
+loyingradius.com&gt;<br>
+<b><span style=3D"font-weight:bold">Cc:</span></b> &lt;tls@ietf.org&gt; &lt=
+;tls@ietf.org&gt;; EMU WG &lt;emu@ietf.org&gt;; Benjamin Kaduk &lt;kaduk@mi=
+t.edu&gt;<br>
+<b><span style=3D"font-weight:bold">Subject:</span></b> Re: [Emu] [TLS] Fwd=
+: Benjamin Kaduk's Discuss on draft-ietf-emu-eap-tls13-13: (with DISCUSS an=
+d COMMENT)<o:p></o:p></p>
+</div>
+<p class=3D"MsoNormal"><font size=3D"2" face=3D"Calibri"><span style=3D"fon=
+t-size:11.0pt"><o:p>&nbsp;</o:p></span></font></p>
+<div>
+<div>
+<p class=3D"MsoNormal"><font size=3D"2" face=3D"Calibri"><span style=3D"fon=
+t-size:11.0pt"><o:p>&nbsp;</o:p></span></font></p>
+</div>
+<p class=3D"MsoNormal"><font size=3D"2" face=3D"Calibri"><span style=3D"fon=
+t-size:11.0pt"><o:p>&nbsp;</o:p></span></font></p>
+<div>
+<div>
+<p class=3D"MsoNormal"><font size=3D"2" face=3D"Calibri"><span style=3D"fon=
+t-size:11.0pt">On Mon, Feb 1, 2021 at 11:25 AM Alan DeKok &lt;<a href=3D"ma=
+ilto:aland@deployingradius.com">aland@deployingradius.com</a>&gt; wrote:<o:=
+p></o:p></span></font></p>
+</div>
+<blockquote style=3D"border:none;border-left:solid #CCCCCC 1.0pt;padding:0i=
+n 0in 0in 6.0pt;margin-left:4.8pt;margin-top:5.0pt;margin-right:0in;margin-=
+bottom:5.0pt">
+<p class=3D"MsoNormal" style=3D"margin-bottom:12.0pt"><font size=3D"2" face=
+=3D"Calibri"><span style=3D"font-size:11.0pt">On Feb 1, 2021, at 11:26 AM, =
+Eric Rescorla &lt;<a href=3D"mailto:ekr@rtfm.com" target=3D"_blank">ekr@rtf=
+m.com</a>&gt; wrote:<br>
+&gt; Yes, this is what I have in mind. So, maybe there's never any need for=
+ the server to say &quot;I won't say anything more&quot; after just one rou=
+nd trip?<br>
+<br>
+&nbsp; I think so, yes.<br>
+<br>
+&nbsp; That means of course EAP-TLS will always require 4.5 round trips.<o:=
+p></o:p></span></font></p>
+</blockquote>
+<div>
+<p class=3D"MsoNormal"><font size=3D"2" face=3D"Calibri"><span style=3D"fon=
+t-size:11.0pt"><o:p>&nbsp;</o:p></span></font></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><font size=3D"2" face=3D"Calibri"><span style=3D"fon=
+t-size:11.0pt">[Joe] I don't follow why this means 4.5 round trips would be=
+ required.&nbsp;&nbsp;<o:p></o:p></span></font></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><font size=3D"2" face=3D"Calibri"><span style=3D"fon=
+t-size:11.0pt">&nbsp;<o:p></o:p></span></font></p>
+</div>
+<blockquote style=3D"border:none;border-left:solid #CCCCCC 1.0pt;padding:0i=
+n 0in 0in 6.0pt;margin-left:4.8pt;margin-top:5.0pt;margin-right:0in;margin-=
+bottom:5.0pt">
+<p class=3D"MsoNormal"><font size=3D"2" face=3D"Calibri"><span style=3D"fon=
+t-size:11.0pt">&nbsp; Alan DeKok.<br>
+<br>
+_______________________________________________<br>
+TLS mailing list<br>
+<a href=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.org</a><br>
+<a href=3D"https://nam06.safelinks.protection.outlook.com/?url=3Dhttps%3A%2=
+F%2Fwww.ietf.org%2Fmailman%2Flistinfo%2Ftls&amp;data=3D04%7C01%7Cjovergar%4=
+0microsoft.com%7Cd91c71b48e0c4b698fbc08d8c6e850bb%7C72f988bf86f141af91ab2d7=
+cd011db47%7C1%7C0%7C637478048391997828%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4w=
+LjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=3Dy=
+8w56%2BgJwrxEOi%2B%2FgFCeQpZnA8%2FjPqslXFEngbk8dKE%3D&amp;reserved=3D0" tar=
+get=3D"_blank">https://www.ietf.org/mailman/listinfo/tls</a><o:p></o:p></sp=
+an></font></p>
+</blockquote>
+</div>
+</div>
+</div>
+</body>
+</html>
+
+--_000_MW2PR2101MB092375CABDC99B8A240F224AD1B69MW2PR2101MB0923_--
+

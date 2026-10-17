@@ -1,0 +1,616 @@
+From davidben@google.com  Tue Mar 19 13:42:45 2024
+Return-Path: <davidben@google.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id EC423C151093
+ for <tls@ietfa.amsl.com>; Tue, 19 Mar 2024 13:42:45 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -9.257
+X-Spam-Level: 
+X-Spam-Status: No, score=-9.257 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIMWL_WL_HIGH=-0.001, DKIM_SIGNED=0.1,
+ DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1,
+ HEADER_FROM_DIFFERENT_DOMAINS=0.249, HTML_MESSAGE=0.001,
+ RCVD_IN_ZEN_BLOCKED_OPENDNS=0.001, SPF_HELO_NONE=0.001,
+ SPF_PASS=-0.001, T_SCC_BODY_TEXT_LINE=-0.01, URIBL_BLOCKED=0.001,
+ URIBL_DBL_BLOCKED_OPENDNS=0.001, URIBL_ZEN_BLOCKED_OPENDNS=0.001,
+ USER_IN_DEF_SPF_WL=-7.5] autolearn=no autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=chromium.org
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id sdsflk9xMtXW for <tls@ietfa.amsl.com>;
+ Tue, 19 Mar 2024 13:42:42 -0700 (PDT)
+Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com
+ [IPv6:2607:f8b0:4864:20::112e])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 3C7D9C15107A
+ for <tls@ietf.org>; Tue, 19 Mar 2024 13:42:42 -0700 (PDT)
+Received: by mail-yw1-x112e.google.com with SMTP id
+ 00721157ae682-60cbcd04de8so2384697b3.0
+ for <tls@ietf.org>; Tue, 19 Mar 2024 13:42:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=chromium.org; s=google; t=1710880961; x=1711485761; darn=ietf.org;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=uKm4eLuc1x6mhSd5ShZ+ci5FSLCgK92B+9U2waTtBq0=;
+ b=G/sX8i1eMulx5OCPmuf/B8LpVApZLMYvfThCQBTdcJ0mqmjKhCYTuCkUoY5j56tzJV
+ 29CJiVQbFEFjIgexZt/MFHEpCM7hlVjn8DHk3IbJMo6WlF6ljvIgmDsT0b7ntAYzF2ro
+ X62RyhCfD455sdE+OmxYN2P7fc5MCLPJzZVy4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1710880961; x=1711485761;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=uKm4eLuc1x6mhSd5ShZ+ci5FSLCgK92B+9U2waTtBq0=;
+ b=K8skdniqR41BvcgffcCMVoXnTpMnnAQC+/bPUTTmMS1FGy7w+CfrjsDnyrEc7sspcr
+ pQbNnDJGD4KU+4oKYhM9F75MC0xxnasHew/OU82tg/IWIfxRovpgZc0AgJ7HfdXbSue7
+ VtuWLxNg9/CmRJCTB+yZGRWqUmKHheoM66oHbRaIrGoUmu7cAaXmgysS8/oAeDRTlW0I
+ KQd8zRYa+dLtBixKwY7PmCBbWEvblKvWphUP8sYO8yqNb5IdxpUtF7Vus5G/pLPFTIsF
+ zXW2Zv8UyOCtRh8s7HvV/kv/S+T9IEyApyXHvqZVWV3gSzFUMD8XwE5DiCPFAaXrVMBm
+ W/Dg==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCWJuh4BbWQh5hkH6K01XuKjp7G0UO8W2P19XfHfX7NsZQ1X2WEFvsPJppBw32L7E5sZBOIWiM3We/iOIlo=
+X-Gm-Message-State: AOJu0Yxe018iH0SxCPPa+rlWjbVrwCHmSyw4kuMbfYZDQFRuMoUoEu0Z
+ Sm5PfhHyZtkH6vSMUVlaMl5Re55iU+g3toE1hh/Bo07RK+99dE3fOfUkW67xo2TJ7clfJN0xKyv
+ BBTKdxWMcUYoPW2ZH8t3w1divwyY7gjuj5eHsqZKvn9ytYVl4ysY=
+X-Google-Smtp-Source: AGHT+IH/NGQPrqY33n/IJgaVPRaJa7tQVFbnyzABOzbKtTxY+GqWlPakRW+1l15rPpTt1ZEnDiIKGFmxsNMZdzqQG+8=
+X-Received: by 2002:a81:be08:0:b0:610:e130:d6af with SMTP id
+ i8-20020a81be08000000b00610e130d6afmr2002230ywn.8.1710880960774; Tue, 19 Mar
+ 2024 13:42:40 -0700 (PDT)
+MIME-Version: 1.0
+References: <CH0PR11MB544488B051C041EB32541AB6C12C2@CH0PR11MB5444.namprd11.prod.outlook.com>
+ <CAF8qwaDmYMprxW4aYCiEEWKAw04xoSEZU=6fXCHqOcqjnhG6_w@mail.gmail.com>
+ <6c94e7dd71d94b769c72b29318e1208f@amazon.com>
+In-Reply-To: <6c94e7dd71d94b769c72b29318e1208f@amazon.com>
+From: David Benjamin <davidben@chromium.org>
+Date: Wed, 20 Mar 2024 06:42:22 +1000
+Message-ID: <CAF8qwaBw2JWV+EsbaB5B-528u9_RvfL14C3s_BBV2j1c0WESfQ@mail.gmail.com>
+To: "Kampanakis, Panos" <kpanos@amazon.com>
+Cc: "Scott Fluhrer (sfluhrer)" <sfluhrer=40cisco.com@dmarc.ietf.org>,
+ "TLS@ietf.org" <tls@ietf.org>
+Content-Type: multipart/alternative; boundary="000000000000ecb993061409838e"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/Ky9UsEtSo_AnY3GrdtJgxSNU1Z4>
+Subject: Re: [TLS] A suggestion for handling large key shares
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Tue, 19 Mar 2024 20:42:46 -0000
+
+--000000000000ecb993061409838e
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+I think you're several discussions behind here. :-P I don't think
+draft-ietf-tls-hybrid-design makes sense here. This has nothing to do with
+hybrids, but anything with large key shares. If one were to do Kyber on its
+own, this would apply too. Rather, per the discussion at IETF 118, the WG
+opted to add some clarifications to rfc8446bis in light of draft-00.
+
+It has also turned out that:
+a) RFC 8446 actually already defined the semantics (when I wrote draft-00,
+I'd thought it was ambiguous), though the clarification definitely helped
+b) The implementation that motivated the downgrade concern says this was
+not bug from misunderstanding the protocol, but an intentional design
+decision
+
+Given that, the feedback on the list and
+https://github.com/davidben/tls-key-share-prediction/issues/5, I concluded
+past-me was overthinking this and we can simply define the DNS mechanism
+and say it is the server's responsibility to interpret the preexisting TLS
+spec text correctly and pick what it believes is a coherent selection
+policy. So draft-01 now simply defines the DNS mechanism without any
+complex codepoint classification and includes some discussion of the
+situation in Security Considerations, as you noted.
+
+Of what remains in Security Considerations, the random client MAY is
+specific to this draft and does not make sense to move. The server NOT
+RECOMMENDED is simply restating the preexisting implications of RFC 8446
+and the obvious implications of believing some options are more secure than
+others. If someone wishes to *replicate* it into another document, they're
+welcome to, but I disagree with *moving* it. In the context of the
+discussion in that section, it makes sense to restate this implication
+because this is very relevant to why it's okay for the client to use DNS to
+influence key shares.
+
+David
+
+On Wed, Mar 20, 2024 at 6:08=E2=80=AFAM Kampanakis, Panos <kpanos@amazon.co=
+m> wrote:
+
+> Hi Scott, David,
+>
+>
+>
+> I think it would make more sense for the normative language about Client
+> and Server behavior (section 3.2, 3.4) in
+> draft-davidben-tls-key-share-prediction-00 (
+> https://www.ietf.org/archive/id/draft-davidben-tls-key-share-prediction-0=
+0.html
+> ) to go in draft-ietf-tls-hybrid-design. These are now discussed in the S=
+ec
+> Considerations of draft-davidben-tls-key-share-prediction-01, but the
+> =E2=80=9CSHOULD=E2=80=9D and =E2=80=9CSHOULD NOT=E2=80=9D language from -=
+00 section 3.2 and 3.4 ought to be
+> in draft-ietf-tls-hybrid-design.
+>
+>
+>
+> I definitely want to see draft-davidben-tls-key-share-prediction move
+> forward too.
+>
+>
+>
+> Rgs,
+>
+> Panos
+>
+>
+>
+> *From:* TLS <tls-bounces@ietf.org> *On Behalf Of * David Benjamin
+> *Sent:* Tuesday, March 19, 2024 1:26 AM
+> *To:* Scott Fluhrer (sfluhrer) <sfluhrer=3D40cisco.com@dmarc.ietf.org>
+> *Cc:* TLS@ietf.org
+> *Subject:* RE: [EXTERNAL] [TLS] A suggestion for handling large key share=
+s
+>
+>
+>
+> *CAUTION*: This email originated from outside of the organization. Do not
+> click links or open attachments unless you can confirm the sender and kno=
+w
+> the content is safe.
+>
+>
+>
+> > If the server supports P256+ML-KEM, what Matt suggested is that, instea=
+d
+> of accepting P256, it instead a ClientHelloRetry with P256+ML_KEM.  We th=
+en
+> continue as expected and end up negotiating things in 2 round trips.
+>
+>
+>
+> I assume ClientHelloRetry was meant to be HelloRetryRequest? If so, yeah,
+> a server which aims to prefer P256+ML-KEM over P256 should, well, prefer
+> P256+ML-KEM over P256. :-) See the discussions around
+> draft-davidben-tls-key-share-prediction. In particular, RFC 8446 is clear
+> on the semantics of such a ClientHello:
+>
+>
+>
+>    This vector MAY be empty if the client is requesting a
+>    HelloRetryRequest.  Each KeyShareEntry value MUST correspond to a
+>    group offered in the "supported_groups" extension and MUST appear in
+>    the same order.  However, the values MAY be a non-contiguous subset
+>    of the "supported_groups" extension and MAY omit the most preferred
+>    groups.  Such a situation could arise if the most preferred groups
+>    are new and unlikely to be supported in enough places to make
+>    pregenerating key shares for them efficient.
+>
+>
+>
+> rfc8446bis contains further clarifications:
+> https://github.com/tlswg/tls13-spec/pull/1331
+>
+>
+>
+> Now, some servers (namely OpenSSL) will instead unconditionally select
+> from key_share first. This isn't wrong, per se. It is how you implement a
+> server which believes all of its supported groups are of comparable
+> security level and therefore prioritizes round trips. Such a policy is
+> plausible when you only support, say, ECDH curves. It's not so reasonable
+> if you support both ECDH and a PQ KEM. But all the spec text for that is =
+in
+> place, so all that is left is that folks keep this in mind when adding PQ
+> KEMs to a TLS implementation. A TLS stack that always looks at key_share
+> first is not PQ-ready and will need some changes before adopting PQ KEMs.
+>
+>
+>
+> Regarding the other half of this:
+>
+>
+>
+> > Suppose we have a client that supports both P-256 and P256+ML-KEM.  Wha=
+t
+> the client does is send a key share for P-256, and also indicate support
+> for P256+ML-KEM.  Because we=E2=80=99re including only the P256 key share=
+, the
+> client hello is short
+>
+>
+>
+> I don't think this is a good tradeoff and would oppose such a SHOULD here=
+.
+> PQ KEMs are expensive as they are. Adding a round-trip to it will only ma=
+ke
+> it worse. Given the aim is to migrate the TLS ecosystem to PQ, penalizing
+> the desired state doesn't make sense. Accordingly, Chrome's Kyber
+> deployment includes X25519Kyber768 in the initial ClientHello. While this
+> does mean paying an unfortunate upfront cost, this alternative would
+> instead disincentivize servers from deploying post-quantum protections.
+>
+>
+>
+> If you're interested in avoiding the upfront cost, see
+> draft-davidben-tls-key-share-prediction-01. That provides a mechanism for
+> clients to predict more accurately, though it's yet to even be adopted, s=
+o
+> it's a bit early to rely on that one. Note also the Security Consideratio=
+ns
+> section, which further depends on the server expectations above.
+>
+>
+>
+> David
+>
+>
+>
+> On Tue, Mar 19, 2024 at 2:47=E2=80=AFPM Scott Fluhrer (sfluhrer) <sfluhre=
+r=3D
+> 40cisco.com@dmarc.ietf.org> wrote:
+>
+> Recently, Matt Campagna emailed the hybrid KEM group (Douglas, Shay and
+> me) about a suggestion about one way to potentially improve the performan=
+ce
+> (in the =E2=80=98the server hasn=E2=80=99t upgraded yet=E2=80=99 case), a=
+nd asked if we should add
+> that suggestion to our draft.  It occurs to me that this suggestion is
+> equally applicable to the pure ML-KEM draft (and future PQ drafts as well=
+);
+> hence putting it in our draft might not be the right spot.
+>
+>
+>
+> Here=E2=80=99s the core idea (Matt=E2=80=99s original scenario was more c=
+omplicated):
+>
+>
+>
+>    - Suppose we have a client that supports both P-256 and P256+ML-KEM.
+>    What the client does is send a key share for P-256, and also indicate
+>    support for P256+ML-KEM.  Because we=E2=80=99re including only the P25=
+6 key share,
+>    the client hello is short
+>    - If the server supports only P256, it accepts it, and life goes on as
+>    normal.
+>    - If the server supports P256+ML-KEM, what Matt suggested is that,
+>    instead of accepting P256, it instead a ClientHelloRetry with P256+ML_=
+KEM.
+>    We then continue as expected and end up negotiating things in 2 round =
+trips.
+>
+>
+>
+> Hence, the non-upgraded scenario has no performance hit; the upgraded
+> scenario does (because of the second round trip), but we=E2=80=99re trans=
+mitting
+> more data anyways (and the client could, if it communicates with the serv=
+er
+> again, lead off with the proposal that was accepted last time).
+>
+>
+>
+> Matt=E2=80=99s suggestion was that this should be a SHOULD in our draft.
+>
+>
+>
+> My questions to you: a) do you agree with this suggestion, and b) if so,
+> where should this SHOULD live?  Should it be in our draft?  The ML-KEM
+> draft as well (assuming there is one, and it=E2=80=99s not just a codepoi=
+nt
+> assignment)?  Another RFC about how to handle large key shares in general
+> (sounds like overkill to me, unless we have other things to put in that
+> RFC)?
+>
+>
+>
+> Thank you.
+>
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+>
+>
+
+--000000000000ecb993061409838e
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr">I think you&#39;re several discussions be=
+hind here. :-P I don&#39;t think draft-ietf-tls-hybrid-design makes sense h=
+ere. This has nothing to do with hybrids, but anything with large key share=
+s. If one were to do Kyber on its own, this would apply too. Rather, per th=
+e discussion at IETF 118, the WG opted to add some clarifications to rfc844=
+6bis in light of draft-00.</div><div dir=3D"ltr"><br></div><div>It has also=
+ turned out that:</div><div dir=3D"ltr"><div>a) RFC 8446 actually already d=
+efined the semantics (when I wrote draft-00, I&#39;d thought it was ambiguo=
+us), though the clarification definitely helped</div><div>b) The implementa=
+tion that motivated the downgrade concern says this was not bug from misund=
+erstanding the protocol, but an intentional design decision</div><div><br><=
+/div><div>Given that, the feedback on the list and=C2=A0<a href=3D"https://=
+github.com/davidben/tls-key-share-prediction/issues/5" target=3D"_blank">ht=
+tps://github.com/davidben/tls-key-share-prediction/issues/5</a>, I conclude=
+d past-me was overthinking this and we can simply define the DNS mechanism =
+and say it is the server&#39;s responsibility to interpret the preexisting =
+TLS spec text correctly and pick what it believes is a coherent selection p=
+olicy. So draft-01 now simply defines the DNS mechanism without any complex=
+ codepoint classification and includes some discussion of the situation in =
+Security Considerations, as you noted.</div><div><br></div><div>Of what rem=
+ains in Security Considerations, the random client MAY is specific to this =
+draft and does not make sense to move. The server NOT RECOMMENDED  is simpl=
+y restating the preexisting implications of RFC 8446 and the obvious implic=
+ations of believing some options are more secure than others. If someone wi=
+shes to <i>replicate</i> it into another document, they&#39;re welcome to, =
+but I disagree with <i>moving</i>=C2=A0it. In the context of the discussion=
+ in that section, it makes sense to restate this implication because this i=
+s very relevant to why it&#39;s okay for the client to use DNS to influence=
+ key shares.</div><div><br></div><div>David</div></div><br><div class=3D"gm=
+ail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Wed, Mar 20, 2024 at 6:=
+08=E2=80=AFAM Kampanakis, Panos &lt;<a href=3D"mailto:kpanos@amazon.com" ta=
+rget=3D"_blank">kpanos@amazon.com</a>&gt; wrote:<br></div><blockquote class=
+=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rg=
+b(204,204,204);padding-left:1ex"><div>
+
+
+
+
+
+<div lang=3D"EN-US">
+<div>
+<p class=3D"MsoNormal">Hi Scott, David,<u></u><u></u></p>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+<p class=3D"MsoNormal">I think it would make more sense for the normative l=
+anguage about Client and Server behavior (section 3.2, 3.4) in draft-davidb=
+en-tls-key-share-prediction-00 (<a href=3D"https://www.ietf.org/archive/id/=
+draft-davidben-tls-key-share-prediction-00.html" target=3D"_blank">https://=
+www.ietf.org/archive/id/draft-davidben-tls-key-share-prediction-00.html</a>
+ ) to go in draft-ietf-tls-hybrid-design. These are now discussed in the Se=
+c Considerations of draft-davidben-tls-key-share-prediction-01, but the =E2=
+=80=9CSHOULD=E2=80=9D and =E2=80=9CSHOULD NOT=E2=80=9D language from -00 se=
+ction 3.2 and 3.4 ought to be in draft-ietf-tls-hybrid-design.
+<u></u><u></u></p>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+<p class=3D"MsoNormal">I definitely want to see draft-davidben-tls-key-shar=
+e-prediction move forward too.
+<u></u><u></u></p>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+<p class=3D"MsoNormal">Rgs, <u></u><u></u></p>
+<p class=3D"MsoNormal">Panos<u></u><u></u></p>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+<div>
+<div style=3D"border-right:none;border-bottom:none;border-left:none;border-=
+top:1pt solid rgb(225,225,225);padding:3pt 0in 0in">
+<p class=3D"MsoNormal"><b>From:</b> TLS &lt;<a href=3D"mailto:tls-bounces@i=
+etf.org" target=3D"_blank">tls-bounces@ietf.org</a>&gt; <b>On Behalf Of </b=
+>
+David Benjamin<br>
+<b>Sent:</b> Tuesday, March 19, 2024 1:26 AM<br>
+<b>To:</b> Scott Fluhrer (sfluhrer) &lt;sfluhrer=3D<a href=3D"mailto:40cisc=
+o.com@dmarc.ietf.org" target=3D"_blank">40cisco.com@dmarc.ietf.org</a>&gt;<=
+br>
+<b>Cc:</b> <a href=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.org</=
+a><br>
+<b>Subject:</b> RE: [EXTERNAL] [TLS] A suggestion for handling large key sh=
+ares<u></u><u></u></p>
+</div>
+</div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+<div>
+<table border=3D"0" cellspacing=3D"0" cellpadding=3D"0" style=3D"border-col=
+lapse:collapse">
+<tbody>
+<tr style=3D"height:15.25pt">
+<td width=3D"1123" valign=3D"top" style=3D"width:842.35pt;border:1.5pt soli=
+d rgb(237,125,49);padding:0in 5.4pt;height:15.25pt">
+<p><strong><span style=3D"font-family:Calibri,sans-serif;background:rgb(255=
+,255,153)">CAUTION</span></strong><span style=3D"background:rgb(255,255,153=
+)">: This email originated from outside of the organization. Do not click l=
+inks or open attachments unless you can confirm the
+ sender and know the content is safe.</span><u></u><u></u></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+<div>
+<div>
+<div>
+<div>
+<p class=3D"MsoNormal">&gt; If the server supports P256+ML-KEM, what Matt s=
+uggested is that, instead of accepting P256, it instead a ClientHelloRetry =
+with P256+ML_KEM.=C2=A0 We then continue as expected and end up negotiating=
+ things in 2 round trips.<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">I assume ClientHelloRetry was meant to be HelloRetry=
+Request? If so, yeah, a server which aims to prefer P256+ML-KEM over P256 s=
+hould, well, prefer P256+ML-KEM over P256. :-) See the discussions around d=
+raft-davidben-tls-key-share-prediction.
+ In particular, RFC 8446 is clear on the semantics of such a ClientHello:<u=
+></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">=C2=A0 =C2=A0This vector MAY be empty if the client =
+is requesting a<br>
+=C2=A0 =C2=A0HelloRetryRequest.=C2=A0 Each KeyShareEntry value MUST corresp=
+ond to a<br>
+=C2=A0 =C2=A0group offered in the &quot;supported_groups&quot; extension an=
+d MUST appear in<br>
+=C2=A0 =C2=A0the same order.=C2=A0 However, the values MAY be a non-contigu=
+ous subset<br>
+=C2=A0 =C2=A0of the &quot;supported_groups&quot; extension and MAY omit the=
+ most preferred<br>
+=C2=A0 =C2=A0groups.=C2=A0 Such a situation could arise if the most preferr=
+ed groups<br>
+=C2=A0 =C2=A0are new and unlikely to be supported in enough places to make<=
+br>
+=C2=A0 =C2=A0pregenerating key shares for them efficient.<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">rfc8446bis contains further clarifications:=C2=A0<a =
+href=3D"https://github.com/tlswg/tls13-spec/pull/1331" target=3D"_blank">ht=
+tps://github.com/tlswg/tls13-spec/pull/1331</a><u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">Now, some servers (namely OpenSSL) will instead unco=
+nditionally select from key_share first. This isn&#39;t wrong, per se. It i=
+s how you implement a server which believes all of its supported groups are=
+ of comparable security level and therefore
+ prioritizes round trips. Such a policy is plausible when you only support,=
+ say, ECDH curves. It&#39;s not so reasonable if you support both ECDH and =
+a PQ KEM. But all the spec text for that is in place, so all that is left i=
+s that folks keep this in mind when
+ adding PQ KEMs to a TLS implementation. A TLS stack that always looks at k=
+ey_share first is not PQ-ready and will need some changes before adopting P=
+Q KEMs.<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">Regarding the other half of this:<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&gt;=C2=A0Suppose we have a client that supports bot=
+h P-256 and P256+ML-KEM.=C2=A0 What the client does is send a key share for=
+ P-256, and also indicate support for P256+ML-KEM.=C2=A0 Because we=E2=80=
+=99re including only the P256 key share, the client hello is short<u></u><u=
+></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+<p class=3D"MsoNormal">I don&#39;t think this is a good tradeoff and would =
+oppose such a=C2=A0SHOULD here. PQ KEMs are=C2=A0expensive as they are. Add=
+ing a round-trip to it will only make it worse. Given the aim is to migrate=
+ the TLS ecosystem to PQ, penalizing the desired
+ state=C2=A0doesn&#39;t make sense. Accordingly, Chrome&#39;s Kyber deploym=
+ent=C2=A0includes X25519Kyber768 in the initial ClientHello. While this doe=
+s mean paying an unfortunate upfront cost, this alternative would instead d=
+isincentivize servers from deploying post-quantum
+ protections.<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">If you&#39;re interested in avoiding the upfront cos=
+t, see draft-davidben-tls-key-share-prediction-01. That provides a mechanis=
+m for clients to=C2=A0predict more accurately, though it&#39;s yet to even =
+be adopted, so it&#39;s a bit early to rely on that
+ one. Note also the Security Considerations section, which further depends =
+on the server expectations above.<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">David<u></u><u></u></p>
+</div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+<div>
+<div>
+<p class=3D"MsoNormal">On Tue, Mar 19, 2024 at 2:47=E2=80=AFPM Scott Fluhre=
+r (sfluhrer) &lt;sfluhrer=3D<a href=3D"mailto:40cisco.com@dmarc.ietf.org" t=
+arget=3D"_blank">40cisco.com@dmarc.ietf.org</a>&gt; wrote:<u></u><u></u></p=
+>
+</div>
+<blockquote style=3D"border-top:none;border-right:none;border-bottom:none;b=
+order-left:1pt solid rgb(204,204,204);padding:0in 0in 0in 6pt;margin-left:4=
+.8pt;margin-right:0in">
+<div>
+<div>
+<div>
+<p class=3D"MsoNormal">Recently, Matt Campagna emailed the hybrid KEM group=
+ (Douglas, Shay and me) about a suggestion about one way to potentially imp=
+rove the performance (in the =E2=80=98the server hasn=E2=80=99t upgraded
+ yet=E2=80=99 case), and asked if we should add that suggestion to our draf=
+t.=C2=A0 It occurs to me that this suggestion is equally applicable to the =
+pure ML-KEM draft (and future PQ drafts as well); hence putting it in our d=
+raft might not be the right spot.<u></u><u></u></p>
+<p class=3D"MsoNormal">=C2=A0<u></u><u></u></p>
+<p class=3D"MsoNormal">Here=E2=80=99s the core idea (Matt=E2=80=99s origina=
+l scenario was more complicated):<u></u><u></u></p>
+<p class=3D"MsoNormal">=C2=A0<u></u><u></u></p>
+<ul type=3D"disc">
+<li class=3D"MsoNormal">
+Suppose we have a client that supports both P-256 and P256+ML-KEM.=C2=A0 Wh=
+at the client does is send a key share for P-256, and also indicate support=
+ for P256+ML-KEM.=C2=A0 Because we=E2=80=99re including only the P256 key s=
+hare, the client hello is short<u></u><u></u></li><li class=3D"MsoNormal">
+If the server supports only P256, it accepts it, and life goes on as normal=
+.<u></u><u></u></li><li class=3D"MsoNormal">
+If the server supports P256+ML-KEM, what Matt suggested is that, instead of=
+ accepting P256, it instead a ClientHelloRetry with P256+ML_KEM.=C2=A0 We t=
+hen continue as expected and end up negotiating things in 2 round trips.<u>=
+</u><u></u></li></ul>
+<p class=3D"MsoNormal">=C2=A0<u></u><u></u></p>
+<p class=3D"MsoNormal">Hence, the non-upgraded scenario has no performance =
+hit; the upgraded scenario does (because of the second round trip), but we=
+=E2=80=99re transmitting more data anyways (and the client
+ could, if it communicates with the server again, lead off with the proposa=
+l that was accepted last time).<u></u><u></u></p>
+<p class=3D"MsoNormal">=C2=A0<u></u><u></u></p>
+<p class=3D"MsoNormal">Matt=E2=80=99s suggestion was that this should be a =
+SHOULD in our draft.<u></u><u></u></p>
+<p class=3D"MsoNormal">=C2=A0<u></u><u></u></p>
+<p class=3D"MsoNormal">My questions to you: a) do you agree with this sugge=
+stion, and b) if so, where should this SHOULD live?=C2=A0 Should it be in o=
+ur draft?=C2=A0 The ML-KEM draft as well (assuming there is
+ one, and it=E2=80=99s not just a codepoint assignment)?=C2=A0 Another RFC =
+about how to handle large key shares in general (sounds like overkill to me=
+, unless we have other things to put in that RFC)?<u></u><u></u></p>
+<p class=3D"MsoNormal">=C2=A0<u></u><u></u></p>
+<p class=3D"MsoNormal">Thank you.
+<u></u><u></u></p>
+</div>
+</div>
+<p class=3D"MsoNormal">_______________________________________________<br>
+TLS mailing list<br>
+<a href=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.org</a><br>
+<a href=3D"https://www.ietf.org/mailman/listinfo/tls" target=3D"_blank">htt=
+ps://www.ietf.org/mailman/listinfo/tls</a><u></u><u></u></p>
+</div>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</div></blockquote></div></div>
+
+--000000000000ecb993061409838e--
+

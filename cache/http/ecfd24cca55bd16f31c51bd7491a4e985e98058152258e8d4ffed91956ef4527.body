@@ -1,0 +1,100 @@
+Return-Path: <mrex@sap.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 887D8129AEA
+ for <tls@ietfa.amsl.com>; Thu,  3 Nov 2016 11:16:20 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -6.922
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.922 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, RCVD_IN_DNSWL_HI=-5, RCVD_IN_MSPIKE_H3=-0.01,
+ RCVD_IN_MSPIKE_WL=-0.01, SPF_HELO_PASS=-0.001, SPF_PASS=-0.001]
+ autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id I0YlR_foFAeO for <tls@ietfa.amsl.com>;
+ Thu,  3 Nov 2016 11:16:19 -0700 (PDT)
+Received: from smtpde02.smtp.sap-ag.de (smtpde02.smtp.sap-ag.de
+ [155.56.68.140])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 5C07D129AC2
+ for <tls@ietf.org>; Thu,  3 Nov 2016 11:15:50 -0700 (PDT)
+Received: from mail06.wdf.sap.corp (mail06.sap.corp [194.39.131.54])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by smtpde02.smtp.sap-ag.de (Postfix) with ESMTPS id 3t8tSN2n3Cz25yv;
+ Thu,  3 Nov 2016 19:15:48 +0100 (CET)
+X-purgate-ID: 152705::1478196948-0000521C-59E07886/0/0
+X-purgate-size: 1365
+X-purgate: clean
+X-purgate: This mail is considered clean (visit http://www.eleven.de for
+ further information)
+X-purgate-Ad: Categorized by eleven eXpurgate (R) http://www.eleven.de
+X-purgate-type: clean
+X-SAP-SPAM-Status: clean
+Received: from ld9781.wdf.sap.corp (ld9781.wdf.sap.corp [10.21.82.193])
+ by mail06.wdf.sap.corp (Postfix) with ESMTP id 3t8tSM5Jvszkyyy;
+ Thu,  3 Nov 2016 19:15:47 +0100 (CET)
+Received: by ld9781.wdf.sap.corp (Postfix, from userid 10159)
+ id B06D21A576; Thu,  3 Nov 2016 19:15:47 +0100 (CET)
+In-Reply-To: <cf2c2058eb2e4b81a3e53aa92b53c37b@usma1ex-dag1mb1.msg.corp.akamai.com>
+To: "Salz, Rich" <rsalz@akamai.com>
+Date: Thu, 3 Nov 2016 19:15:47 +0100 (CET)
+X-Mailer: ELM [version 2.4ME+ PL125 (25)]
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="US-ASCII"
+Message-Id: <20161103181547.B06D21A576@ld9781.wdf.sap.corp>
+From: mrex@sap.com (Martin Rex)
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/G16rx0mlv4Ks-kVYY_pY4g4iEFk>
+Cc: "tls@ietf.org" <tls@ietf.org>
+Subject: Re: [TLS] Working Group Last Call for draft-ietf-tls-tls13-18
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.17
+Precedence: list
+Reply-To: mrex@sap.com
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Thu, 03 Nov 2016 18:16:20 -0000
+
+Salz, Rich wrote:
+>> Since then, I've seen exactly ZERO rationale why the cleartext contenttype,
+>> which has existed through SSLv3->TLSv1.2 would be a problem.  
+> 
+> Because it's kind of implied in the charter, about making as much private as possible.
+> 
+>> years), because it is actively being used to signal state of the communication
+>> channel to the application and to *NOT* break application architecture that
+>> relies on (new) application data remaining visible on network sockets as
+>> "network readable" events.
+> 
+> One app's data is another adversary's oracle.
+> Or is it that "signals have no morals"?
+
+If you look at TLS records exchanged between two peers,
+and in particular if you perform a TLS handshake with same server
+yourself and compare, you can easily (heuristically) determine
+which TLS records of the original stream are hanshake records,
+and which are application data records.
+
+So there is exactly ZERO benefit of concealing the ContentTypes.
+
+But this concealing reliably breaks existing application middleware
+at the endpoints, which needs to reliably & quickly tell the difference
+between handshake&alert records and application data, so that it can
+leave application data records in the network buffer, so that the
+socket readable event remains visible for the event-based application
+logic.
+
+-Martin
+

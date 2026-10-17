@@ -1,0 +1,365 @@
+Return-Path: <nicholas.sullivan@gmail.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 67DFD133069
+ for <tls@ietfa.amsl.com>; Mon, 11 Sep 2017 17:39:19 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.698
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.698 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ DKIM_VALID_AU=-0.1, FREEMAIL_FROM=0.001, HTML_MESSAGE=0.001,
+ RCVD_IN_DNSWL_LOW=-0.7, SPF_PASS=-0.001, URIBL_BLOCKED=0.001]
+ autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=gmail.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id ZlHQiKoxUaIx for <tls@ietfa.amsl.com>;
+ Mon, 11 Sep 2017 17:39:15 -0700 (PDT)
+Received: from mail-wm0-x235.google.com (mail-wm0-x235.google.com
+ [IPv6:2a00:1450:400c:c09::235])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 722C4132EBF
+ for <tls@ietf.org>; Mon, 11 Sep 2017 17:39:15 -0700 (PDT)
+Received: by mail-wm0-x235.google.com with SMTP id f199so50838919wme.0
+ for <tls@ietf.org>; Mon, 11 Sep 2017 17:39:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025; 
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=O3+GnPB9UyLOMdYhpGmFUhCCX+G3LVVwFFyrSq+cLAY=;
+ b=FIsm6OauaYu12lWd0FAH1pBX8VvqSfGZpsojhKw8XEDeIJVsUosDzeD7jaQtc/ootd
+ JTS+K6R1PMtj6c+fD5RmdBp77Hq9sj6jQ4wtPvsZHBTQVSc0dtpT6yNVP4L4la3oxPZX
+ TAgISTEF3x1RXGRFVC5lWZHjvsXrHNsRxkBv0HSvzmdv//dWBU8DIYyYv33h9e2HFoiv
+ 989VlLVcE26gIPWwF0P8g/ILtmQ/LBac9BJPHBF5hxy7ls45wrmFsycMhSaLFOoFytSc
+ XsYnFyZ8/uH0zqAOy3EBr/42VFWL+365JRMx3dmQY2PGQD0VYChlXAb+KptCsUjtD/dh
+ EGgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=O3+GnPB9UyLOMdYhpGmFUhCCX+G3LVVwFFyrSq+cLAY=;
+ b=AAbl9LuHQHLE/YKE9+/q0pTrUsYOjzCDHcpL5T4KgPjPakyOPTHJRuFfmdRZIqeCdh
+ FLTp5btzBSI2188ceLxn8QBJayG2oMtcNu3WgoIbq+o9924lYp+rB/55GJsnfY1UZ6OE
+ ez7CoNIuqPGThIqsxSw2etEUUffLhDS5RO4DKN7pA17+zEtezGyCNqz1c1BDyOqZbCfP
+ nUwuGK95LQf3CFAjiLTFOnDdf68ZeplHoYuvqpre91rjrNaFVlOvakXo0rdtYN3jbhUh
+ Zx9X8NShuGpnwijQAhAZz2l14EdyRpLhQxtrKaBof55Whm3qLCc9mS1HME47Q0ygSbAJ
+ sT1g==
+X-Gm-Message-State: AHPjjUjOvjA+48b39fW6ujwg9T+TeOjuTgfVEn5Mcy6Ucx7/cOS6eVeM
+ IlP+cagHKcPQ0th1xsFpn3c8EZycnUG/4nXNGo0=
+X-Google-Smtp-Source: AOwi7QDh8bVm71jmyFMF3NZ1M3+vXtcpbRrYAYNWjw5xRof2Wdlirhk1Zw6BCTSiMIBROa3MqYWWx5TVFu+gzuVMYTc=
+X-Received: by 10.28.70.133 with SMTP id t127mr1399121wma.42.1505176753806;
+ Mon, 11 Sep 2017 17:39:13 -0700 (PDT)
+MIME-Version: 1.0
+References: <20170908225948.GC31695@al>
+ <CABcZeBNYoqpWx_3V42wut3FUUt3xELv5J5YayvcrhwzJKqgcyg@mail.gmail.com>
+In-Reply-To: <CABcZeBNYoqpWx_3V42wut3FUUt3xELv5J5YayvcrhwzJKqgcyg@mail.gmail.com>
+From: Nick Sullivan <nicholas.sullivan@gmail.com>
+Date: Tue, 12 Sep 2017 00:39:02 +0000
+Message-ID: <CAOjisRwFKCoh9kmmmQbXO9eudOwjHVH9heaZn86AddhwWU1m9g@mail.gmail.com>
+To: Eric Rescorla <ekr@rtfm.com>, Peter Wu <peter@lekensteyn.nl>
+Cc: "tls@ietf.org" <tls@ietf.org>
+Content-Type: multipart/alternative; boundary="94eb2c0d4b5ebc21220558f3452e"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/7zdoq7fm3nxoR77HCcVt2iB_nfo>
+Subject: Re: [TLS] RSASSA-PSS in certificates and "signature_algorithms"
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Tue, 12 Sep 2017 00:39:19 -0000
+
+--94eb2c0d4b5ebc21220558f3452e
+Content-Type: text/plain; charset="UTF-8"
+
+This situation is likely to arise every time a new signature algorithm is
+introduced. Suppose a TLS client library is updated to support Ed25519
+certificates, but that the PKIX library only supports validating Ed25519
+certificates signed by RSA or ECDSA, which signature schemes should the
+client present? This is similar to the 2014 issue with ECDSA and Chrome on
+XP (https://bugs.chromium.org/p/chromium/issues/detail?id=409901), in which
+the PKIX library didn't support ECDSA, but the TLS stack did. As long as
+TLS and PKIX libraries are decoupled, the dual meaning of the signature
+scheme makes the addition of a new algorithm to one or the other a bit
+messy.
+
+For example: In the current situation, it is mandatory to support
+rsa_pss_sha256, but how many of these clients support certificates signed
+with PSS? Not many -- including OpenSSL (
+https://github.com/openssl/openssl/issues/2878#issuecomment-328576616).
+Without PSS certificate support, if we chose EKR's option 1, these clients
+would not be able to support TLS 1.3 according to the spec. This seems like
+an unnecessary dependency.
+
+An easy fix would be to use a different extension for PSS certificates, but
+this makes the naming and code point definitions more troublesome. Will all
+new signature schemes get two codepoints, one for the handshake and one for
+the certificate? The other option, EKR's option 2, seems more promising.
+
+This option could be implemented as follows:
+- keep the old hash and signature algorithm extension from TLS 1.2 to
+indicate certificate signature support
+- add a new extension for handshake signature scheme support
+
+This would have the additional advantage of allowing us to clean up some of
+the issues that have been raised before on this list around the numbering
+of new TLS 1.3 signatureSchemes, specifically the fact that the byte order
+is backwards for RSA-PSS relative to existing TLS 1.2 values.
+
+Nick
+
+On Mon, Sep 11, 2017 at 11:43 AM Eric Rescorla <ekr@rtfm.com> wrote:
+
+> Ugh.
+>
+> Generally, the idea with signature schemes is that they are supposed to
+> reflect both the capabilities of your TLS stack and the capabilities of
+> your PKI verifier [0]. So, yes, if you advertise this it is supposed to
+> work. So, ideally we would just say that it's as Ilari says in his followup.
+>
+> It seems like there are really two choices:
+>
+> 1. Only advertise algorithm X if you support algorithm X in both places
+> 2. Invent a new extension whose semantics are "if present, this tells you
+> what the PKI validator accepts, otherwise look at signature schemes"
+>
+> I hate to be suggesting #2 at this stage in the process, but maybe it's
+> right anyway...
+>
+> -Ekr
+>
+> [0] I recognize that there are people who think that TLS shouldn't say
+> anything about the PKI verifier,
+> but I don't think that this is viable, for exactly the reason shown here:
+> it's possibly to have an algorithm which is widely supported in TLS stacks
+> but not in PKI verifiers.
+>
+>
+>
+> On Fri, Sep 8, 2017 at 3:59 PM, Peter Wu <peter@lekensteyn.nl> wrote:
+>
+>> Hi!
+>>
+>> While working on adding RSASSA-PSS support to Go's crypto/tls library
+>> (TLS 1.2), I have noticed something that may cause interop problems
+>> later.
+>>
+>>
+>> The current draft says the following about Server Certificate Selection
+>> (https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.4.2.2):
+>>
+>>    -  The certificate MUST allow the key to be used for signing (i.e.,
+>>       the digitalSignature bit MUST be set if the Key Usage extension is
+>>       present) with a signature scheme indicated in the client's
+>>       "signature_algorithms" extension.
+>>
+>> In TLS 1.2, the cipher suite was responsible for selecting the hash
+>> function and signature algorithm (e.g. for ServerKeyExchange) while
+>> "signature_algorithms" directed what certificate signatures are
+>> accepted.  But in TLS 1.3, this also influences what algorithms can be
+>> used for signing handshake messages (CertificateVerify).
+>>
+>> This results in possible interop problem: while implementations
+>> advertise RSASSA-PSS support in "supported_algorithms" because they can
+>> indeed sign/verify handshake messages with said algorithm, they might
+>> not be able to accept certificates with a RSASSA-PSS signature (because
+>> the PKI library does not implement it for example). And because PSS
+>> certificates are non-existent now, it will only be discovered later.
+>>
+>> Some implementations I have checked wrt RSASSA-PSS support:
+>>  - Go crypto/tls (TLS 1.2) - no RSASSA-PSS yet.
+>>  - tls-tris (TLS 1.3) - accepts PSS for CV, but not certificates.
+>>  - BoringSSL - failed, "bssl server" rejects cert.
+>>  - OpenSSL - failed, s_server rejects cert. Related:
+>>    https://github.com/openssl/openssl/issues/2878
+>>  - NSS - not checked, but I think it has the same problem as tls-tris.
+>>    Related: https://bugzilla.mozilla.org/show_bug.cgi?id=158750
+>>
+>> These implementations will require fixing, but at the moment it is just
+>> broken. Is this the expected behavior/intention?
+>>
+>>
+>> While RSASSA-PSS is quite well understood for handshake messages, its
+>> restrictions for certificates are not explicit. Currently the draft
+>> limits the salt length for handshake messages, but what about certs?
+>> What is needed for a TLS implementation to claim support for RSASSA-PSS?
+>>
+>> In particular, for certificates:
+>>
+>>  - Limitations on salt length?
+>>  - What AlgorithmIdentifier OID to use?
+>>  - Whether to constrain other AlgorithmIdentifier Params? (MGF, hash
+>>    algorithm, trailerField)?
+>> --
+>> Kind regards,
+>> Peter Wu
+>> https://lekensteyn.nl
+>>
+>> _______________________________________________
+>> TLS mailing list
+>> TLS@ietf.org
+>> https://www.ietf.org/mailman/listinfo/tls
+>>
+>
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+>
+
+--94eb2c0d4b5ebc21220558f3452e
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">This situation is likely to arise every time a new signatu=
+re algorithm is introduced. Suppose a TLS client library is updated to supp=
+ort Ed25519 certificates, but that the PKIX library only supports validatin=
+g Ed25519 certificates signed by RSA or ECDSA, which signature schemes shou=
+ld the client present? This is similar to the 2014 issue with ECDSA and Chr=
+ome on XP (<a href=3D"https://bugs.chromium.org/p/chromium/issues/detail?id=
+=3D409901">https://bugs.chromium.org/p/chromium/issues/detail?id=3D409901</=
+a>), in which the PKIX library didn&#39;t support ECDSA, but the TLS stack =
+did. As long as TLS and PKIX libraries are decoupled, the dual meaning of t=
+he signature scheme makes the addition of a new algorithm to one or the oth=
+er a bit messy.<br><br>For example: In the current situation, it is mandato=
+ry to support rsa_pss_sha256, but how many of these clients support certifi=
+cates signed with PSS? Not many -- including OpenSSL (<a href=3D"https://gi=
+thub.com/openssl/openssl/issues/2878#issuecomment-328576616">https://github=
+.com/openssl/openssl/issues/2878#issuecomment-328576616</a>). Without PSS c=
+ertificate support, if we chose EKR&#39;s option 1, these clients would not=
+ be able to support TLS 1.3 according to the spec. This seems like an unnec=
+essary dependency.<br><div><div><br></div><div>An easy fix would be to use =
+a different extension for PSS certificates, but this makes the naming and c=
+ode point definitions more troublesome. Will all new signature schemes get =
+two codepoints, one for the handshake and one for the certificate? The othe=
+r option, EKR&#39;s option 2, seems more promising.<br></div><div><br></div=
+><div>This option could be implemented as follows:</div><div>- keep the old=
+ hash and signature algorithm extension from TLS 1.2 to indicate certificat=
+e signature support<br></div><div>- add a new extension for handshake signa=
+ture scheme support<br></div><div><br></div><div>This would have the additi=
+onal advantage of allowing us to clean up some of the issues that have been=
+ raised before on this list around the numbering of new TLS 1.3 signatureSc=
+hemes, specifically the fact that the byte order is backwards for RSA-PSS r=
+elative to existing TLS 1.2 values.<br></div><div><br></div><div>Nick<br></=
+div></div></div><br><div class=3D"gmail_quote"><div dir=3D"ltr">On Mon, Sep=
+ 11, 2017 at 11:43 AM Eric Rescorla &lt;<a href=3D"mailto:ekr@rtfm.com">ekr=
+@rtfm.com</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=
+=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex"><div dir=
+=3D"ltr">Ugh.<div><br></div><div>Generally, the idea with signature schemes=
+ is that they are supposed to reflect both the capabilities of your TLS sta=
+ck and the capabilities of your PKI verifier [0]. So, yes, if you advertise=
+ this it is supposed to work. So, ideally we would just say that it&#39;s a=
+s Ilari says in his followup.</div><div><br></div><div>It seems like there =
+are really two choices:</div><div><br></div><div>1. Only advertise algorith=
+m X if you support algorithm X in both places</div><div>2. Invent a new ext=
+ension whose semantics are &quot;if present, this tells you what the PKI va=
+lidator accepts, otherwise look at signature schemes&quot;</div><div><br></=
+div><div>I hate to be suggesting #2 at this stage in the process, but maybe=
+ it&#39;s right anyway...</div><div><br></div><div><div>-Ekr</div><div><br>=
+</div></div><div>[0] I recognize that there are people who think that TLS s=
+houldn&#39;t say anything about the PKI verifier,</div><div>but I don&#39;t=
+ think that this is viable, for exactly the reason shown here: it&#39;s pos=
+sibly to have an algorithm which is widely supported in TLS stacks but not =
+in PKI verifiers.</div><div><br></div><div><br></div><div></div></div><div =
+class=3D"gmail_extra"><br><div class=3D"gmail_quote">On Fri, Sep 8, 2017 at=
+ 3:59 PM, Peter Wu <span dir=3D"ltr">&lt;<a href=3D"mailto:peter@lekensteyn=
+.nl" target=3D"_blank">peter@lekensteyn.nl</a>&gt;</span> wrote:<br><blockq=
+uote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc =
+solid;padding-left:1ex">Hi!<br>
+<br>
+While working on adding RSASSA-PSS support to Go&#39;s crypto/tls library<b=
+r>
+(TLS 1.2), I have noticed something that may cause interop problems<br>
+later.<br>
+<br>
+<br>
+The current draft says the following about Server Certificate Selection<br>
+(<a href=3D"https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.4=
+.2.2" rel=3D"noreferrer" target=3D"_blank">https://tools.ietf.org/html/draf=
+t-ietf-tls-tls13-21#section-4.4.2.2</a>):<br>
+<br>
+=C2=A0 =C2=A0-=C2=A0 The certificate MUST allow the key to be used for sign=
+ing (i.e.,<br>
+=C2=A0 =C2=A0 =C2=A0 the digitalSignature bit MUST be set if the Key Usage =
+extension is<br>
+=C2=A0 =C2=A0 =C2=A0 present) with a signature scheme indicated in the clie=
+nt&#39;s<br>
+=C2=A0 =C2=A0 =C2=A0 &quot;signature_algorithms&quot; extension.<br>
+<br>
+In TLS 1.2, the cipher suite was responsible for selecting the hash<br>
+function and signature algorithm (e.g. for ServerKeyExchange) while<br>
+&quot;signature_algorithms&quot; directed what certificate signatures are<b=
+r>
+accepted.=C2=A0 But in TLS 1.3, this also influences what algorithms can be=
+<br>
+used for signing handshake messages (CertificateVerify).<br>
+<br>
+This results in possible interop problem: while implementations<br>
+advertise RSASSA-PSS support in &quot;supported_algorithms&quot; because th=
+ey can<br>
+indeed sign/verify handshake messages with said algorithm, they might<br>
+not be able to accept certificates with a RSASSA-PSS signature (because<br>
+the PKI library does not implement it for example). And because PSS<br>
+certificates are non-existent now, it will only be discovered later.<br>
+<br>
+Some implementations I have checked wrt RSASSA-PSS support:<br>
+=C2=A0- Go crypto/tls (TLS 1.2) - no RSASSA-PSS yet.<br>
+=C2=A0- tls-tris (TLS 1.3) - accepts PSS for CV, but not certificates.<br>
+=C2=A0- BoringSSL - failed, &quot;bssl server&quot; rejects cert.<br>
+=C2=A0- OpenSSL - failed, s_server rejects cert. Related:<br>
+=C2=A0 =C2=A0<a href=3D"https://github.com/openssl/openssl/issues/2878" rel=
+=3D"noreferrer" target=3D"_blank">https://github.com/openssl/openssl/issues=
+/2878</a><br>
+=C2=A0- NSS - not checked, but I think it has the same problem as tls-tris.=
+<br>
+=C2=A0 =C2=A0Related: <a href=3D"https://bugzilla.mozilla.org/show_bug.cgi?=
+id=3D158750" rel=3D"noreferrer" target=3D"_blank">https://bugzilla.mozilla.=
+org/show_bug.cgi?id=3D158750</a><br>
+<br>
+These implementations will require fixing, but at the moment it is just<br>
+broken. Is this the expected behavior/intention?<br>
+<br>
+<br>
+While RSASSA-PSS is quite well understood for handshake messages, its<br>
+restrictions for certificates are not explicit. Currently the draft<br>
+limits the salt length for handshake messages, but what about certs?<br>
+What is needed for a TLS implementation to claim support for RSASSA-PSS?<br=
+>
+<br>
+In particular, for certificates:<br>
+<br>
+=C2=A0- Limitations on salt length?<br>
+=C2=A0- What AlgorithmIdentifier OID to use?<br>
+=C2=A0- Whether to constrain other AlgorithmIdentifier Params? (MGF, hash<b=
+r>
+=C2=A0 =C2=A0algorithm, trailerField)?<br>
+<span class=3D"m_6224913556025837357HOEnZb"><font color=3D"#888888">--<br>
+Kind regards,<br>
+Peter Wu<br>
+<a href=3D"https://lekensteyn.nl" rel=3D"noreferrer" target=3D"_blank">http=
+s://lekensteyn.nl</a><br>
+<br>
+_______________________________________________<br>
+TLS mailing list<br>
+<a href=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.org</a><br>
+<a href=3D"https://www.ietf.org/mailman/listinfo/tls" rel=3D"noreferrer" ta=
+rget=3D"_blank">https://www.ietf.org/mailman/listinfo/tls</a><br>
+</font></span></blockquote></div><br></div>
+_______________________________________________<br>
+TLS mailing list<br>
+<a href=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.org</a><br>
+<a href=3D"https://www.ietf.org/mailman/listinfo/tls" rel=3D"noreferrer" ta=
+rget=3D"_blank">https://www.ietf.org/mailman/listinfo/tls</a><br>
+</blockquote></div>
+
+--94eb2c0d4b5ebc21220558f3452e--
+

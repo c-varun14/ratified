@@ -1,0 +1,192 @@
+Return-Path: <bkaduk@akamai.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id E886612EB3F
+ for <tls@ietfa.amsl.com>; Mon, 22 May 2017 10:27:59 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.999
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.999 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ DKIM_VALID_AU=-0.1, HTML_MESSAGE=0.001, SPF_PASS=-0.001,
+ URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=akamai.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id UkpmuJA94A1i for <tls@ietfa.amsl.com>;
+ Mon, 22 May 2017 10:27:58 -0700 (PDT)
+Received: from mx0b-00190b01.pphosted.com (mx0a-00190b01.pphosted.com
+ [IPv6:2620:100:9001:583::1])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 81A1E12EB42
+ for <tls@ietf.org>; Mon, 22 May 2017 10:27:58 -0700 (PDT)
+Received: from pps.filterd (m0050093.ppops.net [127.0.0.1])
+ by m0050093.ppops.net-00190b01. (8.16.0.21/8.16.0.21) with SMTP id
+ v4MHRY75006198; Mon, 22 May 2017 18:27:54 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com;
+ h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type; s=jan2016.eng;
+ bh=ehDqqxUga0kKRl/Ph4TRwQISd5C+7kI17V9ZZkf60O8=;
+ b=TP5ycv6PhHtCiFoxTACw+WQKflYHEn1pOpRs8Y9KLsnz67/YSyFnv2Bo86I9DMVNT6Ui
+ jbA/SRM0YJA2V8lpvUkrNVWLXUelJFUZxrrY3wGgwDMTbdB87+YeBCps9oLBiLsQf32v
+ O0MUFOzvaAtqqp89BORfGV1xWPNWQAmnBb459YzfSR4otO+VaIXiqyhojDoCw4Wz2lCi
+ dtmhC08O8cNAW5dlkM/mnKO9UDLJS9FnC5iqDiRzYgvyVHeZujsr8UQYd78UKriiwMgu
+ 4yhpfOftCCxk+mhE7mxYQWJsfNFKR1UFJ1ZcVUhU6t/SDBghnaW2VYrCnD6oe5wy/EJM Ug== 
+Received: from prod-mail-ppoint3 ([96.6.114.86])
+ by m0050093.ppops.net-00190b01. with ESMTP id 2akvg5tt8p-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Mon, 22 May 2017 18:27:54 +0100
+Received: from pps.filterd (prod-mail-ppoint3.akamai.com [127.0.0.1])
+ by prod-mail-ppoint3.akamai.com (8.16.0.17/8.16.0.17) with SMTP id
+ v4MHLZC2009213; Mon, 22 May 2017 13:27:53 -0400
+Received: from prod-mail-relay15.akamai.com ([172.27.17.40])
+ by prod-mail-ppoint3.akamai.com with ESMTP id 2ajh4vbht9-1;
+ Mon, 22 May 2017 13:27:52 -0400
+Received: from [172.19.17.86] (bos-lpczi.kendall.corp.akamai.com
+ [172.19.17.86])
+ by prod-mail-relay15.akamai.com (Postfix) with ESMTP id 9035520064;
+ Mon, 22 May 2017 11:27:52 -0600 (MDT)
+To: TLS WG <tls@ietf.org>, Viktor Dukhovni <ietf-dane@dukhovni.org>
+References: <CAPZZOTgizE2n06V9wEtARFCXB7FP_eikW-K1k67bZG11kNhSAw@mail.gmail.com>
+ <44AED5C2-B21C-442A-8412-9134D1C10BCD@dukhovni.org>
+ <201705192143.19490.davemgarrett@gmail.com>
+ <20170520054117.GM10188@localhost>
+ <80AB5C55-41BA-471E-A55A-86E98299B652@dukhovni.org>
+ <f262447d-5bd1-68c8-dac6-ad2224733235@akamai.com>
+ <35E448DD-7F74-4563-9707-DFAB66125FAA@dukhovni.org>
+From: Benjamin Kaduk <bkaduk@akamai.com>
+Message-ID: <89704888-5f4d-0021-74cb-4cea28c773bd@akamai.com>
+Date: Mon, 22 May 2017 12:27:52 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.1.1
+MIME-Version: 1.0
+In-Reply-To: <35E448DD-7F74-4563-9707-DFAB66125FAA@dukhovni.org>
+Content-Type: multipart/alternative;
+ boundary="------------D1D81A8F72EB60D9EAC726FE"
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10432:, ,
+ definitions=2017-05-22_09:, , signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0
+ suspectscore=0
+ malwarescore=0 phishscore=0 adultscore=0 bulkscore=0 classifier=spam
+ adjust=0 reason=mlx scancount=1 engine=8.0.1-1703280000
+ definitions=main-1705220091
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10432:, ,
+ definitions=2017-05-22_09:, , signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
+ priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 impostorscore=0 adultscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.0.1-1703280000 definitions=main-1705220092
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/d_sOsLgJmQp32-WLh25UYtePSm8>
+Subject: Re: [TLS] AD Review of draft-ietf-tls-tls13
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Mon, 22 May 2017 17:28:00 -0000
+
+This is a multi-part message in MIME format.
+--------------D1D81A8F72EB60D9EAC726FE
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+On 05/22/2017 12:17 PM, Viktor Dukhovni wrote:
+>> On May 22, 2017, at 1:06 PM, Benjamin Kaduk <bkaduk@akamai.com> wrote:
+>>
+>> Given the apparent strength of opinion against removing these supposed restrictions entirely, it seems like this text (or something similar) is probably the best we can do.
+> Perhaps so, but I saw only one strong objection from Dave Garrett.  Is that
+
+There was also some discussion when this text was originally going in,
+IIRC.  But I do not remember well enough to say who/how many people
+wanted it.
+
+> sufficient for "apparent strength of opinion"?  Removal is simpler, and it
+> sure does not look like people are determined to continue to support MD5
+> and SHA-1 in certificates, but would be willing to relent if TLS 1.3 told
+> them not to.  Isn't the language in question tackling a non-problem?
+
+It probably is, but I don't feel a need to spend a lot of my time
+pushing for it to be removed.
+
+-Ben
+
+> That said, if the only way to rough consensus is a properly qualified
+> requirement to not rely on such certificate signatures for authentication,
+> (rather than must hang up with a fatal alert when you see these, must not
+> send these, ...) then I'll go along with a compromise.
+>
+
+
+--------------D1D81A8F72EB60D9EAC726FE
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  </head>
+  <body text="#000000" bgcolor="#FFFFFF">
+    On 05/22/2017 12:17 PM, Viktor Dukhovni wrote:<br>
+    <blockquote type="cite"
+      cite="mid:35E448DD-7F74-4563-9707-DFAB66125FAA@dukhovni.org">
+      <pre wrap="">
+</pre>
+      <blockquote type="cite">
+        <pre wrap="">On May 22, 2017, at 1:06 PM, Benjamin Kaduk <a class="moz-txt-link-rfc2396E" href="mailto:bkaduk@akamai.com">&lt;bkaduk@akamai.com&gt;</a> wrote:
+
+Given the apparent strength of opinion against removing these supposed restrictions entirely, it seems like this text (or something similar) is probably the best we can do.
+</pre>
+      </blockquote>
+      <pre wrap="">
+Perhaps so, but I saw only one strong objection from Dave Garrett.  Is that
+</pre>
+    </blockquote>
+    <br>
+    There was also some discussion when this text was originally going
+    in, IIRC.  But I do not remember well enough to say who/how many
+    people wanted it.<br>
+    <br>
+    <blockquote type="cite"
+      cite="mid:35E448DD-7F74-4563-9707-DFAB66125FAA@dukhovni.org">
+      <pre wrap="">sufficient for "apparent strength of opinion"?  Removal is simpler, and it
+sure does not look like people are determined to continue to support MD5
+and SHA-1 in certificates, but would be willing to relent if TLS 1.3 told
+them not to.  Isn't the language in question tackling a non-problem?
+</pre>
+    </blockquote>
+    <br>
+    It probably is, but I don't feel a need to spend a lot of my time
+    pushing for it to be removed.<br>
+    <br>
+    -Ben<br>
+    <br>
+    <blockquote type="cite"
+      cite="mid:35E448DD-7F74-4563-9707-DFAB66125FAA@dukhovni.org">
+      <pre wrap="">
+That said, if the only way to rough consensus is a properly qualified
+requirement to not rely on such certificate signatures for authentication,
+(rather than must hang up with a fatal alert when you see these, must not
+send these, ...) then I'll go along with a compromise.
+
+</pre>
+    </blockquote>
+    <br>
+  </body>
+</html>
+
+--------------D1D81A8F72EB60D9EAC726FE--
+

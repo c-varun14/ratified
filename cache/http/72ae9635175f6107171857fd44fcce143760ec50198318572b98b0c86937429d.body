@@ -1,0 +1,145 @@
+From nobody Fri Sep 18 07:49:28 2020
+Return-Path: <davidben@google.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id C01BB3A0BC6
+ for <tls@ietfa.amsl.com>; Fri, 18 Sep 2020 07:49:26 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -10.944
+X-Spam-Level: 
+X-Spam-Status: No, score=-10.944 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIMWL_WL_HIGH=-1.695, DKIM_SIGNED=0.1,
+ DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1,
+ HEADER_FROM_DIFFERENT_DOMAINS=0.249, HTML_MESSAGE=0.001,
+ SPF_HELO_NONE=0.001, SPF_PASS=-0.001, URIBL_BLOCKED=0.001,
+ USER_IN_DEF_SPF_WL=-7.5] autolearn=unavailable autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=chromium.org
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id r8MOc9VYblZL for <tls@ietfa.amsl.com>;
+ Fri, 18 Sep 2020 07:49:24 -0700 (PDT)
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com
+ [IPv6:2607:f8b0:4864:20::42b])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id C5CBF3A0BC2
+ for <tls@ietf.org>; Fri, 18 Sep 2020 07:49:24 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d6so3578279pfn.9
+ for <tls@ietf.org>; Fri, 18 Sep 2020 07:49:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=nrDVkATn0PgwEJtHDKLRVRrhw8mnY5xaVUhIDyPLX3o=;
+ b=YMV1uGiUzViof4/wlFGEDszlYA2nAKD+cwLNz8ryfDM3OXT44oQxA9p9vfhZVb91gX
+ 0Kw8anmhLLe92+xX0TvSBYNSbgRYYe8Tsun20kPSleQNXUAOjGi7uNheP9lhj1rtEEGn
+ eojBb5tcj9WQjNDUShWpqh+Jub2j6FH0LCDZQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=nrDVkATn0PgwEJtHDKLRVRrhw8mnY5xaVUhIDyPLX3o=;
+ b=OwUtEz7k9Xf0HcGRNrd0dy2AwUW+prsytZpgZcLijCK45N5/2q6ZALpcYAzBvshnZp
+ dKOY5B7Uy39E7kEamAq1oBKI+06TXK1c6XL11Q1SVadsDc4YTare5tUC1QjAixkEJwyh
+ g4XBWOrDH+Xx/n2oVAz4DN4b8ZHbR/StkUR1jBhMh0SO7Av6BXbd7u3I6T+l6S5rL43U
+ YsvDnwxsD6RsRwjM7Wqs0+2GFKSzRlzWluqoKUGqdN6bCfTOttbgjd7U4rsWPsgLvvbr
+ A6PORao/S+3aIAmLwfs80dRTD+FRDX2H9RXzS4KW5ulZ2s1tvJkZaC1FCzBh3qOtlOxD
+ Hj8A==
+X-Gm-Message-State: AOAM530eDaxDmxBFHaZ8I4vKMrhckfKII2AlTpMRoXEITohBz3S8Wfrh
+ pXZfX+gzcpBMQ49RNY7lH5EhMDZvqAIy1ao2sWKz
+X-Google-Smtp-Source: ABdhPJzRpWXPuCbYWegGXGdTDhslIgsWUBvH9IXOeSu66D7Ynert4p9k3+FKLt86Gs3gnJ19IIBbqX8Tm/BzPiGIobo=
+X-Received: by 2002:a62:c701:0:b029:142:2501:39e4 with SMTP id
+ w1-20020a62c7010000b0290142250139e4mr16815682pfg.51.1600440564078; Fri, 18
+ Sep 2020 07:49:24 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAOgPGoAj-Pf4jWKuZuNS=Dh0V3WV9e5cHbQcFVBnmxd=93AebQ@mail.gmail.com>
+ <49C2B577-FD06-44E7-A6E1-6F74E2AB85A9@akamai.com>
+ <DC52F167-32B5-499E-B86D-FD520CE1288D@sn3rd.com>
+In-Reply-To: <DC52F167-32B5-499E-B86D-FD520CE1288D@sn3rd.com>
+From: David Benjamin <davidben@chromium.org>
+Date: Fri, 18 Sep 2020 10:49:07 -0400
+Message-ID: <CAF8qwaBW0D_2r4-AdV_h9pRf6wQKZ+wHG-NzrQnX-Xz_jhDLPg@mail.gmail.com>
+To: Sean Turner <sean@sn3rd.com>
+Cc: "Salz, Rich" <rsalz=40akamai.com@dmarc.ietf.org>, 
+ "draft-ietf-tls-md5-sha1-deprecate@ietf.org"
+ <draft-ietf-tls-md5-sha1-deprecate@ietf.org>, TLS List <tls@ietf.org>, 
+ Benjamin Kaduk <kaduk@mit.edu>
+Content-Type: multipart/alternative; boundary="0000000000004eca8e05af979b7e"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/pqK9XKoUevA6cWVMsg_KXXmFwMY>
+Subject: Re: [TLS] Moving SHA-1 signature schemes to not recommended in
+ draft-ietf-tls-md5-sha1-deprecate
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Fri, 18 Sep 2020 14:49:27 -0000
+
+--0000000000004eca8e05af979b7e
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Sep 18, 2020 at 10:28 AM Sean Turner <sean@sn3rd.com> wrote:
+
+> Also, should we be adding =E2=80=9C_legacy=E2=80=9D to the names of the c=
+ode points as was
+> done for rsa_pkcs1_sha256_legacy by:
+> https://www.ietf.org/archive/id/draft-davidben-tls13-pkcs1-00.txt?
+>
+
+My inclination is no. We didn't go about renaming the huge mess of TLS
+cipher suites or anything else that I remember.
+
+The "_legacy" suffix in that draft has a slightly different meaning
+(perhaps I should have picked a different name). The existing
+rsa_pkcs1_sha256 code points from TLS 1.2 were carried over into TLS 1.3
+but with a subsetted meaning. In TLS 1.2, rsa_pkcs1_sha256 advertises both
+TLS and X.509 capabilities, but in TLS 1.3 it advertises only X.509
+capabilities. rsa_pkcs1_sha256 is undefined for a TLS CertificateVerify
+because we took PKCS#1 v1.5 out. So, in order for TLS 1.3 servers to opt
+into accepting PKCS#1 v1.5 signatures in CertificateVerify, the draft
+needed to define new code points with a CertificateVerify capability.
+
+rsa_pkcs1_sha256_tls1_3_certificate_verify_for_legacy_clients was a
+mouthful, so I just added a "legacy" suffix. :-)
+
+David
+
+--0000000000004eca8e05af979b7e
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr">On Fri, Sep 18, 2020 at 10:28 AM Sean Tur=
+ner &lt;<a href=3D"mailto:sean@sn3rd.com">sean@sn3rd.com</a>&gt; wrote:<br>=
+</div><div class=3D"gmail_quote"><blockquote class=3D"gmail_quote" style=3D=
+"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-le=
+ft:1ex">Also, should we be adding =E2=80=9C_legacy=E2=80=9D to the names of=
+ the code points as was done for rsa_pkcs1_sha256_legacy by:<br>
+<a href=3D"https://www.ietf.org/archive/id/draft-davidben-tls13-pkcs1-00.tx=
+t" rel=3D"noreferrer" target=3D"_blank">https://www.ietf.org/archive/id/dra=
+ft-davidben-tls13-pkcs1-00.txt</a>?<br></blockquote><div><br></div><div>My =
+inclination is no. We didn&#39;t go about renaming the huge mess of TLS cip=
+her suites or anything else that I remember.</div><div><br></div><div>The &=
+quot;_legacy&quot; suffix in that draft has a slightly different meaning (p=
+erhaps I should have picked a different name). The existing rsa_pkcs1_sha25=
+6 code points from TLS 1.2 were carried over into TLS 1.3 but with a subset=
+ted meaning. In TLS 1.2,=C2=A0rsa_pkcs1_sha256 advertises both TLS and X.50=
+9 capabilities, but in TLS 1.3 it advertises only X.509 capabilities.=C2=A0=
+rsa_pkcs1_sha256 is undefined for a TLS CertificateVerify because we took P=
+KCS#1 v1.5 out. So, in order for TLS 1.3 servers to opt into accepting PKCS=
+#1 v1.5 signatures in CertificateVerify, the draft needed to define new cod=
+e points with a CertificateVerify capability.</div><div><br></div><div>rsa_=
+pkcs1_sha256_tls1_3_certificate_verify_for_legacy_clients was a mouthful, s=
+o I just added a &quot;legacy&quot; suffix. :-)<br></div><div><br></div><di=
+v>David</div></div></div>
+
+--0000000000004eca8e05af979b7e--
+

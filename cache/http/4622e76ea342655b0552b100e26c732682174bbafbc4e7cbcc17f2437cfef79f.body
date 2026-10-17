@@ -1,0 +1,296 @@
+Return-Path: <tshort@akamai.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 4F2F3130E93
+ for <tls@ietfa.amsl.com>; Thu,  9 Aug 2018 11:00:35 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.709
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.709 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ DKIM_VALID_AU=-0.1, HTML_MESSAGE=0.001, RCVD_IN_DNSWL_LOW=-0.7,
+ SPF_PASS=-0.001, T_DKIMWL_WL_HIGH=-0.01, URIBL_BLOCKED=0.001]
+ autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=akamai.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id Vyym7WZhYSwm for <tls@ietfa.amsl.com>;
+ Thu,  9 Aug 2018 11:00:33 -0700 (PDT)
+Received: from mx0b-00190b01.pphosted.com (mx0b-00190b01.pphosted.com
+ [IPv6:2620:100:9005:57f::1])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id D99A4130E8E
+ for <tls@ietf.org>; Thu,  9 Aug 2018 11:00:32 -0700 (PDT)
+Received: from pps.filterd (m0050096.ppops.net [127.0.0.1])
+ by m0050096.ppops.net-00190b01. (8.16.0.22/8.16.0.22) with SMTP id
+ w79Hqr8o004508 for <tls@ietf.org>; Thu, 9 Aug 2018 19:00:32 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com;
+ h=from : to : subject :
+ date : message-id : references : in-reply-to : content-type :
+ mime-version; s=jan2016.eng;
+ bh=sjci4KD4SZKzBLaRNZhhy0Iv38oraeCKonf7zFCNKPw=;
+ b=EwEez4levNWsnASammAsrDTFUe0DxUO/YCc0Pd6/7Ky4d+Y3V/VH0u6RakK9Oby8iIlo
+ w3JBPBUgsNSWMZHpPi+sW4p51khgvtwLr8OiJ1teLk6K+T+tyi3OJ0liNDReoLu7XLqZ
+ vusQwbwSmpIrZg6VCIiurmHl/tAGL6FWj+QvAMH+ei65os0adlkmGnCCQZzXNdBRf5mE
+ T7JqPQegffeIM/4q1Wjq7MbB5VRtj6YtFqv0gz1xraxzwNXtifxcwiUtgJ9nS5csL0OF
+ ZzCi4syYrvffjdLXtU48N4h7vTpCSGNwrt1g4ErWZXRfqGdl/aj/81bZe1zIgi/6omcS pQ== 
+Received: from prod-mail-ppoint2 (prod-mail-ppoint2.akamai.com [184.51.33.19])
+ by m0050096.ppops.net-00190b01. with ESMTP id 2kqy43mfgg-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <tls@ietf.org>; Thu, 09 Aug 2018 19:00:31 +0100
+Received: from pps.filterd (prod-mail-ppoint2.akamai.com [127.0.0.1])
+ by prod-mail-ppoint2.akamai.com (8.16.0.21/8.16.0.21) with SMTP id
+ w79Ho13e006384 for <tls@ietf.org>; Thu, 9 Aug 2018 14:00:30 -0400
+Received: from email.msg.corp.akamai.com ([172.27.123.33])
+ by prod-mail-ppoint2.akamai.com with ESMTP id 2kn7fuhk2r-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
+ for <tls@ietf.org>; Thu, 09 Aug 2018 14:00:29 -0400
+Received: from USMA1EX-DAG1MB1.msg.corp.akamai.com (172.27.123.101) by
+ usma1ex-dag1mb3.msg.corp.akamai.com (172.27.123.103) with Microsoft SMTP
+ Server (TLS) id 15.0.1365.1; Thu, 9 Aug 2018 14:00:28 -0400
+Received: from USMA1EX-DAG1MB1.msg.corp.akamai.com ([172.27.123.101]) by
+ usma1ex-dag1mb1.msg.corp.akamai.com ([172.27.123.101]) with mapi id
+ 15.00.1365.000; Thu, 9 Aug 2018 14:00:28 -0400
+From: "Short, Todd" <tshort@akamai.com>
+To: "<tls@ietf.org>" <tls@ietf.org>
+Thread-Topic: [TLS] inappropriate_fallback
+Thread-Index: AQHULxh75kG8k7OPYk+Jc40sIvbVU6S2GmWAgAABSwCAAAVYAIAAAeqAgAACqoCAAAEfAIABLiYAgABINICAAAifgIAAAZcAgAASnYCAACJIgIAAHmAA
+Date: Thu, 9 Aug 2018 18:00:27 +0000
+Message-ID: <F76C7518-E02B-4D0F-B725-358BF71C4053@akamai.com>
+References: <2fd24f64-bee5-18ed-cf0d-0fc999add395@openssl.org>
+ <9fec7f0c-9591-703a-066f-2eab54a57515@openssl.org>
+ <084E22DD-9B7E-4F68-A0F9-AE17CD1830A6@akamai.com>
+ <2188947.p4FsqiceqA@pintsize.usersys.redhat.com>
+In-Reply-To: <2188947.p4FsqiceqA@pintsize.usersys.redhat.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: yes
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [172.19.38.126]
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_0A230889-E5EC-4347-979C-5053D1CA816F";
+ protocol="application/pgp-signature"; micalg=pgp-sha512
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:, ,
+ definitions=2018-08-09_07:, , signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0
+ malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=892
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1807170000 definitions=main-1808090180
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:, ,
+ definitions=2018-08-09_07:, , signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
+ priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=876 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1807170000
+ definitions=main-1808090181
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/BRssky6Xt6EQ7FLmk1t7gRSz_SE>
+Subject: Re: [TLS] inappropriate_fallback
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.27
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Thu, 09 Aug 2018 18:00:36 -0000
+
+--Apple-Mail=_0A230889-E5EC-4347-979C-5053D1CA816F
+Content-Type: multipart/alternative;
+	boundary="Apple-Mail=_9A3160D9-B554-4C4F-816C-172936A3B50C"
+
+
+--Apple-Mail=_9A3160D9-B554-4C4F-816C-172936A3B50C
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=utf-8
+
+
+--
+-Todd Short
+// tshort@akamai.com
+// "One if by land, two if by sea, three if by the Internet."
+
+> On Aug 9, 2018, at 12:11 PM, Hubert Kario <hkario@redhat.com> wrote:
+>=20
+> On Thursday, 9 August 2018 16:09:02 CEST Short, Todd wrote:
+>>> On Aug 9, 2018, at 9:02 AM, Matt Caswell <matt@openssl.org> wrote:
+>>>=20
+>>>=20
+>>> That's not the way I read it. If a server is configured to use =
+TLSv1.1
+>>> then its not a TLSv1.3 server and this text doesn't apply =
+(regardless of
+>>> whether the binary could do TLSv1.3 if it was configured =
+differently).
+>>>=20
+>>> Matt
+>>>=20
+>>=20
+>>=20
+>> Agreed.
+>>=20
+>> If a TLS 1.2 (capable) server is negotiating TLS 1.1 with a TLS 1.2 =
+client,
+>> then it can=E2=80=99t be considered a TLS 1.2 server, otherwise, it =
+would negotiate
+>> TLS 1.2.
+>=20
+>> It must be considered a TLS 1.1 server, since that is the maximum =
+version it
+>> is configured to support.
+>=20
+> actually, no, if it has both TLS 1.2 and TLS 1.1 enabled, then it is a =
+TLS 1.2
+> server, so receiving a TLS 1.1 ClientHello with FALLBACK_SCSV MUST =
+fail with
+> inappropriate_fallback
+>=20
+> if it is has TLS 1.1 enabled, and nothing else, *then* it is TLS 1.1 =
+server,
+> and receiving a TLS 1.1 ClientHello with FALLBACK_SCSV SHOULD NOT fail =
+(it may
+> fail because of ciphersuite mismatch, but it MUST NOT fail because of =
+the the
+> FALLBACK_SCSV being present)
+
+^^^^^^^^^^^^^^^^^^^^^
+
+This is the situation I am referring to TLS 1.1 only (even if it has =
+disabled TLS 1.2 code). If TLS 1.2 were enabled in the above scenario, =
+then TLS 1.2 would be negotiated with the TLS 1.2 client.
+I explicitly stated "since that [TLS 1.1] is the maximum version it is =
+configured to support".
+
+>=20
+> situation with TLS 1.3, TLS 1.2 and downgrade protection from Section =
+4.1.3
+> (bottom of page 37 onwards:
+> https://tools.ietf.org/html/draft-ietf-tls-tls13-28#page-37) is =
+exactly the
+> same =E2=80=93 it does not matter what is _implemented_ it matters =
+what is _enabled_
+>=20
+> --
+> Regards,
+> Hubert Kario
+> Senior Quality Engineer, QE BaseOS Security team
+> Web: www.cz.redhat.com
+> Red Hat Czech s.r.o., Purky=C5=88ova 115, 612 00  Brno, Czech Republic
+
+
+--Apple-Mail=_9A3160D9-B554-4C4F-816C-172936A3B50C
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html;
+	charset=utf-8
+
+<html><head><meta http-equiv=3D"Content-Type" content=3D"text/html; =
+charset=3Dutf-8"></head><body style=3D"word-wrap: break-word; =
+-webkit-nbsp-mode: space; line-break: after-white-space;" class=3D""><br =
+class=3D""><div class=3D"">
+<div style=3D"color: rgb(0, 0, 0); letter-spacing: normal; orphans: =
+auto; text-align: start; text-indent: 0px; text-transform: none; =
+white-space: normal; widows: auto; word-spacing: 0px; =
+-webkit-text-stroke-width: 0px; word-wrap: break-word; =
+-webkit-nbsp-mode: space; -webkit-line-break: after-white-space;" =
+class=3D""><div style=3D"color: rgb(0, 0, 0); letter-spacing: normal; =
+orphans: auto; text-align: start; text-indent: 0px; text-transform: =
+none; white-space: normal; widows: auto; word-spacing: 0px; =
+-webkit-text-stroke-width: 0px; word-wrap: break-word; =
+-webkit-nbsp-mode: space; -webkit-line-break: after-white-space;" =
+class=3D""><div class=3D"">--</div><div class=3D"">-Todd Short</div><div =
+class=3D"">// <a href=3D"mailto:tshort@akamai.com" =
+class=3D"">tshort@akamai.com</a></div><div class=3D"">// "One if by =
+land, two if by sea, three if by the Internet."</div></div></div>
+</div>
+<div><br class=3D""><blockquote type=3D"cite" class=3D""><div =
+class=3D"">On Aug 9, 2018, at 12:11 PM, Hubert Kario &lt;<a =
+href=3D"mailto:hkario@redhat.com" class=3D"">hkario@redhat.com</a>&gt; =
+wrote:</div><br class=3D"Apple-interchange-newline"><div class=3D""><div =
+class=3D"">On Thursday, 9 August 2018 16:09:02 CEST Short, Todd =
+wrote:<br class=3D""><blockquote type=3D"cite" class=3D""><blockquote =
+type=3D"cite" class=3D"">On Aug 9, 2018, at 9:02 AM, Matt Caswell &lt;<a =
+href=3D"mailto:matt@openssl.org" class=3D"">matt@openssl.org</a>&gt; =
+wrote:<br class=3D""><br class=3D""><br class=3D"">That's not the way I =
+read it. If a server is configured to use TLSv1.1<br class=3D"">then its =
+not a TLSv1.3 server and this text doesn't apply (regardless of<br =
+class=3D"">whether the binary could do TLSv1.3 if it was configured =
+differently).<br class=3D""><br class=3D"">Matt<br class=3D""><br =
+class=3D""></blockquote><br class=3D""><br class=3D"">Agreed.<br =
+class=3D""><br class=3D"">If a TLS 1.2 (capable) server is negotiating =
+TLS 1.1 with a TLS 1.2 client,<br class=3D"">then it can=E2=80=99t be =
+considered a TLS 1.2 server, otherwise, it would negotiate<br =
+class=3D"">TLS 1.2.<br class=3D""></blockquote><br class=3D""><blockquote =
+type=3D"cite" class=3D"">It must be considered a TLS 1.1 server, since =
+that is the maximum version it<br class=3D"">is configured to =
+support.<br class=3D""></blockquote><br class=3D"">actually, no, if it =
+has both TLS 1.2 and TLS 1.1 enabled, then it is a TLS 1.2 <br =
+class=3D"">server, so receiving a TLS 1.1 ClientHello with FALLBACK_SCSV =
+MUST fail with <br class=3D"">inappropriate_fallback<br class=3D""><br =
+class=3D"">if it is has TLS 1.1 enabled, and nothing else, *then* it is =
+TLS 1.1 server, <br class=3D"">and receiving a TLS 1.1 ClientHello with =
+FALLBACK_SCSV SHOULD NOT fail (it may <br class=3D"">fail because of =
+ciphersuite mismatch, but it MUST NOT fail because of the the <br =
+class=3D"">FALLBACK_SCSV being present)<br =
+class=3D""></div></div></blockquote><div><br =
+class=3D""></div><div>^^^^^^^^^^^^^^^^^^^^^</div><div><br =
+class=3D""></div><div>This is the situation I am referring to TLS 1.1 =
+only (even if it has disabled TLS 1.2 code). If TLS 1.2 were enabled in =
+the above scenario, then TLS 1.2 would be negotiated with the TLS 1.2 =
+client.</div><div>I explicitly stated "since that [TLS 1.1] is the =
+maximum version it is configured to support".</div><div><br =
+class=3D""></div><blockquote type=3D"cite" class=3D""><div class=3D""><div=
+ class=3D""><br class=3D"">situation with TLS 1.3, TLS 1.2 and downgrade =
+protection from Section 4.1.3 <br class=3D"">(bottom of page 37 =
+onwards:<br class=3D""><a =
+href=3D"https://tools.ietf.org/html/draft-ietf-tls-tls13-28#page-37" =
+class=3D"">https://tools.ietf.org/html/draft-ietf-tls-tls13-28#page-37</a>=
+) is exactly the <br class=3D"">same =E2=80=93 it does not matter what =
+is _implemented_ it matters what is _enabled_<br class=3D""><br =
+class=3D"">-- <br class=3D"">Regards,<br class=3D"">Hubert Kario<br =
+class=3D"">Senior Quality Engineer, QE BaseOS Security team<br =
+class=3D"">Web: <a href=3D"http://www.cz.redhat.com" =
+class=3D"">www.cz.redhat.com</a><br class=3D"">Red Hat Czech s.r.o., =
+Purky=C5=88ova 115, 612 00 &nbsp;Brno, Czech =
+Republic</div></div></blockquote></div><br class=3D""></body></html>=
+
+--Apple-Mail=_9A3160D9-B554-4C4F-816C-172936A3B50C--
+
+--Apple-Mail=_0A230889-E5EC-4347-979C-5053D1CA816F
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="signature.asc"
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEisLwOni6taemOfy9z8VToroaDtEFAltsgToACgkQz8VToroa
+DtG8bQ/+IN1qnie390WDK60mbaU/W7QU1UhpApqPznFvKP9/qNkDr1p2tcHwhAoM
+UKoRPRb2jYgJPDuyxH5NB8Z6vjhL4e1gl3YXMuhbfjxz5c3oF5Dnm8tY6xPjedAl
+ie1+EYVwhbaFn6+f2Z1EvsL6RU6RF5H1mFPMv6NOG9nmPgFMn78XYhI+COpVXDPM
+IfGXEdqDeDVXM3o2D7IFCdHk3zR9JDiX7/OyJQi39YQ0BlCD8i10HedmDNnOgn+4
+9HYaYeImxd2AwjjdhhQd74apT3P+RDocgFrTHHweyNIOKUmQxFHvNEC0D0GWhyeU
+ZCu5jC1RuktHRPlEV4bYS7Cy6PAnGghrmg6jGFo0DR0B39LG6RFAesAiSzaXMA2D
+d/3iBuzdJy5AF5tdwOcMQpIUY576S2CqMfVjJlURO3MBALogpsgiarstpTwtAsEH
+zB4APBw82E9CD2YrTfDn+ZneAvHKUtHhyJfpzkXn7vjmQ32D/eukLoebxajKtDOr
+1SbEikgV/LTwXYpdlQqz+gmzN1F9MhtIYwKyGP8thY86OKPoKGLfkES52sFcTCNl
+shrZaFU6u5GuMlFYqpzo+27kfXFEko7SAqRHhQjoMGdGrugkoCr3sxflm8VLV/Ix
+q1lS0VnwGoRZ+710ET3lTlxq9o2PIw9cyTiF4yu1J2VxleeeMOc=
+=TY7N
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_0A230889-E5EC-4347-979C-5053D1CA816F--
+

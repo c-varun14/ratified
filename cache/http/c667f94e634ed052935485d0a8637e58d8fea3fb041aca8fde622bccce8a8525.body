@@ -1,0 +1,103 @@
+Return-Path: <ilariliusvaara@welho.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id ED17B12961A
+ for <tls@ietfa.amsl.com>; Fri, 28 Oct 2016 09:24:31 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.331
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.331 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, RCVD_IN_DNSWL_NONE=-0.0001,
+ RP_MATCHES_RCVD=-0.431] autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id trDzyxfRnH7J for <tls@ietfa.amsl.com>;
+ Fri, 28 Oct 2016 09:24:30 -0700 (PDT)
+Received: from welho-filter4.welho.com (welho-filter4.welho.com [83.102.41.26])
+ by ietfa.amsl.com (Postfix) with ESMTP id DD291129496
+ for <tls@ietf.org>; Fri, 28 Oct 2016 09:24:29 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+ by welho-filter4.welho.com (Postfix) with ESMTP id 750A116226;
+ Fri, 28 Oct 2016 19:24:28 +0300 (EEST)
+X-Virus-Scanned: Debian amavisd-new at pp.htv.fi
+Received: from welho-smtp3.welho.com ([IPv6:::ffff:83.102.41.86])
+ by localhost (welho-filter4.welho.com [::ffff:83.102.41.26]) (amavisd-new,
+ port 10024)
+ with ESMTP id tr3JAlqQSeiZ; Fri, 28 Oct 2016 19:24:28 +0300 (EEST)
+Received: from LK-Perkele-V2 (87-92-51-204.bb.dnainternet.fi [87.92.51.204])
+ (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by welho-smtp3.welho.com (Postfix) with ESMTPSA id 236092310;
+ Fri, 28 Oct 2016 19:24:28 +0300 (EEST)
+Date: Fri, 28 Oct 2016 19:24:26 +0300
+From: Ilari Liusvaara <ilariliusvaara@welho.com>
+To: Martin Rex <mrex@sap.com>
+Message-ID: <20161028162426.GA25186@LK-Perkele-V2.elisa-laajakaista.fi>
+References: <CAOgPGoChDnFf-4Vxm1S021MXHhGGpTjniD6+124B7off2RzO6w@mail.gmail.com>
+ <20161028160003.B5CA61A56C@ld9781.wdf.sap.corp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20161028160003.B5CA61A56C@ld9781.wdf.sap.corp>
+User-Agent: Mutt/1.5.23 (2014-03-12)
+Sender: ilariliusvaara@welho.com
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/Mpt7rIVdsbSqKzg-XPf4vwDSAXU>
+Cc: "tls@ietf.org" <tls@ietf.org>
+Subject: Re: [TLS] Working Group Last Call for draft-ietf-tls-tls13-18
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.17
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Fri, 28 Oct 2016 16:24:32 -0000
+
+On Fri, Oct 28, 2016 at 06:00:03PM +0200, Martin Rex wrote:
+> Joseph Salowey wrote:
+> 
+> There are two seriously backwards-incompatible changes in the
+> current proposal that provide zero value, but completely break
+> backwards-compatibility with existing middleware infrastructure.
+> 
+> 
+> (1) hiding of the TLS record content types.
+>     Please leave the TLS record types (handshake/AppData/Alert/CCS)
+>     clearly visible on the outside of the TLS records, so that
+>     middleware protocol parsers (which interface to transport-free
+>     TLS protocol stacks) can continue to work, and continue to
+>     work efficiently.
+
+Hiding the types does have its benefits (and it is also used for
+zero-overhead padding scheme).
+
+And also, TLS 1.3 handshake is so darn different from TLS 1.2, that
+you couldn't do anything sane even if you had record types.
+ 
+> (2) hiding of the TLS extension SNI.
+>     Right now it is perferctly fine to implement TLS extensions SNI
+>     on the server completely outside the TLS protocol stack to route
+>     to single-cert SNI-unaware backends.  The current proposal
+>     suggest to move TLS extension SNI into the encrypted part, if
+>     my superficial reading of the draft is correct, so TLSv1.3
+>     will not fly with existing architectures where spreading of
+>     TLS requests on the server-side based on TLS extension SNI
+>     is done outside of the TLS protocol stack (i.e. bottleneck-less
+>     without having to open TLS).
+
+Who actually cares about server-side SNI? And it wasn't like you
+could do anything useful with server-side SNI in TLS 1.2 either.
+
+You can still route connections on SNI, and it even works the
+same way it did in TLS 1.2 (so existing code works).
+
+
+-Ilari
+

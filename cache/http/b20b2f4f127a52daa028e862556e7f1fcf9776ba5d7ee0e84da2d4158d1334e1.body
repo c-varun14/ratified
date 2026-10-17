@@ -1,0 +1,168 @@
+Return-Path: <sean@sn3rd.com>
+X-Original-To: tls@mail2.ietf.org
+Delivered-To: tls@mail2.ietf.org
+Received: from localhost (localhost [127.0.0.1])
+	by mail2.ietf.org (Postfix) with ESMTP id 33D15500C0F8
+	for <tls@mail2.ietf.org>; Tue,  5 Aug 2025 07:26:10 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at ietf.org
+X-Spam-Flag: NO
+X-Spam-Score: -2.099
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.099 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+	DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, HTML_MESSAGE=0.001,
+	RCVD_IN_DNSWL_NONE=-0.0001, SPF_HELO_NONE=0.001, SPF_PASS=-0.001]
+	autolearn=ham autolearn_force=no
+Authentication-Results: mail2.ietf.org (amavisd-new); dkim=pass (1024-bit key)
+	header.d=sn3rd.com
+Received: from mail2.ietf.org ([166.84.6.31])
+	by localhost (mail2.ietf.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id ZXAWpbXI-tUr for <tls@mail2.ietf.org>;
+	Tue,  5 Aug 2025 07:26:08 -0700 (PDT)
+Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com
+ [IPv6:2607:f8b0:4864:20::930])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail2.ietf.org (Postfix) with ESMTPS id 3A509500C0EB
+	for <tls@ietf.org>; Tue,  5 Aug 2025 07:26:08 -0700 (PDT)
+Received: by mail-ua1-x930.google.com with SMTP id
+ a1e0cc1a2514c-88dbde4a2abso1836131241.3
+        for <tls@ietf.org>; Tue, 05 Aug 2025 07:26:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sn3rd.com; s=google; t=1754403967; x=1755008767; darn=ietf.org;
+        h=message-id:in-reply-to:to:references:date:subject:mime-version:from
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FZkmnjffOzCR8giXbkwTqUK9NYUV2TiNRoV/kkv1ss8=;
+        b=LhClkDxQ+JPk/IV/7LpmoeQ67hnRoEbj7zrsUPlbBezqHOblfKjADOi9pyRQyx16i2
+         cExk/CIR8mJcLH/Y58YdtHDjgwLh/hz00NmheyFW9BOk6+BcGnsUBSnBadxI3HhJnW5V
+         Zz7wL3PVz5S1B+J9QhDCGGpcNRp+/kUCqXTLQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1754403967; x=1755008767;
+        h=message-id:in-reply-to:to:references:date:subject:mime-version:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FZkmnjffOzCR8giXbkwTqUK9NYUV2TiNRoV/kkv1ss8=;
+        b=XeEnen3itwi1tJSvfoTqHuqjSWcZl41HAqdc0fNrSRhgNKxHgBRUGJxEYPs9GjiQW6
+         Q5o0fRasXnl+Jcu1fLZXLqmfGlPcPJS/fvaXv0yM15PDAOTm1pksisV2qHEI8UBjOM/Z
+         dNW+q7HuY3zo46/C0oqD2GtCGCgDsel08J1LLrdjZegJKXQBuJFU2t9RYweMVtXox4bc
+         fX4KsXQUtx2jqZVdXsKj/vx0RHYAnbjnP2OSnLUXYyQrO5AEvgZED2X7AkNP6ix+RW/P
+         CiGL6PWkfZ6VH7g5phNOFWGdFKSUE54CxpMc36ttrh0HhSNzvhbzY0FrTZdQihVn3Wsx
+         kxUQ==
+X-Gm-Message-State: AOJu0YxM+onFXIEANEOmtw3exw1pOSmD7ye8RK4CN7KuBTyFPMrZNP/p
+	YZonktMrAX1CEnha4GVjOipyQU1+9QQjMp4WKd4l34M52xa9Fxnx0KdOQ/bHWuad4g+fgPX/zf3
+	mMfSu
+X-Gm-Gg: ASbGncv22tdqi1uVCKb7mAWVzYOL0bBpdg6iyyTT9AvZLEFkRRl5S9GnSd35IQoExAL
+	w/Qh6kSiXeUkOxk+viZqjkVUhPNVK5ylnm7Qv+xzglUhp8thfefpzHL0r4cO0HuYz/zy4u7oz3S
+	yuGDjhC/Fem5frizKnZh7haCtLUi+ov2qhwdFODvpPjBxcJbDnU2CYgpWSE+Zqkok74Vs+5uNMT
+	ufOX+5KNvjz7B14c8MPfBhJFvjyRsGoZQMnHSVEab1H7En/t8qriTWTtawxyibjxSMQGT39C0Pz
+	sRbD5i3/y7iFaZmuKrlh+R4ZbPzWbhPAAOIuYHtx98b3VItpPnZIu2b7qoK/phkwcXaSxlb1eDx
+	jIvbGvaicwYKcIx187QwLcAdyZlZM/eYtLe3vtbveB+4=
+X-Google-Smtp-Source: 
+ AGHT+IF4jdqc4BG1vK0FTQMXJJUEdnO8O3uZUSNjfmEiw8z3esosQpSgYTjzMzxBXRq4IPRJEf23NA==
+X-Received: by 2002:a05:6102:f08:b0:4fa:d2c:4ff with SMTP id
+ ada2fe7eead31-4fdc480e531mr5938973137.27.1754403967409;
+        Tue, 05 Aug 2025 07:26:07 -0700 (PDT)
+Received: from smtpclient.apple ([2600:4040:252a:8d00:b49e:9b84:ddb0:6a3a])
+        by smtp.gmail.com with ESMTPSA id
+ 6a1803df08f44-7077cd56e1csm72153056d6.45.2025.08.05.07.26.06
+        for <tls@ietf.org>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 05 Aug 2025 07:26:06 -0700 (PDT)
+From: Sean Turner <sean@sn3rd.com>
+Content-Type: multipart/alternative;
+	boundary="Apple-Mail=_2452E0DD-45DA-4C7F-AA88-F0589AC3527B"
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.700.81\))
+Date: Tue, 5 Aug 2025 10:25:46 -0400
+References: <A729C01D-2CFA-48DD-B709-70D3DBB41250@sn3rd.com>
+ <F626C530-EA68-4BE5-B17F-28548791578C@sn3rd.com>
+To: TLS List <tls@ietf.org>
+In-Reply-To: <F626C530-EA68-4BE5-B17F-28548791578C@sn3rd.com>
+Message-Id: <EED6FC46-7D72-4C4F-A1A5-68B4F55AAB92@sn3rd.com>
+X-Mailer: Apple Mail (2.3826.700.81)
+Message-ID-Hash: 3C4WNE3OPPLZB6E4LZ2RTMTZYCGKNCPU
+X-Message-ID-Hash: 3C4WNE3OPPLZB6E4LZ2RTMTZYCGKNCPU
+X-MailFrom: sean@sn3rd.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Re=3A_Working_Group_Last_Call_for_Legacy_RSASSA-PKCS1-v1?=
+ =?utf-8?q?=5F5_codepoints_for_TLS_1=2E3?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/pqmwug8nIv5MeUX6B-77PD9v3FQ>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+
+--Apple-Mail=_2452E0DD-45DA-4C7F-AA88-F0589AC3527B
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
+
+
+> On Jul 28, 2025, at 10:57, Sean Turner <sean@sn3rd.com> wrote:
+>=20
+>=20
+>> On Jul 24, 2025, at 03:00, Sean Turner <sean@sn3rd.com> wrote:
+>>=20
+>> This is the working group last call for Legacy RSASSA-PKCS1-v1_5 =
+codepoints for TLS 1.3. Please review draft-ietf-tls-tls13-pkcs1 [1] and =
+reply to this thread indicating if you think it is ready for publication =
+or not.  If you do not think it is ready please indicate why.  This call =
+will end on at 2359 UTC on 07 August 2024.
+>>=20
+>> Cheers,
+>> spt
+>=20
+>=20
+> [1] https://datatracker.ietf.org/doc/draft-ietf-tls-tls13-pkcs1/
+>=20
+> Just a reminder that this is still on-going (and this time with the =
+correct link).
+
+Final reminder that this is still ongoing.
+
+Cheers,
+spt=
+
+--Apple-Mail=_2452E0DD-45DA-4C7F-AA88-F0589AC3527B
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html;
+	charset=us-ascii
+
+<html><head><meta http-equiv=3D"content-type" content=3D"text/html; =
+charset=3Dus-ascii"></head><body style=3D"overflow-wrap: break-word; =
+-webkit-nbsp-mode: space; line-break: =
+after-white-space;"><br><div><blockquote type=3D"cite"><div>On Jul 28, =
+2025, at 10:57, Sean Turner &lt;sean@sn3rd.com&gt; wrote:</div><br =
+class=3D"Apple-interchange-newline"><div><meta http-equiv=3D"content-type"=
+ content=3D"text/html; charset=3Dus-ascii"><div style=3D"overflow-wrap: =
+break-word; -webkit-nbsp-mode: space; line-break: =
+after-white-space;"><br><div><blockquote type=3D"cite"><div>On Jul 24, =
+2025, at 03:00, Sean Turner &lt;sean@sn3rd.com&gt; wrote:</div><br =
+class=3D"Apple-interchange-newline"><div><div>This is the working group =
+last call for Legacy RSASSA-PKCS1-v1_5 codepoints for TLS 1.3. Please =
+review draft-ietf-tls-tls13-pkcs1 [1] and reply to this thread =
+indicating if you think it is ready for publication or not. &nbsp;If you =
+do not think it is ready please indicate why. &nbsp;This call will end =
+on at 2359 UTC on 07 August =
+2024.<br><br>Cheers,<br>spt<br></div></div></blockquote></div><div><br></d=
+iv><div>[1]&nbsp;<a =
+href=3D"https://datatracker.ietf.org/doc/draft-ietf-tls-tls13-pkcs1/">http=
+s://datatracker.ietf.org/doc/draft-ietf-tls-tls13-pkcs1/</a></div><br><div=
+>Just a reminder that this is still on-going (and this time with the =
+correct link).</div></div></div></blockquote><br></div><div>Final =
+reminder that this is still =
+ongoing.</div><div><br></div><div>Cheers,</div><div>spt</div></body></html=
+>=
+
+--Apple-Mail=_2452E0DD-45DA-4C7F-AA88-F0589AC3527B--
+

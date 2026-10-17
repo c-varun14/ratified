@@ -1,0 +1,179 @@
+Return-Path: <bkaduk@akamai.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 33A9912FA9A;
+ Thu,  1 Mar 2018 12:32:19 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.7
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.7 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ DKIM_VALID_AU=-0.1, RCVD_IN_DNSWL_LOW=-0.7, SPF_PASS=-0.001,
+ URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=akamai.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id smdpocFT1Xta; Thu,  1 Mar 2018 12:32:17 -0800 (PST)
+Received: from mx0a-00190b01.pphosted.com (mx0a-00190b01.pphosted.com
+ [IPv6:2620:100:9001:583::1])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 74BB312FA87;
+ Thu,  1 Mar 2018 12:32:17 -0800 (PST)
+Received: from pps.filterd (m0050093.ppops.net [127.0.0.1])
+ by mx0a-00190b01.pphosted.com (8.16.0.22/8.16.0.22) with SMTP id
+ w21KVYBB008080; Thu, 1 Mar 2018 20:32:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com;
+ h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=jan2016.eng;
+ bh=wjJCr7Xn1mMBASbVzb79YRbmjcW1vjZDhQ6gJF0ImDI=;
+ b=SfHuAHeCpmOiI/pRBwF0WKQphs+JOP+Vk5vWUVMa/qX8QXH8Nams9bdLuckIyzmWrNan
+ QHSkib3sbq7vJB9GAENkosk8IGgnEFYsTwsmOmmn1H00bMw3o+I/W9K0vjQP+WdWd30H
+ JbpgriqOw/PR+Vq9M7Y2CVSbOG1lYt4ApvlPcLnbjy3nePebMXBNRKihT/BcRuEXcTkt
+ UO5LEfZmx4h4TothcQeNqpLLETLgneRiRfg5Dobd7qmFxoOKQWF8xA+dnqyBW5MpSr0b
+ VdlXPyKAgQkW/A2rVQATnQZW3Jn7WG7XSYcdiJT3GALdMVe6B1zKc1hD1GV1sFRtpm+y zg== 
+Received: from prod-mail-ppoint4 ([96.6.114.87])
+ by m0050093.ppops.net-00190b01. with ESMTP id 2gdqchx4sb-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Thu, 01 Mar 2018 20:32:17 +0000
+Received: from pps.filterd (prod-mail-ppoint4.akamai.com [127.0.0.1])
+ by prod-mail-ppoint4.akamai.com (8.16.0.21/8.16.0.21) with SMTP id
+ w21KVM6Z018413; Thu, 1 Mar 2018 15:32:16 -0500
+Received: from prod-mail-relay14.akamai.com ([172.27.17.39])
+ by prod-mail-ppoint4.akamai.com with ESMTP id 2gb49fyhb1-1;
+ Thu, 01 Mar 2018 15:32:16 -0500
+Received: from [172.19.17.86] (bos-lpczi.kendall.corp.akamai.com
+ [172.19.17.86])
+ by prod-mail-relay14.akamai.com (Postfix) with ESMTP id 6D5AC83E6A;
+ Thu,  1 Mar 2018 20:32:15 +0000 (GMT)
+To: Sean Turner <sean@sn3rd.com>, "<tls@ietf.org>" <tls@ietf.org>
+Cc: draft-ietf-tls-tls13@ietf.org, tls-chairs <tls-chairs@ietf.org>
+References: <151872922818.7492.15112829041576036922.idtracker@ietfa.amsl.com>
+ <92C437ED-68EC-48EE-A30F-7E99F8B7D98C@sn3rd.com>
+ <27AE702D-2D0D-489A-B827-000532D1ACEF@sn3rd.com>
+From: Benjamin Kaduk <bkaduk@akamai.com>
+Message-ID: <92f2fea1-5bf6-3765-275d-ffcec8dee3b3@akamai.com>
+Date: Thu, 1 Mar 2018 14:32:14 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.6.0
+MIME-Version: 1.0
+In-Reply-To: <27AE702D-2D0D-489A-B827-000532D1ACEF@sn3rd.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10432:, ,
+ definitions=2018-03-01_11:, , signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0
+ malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1711220000 definitions=main-1803010252
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10432:, ,
+ definitions=2018-03-01_11:, , signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
+ priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1711220000
+ definitions=main-1803010252
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/FfrFzlUTyNgtT2fItttnGw2De2E>
+Subject: Re: [TLS] Last Call: <draft-ietf-tls-tls13-24.txt> (The Transport
+ Layer Security (TLS) Protocol Version 1.3) to Proposed Standard
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Thu, 01 Mar 2018 20:32:19 -0000
+
+To expound a bit more on my thinking, pss_pss is what we actually want
+people to be using, thus it should be Recommended, but pss_rsae is what
+people are actually going to be using (to large extent), and that is
+still a deployment that we consider good and useful, for now.  Maybe in
+5 years the IESG can change those "yes"es to "no"s, of course.
+
+-Ben
+
+On 03/01/2018 02:15 PM, Sean Turner wrote:
+> I should note that Ben pointed out in the PR that we might need to specify all 6 as recommended.  I can kind of get behind that because before we were doing PSS regardless of the identifier.  Thoughts?
+>
+> spt
+>
+>> On Mar 1, 2018, at 09:58, Sean Turner <sean@sn3rd.com> wrote:
+>>
+>> I’ve submitted the following PR to make sure we answer IANA questions*:
+>> https://github.com/tlswg/tls13-spec/pull/1159
+>>
+>> One thing I’d like to get input on is which of the RSA-PSS signature schemes should be recommended.  The IANA considerations currently recommends rsa_pss_sha256, rsa_pss_sha384, and rsa_pss_sha512. But, we’ve changed the PSS identifiers to split them so now we’ve got different identifiers that follow and we need to make sure we indicate which ones get marked as Recommended:
+>> rsa_pss_rsae_sha256
+>> rsa_pss_rsae_sha384
+>> rsa_pss_rsae_sha512
+>> rsa_pss_pss_sha256
+>> rsa_pss_pss_sha384
+>> rsa_pss_pss_sha512
+>>
+>> I believe the intent was that we would specify three rsa_pss_rsae as Recommended.
+>>
+>> spt
+>>
+>> * IANA does a review of the IANA considerations section to make sure that they understand the requests we’ve made of them.
+>>
+>>> On Feb 15, 2018, at 16:13, The IESG <iesg-secretary@ietf.org> wrote:
+>>>
+>>>
+>>> The IESG has received a request from the Transport Layer Security WG (tls) to
+>>> consider the following document: - 'The Transport Layer Security (TLS)
+>>> Protocol Version 1.3'
+>>> <draft-ietf-tls-tls13-24.txt> as Proposed Standard
+>>>
+>>> The IESG plans to make a decision in the next few weeks, and solicits final
+>>> comments on this action. Please send substantive comments to the
+>>> ietf@ietf.org mailing lists by 2018-03-01. Exceptionally, comments may be
+>>> sent to iesg@ietf.org instead. In either case, please retain the beginning of
+>>> the Subject line to allow automated sorting.
+>>>
+>>> Abstract
+>>>
+>>>
+>>>  This document specifies version 1.3 of the Transport Layer Security
+>>>  (TLS) protocol.  TLS allows client/server applications to communicate
+>>>  over the Internet in a way that is designed to prevent eavesdropping,
+>>>  tampering, and message forgery.
+>>>
+>>>
+>>>
+>>>
+>>> The file can be obtained via
+>>> https://datatracker.ietf.org/doc/draft-ietf-tls-tls13/
+>>>
+>>> IESG discussion can be tracked via
+>>> https://datatracker.ietf.org/doc/draft-ietf-tls-tls13/ballot/
+>>>
+>>> The following IPR Declarations may be related to this I-D:
+>>>
+>>>  https://datatracker.ietf.org/ipr/2900/
+>>>
+>>>
+>>>
+>>> The document contains these normative downward references.
+>>> See RFC 3967 for additional information: 
+>>>   rfc8017: PKCS #1: RSA Cryptography Specifications Version 2.2 (Informational - IETF stream)
+>>>
+>>>
+>>>
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+

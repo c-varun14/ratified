@@ -1,0 +1,230 @@
+Return-Path: <sean@sn3rd.com>
+X-Original-To: tls@mail2.ietf.org
+Delivered-To: tls@mail2.ietf.org
+Received: from localhost (localhost [127.0.0.1])
+	by mail2.ietf.org (Postfix) with ESMTP id 058F726A86A0
+	for <tls@mail2.ietf.org>; Thu,  8 May 2025 17:53:34 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at ietf.org
+X-Spam-Flag: NO
+X-Spam-Score: -2.098
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.098 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+	DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, HTML_MESSAGE=0.001,
+	RCVD_IN_DNSWL_BLOCKED=0.001, SPF_HELO_NONE=0.001, SPF_PASS=-0.001]
+	autolearn=ham autolearn_force=no
+Authentication-Results: mail2.ietf.org (amavisd-new); dkim=pass (1024-bit key)
+	header.d=sn3rd.com
+Received: from mail2.ietf.org ([166.84.6.31])
+	by localhost (mail2.ietf.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id GCuqBK8S5a4W for <tls@mail2.ietf.org>;
+	Thu,  8 May 2025 17:53:31 -0700 (PDT)
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com
+ [IPv6:2607:f8b0:4864:20::835])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail2.ietf.org (Postfix) with ESMTPS id F040A26A8692
+	for <tls@ietf.org>; Thu,  8 May 2025 17:53:31 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id
+ d75a77b69052e-4768f90bf36so16678181cf.0
+        for <tls@ietf.org>; Thu, 08 May 2025 17:53:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sn3rd.com; s=google; t=1746752011; x=1747356811; darn=ietf.org;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=nHM/VpcJcEWTZHesRqL73MeYrq0kw+TC+SLXANTji4c=;
+        b=ac/bzGDmcOLQ8z3zD7mDIeLYyG/5KkdqQ5Q3O6TVtciCFAECPMm9gS5YX+HVknqIjc
+         WmnQgZOZOEVsd8Dm0CBGltrqnCVzlURhMpQ0fN/NEx7J/hdZjnnyOhf8Wc94ynLP9B6u
+         FFhRmE7F+zPLcD2c7IVfJtw/Ukany0AOYhkEI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746752011; x=1747356811;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nHM/VpcJcEWTZHesRqL73MeYrq0kw+TC+SLXANTji4c=;
+        b=jR3cZ8EtnII56UeTFEE9WkaCvVA2OxbyrIQTYTPZdsKPtXDrgea5aQJVng/HxIWevt
+         TlGLF9vr1l7h6YDjYrOSaJEX2A1vdiT1lwamdC/wk7oLSBTEZUws2XYix0iIo5LXoyke
+         xc8JUkWxBFQCtDjFNBvUeJIcDNmXFdwuccWhfLBgqQMcsmllieMxqAGjYWHyO5LKELFL
+         y/mkcdrwJwcXy5Ttbu2Gs2sUUOO2lCqDHOP6E/JMyUlimyNNE9WYPVx+ZsoKtr8VARxA
+         uanyZLcGYt+eWeDqZANo+AAE+4b2R7Lrsd8Xm/rniZOAMvyotabcmDMZNyVY7qYQrvVI
+         NqRg==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCWFRVBVkWYTJaolketYaCIFNiRDqDJwWnuN6YTHvNxmInRFhz+L182HhMkts2ULuZ03SMs=@ietf.org
+X-Gm-Message-State: AOJu0Yw/wS8lX9n5YOpJFCMu/32JlGZB3TxM7YMw6T+FNz4lq980RXEg
+	QB6A61ZL5LWoyRG3pJX8xqIW/EASPk/d5A3H0LnJDT2O6SPvbQFV07/VfuWttuE=
+X-Gm-Gg: ASbGncu8hWyly2JR/1LWosFyaAGM3TSIH7/qg59M6hF6M4+9GsnUneJbBLKJXWc5qu9
+	HuXYOH2ek8VYRoo5Y2Ce52f6a9/ZnenXB+U0FZziOnTEyTMVSBTXlnOVHoi5Sl6hkB9UgHrhKy5
+	WytVdt8D7Fn6xs5mbFDVDWLsDS4wXtdxwFVDJwfEB05CAWAhfUAeHw6TZgxg4SSVeRA6vIvY5bK
+	/upqNgeKUJd3VABrg2NQGfbPk0/JWRZue57oh3RpKE1FOGwg+ApkTsAUtL5XTXsPMA11bfHrwzG
+	5najIwx1YS8i7F0wC7WcwlFAThbbFdBXyvn/3i4W0Mjm2/kVTOAhWyvlMeqEMpMOMS1fjxis
+X-Google-Smtp-Source: 
+ AGHT+IHdrRa++3eE/4CF+DXOR5LvHCZIVkSBno9ty7Q5P/YymjrpBFX9mIrQltNsEZHYIkesEOCsug==
+X-Received: by 2002:ac8:5a50:0:b0:476:9474:9b73 with SMTP id
+ d75a77b69052e-494527d50dbmr19065341cf.42.1746752011282;
+        Thu, 08 May 2025 17:53:31 -0700 (PDT)
+Received: from smtpclient.apple ([2600:4040:252a:8d00:1989:5f37:f05e:6c4b])
+        by smtp.gmail.com with ESMTPSA id
+ d75a77b69052e-49452583e88sm5254571cf.63.2025.05.08.17.53.30
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 08 May 2025 17:53:30 -0700 (PDT)
+From: Sean Turner <sean@sn3rd.com>
+Message-Id: <B41886D4-708E-4567-B494-91F31A6AD023@sn3rd.com>
+Content-Type: multipart/alternative;
+	boundary="Apple-Mail=_D59F636A-402F-4025-B52A-5B9E9BE82A48"
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.500.181.1.5\))
+Date: Thu, 8 May 2025 20:53:10 -0400
+In-Reply-To: <20250508080537.F18C21C9ED8@rfcpa.rfc-editor.org>
+To: Paul Wouters <paul.wouters@aiven.io>
+References: <20250508080537.F18C21C9ED8@rfcpa.rfc-editor.org>
+X-Mailer: Apple Mail (2.3826.500.181.1.5)
+Message-ID-Hash: SHFH2OIV33ZOMZX6DQKZP4OGPSCPEONC
+X-Message-ID-Hash: SHFH2OIV33ZOMZX6DQKZP4OGPSCPEONC
+X-MailFrom: sean@sn3rd.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+CC: albin.johansson@vector.com, TLS List <tls@ietf.org>
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Re=3A_=5BTechnical_Errata_Reported=5D_RFC8446_=288411=29?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/2_8La-hllMG5A9kSIsS0XnhcKO4>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+
+--Apple-Mail=_D59F636A-402F-4025-B52A-5B9E9BE82A48
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=utf-8
+
+Paul,
+
+You can marked this one as =E2=80=9Cverified" if you want. I submitted a =
+PR to fix this in -rfc8446bis; see:
+https://github.com/tlswg/tls13-spec/pull/1380
+
+spt
+
+> On May 8, 2025, at 4:05=E2=80=AFAM, RFC Errata System =
+<rfc-editor@rfc-editor.org> wrote:
+>=20
+> The following errata report has been submitted for RFC8446,
+> "The Transport Layer Security (TLS) Protocol Version 1.3".
+>=20
+> --------------------------------------
+> You may review the report below and at:
+> https://www.rfc-editor.org/errata/eid8411
+>=20
+> --------------------------------------
+> Type: Technical
+> Reported by: Albin Johansson <albin.johansson@vector.com>
+>=20
+> Section: 4.2.7
+>=20
+> Original Text
+> -------------
+> struct {
+>    NamedGroup named_group_list<2..2^16-1>;
+> } NamedGroupList;
+>=20
+> Corrected Text
+> --------------
+> struct {
+>    NamedGroup named_group_list<2..2^16-2>;
+> } NamedGroupList;
+>=20
+> Notes
+> -----
+> The specified maximum legal length of the named_group_list vector in =
+the NamedGroupList structure is 2^16-1 bytes. This is invalid because =
+NamedGroup is an enum that occupies two bytes, but 2^16-1 is not an =
+exact multiple of the element size (2 bytes), as required in Section =
+3.4. It appears that the intended upper bound should be 2^16-2 bytes =
+instead.
+>=20
+> Instructions:
+> -------------
+> This erratum is currently posted as "Reported". (If it is spam, it=20
+> will be removed shortly by the RFC Production Center.) Please
+> use "Reply All" to discuss whether it should be verified or
+> rejected. When a decision is reached, the verifying party =20
+> will log in to change the status and edit the report, if necessary.
+>=20
+> --------------------------------------
+> RFC8446 (draft-ietf-tls-tls13-28)
+> --------------------------------------
+> Title               : The Transport Layer Security (TLS) Protocol =
+Version 1.3
+> Publication Date    : August 2018
+> Author(s)           : E. Rescorla
+> Category            : PROPOSED STANDARD
+> Source              : Transport Layer Security
+> Stream              : IETF
+> Verifying Party     : IESG
+
+
+--Apple-Mail=_D59F636A-402F-4025-B52A-5B9E9BE82A48
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html;
+	charset=utf-8
+
+<html><head><meta http-equiv=3D"content-type" content=3D"text/html; =
+charset=3Dutf-8"></head><body style=3D"overflow-wrap: break-word; =
+-webkit-nbsp-mode: space; line-break: =
+after-white-space;">Paul,<div><br></div><div>You can marked this one as =
+=E2=80=9Cverified" if you want. I submitted a PR to fix this in =
+-rfc8446bis; see:</div><div><a =
+href=3D"https://github.com/tlswg/tls13-spec/pull/1380">https://github.com/=
+tlswg/tls13-spec/pull/1380</a></div><div><br></div><div>spt</div><div><div=
+><br><blockquote type=3D"cite"><div>On May 8, 2025, at 4:05=E2=80=AFAM, =
+RFC Errata System &lt;rfc-editor@rfc-editor.org&gt; wrote:</div><br =
+class=3D"Apple-interchange-newline"><div><div>The following errata =
+report has been submitted for RFC8446,<br>"The Transport Layer Security =
+(TLS) Protocol Version =
+1.3".<br><br>--------------------------------------<br>You may review =
+the report below and =
+at:<br>https://www.rfc-editor.org/errata/eid8411<br><br>------------------=
+--------------------<br>Type: Technical<br>Reported by: Albin Johansson =
+&lt;albin.johansson@vector.com&gt;<br><br>Section: 4.2.7<br><br>Original =
+Text<br>-------------<br>struct {<br> &nbsp;&nbsp;&nbsp;NamedGroup =
+named_group_list&lt;2..2^16-1&gt;;<br>} NamedGroupList;<br><br>Corrected =
+Text<br>--------------<br>struct {<br> &nbsp;&nbsp;&nbsp;NamedGroup =
+named_group_list&lt;2..2^16-2&gt;;<br>} =
+NamedGroupList;<br><br>Notes<br>-----<br>The specified maximum legal =
+length of the named_group_list vector in the NamedGroupList structure is =
+2^16-1 bytes. This is invalid because NamedGroup is an enum that =
+occupies two bytes, but 2^16-1 is not an exact multiple of the element =
+size (2 bytes), as required in Section 3.4. It appears that the intended =
+upper bound should be 2^16-2 bytes =
+instead.<br><br>Instructions:<br>-------------<br>This erratum is =
+currently posted as "Reported". (If it is spam, it <br>will be removed =
+shortly by the RFC Production Center.) Please<br>use "Reply All" to =
+discuss whether it should be verified or<br>rejected. When a decision is =
+reached, the verifying party &nbsp;<br>will log in to change the status =
+and edit the report, if =
+necessary.<br><br>--------------------------------------<br>RFC8446 =
+(draft-ietf-tls-tls13-28)<br>--------------------------------------<br>Tit=
+le =
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
+bsp;&nbsp;: The Transport Layer Security (TLS) Protocol Version =
+1.3<br>Publication Date &nbsp;&nbsp;&nbsp;: August 2018<br>Author(s) =
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: E. =
+Rescorla<br>Category =
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: =
+PROPOSED STANDARD<br>Source =
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
+bsp;: Transport Layer Security<br>Stream =
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
+bsp;: IETF<br>Verifying Party &nbsp;&nbsp;&nbsp;&nbsp;: =
+IESG<br></div></div></blockquote></div><br></div></body></html>=
+
+--Apple-Mail=_D59F636A-402F-4025-B52A-5B9E9BE82A48--
+

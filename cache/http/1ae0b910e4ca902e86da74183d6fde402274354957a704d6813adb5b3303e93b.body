@@ -1,0 +1,784 @@
+Return-Path: <muhammad_usama.sardar@tu-dresden.de>
+X-Original-To: tls@mail2.ietf.org
+Delivered-To: tls@mail2.ietf.org
+Received: from localhost (localhost [127.0.0.1])
+	by mail2.ietf.org (Postfix) with ESMTP id A5018BE4F33C
+	for <tls@mail2.ietf.org>; Wed, 25 Feb 2026 16:24:49 -0800 (PST)
+X-Virus-Scanned: amavisd-new at ietf.org
+X-Spam-Flag: NO
+X-Spam-Score: -4.397
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.397 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+	DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, HTML_MESSAGE=0.001,
+	RCVD_IN_DNSWL_MED=-2.3, RCVD_IN_VALIDITY_CERTIFIED_BLOCKED=0.001,
+	RCVD_IN_VALIDITY_RPBL_BLOCKED=0.001, SPF_HELO_NONE=0.001,
+	SPF_PASS=-0.001] autolearn=ham autolearn_force=no
+Authentication-Results: mail2.ietf.org (amavisd-new); dkim=pass (2048-bit key)
+	header.d=tu-dresden.de
+Received: from mail2.ietf.org ([166.84.6.31])
+	by localhost (mail2.ietf.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id wrW2SWK8e3jK for <tls@mail2.ietf.org>;
+	Wed, 25 Feb 2026 16:24:48 -0800 (PST)
+Received: from mailout4.zih.tu-dresden.de (mailout4.zih.tu-dresden.de
+ [141.30.67.75])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest
+ SHA256)
+	(No client certificate requested)
+	by mail2.ietf.org (Postfix) with ESMTPS id 463E4BE4F332
+	for <tls@ietf.org>; Wed, 25 Feb 2026 16:24:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=tu-dresden.de; s=dkim2022; h=Content-Type:In-Reply-To:References:To:Subject
+	:From:MIME-Version:Date:Message-ID:Sender:Reply-To:Cc:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=CHOawkByLnG29f3UMMFPtQJrgLSUmgc7pMj4fUfA8Ck=; b=GBRfRun7jpBXAjrTdhhTcURc28
+	d2O4XuGo7qfATWaFS5upeS21InwZpvWGX63zhDcnnA4dUtxMKywTt/Pu30aKUuWPj3YfYKjmTQcH0
+	VSQ/nmauY9M/QKETGohsyMSQENZMwjCnLvQAVqtkxIn24w2owgSemjRW0xZX3BR3Vsqbih7NLO2yF
+	Y5Gtvp768QCbo235325O0YwN4GhsKot/V4YtlnZhbyqz/YO8evS/swH/sQ0D75v8eT/Z5s9qelnuW
+	lwfUTEK+jGR0n+vC5luDy0OERz4GI0iR+stOSFBxqDenRryUwczONw1CYlcejcdzs7mkDV6nQYRQx
+	lNw3e2Nw==;
+Received: from msx-t422.msx.ad.zih.tu-dresden.de ([172.26.35.139]
+ helo=msx.tu-dresden.de)
+	by mailout4.zih.tu-dresden.de with esmtps  (TLS1.2) tls
+ TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <muhammad_usama.sardar@tu-dresden.de>)
+	id 1vvPBP-007afK-1G
+	for tls@ietf.org; Thu, 26 Feb 2026 01:24:47 +0100
+Received: from [10.12.5.228] (141.76.13.165) by
+ msx-t422.msx.ad.zih.tu-dresden.de (172.26.35.139) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.37; Thu, 26 Feb 2026 01:24:39 +0100
+Message-ID: <450fb4ab-60ca-4fde-92ad-69e815fc90b8@tu-dresden.de>
+Date: Thu, 26 Feb 2026 01:24:38 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+From: Muhammad Usama Sardar <muhammad_usama.sardar@tu-dresden.de>
+To: <tls@ietf.org>
+References: 
+ <CAOgPGoDLVqAVesWjrrD9ZR8HMkqQVLMp69vOkXPkk87MzcsOSw@mail.gmail.com>
+ <AS5PR07MB10596FC9D182E975AA0E11F8E8960A@AS5PR07MB10596.eurprd07.prod.outlook.com>
+ <1050A0B9-9F8D-4762-BAF6-1BD290249F90@vigilsec.com>
+ <AS5PR07MB1059644BD0CB1E2DBCEC0A5378975A@AS5PR07MB10596.eurprd07.prod.outlook.com>
+Content-Language: en-US
+In-Reply-To: 
+ <AS5PR07MB1059644BD0CB1E2DBCEC0A5378975A@AS5PR07MB10596.eurprd07.prod.outlook.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature";
+	micalg=sha-512; boundary="------------ms050906020604060603040908"
+X-ClientProxiedBy: MSX-T415.msx.ad.zih.tu-dresden.de (172.26.35.135) To
+ msx-t422.msx.ad.zih.tu-dresden.de (172.26.35.139)
+X-TUD-Virus-Scanned: mailout4.zih.tu-dresden.de
+Message-ID-Hash: GKNPXAIYIZVYICJ7RLLY5BIJSQ2CVZRA
+X-Message-ID-Hash: GKNPXAIYIZVYICJ7RLLY5BIJSQ2CVZRA
+X-MailFrom: muhammad_usama.sardar@tu-dresden.de
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Re=3A_WG_Last_Call=3A_draft-ietf-tls-mlkem-07_=28Ends_20?=
+	=?utf-8?q?26-02-27=29?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/5n9k4AE6XCQVGj7W8W5O_ewTAn4>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+--------------ms050906020604060603040908
+Content-Type: multipart/alternative;
+ boundary="------------8Gvqr0AFYAelHa70KtZNyrBt"
+
+--------------8Gvqr0AFYAelHa70KtZNyrBt
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
+
+WyBOb3Qgc3VyZSB3aGV0aGVyIHRoZSBjb21tZW50cyBpbiB0aGUgb3RoZXIgdGhyZWFkIGNv
+dW50IGFzIFdHTEMgDQpjb21tZW50cywgc28gcHV0dGluZyBteSBjb25jbHVzaXZlIG9waW5p
+b24gaGVyZSBdDQoNCkhpIGFsbCwNCg0KIyBUTDtEUg0KDQpObyBGQVRUIHJlcG9ydCBpcyBz
+aG93biBkZXNwaXRlIG15IHJlcGVhdGVkIHJlcXVlc3RzIHRvIHRoZSBjaGFpcnMgZm9yIA0K
+bGFzdCAxMCBkYXlzLiBTcGVha2luZyBhcyBzb21lb25lIHdobyBoYXMgYmVlbiBkb2luZyB0
+aGUgZm9ybWFsIGFuYWx5c2lzIA0Kb2YgdmFyaW91cyBUTFMgZHJhZnRzIHNpbmNlIHRoZSB0
+aW1lIEZBVFQgcHJvY2VzcyB3YXMgaW5pdGlhbGl6ZWQsIA0KcGxlYXNlIHRyeSB0byBwdXQg
+eW91cnNlbGYgaW4gbXkgc2hvZXMuIFdoaWxlIGl0IGlzIGVhc3kgZm9yIG1hbnkgb2YgeW91
+IA0KdG8ganVzdCBoYXZlIGEgcXVpY2sgbG9vayBhbmQgc2F5ICdJIHN1cHBvcnQgcHVibGlj
+YXRpb24nIGFuZCBtb3ZlIG9uIA0Kd2l0aCB5b3VyIGxpZmUsIEkgYW5kIHRoZSB0ZWFtIHdv
+cmtpbmcgd2l0aCBtZSBoYXZlIGEgcmVzcG9uc2liaWxpdHkgdG8gDQptYWludGFpbiBwcm9v
+ZnMgYW5kIHRob3JvdWdobHkgY2hlY2sgc2VjdXJpdHkgY29uc2lkZXJhdGlvbnMgZXRjLiBU
+aGUgDQptb3JlIEkgYW0gbG9va2luZyBpbnRvIHRoZSBpc3N1ZXMgbGlrZSBrZXkgcmV1c2Ug
+KHNlZSBKb2huJ3MgZW1haWwgDQpiZWxvdyksIHRoZSBtb3JlIEkgYW0gY29udmluY2VkIHRo
+YXQgdGhlIHNlY3VyaXR5IGNvbnNpZGVyYXRpb25zIGhhdmUgDQpzZXJpb3VzIGNvbmNlcm5z
+LiBUaHVzLCBJICpzdHJvbmdseSBvcHBvc2UqIHB1YmxpY2F0aW9uIG9mIC0wNy4gSWYgcm91
+Z2ggDQpjb25zZW5zdXMgaXMgZGVjbGFyZWQgb24gdGhpcyBkcmFmdCB0byBtb3ZlIG9uLCBJ
+IHdpbGwgcHV0IHVwIGEgaHVtYmxlIA0KKmFwcGVhbCogdG8gdGhlIHJlc3BvbnNpYmxlIEFE
+IGZvciBoaXMga2luZCBjb25zaWRlcmF0aW9uIG9uIHRoZSBtYXR0ZXIgDQpvZiB2aW9sYXRp
+b24gb2YgRkFUVCBwcm9jZXNzIFswXS4NCg0KIyBMb25nIHN0b3J5DQoNClVubGVzcyBGQVRU
+IHJlcG9ydCBpcyBzaG93biB3aGljaCB0ZWxscyBtZSB0aGF0IHRoZXkgdW5hbmltb3VzbHkg
+YWdyZWUgDQp0aGF0IHRoZSBzZWN1cml0eSBjb25zaWRlcmF0aW9ucyBhcmUgYWNjZXB0YWJs
+ZSwgcGxlYXNlIGNvbnNpZGVyIHRoZSANCmFib3ZlIGFzIG15IGNvbmNsdXNpdmUgb3Bpbmlv
+biBvbiB0aGlzIFdHTEMuIEkgc2luY2VyZWx5IGFwb2xvZ2l6ZSB0byANCmV2ZXJ5b25lIGZv
+ciB0aGUgYnVuZGxlIG9mIGVtYWlscyBpbiB0aGlzIHRocmVhZC4gSSB0cmllZCBteSBiZXN0
+IHRvIA0KdW5kZXJzdGFuZCB0aGlzIGVuY2FwcyBkZWNhcHMgdGhpbmd5IGFuZCBob3cgdGhl
+IGV4aXN0aW5nIHByb29mcyBtaWdodCANCmhvbGQuIElmIEZBVFQgcmVwb3J0IHdhcyBhdmFp
+bGFibGUsIEkgd291bGQgaGF2ZSBwdXQgYWxsIG15IHRydXN0IGluIA0KRkFUVCBmb3IgYSBt
+YXR0ZXIgaW4gd2hpY2ggSSBhbSBub3QgYW4gZXhwZXJ0LCBidXQgdGhhdCByZXBvcnQgd2Fz
+IA0KdW5mb3J0dW5hdGVseSBub3Qgc2hvd24uIEFic2VudCB0aGF0IHJlcG9ydCwgSSBoYXZl
+IHRha2VuIGludG8gDQpjb25zaWRlcmF0aW9uIHRoZSBvcGluaW9ucyBvZiBteSBVRk1SRyBj
+aGFpciAoU3RlcGhlbiBGYXJyZWxsKSBhbmQgb25lIA0KRkFUVCBtZW1iZXIgKERlbm5pcyBK
+YWNrc29uKSB3aG8gaGF2ZSBzaGFyZWQgdGhlaXIgb3BpbmlvbnMgaW4gDQp0aGlzL290aGVy
+IHJlbGF0ZWQgdGhyZWFkcyBvbiB0aGUgbGlzdC4gVW5sZXNzIEkgaGF2ZSBtaXNzZWQgc29t
+ZXRoaW5nLCANCkkgaGF2ZW4ndCBzZWVuIGFueSBvdGhlciBGQVRUIG1lbWJlciBjb21tZW50
+aW5nIG9uIHRoZSBtYXR0ZXIgc28gZmFyLg0KDQpMaWtlIEpvaG4sIEkgYW0gZnJ1c3RyYXRl
+ZCB0b28gdGhhdCBJIHJhaXNlZCBzb21lIGNvbmNlcm5zIGluIGZpcnN0IA0KV0dMQywgaW5j
+bHVkaW5nIGFuIC9pbnR1aXRpdmUvIGF0dGVzdGF0aW9uIHRvIGhpcyBjb25jZXJuIG9uIGtl
+eSByZXVzZS4gDQpOb25lIG9mIHRoYXQgd2FzIGFkZHJlc3NlZCBpbiB0aGUgdmVyc2lvbiBp
+biB0aGlzIFdHTEMuIEkgc3BlbnQgcXVpdGUgDQpzb21lIHRpbWUgZHVyaW5nIHRoaXMgV0dM
+QywgYW5kIEkgaGF2ZSByYWlzZWQgc2V2ZXJhbCBjb25jZXJucyBpbmNsdWRpbmcgDQppbnRy
+b2R1Y3Rpb24sIG1vdGl2YXRpb24sIHNlY3VyaXR5IGNvbnNpZGVyYXRpb25zIGV0Yy4gaW4g
+dGhpcyB0aHJlYWQgDQpidXQgdmVyeSBsaXR0bGUgb2YgdGhhdCBpcyBhZGRyZXNzZWQgaW4g
+dGhlIGVkaXRvcidzIHZlcnNpb24gYXQgdGhlIHRpbWUgDQpvZiBzZW5kaW5nIHRoaXMgZW1h
+aWwsIGFuZCB0aGUgcmVzdCBpcyBub3QgZXZlbiBwcm9taXNlZCB0byBiZSANCmFkZHJlc3Nl
+ZC4gSG93IGlzIGEgcHJvdG9jb2wgZGVzaWduZXIgLS0gd2hvIGlzIGtub3dsZWRnZWFibGUg
+d2l0aCBUTFMgDQoxLjMgYW5kIEVDREhFIGJ1dCBub3Qgd2l0aCB0aGlzIGVuY2FwcyBkZWNh
+cHMgdGhpbmd5IC0tIHN1cHBvc2VkIHRvIHVzZSANCml0IHByb3Blcmx5IGluIGFjaGlldmlu
+ZyB0aGUgZGVzaXJlZCBwcm9wZXJ0aWVzPyBXaGF0IGFyZSB0aGUgZGVzaXJlZCANCnByb3Bl
+cnRpZXMgaW4gdGhlIGZpcnN0IHBsYWNlPyBIb3cgYXJlIHRoZSBpbXBsZW1lbnRlcnMgc3Vw
+cG9zZWQgdG8gDQp1bmRlcnN0YW5kIHRoZSBzZWN1cml0eSBhbmQgcHJpdmFjeSBpbXBsaWNh
+dGlvbnM/IEkgdmVyeSBtdWNoIGxpa2UgDQpKb2huJ3MgZGlzdGluY3Rpb24gb2YgdGhlIHRo
+cmVlIGNhc2VzIGluIGhpcyBlbWFpbCBiZWxvdyB3aGljaCBwcmVjaXNlbHkgDQpkaXNhbWJp
+Z3VhdGVzIHRoZSBzY2VuYXJpb3MgYW5kIElNSE8gYW5kIHRvIHRoZSBiZXN0IG9mIG15IA0K
+dW5kZXJzdGFuZGluZywgdGhlIHR3byByZXNwb25zZXMgb2YgYXV0aG9yIHRvIEpvaG4gc3Rp
+bGwgc2VlbSB0byBiZSANCmNvbGx1ZGluZyBwb2ludHMgIzIgYW5kICMzIG9mIEpvaG4uDQoN
+CkdpdmVuIHRoYXQgSSBoYXZlIG1hZGUgcmVwZWF0ZWQgcmVxdWVzdHMgZm9yIGNsYXJpZmlj
+YXRpb24gb2YgRkFUVCANCnByb2Nlc3MgdmlvbGF0aW9uIGFuZCBJIGhhdmVuJ3QgcmVjZWl2
+ZWQgYW55IGFuc3dlciBvbiB3aHkgdGhlIGNoYWlycyANCmFwcGFyZW50bHkgZGlkIG5vdCAi
+aW5mb3JtIHRoZSBXRyBvZiB0aGVpciBkZWNpc2lvbiIgYXMgcGVyIEZBVFQgcHJvY2VzcyAN
+ClswXSwgSSB3aWxsIGdvIGZvciBhbiBhcHBlYWwgdG8gdGhlIEFEIGZvciBjb25zaWRlcmF0
+aW9uIG9mIHZpb2xhdGlvbiBvZiANCkZBVFQgcHJvY2VzcyBpZiB0aGUgZGVjaXNpb24gb2Yg
+dGhlIGNoYWlycyBjb21lcyBvdXQgdG8gYmUgdG8gcHVibGlzaCANCnRoZSBkb2N1bWVudCBh
+bmQgbm8gc3VjaCAiaW5mb3JtIiBlbWFpbCBpcyBzaG93biB0byBtZS4gV2hhdCBKb2huIGlz
+IA0KbWVudGlvbmluZyBpbiBoaXMgZW1haWwgYmVsb3cgaXMgZXhhY3RseSBhbiBleGFtcGxl
+IG9mIHdoZXJlIEZBVFQgY291bGQgDQpoYXZlIGhlbHBlZCBpbiByZWZpbmluZyB0aGUgc2Vj
+dXJpdHkgY29uc2lkZXJhdGlvbnMuDQoNCldoaWxlIEkgdmVyeSBtdWNoIHJlc3BlY3QgdGhh
+dCBzb21lIHZvY2FsIHByb3BvbmVudHMgc2VlIHNvbWUgdmFsdWUgaW4gDQp0aGlzIGRyYWZ0
+LCBGV0lXIEkgd291bGQgbGlrZSB0byBwcm9wb3NlIG15IGh1bWJsZSBwcm9wb3NhbCAoYWRh
+cHRlZCANCmZyb20gdGhlIG9uZSBwcm9wb3NlZCBieSBFa3IgaW4gdGhlIG90aGVyIHRocmVh
+ZCkgd2hpY2ggSSBzdHJvbmdseSANCmJlbGlldmUgYXMgdGhlIGNvbnN0cnVjdGl2ZSB3YXkg
+Zm9yd2FyZCAoZmVlbCBmcmVlIHRvIGJhc2ggaXQpOg0KDQogMS4gQWRvcHQgZHJhZnQtYmFy
+bmVzLXRscy10aGlzLWNvdWxkLWhhdmUtYmVlbi1hbi1lbWFpbCB0byBzYXZlIFdHDQogICAg
+ZW5lcmdpZXMgZm9yIHVzZWZ1bCBhbmQgY29uc3RydWN0aXZlIHdvcmsNCiAyLiBBZG9wdCBk
+cmFmdC11c2FtYS10bHMtZWNkaGUtbWxrZW0tdXBkYXRlIGZvciByZWNvbW1lbmRpbmcgaHli
+cmlkcw0KIDMuIEZvbGxvd2luZyAjMSwgcmVzcGVjdGZ1bGx5IGRlY2xpbmUgdG8gcHVibGlz
+aCBkcmFmdC1pZXRmLXRscy1tbGtlbQ0KICAgIHVudGlsIFdHIHZpZXdzIGl0IGltcG9ydGFu
+dCBhbmQgc2VjdXJlIGVub3VnaCBmb3IgUmVjb21tZW5kZWQgPSBZDQogICAgYW5kIEZBVFQg
+cmVwb3J0IGlzIGF2YWlsYWJsZQ0KDQpSZWdhcmRpbmcgU0RPcyB3aGljaCBuZWVkIHN0YWJs
+ZSBsaW5rcywgdGhlIGxpbmsgDQpodHRwczovL2RhdGF0cmFja2VyLmlldGYub3JnL2RvYy9k
+cmFmdC1pZXRmLXRscy1tbGtlbS8gaXMgYSBwZXJmZWN0bHkgDQpzdGFibGUgbGluay4gSWYg
+ZXhwaXJ5IGlzIGFuIGlzc3VlLCBydW5uaW5nIDMgY29tbWFuZHMgZXZlcnkgNiBtb250aHMg
+DQphbmQgYWNjZXB0aW5nIGFuIGVtYWlsIGlzIG5vdCBhIGJpZyBlZmZvcnQsIEkgcHJlc3Vt
+ZS4gSWYgdGhpcyBpcyBzdGlsbCANCmEgYmlnIGVmZm9ydCwgYWRkIG1lIGFzIGEgY29sbGFi
+b3JhdG9yIGluIHRoZSByZXBvLCBhbmQgSSB3aWxsIHVwZGF0ZSBpdCANCmV2ZXJ5IDYgbW9u
+dGhzIGZvciB5b3UgdG8gbGV0IGl0IG5vdCBleHBpcmUuDQoNCiMgUXVlc3Rpb24gZm9yIHBy
+b3BvbmVudHMNCg0KSG93IG1hbnkgb2YgeW91IC0tIHRob3NlIHdobyBoYXZlIHN1cHBvcnRl
+ZCBwdWJsaWNhdGlvbiBvZiB0aGUgZHJhZnQgb24gDQp0aGUgbGlzdCAtLSBjYW4gYWN0dWFs
+bHkgdGFrZSByZXNwb25zaWJpbGl0eSBvZiB0aGUgc2VjdXJpdHkgDQpjb25zaWRlcmF0aW9u
+cyBvZiB0aGUgZHJhZnQ/DQoNCkkgc2luY2VyZWx5IHRoYW5rIEpvaG4sIEVrciwgVGhvbSwg
+TmFkaW0gYW5kIE5pY28gZm9yIHRoZSBkaXNjdXNzaW9uIG9uIA0KdGhlIGZvcm1hbCBtb2Rl
+bGluZy4NCg0KVGhhbmsgeW91IGZvciB5b3VyIGtpbmQgY29uc2lkZXJhdGlvbiwNCg0KLVVz
+YW1hDQoNCg0KWzBdIGh0dHBzOi8vZ2l0aHViLmNvbS90bHN3Zy90bHMtZmF0dD90YWI9cmVh
+ZG1lLW92LWZpbGUjZG9jdW1lbnQtYWRvcHRpb24NCg0KDQpPbiAyNS4wMi4yNiAwODozMSwg
+Sm9obiBNYXR0c3NvbiB3cm90ZToNCj4NCj4gSGkNCj4NCj4gSSByZWNlaXZlZCBhbiBvZmZs
+aW5lIGNvbW1lbnQgZnJvbSBhIHNlbmlvciBJRVRGIHBhcnRpY2lwYW50IA0KPiBzdWdnZXN0
+aW5nIHRoYXQgSSBoYWQgbWlzdW5kZXJzdG9vZCB0aGUgZHJhZnQgYW5kIHRoYXQgdGhlIGtl
+eSByZXVzZSANCj4gaW4gcXVlc3Rpb24gcmVmZXJyZWQgdG8gcmV1c2Ugd2l0aGluIGEgc2lu
+Z2xlIHNlc3Npb24uIFRoYXQgaXMgbm90IA0KPiBhY2N1cmF0ZS4gVGhlIGRyYWZ0IHRhbGtz
+IGFib3V0IHN0YXRpYyBrZXlzLCBpLmUuLCBrZXlzIHVzZWQgaW4gbW9yZSANCj4gdGhhbiBv
+bmUga2V5LWVzdGFibGlzaG1lbnQuDQo+DQo+IEdpdmVuIHRoZSBhcHBhcmVudCBjb25mdXNp
+b24gYmV0d2VlbiAxLiByZXVzZSBvZiBlcGhlbWVyYWwga2V5cyB3aXRoaW4gDQo+IGEgc2Vz
+c2lvbiwgMi4gcmV1c2Ugb2YgZXBoZW1lcmFsIGtleXMgYWNyb3NzIHNlc3Npb25zLCBhbmQg
+My4gc3RhdGljIA0KPiBrZXlzLCBlYWNoIG9mIHdoaWNoIGNhcnJpZXMgZGlzdGluY3QgcHJp
+dmFjeSBhbmQgc2VjdXJpdHkgDQo+IGltcGxpY2F0aW9ucywgSSByZWNvbW1lbmQgdGhhdCB0
+aGUgQUQgZW5zdXJlIHRoYXQgYWxsIG5vdCB5ZXQgDQo+IHB1Ymxpc2hlZCBkcmFmdHMgdXNl
+IHZlcnkgcHJlY2lzZSB0ZXJtaW5vbG9neS4gU3BlY2lmaWNhbGx5LCBhIGtleSANCj4gdXNl
+ZCBpbiBtb3JlIHRoYW4gb25lIGtleS1lc3RhYmxpc2htZW50IHNob3VsZCB1c2UgdGhlIA0K
+PiB3ZWxsLWVzdGFibGlzaGVkIHRlcm0g4oCcc3RhdGljIGtleeKAnS4NCj4NCj4gLS0tDQo+
+DQo+IDEuIFJldXNlIG9mIGVwaGVtZXJhbCBrZXlzIHdpdGhpbiBhIHNlc3Npb246DQo+DQo+
+IC0gU2Vzc2lvbiBBOiBDbGllbnRIZWxsbyB3aXRoIE1MS0VNNzY4IEtleVNoYXJlRW50cnkx
+IGFuZCANCj4gWDI1NTE5TUxLRU03NjggS2V5U2hhcmVFbnRyeTIgYm90aCBjb250YWluaW5n
+IHRoZSBzYW1lIE1MLUtFTSBwdWJsaWMga2V5Lg0KPg0KPiAyLiBSZXVzZSBvZiBlcGhlbWVy
+YWwga2V5cyBhY3Jvc3Mgc2Vzc2lvbnM6DQo+DQo+IC0gU2Vzc2lvbiBCMS4gQ2xpZW50SGVs
+bG8gd2l0aCBNTEtFTTc2OCBLZXlTaGFyZUVudHJ5MyBhbmQgWDI1NTE5IA0KPiBLZXlTaGFy
+ZUVudHJ5NC4gU2V2ZXIgcGlja3MgWDI1NTE5IEtleVNoYXJlRW50cnk0Lg0KPg0KPiAtIFNl
+c3Npb24gQjIuIENsaWVudEhlbGxvIHdpdGggTUxLRU03NjggS2V5U2hhcmVFbnRyeTMgYW5k
+IFgyNTUxOSANCj4gS2V5U2hhcmVFbnRyeTUuDQo+DQo+IDMuIFN0YXRpYyBrZXlzDQo+DQo+
+IC0gU2Vzc2lvbiBDMS4gQ2xpZW50SGVsbG8gd2l0aCBNTEtFTTc2OCBLZXlTaGFyZUVudHJ5
+Ni4gU2V2ZXIgcGlja3MgDQo+IE1MS0VNNzY4IEtleVNoYXJlRW50cnk2DQo+DQo+IC0gU2Vz
+c2lvbiBDMi4gQ2xpZW50SGVsbG8gd2l0aCBNTEtFTTc2OCBLZXlTaGFyZUVudHJ5Ni4gU2V2
+ZXIgcGlja3MgDQo+IE1MS0VNNzY4IEtleVNoYXJlRW50cnk2DQo+DQo+IC0tLQ0KPg0KPiBJ
+c3N1ZXMgd2l0aCB0aGUgdGV4dCBvbiBzdGF0aWMga2V5cyB3ZXJlIGNsZWFybHkgcmFpc2Vk
+IGR1cmluZyB0aGUgDQo+IGZpcnN0IFdHTEMgYW5kIHNob3VsZCBoYXZlIGJlZW4gYWRkcmVz
+c2VkIGJlZm9yZSB0aGUgc2Vjb25kLiBIYXZpbmcgdG8gDQo+IHJlcGVhdCB0aGUgc2FtZSBp
+c3N1ZXMgaXMgYm90aCBmcnVzdHJhdGluZyBhbmQgYSB3YXN0ZSBvZiB0aW1lLg0KPg0KPiBU
+aGUgbWFqb3IgaXNzdWVzLCB0aGF0IHRoZSBkcmFmdCBsYWNrcyBwcm9wZXIgc2VjdXJpdHkg
+Y29uc2lkZXJhdGlvbnMgDQo+IGZvciB0aGUgdXNlIG9mIHN0YXRpYyBrZXlzICh0aGV5IHNo
+b3VsZCBiZSBxdWl0ZSBuZWdhdGl2ZSksIGFuZCB0aGF0IA0KPiBpdCBkb2VzIG5vdCBleHBs
+YWluIGhvdyBhbiBpbXBsZW1lbnRhdGlvbiB1c2luZyBzdGF0aWMga2V5cyBjYW4gYmUgDQo+
+IGNvbmZvcm1hbnQgd2l0aCBOSVNUIHNwZWNpZmljYXRpb25zLCB3ZXJlIHJhaXNlZCBkdXJp
+bmcgdGhlIGZpcnN0IFdHTEMgDQo+IGFuZCBoYXZlIG5vdCBiZWVuIGFkZHJlc3NlZC4gRHVy
+aW5nIHRoZSBzZWNvbmQgV0dMQywgaXQgd2FzIGlkZW50aWZpZWQgDQo+IHRoYXQgY29uZm9y
+bWFuY2UgaXMgaW50cmluc2ljYWxseSBsaW5rZWQgdG8gdGhlIHBhdGVudCBsaWNlbnNlLg0K
+Pg0KPiBNeSBjb25zdHJ1Y3RpdmUgc3VnZ2VzdGlvbiBpcyB0byByZW1vdmUgYWxsIHRleHQg
+cmVnYXJkaW5nIHN0YXRpYyANCj4ga2V5cywgYXMgdGhlcmUgaXMgbm8gcmVhc29uIGZvciB0
+aGlzIGRyYWZ0IHRvIGluY2x1ZGUgdGhlbS4gSSBkbyBub3QgDQo+IGJlbGlldmUgY29tcGFy
+aXNvbnMgd2l0aCBkcmFmdC1pZXRmLXRscy1oeWJyaWQtZGVzaWduIGFyZSByZWxldmFudCwg
+DQo+IHNpbmNlIHRoYXQgZG9jdW1lbnQgc2VydmVzIGEgY29tcGxldGVseSBkaWZmZXJlbnQg
+cHVycG9zZSBhbmQgZG9lcyBub3QgDQo+IHJlZ2lzdGVyIGNvZGUgcG9pbnRzLg0KPg0KPiBJ
+ZiB0aGUgZHJhZnQgaW50ZW5kcyB0byByZXRhaW4gYW55IHRleHQgb24gc3RhdGljIGtleXMs
+IE5JU1QgU1AgDQo+IDE4MDAtMzcsIC9BZGRyZXNzaW5nIFZpc2liaWxpdHkgQ2hhbGxlbmdl
+cyB3aXRoIFRMUyAxLjMgd2l0aGluIHRoZSANCj4gRW50ZXJwcmlzZS8sIGlzIGEgdXNlZnVs
+IHJlZmVyZW5jZSByZWdhcmRpbmcgdGhlIG5lZ2F0aXZlIHByaXZhY3kgYW5kIA0KPiBzZWN1
+cml0eSBpbXBsaWNhdGlvbnMgb2Ygc3RhdGljIGtleXMuIEkgZG8gbm90IGhhdmUgc3BlY2lm
+aWMgZ3VpZGFuY2UgDQo+IG9uIGhvdyB0byBhY2hpZXZlIGNvbmZvcm1hbmNlIHdpdGggTklT
+VCBzcGVjaWZpY2F0aW9ucyB3aGVuIHVzaW5nIA0KPiBzdGF0aWMga2V5cywgYnV0IHRoYXQg
+aXNzdWUgbXVzdCBjbGVhcmx5IGJlIHJlc29sdmVkLg0KPg0KPiBJIGRvIG5vdCBmaW5kIGFu
+eSB0ZXh0IGluIFJGQyA4NDQ2IHRoYXQgYWxsb3dzIHRoZSB1c2Ugb2Ygc3RhdGljIGtleXMu
+IA0KPiBJZiB0aGUgVExTIFdHIGludGVuZHMgdG8gZXhwbGljaXRseSBwZXJtaXQgc3RhdGlj
+IGtleXMgYWdhaW4sIHRoZWlyIA0KPiB1c2Ugc2hvdWxkIGJlIGV4cGxpY2l0bHkgbmVnb3Rp
+YXRlZCwgYXMgZG9uZSBpbiBUTFMgMS4yIG9yIA0KPiBkcmFmdC1yaHJkLXRscy10bHMxMy12
+aXNpYmlsaXR5Lg0KPg0KPiBBcyBJIGhhdmUgc2VlbiBubyByZXNwb25zZSBmcm9tIHRoZSBh
+dXRob3JzIGluZGljYXRpbmcgdGhhdCB0aGV5IHBsYW4gDQo+IHRvIGFkZHJlc3MgdGhpcyBp
+c3N1ZSwgSSBhbSBvcHBvc2VkIHRvIHB1Ymxpc2hpbmcgdGhpcyBkb2N1bWVudC4NCj4NCj4g
+Q2hlZXJzLA0KPg0KPiBKb2huDQo+DQo=
+--------------8Gvqr0AFYAelHa70KtZNyrBt
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3DUTF=
+-8">
+  </head>
+  <body>
+    [ Not sure whether the comments in the other thread count as WGLC
+    comments, so putting my conclusive opinion here ]<br>
+    <p></p>
+    <p>Hi all,<br>
+    </p>
+    <p># TL;DR</p>
+    <p>No FATT report is shown despite my repeated requests to the
+      chairs for last 10 days. Speaking as someone who has been doing
+      the formal analysis of various TLS drafts since the time FATT
+      process was initialized, please try to put yourself in my shoes.
+      While it is easy for many of you to just have a quick look and say
+      'I support publication' and move on with your life, I and the team
+      working with me have a responsibility to maintain proofs and
+      thoroughly check security considerations etc. The more I am
+      looking into the issues like key reuse (see John's email below),
+      the more I am convinced that the security considerations have
+      serious concerns. Thus, I <b>strongly oppose</b> publication of
+      -07. If rough consensus is declared on this draft to move on, I
+      will put up a humble <b>appeal</b> to the responsible AD for his
+      kind consideration on the matter of violation of FATT process [0].
+    </p>
+    <p># Long story<br>
+    </p>
+    Unless FATT report is shown which tells me that they unanimously
+    agree that the security considerations are acceptable, please
+    consider the above as my conclusive opinion on this WGLC. I
+    sincerely apologize to everyone for the bundle of emails in this
+    thread. I tried my best to understand this encaps decaps thingy and
+    how the existing proofs might hold. If FATT report was available, I
+    would have put all my trust in FATT for a matter in which I am not
+    an expert, but that report was unfortunately not shown. Absent that
+    report, I have taken into consideration the opinions of my UFMRG
+    chair (Stephen Farrell) and one FATT member (Dennis Jackson) who
+    have shared their opinions in this/other related threads on the
+    list. Unless I have missed something, I haven't seen any other FATT
+    member commenting on the matter so far.<br>
+    <p>Like John, I am frustrated too that I raised some concerns in
+      first WGLC, including an <i>intuitive</i> attestation to his
+      concern on key reuse. None of that was addressed in the version in
+      this WGLC. I spent quite some time during this WGLC, and I have
+      raised several concerns including introduction, motivation,
+      security considerations etc. in this thread but very little of
+      that is addressed in the editor's version at the time of sending
+      this email, and the rest is not even promised to be addressed. How
+      is a protocol designer -- who is knowledgeable with TLS 1.3 and
+      ECDHE but not with this encaps decaps thingy -- supposed to use it
+      properly in achieving the desired properties? What are the desired
+      properties in the first place? How are the implementers supposed
+      to understand the security and privacy implications? I very much
+      like John's distinction of the three cases in his email below
+      which precisely disambiguates the scenarios and IMHO and to the
+      best of my understanding, the two responses of author to John
+      still seem to be colluding points #2 and #3 of John.=C2=A0</p>
+    <p>Given that I have made repeated requests for clarification of
+      FATT process violation and I haven't received any answer on why
+      the chairs apparently did not "inform the WG of their decision" as
+      per FATT process [0], I will go for an appeal to the AD for
+      consideration of violation of FATT process if the decision of the
+      chairs comes out to be to publish the document and no such
+      "inform" email is shown to me. What John is mentioning in his
+      email below is exactly an example of where FATT could have helped
+      in refining the security considerations.</p>
+    <p>While I very much respect that some vocal proponents see some
+      value in this draft, FWIW I would like to propose my humble
+      proposal (adapted from the one proposed by Ekr in the other
+      thread) which I strongly believe as the constructive way forward
+      (feel free to bash it):<br>
+    </p>
+    <ol>
+      <li>Adopt draft-barnes-tls-this-could-have-been-an-email to save
+        WG energies for useful and constructive work<br>
+      </li>
+      <li>Adopt draft-usama-tls-ecdhe-mlkem-update for recommending
+        hybrids<br>
+      </li>
+      <li>Following #1, respectfully decline to publish
+        draft-ietf-tls-mlkem until WG views it important and secure
+        enough for Recommended =3D Y and FATT report is available</li>
+    </ol>
+    <p>Regarding SDOs which need stable links, the link
+      <a class=3D"moz-txt-link-freetext" href=3D"https://datatracker.ietf=
+=2Eorg/doc/draft-ietf-tls-mlkem/">https://datatracker.ietf.org/doc/draft-=
+ietf-tls-mlkem/</a> is a
+      perfectly stable link. If expiry is an issue, running 3 commands
+      every 6 months and accepting an email is not a big effort, I
+      presume. If this is still a big effort, add me as a collaborator
+      in the repo, and I will update it every 6 months for you to let it
+      not expire.</p>
+    <p># Question for proponents<br>
+    </p>
+    <p>How many of you -- those who have supported publication of the
+      draft on the list -- can actually take responsibility of the
+      security considerations of the draft?</p>
+    <p>I sincerely thank John, Ekr, Thom, Nadim and Nico for the
+      discussion on the formal modeling.<br>
+    </p>
+    <p>Thank you for your kind consideration,</p>
+    <p>-Usama<br>
+    </p>
+    <p><br>
+    </p>
+    <p>[0]
+      <a class=3D"moz-txt-link-freetext" href=3D"https://github.com/tlswg=
+/tls-fatt?tab=3Dreadme-ov-file#document-adoption">https://github.com/tlsw=
+g/tls-fatt?tab=3Dreadme-ov-file#document-adoption</a><br>
+    </p>
+    <p><br>
+    </p>
+    <div class=3D"moz-cite-prefix">On 25.02.26 08:31, John Mattsson wrote=
+:<br>
+    </div>
+    <blockquote type=3D"cite"
+cite=3D"mid:AS5PR07MB1059644BD0CB1E2DBCEC0A5378975A@AS5PR07MB10596.eurprd=
+07.prod.outlook.com">
+      <meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3DU=
+TF-8">
+      <p class=3D"MsoNormal"
+style=3D"direction: ltr; text-align: left; text-indent: 0px; text-transfo=
+rm: none; margin: 0cm;">
+        <span
+style=3D"font-family: Aptos, sans-serif; font-size: 12pt; color: rgb(0, 0=
+, 0);">Hi</span></p>
+      <p class=3D"MsoNormal"
+style=3D"text-align: left; text-indent: 0px; text-transform: none; margin=
+: 0cm;">
+        <span
+style=3D"font-family: Aptos, sans-serif; font-size: 12pt; color: rgb(0, 0=
+, 0);">=C2=A0</span></p>
+      <p class=3D"MsoNormal"
+style=3D"text-align: left; text-indent: 0px; text-transform: none; margin=
+: 0cm;">
+        <span
+style=3D"font-family: Aptos, sans-serif; font-size: 12pt; color: rgb(0, 0=
+, 0);">I
+          received an offline comment from a senior IETF participant
+          suggesting that I had misunderstood the draft and that the key
+          reuse in question referred to reuse within a single session.
+          That is not accurate. The draft talks about static keys, i.e.,
+          keys used in more than one key-establishment.</span></p>
+      <p class=3D"MsoNormal"
+style=3D"text-align: left; text-indent: 0px; text-transform: none; margin=
+: 0cm;">
+        <span
+style=3D"font-family: Aptos, sans-serif; font-size: 12pt; color: rgb(0, 0=
+, 0);">=C2=A0</span></p>
+      <p class=3D"MsoNormal"
+style=3D"text-align: left; text-indent: 0px; text-transform: none; margin=
+: 0cm;">
+        <span
+style=3D"font-family: Aptos, sans-serif; font-size: 12pt; color: rgb(0, 0=
+, 0);">Given
+          the apparent confusion between 1. reuse of ephemeral keys
+          within a session, 2. reuse of ephemeral keys across sessions,
+          and 3. static keys, each of which carries distinct privacy and
+          security implications, I recommend that the AD ensure that all
+          not yet published drafts use very precise terminology.
+          Specifically, a key used in more than one key-establishment
+          should use the well-established term =E2=80=9Cstatic key=E2=80=9D=
+=2E</span></p>
+      <p class=3D"MsoNormal"
+style=3D"text-align: left; text-indent: 0px; text-transform: none; margin=
+: 0cm;">
+        <span
+style=3D"font-family: Aptos, sans-serif; font-size: 12pt; color: rgb(0, 0=
+, 0);">=C2=A0</span></p>
+      <p class=3D"MsoNormal"
+style=3D"text-align: left; text-indent: 0px; text-transform: none; margin=
+: 0cm;">
+        <span
+style=3D"font-family: Aptos, sans-serif; font-size: 12pt; color: rgb(0, 0=
+, 0);">---</span></p>
+      <p class=3D"MsoNormal"
+style=3D"text-align: left; text-indent: 0px; text-transform: none; margin=
+: 0cm;">
+        <span
+style=3D"font-family: Aptos, sans-serif; font-size: 12pt; color: rgb(0, 0=
+, 0);">=C2=A0</span></p>
+      <p class=3D"MsoNormal"
+style=3D"text-align: left; text-indent: 0px; text-transform: none; margin=
+: 0cm;">
+        <span
+style=3D"font-family: Aptos, sans-serif; font-size: 12pt; color: rgb(0, 0=
+, 0);">1.
+          Reuse of ephemeral keys within a session:</span></p>
+      <p class=3D"MsoNormal"
+style=3D"text-align: left; text-indent: 0px; text-transform: none; margin=
+: 0cm;">
+        <span
+style=3D"font-family: Aptos, sans-serif; font-size: 12pt; color: rgb(0, 0=
+, 0);">=C2=A0</span></p>
+      <p class=3D"MsoNormal"
+style=3D"text-align: left; text-indent: 0px; text-transform: none; margin=
+: 0cm;">
+        <span
+style=3D"font-family: Aptos, sans-serif; font-size: 12pt; color: rgb(0, 0=
+, 0);">-
+          Session A: ClientHello with MLKEM768 KeyShareEntry1 and
+          X25519MLKEM768 KeyShareEntry2 both containing the same ML-KEM
+          public key.</span></p>
+      <p class=3D"MsoNormal"
+style=3D"text-align: left; text-indent: 0px; text-transform: none; margin=
+: 0cm;">
+        <span
+style=3D"font-family: Aptos, sans-serif; font-size: 12pt; color: rgb(0, 0=
+, 0);">=C2=A0</span></p>
+      <p class=3D"MsoNormal"
+style=3D"text-align: left; text-indent: 0px; text-transform: none; margin=
+: 0cm;">
+        <span
+style=3D"font-family: Aptos, sans-serif; font-size: 12pt; color: rgb(0, 0=
+, 0);">2.
+          Reuse of ephemeral keys across sessions:</span></p>
+      <p class=3D"MsoNormal"
+style=3D"text-align: left; text-indent: 0px; text-transform: none; margin=
+: 0cm;">
+        <span
+style=3D"font-family: Aptos, sans-serif; font-size: 12pt; color: rgb(0, 0=
+, 0);">=C2=A0</span></p>
+      <p class=3D"MsoNormal"
+style=3D"text-align: left; text-indent: 0px; text-transform: none; margin=
+: 0cm;">
+        <span
+style=3D"font-family: Aptos, sans-serif; font-size: 12pt; color: rgb(0, 0=
+, 0);">-
+          Session B1. ClientHello with MLKEM768 KeyShareEntry3 and
+          X25519 KeyShareEntry4. Sever picks X25519 KeyShareEntry4.</span=
+></p>
+      <p class=3D"MsoNormal"
+style=3D"text-align: left; text-indent: 0px; text-transform: none; margin=
+: 0cm;">
+        <span
+style=3D"font-family: Aptos, sans-serif; font-size: 12pt; color: rgb(0, 0=
+, 0);">=C2=A0</span></p>
+      <p class=3D"MsoNormal"
+style=3D"text-align: left; text-indent: 0px; text-transform: none; margin=
+: 0cm;">
+        <span
+style=3D"font-family: Aptos, sans-serif; font-size: 12pt; color: rgb(0, 0=
+, 0);">-
+          Session B2. ClientHello with MLKEM768 KeyShareEntry3 and
+          X25519 KeyShareEntry5.</span></p>
+      <p class=3D"MsoNormal"
+style=3D"text-align: left; text-indent: 0px; text-transform: none; margin=
+: 0cm;">
+        <span
+style=3D"font-family: Aptos, sans-serif; font-size: 12pt; color: rgb(0, 0=
+, 0);">=C2=A0</span></p>
+      <p class=3D"MsoNormal"
+style=3D"text-align: left; text-indent: 0px; text-transform: none; margin=
+: 0cm;">
+        <span
+style=3D"font-family: Aptos, sans-serif; font-size: 12pt; color: rgb(0, 0=
+, 0);">3.
+          Static keys</span></p>
+      <p class=3D"MsoNormal"
+style=3D"text-align: left; text-indent: 0px; text-transform: none; margin=
+: 0cm;">
+        <span
+style=3D"font-family: Aptos, sans-serif; font-size: 12pt; color: rgb(0, 0=
+, 0);">=C2=A0</span></p>
+      <p class=3D"MsoNormal"
+style=3D"text-align: left; text-indent: 0px; text-transform: none; margin=
+: 0cm;">
+        <span
+style=3D"font-family: Aptos, sans-serif; font-size: 12pt; color: rgb(0, 0=
+, 0);">-
+          Session C1. ClientHello with MLKEM768 KeyShareEntry6. Sever
+          picks MLKEM768 KeyShareEntry6</span></p>
+      <p class=3D"MsoNormal"
+style=3D"text-align: left; text-indent: 0px; text-transform: none; margin=
+: 0cm;">
+        <span
+style=3D"font-family: Aptos, sans-serif; font-size: 12pt; color: rgb(0, 0=
+, 0);">=C2=A0</span></p>
+      <p class=3D"MsoNormal"
+style=3D"text-align: left; text-indent: 0px; text-transform: none; margin=
+: 0cm;">
+        <span
+style=3D"font-family: Aptos, sans-serif; font-size: 12pt; color: rgb(0, 0=
+, 0);">-
+          Session C2. ClientHello with MLKEM768 KeyShareEntry6. Sever
+          picks MLKEM768 KeyShareEntry6</span></p>
+      <p class=3D"MsoNormal"
+style=3D"text-align: left; text-indent: 0px; text-transform: none; margin=
+: 0cm;">
+        <span
+style=3D"font-family: Aptos, sans-serif; font-size: 12pt; color: rgb(0, 0=
+, 0);">=C2=A0</span></p>
+      <p class=3D"MsoNormal"
+style=3D"text-align: left; text-indent: 0px; text-transform: none; margin=
+: 0cm;">
+        <span
+style=3D"font-family: Aptos, sans-serif; font-size: 12pt; color: rgb(0, 0=
+, 0);">---</span></p>
+      <p class=3D"MsoNormal"
+style=3D"text-align: left; text-indent: 0px; text-transform: none; margin=
+: 0cm;">
+        <span
+style=3D"font-family: Aptos, sans-serif; font-size: 12pt; color: rgb(0, 0=
+, 0);">=C2=A0</span></p>
+      <p class=3D"MsoNormal"
+style=3D"text-align: left; text-indent: 0px; text-transform: none; margin=
+: 0cm;">
+        <span
+style=3D"font-family: Aptos, sans-serif; font-size: 12pt; color: rgb(0, 0=
+, 0);">Issues
+          with the text on static keys were clearly raised during the
+          first WGLC and should have been addressed before the second.
+          Having to repeat the same issues is both frustrating and a
+          waste of time.<br>
+          <br>
+          The major issues, that the draft lacks proper security
+          considerations for the use of static keys (they should be
+          quite negative), and that it does not explain how an
+          implementation using static keys can be conformant with NIST
+          specifications, were raised during the first WGLC and have not
+          been addressed. During the second WGLC, it was identified that
+          conformance is intrinsically linked to the patent license.</spa=
+n></p>
+      <p class=3D"MsoNormal"
+style=3D"text-align: left; text-indent: 0px; text-transform: none; margin=
+: 0cm;">
+        <span
+style=3D"font-family: Aptos, sans-serif; font-size: 12pt; color: rgb(0, 0=
+, 0);">=C2=A0</span></p>
+      <p class=3D"MsoNormal"
+style=3D"text-align: left; text-indent: 0px; text-transform: none; margin=
+: 0cm;">
+        <span
+style=3D"font-family: Aptos, sans-serif; font-size: 12pt; color: rgb(0, 0=
+, 0);">My
+          constructive suggestion is to remove all text regarding static
+          keys, as there is no reason for this draft to include them. I
+          do not believe comparisons with draft-ietf-tls-hybrid-design
+          are relevant, since that document serves a completely
+          different purpose and does not register code points.</span></p>=
+
+      <p class=3D"MsoNormal"
+style=3D"text-align: left; text-indent: 0px; text-transform: none; margin=
+: 0cm;">
+        <span
+style=3D"font-family: Aptos, sans-serif; font-size: 12pt; color: rgb(0, 0=
+, 0);">=C2=A0</span></p>
+      <p class=3D"MsoNormal"
+style=3D"text-align: left; text-indent: 0px; text-transform: none; margin=
+: 0cm;">
+        <span
+style=3D"font-family: Aptos, sans-serif; font-size: 12pt; color: rgb(0, 0=
+, 0);">If
+          the draft intends to retain any text on static keys, NIST SP
+          1800-37, <i>Addressing Visibility Challenges with TLS 1.3
+            within the Enterprise</i>, is a useful reference regarding
+          the negative privacy and security implications of static keys.
+          I do not have specific guidance on how to achieve conformance
+          with NIST specifications when using static keys, but that
+          issue must clearly be resolved.</span></p>
+      <p class=3D"MsoNormal"
+style=3D"text-align: left; text-indent: 0px; text-transform: none; margin=
+: 0cm;">
+        <span
+style=3D"font-family: Aptos, sans-serif; font-size: 12pt; color: rgb(0, 0=
+, 0);">=C2=A0</span></p>
+      <p class=3D"MsoNormal"
+style=3D"text-align: left; text-indent: 0px; text-transform: none; margin=
+: 0cm;">
+        <span
+style=3D"font-family: Aptos, sans-serif; font-size: 12pt; color: rgb(0, 0=
+, 0);">I
+          do not find any text in RFC 8446 that allows the use of static
+          keys. If the TLS WG intends to explicitly permit static keys
+          again, their use should be explicitly negotiated, as done in
+          TLS 1.2 or draft-rhrd-tls-tls13-visibility.</span></p>
+      <p class=3D"MsoNormal"
+style=3D"text-align: left; text-indent: 0px; text-transform: none; margin=
+: 0cm;">
+        <span
+style=3D"font-family: Aptos, sans-serif; font-size: 12pt; color: rgb(0, 0=
+, 0);">=C2=A0</span></p>
+      <p class=3D"MsoNormal"
+style=3D"text-align: left; text-indent: 0px; text-transform: none; margin=
+: 0cm;">
+        <span
+style=3D"font-family: Aptos, sans-serif; font-size: 12pt; color: rgb(0, 0=
+, 0);">As
+          I have seen no response from the authors indicating that they
+          plan to address this issue, I am opposed to publishing this
+          document.</span></p>
+      <p class=3D"MsoNormal"
+style=3D"text-align: left; text-indent: 0px; text-transform: none; margin=
+: 0cm;">
+        <span
+style=3D"font-family: Aptos, sans-serif; font-size: 12pt; color: rgb(0, 0=
+, 0);">=C2=A0</span></p>
+      <p class=3D"MsoNormal"
+style=3D"text-align: left; text-indent: 0px; text-transform: none; margin=
+: 0cm;">
+        <span
+style=3D"font-family: Aptos, sans-serif; font-size: 12pt; color: rgb(0, 0=
+, 0);">Cheers,</span></p>
+      <p class=3D"MsoNormal"
+style=3D"text-align: left; text-indent: 0px; text-transform: none; margin=
+: 0cm;">
+        <span
+style=3D"font-family: Aptos, sans-serif; font-size: 12pt; color: rgb(0, 0=
+, 0);">John</span></p>
+      <div
+style=3D"direction: ltr; font-family: Aptos, Arial, Helvetica, sans-serif=
+; font-size: 12pt; color: rgb(0, 0, 0);">
+        <span style=3D"white-space: pre-wrap">
+</span></div>
+    </blockquote>
+  </body>
+</html>
+
+--------------8Gvqr0AFYAelHa70KtZNyrBt--
+
+--------------ms050906020604060603040908
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgMFADCABgkqhkiG9w0BBwEAAKCC
+DlwwggbmMIIEzqADAgECAhAxAnDUNb6bJJr4VtDh4oVJMA0GCSqGSIb3DQEBDAUAMIGIMQsw
+CQYDVQQGEwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkx
+HjAcBgNVBAoTFVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJT
+QSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTAeFw0yMDAyMTgwMDAwMDBaFw0zMzA1MDEyMzU5
+NTlaMEYxCzAJBgNVBAYTAk5MMRkwFwYDVQQKExBHRUFOVCBWZXJlbmlnaW5nMRwwGgYDVQQD
+ExNHRUFOVCBQZXJzb25hbCBDQSA0MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA
+s0riIl4nW+kEWxQENTIgFK600jFAxs1QwB6hRMqvnkphfy2Q3mKbM2otpELKlgE8/3AQPYBo
+7p7yeORuPMnAuA+oMGRb2wbeSaLcZbpwXgfCvnKxmq97/kQkOFX706F9O7/h0yehHhDjUdyM
+yT0zMs4AMBDRrAFn/b2vR3j0BSYgoQs16oSqadM3p+d0vvH/YrRMtOhkvGpLuzL8m+LTAQWv
+QJ92NwCyKiHspoP4mLPJvVpEpDMnpDbRUQdftSpZzVKTNORvPrGPRLnJ0EEVCHR82LL6oz91
+5WkrgeCY9ImuulBn4uVsd9ZpubCgM/EXvVBlViKqusChSsZEn7juIsGIiDyaIhhLsd3amm8B
+S3bgK6AxdSMROND6hiHT182Lmf8C+gRHxQG9McvG35uUvRu8v7bPZiJRaT7ZC2f50P4lTlnb
+LvWpXv5yv7hheO8bMXltiyLweLB+VNvg+GnfL6TW3Aq1yF1yrZAZzR4MbpjTWdEdSLKvz8+0
+wCwscQ81nbDOwDt9vyZ+0eJXbRkWZiqScnwAg5/B1NUD4TrYlrI4n6zFp2pyYUOiuzP+as/A
+Znz63GvjFK69WODR2W/TK4D7VikEMhg18vhuRf4hxnWZOy0vhfDR/g3aJbdsGac+diahjEwz
+yB+UKJOCyzvecG8bZ/u/U8PsEMZg07iIPi8CAwEAAaOCAYswggGHMB8GA1UdIwQYMBaAFFN5
+v1qqK0rPVIDh2JvAnfKyA2bLMB0GA1UdDgQWBBRpAKHHIVj44MUbILAK3adRvxPZ5DAOBgNV
+HQ8BAf8EBAMCAYYwEgYDVR0TAQH/BAgwBgEB/wIBADAdBgNVHSUEFjAUBggrBgEFBQcDAgYI
+KwYBBQUHAwQwOAYDVR0gBDEwLzAtBgRVHSAAMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2Vj
+dGlnby5jb20vQ1BTMFAGA1UdHwRJMEcwRaBDoEGGP2h0dHA6Ly9jcmwudXNlcnRydXN0LmNv
+bS9VU0VSVHJ1c3RSU0FDZXJ0aWZpY2F0aW9uQXV0aG9yaXR5LmNybDB2BggrBgEFBQcBAQRq
+MGgwPwYIKwYBBQUHMAKGM2h0dHA6Ly9jcnQudXNlcnRydXN0LmNvbS9VU0VSVHJ1c3RSU0FB
+ZGRUcnVzdENBLmNydDAlBggrBgEFBQcwAYYZaHR0cDovL29jc3AudXNlcnRydXN0LmNvbTAN
+BgkqhkiG9w0BAQwFAAOCAgEACgVOew2PHxM5AP1v7GLGw+3tF6rjAcx43D9Hl110Q+BABABg
+lkrPkES/VyMZsfuds8fcDGvGE3o5UfjSno4sij0xdKut8zMazv8/4VMKPCA3EUS0tDUoL01u
+gDdqwlyXuYizeXyH2ICAQfXMtS+raz7mf741CZvO50OxMUMxqljeRfVPDJQJNHOYi2pxuxgj
+KDYx4hdZ9G2o+oLlHhu5+anMDkE8g0tffjRKn8I1D1BmrDdWR/IdbBOj6870abYvqys1qYlP
+otv5N5dm+XxQ8vlrvY7+kfQaAYeO3rP1DM8BGdpEqyFVa+I0rpJPhaZkeWW7cImDQFerHW9b
+KzBrCC815a3WrEhNpxh72ZJZNs1HYJ+29NTB6uu4NJjaMxpk+g2puNSm4b9uVjBbPO9V6sFS
+G+IBqE9ckX/1XjzJtY8Grqoo4SiRb6zcHhp3mxj3oqWi8SKNohAOKnUc7RIP6ss1hqIFyv0x
+XZor4N9tnzD0Fo0JDIURjDPEgo5WTdti/MdGTmKFQNqxyZuT9uSI2Xvhz8p+4pCYkiZqpahZ
+lHqMFxdw9XRZQgrP+cgtOkWEaiNkRBbvtvLdp7MCL2OsQhQEdEbUvDM9slzZXdI7NjJokVBq
+3O4pls3VD2z3L/bHVBe0rBERjyM2C/HSIh84rfmAqBgklzIOqXhd+4RzadUwggduMIIFVqAD
+AgECAhA/YCOTOabjcS/HTP8f2MRxMA0GCSqGSIb3DQEBDAUAMEYxCzAJBgNVBAYTAk5MMRkw
+FwYDVQQKExBHRUFOVCBWZXJlbmlnaW5nMRwwGgYDVQQDExNHRUFOVCBQZXJzb25hbCBDQSA0
+MB4XDTI0MTExOTAwMDAwMFoXDTI2MTExOTIzNTk1OVowgdoxCzAJBgNVBAYTAkRFMRAwDgYD
+VQQIEwdTYWNoc2VuMSgwJgYDVQQKEx9UZWNobmlzY2hlIFVuaXZlcnNpdGFldCBEcmVzZGVu
+MREwDwYDVQRhEwhHT1ZERStTTjEyMDAGCSqGSIb3DQEJARYjbXVoYW1tYWRfdXNhbWEuc2Fy
+ZGFyQHR1LWRyZXNkZW4uZGUxDzANBgNVBAQTBlNhcmRhcjEXMBUGA1UEKhMOTXVoYW1tYWQg
+VXNhbWExHjAcBgNVBAMTFU11aGFtbWFkIFVzYW1hIFNhcmRhcjCCAiIwDQYJKoZIhvcNAQEB
+BQADggIPADCCAgoCggIBAKhTeUVDqbjfDFmkVrgQMFC3S4O0vjW9zjlrkD8FrZ2ipCLuiNE2
+XHibuTw57N2lrcWMRqjw/Tv7WqpasIHjIlvE5SJ+VuOzu5P0xLqfroT4MSlKIq1LyXkL1u09
+A9EuCUxhf4Uc3Ir17VYzjS7meqv4+4yoVhnL9zepze8f0FG3EJmGJlBSJ8sD6dVxGQkDLWMf
+NNt/I8wkaQSFkzvd+KppPOjc4t4JtQWIHKPMKS3lbXv8RLO1jaPO9Fdfg4D/dq5I8fsnfg6y
+gmCL+nTsHWAXqgX8vcDVG5tz5ONzHgODtItrQWO+m4d8W16JWCbMMCFIqscZ5weRfS5dSFZk
+sptipqIm5tzUL3y2/VOFCiL/tofo7yA1bHnFXUGm2LkJVNx6pDZFh1G9OYPqmrjjSxL9E/ed
+xQ1lIe3GmBJGBUFldlP8STm3WapaatgNcuQ6HXX1HexWF14NBIguNajgOR17JxX0JS4t9o5f
+3Po+Nqa/Als1Mm9Q6PACcVRhm7yH4vj3UqGcjAps6YM/HDkNoA2qsHmqZ/ya15eIORADN+ZQ
+O7hJYBH5TJprVdGXL7aTLNJh6xEn5V9TFcsT017ocQ5bJteN6caUay/0zPenwtabuSLR6y7e
+gmx8gTF4oPDUlgkaNcKAmkyzwM+IzPNIJvyxq/NI1pQRyTGUQJYyExO7AgMBAAGjggHBMIIB
+vTAfBgNVHSMEGDAWgBRpAKHHIVj44MUbILAK3adRvxPZ5DAdBgNVHQ4EFgQU4R79RPVSVexS
++el1ZxCchmYs1akwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYI
+KwYBBQUHAwQGCCsGAQUFBwMCMFAGA1UdIARJMEcwOgYMKwYBBAGyMQECAQoEMCowKAYIKwYB
+BQUHAgEWHGh0dHBzOi8vc2VjdGlnby5jb20vU01JTUVDUFMwCQYHZ4EMAQUDAjBCBgNVHR8E
+OzA5MDegNaAzhjFodHRwOi8vR0VBTlQuY3JsLnNlY3RpZ28uY29tL0dFQU5UUGVyc29uYWxD
+QTQuY3JsMHgGCCsGAQUFBwEBBGwwajA9BggrBgEFBQcwAoYxaHR0cDovL0dFQU5ULmNydC5z
+ZWN0aWdvLmNvbS9HRUFOVFBlcnNvbmFsQ0E0LmNydDApBggrBgEFBQcwAYYdaHR0cDovL0dF
+QU5ULm9jc3Auc2VjdGlnby5jb20wLgYDVR0RBCcwJYEjbXVoYW1tYWRfdXNhbWEuc2FyZGFy
+QHR1LWRyZXNkZW4uZGUwDQYJKoZIhvcNAQEMBQADggIBAIxymCHDahevSfae44bVKxAKDRLh
+ZVraNygdRQ2RQOkz8v8b/cl5yuWR/l3yMpIrwiDWT37UQibNuoPxaZeRBjDh8ItcUP51sOAV
+7zd3GwfyUJNYKmgd6LjfE8+mkXrVU2JffVjRUgiyy7eBTzvTz5PFUQh2oqWfTh/Oz3pFXV+/
+0K3eP+fNkr0gljmEZi/h0ici5cJ+Q9J/Zx6Vg9ke2qb6PIh+zeb5oL40i7FR875NX/WGKMib
+ojTopS5xPbo0KmN64FqgasfJW03t0wyTtcYOap6tw2RcfVpjfsXQqEfjdjyrNHH6l/TDxUoL
+cNlu0zkYHMYmJ6MJ6VwaHWB5hou9N0WWrcQotsfkpf7lGZSlum9jG5/uB+d3FLK00QM99XN7
+RhLbLOKKuw2Xri3MEcN/LvIRDIHef4uoONAI+4bOW+1wFmGwqpHYxA/JoUXoRjojuAon8lCF
+uVf3tFAkQ/V8zuPxCX36gEOsyQuK3IAeS8R8qhV5Cc+dcYDKid61AluluBcUSxfKxmoK19Mm
+f39FTD+bJpBCiEAdJuZfP6TD0dtBVcgJ4dBLZ4H13WBeVZRDXcxghYJcNWFHPa/qi20jmuUs
+CvcD4z2+LBFnVrwhOeBefYjm6zy7+9IbuomR11B4+AnLkjzTBZxcX17UMWyqVe4hZN2CsVS0
+7doWTJJYMYIEWDCCBFQCAQEwWjBGMQswCQYDVQQGEwJOTDEZMBcGA1UEChMQR0VBTlQgVmVy
+ZW5pZ2luZzEcMBoGA1UEAxMTR0VBTlQgUGVyc29uYWwgQ0EgNAIQP2Ajkzmm43Evx0z/H9jE
+cTANBglghkgBZQMEAgMFAKCCAc8wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG
+9w0BCQUxDxcNMjYwMjI2MDAyNDM4WjBPBgkqhkiG9w0BCQQxQgRAHpbMX8knKfzcmW4p2O1A
+nnBUUqmnaFh1EdUmuii6robLKGgAc+iN8VjlMF7BgTdewgA0nB/luS1AouuB0aLh9jBpBgkr
+BgEEAYI3EAQxXDBaMEYxCzAJBgNVBAYTAk5MMRkwFwYDVQQKExBHRUFOVCBWZXJlbmlnaW5n
+MRwwGgYDVQQDExNHRUFOVCBQZXJzb25hbCBDQSA0AhA/YCOTOabjcS/HTP8f2MRxMGsGCyqG
+SIb3DQEJEAILMVygWjBGMQswCQYDVQQGEwJOTDEZMBcGA1UEChMQR0VBTlQgVmVyZW5pZ2lu
+ZzEcMBoGA1UEAxMTR0VBTlQgUGVyc29uYWwgQ0EgNAIQP2Ajkzmm43Evx0z/H9jEcTBsBgkq
+hkiG9w0BCQ8xXzBdMAsGCWCGSAFlAwQBKjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwDgYI
+KoZIhvcNAwICAgCAMA0GCCqGSIb3DQMCAgFAMAcGBSsOAwIHMA0GCCqGSIb3DQMCAgEoMA0G
+CSqGSIb3DQEBAQUABIICAI9xhm1qzQTguWXKW1SwJKZyPoirS2yeEvBgdLUN+bkrBUsW+Gaq
+TLE4Vx3eOfSdjL6ZdjNYEL1L/DkL3j+3CgZfne748r2XdnAbVxz4LOTFKxetFZb9bzQ1Ok9w
+BUgqgK3C0tvs56iVTsMkne3XZWPdfY6BwCVQZYeBRZd5ktqtvSmGHKdCRpJ1c5PqYt7sAMT+
+/xAifaKUaJAZkah4rZKqRFsaUyGY4Cxy30Dld9GpMkemc7zYIm/BKYe38eHVk3lRC5ZWxdyd
+wJ6khByAUDL6oqc60r+fwwvmOazBPnDAtvNh7tcvnk/3XfzHzOkwxSXo1+CEXoA4TsA9biOy
+y4M5MyEOG+lJVax4ST8JnpNW1ApqDaIPrmsSpkYPytLhw01EfvYFC0i5elNnuLSez2mrRJ6u
+HWQXpA8+obcG3nBrFzA6Kuz+Dkm5Eg6dqfXC4GPfnITfAnD7wgw15llnnDECLmIilDQYZzV6
+jfRyP2edSI63ziJ5GMrdYjQS5uJ6Dxm/ebYe3OlA0Tt824k3OeraSvbG/UAlbAd0Stg+5obz
+rJ3+0iUz7xdyeyo9sLXzS6FWf/6vEzMyOmQtbPzBP5RnPZQnezHrej2qcsNk01UUYRC0XriB
+nsJ0iluR2RGiJpe9A68uRZbpbKXy+mYMGbEPN/P5vjWv+KMBBPxpLp3fAAAAAAAA
+--------------ms050906020604060603040908--
+

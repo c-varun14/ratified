@@ -1,0 +1,215 @@
+Return-Path: <ketant.ietf@gmail.com>
+X-Original-To: tls@mail2.ietf.org
+Delivered-To: tls@mail2.ietf.org
+Received: from localhost (localhost [127.0.0.1])
+	by mail2.ietf.org (Postfix) with ESMTP id 19EDC2FB65C1;
+	Mon,  2 Jun 2025 07:20:14 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at ietf.org
+X-Spam-Flag: NO
+X-Spam-Score: -2.098
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.098 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+	DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, FREEMAIL_FROM=0.001,
+	HTML_MESSAGE=0.001, RCVD_IN_DNSWL_NONE=-0.0001, SPF_HELO_NONE=0.001,
+	SPF_PASS=-0.001] autolearn=ham autolearn_force=no
+Authentication-Results: mail2.ietf.org (amavisd-new); dkim=pass (2048-bit key)
+	header.d=gmail.com
+Received: from mail2.ietf.org ([166.84.6.31])
+	by localhost (mail2.ietf.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id Iw0H1zvz8oK7; Mon,  2 Jun 2025 07:20:13 -0700 (PDT)
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com
+ [IPv6:2607:f8b0:4864:20::82d])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail2.ietf.org (Postfix) with ESMTPS id 9DB7D2FB65B9;
+	Mon,  2 Jun 2025 07:20:13 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id
+ d75a77b69052e-4a442a3a2bfso56870611cf.1;
+        Mon, 02 Jun 2025 07:20:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1748874013; x=1749478813; darn=ietf.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=56dgZix9IjDf6oJE3hP3M1ozJccedJb80bR1CJ5qmTQ=;
+        b=Zy4kiMz5KLMS4kzD8evlgrmy488qWIgSzTpzQn8oXoBnp1yec//LULoMxLir2eKxmq
+         V6JIlJ9/6snoZIdQ73SIHhjsP2IKWlj6h5Sk2VTrD0L2yjBV6AGYrTde0mOrMudH9rdh
+         GHKGnIR83s3O7dOcTS2DFnU+yFh5NpngUKzqBndNoae/zqlJMczWq60IhGk9fceZRPkK
+         IobppJuK72IzzPlRlJvxgE4fZzLkXIeefGeqIrIH4+vW9Kjk9BP4h5MzEZCpR6z7jYU1
+         15MRJeIkIGHIOtKcOrefDX/XEfv5HsH9rrjkZE0NBLuPeI8E8jd1/wvM/oA1BpvQ2E1y
+         xONA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748874013; x=1749478813;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=56dgZix9IjDf6oJE3hP3M1ozJccedJb80bR1CJ5qmTQ=;
+        b=n7V51BWBBHd3eCdAiQqO4S53usgOv/wxkwyS808fc6hJzRgZoJyS+vxfnLCtgmigSX
+         jkks368GCVYHmT4Iue2wcmUEWkmM5dI0mrapgXl2fnscmJJ2Cw9+AOU5CkWU+KXJpHFC
+         gDAkzp8ZcYeA71pBHk0f6f6b1gMP4LsBiLssivk5r2GcaPz9p0cUOVD/Ruj0kF58WzHn
+         6bJqgQo6WWZMhSN81rq2EmnsRnSbet3pyIO/RPG3HR3uvdBB6wkkagfNBxtGFLdKA2qj
+         2GoxCKN5rtV9dmKT6ydowOTv5jUo4V1n0pjoiQSJbROIZiapMtOE1riYGH1uddRaxaIa
+         nFuw==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCUPM9LMpGFg8SXvtfzR7lHuY06CZJIBnSbZRJm9BFMAGrEwMBHcd6lBZ+YploRq7f6UZ+z/dCwuiD0ySw==@ietf.org,
+ AJvYcCVQvq9U7FRr2IWEmr3/HiCzncXn/6HOGw6VBh51vJPJQ3TTTGIjXPs48A7FFPdp3Jr6nEvl@ietf.org,
+ AJvYcCXlqXgfEihr6qVJKGtkJL9rjb0e/hDv2o3XtauOf6X4MwcXQv6rwBiqFkONYRuLsIRYDr1AF4R4xwH5PdMJcrQrBBDwrSDcA4Gx@ietf.org
+X-Gm-Message-State: AOJu0YxktES6Z53hlmBeDlK39T+7vl9yCMKupc3lhFZw2gLS4IERQkpa
+	fAGgACAnLnz++MKs9IvGhImc0fD5BFuNCNRYjdZxTpW10YR2cbv9oCJ8Tv5MyopwhqYoRn0UWGf
+	q9R3CL/Ql0OpjDSu0M3EMjC5EdJcIR4HxZA==
+X-Gm-Gg: ASbGnctp0wmXZeJtHtAlIMwXKGkl3Rj5/3tojgJMtmQ3KZhp5ns0gDhzDAGPYAMCNKZ
+	jPRPsTjUthTE/lBMrSmkTx1IouWI7ODO+0dudXFWw2zOwqPUJjw7cm2E+Rlmb1b7bZ/GMFwmoFk
+	w0WojaGWVfZcU10fiboCGrDaK/oPyCPK6zUcV6//LjJW0BTRtRY5L53sVs05ubCtE+RA==
+X-Google-Smtp-Source: 
+ AGHT+IEnzemNtLqKZmVcDgQqyT1IxI6oqGsHGFQwlTBRC60Z2dYzL/vW6V+WPYjSUE5xljO2fenrH+dMT7bdCWlhUp0=
+X-Received: by 2002:a05:690c:3507:b0:70f:8883:ce60 with SMTP id
+ 00721157ae682-71057d235b9mr183954957b3.26.1748874001989; Mon, 02 Jun 2025
+ 07:20:01 -0700 (PDT)
+MIME-Version: 1.0
+References: 
+ <174766053225.312421.13437723553994479832@dt-datatracker-59b84fc74f-84jsl>
+ <CABcZeBMRPVsf7BMJXy877xQxdwt5KeKQ7evFNEhyyOsnveOk5w@mail.gmail.com>
+In-Reply-To: 
+ <CABcZeBMRPVsf7BMJXy877xQxdwt5KeKQ7evFNEhyyOsnveOk5w@mail.gmail.com>
+From: Ketan Talaulikar <ketant.ietf@gmail.com>
+Date: Mon, 2 Jun 2025 19:49:49 +0530
+X-Gm-Features: AX0GCFubHjemvaflQXlplfCns-wMuR9gy5WWod5bvvF0DV2Gcaq1G3Y33mJmcR8
+Message-ID: 
+ <CAH6gdPxfpKkG0yKanX3ncG-CRxXHQg9A-znpujhhy6TyB_r=Dg@mail.gmail.com>
+To: Eric Rescorla <ekr@rtfm.com>
+Content-Type: multipart/alternative; boundary="000000000000a544040636977503"
+Message-ID-Hash: FTAZ4C7IQ6I756LGXF4R67DXC74RH3VX
+X-Message-ID-Hash: FTAZ4C7IQ6I756LGXF4R67DXC74RH3VX
+X-MailFrom: ketant.ietf@gmail.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+CC: The IESG <iesg@ietf.org>, draft-ietf-tls-rfc8446bis@ietf.org,
+ tls-chairs@ietf.org, tls@ietf.org
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Re=3A_Ketan_Talaulikar=27s_No_Objection_on_draft-ietf-tl?=
+ =?utf-8?q?s-rfc8446bis-12=3A_=28with_COMMENT=29?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/ZFiDqwRwiAiKcK14BVH9nBUoxkQ>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+--000000000000a544040636977503
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Hi Eric,
+
+I may be losing track of the conversations since the draft update has not
+yet been posted. I am responding only to the points that you have raised
+below.
+
+
+On Fri, May 30, 2025 at 9:16=E2=80=AFPM Eric Rescorla <ekr@rtfm.com> wrote:
+
+>
+>
+> On Mon, May 19, 2025 at 6:15=E2=80=AFAM Ketan Talaulikar via Datatracker =
+<
+> noreply@ietf.org> wrote:
+>
+>>
+>> 2) Please state in the introduction section on what part of 8422 is bein=
+g
+>> updated by this document.
+>>
+>
+> I'm actually not sure it does. I'll start a separate thread.
+>
+>
+>
+>>
+>> 4) Ref section 1.4 - does this document also not update RFC7627 with its
+>> terminology change?
+>>
+>
+> I'm not sure I understand this question.
+>
+
+KT> Please add a sentence in the last paragraph of Section 1 to indicate
+that the document updates RFC7627 with change in its terminology to remove
+the use of "master". Or something like that.
+
+Thanks,
+Ketan
+
+
+>
+>
+>>
+>> 6) I believe there is an error with the reference to RFC8444. That one i=
+s
+>> a
+>> OSPF routing protocol extension and don't see how that comes into TLS
+>> land.
+>>
+>
+> Correct. It is 8844. https://github.com/tlswg/tls13-spec/pull/1387
+>
+> -Ekr
+>
+>
+
+--000000000000a544040636977503
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr">Hi Eric,<div><br></div><div>I may be losi=
+ng track of the conversations since the draft update has not yet been poste=
+d. I am responding only to the points that you have raised below.</div><div=
+><br></div></div><br><div class=3D"gmail_quote gmail_quote_container"><div =
+dir=3D"ltr" class=3D"gmail_attr">On Fri, May 30, 2025 at 9:16=E2=80=AFPM Er=
+ic Rescorla &lt;<a href=3D"mailto:ekr@rtfm.com">ekr@rtfm.com</a>&gt; wrote:=
+<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8=
+ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr=
+"><div dir=3D"ltr"><br></div><br><div class=3D"gmail_quote"><div dir=3D"ltr=
+" class=3D"gmail_attr">On Mon, May 19, 2025 at 6:15=E2=80=AFAM Ketan Talaul=
+ikar via Datatracker &lt;<a href=3D"mailto:noreply@ietf.org" target=3D"_bla=
+nk">noreply@ietf.org</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quo=
+te" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204=
+);padding-left:1ex"><br>
+2) Please state in the introduction section on what part of 8422 is being<b=
+r>
+updated by this document.<br></blockquote><div><br></div><div>I&#39;m actua=
+lly not sure it does. I&#39;ll start a separate thread.</div><div><br></div=
+><div>=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px=
+ 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">
+<br>
+4) Ref section 1.4 - does this document also not update RFC7627 with its<br=
+>
+terminology change?<br></blockquote><div><br></div><div>I&#39;m not sure I =
+understand this question.</div></div></div></blockquote><div><br></div><div=
+>KT&gt; Please add a sentence in the last paragraph of Section 1 to indicat=
+e that the document updates RFC7627 with change in its terminology to remov=
+e the use of &quot;master&quot;. Or something like that.=C2=A0</div><div><b=
+r></div><div>Thanks,</div><div>Ketan</div><div>=C2=A0</div><blockquote clas=
+s=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid r=
+gb(204,204,204);padding-left:1ex"><div dir=3D"ltr"><div class=3D"gmail_quot=
+e"><div>=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0=
+px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">
+<br>
+6) I believe there is an error with the reference to RFC8444. That one is a=
+<br>
+OSPF routing protocol extension and don&#39;t see how that comes into TLS l=
+and.<br></blockquote><div><br></div><div>Correct. It is 8844.=C2=A0<a href=
+=3D"https://github.com/tlswg/tls13-spec/pull/1387" target=3D"_blank">https:=
+//github.com/tlswg/tls13-spec/pull/1387</a></div><div><br></div><div>-Ekr</=
+div><div>=C2=A0</div></div></div>
+</blockquote></div></div>
+
+--000000000000a544040636977503--
+

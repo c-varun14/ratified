@@ -1,0 +1,422 @@
+Return-Path: <Kenny.Paterson@rhul.ac.uk>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id E031112D5AE
+ for <tls@ietfa.amsl.com>; Tue, 12 Jul 2016 12:09:47 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.921
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.921 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ RCVD_IN_DNSWL_NONE=-0.0001, RCVD_IN_MSPIKE_H3=-0.01,
+ RCVD_IN_MSPIKE_WL=-0.01, SPF_HELO_PASS=-0.001]
+ autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=rhul.onmicrosoft.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 0S_ZA6wyn_q6 for <tls@ietfa.amsl.com>;
+ Tue, 12 Jul 2016 12:09:45 -0700 (PDT)
+Received: from EUR03-DB5-obe.outbound.protection.outlook.com
+ (mail-eopbgr40047.outbound.protection.outlook.com [40.107.4.47])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 7CDC712D5C2
+ for <tls@ietf.org>; Tue, 12 Jul 2016 12:09:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rhul.onmicrosoft.com; 
+ s=selector1-rhul-ac-uk;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=1qhbnUCwHkKPbF31hzL5Pzr/K79GMjUempFKH1ZjKOs=;
+ b=Y8GT6JjMUTJoaQOYgFE/jQ+zkWb+jQquAmpj69wAjPMbNpvOaOjStD0nm5vAj1pXjeUCJb3sNkyYKoHCBfe3bWazKEDXZFirke+1vhwfH/EwIm2iYfk0zWrKhnP4Hxo1lEKml5R9JBCHaXgjlfSYijqsQh72SgTBNYH//0F64io=
+Received: from VI1PR03MB1822.eurprd03.prod.outlook.com (10.166.42.148) by
+ VI1PR03MB1822.eurprd03.prod.outlook.com (10.166.42.148) with Microsoft SMTP
+ Server (TLS) id 15.1.539.14; Tue, 12 Jul 2016 19:09:41 +0000
+Received: from VI1PR03MB1822.eurprd03.prod.outlook.com ([10.166.42.148]) by
+ VI1PR03MB1822.eurprd03.prod.outlook.com ([10.166.42.148]) with mapi id
+ 15.01.0539.019; Tue, 12 Jul 2016 19:09:41 +0000
+From: "Paterson, Kenny" <Kenny.Paterson@rhul.ac.uk>
+To: "Dang, Quynh (Fed)" <quynh.dang@nist.gov>
+Thread-Topic: [TLS] New draft: draft-ietf-tls-tls13-14.txt
+Thread-Index: AQHR26esSHCH//KpSE6diooP42E52KAUxHSAgAAiIQCAAAGugIAACUMAgAAetICAAAYNgIAAFExS
+Date: Tue, 12 Jul 2016 19:09:41 +0000
+Message-ID: <86A9696F-2B89-45D7-AEB1-7587326E3D4F@rhul.ac.uk>
+References: <CABcZeBMiLmwBeuLt=v4qdcJwe5rdsK_9R4-2TUXYC=sttmwH-g@mail.gmail.com>
+ <D3AA5BD6.27AC0%qdang@nist.gov> <D3AAB674.709EA%kenny.paterson@rhul.ac.uk>
+ <D3AA7549.27B09%qdang@nist.gov>
+ <d1f35d74e93b4067bf17f587b904ebff@XCH-RTP-006.cisco.com>
+ <D3AAD721.70A11%kenny.paterson@rhul.ac.uk>,<D3AA9E40.27BB4%qdang@nist.gov>
+In-Reply-To: <D3AA9E40.27BB4%qdang@nist.gov>
+Accept-Language: en-GB, en-US
+Content-Language: en-GB
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Kenny.Paterson@rhul.ac.uk; 
+x-originating-ip: [78.146.50.187]
+x-ms-office365-filtering-correlation-id: 262bfacd-8b40-4035-ddfc-08d3aa8813ea
+x-microsoft-exchange-diagnostics: 1; VI1PR03MB1822;
+ 6:fkzzqzEwec06L75smwA1iDYjtZLQvFAFP4fcvmJyH/Z7y3Hq0BExPREEaoVav0YZWOD37BTxb3Tdhuxw1vyY/KC94E0DQG9Dx0Qt4yH6zfPAkzQLOU0nGIWw0URLyQ6QJJspSFPIy0rt+71XsBFiJmssuG7xX56tC48UiUQd8jSWtrICIyshtM5zHC96bNXStfDawEobPM/BfuNQy+P3QaJoDI7T9CRl9C01ApYnimZ1BXXURcPjmaRYap5VDSQ5qphNS+vjmcln0Nl6EsXfoAZ3qbJNNbx3iHOiQW3dvn8=;
+ 5:v/CFZ1USRA4Q/iRKNZRR7XMtuSJUDRQ4iACq281KE0/Y35y3Si/eIJ2NkG4DywLWzQhcYWEk7DcVIt3L7OEANjBepSXkWfjpqRUg/ELoYmGatp0fKfKC9PT66HacmSFudqyjseNwFuqxz9xO851laQ==;
+ 24:ZDDOb0OHQTh2cNue4mwLW9c1+hldixxFgIIVXaUOm871gy0+fzH2+ZHiDsd2i+0SpP3iIISOe2BKYqeuqeAh4kkRF1CA/UweZq/sp5KhViY=;
+ 7:wk9GIyFmH2UEEBpdVztqxkpF07KJbg42m1s/yNGPdttHgJH0yZbBi+v+mS4OHxabo333aOlu8rrAW9r2zghq8RDICApkBp+xNNIdaesc2YM4TBL6W11kpm3YO4KUeIAYpw/PuVzGjV3HzJHxRZSA1rMUmEOruSLhlmlz3CE9otQROc7wx0j6x63fPS4mk2HosbcO97T3f6ZQTtxCcbYo/VHtvnhXIaRAa1H2lwmGoXkg/FrAPGdgjbLFVKIjSGxR
+x-microsoft-antispam: UriScan:;BCL:0;PCL:0;RULEID:;SRVR:VI1PR03MB1822;
+x-microsoft-antispam-prvs: <VI1PR03MB1822BB00D011DADBE8391489BC300@VI1PR03MB1822.eurprd03.prod.outlook.com>
+x-exchange-antispam-report-test: UriScan:(65766998875637)(192374486261705)(788757137089)(95692535739014); 
+x-exchange-antispam-report-cfa-test: BCL:0; PCL:0;
+ RULEID:(601004)(2401047)(5005006)(8121501046)(10201501046)(3002001);
+ SRVR:VI1PR03MB1822; BCL:0; PCL:0; RULEID:; SRVR:VI1PR03MB1822; 
+x-forefront-prvs: 0001227049
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10009020)(6009001)(7916002)(24454002)(55674003)(189002)(199003)(377454003)(13464003)(305945005)(66066001)(36756003)(81166006)(2950100001)(15975445007)(2900100001)(54356999)(76176999)(50986999)(8666005)(101416001)(7736002)(74482002)(8936002)(7846002)(82746002)(122556002)(92566002)(81156014)(77096005)(19580395003)(19580405001)(230783001)(106116001)(2906002)(83716003)(6116002)(106356001)(68736007)(102836003)(3846002)(87936001)(68196006)(105586002)(4326007)(86362001)(3280700002)(110136002)(10400500002)(3660700001)(33656002)(189998001)(11100500001)(97736004)(93886004)(8676002)(5002640100001)(586003)(7059030)(104396002);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:VI1PR03MB1822;
+ H:VI1PR03MB1822.eurprd03.prod.outlook.com; FPR:; SPF:None; PTR:InfoNoRecords; 
+ MX:1; A:1; LANG:en; 
+received-spf: None (protection.outlook.com: rhul.ac.uk does not designate
+ permitted sender hosts)
+spamdiagnosticoutput: 1:99
+spamdiagnosticmetadata: NSPM
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: rhul.ac.uk
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jul 2016 19:09:41.4494 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 2efd699a-1922-4e69-b601-108008d28a2e
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR03MB1822
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/Lmz16uCJ42o20r5MgiZel5K2vTk>
+Cc: "tls@ietf.org" <tls@ietf.org>
+Subject: Re: [TLS] New draft: draft-ietf-tls-tls13-14.txt
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.17
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Tue, 12 Jul 2016 19:09:48 -0000
+
+Hi
+
+> On 12 Jul 2016, at 18:57, Dang, Quynh (Fed) <quynh.dang@nist.gov> wrote:
+>=20
+> Hi Kenny,=20
+>=20
+>> On 7/12/16, 12:33 PM, "Paterson, Kenny" <Kenny.Paterson@rhul.ac.uk> wrot=
+e:
+>>=20
+>> Unfortunately, that's not quite the right interpretation. The bounds one
+>> obtains depend on both the total amount of data encrypted AND the number
+>> of encryption queries the adversary is allowed to make to AES-GCM under
+>> the (single) target key.
+>=20
+> My understanding is that the total is the data complexity limit (counting
+> block encryptions and queries which are also block encryptions).
+
+Yes. And you can approximately convert between them by dividing by the bloc=
+k size (128 bits for AES).=20
+
+> To be
+> more precise, then we should count data complexity by number of block
+> encryptions (encrypting 1 bit is 1 block encryption). But for large data
+> in TLS, encryption is pretty much with full blocks of plaintexts.
+
+Yes. For our analysis, we assume 2^14 bytes per record. This equates to a w=
+hole number of AES blocks. You can add one more block per record if you wan=
+t to, to cater for any rounding up, but it makes only a tiny difference to =
+the final bounds.=20
+
+> If the attacker has 2^10 encrypted blocks and  is allowed to query anothe=
+r
+> 2^10 encryptions, then the total data is 2^20 because the total of 2^20
+> block encryptions happens. In TLS, it means that 2^20 AES block
+> encryptions happen.
+>=20
+I'm not sure I understand this. It's perhaps worth rereading what I wrote j=
+ust below about why we assume 2^14 bytes per record.=20
+
+Cheers,
+
+Kenny
+
+>> We assumed each record was 2^14 bytes in size to simplify the ensuing
+>> analysis, and to enable us to focus on how the security bounds then depe=
+nd
+>> on the number of records encrypted. See equation (5) and Table 2 in the
+>> note at=20
+>>=20
+>>    http://www.isg.rhul.ac.uk/~kp/TLS-AEbounds.pdf.
+>>=20
+>> In short, the security bound does not necessarily hold for ANY 2^52
+>> encrypted data bytes. For example, if the attacker encrypted 2^52 record=
+s
+>> of size 1 (!) then equation (5) would tell us almost nothing useful at a=
+ll
+>> about security.
+>>=20
+>> Finally, you write "to come to the 2^38 record limit, they assume that
+>> each record is the maximum 2^14 bytes". For clarity, we did not recommen=
+d
+>> a limit of 2^38 records. That's Quynh's preferred number, and is
+>> unsupported by our analysis.
+>>=20
+>> Cheers,
+>>=20
+>> Kenny
+>=20
+> Regards,
+> Quynh.=20
+>=20
+>=20
+>=20
+>=20
+>=20
+>=20
+>=20
+>=20
+>=20
+>=20
+>=20
+>=20
+>=20
+>=20
+>>=20
+>>=20
+>>=20
+>> On 12/07/2016 16:45, "Scott Fluhrer (sfluhrer)" <sfluhrer@cisco.com>
+>> wrote:
+>>=20
+>>> Actually, a more correct way of viewing the limit would be 2^52 encrypt=
+ed
+>>> data bytes. To come to the 2^38 record limit, they assume that each
+>>> record is the maximum 2^14 bytes.  Of course, at a 1Gbps rate, it'd tak=
+e
+>>> over a year to encrypt that much data...
+>>>=20
+>>>> -----Original Message-----
+>>>> From: TLS [mailto:tls-bounces@ietf.org] On Behalf Of Dang, Quynh (Fed)
+>>>> Sent: Tuesday, July 12, 2016 11:12 AM
+>>>> To: Paterson, Kenny; Dang, Quynh (Fed); Eric Rescorla; tls@ietf.org
+>>>> Subject: Re: [TLS] New draft: draft-ietf-tls-tls13-14.txt
+>>>>=20
+>>>> Hi Kenny,
+>>>>=20
+>>>> The indistinguishability-based security notion in the paper is a
+>>>> stronger
+>>>> security notion than the (old) traditional confidentiality notion.
+>>>>=20
+>>>>=20
+>>>> (*) Indistinguishability notion (framework) guarantees no other attack=
+s
+>>>> can
+>>>> be better than the indistinguishability bound. Intuitively, you can=B9=
+t
+>>>> attack if
+>>>> you can=B9t even tell two things are different or not. So, being able =
+to
+>>>> say two
+>>>> things are different or not is the minimal condition to lead to any
+>>>> attack.
+>>>>=20
+>>>> The traditional confidentiality definition is that knowing only the
+>>>> ciphertexts,
+>>>> the attacker can=B9t know any content of the corresponding plaintexts
+>>>> with a
+>>>> greater probability than some value and this value depends on the
+>>>> particular
+>>>> cipher. Of course, the maximum amount of data must not be more than
+>>>> some limit under a given key which also depends on the cipher.
+>>>>=20
+>>>> For example, with counter mode AES_128, Let=B9s say encrypting 2^70 in=
+put
+>>>> blocks with a single key. With the 2^70 ciphertext blocks alone (each
+>>>> block is
+>>>> 128 bits), I don=B9t think one can find out any content of any of the
+>>>> plaintexts.
+>>>> The chance for knowing any block of the plaintexts is
+>>>> 1/(2^128) in this case.
+>>>>=20
+>>>> I support the strongest indistinguishability notion mentioned in (*)
+>>>> above,
+>>>> but in my opinion we should provide good description to the users.
+>>>> That is why I support the limit around 2^38 records.
+>>>>=20
+>>>> Regards,
+>>>> Quynh.
+>>>>=20
+>>>> On 7/12/16, 10:03 AM, "Paterson, Kenny" <Kenny.Paterson@rhul.ac.uk>
+>>>> wrote:
+>>>>=20
+>>>>> Hi Quynh,
+>>>>>=20
+>>>>> This indistinguishability-based security notion is the confidentialit=
+y
+>>>>> notion that is by now generally accepted in the crypto community.
+>>>>> Meeting it is sufficient to guarantee security against many other
+>>>> forms
+>>>>> of attack on confidentiality, which is one of the main reasons we use
+>>>> it.
+>>>>>=20
+>>>>> You say that an attack in the sense implied by breaking this notion
+>>>>> does not break confidentiality. Can you explain what you mean by
+>>>>> "confidentiality", in a precise way? I can then try to tell you
+>>>> whether
+>>>>> this notion will imply yours.
+>>>>>=20
+>>>>> Regards
+>>>>>=20
+>>>>> Kenny
+>>>>>=20
+>>>>> On 12/07/2016 14:04, "TLS on behalf of Dang, Quynh (Fed)"
+>>>>> <tls-bounces@ietf.org on behalf of quynh.dang@nist.gov> wrote:
+>>>>>=20
+>>>>>> Hi Eric and all,
+>>>>>>=20
+>>>>>>=20
+>>>>>> In my opinion, we should give better information about data limit fo=
+r
+>>>>>> AES_GCM in TLS 1.3 instead of what is current in the draft 14.
+>>>>>>=20
+>>>>>>=20
+>>>>>> In this paper: http://www.isg.rhul.ac.uk/~kp/TLS-AEbounds.pdf,  what
+>>>>>> is called confidentiality attack is the known plaintext
+>>>>>> differentiality attack where  the attacker has/chooses two
+>>>> plaintexts,
+>>>>>> send them to the AES-encryption oracle.  The oracle encrypts one of
+>>>>>> them, then sends the ciphertext to the attacker.  After seeing the
+>>>>>> ciphertext, the attacker has some success probability of telling
+>>>> which
+>>>>>> plaintext  was encrypted and this success probability is in the
+>>>> column
+>>>>>> called =B3Attack Success Probability=B2 in Table 1.  This attack doe=
+s not
+>>>>>> break confidentiality.
+>>>>>>=20
+>>>>>>=20
+>>>>>> If the attack above breaks one of security goal(s) of your individua=
+l
+>>>>>> system, then making success probability of that attack at 2^(-32) ma=
+x
+>>>>>> is enough. In that case, the Max number of records is around 2^38.
+>>>>>>=20
+>>>>>>=20
+>>>>>>=20
+>>>>>>=20
+>>>>>> Regards,
+>>>>>> Quynh.
+>>>>>>=20
+>>>>>>=20
+>>>>>>=20
+>>>>>>=20
+>>>>>>=20
+>>>>>>=20
+>>>>>> Date: Monday, July 11, 2016 at 3:08 PM
+>>>>>> To: "tls@ietf.org" <tls@ietf.org>
+>>>>>> Subject: [TLS] New draft: draft-ietf-tls-tls13-14.txt
+>>>>>>=20
+>>>>>>=20
+>>>>>>=20
+>>>>>> Folks,
+>>>>>>=20
+>>>>>>=20
+>>>>>> I've just submitted draft-ietf-tls-tls13-14.txt and it should show u=
+p
+>>>>>> on the draft repository shortly. In the meantime you can find the
+>>>>>> editor's copy in the usual location at:
+>>>>>>=20
+>>>>>>=20
+>>>>>> http://tlswg.github.io/tls13-spec/
+>>>>>>=20
+>>>>>>=20
+>>>>>> The major changes in this document are:
+>>>>>>=20
+>>>>>>=20
+>>>>>> * A big restructure to make it read better. I moved the Overview
+>>>>>> to the beginning and then put the document in a more logical
+>>>>>> order starting with the handshake and then the record and
+>>>>>> alerts.
+>>>>>>=20
+>>>>>>=20
+>>>>>> * Totally rewrote the section which used to be called "Security
+>>>>>> Analysis" and is now called "Overview of Security Properties".
+>>>>>> This section is still kind of a hard hat area, so PRs welcome.
+>>>>>> In particular, I know I need to beef up the citations for the
+>>>>>> record layer section.
+>>>>>>=20
+>>>>>>=20
+>>>>>> * Removed the 0-RTT EncryptedExtensions and moved ticket_age
+>>>>>> into the ClientHello. This quasi-reverts a change in -13 that
+>>>>>> made implementation of 0-RTT kind of a pain.
+>>>>>>=20
+>>>>>>=20
+>>>>>> As usual, comments welcome.
+>>>>>> -Ekr
+>>>>>>=20
+>>>>>>=20
+>>>>>>=20
+>>>>>>=20
+>>>>>>=20
+>>>>>>=20
+>>>>>> * Allow cookies to be longer (*)
+>>>>>>=20
+>>>>>>=20
+>>>>>> * Remove the "context" from EarlyDataIndication as it was undefined
+>>>>>> and nobody used it (*)
+>>>>>>=20
+>>>>>>=20
+>>>>>> * Remove 0-RTT EncryptedExtensions and replace the ticket_age
+>>>>>> extension
+>>>>>> with an obfuscated version. Also necessitates a change to
+>>>>>> NewSessionTicket (*).
+>>>>>>=20
+>>>>>>=20
+>>>>>> * Move the downgrade sentinel to the end of ServerHello.Random
+>>>>>> to accomodate tlsdate (*).
+>>>>>>=20
+>>>>>>=20
+>>>>>> * Define ecdsa_sha1 (*).
+>>>>>>=20
+>>>>>>=20
+>>>>>> * Allow resumption even after fatal alerts. This matches current
+>>>>>> practice.
+>>>>>>=20
+>>>>>>=20
+>>>>>> * Remove non-closure warning alerts. Require treating unknown alerts
+>>>>>> as
+>>>>>> fatal.
+>>>>>>=20
+>>>>>>=20
+>>>>>> * Make the rules for accepting 0-RTT less restrictive.
+>>>>>>=20
+>>>>>>=20
+>>>>>> * Clarify 0-RTT backward-compatibility rules.
+>>>>>>=20
+>>>>>>=20
+>>>>>> * Clarify how 0-RTT and PSK identities interact.
+>>>>>>=20
+>>>>>>=20
+>>>>>> * Add a section describing the data limits for each cipher.
+>>>>>>=20
+>>>>>>=20
+>>>>>> * Major editorial restructuring.
+>>>>>>=20
+>>>>>>=20
+>>>>>> * Replace the Security Analysis section with a WIP draft.
+>>>>>>=20
+>>>>>>=20
+>>>>>> (*) indicates changes to the wire protocol which may require
+>>>>>> implementations
+>>>>>>   to update.
+>>>>=20
+>>>> _______________________________________________
+>>>> TLS mailing list
+>>>> TLS@ietf.org
+>>>> https://www.ietf.org/mailman/listinfo/tls
+>=20
+

@@ -1,0 +1,191 @@
+Return-Path: <sean@sn3rd.com>
+X-Original-To: tls@mail2.ietf.org
+Delivered-To: tls@mail2.ietf.org
+Received: from localhost (localhost [127.0.0.1])
+	by mail2.ietf.org (Postfix) with ESMTP id EFBE94A7FABC
+	for <tls@mail2.ietf.org>; Thu, 24 Jul 2025 09:30:23 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at ietf.org
+X-Spam-Flag: NO
+X-Spam-Score: -2.099
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.099 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+	DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, HTML_MESSAGE=0.001,
+	RCVD_IN_DNSWL_NONE=-0.0001, SPF_HELO_NONE=0.001, SPF_PASS=-0.001]
+	autolearn=unavailable autolearn_force=no
+Authentication-Results: mail2.ietf.org (amavisd-new); dkim=pass (1024-bit key)
+	header.d=sn3rd.com
+Received: from mail2.ietf.org ([166.84.6.31])
+	by localhost (mail2.ietf.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id iCuHqyWCUxGE for <tls@mail2.ietf.org>;
+	Thu, 24 Jul 2025 09:30:19 -0700 (PDT)
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com
+ [IPv6:2607:f8b0:4864:20::b30])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail2.ietf.org (Postfix) with ESMTPS id EDF994A7F9C3
+	for <tls@ietf.org>; Thu, 24 Jul 2025 09:29:16 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id
+ 3f1490d57ef6-e8dbe824ebcso1099112276.0
+        for <tls@ietf.org>; Thu, 24 Jul 2025 09:29:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sn3rd.com; s=google; t=1753374556; x=1753979356; darn=ietf.org;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rQMOGuxDGZRaPOqoZDi8UVOT1GtidICokrfm9GTiPM0=;
+        b=G5wiZ/WlsmYefVuFuPOVZgrM9HhHg0i8T/Z8eV1yyWBdQKhHKV8GsEuNl1lqoMBO7M
+         REITIsZ8R3+iAIb8kPYH//BfElSpRnCd2vcu/HoIDci3z+SbicQsneGSQAdXXXJ8S2p7
+         EsMuRxWzeZT3iJHo4c62GBP/fwyfDGKSYDLD8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753374556; x=1753979356;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rQMOGuxDGZRaPOqoZDi8UVOT1GtidICokrfm9GTiPM0=;
+        b=vdypsoNjlY9TZJdpNrVxuMgZgCprTJrYYqJBp9rGaIfxUHUlJxKt4ZQJDmOrchQJcz
+         YO7hYT/ara+KWCaMMxagDZPEVHedBt+W18AwQiVcvpm6tlfP4L+QUqT+HBHz99J/5lRD
+         z7q7yNVSYa3kUydhdBxUjY8MSMQ6f1MeM0F0bjaPJUMaKwJm84QuS5cz9mDkWCd0KfLE
+         N71QE8QBVbTbXD682a71S75mXDR9ZCYeiXnm0LbP7L5Nm4rfXGGbsmB8AGKgzk4A0Uni
+         /6YRSLqASbZ6I1xTZoynn61jnNTY1VBnJPMOq3yy5RZbAPOtQjTgvUAzeT/VmcvDfmk0
+         J8vg==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCUCCseqffXKD/XEaCh/yeSpoyDdQJXamggFRIVUEDeoMWxbG5ucG5BaiWtBmXFkBF4HNV8=@ietf.org
+X-Gm-Message-State: AOJu0Yw+ywmkgUSIPAMgGRsDck4KDg5VY/EiPE9XesW1uMNrQypfmoe7
+	Bjh+wAczVSm+6bRR4SltKOPYIK3Ko77pWc15NeslevC4/0rt7l5svqJUTJJPizuf/mo=
+X-Gm-Gg: ASbGncuxmRQQJ4/qJV+5gFn7Smt042zZy0zSdrFZYoaDpr04vEz+T5p2gE821LLJTmC
+	Ok4a1N3qzXlkm9ZxsRPIwI9psbor2ltMuyv7IJx/6dtqC0LrQdn7rWo+15Zq0BCbZqj+lBSfbfO
+	PIq7ZWx8CTtPXFZnMMNHzfn3cOBl7jHzcNwruqGsOjWfX0U5svYjP0gENg+3q4ApzQqWGBoWGG2
+	ZFhNf10W/+iLAseRQFfy1/WFxb8/ZQmsVmU/kMah0iPFBSZZoW0moXmw77EygwwAiXy5sTYGwua
+	SKd9m8S5wfJtJDLumWhDGIPgdPpfdPgddNlHCJnOMMDPBiOiXC87NSnDOcSx847CdvThWzDzxkq
+	O2mi+ZKTfdTBEFQOHQn0vkJU5Kxg6OaBJy2Py3ZntXLr7Lg==
+X-Google-Smtp-Source: 
+ AGHT+IHQ6DUbtaO2MgBysKhIhHOcUu8btP/znu2pUHXfL869D7/kVdtpdn6KmrlKvKgkblTZolU4KQ==
+X-Received: by 2002:a05:6902:1243:b0:e8d:743b:ebc with SMTP id
+ 3f1490d57ef6-e8de2145d61mr2745238276.23.1753374556027;
+        Thu, 24 Jul 2025 09:29:16 -0700 (PDT)
+Received: from smtpclient.apple ([2001:67c:370:1998:ed81:333f:ffe3:b077])
+        by smtp.gmail.com with ESMTPSA id
+ 3f1490d57ef6-e8ddf530accsm573767276.39.2025.07.24.09.29.14
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 24 Jul 2025 09:29:15 -0700 (PDT)
+From: Sean Turner <sean@sn3rd.com>
+Message-Id: <911F15AA-E037-4557-8F36-209F7DB9516D@sn3rd.com>
+Content-Type: multipart/alternative;
+	boundary="Apple-Mail=_5B093170-7974-4D6D-B149-13DB5072739D"
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.600.51.1.1\))
+Date: Thu, 24 Jul 2025 18:28:53 +0200
+In-Reply-To: 
+ <CAF8qwaDifxkVuPv7Utem5zX3d=buFxU=mMX5kySNJbKZDRt1Vw@mail.gmail.com>
+To: David Benjamin <davidben@chromium.org>
+References: <A729C01D-2CFA-48DD-B709-70D3DBB41250@sn3rd.com>
+ <MN2PR17MB4031B32FA6D976746511E424CD5EA@MN2PR17MB4031.namprd17.prod.outlook.com>
+ <CAF8qwaDifxkVuPv7Utem5zX3d=buFxU=mMX5kySNJbKZDRt1Vw@mail.gmail.com>
+X-Mailer: Apple Mail (2.3826.600.51.1.1)
+Message-ID-Hash: XFL57WZU3BUECJD44OZSRS4A7ZEQEMYM
+X-Message-ID-Hash: XFL57WZU3BUECJD44OZSRS4A7ZEQEMYM
+X-MailFrom: sean@sn3rd.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+CC: "Salz, Rich" <rsalz=40akamai.com@dmarc.ietf.org>, TLS List <tls@ietf.org>
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Re=3A_Working_Group_Last_Call_for_Legacy_RSASSA-PKCS1-v1?=
+ =?utf-8?q?=5F5_codepoints_for_TLS_1=2E3?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/dzRtwTyNoWx1Crx6J3ksS8ntGMg>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+
+--Apple-Mail=_5B093170-7974-4D6D-B149-13DB5072739D
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=utf-8
+
+Thanks for that!
+
+spt
+
+> On Jul 24, 2025, at 18:26, David Benjamin <davidben@chromium.org> =
+wrote:
+>=20
+> URL correction: =
+https://datatracker.ietf.org/doc/draft-ietf-tls-tls13-pkcs1/03/
+>=20
+> I think it is ready for publication.
+>=20
+> On Thu, Jul 24, 2025 at 9:05=E2=80=AFAM Salz, Rich =
+<rsalz=3D40akamai.com@dmarc.ietf.org =
+<mailto:40akamai.com@dmarc.ietf.org>> wrote:
+>> Ship it.
+>>=20
+>> _______________________________________________
+>> TLS mailing list -- tls@ietf.org <mailto:tls@ietf.org>
+>> To unsubscribe send an email to tls-leave@ietf.org =
+<mailto:tls-leave@ietf.org>
+
+
+--Apple-Mail=_5B093170-7974-4D6D-B149-13DB5072739D
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html;
+	charset=utf-8
+
+<html><head><meta http-equiv=3D"content-type" content=3D"text/html; =
+charset=3Dutf-8"></head><body style=3D"overflow-wrap: break-word; =
+-webkit-nbsp-mode: space; line-break: after-white-space;">Thanks for =
+that!<div><br></div><div>spt<br =
+id=3D"lineBreakAtBeginningOfMessage"><div><br><blockquote =
+type=3D"cite"><div>On Jul 24, 2025, at 18:26, David Benjamin =
+&lt;davidben@chromium.org&gt; wrote:</div><br =
+class=3D"Apple-interchange-newline"><div><div dir=3D"ltr">URL =
+correction:&nbsp;<a =
+href=3D"https://datatracker.ietf.org/doc/draft-ietf-tls-tls13-pkcs1/03/">h=
+ttps://datatracker.ietf.org/doc/draft-ietf-tls-tls13-pkcs1/03/</a><div><br=
+></div><div>I think it is ready for publication.</div></div><br><div =
+class=3D"gmail_quote gmail_quote_container"><div dir=3D"ltr" =
+class=3D"gmail_attr">On Thu, Jul 24, 2025 at 9:05=E2=80=AFAM Salz, Rich =
+&lt;rsalz=3D<a =
+href=3D"mailto:40akamai.com@dmarc.ietf.org">40akamai.com@dmarc.ietf.org</a=
+>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" =
+style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid =
+rgb(204,204,204);padding-left:1ex"><div class=3D"msg-3879113845586599436">=
+
+
+
+
+
+
+<div lang=3D"EN-US" style=3D"overflow-wrap: break-word;">
+<div class=3D"m_-3879113845586599436WordSection1">
+<div id=3D"m_-3879113845586599436mail-editor-reference-message-container">=
+
+<div>
+<div>
+<div><p class=3D"MsoNormal"><span =
+style=3D"font-size:11pt;font-family:Calibri,sans-serif">Ship =
+it.</span><span style=3D"font-size:11pt"><u></u><u></u></span></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+_______________________________________________<br>
+TLS mailing list -- <a href=3D"mailto:tls@ietf.org" =
+target=3D"_blank">tls@ietf.org</a><br>
+To unsubscribe send an email to <a href=3D"mailto:tls-leave@ietf.org" =
+target=3D"_blank">tls-leave@ietf.org</a><br>
+</div></blockquote></div>
+</div></blockquote></div><br></div></body></html>=
+
+--Apple-Mail=_5B093170-7974-4D6D-B149-13DB5072739D--
+

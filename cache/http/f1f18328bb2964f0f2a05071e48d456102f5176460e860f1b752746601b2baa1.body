@@ -1,0 +1,411 @@
+Return-Path: <ekr@rtfm.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 2B4FF12996D
+ for <tls@ietfa.amsl.com>; Wed,  9 Nov 2016 02:25:47 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.599
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.599 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_LOW=-0.7]
+ autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=rtfm-com.20150623.gappssmtp.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id HiC6acw-nJ7C for <tls@ietfa.amsl.com>;
+ Wed,  9 Nov 2016 02:25:44 -0800 (PST)
+Received: from mail-yw0-x233.google.com (mail-yw0-x233.google.com
+ [IPv6:2607:f8b0:4002:c05::233])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id A692612959D
+ for <tls@ietf.org>; Wed,  9 Nov 2016 02:25:44 -0800 (PST)
+Received: by mail-yw0-x233.google.com with SMTP id i145so108212205ywg.2
+ for <tls@ietf.org>; Wed, 09 Nov 2016 02:25:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=rtfm-com.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+ :cc; bh=CijFGCR65A4SnAeZzvRJogBe8LMOUaitivWzkrez8g0=;
+ b=H7YQohWGCwl+rxtalCEcww6CmVyptgyNG9nJpV5jGCy/VBpnXj5N+cGIt4X2YA1jgu
+ 0bsh5qG/SXSDCD/My3vxRfdL0WawejwoyibD3pOXQw3ce9HXmz8u35jblYQBc2+e+qz3
+ aMKbszGx4KQ2BjRSVwlDi2dhUcLUF9RwQOV0IRiOZC/srF843cyu8FmZuoLvhEGhk55L
+ pauBx4L8ONVFUdD7wKmd/fbyZFRVe9Ge9xsbrR78/Tcs2mWDH3pA9eC4DVJrY0oyLkFr
+ KnzRvdSkb3UJ6RLRi8m2XmMj+vWGjygRxxgtb8mEUlwwnI83Nr9LiRer0YVxoRJjmzAP
+ gloQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20130820;
+ h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+ :message-id:subject:to:cc;
+ bh=CijFGCR65A4SnAeZzvRJogBe8LMOUaitivWzkrez8g0=;
+ b=fZcuSqvTkv3+5M7UcUcZwpevM8+/1J1O5QNgxw0iCHtLu7pDCLRnrblPabdLMx47VE
+ McAC5MET83K5Y8rqzzic5tIN5qpLEiyUkIG7DkJTZ9LUjpvM4d3PBDC2MmKC5OB3k4e5
+ ME0yBLPLEtS3Bjp3VTzqa2iIw5pEi/CKOu0Wd0SeNgzyS9vipqf6MplQ1pTJv23BOjkC
+ 3W+p8cAnH2DATtfNUns/zMF95W9UsnA8kGn7+GM2+OPD+tEpny2gvH1sQahkkNAkFv6T
+ 2EgLO5Me9Q0fPn1iacT5J+FwyCF3DEoEz2ifyiK2BAoCUAwn92QwzM2M7PFdr3r2ZMYk
+ EgQw==
+X-Gm-Message-State: ABUngvfzWZgQ0QKgWoy20F/LzwiE7Cx/gs55S/F6SfNKsUvN33FTCvjyuZQo3xRSZwpjLfXBTaW9MQPOK3sfuQ==
+X-Received: by 10.129.125.215 with SMTP id y206mr15425206ywc.234.1478687143849; 
+ Wed, 09 Nov 2016 02:25:43 -0800 (PST)
+MIME-Version: 1.0
+Received: by 10.129.159.141 with HTTP; Wed, 9 Nov 2016 02:25:03 -0800 (PST)
+In-Reply-To: <20161109093122.6D3111A579@ld9781.wdf.sap.corp>
+References: <61800c8dd50f4a1a911f8f2c96b65dda@usma1ex-dag1mb1.msg.corp.akamai.com>
+ <20161109093122.6D3111A579@ld9781.wdf.sap.corp>
+From: Eric Rescorla <ekr@rtfm.com>
+Date: Wed, 9 Nov 2016 02:25:03 -0800
+Message-ID: <CABcZeBPygA5XOAwnGpV+GL5rJhz81MizWvhgPO1gKsQPkzx=JA@mail.gmail.com>
+To: "mrex@sap.com" <mrex@sap.com>
+Content-Type: multipart/alternative; boundary=001a11492dfaf1a2580540dbada2
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/g3eagt-W1djUQTHFnGHEG8JHpUA>
+Cc: "tls@ietf.org" <tls@ietf.org>
+Subject: Re: [TLS] Working Group Last Call for draft-ietf-tls-tls13-18
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.17
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Wed, 09 Nov 2016 10:25:47 -0000
+
+--001a11492dfaf1a2580540dbada2
+Content-Type: text/plain; charset=UTF-8
+
+On Wed, Nov 9, 2016 at 1:31 AM, Martin Rex <mrex@sap.com> wrote:
+
+> Salz, Rich wrote:
+> >> the PDUs are still pretty much predictable
+> >> heuristically (by their ordering), even when they're padded.
+> >
+> > ...
+> >
+> >> So besides being completely pointless, can you describe any realistic
+> >> problem that is worth breaking middleware at the endpoints so badly?
+> >
+> > I found the language difference interesting.  We could conduct an
+> > interesting thought experiment by reversing the emphasis on each
+> > of the above fragments.  But I won't.
+> >
+> > Instead, I'll point out that this is in-charter, in-scope, and WG
+> consensus
+> > has generally been to "encrypt all the bits" as much as feasible.
+>
+> The problem here is that this breaks (network) flow control, existing
+> (network socket) event management, and direction-independent connection
+> closure, and does so completely without value.
+>
+> When TLS records with AppData can be left in the network socket while
+> the application layer is not ready to process & consume it, then TCP flow
+> control works better in high load situation.
+>
+>
+> The semantics defined for the TLS Closure Alert in SSLv3->TLSv1.2
+> is somewhat difficult for full-duplex communication, direction-independent
+> shutdown, and confirmation of receipt:
+>
+>    https://tools.ietf.org/html/rfc5246#section-7.2.1
+>
+>    7.2.1.  Closure Alerts
+>
+>    The client and the server must share knowledge that the connection is
+>    ending in order to avoid a truncation attack.  Either party may
+>    initiate the exchange of closing messages.
+>
+>    close_notify
+>       This message notifies the recipient that the sender will not send
+>       any more messages on this connection.  Note that as of TLS 1.1,
+>       failure to properly close a connection no longer requires that a
+>       session not be resumed.  This is a change from TLS 1.0 to conform
+>       with widespread implementation practice.
+>
+>    Either party may initiate a close by sending a close_notify alert.
+>    Any data received after a closure alert is ignored.
+>
+>    Unless some other fatal alert has been transmitted, each party is
+>    required to send a close_notify alert before closing the write side
+>    of the connection.  The other party MUST respond with a close_notify
+>    alert of its own and close down the connection immediately,
+>    discarding any pending writes.  It is not required for the initiator
+>    of the close to wait for the responding close_notify alert before
+>    closing the read side of the connection.
+>
+>
+> The issue here is that the receiving TLS stack, when processing an
+> incoming TLS CloseNotify Alert, will typically immediately respond
+> with a TLS CloseNotifyAlert on its own, precluding the application
+> from sending any further data in the other direction in response
+>
+> When hiding the TLS record ContentType, then pre-reading and coalescing
+> (=streaming) application data records suddenly becomes a problem, because
+> receiving and processing a hidden TLS CloseNotify Alert will cause
+> a TLS CloseNotify Alert response (an alleged indicator for a graceful
+> connection closure) being generated and returned even before
+> the application has (a) seen and (b) had a chance to respond to the
+> latest batch of application data.
+>
+>
+> To prevent this from happening, and leave the decision to the application
+> of whether to read a (potential) CloseNotify alert from the wire,
+> I would have to go back to trickling TLS records (including those
+> pathologically fragmented ones from Google) to the application
+> whenever TLSv1.3 is negotiated.
+>
+
+I'm not quite following who's who in this scenario, so some potentially
+stupid
+questions below.
+
+As I understand it, you have the following situation:
+
+- A Web application server
+- Some middleware, which comes in two pieces
+  - A crypto-unaware network component
+  - The TLS stack (you control this piece as well, right?)
+- The client
+
+So, in this case, the client sends a flight of records which (ignoring
+rehandshakes
+and other TLS 1.3 post-handshake shenanigans such as KeyUpdate) contains
+a bunch of application data traffic potentially terminating in a
+close_notify. In
+TLS 1.2 you inspect the content type, deliver all the app data to the TLS
+processor,
+but hold the close_notify. And those packets are in turn handed to the Web
+server/application. Is that correct? If so, when do you deliver the
+close_notify
+and how do you know how?
+
+In the TLS 1.3 case, as I understand it, you can't see which packets are
+which
+so you just have to deliver all the packets to the TLS processor, and if
+one of
+them contains a close_notify, then it responds with its own close_notify
+(I'm getting this from the text above where you say "being generated and
+returned even before the application has..."). Is that right as well? Can
+you explain
+further why this is a problem: are you expecting that if you send
+application
+data to the client after sending the close_notify itself, the client will
+consume
+it? Or are we somehow concerned with side effects on the application server?
+
+Can you help me understand?
+
+thanks,
+-Ekr
+
+
+
+
+
+
+
+
+There is a similar (slightly smaller) issuer with the coalesced TLS
+> handshake/alert/css record processing during the TLS handshake phase,
+> Feeding the whole "flight" already waiting in network buffers into
+> the TLS stack at once will no longer be possible, with hidden ContentTypes
+> I will have to start trickling TLS records with handshake messages into
+> the TLS stack, and have to poll the handshake state after each TLS record
+> in order to heuristically determine whether the next record waiting in
+> the network buffer is (likely) a record with AppData--which I must leave
+> in the network buffer until the application caller explicitly calls for it.
+>
+>
+> The really painful issue are constantly mind-changing browsers loosing
+> interest in responses and sending TLS CloseNotify instead of TCP RSTs
+> -- I don't know how to deal with these without breaking the current
+> (network socket) event semantics for the app.
+>
+>
+> -Martin
+>
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+>
+
+--001a11492dfaf1a2580540dbada2
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><br><div class=3D"gmail_extra"><br><div class=3D"gmail_quo=
+te">On Wed, Nov 9, 2016 at 1:31 AM, Martin Rex <span dir=3D"ltr">&lt;<a hre=
+f=3D"mailto:mrex@sap.com" target=3D"_blank">mrex@sap.com</a>&gt;</span> wro=
+te:<br><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;=
+border-left:1px solid rgb(204,204,204);padding-left:1ex"><span>Salz, Rich w=
+rote:<br>
+&gt;&gt; the PDUs are still pretty much predictable<br>
+&gt;&gt; heuristically (by their ordering), even when they&#39;re padded.<b=
+r>
+&gt;<br>
+&gt; ...<br>
+&gt;<br>
+&gt;&gt; So besides being completely pointless, can you describe any realis=
+tic<br>
+&gt;&gt; problem that is worth breaking middleware at the endpoints so badl=
+y?<br>
+&gt;<br>
+&gt; I found the language difference interesting.=C2=A0 We could conduct an=
+<br>
+&gt; interesting thought experiment by reversing the emphasis on each<br>
+&gt; of the above fragments.=C2=A0 But I won&#39;t.<br>
+&gt;<br>
+&gt; Instead, I&#39;ll point out that this is in-charter, in-scope, and WG =
+consensus<br>
+&gt; has generally been to &quot;encrypt all the bits&quot; as much as feas=
+ible.<br>
+<br>
+</span>The problem here is that this breaks (network) flow control, existin=
+g<br>
+(network socket) event management, and direction-independent connection<br>
+closure, and does so completely without value.<br>
+<br>
+When TLS records with AppData can be left in the network socket while<br>
+the application layer is not ready to process &amp; consume it, then TCP fl=
+ow<br>
+control works better in high load situation.<br>
+<br>
+<br>
+The semantics defined for the TLS Closure Alert in SSLv3-&gt;TLSv1.2<br>
+is somewhat difficult for full-duplex communication, direction-independent<=
+br>
+shutdown, and confirmation of receipt:<br>
+<br>
+=C2=A0 =C2=A0<a href=3D"https://tools.ietf.org/html/rfc5246#section-7.2.1" =
+rel=3D"noreferrer" target=3D"_blank">https://tools.ietf.org/html/r<wbr>fc52=
+46#section-7.2.1</a><br>
+<br>
+=C2=A0 =C2=A07.2.1.=C2=A0 Closure Alerts<br>
+<br>
+=C2=A0 =C2=A0The client and the server must share knowledge that the connec=
+tion is<br>
+=C2=A0 =C2=A0ending in order to avoid a truncation attack.=C2=A0 Either par=
+ty may<br>
+=C2=A0 =C2=A0initiate the exchange of closing messages.<br>
+<br>
+=C2=A0 =C2=A0close_notify<br>
+=C2=A0 =C2=A0 =C2=A0 This message notifies the recipient that the sender wi=
+ll not send<br>
+=C2=A0 =C2=A0 =C2=A0 any more messages on this connection.=C2=A0 Note that =
+as of TLS 1.1,<br>
+=C2=A0 =C2=A0 =C2=A0 failure to properly close a connection no longer requi=
+res that a<br>
+=C2=A0 =C2=A0 =C2=A0 session not be resumed.=C2=A0 This is a change from TL=
+S 1.0 to conform<br>
+=C2=A0 =C2=A0 =C2=A0 with widespread implementation practice.<br>
+<br>
+=C2=A0 =C2=A0Either party may initiate a close by sending a close_notify al=
+ert.<br>
+=C2=A0 =C2=A0Any data received after a closure alert is ignored.<br>
+<br>
+=C2=A0 =C2=A0Unless some other fatal alert has been transmitted, each party=
+ is<br>
+=C2=A0 =C2=A0required to send a close_notify alert before closing the write=
+ side<br>
+=C2=A0 =C2=A0of the connection.=C2=A0 The other party MUST respond with a c=
+lose_notify<br>
+=C2=A0 =C2=A0alert of its own and close down the connection immediately,<br=
+>
+=C2=A0 =C2=A0discarding any pending writes.=C2=A0 It is not required for th=
+e initiator<br>
+=C2=A0 =C2=A0of the close to wait for the responding close_notify alert bef=
+ore<br>
+=C2=A0 =C2=A0closing the read side of the connection.<br>
+<br>
+<br>
+The issue here is that the receiving TLS stack, when processing an<br>
+incoming TLS CloseNotify Alert, will typically immediately respond<br>
+with a TLS CloseNotifyAlert on its own, precluding the application<br>
+from sending any further data in the other direction in response<br>
+<br>
+When hiding the TLS record ContentType, then pre-reading and coalescing<br>
+(=3Dstreaming) application data records suddenly becomes a problem, because=
+<br>
+receiving and processing a hidden TLS CloseNotify Alert will cause<br>
+a TLS CloseNotify Alert response (an alleged indicator for a graceful<br>
+connection closure) being generated and returned even before<br>
+the application has (a) seen and (b) had a chance to respond to the<br>
+latest batch of application data.<br>
+<br>
+<br>
+To prevent this from happening, and leave the decision to the application<b=
+r>
+of whether to read a (potential) CloseNotify alert from the wire,<br>
+I would have to go back to trickling TLS records (including those<br>
+pathologically fragmented ones from Google) to the application<br>
+whenever TLSv1.3 is negotiated.<br></blockquote><div><br></div><div>I&#39;m=
+ not quite following who&#39;s who in this scenario, so some potentially st=
+upid</div><div>questions below.</div><div><br></div><div>As I understand it=
+, you have the following situation:</div><div><br></div><div>- A Web applic=
+ation server</div><div>- Some middleware, which comes in two pieces</div><d=
+iv>=C2=A0 - A crypto-unaware network component</div><div>=C2=A0 - The TLS s=
+tack (you control this piece as well, right?)</div><div>- The client</div><=
+div><br></div><div>So, in this case, the client sends a flight of records w=
+hich (ignoring rehandshakes</div><div>and other TLS 1.3 post-handshake shen=
+anigans such as KeyUpdate) contains</div><div>a bunch of application data t=
+raffic potentially terminating in a close_notify. In</div><div>TLS 1.2 you =
+inspect the content type, deliver all the app data to the TLS processor,</d=
+iv><div>but hold the close_notify. And those packets are in turn handed to =
+the Web</div><div>server/application. Is that correct? If so, when do you d=
+eliver the close_notify</div><div>and how do you know how?</div><div><br></=
+div><div>In the TLS 1.3 case, as I understand it, you can&#39;t see which p=
+ackets are which</div><div>so you just have to deliver all the packets to t=
+he TLS processor, and if one of</div><div>them contains a close_notify, the=
+n it responds with its own close_notify</div><div>(I&#39;m getting this fro=
+m the text above where you say &quot;being generated and</div><div>returned=
+ even before the application has...&quot;). Is that right as well? Can you =
+explain</div><div>further why this is a problem: are you expecting that if =
+you send application</div><div>data to the client after sending the close_n=
+otify itself, the client will consume</div><div>it? Or are we somehow conce=
+rned with side effects on the application server?</div><div><br></div><div>=
+Can you help me understand?</div><div><br></div><div>thanks,</div><div>-Ekr=
+</div><div><br></div><div><br></div><div><br></div><div><br></div><div><br>=
+</div><div><br></div><div><br></div><div><br></div><blockquote class=3D"gma=
+il_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,2=
+04,204);padding-left:1ex">
+There is a similar (slightly smaller) issuer with the coalesced TLS<br>
+handshake/alert/css record processing during the TLS handshake phase,<br>
+Feeding the whole &quot;flight&quot; already waiting in network buffers int=
+o<br>
+the TLS stack at once will no longer be possible, with hidden ContentTypes<=
+br>
+I will have to start trickling TLS records with handshake messages into<br>
+the TLS stack, and have to poll the handshake state after each TLS record<b=
+r>
+in order to heuristically determine whether the next record waiting in<br>
+the network buffer is (likely) a record with AppData--which I must leave<br=
+>
+in the network buffer until the application caller explicitly calls for it.=
+<br>
+<br>
+<br>
+The really painful issue are constantly mind-changing browsers loosing<br>
+interest in responses and sending TLS CloseNotify instead of TCP RSTs<br>
+-- I don&#39;t know how to deal with these without breaking the current<br>
+(network socket) event semantics for the app.<br>
+<span class=3D"gmail-m_-4049838799356567384HOEnZb"><font color=3D"#888888">=
+<br>
+<br>
+-Martin<br>
+</font></span><div class=3D"gmail-m_-4049838799356567384HOEnZb"><div class=
+=3D"gmail-m_-4049838799356567384h5"><br>
+______________________________<wbr>_________________<br>
+TLS mailing list<br>
+<a href=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.org</a><br>
+<a href=3D"https://www.ietf.org/mailman/listinfo/tls" rel=3D"noreferrer" ta=
+rget=3D"_blank">https://www.ietf.org/mailman/l<wbr>istinfo/tls</a><br>
+</div></div></blockquote></div><br></div></div>
+
+--001a11492dfaf1a2580540dbada2--
+

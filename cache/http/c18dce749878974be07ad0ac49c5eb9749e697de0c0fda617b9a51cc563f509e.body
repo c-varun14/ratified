@@ -1,0 +1,497 @@
+Return-Path: <quynh.dang@nist.gov>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 69F06129B26
+ for <tls@ietfa.amsl.com>; Fri, 10 Feb 2017 11:36:32 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.901
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.901 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_NONE=-0.0001, SPF_HELO_PASS=-0.001,
+ SPF_PASS=-0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=nistgov.onmicrosoft.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id MvlUxW6dXgcB for <tls@ietfa.amsl.com>;
+ Fri, 10 Feb 2017 11:36:29 -0800 (PST)
+Received: from gcc01-dm2-obe.outbound.protection.outlook.com
+ (mail-dm2gcc01on0136.outbound.protection.outlook.com [23.103.201.136])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 5732C129B25
+ for <tls@ietf.org>; Fri, 10 Feb 2017 11:36:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=nistgov.onmicrosoft.com; s=selector1-nist-gov;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=/RC4K1ufqEUjFKfO3hV6JxqyREy5B+X+4Ap5X2ylSOE=;
+ b=tb0AR19uLfrFkx+ChxBNK7ffOPlFEiPO9rRKvw1oLlzShMWaS0lmf2f05XngUCQ8K5zG9+ucIKVzFJcN96/jWTDmCuquLMylpjGnjPy16CmrU/MSZzYb3CnoRIl47GptwKwqgTBhtaN1qjsbxe1tYr015a66kGBi0KyUsQPdDeQ=
+Received: from CY4PR09MB1464.namprd09.prod.outlook.com (10.173.191.22) by
+ CY4PR09MB1461.namprd09.prod.outlook.com (10.173.191.19) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
+ 15.1.888.16; Fri, 10 Feb 2017 19:36:27 +0000
+Received: from CY4PR09MB1464.namprd09.prod.outlook.com ([10.173.191.22]) by
+ CY4PR09MB1464.namprd09.prod.outlook.com ([10.173.191.22]) with mapi id
+ 15.01.0888.026; Fri, 10 Feb 2017 19:36:27 +0000
+From: "Dang, Quynh (Fed)" <quynh.dang@nist.gov>
+To: Rene Struik <rstruik.ext@gmail.com>, Sean Turner <sean@sn3rd.com>,
+ "<tls@ietf.org>" <tls@ietf.org>
+Thread-Topic: [TLS] [Cfrg] Closing out tls1.3 "Limits on key usage" PRs
+ (#765/#769)
+Thread-Index: AQHSg84y+88vw5exDE6fOqGEW6ep0KFimMQAgAAIvxk=
+Date: Fri, 10 Feb 2017 19:36:27 +0000
+Message-ID: <CY4PR09MB146415E668A3DA0484190BC9F3440@CY4PR09MB1464.namprd09.prod.outlook.com>
+References: <352D31A3-5A8B-4790-9473-195C256DEEC8@sn3rd.com>
+ <eeef0b36-2fdd-8de0-3bd7-7f0c5b68e9e9@gmail.com>
+ <D4C3749F.2F856%qdang@nist.gov>,
+ <51978c0d-f944-5ebf-ee85-cdc801568e8a@gmail.com>
+In-Reply-To: <51978c0d-f944-5ebf-ee85-cdc801568e8a@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=quynh.dang@nist.gov; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [129.6.105.150]
+x-ms-office365-filtering-correlation-id: af8743ad-29f3-4eb2-9bad-08d451ec1b1a
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: UriScan:; BCL:0; PCL:0; RULEID:(22001)(48565401081);
+ SRVR:CY4PR09MB1461; 
+x-microsoft-exchange-diagnostics: 1; CY4PR09MB1461;
+ 7:Tvmz1I9smEOm634E2dtS/81MKf6JD46qJvRc18qtWl4vLJGdx5K2mrUpOLTzRH+s8Y9AQZrBdRmovUFkIm7RBv/VybzvDclEDzGQC1FgRmUlSKw47BH89xakgL95d4hwrXHtV3aMDQOV0JCfLjA6nh55TgyHq/fcLHVjtoJ7KiPzTFSH0wxZR4c9VMPJYNQ41XAVILS/SjlqvyawGzCrJsGvlWoKJ40ybni1Io5ehLnCTLVfLAz1bVzMZFzMpvehOvX/WusZuzTU9ILUymhU+fMtXDTjHB2zK5j+GctlBPieX7/Kel+44hON2aC6SOzf5PDZ1NQS83jnUbWXyfo0SjlOZdYVJi/8H/MKmXVXIFiiDLRAj+7ExeAPCycWlHyFAF8j+t+akG0qfBcL609eEs+yM/7+HtK7QPJne7iqcSf81akTh8oZURrODJHjcpS9garZ6BvY4bHXrFsX4/ysdCL7YnQgc3uPDmmenVBGvHvxjfGNdJ1DOheBvj6nV3fpUeV+RX3N4yXhCRtjnIw4Gw==
+x-microsoft-antispam-prvs: <CY4PR09MB1461BDC17D34D8CDD415F314F3440@CY4PR09MB1461.namprd09.prod.outlook.com>
+x-exchange-antispam-report-test: UriScan:(65766998875637)(166708455590820)(100405760836317)(131022147185803); 
+x-exchange-antispam-report-cfa-test: BCL:0; PCL:0;
+ RULEID:(6040375)(601004)(2401047)(8121501046)(5005006)(3002001)(10201501046)(6055026)(6041248)(20161123560025)(20161123558025)(20161123555025)(20161123562025)(20161123564025)(6072148);
+ SRVR:CY4PR09MB1461; BCL:0; PCL:0; RULEID:; SRVR:CY4PR09MB1461; 
+x-forefront-prvs: 0214EB3F68
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10019020)(7916002)(39840400002)(39450400003)(39850400002)(39410400002)(39860400002)(199003)(24454002)(377454003)(189002)(86362001)(122556002)(575784001)(50986999)(66066001)(54356999)(3280700002)(76176999)(189998001)(3660700001)(4326007)(68736007)(2906002)(2900100001)(81166006)(81156014)(38730400002)(7906003)(8936002)(16297215004)(39060400001)(74316002)(8676002)(7736002)(106356001)(105586002)(6246003)(53546003)(106116001)(19627405001)(3846002)(7696004)(92566002)(77096006)(229853002)(6436002)(2950100002)(966004)(5660300001)(9686003)(99286003)(102836003)(93886004)(55016002)(325944008)(33656002)(97736004)(101416001)(236005)(606005)(54896002)(25786008)(6116002)(6506006)(6306002)(53936002)(491001);
+ DIR:OUT; SFP:1102; SCL:1; SRVR:CY4PR09MB1461;
+ H:CY4PR09MB1464.namprd09.prod.outlook.com; FPR:; SPF:None; PTR:InfoNoRecords; 
+ A:1; MX:1; LANG:en; 
+received-spf: None (protection.outlook.com: nist.gov does not designate
+ permitted sender hosts)
+spamdiagnosticoutput: 1:99
+spamdiagnosticmetadata: NSPM
+Content-Type: multipart/alternative;
+ boundary="_000_CY4PR09MB146415E668A3DA0484190BC9F3440CY4PR09MB1464namp_"
+MIME-Version: 1.0
+X-OriginatorOrg: nist.gov
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Feb 2017 19:36:27.3491 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 2ab5d82f-d8fa-4797-a93e-054655c61dec
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR09MB1461
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/1Y1xEPzYqfqsLDCSbf5Tor7UnO0>
+Cc: IRTF CFRG <cfrg@irtf.org>
+Subject: Re: [TLS] [Cfrg] Closing out tls1.3 "Limits on key usage" PRs
+ (#765/#769)
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.17
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Fri, 10 Feb 2017 19:36:32 -0000
+
+--_000_CY4PR09MB146415E668A3DA0484190BC9F3440CY4PR09MB1464namp_
+Content-Type: text/plain; charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
+
+Hi Rene,
+
+
+I care about side channel attacks in general as much as you do. But my ques=
+tion was that how you carry out those attacks on GCM in TLS 1.3's servers a=
+nd clients ? Do those side-channel attacks apply only to GCM in TLS 1.3 ?
+
+
+Quynh.
+
+________________________________
+From: Rene Struik <rstruik.ext@gmail.com>
+Sent: Friday, February 10, 2017 2:02:14 PM
+To: Dang, Quynh (Fed); Sean Turner; <tls@ietf.org>
+Cc: IRTF CFRG
+Subject: Re: [TLS] [Cfrg] Closing out tls1.3 "Limits on key usage" PRs (#76=
+5/#769)
+
+Hi Quynh:
+
+Not sure where to start (there is vast literature on side channel attacks a=
+nd other implementation attacks). A good starting point would be the book [=
+1], but one could also look at some NIST publications [2].
+
+Side channel attacks differs from cryptanalytic attacks in that it does not=
+ merely study I/O behavior of crypto contructs, but also looks into what in=
+formation can be obtained from what is going on "under the hood" of the com=
+putations (power consumption, radiation, timing, etc; or even invasive atta=
+cks). Most commonly one looks at crypto building blocks, but ultimately sid=
+e channels can comprise any system behavior ("Lucky13" does, e.g., exploit =
+this, if I remember correctly).
+
+>From the last page of [2]: Finally, the most important conclusion from this=
+ paper is that it is not only a necessity but also a must, in the coming ve=
+rsion of FIPS 140-3 standard, to evaluate cryptographic modules for their r=
+esistivity against SCA attacks.
+
+Ref:
+[1] Stefan Mangard, Elisabeth Oswald, Thomas Popp, "Power Analysis Attacks =
+- Revealing the Secrets of Smart Cards", Springer, 2007.
+[2] http://csrc.nist.gov/groups/STM/cmvp/documents/fips140-3/physec/papers/=
+physecpaper19.pdf
+[2]
+
+
+On 2/10/2017 1:47 PM, Dang, Quynh (Fed) wrote:
+Hi Rene,
+
+From: TLS <tls-bounces@ietf.org<mailto:tls-bounces@ietf.org>> on behalf of =
+Rene Struik <rstruik.ext@gmail.com<mailto:rstruik.ext@gmail.com>>
+Date: Friday, February 10, 2017 at 10:51 AM
+To: Sean Turner <sean@sn3rd.com<mailto:sean@sn3rd.com>>, "<tls@ietf.org<mai=
+lto:tls@ietf.org>>" <tls@ietf.org<mailto:tls@ietf.org>>
+Cc: IRTF CFRG <cfrg@irtf.org<mailto:cfrg@irtf.org>>
+Subject: Re: [TLS] [Cfrg] Closing out tls1.3 "Limits on key usage" PRs (#76=
+5/#769)
+
+Dear colleagues:
+
+I would suggest adding the following paragraph at the end of Section 5.5:
+
+[current text of Section 5.5]
+
+
+There are cryptographic limits on the amount of plaintext which can be safe=
+ly encrypted under a given set of keys. [AEAD-LIMITS]<https://tlswg.github.=
+io/tls13-spec/#AEAD-LIMITS> provides an analysis of these limits under the =
+assumption that the underlying primitive (AES or ChaCha20) has no weaknesse=
+s. Implementations SHOULD do a key update Section 4.6.3<https://tlswg.githu=
+b.io/tls13-spec/#key-update> prior to reaching these limits.
+
+For AES-GCM, up to 2^24.5 full-size records (about 24 million) may be encry=
+pted on a given connection while keeping a safety margin of approximately 2=
+^-57 for Authenticated Encryption (AE) security. For ChaCha20/Poly1305, the=
+ record sequence number would wrap before the safety limit is reached.
+
+[suggested additional text]
+
+The above upper limits do not take into account potential side channel atta=
+cks, which - in some implementations - have been shown to be successful at =
+recovering keying material with a relatively small number of messages encry=
+pted using the same key. While results are highly implementation-specific, =
+thereby making it hard to provide precise guidance, prudence suggests that =
+implementations should not reuse keys ad infinitum. Implementations SHALL t=
+herefore always implement the key update mechanism of Section 4.6.3.
+
+{editorial note: perhaps, one should impose the limit 2^20, just to make su=
+re people do not "forget" to implement key updates?}
+
+How do you do side channel attacks on TLS ? Do these side-channel attacks w=
+ork for AES-GCM only in TLS 1.3 ?
+
+
+
+
+See also my email of August 29, 2016:
+https://mailarchive.ietf.org/arch/msg/cfrg/SUuLDg0wTvjR7H46oNyEtyGVdno
+
+On 2/10/2017 12:07 AM, Sean Turner wrote:
+
+All,
+
+We=92ve got two outstanding PRs that propose changes to draft-ietf-tls-tls1=
+3 Section 5.5 =93Limits on Key Usage=94.  As it relates to rekeying, these =
+limits have been discussed a couple of times and we need to resolve once an=
+d for all whether the TLS WG wants to:
+
+a) Close these two PRs and go with the existing text [0]
+b) Adopt PR#765 [1]
+c) Adopt PR#769 [2]
+
+Please indicate you preference to the TLS mailing list before Feb 17.  Note=
+ that unless there=92s clear consensus to change the text will remain as is=
+ (i.e., option a).
+
+J&S
+
+[0] https://tlswg.github.io/tls13-spec/#rfc.section.5.5
+[1] https://github.com/tlswg/tls13-spec/pull/765
+[2] https://github.com/tlswg/tls13-spec/pull/769
+_______________________________________________
+Cfrg mailing list
+Cfrg@irtf.org<mailto:Cfrg@irtf.org>https://www.irtf.org/mailman/listinfo/cf=
+rg
+
+
+
+--
+email: rstruik.ext@gmail.com<mailto:rstruik.ext@gmail.com> | Skype: rstruik
+cell: +1 (647) 867-5658 | US: +1 (415) 690-7363
+
+
+
+--
+email: rstruik.ext@gmail.com<mailto:rstruik.ext@gmail.com> | Skype: rstruik
+cell: +1 (647) 867-5658 | US: +1 (415) 690-7363
+
+--_000_CY4PR09MB146415E668A3DA0484190BC9F3440CY4PR09MB1464namp_
+Content-Type: text/html; charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
+
+<html>
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3DWindows-1=
+252">
+</head>
+<body bgcolor=3D"#FFFFFF" text=3D"#000000">
+<style type=3D"text/css" style=3D"display:none;"><!-- P {margin-top:0;margi=
+n-bottom:0;} --></style>
+<div id=3D"divtagdefaultwrapper" style=3D"font-size:12pt;color:#000000;font=
+-family:Calibri,Arial,Helvetica,sans-serif;" dir=3D"ltr">
+<p>Hi Rene,</p>
+<p><br>
+</p>
+<p>I care about side channel attacks in general as much as you do. But my q=
+uestion was that how you carry out those attacks on GCM in TLS 1.3's server=
+s and clients ? Do those side-channel attacks apply only to GCM in TLS 1.3 =
+?</p>
+<p><br>
+</p>
+<p>Quynh.&nbsp;</p>
+</div>
+<hr style=3D"display:inline-block;width:98%" tabindex=3D"-1">
+<div id=3D"divRplyFwdMsg" dir=3D"ltr"><font face=3D"Calibri, sans-serif" st=
+yle=3D"font-size:11pt" color=3D"#000000"><b>From:</b> Rene Struik &lt;rstru=
+ik.ext@gmail.com&gt;<br>
+<b>Sent:</b> Friday, February 10, 2017 2:02:14 PM<br>
+<b>To:</b> Dang, Quynh (Fed); Sean Turner; &lt;tls@ietf.org&gt;<br>
+<b>Cc:</b> IRTF CFRG<br>
+<b>Subject:</b> Re: [TLS] [Cfrg] Closing out tls1.3 &quot;Limits on key usa=
+ge&quot; PRs (#765/#769)</font>
+<div>&nbsp;</div>
+</div>
+<div>
+<div class=3D"moz-cite-prefix">Hi Quynh:<br>
+<br>
+Not sure where to start (there is vast literature on side channel attacks a=
+nd other implementation attacks). A good starting point would be the book [=
+1], but one could also look at some NIST publications [2].
+<br>
+<br>
+Side channel attacks differs from cryptanalytic attacks in that it does not=
+ merely study I/O behavior of crypto contructs, but also looks into what in=
+formation can be obtained from what is going on &quot;under the hood&quot; =
+of the computations (power consumption, radiation,
+ timing, etc; or even invasive attacks). Most commonly one looks at crypto =
+building blocks, but ultimately side channels can comprise any system behav=
+ior (&quot;Lucky13&quot; does, e.g., exploit this, if I remember correctly)=
+.<br>
+<br>
+>From the last page of [2]: Finally, the most important conclusion from this=
+ paper is that it is not only a necessity but also a must, in the coming ve=
+rsion of FIPS 140-3 standard, to evaluate cryptographic modules for their r=
+esistivity against SCA attacks.
+<br>
+<br>
+Ref:<br>
+[1] Stefan Mangard, Elisabeth Oswald, Thomas Popp, &quot;Power Analysis Att=
+acks - Revealing the Secrets of Smart Cards&quot;, Springer, 2007.<br>
+[2] <a class=3D"moz-txt-link-freetext" href=3D"http://csrc.nist.gov/groups/=
+STM/cmvp/documents/fips140-3/physec/papers/physecpaper19.pdf">
+http://csrc.nist.gov/groups/STM/cmvp/documents/fips140-3/physec/papers/phys=
+ecpaper19.pdf</a><br>
+[2] <br>
+<br>
+<br>
+On 2/10/2017 1:47 PM, Dang, Quynh (Fed) wrote:<br>
+</div>
+<blockquote cite=3D"mid:D4C3749F.2F856%25qdang@nist.gov" type=3D"cite">
+<div>Hi Rene,&nbsp;</div>
+<div><br>
+</div>
+<span id=3D"OLK_SRC_BODY_SECTION">
+<div style=3D"font-family:Calibri; font-size:11pt;
+          text-align:left; color:black; BORDER-BOTTOM: medium none;
+          BORDER-LEFT: medium none; PADDING-BOTTOM: 0in; PADDING-LEFT:
+          0in; PADDING-RIGHT: 0in; BORDER-TOP: #b5c4df 1pt solid;
+          BORDER-RIGHT: medium none; PADDING-TOP: 3pt">
+<span style=3D"font-weight:bold">From: </span>TLS &lt;<a moz-do-not-send=3D=
+"true" href=3D"mailto:tls-bounces@ietf.org">tls-bounces@ietf.org</a>&gt; on=
+ behalf of Rene Struik &lt;<a moz-do-not-send=3D"true" href=3D"mailto:rstru=
+ik.ext@gmail.com">rstruik.ext@gmail.com</a>&gt;<br>
+<span style=3D"font-weight:bold">Date: </span>Friday, February 10, 2017 at =
+10:51 AM<br>
+<span style=3D"font-weight:bold">To: </span>Sean Turner &lt;<a moz-do-not-s=
+end=3D"true" href=3D"mailto:sean@sn3rd.com">sean@sn3rd.com</a>&gt;, &quot;&=
+lt;<a moz-do-not-send=3D"true" href=3D"mailto:tls@ietf.org">tls@ietf.org</a=
+>&gt;&quot; &lt;<a moz-do-not-send=3D"true" href=3D"mailto:tls@ietf.org">tl=
+s@ietf.org</a>&gt;<br>
+<span style=3D"font-weight:bold">Cc: </span>IRTF CFRG &lt;<a moz-do-not-sen=
+d=3D"true" href=3D"mailto:cfrg@irtf.org">cfrg@irtf.org</a>&gt;<br>
+<span style=3D"font-weight:bold">Subject: </span>Re: [TLS] [Cfrg] Closing o=
+ut tls1.3 &quot;Limits on key usage&quot; PRs (#765/#769)<br>
+</div>
+<div><br>
+</div>
+<blockquote id=3D"MAC_OUTLOOK_ATTRIBUTION_BLOCKQUOTE" style=3D"BORDER-LEFT:=
+ #b5c4df 5 solid; PADDING:0 0 0 5; MARGIN:0
+          0 0 5;">
+<div>
+<div bgcolor=3D"#FFFFFF" text=3D"#000000">
+<div class=3D"moz-cite-prefix">Dear colleagues:<br>
+<br>
+I would suggest adding the following paragraph at the end of Section 5.5:<b=
+r>
+<br>
+[current text of Section 5.5]<br>
+<br>
+<p style=3D"padding: 0px; margin: 0.5em 0px; color:
+                  rgb(51, 51, 51); font-family: &quot;Helvetica
+                  Neue&quot;, Helvetica, Arial, sans-serif; font-size:
+                  15px; font-style: normal; font-variant-ligatures:
+                  normal; font-variant-caps: normal; font-weight:
+                  normal; letter-spacing: normal; orphans: 2;
+                  text-align: start; text-indent: 0px; text-transform:
+                  none; white-space: normal; widows: 2; word-spacing:
+                  0px; -webkit-text-stroke-width: 0px;">
+There are cryptographic limits on the amount of plaintext which can be safe=
+ly encrypted under a given set of keys.<span class=3D"Apple-converted-space=
+">&nbsp;</span><a moz-do-not-send=3D"true" href=3D"https://tlswg.github.io/=
+tls13-spec/#AEAD-LIMITS" style=3D"text-decoration: none; color: rgb(42, 100=
+,
+                    150);">[AEAD-LIMITS]</a><span class=3D"Apple-converted-=
+space">&nbsp;</span>provides
+ an analysis of these limits under the assumption that the underlying primi=
+tive (AES or ChaCha20) has no weaknesses. Implementations SHOULD do a key u=
+pdate<span class=3D"Apple-converted-space">&nbsp;</span><a moz-do-not-send=
+=3D"true" href=3D"https://tlswg.github.io/tls13-spec/#key-update" style=3D"=
+text-decoration: none; color: rgb(42, 100,
+                    150);">Section
+ 4.6.3</a><span class=3D"Apple-converted-space">&nbsp;</span>prior to reach=
+ing these limits.</p>
+<p id=3D"rfc.section.5.5.p.2" style=3D"padding: 0px; margin:
+                  0.5em 0px; color: rgb(51, 51, 51); font-family:
+                  &quot;Helvetica Neue&quot;, Helvetica, Arial,
+                  sans-serif; font-size: 15px; font-style: normal;
+                  font-variant-ligatures: normal; font-variant-caps:
+                  normal; font-weight: normal; letter-spacing: normal;
+                  orphans: 2; text-align: start; text-indent: 0px;
+                  text-transform: none; white-space: normal; widows: 2;
+                  word-spacing: 0px; -webkit-text-stroke-width: 0px;">
+For AES-GCM, up to 2^24.5 full-size records (about 24 million) may be encry=
+pted on a given connection while keeping a safety margin of approximately 2=
+^-57 for Authenticated Encryption (AE) security. For ChaCha20/Poly1305, the=
+ record sequence number would wrap
+ before the safety limit is reached.</p>
+[suggested additional text]<br>
+<br>
+The above upper limits do not take into account potential side channel atta=
+cks, which - in some implementations - have been shown to be successful at =
+recovering keying material with a relatively small number of messages encry=
+pted using the same key. While results
+ are highly implementation-specific, thereby making it hard to provide prec=
+ise guidance, prudence suggests that implementations should not reuse keys =
+ad infinitum. Implementations SHALL therefore always implement the key upda=
+te mechanism of Section 4.6.3.
+<br>
+<br>
+{editorial note: perhaps, one should impose the limit 2^20, just to make su=
+re people do not &quot;forget&quot; to implement key updates?} &nbsp;
+</div>
+</div>
+</div>
+</blockquote>
+</span>
+<div><br>
+</div>
+<div>How do you do side channel attacks on TLS ? Do these side-channel atta=
+cks work for AES-GCM only in TLS 1.3 ?</div>
+<div><br>
+</div>
+<span id=3D"OLK_SRC_BODY_SECTION">
+<blockquote id=3D"MAC_OUTLOOK_ATTRIBUTION_BLOCKQUOTE" style=3D"BORDER-LEFT:=
+ #b5c4df 5 solid; PADDING:0 0 0 5; MARGIN:0
+          0 0 5;">
+<div>
+<div bgcolor=3D"#FFFFFF" text=3D"#000000">
+<div class=3D"moz-cite-prefix"><br class=3D"Apple-interchange-newline">
+<br>
+<br>
+See also my email of August 29, 2016:<br>
+<a moz-do-not-send=3D"true" class=3D"moz-txt-link-freetext" href=3D"https:/=
+/mailarchive.ietf.org/arch/msg/cfrg/SUuLDg0wTvjR7H46oNyEtyGVdno">https://ma=
+ilarchive.ietf.org/arch/msg/cfrg/SUuLDg0wTvjR7H46oNyEtyGVdno</a><br>
+<br>
+On 2/10/2017 12:07 AM, Sean Turner wrote:<br>
+</div>
+<blockquote cite=3D"mid:352D31A3-5A8B-4790-9473-195C256DEEC8@sn3rd.com" typ=
+e=3D"cite">
+<pre wrap=3D"">All,
+
+We=92ve got two outstanding PRs that propose changes to draft-ietf-tls-tls1=
+3 Section 5.5 =93Limits on Key Usage=94.  As it relates to rekeying, these =
+limits have been discussed a couple of times and we need to resolve once an=
+d for all whether the TLS WG wants to:
+
+a) Close these two PRs and go with the existing text [0]
+b) Adopt PR#765 [1]
+c) Adopt PR#769 [2]
+
+Please indicate you preference to the TLS mailing list before Feb 17.  Note=
+ that unless there=92s clear consensus to change the text will remain as is=
+ (i.e., option a).
+
+J&amp;S
+
+[0] <a moz-do-not-send=3D"true" class=3D"moz-txt-link-freetext" href=3D"htt=
+ps://tlswg.github.io/tls13-spec/#rfc.section.5.5">https://tlswg.github.io/t=
+ls13-spec/#rfc.section.5.5</a>
+[1] <a moz-do-not-send=3D"true" class=3D"moz-txt-link-freetext" href=3D"htt=
+ps://github.com/tlswg/tls13-spec/pull/765">https://github.com/tlswg/tls13-s=
+pec/pull/765</a>
+[2] <a moz-do-not-send=3D"true" class=3D"moz-txt-link-freetext" href=3D"htt=
+ps://github.com/tlswg/tls13-spec/pull/769">https://github.com/tlswg/tls13-s=
+pec/pull/769</a>
+_______________________________________________
+Cfrg mailing list
+<a moz-do-not-send=3D"true" class=3D"moz-txt-link-abbreviated" href=3D"mail=
+to:Cfrg@irtf.org">Cfrg@irtf.org</a><a moz-do-not-send=3D"true" class=3D"moz=
+-txt-link-freetext" href=3D"https://www.irtf.org/mailman/listinfo/cfrg">htt=
+ps://www.irtf.org/mailman/listinfo/cfrg</a></pre>
+</blockquote>
+<br>
+<p><br>
+</p>
+<pre class=3D"moz-signature" cols=3D"72">--=20
+email: <a moz-do-not-send=3D"true" class=3D"moz-txt-link-abbreviated" href=
+=3D"mailto:rstruik.ext@gmail.com">rstruik.ext@gmail.com</a> | Skype: rstrui=
+k
+cell: &#43;1 (647) 867-5658 | US: &#43;1 (415) 690-7363</pre>
+</div>
+</div>
+</blockquote>
+</span></blockquote>
+<br>
+<p><br>
+</p>
+<pre class=3D"moz-signature" cols=3D"72">--=20
+email: <a class=3D"moz-txt-link-abbreviated" href=3D"mailto:rstruik.ext@gma=
+il.com">rstruik.ext@gmail.com</a> | Skype: rstruik
+cell: &#43;1 (647) 867-5658 | US: &#43;1 (415) 690-7363</pre>
+</div>
+</body>
+</html>
+
+--_000_CY4PR09MB146415E668A3DA0484190BC9F3440CY4PR09MB1464namp_--
+

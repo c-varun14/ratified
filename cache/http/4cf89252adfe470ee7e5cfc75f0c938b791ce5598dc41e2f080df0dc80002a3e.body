@@ -1,0 +1,726 @@
+From nobody Thu Oct 21 18:34:18 2021
+Return-Path: <sean@sn3rd.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 1B6093A03EE
+ for <tls@ietfa.amsl.com>; Thu, 21 Oct 2021 18:34:16 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.099
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.099 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, SPF_HELO_NONE=0.001,
+ SPF_PASS=-0.001, URIBL_BLOCKED=0.001]
+ autolearn=unavailable autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=sn3rd.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id oSk6z5faMXPl for <tls@ietfa.amsl.com>;
+ Thu, 21 Oct 2021 18:34:12 -0700 (PDT)
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com
+ [IPv6:2607:f8b0:4864:20::72f])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id C691A3A059F
+ for <tls@ietf.org>; Thu, 21 Oct 2021 18:34:11 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id g20so3396126qka.1
+ for <tls@ietf.org>; Thu, 21 Oct 2021 18:34:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sn3rd.com; s=google;
+ h=mime-version:subject:from:in-reply-to:date:cc
+ :content-transfer-encoding:message-id:references:to;
+ bh=CSQUSf1STIdX0f1g7E7PjIHNZO1tMYXChKTCGoz0zHc=;
+ b=lOrYxj+N16Hn8QQ14QJK5UvjUnF0M5ahk1qZewCxX5kEPbZDyMCQNO7R+xIWO2bbvR
+ skVRvvBuK/tl1GCL6B58DkLUvRTeWaDVxG+rF1jjJE5fi9BsejPSSndmw3KwsfqDKW1w
+ BpdbeNwZEHHzbBRfhNVGjWzyw6Flpte0WEPRs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+ :content-transfer-encoding:message-id:references:to;
+ bh=CSQUSf1STIdX0f1g7E7PjIHNZO1tMYXChKTCGoz0zHc=;
+ b=4t7Uv8l4R/EZnBjOPxvJrKdV+Uxr8ZX1UwX01uQLPuHo5rPfmMVTbatYfxP4RVakVK
+ hH416tA2We5IdbG424Hvz6ay8p8IBxkDm75L/nCSgbwjDexxOH9Vfh5bdeAI4CRQzrrG
+ 0Yys/mRO/ZARsg6UW5PB0eA0Ya8lCHNlXk9hmGEUeA5QWK3+ZFBka71+FQ1jhVvu7I5A
+ DTSrjMuCXK23PY7wHEXcq4kG++z5QSU8KOi6JfwXl2qTnJX2gScPPUZwABHJr6ab4qny
+ p4B4S0pkpu6BKN66x0l0F2SndiA9k7o4RyyyGg7EDS/ihR6vA57fwDWDqcLJefyb2oNS
+ pTAg==
+X-Gm-Message-State: AOAM531EmKt5mw2mIepErrRslFS9pdYfQIA8vycqv63kf91PgQTov/Zs
+ jnkfs6yl6ZXPtdXvir0WoyXKX4PoRV6yiQ==
+X-Google-Smtp-Source: ABdhPJw1ZIk+Q+bzcmD9kwVCtC58MrZjTGQHooD4zl3lKKwNkOAXdrBsV/8kFy792FcrhaAy63EQXA==
+X-Received: by 2002:a37:d8c:: with SMTP id 134mr7746707qkn.54.1634866448091;
+ Thu, 21 Oct 2021 18:34:08 -0700 (PDT)
+Received: from smtpclient.apple (pool-71-178-177-131.washdc.fios.verizon.net.
+ [71.178.177.131])
+ by smtp.gmail.com with ESMTPSA id o2sm3384159qtm.0.2021.10.21.18.34.07
+ (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+ Thu, 21 Oct 2021 18:34:07 -0700 (PDT)
+Content-Type: text/plain;
+	charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
+From: Sean Turner <sean@sn3rd.com>
+In-Reply-To: <CAFDDyk-TQaoyAnc7tzD83_k1y5FO9cJ-kGimqB4rGr6kO66vhA@mail.gmail.com>
+Date: Thu, 21 Oct 2021 21:34:04 -0400
+Cc: TLS Chairs <tls-chairs@ietf.org>,
+ Jonathan Hoyland <jhoyland@cloudflare.com>,
+ Nick Sullivan <nick@cloudflare.com>, The IESG <iesg@ietf.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <5BC8D8CC-16F4-47FA-A118-7F7C65AE4F28@sn3rd.com>
+References: <CAFDDyk-TQaoyAnc7tzD83_k1y5FO9cJ-kGimqB4rGr6kO66vhA@mail.gmail.com>
+To: TLS List <tls@ietf.org>
+X-Mailer: Apple Mail (2.3654.120.0.1.13)
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/mzCBPeijLeGV27FGO10v1yWt_bc>
+Subject: Re: [TLS] [re-send] draft-ietf-tls-exported-authenticator IESG
+ review
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Fri, 22 Oct 2021 01:34:16 -0000
+
+Hi! It=E2=80=99s a been awhile since Nick proposed how to resolve the =
+IESG comments. To get the I-D moving again, I would like to propose the =
+following and unless I hear otherwise by 29 November 2021 2359 UTC it is =
+what we will do:
+
+- For the 1st two, we accept Nick's suggestion, i.e., no change (these =
+were IESG comments after all).
+
+- For the 3rd, we work with Jonathan=E2=80=99s two options in [1]. =
+Expect an email shortly.
+
+- For the 4th, I would like to split the difference between the new text =
+in the I-D and adding a new comments column by augmenting PR#74 to make =
+the added text a note that appears at the before the table. That way, =
+the text is in our doc and in the IANA registry. I have included this as =
+a review comment in the PR [2], but also included here for convenience:
+
+In s8.1 add:
+
+IANA is also requested to add the following note to the registry:
+
+The addition of the "CR" to the "TLS 1.3" column for the server_name(0) =
+extension does not authorize the use of this extension in authenticator =
+CertificateRequests or handshake CertificateRequests, only
+ClientCertificateRequest created as part of client-generated =
+authenticator requests.
+
+
+Effectively, for the outstanding PRs [3] that means the following:
+- PR#71 close (included as part of 74)
+- PR#74: merge after checking amendment to make text a registry note
+- PR#75: close (addressed via #74)
+- PR#76: discuss
+
+Cheers,
+spt
+
+[1] =
+https://mailarchive.ietf.org/arch/msg/tls/FovH210wjIxb4qpArF6HiHALy-I/
+[2] https://github.com/tlswg/tls-exported-authenticator/pull/74
+[3] https://github.com/tlswg/tls-exported-authenticator/pulls
+
+> On Aug 23, 2021, at 19:28, Nick Sullivan <nick@cloudflare.com> wrote:
+>=20
+> Hello TLSWG and IESG reviewers,
+>=20
+> This is a compendium of responses to the various reviews of the
+> document. There are a few remaining open questions to address that I
+> hope we can resolve in this thread.
+>=20
+> I=E2=80=99ve compiled the changes to the document in response to the =
+comments in Github:
+> https://github.com/tlswg/tls-exported-authenticator/pull/74
+>=20
+> Responses welcome!
+>=20
+> =3D=3D=3D=3D=3D
+>=20
+> Open questions for debate
+>=20
+> Should we define an optional API to generate the =
+certificate_request_context?
+> [ns] Proposed solution: no, let the application decide
+>=20
+> Should we remove the SHOULDs in Section 7, as they have little to do
+> with interoperability?
+> [ns] Proposed solution: leave the text as is.
+>=20
+> Are there any security issues caused by the fact that the Exported
+> Authenticator is based on the Exporter Secret, which does not
+> incorporate the entire transcript:
+>=20
+>  Using an exporter value as the handshake context means that any =
+client
+>  authentication from the initial handshake is not cryptographically
+>  digested into the exporter value.  In light of what we ran into with
+>  EAP-TLS1.3, do we want to revisit whether we're still happy with =
+that?
+>  We should in practice still benefit from the implicit confirmation =
+that
+>  anything the server participates in after receiving the Client =
+Finished
+>  means the server properly validated it and did not abort the =
+handshake,
+>  but it's a bit awkward, especially since the RFC 8446 post-handshake
+>  authentication does digest the entire initial handshake transcript.
+>  Would we feel any safer if an exporter variant was available that
+>  digested the entire initial handshake transcript and we could use =
+that?
+>=20
+> [ns] This is a very good question. I didn=E2=80=99t follow the =
+EAP-TLS1.3
+> issue closely, but this does seem to imply an imperfect match with
+> post-handshake authentication in the case of mutually authenticated
+> connections. I would like to suggest that Jonathan Hoyland (cc'd), who
+> did the formal analysis on the protocol, provide his input.
+>=20
+> A comment from Yaron Scheffer/Benjamin Kaduk on the IANA =
+considerations:
+>=20
+> My understanding is that the intent of this document is to only allow
+> "server_name" to appear in the ClientCertificateRequest structure that
+> otherwise uses the "CR" notation in the TLS 1.3 column of the TLS
+> ExtensionType Values registry, but not to allow for "server_name" in
+> authenticator CertificateRequests or handshake CertificateRequests.
+> Assuming that's correct, the easiest way to indicate that would be if
+> there was a "Comment" column in the registry that could say "only used
+> in ClientCertificateRequest certificate requests and no other
+> certificate requests", but there is not such a column in the registry.
+> I think it could also work to be much more clear in the IANA
+> considerations of this document as to why the "CR" is being added and
+> what restrictions there are on its use, even if that's not quite as
+> clean of a solution.
+>=20
+> [ns] Proposed solution:
+> Add text to section 8.1 to clarify why the CR is being added and what
+> restrictions there are to its use, as is done in
+> https://github.com/tlswg/tls-exported-authenticator/pull/74.
+> Alternate solution:
+> Propose a new column, as done in
+> https://github.com/tlswg/tls-exported-authenticator/pull/75
+>=20
+> =3D=3D=3D=3D=3D
+>=20
+> Comments and responses
+>=20
+> Proposals to address IESG comments below are here:
+> https://github.com/tlswg/tls-exported-authenticator/pull/74
+>=20
+> Martin Duke (No Objection):
+>=20
+> - I come away from this not being entirely sure if this document =
+applies to
+> DTLS or not. There is the one reference in the intro to DTLS, but it's =
+not in
+> the abstract, nor anywhere else. Assuming that the Sec. 1 reference is =
+not some
+> sort of artifact, the document would benefit from a liberal sprinkling =
+of
+> 's/TLS/(D)TLS' (but this would not apply to every instance)
+>=20
+> [ns] DTLS does not explicitly define a post-handshake authentication,
+> so not all references made sense to update, but I updated all the
+> relevant references.
+>=20
+> - If (D)TLS 1.2 is REQUIRED to implement, then does this document not =
+update
+> those RFCs?
+>=20
+> [ns] It doesn=E2=80=99t change existing versions of (D)TLS and it is =
+not
+> mandatory to include this functionality, so I don=E2=80=99t think that =
+it
+> updates them. It=E2=80=99s a separate and optional feature built on =
+top of
+> TLS. In any case, the text is changed to make it explicit that this is
+> a minimum requirement.
+>=20
+> NITS:
+>=20
+> - Sec 1. I think you mean Sec 4.2.6 of RFC 8446, not 4.6.3.
+> [ns] It=E2=80=99s actually neither, it=E2=80=99s 4.6.2. Sec. 4.2.6 =
+defines the
+> extension that the client uses to advertise support for post-handshake
+> authentication.
+>=20
+> - Sec 4 and 5. "use a secure with..." ?
+> [ns] Added =E2=80=9Ctransport=E2=80=9D
+>=20
+> - Sec 4. s/messages structures/message structures
+> [ns] Fixed
+>=20
+>=20
+>=20
+>=20
+> Erik Kline's No Objection
+>=20
+> ----------------------------------------------------------------------
+> COMMENT:
+> ----------------------------------------------------------------------
+>=20
+> [ sections 4 & 5 ]
+>=20
+> * "SHOULD use a secure with" ->
+>  "SHOULD use a secure communications channel with" or
+>  "SHOULD use a secure transport with" or something?
+> [ns] Fixed in previous change
+>=20
+> * "as its as its" -> "as its"
+> [ns] Fixed
+>=20
+> [ section 5.2.3 ]
+>=20
+> * I think the first sentence of the first paragraph may not be a
+>  grammatically complete sentence?
+> [ns] Fixed
+>=20
+> [ section 7 ]
+>=20
+> * "following sections describes APIs" ->
+>  "following sections describe APIs"
+> [ns] Fixed
+>=20
+>=20
+> Francesca Palombini's No Objection
+> Thank you for the work on this document, and thank you to the doc =
+shepherd for
+> the in-depth background. Please find some comments below.
+>=20
+> Francesca
+>=20
+> 1. -----
+>=20
+>   TLS (or DTLS) version 1.2 [RFC5246] [RFC6347]. or later are REQUIRED
+>   to implement the mechanisms described in this document.
+>=20
+> FP: Does this mechanism applies to DTLS as well? The sentence above, =
+the
+> normative reference to DTLS 1.2, and the IANA section 8.2 would imply =
+so.
+> However, this is the only time DTLS is mentioned in the body of the =
+document,
+> excluding IANA considerations. I would like it to be made explicit =
+that this
+> mechanism can be used for DTLS (if that's the case) both in the =
+abstract and in
+> the introduction, add any useful considerations about using this =
+mechanism with
+> DTLS vs TLS, and possibly add a sentence in the introduction stating =
+that DTLS
+> 1.X uses what specified for TLS 1.X. Two examples of why that would be =
+useful
+> are the following sentences:
+>=20
+>   using an exporter as described in Section 4 of [RFC5705] (for TLS
+>   1.2) or Section 7.5 of [TLS13] (for TLS 1.3).  For TLS 1.3, the
+>=20
+>   "signature_algorithms" and "signature_algorithms_cert" extension, as
+>   described in Section 4.2.3 of [TLS13] for TLS 1.3 or the
+>   "signature_algorithms" extension from Sections 7.4.2 and 7.4.6 of
+>   [RFC5246] for TLS 1.2.
+>=20
+> which makes it clear what applies for TLS but not for DTLS.
+>=20
+> [ns] Fixed in previous change
+>=20
+>=20
+> 2. -----
+>=20
+>   used to send the authenticator request SHOULD use a secure with
+>   equivalent security to TLS, such as QUIC [QUIC-TLS], as its as its
+>=20
+> FP: What are the implications of not using such a secure transport =
+protocol?
+> Why is it just RECOMMENDED and not MANDATED? nits: missing word "use a =
+secure
+> with" ; remove one of the duplicated "as its". (Note: this text =
+appears again
+> with the same typos for the authenticator in section 5)
+>=20
+> [ns] There are no known security implications of using an insecure
+> transport here, just privacy implications. This point was debated on
+> list (see Yaron Sheffer=E2=80=99s comments) and it was agreed that =
+because
+> there may be alternate deployment scenarios that involve transport
+> outside the original tunnel, TLS-equivalent security is not a mandated
+> requirement. Typos fixed in previous change.
+>=20
+>=20
+> 3. -----
+>=20
+>      extensions (OCSP, SCT, etc.)
+>=20
+> FP: Please consider adding informative references.
+>=20
+> [ns] Added
+>=20
+> Zaheduzzaman Sarker's No Objection
+>=20
+> Thanks for the work on this document. I found it well written and I =
+have minor
+> comments and Nits
+>=20
+> Comment :
+>  * As this document asked for a IANA registration entry with DTLS-OK, =
+hence
+>  this mechanism is OK to be used with DTLS. I understand the heavily
+>  references to TLS 1.3 as it relay on the mechanisms described there. =
+However,
+>  I found it odd not find any reference to DTLS1.3 (we had it on the =
+last
+>  formal IESG telechat, it is quite ready to be referenced). Is this
+>  intentional? is it supposed to be that this mechanism defined in this
+>  document on can be used with DTLS1.2?
+>=20
+> [ns] This was a common concern, the text has been updated.
+>=20
+>  * Section 7.3 & 7.4: is "active connection" defined somewhere? it =
+would be
+>  good if some descriptive texts are added for clarification as done =
+for the
+>  other bullets in the same list.
+>=20
+> [ns] Wording adjusted.
+>=20
+>  * For the API considerations I was expecting a API to generate the
+>  certificate_request_context.
+>=20
+> [ns] An API would likely just return a random number, which isn=E2=80=99=
+t very
+> useful. Not defining such an API gives the application freedom to
+> choose to use this value in some other way. I don=E2=80=99t have =
+strong
+> opinions either way.
+>=20
+>=20
+> Nits:
+> * Post-handshake authentication is not defined in section 4.6.3 of TLS =
+1.3
+> [ns] Updated in prior change.
+> * Section 4 & 5: likely copy paste error -- s/as its as its/as its
+> [ns] Updated in prior change.
+>=20
+> Lars Eggert's No Objection
+>=20
+> All comments below are very minor change suggestions that you may =
+choose to
+> incorporate in some way (or ignore), as you see fit. There is no need =
+to let me
+> know what you did with these suggestions.
+>=20
+> Section 1, paragraph 9, nit:
+> -    TLS (or DTLS) version 1.2 [RFC5246] [RFC6347]. or later are =
+REQUIRED
+> -                                       -         -
+> +    TLS (or DTLS) version 1.2 [RFC5246][RFC6347] or later are =
+REQUIRED
+> [ns] Updated
+>=20
+>=20
+> =C3=89ric Vyncke's No Objection
+>=20
+> Thank you for the work put into this document.
+>=20
+> Please find below some non-blocking COMMENT points (but replies would =
+be
+> appreciated), and some nits.
+>=20
+> I hope that this helps to improve the document,
+>=20
+> Regards,
+>=20
+> -=C3=A9ric
+>=20
+> =3D=3D COMMENTS =3D=3D
+>=20
+> I am trusting the WG and the responsible AD for ensuring that the =
+specific
+> section in references are the correct ones.
+>=20
+> -- Section 2 --
+> Unsure where the "terminology" part is...
+>=20
+> Also, should "Client" and "Server" be defined here ? Reading section =
+3, I am
+> still unsure whether the "client" and "server" are the "TLS client" =
+and "TLS
+> server" ...
+>=20
+> In the same vein, a small figure with all parties involved would be =
+welcome by
+> the reader.
+>=20
+> [ns] Terminology updated to reference the terms in TLS 1.3. There are
+> only two parties in this protocol, so I=E2=80=99m not sure a diagram =
+will
+> help.
+>=20
+> =3D=3D NITS =3D=3D
+>=20
+> In some places, 'TLS13' is used as an anchor rather than 'RFC8446'.
+> [ns] Corrected.
+>=20
+> Sometimes, the document uses 'octet' and sometimes 'bytes'.
+> [ns] Interesting. This is likely an oversight due to RFC 8446=E2=80=99s =
+use of
+> both terms. I=E2=80=99ve adjusted the text to try to be more =
+consistent with
+> that document (octets for on-the-wire, bytes for string values).
+>=20
+> -- Section 1 --
+> Spurious '.' in the last =C2=A7.
+> [ns] Fixed in previous change.
+>=20
+> -- Section 4 --
+> "as its as its" ?
+> [ns] Fixed in previous change.
+>=20
+>=20
+> Ben Kaduk's IESG review + Yes
+>=20
+> You can view, comment on, or merge this pull request online at:
+>  https://github.com/tlswg/tls-exported-authenticator/pull/73
+> Commit Summary
+> Editorial suggestions from IESG review
+> ----------------------------------------------------------------------
+> COMMENT:
+> ----------------------------------------------------------------------
+>=20
+> I've made some (mostl) editorial suggestions in a github PR:
+> https://github.com/tlswg/tls-exported-authenticator/pull/73
+>=20
+> Despite the overall YES ballot, I do have some substantive comments =
+that
+> may be worth some further consideration.
+>=20
+> Do we want to give any insight or examples into how an application =
+might
+> choose to use the certificate_request_context?
+>=20
+> [ns] I put a proposed line here.
+>=20
+> Thanks to Yaron Sheffer for the multiple secdir reviews.  My
+> understanding is that the intent of this document is to only allow
+> "server_name" to appear in the ClientCertificateRequest structure that
+> otherwise uses the "CR" notation in the TLS 1.3 column of the TLS
+> ExtensionType Values registry, but not to allow for "server_name" in
+> authenticator CertificateRequests or handshake CertificateRequests.
+> Assuming that's correct, the easiest way to indicate that would be if
+> there was a "Comment" column in the registry that could say "only used
+> in ClientCertificateRequest certificate requests and no other
+> certificate requests", but there is not such a column in the registry.
+> I think it could also work to be much more clear in the IANA
+> considerations of this document as to why the "CR" is being added and
+> what restrictions there are on its use, even if that's not quite as
+> clean of a solution.
+>=20
+> [ns] I agree that this is an open question.
+>=20
+> Section 1
+>=20
+>   multiple identities -  Endpoints that are authoritative for multiple
+>      identities - but do not have a single certificate that includes
+>      all of the identities - can authenticate additional identities
+>      over a single connection.
+>=20
+> IIUC this is only new functionality for server endpoints, since client
+> endpoints can use different certificates for subsequent post-handshake
+> authentication events.
+>=20
+> [ns] Correct.
+>=20
+>   TLS (or DTLS) version 1.2 [RFC5246] [RFC6347]. or later are REQUIRED
+>   to implement the mechanisms described in this document.
+>=20
+> Please clarify whether this is a minimum TLS version required for =
+using
+> EAs, or that this is a binding requirement on implementations of the
+> named protocol versions.  (If the latter is intended we may have some
+> discussions about an Updates: tag...)
+>=20
+> [ns] I meant =E2=80=9Cminimum version of 1.2=E2=80=9D and have changed =
+the text to reflect this.
+>=20
+> Section 5.1
+>=20
+> Using an exporter value as the handshake context means that any client
+> authentication from the initial handshake is not cryptographically
+> digested into the exporter value.  In light of what we ran into with
+> EAP-TLS1.3, do we want to revisit whether we're still happy with that?
+> We should in practice still benefit from the implicit confirmation =
+that
+> anything the server participates in after receiving the Client =
+Finished
+> means the server properly validated it and did not abort the =
+handshake,
+> but it's a bit awkward, especially since the RFC 8446 post-handshake
+> authentication does digest the entire initial handshake transcript.
+> Would we feel any safer if an exporter variant was available that
+> digested the entire initial handshake transcript and we could use =
+that?
+>=20
+> [ns] Addressed in the open question section above.
+>=20
+>=20
+> Section 5.2.1
+>=20
+>   Certificates chosen in the Certificate message MUST conform to the
+>   requirements of a Certificate message in the negotiated version of
+>   TLS.  In particular, the certificate chain MUST be valid for the
+>   signature algorithms indicated by the peer in the
+>   "signature_algorithms" and "signature_algorithms_cert" extension, as
+>   described in Section 4.2.3 of [TLS13] for TLS 1.3 or the
+>   "signature_algorithms" extension from Sections 7.4.2 and 7.4.6 of
+>   [RFC5246] for TLS 1.2.
+>=20
+> This seems awkward.  Do "the requirements of a Certificate message in
+> the negotiated version of TLS" include the actual message structure?
+> Because the rest of the document suggests that we always use the TLS =
+1.3
+> Certificate, but this line would set us up for using a TLS 1.2
+> Certificate.
+>=20
+> [ns] They do not include the actual message structure. The constraints
+> are about the certificate_list. I=E2=80=99ve updated the text.
+>=20
+>=20
+> START
+>=20
+>=20
+> Also, per =C2=A71.3 of RFC 8446, "signature_algorithms_cert" also =
+applies to
+> TLS 1.2, so the last sentence seems incorrect or at least incomplete.
+>=20
+> [ns] Updated
+>=20
+> Section 5.2.1
+>=20
+>   Otherwise, the Certificate message MUST contain only extensions
+>   present in the TLS handshake.  Unrecognized extensions in the
+>   authenticator request MUST be ignored.
+>=20
+> At least the first sentence seems redundant with the previous section
+> (but I did not propose removing this in my editorial PR).  The second
+> sentence arguably follows from the RFC 8446 requirements, though I =
+don't
+> mind mentioning it again as much as I do for the first sentence.
+>=20
+> [ns] I don=E2=80=99t mind being explicit here considering there was =
+some
+> confusion about this previously.
+>=20
+> Section 5.2.2
+>=20
+>   The authenticator transcript is the hash of the concatenated
+>   Handshake Context, authenticator request (if present), and
+>   Certificate message:
+>=20
+>   Hash(Handshake Context || authenticator request || Certificate)
+>=20
+>   Where Hash is the authenticator hash defined in section 4.1.  If the
+>   authenticator request is not present, it is omitted from this
+>   construction, i.e., it is zero-length.
+>=20
+> This construction is injective, because the handshake messages start
+> with a message HandshakeType.  Should we say so explicitly in the
+> document?
+>=20
+> [ns] I=E2=80=99m not sure I understand what injective means in this =
+context or
+> how it helps the reader.
+>=20
+>   If the party that generates the exported authenticator does so with =
+a
+>   different connection than the party that is validating it, then the
+>   Handshake Context will not match, resulting in a CertificateVerify
+>   message that does not validate.  This includes situations in which
+>   the application data is sent via TLS-terminating proxy.  Given a
+>   failed CertificateVerify validation, it may be helpful for the
+>   application to confirm that both peers share the same connection
+>   using a value derived from the connection secrets before taking a
+>   user-visible action.
+>=20
+> Is it safe to reuse the Handshake Context itself as the "value derived
+> from the connection secrets"?
+>=20
+> [ns] Yes, it should be safe. Updated.
+>=20
+> Section 7.4
+>=20
+>   It returns the identity, such as the certificate chain and its
+>   extensions, and a status to indicate whether the authenticator is
+>   valid or not after applying the function for validating the
+>   certificate chain to the chain contained in the authenticator.
+>=20
+> I strongly recommend not returning the identity in the case when
+> validation fails.
+>=20
+> [ns] Fair. Updated.
+>=20
+>   The API should return a failure if the certificate_request_context =
+of
+>   the authenticator was used in a previously validated authenticator.
+>=20
+> Is the intent for this to be a "distinct previously validated
+> authenticator" (i.e., that the API returns the same value when given =
+the
+> same inputs subsequently)?  That does not seem to be the meaning
+> conveyed by the current text.
+>=20
+> [ns] Yes, this is about distinct validators. Updated.
+>=20
+> Section 8.2
+>=20
+>   IANA is requested to add the following entries to the registry for
+>   Exporter Labels (defined in [RFC5705]): "EXPORTER-server
+>   authenticator handshake context", "EXPORTER-client authenticator
+>   finished key" and "EXPORTER-server authenticator finished key" with
+>=20
+> Don't we also need "EXPORTER-client authenticator handshake context"?
+>=20
+> [ns] Yes, added.
+>=20
+> Section 9
+>=20
+> I think we should more explicitly incorporate the TLS 1.3 security
+> considerations by reference.
+>=20
+> [ns] Yes.
+>=20
+> Section 11.1
+>=20
+> I don't think [QUIC-TLS] or RFCs 7250 and 7540 are normative =
+references.
+>=20
+> [ns] Updated
+>=20
+>=20
+> Murray Kucherawy's No Objection
+>=20
+> Why are the SHOULDs in Section 4 only SHOULDs?  Why might an =
+implementer
+> reasonably not do what this says?
+>=20
+> [ns] Addressed after discussion on list and in reply above.
+>=20
+> Similarly, the SHOULDs in Section 7 seem awkward, as they have little =
+to do
+> with interoperability.
+>=20
+> [ns] It=E2=80=99s true that this is about interoperability. I=E2=80=99m =
+open to
+> changing these to lower-case shoulds since they reflect implementation
+> recommendations rather than interoperability.
+>=20
+> - Nick
+

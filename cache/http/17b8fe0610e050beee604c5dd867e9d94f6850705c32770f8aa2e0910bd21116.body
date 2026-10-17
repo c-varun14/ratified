@@ -1,0 +1,187 @@
+Return-Path: <mchurch@staff.rfc-editor.org>
+X-Original-To: tls@mail2.ietf.org
+Delivered-To: tls@mail2.ietf.org
+Received: from localhost (localhost [127.0.0.1])
+	by mail2.ietf.org (Postfix) with ESMTP id DA9AFC2C840F
+	for <tls@mail2.ietf.org>; Mon,  2 Mar 2026 14:05:53 -0800 (PST)
+X-Virus-Scanned: amavisd-new at ietf.org
+X-Spam-Flag: NO
+X-Spam-Score: -1.9
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+	RCVD_IN_DNSWL_NONE=-0.0001, SPF_HELO_NONE=0.001, SPF_PASS=-0.001]
+	autolearn=ham autolearn_force=no
+Authentication-Results: mail2.ietf.org (amavisd-new); dkim=pass (2048-bit key)
+	header.d=staff-rfc-editor-org.20230601.gappssmtp.com
+Received: from mail2.ietf.org ([166.84.6.31])
+	by localhost (mail2.ietf.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id Vg6IqqoCQGRe for <tls@mail2.ietf.org>;
+	Mon,  2 Mar 2026 14:05:53 -0800 (PST)
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com
+ [IPv6:2607:f8b0:4864:20::334])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail2.ietf.org (Postfix) with ESMTPS id 3671FC2C834C
+	for <tls@ietf.org>; Mon,  2 Mar 2026 14:05:43 -0800 (PST)
+Received: by mail-ot1-x334.google.com with SMTP id
+ 46e09a7af769-7d598f4b6fdso1372636a34.1
+        for <tls@ietf.org>; Mon, 02 Mar 2026 14:05:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=staff-rfc-editor-org.20230601.gappssmtp.com; s=20230601;
+ t=1772489142; x=1773093942; darn=ietf.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WZBWiobaxvOAb4QS9jj1xFMTL5Rh6KeICAalAzY0NKg=;
+        b=Evz/6tZCRBcdY7Ahr83o+Y0irclBtEdbgI8z5YvK+psnDxzZndE/3iEF8nhzx5vazo
+         cU0llMpvpczYuCE/x7eHTOuoxZVdnwFZrWvAiCXpUlQLaWQviyGys5UbGBIb1uEiMAK5
+         Dgt2y9HgyQPjsg4RIpGlPiAbKGqZCZGGJ7/oQDjv0+4unsLHSBUI+BOdtj4lXRurJJKc
+         bth/rYyvvI+CcTfkOwzzjm37D7taHS+uTA8vgSLFKMpLUEQG1rESbbmm1Q1L1tTdIayp
+         1LSFoJrNzJoP8JNq2fL45Xa+xe6FmKd1zBXxTM2uJmCHAr0G/p+47+ha78jJY9UyA42v
+         O3Tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772489142; x=1773093942;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-gg:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WZBWiobaxvOAb4QS9jj1xFMTL5Rh6KeICAalAzY0NKg=;
+        b=dP7VN5qiPsHmJuG2y5fzXte+IILjtkxnf9hDQSxubjhbQfZBY3iXcxRzYJAUWXlXLe
+         mzwtJ3j/XT9TZVWV1Ygy231a+VmGpV3NrHYxiNx5sfWRvErjFWX+gIWB+RAni99c+nWy
+         f8d8fKleu/WweLL9nNc7lTncS9QXXA9L0ctbzQiuuaSTnL3FfWPK+DTTKocAPTBAXSxF
+         MRxVKyG+D/356Kf4RcD0i7MFxRdc/wMH3UC32acdAR1ClvuTXoX1W5XDCk/4uGnH+kQs
+         WaF0OHJkmfB3/cGvSVL0tIoCPxrvTL9oWxRLU5g2KaJAEDx+J+84E+dW04G3oikLaIa0
+         r5aQ==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCX5hGlcnIaEOEspJW6dAW+jwMuqzCAiV7Ss5NXFQOERQxI70H/eb2jlDm9vkBhil74i6W4=@ietf.org
+X-Gm-Message-State: AOJu0YyyAavU7wy5Ta5mWrYtyEz2NV/WVRihZdlZ0vmR2TeGj/wXhXy8
+	dx0MyzIveuTlgTTX3C2KQMsL4Bp3PbpHQYC3L/RtwK0jI5txg+qyHhqOzaURsjyfHWJl6w==
+X-Gm-Gg: ATEYQzxaFo8uKgeqMnNBhLx0IvznDAhJnDm/9QXUZMBmu2cyB1021iZEeBBdjulAbWh
+	LOOaRcGnvOq/kVrbH7iFhfNORCHRBhmmHTL0kSI7JdinUaQ25klmFnMffP6THZibGD5wLcoiXei
+	wAbLZSivNOFIrOcf3SR0eFQ7A2tcqwfaIiBkei6WTlFwiQ5/sNYq4KRbnRwgVY10ZKFNJeyHBT6
+	eXd1EKLAGB+VnUd2R/QCBBGNfTNvn5fioIl7cF62lN7RssBorwkvMXXpLOBC8WbjWlTADun2kz6
+	CI4LYwWmkde+gfLdQARNVn4e3R7BKuBKmIQrvDk/uY21yoNX8iHTtzC/+/cBRKayTQtoaZI6/2o
+	iT7KWhGbr8C/rLUia7Yov1+lCrX5la3cKDEoqyS986JGFGqBxh4Qz6qIzzeRvE7Fe/OLLGITcE4
+	y/zVFMIXACH4U+2GNtrv0X4LTmZp+9d5ir4W+fmHc6PlCGiKBjZQ36gAVM
+X-Received: by 2002:a05:6830:6186:b0:7d1:91c9:9e70 with SMTP id
+ 46e09a7af769-7d591af0a69mr8492927a34.6.1772489142447;
+        Mon, 02 Mar 2026 14:05:42 -0800 (PST)
+Received: from smtpclient.apple ([199.192.157.25])
+        by smtp.gmail.com with ESMTPSA id
+ 46e09a7af769-7d58666e5c6sm12129629a34.25.2026.03.02.14.05.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 02 Mar 2026 14:05:42 -0800 (PST)
+Content-Type: text/plain;
+	charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3864.400.21\))
+From: Madison Church <mchurch@staff.rfc-editor.org>
+In-Reply-To: <20260302164434.0645CC000CC4@rfcpa.rfc-editor.org>
+Date: Mon, 2 Mar 2026 16:05:31 -0600
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <55D445ED-46D0-4B90-B830-FBBAD3B69687@staff.rfc-editor.org>
+References: <20260302164434.0645CC000CC4@rfcpa.rfc-editor.org>
+To: Deb Cooley <debcooley1@gmail.com>,
+ Paul Wouters <paul.wouters@aiven.io>
+X-Mailer: Apple Mail (2.3864.400.21)
+Message-ID-Hash: J73JIKULHPPAQCC5HWSWEUOMWUUCNCHX
+X-Message-ID-Hash: J73JIKULHPPAQCC5HWSWEUOMWUUCNCHX
+X-MailFrom: mchurch@staff.rfc-editor.org
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+CC: tls@ietf.org, RFC Errata System <rfc-editor@rfc-editor.org>
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Re=3A_=5BEditorial_Errata_Reported=5D_RFC8446_=288795=29?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/JCCNlBt75lMDQbOX-PNa4tPqsyw>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+Hi Deb and Paul, =20
+
+We are unable to verify this erratum that the submitter marked as =
+editorial, so we changed the Type to =E2=80=9CTechnical=E2=80=9D. As =
+Stream Approver, please review and set the Status and Type accordingly =
+(see the definitions at https://www.rfc-editor.org/errata-definitions/).=20=
+
+
+You may review the report at: https://www.rfc-editor.org/errata/eid8795. =
+=20
+
+Information on how to verify errata reports can be found at: =
+https://www.rfc-editor.org/how-to-verify/.
+
+Further information on errata can be found at: =
+https://www.rfc-editor.org/errata.php.
+=20
+Thank you,=20
+
+Madison Church
+RFC Production Center
+
+> On Mar 2, 2026, at 10:44=E2=80=AFAM, RFC Errata System =
+<rfc-editor@rfc-editor.org> wrote:
+>=20
+> The following errata report has been submitted for RFC8446,
+> "The Transport Layer Security (TLS) Protocol Version 1.3".
+>=20
+> --------------------------------------
+> You may review the report below and at:
+> https://www.rfc-editor.org/errata/eid8795
+>=20
+> --------------------------------------
+> Type: Editorial
+> Reported by: Lo=C3=AFc Ferreira <loic.ferreira@orange.com>
+>=20
+> Section: 4.6.2
+>=20
+> Original Text
+> -------------
+> A client that receives a CertificateRequest message without having =
+sent the "post_handshake_auth" extension MUST send an =
+"unexpected_message" fatal alert.
+>=20
+> Corrected Text
+> --------------
+> A client that receives a CertificateRequest message encrypted with the =
+server_application_traffic_secret_N without having sent the =
+"post_handshake_auth" extension MUST send an "unexpected_message" fatal =
+alert.
+>=20
+> Notes
+> -----
+> This sentence is to be understood in the context of a possible =
+post-handshake authentication. During a main handshake, a =
+CertificateRequest message (encrypted with the =
+server_handshake_traffic_secret) may be sent by the server (without need =
+for the client to send a "post_handshake_auth" extension).
+>=20
+> Instructions:
+> -------------
+> This erratum is currently posted as "Reported". (If it is spam, it=20
+> will be removed shortly by the RFC Production Center.) Please
+> use "Reply All" to discuss whether it should be verified or
+> rejected. When a decision is reached, the verifying party =20
+> will log in to change the status and edit the report, if necessary.
+>=20
+> --------------------------------------
+> RFC8446 (draft-ietf-tls-tls13-28)
+> --------------------------------------
+> Title               : The Transport Layer Security (TLS) Protocol =
+Version 1.3
+> Publication Date    : August 2018
+> Author(s)           : E. Rescorla
+> Category            : PROPOSED STANDARD
+> Source              : Transport Layer Security
+> Stream              : IETF
+> Verifying Party     : IESG
+

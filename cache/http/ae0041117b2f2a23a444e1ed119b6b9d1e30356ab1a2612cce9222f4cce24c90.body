@@ -1,0 +1,144 @@
+Return-Path: <ietf-dane@dukhovni.org>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id B9747129693
+ for <tls@ietfa.amsl.com>; Wed, 30 Nov 2016 18:50:28 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.9
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, RCVD_IN_DNSWL_NONE=-0.0001]
+ autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 6sxMRwMaP5f6 for <tls@ietfa.amsl.com>;
+ Wed, 30 Nov 2016 18:50:26 -0800 (PST)
+Received: from mournblade.imrryr.org (mournblade.imrryr.org [38.117.134.19])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 86B111294B2
+ for <tls@ietf.org>; Wed, 30 Nov 2016 18:50:26 -0800 (PST)
+Received: by mournblade.imrryr.org (Postfix, from userid 1034)
+ id 5B651284F7D; Thu,  1 Dec 2016 02:50:25 +0000 (UTC)
+Date: Thu, 1 Dec 2016 02:50:25 +0000
+From: Viktor Dukhovni <ietf-dane@dukhovni.org>
+To: tls@ietf.org
+Message-ID: <20161201025025.GP26244@mournblade.imrryr.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.24 (2015-08-30)
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/oj2xMFG2yHdTRmbGvi4xmx2r7RE>
+Subject: [TLS]  Draft 18 certificate signature algorithm requirements
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.17
+Precedence: list
+Reply-To: tls@ietf.org
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Thu, 01 Dec 2016 02:50:29 -0000
+
+
+We've discussed this before, and the current state of the text is
+certainly much improved.  I'd like to touch on one final point.
+
+The current text reads:
+
+   Section 4.4.1.2 ( https://tools.ietf.org/html/draft-ietf-tls-tls13-18#page-56 )
+
+   All certificates provided by the server MUST be signed by a signature
+   algorithm that appears in the "signature_algorithms" extension
+   provided by the client, if they are able to provide such a chain (see
+   Section 4.2.3).  Certificates that are self-signed or certificates
+   that are expected to be trust anchors are not validated as part of
+   the chain and therefore MAY be signed with any algorithm.
+
+   If the server cannot produce a certificate chain that is signed only
+   via the indicated supported algorithms, then it SHOULD continue the
+   handshake by sending the client a certificate chain of its choice
+   that may include algorithms that are not known to be supported by the
+   client.  This fallback chain MAY use the deprecated SHA-1 hash
+   algorithm only if the "signature_algorithms" extension provided by
+   the client permits it.  If the client cannot construct an acceptable
+   chain using the provided certificates and decides to abort the
+   handshake, then it MUST abort the handshake with an
+   "unsupported_certificate" alert.
+
+The first and second paragraph are in conflict, unless the first
+paragraph's MUST is changed to a SHOULD, or a "MUST if at all
+possible", ...  That is it fine to require the server to send a
+compatible rather than an incompatible certificate when it has at
+least one of each, but if the only choice is to fail, the second
+paragraph says that the server "SHOULD" send what it has, thus
+the first is not really a MUST as written.
+
+The only compromise in the direction of the first paragraph made
+in the second is that certificates (not self) signed with SHA1 MUST
+not be sent if the client did not offer to support it, even if
+that's the only certificate it has, and even if that SHA1 signature
+will never be used by the client (e.g. with a DANE-EE(3) TLSA record
+authenticating the server directly).
+
+The onus is correctly placed on the client (not on the server) to
+abort the connection, if the client's security requirements are not
+met by the server's certificate chain.
+
+So I'd like to see the text in the first paragraph changed to a
+SHOULD or worst-case a qualified "MUST whenever possible".
+
+I should also note that the second part of the first paragraph,
+which says:
+
+                    Certificates that are self-signed or certificates
+   that are expected to be trust anchors are not validated as part of
+   the chain and therefore MAY be signed with any algorithm.
+
+assumes that the server knows which of its certificates are trust
+anchors, but this is not something that the server can in general
+definitely know.  All kinds of clients may use all kinds of methods
+to validate the server chain.
+
+So I think there is a final opportunity to polish the text by making
+it clear that the server SHOULD (whenever possible) send a certificate
+chain that the client is likely to be able to process, but otherwise
+proceed to the text in the second paragraph, which says (correctly)
+that it SHOULD otherwise send what it has, which may indeed prove
+sufficient to the client despite the apparent signature algorithm
+mismatch.
+
+On a related note, is there in the current draft anything that
+requires ECDSA certificates to bear ECDSA issuer signatures? Or
+has that finally been relaxed, allowing the transmission of EE
+ECDSA certs bearing RSA signatures (ideally the client also signals
+support for RSA signatures)?  This would lift the restriction
+imposed by:
+
+   https://tools.ietf.org/search/rfc4492#section-2.2
+
+   In ECDHE_ECDSA, the server's certificate MUST contain an ECDSA-
+   capable public key and be signed with ECDSA.
+
+My impression is that the text in the last paragraph of 4.4.1.4:
+ 
+   https://tools.ietf.org/html/draft-ietf-tls-tls13-18#section-4.4.1.4
+
+   Note that a certificate containing a key for one signature algorithm
+   MAY be signed using a different signature algorithm (for instance, an
+   RSA key signed with an ECDSA key).
+
+seems to have the desired effect.  Is that correct?  If so, should
+the change from 4492 be stated more emphatically, making it clear
+that the older restriction no longer applies?
+
+-- 
+	Viktor.
+

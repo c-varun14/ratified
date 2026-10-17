@@ -1,0 +1,1806 @@
+From nobody Tue Aug 24 13:46:26 2021
+Return-Path: <jonathan.hoyland@gmail.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 5ECF73A120D;
+ Tue, 24 Aug 2021 13:46:18 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.097
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.097 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, FREEMAIL_FROM=0.001,
+ HTML_MESSAGE=0.001, SPF_HELO_NONE=0.001, SPF_PASS=-0.001,
+ URIBL_BLOCKED=0.001] autolearn=unavailable autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=gmail.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id YTPSn9MxS3KR; Tue, 24 Aug 2021 13:46:11 -0700 (PDT)
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com
+ [IPv6:2607:f8b0:4864:20::f30])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 1AB8F3A1209;
+ Tue, 24 Aug 2021 13:46:11 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id dt3so12486878qvb.6;
+ Tue, 24 Aug 2021 13:46:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025; 
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=Iq0bC6lJzC4UxJ3KZCw/F2+kr6e85Fygiz3PsYxIaVw=;
+ b=vbiSf/OIrJ4mBa6pL7KsbJt0FFHAFEnlMS7Us4YeqC4qwsVzsKlmPIi0tjqbcexUgi
+ h9AmGmsiExsggrwNSk6whfTzNWffmTsUwiaXz16UrekeXRaGUi/b+6vgZp0V+0JWopUM
+ R+XnysuvCjFOGrg3R9PovsMWz9skucGHCfVVDtTyqvntHVhN9tZ2VdjNKbYPxuItTA0x
+ UOXFy0DRf+W1HLGzkb6011AhiOiKCKkEW5xKaPDUVU+NYzGvHFfDb+kbAWLr85jvVYiK
+ dtwIXJfISpoS1ssbjRX/8mHkd1VvYxnsVnDR25/VipIB0UKNSeJ35YLo8cFd6YyvWV0m
+ itYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=Iq0bC6lJzC4UxJ3KZCw/F2+kr6e85Fygiz3PsYxIaVw=;
+ b=jW3F4SxqLqJmb5Q+0oxLpazw2kyp9mSww9eMqqQDYxX+qTABJ3yqN5RvK8QL0WWBcz
+ Q8bEhuKAsX0d7ITMsk6OY0gLaKRjAPdAHsOZ39IhwL7zmXchOgeNoIZbVphnT0rfUh3p
+ jG/47UsH9tsb4OsZTagRzcmTReIeQVC8d8jag8E/P293fDaf5/WpojW1Pcs8385l2p/f
+ FVtRXXjlEWtp9l8I8Ge6BeOkNXDgv8kAAF4hmYDi3nd6yWQtjso7pFHe8uIptEctOyS5
+ RuzNJ+Y+trbDmm1HFWlKKaDhVihK0F5As+M1M6FzVafV7cNCNUaMvI5BmdfRnXMRrk+3
+ iv2Q==
+X-Gm-Message-State: AOAM531eJQrwVBIHQ3t+Ui9E8jb9VIjvNe52I4bRcS9MoW5zlVV4GpRw
+ BvDuWlpXJNvlFOsMO3N70q825BuZ3HpMkISE8lE=
+X-Google-Smtp-Source: ABdhPJzZjeRGgNFwrGqU1+YS8z1Yv51oYJLCOJS8yZsybPfDTgkQuy8vnPPfwEM5WO9jb++PHaoXw/P8kArR1UM6Ssk=
+X-Received: by 2002:a0c:fcd1:: with SMTP id i17mr41117549qvq.13.1629837968907; 
+ Tue, 24 Aug 2021 13:46:08 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAFDDyk-TQaoyAnc7tzD83_k1y5FO9cJ-kGimqB4rGr6kO66vhA@mail.gmail.com>
+In-Reply-To: <CAFDDyk-TQaoyAnc7tzD83_k1y5FO9cJ-kGimqB4rGr6kO66vhA@mail.gmail.com>
+From: Jonathan Hoyland <jonathan.hoyland@gmail.com>
+Date: Tue, 24 Aug 2021 21:45:57 +0100
+Message-ID: <CACykbs32P7kP=qwZQQDci7bGzWXEbojW=E1Z0Qr4J_avuhL8zA@mail.gmail.com>
+To: Nick Sullivan <nick=40cloudflare.com@dmarc.ietf.org>
+Cc: iesg@ietf.org, tls-chairs <tls-chairs@ietf.org>,
+ "<tls@ietf.org>" <tls@ietf.org>, Benjamin Kaduk <kaduk@mit.edu>
+Content-Type: multipart/alternative; boundary="0000000000002da11505ca543999"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/FovH210wjIxb4qpArF6HiHALy-I>
+Subject: Re: [TLS] [re-send] draft-ietf-tls-exported-authenticator IESG
+ review
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Tue, 24 Aug 2021 20:46:19 -0000
+
+--0000000000002da11505ca543999
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Hi Nick, all,
+
+So IIUC the EAP-TLS issue refers to the problem where EAP-TLS clients
+couldn't determine whether they were authenticated at the end of the TLS
+1.3 handshake because the server can reject the client certificate but
+continue on with the handshake.
+
+This is the expected / RFC behaviour, per E.1.2:
+
+ A client that has sent authentication data to a server, either during
+
+ the handshake or in post-handshake authentication, cannot be sure
+
+ whether the server afterwards considers the client to be
+
+ authenticated or not. If the client needs to determine if the server
+
+ considers the connection to be unilaterally or mutually
+
+ authenticated, this has to be provisioned by the application layer.
+
+IIRC the solution was to (ab)use the close_notify alert to signal to the
+client that the server had accepted its authentication.
+
+With respect to EAs there are two issues.
+
+   1.
+
+   Until the server's first application data message arrives at the client
+   the client doesn't know whether some adversary tampered with its final
+   flight.
+   2.
+
+   When a client sends an EA it doesn't know whether the server accepted
+   its handshake auth (whether or not the server has sent an application da=
+ta
+   message.)
+
+Message Tampering:
+
+Ben's proposal to create a new exporter key that includes the client auth
+messages ensures agreement on the messages, but delays the point at which
+client auth can be sent until after the server's first application message.
+
+Given that the EA protocol can be run out-of-band, and there is no
+guarantee that any application messages will be sent, this may be useful.
+Although assuming that an application level system is used to confirm auth
+I can't actually think of a way this potential discrepancy might be
+leveraged.
+
+If a server sent an CertificateRequest in its handshake and also sent
+AuthenticatorRequest out-of-band after its Finished message a malicious
+client might withhold its Finished message, until after it had responded to
+the EA. It is difficult to imagine a scenario where this would lead to a
+bad outcome, but if this was part of the threat model the server can simply
+not request EAs until after it has received the client=E2=80=99s Finished m=
+essage.
+
+Auth Confirmation:
+
+Ben's suggestion that we change the key derivation doesn't affect the
+client's auth status, because the server may agree on the cert bytes, but
+have silently rejected the cert. This still requires application level
+confirmation, so this doesn't directly have any bearing on fixing the
+EAP-TLS style issue.
+
+Joint Auth:
+
+One potentially interesting property that appears to drop out of Ben's
+construction is that EAs sent by the client are bound to the client's
+handshake auth. With application layer mechanisms to confirm auth status,
+the client can use an EA to prove that the handshake cert was used
+honestly, even if the handshake cert has been compromised. I'm not sure
+that it's super useful, but it's def. Interesting.
+
+Overall, I would say there are 2 sensible paths forward.
+
+   1.
+
+   Add a section to the =E2=80=9CSecurity Considerations=E2=80=9D section a=
+long the lines
+   of: =E2=80=9CIn TLS 1.3 the client=E2=80=99s final flight is not agreed =
+until the first
+   application message. Because EAs can be negotiated out-of-band it is
+   possible to agree EAs without agreeing on the entire transcript. Servers=
+=C2=B9
+   SHOULD send application data before sending an AuthenticatorRequest to
+   the client. If there is no application data to send the server MAY send =
+a
+   NewSessionTicket=C2=B2."
+
+   Clients do not need to do this, because the server will not accept any
+   application data messages before it receives the client=E2=80=99s Finish=
+ed
+   message.
+   2.
+
+   Move to the new exporter key variant as Ben suggested. This makes EAs
+   contingent on the client=E2=80=99s final flight. It provides some level =
+of
+   tamper-resistance, at a cost of an extra half RTT. This is also more rob=
+ust
+   when applied to things like DTLS where application layer messages can ge=
+t
+   lost.
+
+We can do either of these. My first choice would be to just do 1, but I=E2=
+=80=99d
+also be happy with 2. I've made a PR for 1 here
+<https://github.com/tlswg/tls-exported-authenticator/pull/76>.
+
+Regards,
+
+Jonathan
+
+=C2=B9 Technically this is only necessary if the server sent a CertificateR=
+equest
+in the handshake, but a blanket SHOULD seems simpler to me. If a server
+never sends CertificateRequests maybe this is overly expensive.
+
+=C2=B2 An NST is bound to the resumption_master_secret and thus to the clie=
+nt
+auth bytes.
+
+On Tue, 24 Aug 2021 at 00:29, Nick Sullivan <nick=3D
+40cloudflare.com@dmarc.ietf.org> wrote:
+
+> Hello TLSWG and IESG reviewers,
+>
+> This is a compendium of responses to the various reviews of the
+> document. There are a few remaining open questions to address that I
+> hope we can resolve in this thread.
+>
+> I=E2=80=99ve compiled the changes to the document in response to the comm=
+ents in
+> Github:
+> https://github.com/tlswg/tls-exported-authenticator/pull/74
+>
+> Responses welcome!
+>
+> =3D=3D=3D=3D=3D
+>
+> Open questions for debate
+>
+> Should we define an optional API to generate the
+> certificate_request_context?
+> [ns] Proposed solution: no, let the application decide
+>
+> Should we remove the SHOULDs in Section 7, as they have little to do
+> with interoperability?
+> [ns] Proposed solution: leave the text as is.
+>
+> Are there any security issues caused by the fact that the Exported
+> Authenticator is based on the Exporter Secret, which does not
+> incorporate the entire transcript:
+>
+>   Using an exporter value as the handshake context means that any client
+>   authentication from the initial handshake is not cryptographically
+>   digested into the exporter value.  In light of what we ran into with
+>   EAP-TLS1.3, do we want to revisit whether we're still happy with that?
+>   We should in practice still benefit from the implicit confirmation that
+>   anything the server participates in after receiving the Client Finished
+>   means the server properly validated it and did not abort the handshake,
+>   but it's a bit awkward, especially since the RFC 8446 post-handshake
+>   authentication does digest the entire initial handshake transcript.
+>   Would we feel any safer if an exporter variant was available that
+>   digested the entire initial handshake transcript and we could use that?
+>
+> [ns] This is a very good question. I didn=E2=80=99t follow the EAP-TLS1.3
+> issue closely, but this does seem to imply an imperfect match with
+> post-handshake authentication in the case of mutually authenticated
+> connections. I would like to suggest that Jonathan Hoyland (cc'd), who
+> did the formal analysis on the protocol, provide his input.
+>
+> A comment from Yaron Scheffer/Benjamin Kaduk on the IANA considerations:
+>
+> My understanding is that the intent of this document is to only allow
+> "server_name" to appear in the ClientCertificateRequest structure that
+> otherwise uses the "CR" notation in the TLS 1.3 column of the TLS
+> ExtensionType Values registry, but not to allow for "server_name" in
+> authenticator CertificateRequests or handshake CertificateRequests.
+> Assuming that's correct, the easiest way to indicate that would be if
+> there was a "Comment" column in the registry that could say "only used
+> in ClientCertificateRequest certificate requests and no other
+> certificate requests", but there is not such a column in the registry.
+> I think it could also work to be much more clear in the IANA
+> considerations of this document as to why the "CR" is being added and
+> what restrictions there are on its use, even if that's not quite as
+> clean of a solution.
+>
+> [ns] Proposed solution:
+> Add text to section 8.1 to clarify why the CR is being added and what
+> restrictions there are to its use, as is done in
+> https://github.com/tlswg/tls-exported-authenticator/pull/74.
+>  Alternate solution:
+> Propose a new column, as done in
+> https://github.com/tlswg/tls-exported-authenticator/pull/75
+>
+> =3D=3D=3D=3D=3D
+>
+> Comments and responses
+>
+> Proposals to address IESG comments below are here:
+> https://github.com/tlswg/tls-exported-authenticator/pull/74
+>
+> Martin Duke (No Objection):
+>
+> - I come away from this not being entirely sure if this document applies =
+to
+> DTLS or not. There is the one reference in the intro to DTLS, but it's no=
+t
+> in
+> the abstract, nor anywhere else. Assuming that the Sec. 1 reference is no=
+t
+> some
+> sort of artifact, the document would benefit from a liberal sprinkling of
+> 's/TLS/(D)TLS' (but this would not apply to every instance)
+>
+> [ns] DTLS does not explicitly define a post-handshake authentication,
+> so not all references made sense to update, but I updated all the
+> relevant references.
+>
+> - If (D)TLS 1.2 is REQUIRED to implement, then does this document not
+> update
+> those RFCs?
+>
+> [ns] It doesn=E2=80=99t change existing versions of (D)TLS and it is not
+> mandatory to include this functionality, so I don=E2=80=99t think that it
+> updates them. It=E2=80=99s a separate and optional feature built on top o=
+f
+> TLS. In any case, the text is changed to make it explicit that this is
+> a minimum requirement.
+>
+> NITS:
+>
+> - Sec 1. I think you mean Sec 4.2.6 of RFC 8446, not 4.6.3.
+> [ns] It=E2=80=99s actually neither, it=E2=80=99s 4.6.2. Sec. 4.2.6 define=
+s the
+> extension that the client uses to advertise support for post-handshake
+> authentication.
+>
+> - Sec 4 and 5. "use a secure with..." ?
+> [ns] Added =E2=80=9Ctransport=E2=80=9D
+>
+> - Sec 4. s/messages structures/message structures
+> [ns] Fixed
+>
+>
+>
+>
+> Erik Kline's No Objection
+>
+> ----------------------------------------------------------------------
+> COMMENT:
+> ----------------------------------------------------------------------
+>
+> [ sections 4 & 5 ]
+>
+> * "SHOULD use a secure with" ->
+>   "SHOULD use a secure communications channel with" or
+>   "SHOULD use a secure transport with" or something?
+> [ns] Fixed in previous change
+>
+> * "as its as its" -> "as its"
+> [ns] Fixed
+>
+> [ section 5.2.3 ]
+>
+> * I think the first sentence of the first paragraph may not be a
+>   grammatically complete sentence?
+> [ns] Fixed
+>
+> [ section 7 ]
+>
+> * "following sections describes APIs" ->
+>   "following sections describe APIs"
+> [ns] Fixed
+>
+>
+> Francesca Palombini's No Objection
+> Thank you for the work on this document, and thank you to the doc shepher=
+d
+> for
+> the in-depth background. Please find some comments below.
+>
+> Francesca
+>
+> 1. -----
+>
+>    TLS (or DTLS) version 1.2 [RFC5246] [RFC6347]. or later are REQUIRED
+>    to implement the mechanisms described in this document.
+>
+> FP: Does this mechanism applies to DTLS as well? The sentence above, the
+> normative reference to DTLS 1.2, and the IANA section 8.2 would imply so.
+> However, this is the only time DTLS is mentioned in the body of the
+> document,
+> excluding IANA considerations. I would like it to be made explicit that
+> this
+> mechanism can be used for DTLS (if that's the case) both in the abstract
+> and in
+> the introduction, add any useful considerations about using this mechanis=
+m
+> with
+> DTLS vs TLS, and possibly add a sentence in the introduction stating that
+> DTLS
+> 1.X uses what specified for TLS 1.X. Two examples of why that would be
+> useful
+> are the following sentences:
+>
+>    using an exporter as described in Section 4 of [RFC5705] (for TLS
+>    1.2) or Section 7.5 of [TLS13] (for TLS 1.3).  For TLS 1.3, the
+>
+>    "signature_algorithms" and "signature_algorithms_cert" extension, as
+>    described in Section 4.2.3 of [TLS13] for TLS 1.3 or the
+>    "signature_algorithms" extension from Sections 7.4.2 and 7.4.6 of
+>    [RFC5246] for TLS 1.2.
+>
+> which makes it clear what applies for TLS but not for DTLS.
+>
+> [ns] Fixed in previous change
+>
+>
+> 2. -----
+>
+>    used to send the authenticator request SHOULD use a secure with
+>    equivalent security to TLS, such as QUIC [QUIC-TLS], as its as its
+>
+> FP: What are the implications of not using such a secure transport
+> protocol?
+> Why is it just RECOMMENDED and not MANDATED? nits: missing word "use a
+> secure
+> with" ; remove one of the duplicated "as its". (Note: this text appears
+> again
+> with the same typos for the authenticator in section 5)
+>
+> [ns] There are no known security implications of using an insecure
+> transport here, just privacy implications. This point was debated on
+> list (see Yaron Sheffer=E2=80=99s comments) and it was agreed that becaus=
+e
+> there may be alternate deployment scenarios that involve transport
+> outside the original tunnel, TLS-equivalent security is not a mandated
+> requirement. Typos fixed in previous change.
+>
+>
+> 3. -----
+>
+>       extensions (OCSP, SCT, etc.)
+>
+> FP: Please consider adding informative references.
+>
+> [ns] Added
+>
+> Zaheduzzaman Sarker's No Objection
+>
+> Thanks for the work on this document. I found it well written and I have
+> minor
+> comments and Nits
+>
+> Comment :
+>   * As this document asked for a IANA registration entry with DTLS-OK,
+> hence
+>   this mechanism is OK to be used with DTLS. I understand the heavily
+>   references to TLS 1.3 as it relay on the mechanisms described there.
+> However,
+>   I found it odd not find any reference to DTLS1.3 (we had it on the last
+>   formal IESG telechat, it is quite ready to be referenced). Is this
+>   intentional? is it supposed to be that this mechanism defined in this
+>   document on can be used with DTLS1.2?
+>
+> [ns] This was a common concern, the text has been updated.
+>
+>   * Section 7.3 & 7.4: is "active connection" defined somewhere? it would
+> be
+>   good if some descriptive texts are added for clarification as done for
+> the
+>   other bullets in the same list.
+>
+> [ns] Wording adjusted.
+>
+>   * For the API considerations I was expecting a API to generate the
+>   certificate_request_context.
+>
+> [ns] An API would likely just return a random number, which isn=E2=80=99t=
+ very
+> useful. Not defining such an API gives the application freedom to
+> choose to use this value in some other way. I don=E2=80=99t have strong
+> opinions either way.
+>
+>
+> Nits:
+>  * Post-handshake authentication is not defined in section 4.6.3 of TLS 1=
+.3
+> [ns] Updated in prior change.
+>  * Section 4 & 5: likely copy paste error -- s/as its as its/as its
+> [ns] Updated in prior change.
+>
+> Lars Eggert's No Objection
+>
+> All comments below are very minor change suggestions that you may choose =
+to
+> incorporate in some way (or ignore), as you see fit. There is no need to
+> let me
+> know what you did with these suggestions.
+>
+> Section 1, paragraph 9, nit:
+> -    TLS (or DTLS) version 1.2 [RFC5246] [RFC6347]. or later are REQUIRED
+> -                                       -         -
+> +    TLS (or DTLS) version 1.2 [RFC5246][RFC6347] or later are REQUIRED
+> [ns] Updated
+>
+>
+> =C3=89ric Vyncke's No Objection
+>
+> Thank you for the work put into this document.
+>
+> Please find below some non-blocking COMMENT points (but replies would be
+> appreciated), and some nits.
+>
+> I hope that this helps to improve the document,
+>
+> Regards,
+>
+> -=C3=A9ric
+>
+> =3D=3D COMMENTS =3D=3D
+>
+> I am trusting the WG and the responsible AD for ensuring that the specifi=
+c
+> section in references are the correct ones.
+>
+> -- Section 2 --
+> Unsure where the "terminology" part is...
+>
+> Also, should "Client" and "Server" be defined here ? Reading section 3, I
+> am
+> still unsure whether the "client" and "server" are the "TLS client" and
+> "TLS
+> server" ...
+>
+> In the same vein, a small figure with all parties involved would be
+> welcome by
+> the reader.
+>
+> [ns] Terminology updated to reference the terms in TLS 1.3. There are
+> only two parties in this protocol, so I=E2=80=99m not sure a diagram will
+> help.
+>
+> =3D=3D NITS =3D=3D
+>
+> In some places, 'TLS13' is used as an anchor rather than 'RFC8446'.
+> [ns] Corrected.
+>
+> Sometimes, the document uses 'octet' and sometimes 'bytes'.
+> [ns] Interesting. This is likely an oversight due to RFC 8446=E2=80=99s u=
+se of
+> both terms. I=E2=80=99ve adjusted the text to try to be more consistent w=
+ith
+> that document (octets for on-the-wire, bytes for string values).
+>
+> -- Section 1 --
+> Spurious '.' in the last =C2=A7.
+> [ns] Fixed in previous change.
+>
+> -- Section 4 --
+> "as its as its" ?
+> [ns] Fixed in previous change.
+>
+>
+> Ben Kaduk's IESG review + Yes
+>
+> You can view, comment on, or merge this pull request online at:
+>   https://github.com/tlswg/tls-exported-authenticator/pull/73
+> Commit Summary
+> Editorial suggestions from IESG review
+> ----------------------------------------------------------------------
+> COMMENT:
+> ----------------------------------------------------------------------
+>
+> I've made some (mostl) editorial suggestions in a github PR:
+> https://github.com/tlswg/tls-exported-authenticator/pull/73
+>
+> Despite the overall YES ballot, I do have some substantive comments that
+> may be worth some further consideration.
+>
+> Do we want to give any insight or examples into how an application might
+> choose to use the certificate_request_context?
+>
+> [ns] I put a proposed line here.
+>
+> Thanks to Yaron Sheffer for the multiple secdir reviews.  My
+> understanding is that the intent of this document is to only allow
+> "server_name" to appear in the ClientCertificateRequest structure that
+> otherwise uses the "CR" notation in the TLS 1.3 column of the TLS
+> ExtensionType Values registry, but not to allow for "server_name" in
+> authenticator CertificateRequests or handshake CertificateRequests.
+> Assuming that's correct, the easiest way to indicate that would be if
+> there was a "Comment" column in the registry that could say "only used
+> in ClientCertificateRequest certificate requests and no other
+> certificate requests", but there is not such a column in the registry.
+> I think it could also work to be much more clear in the IANA
+> considerations of this document as to why the "CR" is being added and
+> what restrictions there are on its use, even if that's not quite as
+> clean of a solution.
+>
+> [ns] I agree that this is an open question.
+>
+> Section 1
+>
+>    multiple identities -  Endpoints that are authoritative for multiple
+>       identities - but do not have a single certificate that includes
+>       all of the identities - can authenticate additional identities
+>       over a single connection.
+>
+> IIUC this is only new functionality for server endpoints, since client
+> endpoints can use different certificates for subsequent post-handshake
+> authentication events.
+>
+> [ns] Correct.
+>
+>    TLS (or DTLS) version 1.2 [RFC5246] [RFC6347]. or later are REQUIRED
+>    to implement the mechanisms described in this document.
+>
+> Please clarify whether this is a minimum TLS version required for using
+> EAs, or that this is a binding requirement on implementations of the
+> named protocol versions.  (If the latter is intended we may have some
+> discussions about an Updates: tag...)
+>
+> [ns] I meant =E2=80=9Cminimum version of 1.2=E2=80=9D and have changed th=
+e text to reflect
+> this.
+>
+> Section 5.1
+>
+> Using an exporter value as the handshake context means that any client
+> authentication from the initial handshake is not cryptographically
+> digested into the exporter value.  In light of what we ran into with
+> EAP-TLS1.3, do we want to revisit whether we're still happy with that?
+> We should in practice still benefit from the implicit confirmation that
+> anything the server participates in after receiving the Client Finished
+> means the server properly validated it and did not abort the handshake,
+> but it's a bit awkward, especially since the RFC 8446 post-handshake
+> authentication does digest the entire initial handshake transcript.
+> Would we feel any safer if an exporter variant was available that
+> digested the entire initial handshake transcript and we could use that?
+>
+> [ns] Addressed in the open question section above.
+>
+>
+> Section 5.2.1
+>
+>    Certificates chosen in the Certificate message MUST conform to the
+>    requirements of a Certificate message in the negotiated version of
+>    TLS.  In particular, the certificate chain MUST be valid for the
+>    signature algorithms indicated by the peer in the
+>    "signature_algorithms" and "signature_algorithms_cert" extension, as
+>    described in Section 4.2.3 of [TLS13] for TLS 1.3 or the
+>    "signature_algorithms" extension from Sections 7.4.2 and 7.4.6 of
+>    [RFC5246] for TLS 1.2.
+>
+> This seems awkward.  Do "the requirements of a Certificate message in
+> the negotiated version of TLS" include the actual message structure?
+> Because the rest of the document suggests that we always use the TLS 1.3
+> Certificate, but this line would set us up for using a TLS 1.2
+> Certificate.
+>
+> [ns] They do not include the actual message structure. The constraints
+> are about the certificate_list. I=E2=80=99ve updated the text.
+>
+>
+> START
+>
+>
+> Also, per =C2=A71.3 of RFC 8446, "signature_algorithms_cert" also applies=
+ to
+> TLS 1.2, so the last sentence seems incorrect or at least incomplete.
+>
+> [ns] Updated
+>
+> Section 5.2.1
+>
+>    Otherwise, the Certificate message MUST contain only extensions
+>    present in the TLS handshake.  Unrecognized extensions in the
+>    authenticator request MUST be ignored.
+>
+> At least the first sentence seems redundant with the previous section
+> (but I did not propose removing this in my editorial PR).  The second
+> sentence arguably follows from the RFC 8446 requirements, though I don't
+> mind mentioning it again as much as I do for the first sentence.
+>
+> [ns] I don=E2=80=99t mind being explicit here considering there was some
+> confusion about this previously.
+>
+> Section 5.2.2
+>
+>    The authenticator transcript is the hash of the concatenated
+>    Handshake Context, authenticator request (if present), and
+>    Certificate message:
+>
+>    Hash(Handshake Context || authenticator request || Certificate)
+>
+>    Where Hash is the authenticator hash defined in section 4.1.  If the
+>    authenticator request is not present, it is omitted from this
+>    construction, i.e., it is zero-length.
+>
+> This construction is injective, because the handshake messages start
+> with a message HandshakeType.  Should we say so explicitly in the
+> document?
+>
+> [ns] I=E2=80=99m not sure I understand what injective means in this conte=
+xt or
+> how it helps the reader.
+>
+>    If the party that generates the exported authenticator does so with a
+>    different connection than the party that is validating it, then the
+>    Handshake Context will not match, resulting in a CertificateVerify
+>    message that does not validate.  This includes situations in which
+>    the application data is sent via TLS-terminating proxy.  Given a
+>    failed CertificateVerify validation, it may be helpful for the
+>    application to confirm that both peers share the same connection
+>    using a value derived from the connection secrets before taking a
+>    user-visible action.
+>
+> Is it safe to reuse the Handshake Context itself as the "value derived
+> from the connection secrets"?
+>
+> [ns] Yes, it should be safe. Updated.
+>
+> Section 7.4
+>
+>    It returns the identity, such as the certificate chain and its
+>    extensions, and a status to indicate whether the authenticator is
+>    valid or not after applying the function for validating the
+>    certificate chain to the chain contained in the authenticator.
+>
+> I strongly recommend not returning the identity in the case when
+> validation fails.
+>
+> [ns] Fair. Updated.
+>
+>    The API should return a failure if the certificate_request_context of
+>    the authenticator was used in a previously validated authenticator.
+>
+> Is the intent for this to be a "distinct previously validated
+> authenticator" (i.e., that the API returns the same value when given the
+> same inputs subsequently)?  That does not seem to be the meaning
+> conveyed by the current text.
+>
+> [ns] Yes, this is about distinct validators. Updated.
+>
+> Section 8.2
+>
+>    IANA is requested to add the following entries to the registry for
+>    Exporter Labels (defined in [RFC5705]): "EXPORTER-server
+>    authenticator handshake context", "EXPORTER-client authenticator
+>    finished key" and "EXPORTER-server authenticator finished key" with
+>
+> Don't we also need "EXPORTER-client authenticator handshake context"?
+>
+> [ns] Yes, added.
+>
+> Section 9
+>
+> I think we should more explicitly incorporate the TLS 1.3 security
+> considerations by reference.
+>
+> [ns] Yes.
+>
+> Section 11.1
+>
+> I don't think [QUIC-TLS] or RFCs 7250 and 7540 are normative references.
+>
+> [ns] Updated
+>
+>
+> Murray Kucherawy's No Objection
+>
+> Why are the SHOULDs in Section 4 only SHOULDs?  Why might an implementer
+> reasonably not do what this says?
+>
+> [ns] Addressed after discussion on list and in reply above.
+>
+> Similarly, the SHOULDs in Section 7 seem awkward, as they have little to =
+do
+> with interoperability.
+>
+> [ns] It=E2=80=99s true that this is about interoperability. I=E2=80=99m o=
+pen to
+> changing these to lower-case shoulds since they reflect implementation
+> recommendations rather than interoperability.
+>
+> - Nick
+>
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+>
+
+--0000000000002da11505ca543999
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><p class=3D"gmail-md-end-block gmail-md-p" style=3D"box-si=
+zing:border-box;line-height:inherit;margin:0.8em 0px;white-space:pre-wrap;c=
+olor:rgb(51,51,51);font-family:&quot;Open Sans&quot;,&quot;Clear Sans&quot;=
+,&quot;Helvetica Neue&quot;,Helvetica,Arial,&quot;Segoe UI Emoji&quot;,sans=
+-serif;font-size:16px;font-style:normal;font-variant-ligatures:normal;font-=
+variant-caps:normal;font-weight:400;letter-spacing:normal;text-align:start;=
+text-indent:0px;text-transform:none;word-spacing:0px;text-decoration-style:=
+initial;text-decoration-color:initial"><span class=3D"gmail-md-plain gmail-=
+md-expand" style=3D"box-sizing:border-box">Hi Nick, all,</span></p><p class=
+=3D"gmail-md-end-block gmail-md-p" style=3D"box-sizing:border-box;line-heig=
+ht:inherit;margin:0.8em 0px;white-space:pre-wrap;color:rgb(51,51,51);font-f=
+amily:&quot;Open Sans&quot;,&quot;Clear Sans&quot;,&quot;Helvetica Neue&quo=
+t;,Helvetica,Arial,&quot;Segoe UI Emoji&quot;,sans-serif;font-size:16px;fon=
+t-style:normal;font-variant-ligatures:normal;font-variant-caps:normal;font-=
+weight:400;letter-spacing:normal;text-align:start;text-indent:0px;text-tran=
+sform:none;word-spacing:0px;text-decoration-style:initial;text-decoration-c=
+olor:initial"><span class=3D"gmail-md-plain" style=3D"box-sizing:border-box=
+">So IIUC the EAP-TLS issue refers to the problem where EAP-TLS clients cou=
+ldn&#39;t determine whether they were authenticated at the end of the TLS 1=
+.3 handshake because the server can reject the client certificate but conti=
+nue on with the handshake.</span></p><p class=3D"gmail-md-end-block gmail-m=
+d-p" style=3D"box-sizing:border-box;line-height:inherit;margin:0.8em 0px;wh=
+ite-space:pre-wrap;color:rgb(51,51,51);font-family:&quot;Open Sans&quot;,&q=
+uot;Clear Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,&quot;Segoe=
+ UI Emoji&quot;,sans-serif;font-size:16px;font-style:normal;font-variant-li=
+gatures:normal;font-variant-caps:normal;font-weight:400;letter-spacing:norm=
+al;text-align:start;text-indent:0px;text-transform:none;word-spacing:0px;te=
+xt-decoration-style:initial;text-decoration-color:initial"><span class=3D"g=
+mail-md-plain" style=3D"box-sizing:border-box">This is the expected / RFC b=
+ehaviour, per E.1.2:</span></p><pre class=3D"gmail-md-fences gmail-md-end-b=
+lock gmail-ty-contain-cm gmail-modeLoaded" style=3D"box-sizing:border-box;o=
+verflow:visible;font-size:0.9em;display:block;break-inside:avoid;text-align=
+:left;white-space:normal;background-image:inherit;background-position:inher=
+it;background-size:inherit;background-repeat:inherit;background-origin:inhe=
+rit;background-clip:inherit;background-color:rgb(248,248,248);border:1px so=
+lid rgb(231,234,237);border-radius:3px;padding:8px 4px 6px;margin-bottom:15=
+px;margin-top:15px;width:inherit;color:rgb(51,51,51);font-style:normal;font=
+-variant-ligatures:normal;font-variant-caps:normal;font-weight:400;letter-s=
+pacing:normal;text-indent:0px;text-transform:none;word-spacing:0px;text-dec=
+oration-style:initial;text-decoration-color:initial" lang=3D""><span role=
+=3D"presentation" style=3D"box-sizing:border-box;padding-right:0.1px"> A cl=
+ient that has sent authentication data to a server, either during</span><br=
+><span role=3D"presentation" style=3D"box-sizing:border-box;padding-right:0=
+.1px"><span style=3D"box-sizing:border-box"></span></span><br><span role=3D=
+"presentation" style=3D"box-sizing:border-box;padding-right:0.1px"> the han=
+dshake or in post-handshake authentication, cannot be sure</span><br><span =
+role=3D"presentation" style=3D"box-sizing:border-box;padding-right:0.1px"><=
+span style=3D"box-sizing:border-box"></span></span><br><span role=3D"presen=
+tation" style=3D"box-sizing:border-box;padding-right:0.1px"> whether the se=
+rver afterwards considers the client to be</span><br><span role=3D"presenta=
+tion" style=3D"box-sizing:border-box;padding-right:0.1px"><span style=3D"bo=
+x-sizing:border-box"></span></span><br><span role=3D"presentation" style=3D=
+"box-sizing:border-box;padding-right:0.1px"> authenticated or not. If the c=
+lient needs to determine if the server</span><br><span role=3D"presentation=
+" style=3D"box-sizing:border-box;padding-right:0.1px"><span style=3D"box-si=
+zing:border-box"></span></span><br><span role=3D"presentation" style=3D"box=
+-sizing:border-box;padding-right:0.1px"> considers the connection to be uni=
+laterally or mutually</span><br><span role=3D"presentation" style=3D"box-si=
+zing:border-box;padding-right:0.1px"><span style=3D"box-sizing:border-box">=
+</span></span><br><span role=3D"presentation" style=3D"box-sizing:border-bo=
+x;padding-right:0.1px"> authenticated, this has to be provisioned by the ap=
+plication layer.</span></pre><p class=3D"gmail-md-end-block gmail-md-p" sty=
+le=3D"box-sizing:border-box;line-height:inherit;margin:0.8em 0px;white-spac=
+e:pre-wrap;color:rgb(51,51,51);font-family:&quot;Open Sans&quot;,&quot;Clea=
+r Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,&quot;Segoe UI Emoj=
+i&quot;,sans-serif;font-size:16px;font-style:normal;font-variant-ligatures:=
+normal;font-variant-caps:normal;font-weight:400;letter-spacing:normal;text-=
+align:start;text-indent:0px;text-transform:none;word-spacing:0px;text-decor=
+ation-style:initial;text-decoration-color:initial"><span class=3D"gmail-md-=
+plain" style=3D"box-sizing:border-box">IIRC the solution was to (ab)use the=
+ close_notify alert to signal to the client that the server had accepted it=
+s authentication.</span></p><p class=3D"gmail-md-end-block gmail-md-p" styl=
+e=3D"box-sizing:border-box;line-height:inherit;margin:0.8em 0px;white-space=
+:pre-wrap;color:rgb(51,51,51);font-family:&quot;Open Sans&quot;,&quot;Clear=
+ Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,&quot;Segoe UI Emoji=
+&quot;,sans-serif;font-size:16px;font-style:normal;font-variant-ligatures:n=
+ormal;font-variant-caps:normal;font-weight:400;letter-spacing:normal;text-a=
+lign:start;text-indent:0px;text-transform:none;word-spacing:0px;text-decora=
+tion-style:initial;text-decoration-color:initial"><span class=3D"gmail-md-p=
+lain" style=3D"box-sizing:border-box">With respect to EAs there are two iss=
+ues.</span></p><ol class=3D"gmail-ol-list" style=3D"box-sizing:border-box;m=
+argin:0.8em 0px;padding-left:30px;color:rgb(51,51,51);font-family:&quot;Ope=
+n Sans&quot;,&quot;Clear Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Ar=
+ial,&quot;Segoe UI Emoji&quot;,sans-serif;font-size:16px;font-style:normal;=
+font-variant-ligatures:normal;font-variant-caps:normal;font-weight:400;lett=
+er-spacing:normal;text-align:start;text-indent:0px;text-transform:none;whit=
+e-space:normal;word-spacing:0px;text-decoration-style:initial;text-decorati=
+on-color:initial"><li class=3D"gmail-md-list-item" style=3D"box-sizing:bord=
+er-box;margin:0px"><p class=3D"gmail-md-end-block gmail-md-p" style=3D"box-=
+sizing:border-box;line-height:inherit;margin:0px 0px 0.5rem;white-space:pre=
+-wrap"><span class=3D"gmail-md-plain" style=3D"box-sizing:border-box">Until=
+ the server&#39;s first application data message arrives at the client the =
+client doesn&#39;t know whether some adversary tampered with its final flig=
+ht.</span></p></li><li class=3D"gmail-md-list-item" style=3D"box-sizing:bor=
+der-box;margin:0px"><p class=3D"gmail-md-end-block gmail-md-p" style=3D"box=
+-sizing:border-box;line-height:inherit;margin:0px 0px 0.5rem;white-space:pr=
+e-wrap"><span class=3D"gmail-md-plain" style=3D"box-sizing:border-box">When=
+ a client sends an EA it doesn&#39;t know whether the server accepted its h=
+andshake auth (whether or not the server has sent an application data messa=
+ge.)</span></p></li></ol><p class=3D"gmail-md-end-block gmail-md-p" style=
+=3D"box-sizing:border-box;line-height:inherit;margin:0.8em 0px;white-space:=
+pre-wrap;color:rgb(51,51,51);font-family:&quot;Open Sans&quot;,&quot;Clear =
+Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,&quot;Segoe UI Emoji&=
+quot;,sans-serif;font-size:16px;font-style:normal;font-variant-ligatures:no=
+rmal;font-variant-caps:normal;font-weight:400;letter-spacing:normal;text-al=
+ign:start;text-indent:0px;text-transform:none;word-spacing:0px;text-decorat=
+ion-style:initial;text-decoration-color:initial"><span class=3D"gmail-md-pl=
+ain" style=3D"box-sizing:border-box">Message Tampering:</span></p><p class=
+=3D"gmail-md-end-block gmail-md-p" style=3D"box-sizing:border-box;line-heig=
+ht:inherit;margin:0.8em 0px;white-space:pre-wrap;color:rgb(51,51,51);font-f=
+amily:&quot;Open Sans&quot;,&quot;Clear Sans&quot;,&quot;Helvetica Neue&quo=
+t;,Helvetica,Arial,&quot;Segoe UI Emoji&quot;,sans-serif;font-size:16px;fon=
+t-style:normal;font-variant-ligatures:normal;font-variant-caps:normal;font-=
+weight:400;letter-spacing:normal;text-align:start;text-indent:0px;text-tran=
+sform:none;word-spacing:0px;text-decoration-style:initial;text-decoration-c=
+olor:initial"><span class=3D"gmail-md-plain" style=3D"box-sizing:border-box=
+">Ben&#39;s proposal to create a new exporter key that includes the client =
+auth messages ensures agreement on the messages, but delays the point at wh=
+ich client auth can be sent until after the server&#39;s first application =
+message.</span></p><p class=3D"gmail-md-end-block gmail-md-p" style=3D"box-=
+sizing:border-box;line-height:inherit;margin:0.8em 0px;white-space:pre-wrap=
+;color:rgb(51,51,51);font-family:&quot;Open Sans&quot;,&quot;Clear Sans&quo=
+t;,&quot;Helvetica Neue&quot;,Helvetica,Arial,&quot;Segoe UI Emoji&quot;,sa=
+ns-serif;font-size:16px;font-style:normal;font-variant-ligatures:normal;fon=
+t-variant-caps:normal;font-weight:400;letter-spacing:normal;text-align:star=
+t;text-indent:0px;text-transform:none;word-spacing:0px;text-decoration-styl=
+e:initial;text-decoration-color:initial"><span class=3D"gmail-md-plain" sty=
+le=3D"box-sizing:border-box">Given that the EA protocol can be run out-of-b=
+and, and there is no guarantee that any application messages will be sent, =
+this may be useful. Although assuming that an application level system is u=
+sed to confirm auth I can&#39;t actually think of a way this potential disc=
+repancy might be leveraged.</span></p><p class=3D"gmail-md-end-block gmail-=
+md-p" style=3D"box-sizing:border-box;line-height:inherit;margin:0.8em 0px;w=
+hite-space:pre-wrap;color:rgb(51,51,51);font-family:&quot;Open Sans&quot;,&=
+quot;Clear Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,&quot;Sego=
+e UI Emoji&quot;,sans-serif;font-size:16px;font-style:normal;font-variant-l=
+igatures:normal;font-variant-caps:normal;font-weight:400;letter-spacing:nor=
+mal;text-align:start;text-indent:0px;text-transform:none;word-spacing:0px;t=
+ext-decoration-style:initial;text-decoration-color:initial"><span class=3D"=
+gmail-md-plain" style=3D"box-sizing:border-box">If a server sent an </span>=
+<span class=3D"gmail-md-pair-s" style=3D"box-sizing:border-box"><code style=
+=3D"box-sizing:border-box;text-align:left;vertical-align:initial;border:1px=
+ solid rgb(231,234,237);background-color:rgb(243,244,244);border-radius:3px=
+;padding:0px 2px;font-size:0.9em">CertificateRequest</code></span><span cla=
+ss=3D"gmail-md-plain" style=3D"box-sizing:border-box"> in its handshake and=
+ also sent </span><span class=3D"gmail-md-pair-s" style=3D"box-sizing:borde=
+r-box"><code style=3D"box-sizing:border-box;text-align:left;vertical-align:=
+initial;border:1px solid rgb(231,234,237);background-color:rgb(243,244,244)=
+;border-radius:3px;padding:0px 2px;font-size:0.9em">AuthenticatorRequest</c=
+ode></span><span class=3D"gmail-md-plain" style=3D"box-sizing:border-box"> =
+out-of-band after its </span><span class=3D"gmail-md-pair-s" style=3D"box-s=
+izing:border-box"><code style=3D"box-sizing:border-box;text-align:left;vert=
+ical-align:initial;border:1px solid rgb(231,234,237);background-color:rgb(2=
+43,244,244);border-radius:3px;padding:0px 2px;font-size:0.9em">Finished</co=
+de></span><span class=3D"gmail-md-plain" style=3D"box-sizing:border-box"> m=
+essage a malicious client might withhold its </span><span class=3D"gmail-md=
+-pair-s" style=3D"box-sizing:border-box"><code style=3D"box-sizing:border-b=
+ox;text-align:left;vertical-align:initial;border:1px solid rgb(231,234,237)=
+;background-color:rgb(243,244,244);border-radius:3px;padding:0px 2px;font-s=
+ize:0.9em">Finished</code></span><span class=3D"gmail-md-plain" style=3D"bo=
+x-sizing:border-box"> message, until after it had responded to the EA. It i=
+s difficult to imagine a scenario where this would lead to a bad outcome, b=
+ut if this was part of the threat model the server can simply not request E=
+As until after it has received the client=E2=80=99s </span><span class=3D"g=
+mail-md-pair-s" style=3D"box-sizing:border-box"><code style=3D"box-sizing:b=
+order-box;text-align:left;vertical-align:initial;border:1px solid rgb(231,2=
+34,237);background-color:rgb(243,244,244);border-radius:3px;padding:0px 2px=
+;font-size:0.9em">Finished</code></span><span class=3D"gmail-md-plain" styl=
+e=3D"box-sizing:border-box"> message. </span></p><p class=3D"gmail-md-end-b=
+lock gmail-md-p" style=3D"box-sizing:border-box;line-height:inherit;margin:=
+0.8em 0px;white-space:pre-wrap;color:rgb(51,51,51);font-family:&quot;Open S=
+ans&quot;,&quot;Clear Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial=
+,&quot;Segoe UI Emoji&quot;,sans-serif;font-size:16px;font-style:normal;fon=
+t-variant-ligatures:normal;font-variant-caps:normal;font-weight:400;letter-=
+spacing:normal;text-align:start;text-indent:0px;text-transform:none;word-sp=
+acing:0px;text-decoration-style:initial;text-decoration-color:initial"><spa=
+n class=3D"gmail-md-plain" style=3D"box-sizing:border-box">Auth Confirmatio=
+n:</span></p><p class=3D"gmail-md-end-block gmail-md-p" style=3D"box-sizing=
+:border-box;line-height:inherit;margin:0.8em 0px;white-space:pre-wrap;color=
+:rgb(51,51,51);font-family:&quot;Open Sans&quot;,&quot;Clear Sans&quot;,&qu=
+ot;Helvetica Neue&quot;,Helvetica,Arial,&quot;Segoe UI Emoji&quot;,sans-ser=
+if;font-size:16px;font-style:normal;font-variant-ligatures:normal;font-vari=
+ant-caps:normal;font-weight:400;letter-spacing:normal;text-align:start;text=
+-indent:0px;text-transform:none;word-spacing:0px;text-decoration-style:init=
+ial;text-decoration-color:initial"><span class=3D"gmail-md-plain" style=3D"=
+box-sizing:border-box">Ben&#39;s suggestion that we change the key derivati=
+on doesn&#39;t affect the client&#39;s auth status, because the server may =
+agree on the cert bytes, but have silently rejected the cert. This still re=
+quires application level confirmation, so this doesn&#39;t directly have an=
+y bearing on fixing the EAP-TLS style issue.</span></p><p class=3D"gmail-md=
+-end-block gmail-md-p" style=3D"box-sizing:border-box;line-height:inherit;m=
+argin:0.8em 0px;white-space:pre-wrap;color:rgb(51,51,51);font-family:&quot;=
+Open Sans&quot;,&quot;Clear Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica=
+,Arial,&quot;Segoe UI Emoji&quot;,sans-serif;font-size:16px;font-style:norm=
+al;font-variant-ligatures:normal;font-variant-caps:normal;font-weight:400;l=
+etter-spacing:normal;text-align:start;text-indent:0px;text-transform:none;w=
+ord-spacing:0px;text-decoration-style:initial;text-decoration-color:initial=
+"><span class=3D"gmail-md-plain" style=3D"box-sizing:border-box">Joint Auth=
+:</span></p><p class=3D"gmail-md-end-block gmail-md-p" style=3D"box-sizing:=
+border-box;line-height:inherit;margin:0.8em 0px;white-space:pre-wrap;color:=
+rgb(51,51,51);font-family:&quot;Open Sans&quot;,&quot;Clear Sans&quot;,&quo=
+t;Helvetica Neue&quot;,Helvetica,Arial,&quot;Segoe UI Emoji&quot;,sans-seri=
+f;font-size:16px;font-style:normal;font-variant-ligatures:normal;font-varia=
+nt-caps:normal;font-weight:400;letter-spacing:normal;text-align:start;text-=
+indent:0px;text-transform:none;word-spacing:0px;text-decoration-style:initi=
+al;text-decoration-color:initial"><span class=3D"gmail-md-plain" style=3D"b=
+ox-sizing:border-box">One potentially interesting property that appears to =
+drop out of Ben&#39;s construction is that EAs sent by the client are bound=
+ to the client&#39;s handshake auth. With application layer mechanisms to c=
+onfirm auth status, the client can use an EA to prove that the handshake ce=
+rt was used honestly, even if the handshake cert has been compromised. I&#3=
+9;m not sure that it&#39;s super useful, but it&#39;s def. Interesting.</sp=
+an></p><p class=3D"gmail-md-end-block gmail-md-p" style=3D"box-sizing:borde=
+r-box;line-height:inherit;margin:0.8em 0px;white-space:pre-wrap;color:rgb(5=
+1,51,51);font-family:&quot;Open Sans&quot;,&quot;Clear Sans&quot;,&quot;Hel=
+vetica Neue&quot;,Helvetica,Arial,&quot;Segoe UI Emoji&quot;,sans-serif;fon=
+t-size:16px;font-style:normal;font-variant-ligatures:normal;font-variant-ca=
+ps:normal;font-weight:400;letter-spacing:normal;text-align:start;text-inden=
+t:0px;text-transform:none;word-spacing:0px;text-decoration-style:initial;te=
+xt-decoration-color:initial"><span class=3D"gmail-md-plain" style=3D"box-si=
+zing:border-box">Overall, I would say there are 2 sensible paths forward.</=
+span></p><ol class=3D"gmail-ol-list" style=3D"box-sizing:border-box;margin:=
+0.8em 0px;padding-left:30px;color:rgb(51,51,51);font-family:&quot;Open Sans=
+&quot;,&quot;Clear Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,&q=
+uot;Segoe UI Emoji&quot;,sans-serif;font-size:16px;font-style:normal;font-v=
+ariant-ligatures:normal;font-variant-caps:normal;font-weight:400;letter-spa=
+cing:normal;text-align:start;text-indent:0px;text-transform:none;white-spac=
+e:normal;word-spacing:0px;text-decoration-style:initial;text-decoration-col=
+or:initial"><li class=3D"gmail-md-list-item" style=3D"box-sizing:border-box=
+;margin:0px"><p class=3D"gmail-md-end-block gmail-md-p" style=3D"box-sizing=
+:border-box;line-height:inherit;margin:0px 0px 0.5rem;white-space:pre-wrap"=
+><span class=3D"gmail-md-plain" style=3D"box-sizing:border-box">Add a secti=
+on to the =E2=80=9CSecurity Considerations=E2=80=9D section along the lines=
+ of:</span><span class=3D"gmail-md-softbreak" style=3D"box-sizing:border-bo=
+x">
+</span><span class=3D"gmail-md-plain" style=3D"box-sizing:border-box">=E2=
+=80=9CIn TLS 1.3 the client=E2=80=99s final flight is not agreed until the =
+first application message. Because EAs can be negotiated out-of-band it is =
+possible to agree EAs without agreeing on the entire transcript. Servers=C2=
+=B9 SHOULD send application data before sending an </span><span class=3D"gm=
+ail-md-pair-s" style=3D"box-sizing:border-box"><code style=3D"box-sizing:bo=
+rder-box;text-align:left;vertical-align:initial;border:1px solid rgb(231,23=
+4,237);background-color:rgb(243,244,244);border-radius:3px;padding:0px 2px;=
+font-size:0.9em">AuthenticatorRequest</code></span><span class=3D"gmail-md-=
+plain" style=3D"box-sizing:border-box"> to the client. If there is no appli=
+cation data to send the server MAY send a NewSessionTicket=C2=B2.&quot;</sp=
+an></p><p class=3D"gmail-md-end-block gmail-md-p" style=3D"box-sizing:borde=
+r-box;line-height:inherit;margin:0.5rem 0px;white-space:pre-wrap"><span cla=
+ss=3D"gmail-md-plain" style=3D"box-sizing:border-box">Clients do not need t=
+o do this, because the server will not accept any application data messages=
+ before it receives the client=E2=80=99s </span><span class=3D"gmail-md-pai=
+r-s" style=3D"box-sizing:border-box"><code style=3D"box-sizing:border-box;t=
+ext-align:left;vertical-align:initial;border:1px solid rgb(231,234,237);bac=
+kground-color:rgb(243,244,244);border-radius:3px;padding:0px 2px;font-size:=
+0.9em">Finished</code></span><span class=3D"gmail-md-plain" style=3D"box-si=
+zing:border-box"> message.</span></p></li><li class=3D"gmail-md-list-item" =
+style=3D"box-sizing:border-box;margin:0px"><p class=3D"gmail-md-end-block g=
+mail-md-p" style=3D"box-sizing:border-box;line-height:inherit;margin:0px 0p=
+x 0.5rem;white-space:pre-wrap"><span class=3D"gmail-md-plain" style=3D"box-=
+sizing:border-box">Move to the new exporter key variant as Ben suggested. T=
+his makes EAs contingent on the client=E2=80=99s final flight. It provides =
+some level of tamper-resistance, at a cost of an extra half RTT. This is al=
+so more robust when applied to things like DTLS where application layer mes=
+sages can get lost.</span></p></li></ol><p class=3D"gmail-md-end-block gmai=
+l-md-p gmail-md-focus" style=3D"box-sizing:border-box;line-height:inherit;m=
+argin:0.8em 0px;white-space:pre-wrap;color:rgb(51,51,51);font-family:&quot;=
+Open Sans&quot;,&quot;Clear Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica=
+,Arial,&quot;Segoe UI Emoji&quot;,sans-serif;font-size:16px;font-style:norm=
+al;font-variant-ligatures:normal;font-variant-caps:normal;font-weight:400;l=
+etter-spacing:normal;text-align:start;text-indent:0px;text-transform:none;w=
+ord-spacing:0px;text-decoration-style:initial;text-decoration-color:initial=
+"><span class=3D"gmail-md-plain gmail-md-expand" style=3D"box-sizing:border=
+-box">We can do either of these. My first choice would be to just do 1, but=
+ I=E2=80=99d also be happy with 2. I&#39;ve made a PR for 1 </span><span cl=
+ass=3D"gmail-md-meta-i-c gmail-md-link" style=3D"box-sizing:border-box"><a =
+href=3D"https://github.com/tlswg/tls-exported-authenticator/pull/76" style=
+=3D"box-sizing:border-box;color:rgb(65,131,196)"><span class=3D"gmail-md-pl=
+ain" style=3D"box-sizing:border-box">here</span></a></span><span class=3D"g=
+mail-md-plain" style=3D"box-sizing:border-box">.</span></p><p class=3D"gmai=
+l-md-end-block gmail-md-p" style=3D"box-sizing:border-box;line-height:inher=
+it;margin:0.8em 0px;white-space:pre-wrap;color:rgb(51,51,51);font-family:&q=
+uot;Open Sans&quot;,&quot;Clear Sans&quot;,&quot;Helvetica Neue&quot;,Helve=
+tica,Arial,&quot;Segoe UI Emoji&quot;,sans-serif;font-size:16px;font-style:=
+normal;font-variant-ligatures:normal;font-variant-caps:normal;font-weight:4=
+00;letter-spacing:normal;text-align:start;text-indent:0px;text-transform:no=
+ne;word-spacing:0px;text-decoration-style:initial;text-decoration-color:ini=
+tial"><span class=3D"gmail-md-plain" style=3D"box-sizing:border-box">Regard=
+s,</span></p><p class=3D"gmail-md-end-block gmail-md-p" style=3D"box-sizing=
+:border-box;line-height:inherit;margin:0.8em 0px;white-space:pre-wrap;color=
+:rgb(51,51,51);font-family:&quot;Open Sans&quot;,&quot;Clear Sans&quot;,&qu=
+ot;Helvetica Neue&quot;,Helvetica,Arial,&quot;Segoe UI Emoji&quot;,sans-ser=
+if;font-size:16px;font-style:normal;font-variant-ligatures:normal;font-vari=
+ant-caps:normal;font-weight:400;letter-spacing:normal;text-align:start;text=
+-indent:0px;text-transform:none;word-spacing:0px;text-decoration-style:init=
+ial;text-decoration-color:initial"><span class=3D"gmail-md-plain" style=3D"=
+box-sizing:border-box">Jonathan</span></p><p class=3D"gmail-md-end-block gm=
+ail-md-p" style=3D"box-sizing:border-box;line-height:inherit;margin:0.8em 0=
+px;white-space:pre-wrap;color:rgb(51,51,51);font-family:&quot;Open Sans&quo=
+t;,&quot;Clear Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,&quot;=
+Segoe UI Emoji&quot;,sans-serif;font-size:16px;font-style:normal;font-varia=
+nt-ligatures:normal;font-variant-caps:normal;font-weight:400;letter-spacing=
+:normal;text-align:start;text-indent:0px;text-transform:none;word-spacing:0=
+px;text-decoration-style:initial;text-decoration-color:initial"><span class=
+=3D"gmail-md-plain" style=3D"box-sizing:border-box">=C2=B9 Technically this=
+ is only necessary if the server sent a </span><span class=3D"gmail-md-pair=
+-s" style=3D"box-sizing:border-box"><code style=3D"box-sizing:border-box;te=
+xt-align:left;vertical-align:initial;border:1px solid rgb(231,234,237);back=
+ground-color:rgb(243,244,244);border-radius:3px;padding:0px 2px;font-size:0=
+.9em">CertificateRequest</code></span><span class=3D"gmail-md-plain" style=
+=3D"box-sizing:border-box"> in the handshake, but a blanket SHOULD seems si=
+mpler to me. If a server never sends </span><span class=3D"gmail-md-pair-s"=
+ style=3D"box-sizing:border-box"><code style=3D"box-sizing:border-box;text-=
+align:left;vertical-align:initial;border:1px solid rgb(231,234,237);backgro=
+und-color:rgb(243,244,244);border-radius:3px;padding:0px 2px;font-size:0.9e=
+m">CertificateRequest</code></span><span class=3D"gmail-md-plain" style=3D"=
+box-sizing:border-box">s maybe this is overly expensive. </span></p><p clas=
+s=3D"gmail-md-end-block gmail-md-p" style=3D"box-sizing:border-box;line-hei=
+ght:inherit;margin:0.8em 0px;white-space:pre-wrap;color:rgb(51,51,51);font-=
+family:&quot;Open Sans&quot;,&quot;Clear Sans&quot;,&quot;Helvetica Neue&qu=
+ot;,Helvetica,Arial,&quot;Segoe UI Emoji&quot;,sans-serif;font-size:16px;fo=
+nt-style:normal;font-variant-ligatures:normal;font-variant-caps:normal;font=
+-weight:400;letter-spacing:normal;text-align:start;text-indent:0px;text-tra=
+nsform:none;word-spacing:0px;text-decoration-style:initial;text-decoration-=
+color:initial"><span class=3D"gmail-md-plain" style=3D"box-sizing:border-bo=
+x">=C2=B2 An NST is bound to the </span><span class=3D"gmail-md-pair-s" sty=
+le=3D"box-sizing:border-box"><code style=3D"box-sizing:border-box;text-alig=
+n:left;vertical-align:initial;border:1px solid rgb(231,234,237);background-=
+color:rgb(243,244,244);border-radius:3px;padding:0px 2px;font-size:0.9em">r=
+esumption_master_secret</code></span><span class=3D"gmail-md-plain gmail-md=
+-expand" style=3D"box-sizing:border-box"> and thus to the client auth bytes=
+. </span></p></div><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D=
+"gmail_attr">On Tue, 24 Aug 2021 at 00:29, Nick Sullivan &lt;nick=3D<a href=
+=3D"mailto:40cloudflare.com@dmarc.ietf.org">40cloudflare.com@dmarc.ietf.org=
+</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:=
+0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">=
+Hello TLSWG and IESG reviewers,<br>
+<br>
+This is a compendium of responses to the various reviews of the<br>
+document. There are a few remaining open questions to address that I<br>
+hope we can resolve in this thread.<br>
+<br>
+I=E2=80=99ve compiled the changes to the document in response to the commen=
+ts in Github:<br>
+<a href=3D"https://github.com/tlswg/tls-exported-authenticator/pull/74" rel=
+=3D"noreferrer" target=3D"_blank">https://github.com/tlswg/tls-exported-aut=
+henticator/pull/74</a><br>
+<br>
+Responses welcome!<br>
+<br>
+=3D=3D=3D=3D=3D<br>
+<br>
+Open questions for debate<br>
+<br>
+Should we define an optional API to generate the certificate_request_contex=
+t?<br>
+[ns] Proposed solution: no, let the application decide<br>
+<br>
+Should we remove the SHOULDs in Section 7, as they have little to do<br>
+with interoperability?<br>
+[ns] Proposed solution: leave the text as is.<br>
+<br>
+Are there any security issues caused by the fact that the Exported<br>
+Authenticator is based on the Exporter Secret, which does not<br>
+incorporate the entire transcript:<br>
+<br>
+=C2=A0 Using an exporter value as the handshake context means that any clie=
+nt<br>
+=C2=A0 authentication from the initial handshake is not cryptographically<b=
+r>
+=C2=A0 digested into the exporter value.=C2=A0 In light of what we ran into=
+ with<br>
+=C2=A0 EAP-TLS1.3, do we want to revisit whether we&#39;re still happy with=
+ that?<br>
+=C2=A0 We should in practice still benefit from the implicit confirmation t=
+hat<br>
+=C2=A0 anything the server participates in after receiving the Client Finis=
+hed<br>
+=C2=A0 means the server properly validated it and did not abort the handsha=
+ke,<br>
+=C2=A0 but it&#39;s a bit awkward, especially since the RFC 8446 post-hands=
+hake<br>
+=C2=A0 authentication does digest the entire initial handshake transcript.<=
+br>
+=C2=A0 Would we feel any safer if an exporter variant was available that<br=
+>
+=C2=A0 digested the entire initial handshake transcript and we could use th=
+at?<br>
+<br>
+[ns] This is a very good question. I didn=E2=80=99t follow the EAP-TLS1.3<b=
+r>
+issue closely, but this does seem to imply an imperfect match with<br>
+post-handshake authentication in the case of mutually authenticated<br>
+connections. I would like to suggest that Jonathan Hoyland (cc&#39;d), who<=
+br>
+did the formal analysis on the protocol, provide his input.<br>
+<br>
+A comment from Yaron Scheffer/Benjamin Kaduk on the IANA considerations:<br=
+>
+<br>
+My understanding is that the intent of this document is to only allow<br>
+&quot;server_name&quot; to appear in the ClientCertificateRequest structure=
+ that<br>
+otherwise uses the &quot;CR&quot; notation in the TLS 1.3 column of the TLS=
+<br>
+ExtensionType Values registry, but not to allow for &quot;server_name&quot;=
+ in<br>
+authenticator CertificateRequests or handshake CertificateRequests.<br>
+Assuming that&#39;s correct, the easiest way to indicate that would be if<b=
+r>
+there was a &quot;Comment&quot; column in the registry that could say &quot=
+;only used<br>
+in ClientCertificateRequest certificate requests and no other<br>
+certificate requests&quot;, but there is not such a column in the registry.=
+<br>
+I think it could also work to be much more clear in the IANA<br>
+considerations of this document as to why the &quot;CR&quot; is being added=
+ and<br>
+what restrictions there are on its use, even if that&#39;s not quite as<br>
+clean of a solution.<br>
+<br>
+[ns] Proposed solution:<br>
+Add text to section 8.1 to clarify why the CR is being added and what<br>
+restrictions there are to its use, as is done in<br>
+<a href=3D"https://github.com/tlswg/tls-exported-authenticator/pull/74" rel=
+=3D"noreferrer" target=3D"_blank">https://github.com/tlswg/tls-exported-aut=
+henticator/pull/74</a>.<br>
+=C2=A0Alternate solution:<br>
+Propose a new column, as done in<br>
+<a href=3D"https://github.com/tlswg/tls-exported-authenticator/pull/75" rel=
+=3D"noreferrer" target=3D"_blank">https://github.com/tlswg/tls-exported-aut=
+henticator/pull/75</a><br>
+<br>
+=3D=3D=3D=3D=3D<br>
+<br>
+Comments and responses<br>
+<br>
+Proposals to address IESG comments below are here:<br>
+<a href=3D"https://github.com/tlswg/tls-exported-authenticator/pull/74" rel=
+=3D"noreferrer" target=3D"_blank">https://github.com/tlswg/tls-exported-aut=
+henticator/pull/74</a><br>
+<br>
+Martin Duke (No Objection):<br>
+<br>
+- I come away from this not being entirely sure if this document applies to=
+<br>
+DTLS or not. There is the one reference in the intro to DTLS, but it&#39;s =
+not in<br>
+the abstract, nor anywhere else. Assuming that the Sec. 1 reference is not =
+some<br>
+sort of artifact, the document would benefit from a liberal sprinkling of<b=
+r>
+&#39;s/TLS/(D)TLS&#39; (but this would not apply to every instance)<br>
+<br>
+[ns] DTLS does not explicitly define a post-handshake authentication,<br>
+so not all references made sense to update, but I updated all the<br>
+relevant references.<br>
+<br>
+- If (D)TLS 1.2 is REQUIRED to implement, then does this document not updat=
+e<br>
+those RFCs?<br>
+<br>
+[ns] It doesn=E2=80=99t change existing versions of (D)TLS and it is not<br=
+>
+mandatory to include this functionality, so I don=E2=80=99t think that it<b=
+r>
+updates them. It=E2=80=99s a separate and optional feature built on top of<=
+br>
+TLS. In any case, the text is changed to make it explicit that this is<br>
+a minimum requirement.<br>
+<br>
+NITS:<br>
+<br>
+- Sec 1. I think you mean Sec 4.2.6 of RFC 8446, not 4.6.3.<br>
+[ns] It=E2=80=99s actually neither, it=E2=80=99s 4.6.2. Sec. 4.2.6 defines =
+the<br>
+extension that the client uses to advertise support for post-handshake<br>
+authentication.<br>
+<br>
+- Sec 4 and 5. &quot;use a secure with...&quot; ?<br>
+[ns] Added =E2=80=9Ctransport=E2=80=9D<br>
+<br>
+- Sec 4. s/messages structures/message structures<br>
+[ns] Fixed<br>
+<br>
+<br>
+<br>
+<br>
+Erik Kline&#39;s No Objection<br>
+<br>
+----------------------------------------------------------------------<br>
+COMMENT:<br>
+----------------------------------------------------------------------<br>
+<br>
+[ sections 4 &amp; 5 ]<br>
+<br>
+* &quot;SHOULD use a secure with&quot; -&gt;<br>
+=C2=A0 &quot;SHOULD use a secure communications channel with&quot; or<br>
+=C2=A0 &quot;SHOULD use a secure transport with&quot; or something?<br>
+[ns] Fixed in previous change<br>
+<br>
+* &quot;as its as its&quot; -&gt; &quot;as its&quot;<br>
+[ns] Fixed<br>
+<br>
+[ section 5.2.3 ]<br>
+<br>
+* I think the first sentence of the first paragraph may not be a<br>
+=C2=A0 grammatically complete sentence?<br>
+[ns] Fixed<br>
+<br>
+[ section 7 ]<br>
+<br>
+* &quot;following sections describes APIs&quot; -&gt;<br>
+=C2=A0 &quot;following sections describe APIs&quot;<br>
+[ns] Fixed<br>
+<br>
+<br>
+Francesca Palombini&#39;s No Objection<br>
+Thank you for the work on this document, and thank you to the doc shepherd =
+for<br>
+the in-depth background. Please find some comments below.<br>
+<br>
+Francesca<br>
+<br>
+1. -----<br>
+<br>
+=C2=A0 =C2=A0TLS (or DTLS) version 1.2 [RFC5246] [RFC6347]. or later are RE=
+QUIRED<br>
+=C2=A0 =C2=A0to implement the mechanisms described in this document.<br>
+<br>
+FP: Does this mechanism applies to DTLS as well? The sentence above, the<br=
+>
+normative reference to DTLS 1.2, and the IANA section 8.2 would imply so.<b=
+r>
+However, this is the only time DTLS is mentioned in the body of the documen=
+t,<br>
+excluding IANA considerations. I would like it to be made explicit that thi=
+s<br>
+mechanism can be used for DTLS (if that&#39;s the case) both in the abstrac=
+t and in<br>
+the introduction, add any useful considerations about using this mechanism =
+with<br>
+DTLS vs TLS, and possibly add a sentence in the introduction stating that D=
+TLS<br>
+1.X uses what specified for TLS 1.X. Two examples of why that would be usef=
+ul<br>
+are the following sentences:<br>
+<br>
+=C2=A0 =C2=A0using an exporter as described in Section 4 of [RFC5705] (for =
+TLS<br>
+=C2=A0 =C2=A01.2) or Section 7.5 of [TLS13] (for TLS 1.3).=C2=A0 For TLS 1.=
+3, the<br>
+<br>
+=C2=A0 =C2=A0&quot;signature_algorithms&quot; and &quot;signature_algorithm=
+s_cert&quot; extension, as<br>
+=C2=A0 =C2=A0described in Section 4.2.3 of [TLS13] for TLS 1.3 or the<br>
+=C2=A0 =C2=A0&quot;signature_algorithms&quot; extension from Sections 7.4.2=
+ and 7.4.6 of<br>
+=C2=A0 =C2=A0[RFC5246] for TLS 1.2.<br>
+<br>
+which makes it clear what applies for TLS but not for DTLS.<br>
+<br>
+[ns] Fixed in previous change<br>
+<br>
+<br>
+2. -----<br>
+<br>
+=C2=A0 =C2=A0used to send the authenticator request SHOULD use a secure wit=
+h<br>
+=C2=A0 =C2=A0equivalent security to TLS, such as QUIC [QUIC-TLS], as its as=
+ its<br>
+<br>
+FP: What are the implications of not using such a secure transport protocol=
+?<br>
+Why is it just RECOMMENDED and not MANDATED? nits: missing word &quot;use a=
+ secure<br>
+with&quot; ; remove one of the duplicated &quot;as its&quot;. (Note: this t=
+ext appears again<br>
+with the same typos for the authenticator in section 5)<br>
+<br>
+[ns] There are no known security implications of using an insecure<br>
+transport here, just privacy implications. This point was debated on<br>
+list (see Yaron Sheffer=E2=80=99s comments) and it was agreed that because<=
+br>
+there may be alternate deployment scenarios that involve transport<br>
+outside the original tunnel, TLS-equivalent security is not a mandated<br>
+requirement. Typos fixed in previous change.<br>
+<br>
+<br>
+3. -----<br>
+<br>
+=C2=A0 =C2=A0 =C2=A0 extensions (OCSP, SCT, etc.)<br>
+<br>
+FP: Please consider adding informative references.<br>
+<br>
+[ns] Added<br>
+<br>
+Zaheduzzaman Sarker&#39;s No Objection<br>
+<br>
+Thanks for the work on this document. I found it well written and I have mi=
+nor<br>
+comments and Nits<br>
+<br>
+Comment :<br>
+=C2=A0 * As this document asked for a IANA registration entry with DTLS-OK,=
+ hence<br>
+=C2=A0 this mechanism is OK to be used with DTLS. I understand the heavily<=
+br>
+=C2=A0 references to TLS 1.3 as it relay on the mechanisms described there.=
+ However,<br>
+=C2=A0 I found it odd not find any reference to DTLS1.3 (we had it on the l=
+ast<br>
+=C2=A0 formal IESG telechat, it is quite ready to be referenced). Is this<b=
+r>
+=C2=A0 intentional? is it supposed to be that this mechanism defined in thi=
+s<br>
+=C2=A0 document on can be used with DTLS1.2?<br>
+<br>
+[ns] This was a common concern, the text has been updated.<br>
+<br>
+=C2=A0 * Section 7.3 &amp; 7.4: is &quot;active connection&quot; defined so=
+mewhere? it would be<br>
+=C2=A0 good if some descriptive texts are added for clarification as done f=
+or the<br>
+=C2=A0 other bullets in the same list.<br>
+<br>
+[ns] Wording adjusted.<br>
+<br>
+=C2=A0 * For the API considerations I was expecting a API to generate the<b=
+r>
+=C2=A0 certificate_request_context.<br>
+<br>
+[ns] An API would likely just return a random number, which isn=E2=80=99t v=
+ery<br>
+useful. Not defining such an API gives the application freedom to<br>
+choose to use this value in some other way. I don=E2=80=99t have strong<br>
+opinions either way.<br>
+<br>
+<br>
+Nits:<br>
+=C2=A0* Post-handshake authentication is not defined in section 4.6.3 of TL=
+S 1.3<br>
+[ns] Updated in prior change.<br>
+=C2=A0* Section 4 &amp; 5: likely copy paste error -- s/as its as its/as it=
+s<br>
+[ns] Updated in prior change.<br>
+<br>
+Lars Eggert&#39;s No Objection<br>
+<br>
+All comments below are very minor change suggestions that you may choose to=
+<br>
+incorporate in some way (or ignore), as you see fit. There is no need to le=
+t me<br>
+know what you did with these suggestions.<br>
+<br>
+Section 1, paragraph 9, nit:<br>
+-=C2=A0 =C2=A0 TLS (or DTLS) version 1.2 [RFC5246] [RFC6347]. or later are =
+REQUIRED<br>
+-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0-=C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0-<br>
++=C2=A0 =C2=A0 TLS (or DTLS) version 1.2 [RFC5246][RFC6347] or later are RE=
+QUIRED<br>
+[ns] Updated<br>
+<br>
+<br>
+=C3=89ric Vyncke&#39;s No Objection<br>
+<br>
+Thank you for the work put into this document.<br>
+<br>
+Please find below some non-blocking COMMENT points (but replies would be<br=
+>
+appreciated), and some nits.<br>
+<br>
+I hope that this helps to improve the document,<br>
+<br>
+Regards,<br>
+<br>
+-=C3=A9ric<br>
+<br>
+=3D=3D COMMENTS =3D=3D<br>
+<br>
+I am trusting the WG and the responsible AD for ensuring that the specific<=
+br>
+section in references are the correct ones.<br>
+<br>
+-- Section 2 --<br>
+Unsure where the &quot;terminology&quot; part is...<br>
+<br>
+Also, should &quot;Client&quot; and &quot;Server&quot; be defined here ? Re=
+ading section 3, I am<br>
+still unsure whether the &quot;client&quot; and &quot;server&quot; are the =
+&quot;TLS client&quot; and &quot;TLS<br>
+server&quot; ...<br>
+<br>
+In the same vein, a small figure with all parties involved would be welcome=
+ by<br>
+the reader.<br>
+<br>
+[ns] Terminology updated to reference the terms in TLS 1.3. There are<br>
+only two parties in this protocol, so I=E2=80=99m not sure a diagram will<b=
+r>
+help.<br>
+<br>
+=3D=3D NITS =3D=3D<br>
+<br>
+In some places, &#39;TLS13&#39; is used as an anchor rather than &#39;RFC84=
+46&#39;.<br>
+[ns] Corrected.<br>
+<br>
+Sometimes, the document uses &#39;octet&#39; and sometimes &#39;bytes&#39;.=
+<br>
+[ns] Interesting. This is likely an oversight due to RFC 8446=E2=80=99s use=
+ of<br>
+both terms. I=E2=80=99ve adjusted the text to try to be more consistent wit=
+h<br>
+that document (octets for on-the-wire, bytes for string values).<br>
+<br>
+-- Section 1 --<br>
+Spurious &#39;.&#39; in the last =C2=A7.<br>
+[ns] Fixed in previous change.<br>
+<br>
+-- Section 4 --<br>
+&quot;as its as its&quot; ?<br>
+[ns] Fixed in previous change.<br>
+<br>
+<br>
+Ben Kaduk&#39;s IESG review + Yes<br>
+<br>
+You can view, comment on, or merge this pull request online at:<br>
+=C2=A0 <a href=3D"https://github.com/tlswg/tls-exported-authenticator/pull/=
+73" rel=3D"noreferrer" target=3D"_blank">https://github.com/tlswg/tls-expor=
+ted-authenticator/pull/73</a><br>
+Commit Summary<br>
+Editorial suggestions from IESG review<br>
+----------------------------------------------------------------------<br>
+COMMENT:<br>
+----------------------------------------------------------------------<br>
+<br>
+I&#39;ve made some (mostl) editorial suggestions in a github PR:<br>
+<a href=3D"https://github.com/tlswg/tls-exported-authenticator/pull/73" rel=
+=3D"noreferrer" target=3D"_blank">https://github.com/tlswg/tls-exported-aut=
+henticator/pull/73</a><br>
+<br>
+Despite the overall YES ballot, I do have some substantive comments that<br=
+>
+may be worth some further consideration.<br>
+<br>
+Do we want to give any insight or examples into how an application might<br=
+>
+choose to use the certificate_request_context?<br>
+<br>
+[ns] I put a proposed line here.<br>
+<br>
+Thanks to Yaron Sheffer for the multiple secdir reviews.=C2=A0 My<br>
+understanding is that the intent of this document is to only allow<br>
+&quot;server_name&quot; to appear in the ClientCertificateRequest structure=
+ that<br>
+otherwise uses the &quot;CR&quot; notation in the TLS 1.3 column of the TLS=
+<br>
+ExtensionType Values registry, but not to allow for &quot;server_name&quot;=
+ in<br>
+authenticator CertificateRequests or handshake CertificateRequests.<br>
+Assuming that&#39;s correct, the easiest way to indicate that would be if<b=
+r>
+there was a &quot;Comment&quot; column in the registry that could say &quot=
+;only used<br>
+in ClientCertificateRequest certificate requests and no other<br>
+certificate requests&quot;, but there is not such a column in the registry.=
+<br>
+I think it could also work to be much more clear in the IANA<br>
+considerations of this document as to why the &quot;CR&quot; is being added=
+ and<br>
+what restrictions there are on its use, even if that&#39;s not quite as<br>
+clean of a solution.<br>
+<br>
+[ns] I agree that this is an open question.<br>
+<br>
+Section 1<br>
+<br>
+=C2=A0 =C2=A0multiple identities -=C2=A0 Endpoints that are authoritative f=
+or multiple<br>
+=C2=A0 =C2=A0 =C2=A0 identities - but do not have a single certificate that=
+ includes<br>
+=C2=A0 =C2=A0 =C2=A0 all of the identities - can authenticate additional id=
+entities<br>
+=C2=A0 =C2=A0 =C2=A0 over a single connection.<br>
+<br>
+IIUC this is only new functionality for server endpoints, since client<br>
+endpoints can use different certificates for subsequent post-handshake<br>
+authentication events.<br>
+<br>
+[ns] Correct.<br>
+<br>
+=C2=A0 =C2=A0TLS (or DTLS) version 1.2 [RFC5246] [RFC6347]. or later are RE=
+QUIRED<br>
+=C2=A0 =C2=A0to implement the mechanisms described in this document.<br>
+<br>
+Please clarify whether this is a minimum TLS version required for using<br>
+EAs, or that this is a binding requirement on implementations of the<br>
+named protocol versions.=C2=A0 (If the latter is intended we may have some<=
+br>
+discussions about an Updates: tag...)<br>
+<br>
+[ns] I meant =E2=80=9Cminimum version of 1.2=E2=80=9D and have changed the =
+text to reflect this.<br>
+<br>
+Section 5.1<br>
+<br>
+Using an exporter value as the handshake context means that any client<br>
+authentication from the initial handshake is not cryptographically<br>
+digested into the exporter value.=C2=A0 In light of what we ran into with<b=
+r>
+EAP-TLS1.3, do we want to revisit whether we&#39;re still happy with that?<=
+br>
+We should in practice still benefit from the implicit confirmation that<br>
+anything the server participates in after receiving the Client Finished<br>
+means the server properly validated it and did not abort the handshake,<br>
+but it&#39;s a bit awkward, especially since the RFC 8446 post-handshake<br=
+>
+authentication does digest the entire initial handshake transcript.<br>
+Would we feel any safer if an exporter variant was available that<br>
+digested the entire initial handshake transcript and we could use that?<br>
+<br>
+[ns] Addressed in the open question section above.<br>
+<br>
+<br>
+Section 5.2.1<br>
+<br>
+=C2=A0 =C2=A0Certificates chosen in the Certificate message MUST conform to=
+ the<br>
+=C2=A0 =C2=A0requirements of a Certificate message in the negotiated versio=
+n of<br>
+=C2=A0 =C2=A0TLS.=C2=A0 In particular, the certificate chain MUST be valid =
+for the<br>
+=C2=A0 =C2=A0signature algorithms indicated by the peer in the<br>
+=C2=A0 =C2=A0&quot;signature_algorithms&quot; and &quot;signature_algorithm=
+s_cert&quot; extension, as<br>
+=C2=A0 =C2=A0described in Section 4.2.3 of [TLS13] for TLS 1.3 or the<br>
+=C2=A0 =C2=A0&quot;signature_algorithms&quot; extension from Sections 7.4.2=
+ and 7.4.6 of<br>
+=C2=A0 =C2=A0[RFC5246] for TLS 1.2.<br>
+<br>
+This seems awkward.=C2=A0 Do &quot;the requirements of a Certificate messag=
+e in<br>
+the negotiated version of TLS&quot; include the actual message structure?<b=
+r>
+Because the rest of the document suggests that we always use the TLS 1.3<br=
+>
+Certificate, but this line would set us up for using a TLS 1.2<br>
+Certificate.<br>
+<br>
+[ns] They do not include the actual message structure. The constraints<br>
+are about the certificate_list. I=E2=80=99ve updated the text.<br>
+<br>
+<br>
+START<br>
+<br>
+<br>
+Also, per =C2=A71.3 of RFC 8446, &quot;signature_algorithms_cert&quot; also=
+ applies to<br>
+TLS 1.2, so the last sentence seems incorrect or at least incomplete.<br>
+<br>
+[ns] Updated<br>
+<br>
+Section 5.2.1<br>
+<br>
+=C2=A0 =C2=A0Otherwise, the Certificate message MUST contain only extension=
+s<br>
+=C2=A0 =C2=A0present in the TLS handshake.=C2=A0 Unrecognized extensions in=
+ the<br>
+=C2=A0 =C2=A0authenticator request MUST be ignored.<br>
+<br>
+At least the first sentence seems redundant with the previous section<br>
+(but I did not propose removing this in my editorial PR).=C2=A0 The second<=
+br>
+sentence arguably follows from the RFC 8446 requirements, though I don&#39;=
+t<br>
+mind mentioning it again as much as I do for the first sentence.<br>
+<br>
+[ns] I don=E2=80=99t mind being explicit here considering there was some<br=
+>
+confusion about this previously.<br>
+<br>
+Section 5.2.2<br>
+<br>
+=C2=A0 =C2=A0The authenticator transcript is the hash of the concatenated<b=
+r>
+=C2=A0 =C2=A0Handshake Context, authenticator request (if present), and<br>
+=C2=A0 =C2=A0Certificate message:<br>
+<br>
+=C2=A0 =C2=A0Hash(Handshake Context || authenticator request || Certificate=
+)<br>
+<br>
+=C2=A0 =C2=A0Where Hash is the authenticator hash defined in section 4.1.=
+=C2=A0 If the<br>
+=C2=A0 =C2=A0authenticator request is not present, it is omitted from this<=
+br>
+=C2=A0 =C2=A0construction, i.e., it is zero-length.<br>
+<br>
+This construction is injective, because the handshake messages start<br>
+with a message HandshakeType.=C2=A0 Should we say so explicitly in the<br>
+document?<br>
+<br>
+[ns] I=E2=80=99m not sure I understand what injective means in this context=
+ or<br>
+how it helps the reader.<br>
+<br>
+=C2=A0 =C2=A0If the party that generates the exported authenticator does so=
+ with a<br>
+=C2=A0 =C2=A0different connection than the party that is validating it, the=
+n the<br>
+=C2=A0 =C2=A0Handshake Context will not match, resulting in a CertificateVe=
+rify<br>
+=C2=A0 =C2=A0message that does not validate.=C2=A0 This includes situations=
+ in which<br>
+=C2=A0 =C2=A0the application data is sent via TLS-terminating proxy.=C2=A0 =
+Given a<br>
+=C2=A0 =C2=A0failed CertificateVerify validation, it may be helpful for the=
+<br>
+=C2=A0 =C2=A0application to confirm that both peers share the same connecti=
+on<br>
+=C2=A0 =C2=A0using a value derived from the connection secrets before takin=
+g a<br>
+=C2=A0 =C2=A0user-visible action.<br>
+<br>
+Is it safe to reuse the Handshake Context itself as the &quot;value derived=
+<br>
+from the connection secrets&quot;?<br>
+<br>
+[ns] Yes, it should be safe. Updated.<br>
+<br>
+Section 7.4<br>
+<br>
+=C2=A0 =C2=A0It returns the identity, such as the certificate chain and its=
+<br>
+=C2=A0 =C2=A0extensions, and a status to indicate whether the authenticator=
+ is<br>
+=C2=A0 =C2=A0valid or not after applying the function for validating the<br=
+>
+=C2=A0 =C2=A0certificate chain to the chain contained in the authenticator.=
+<br>
+<br>
+I strongly recommend not returning the identity in the case when<br>
+validation fails.<br>
+<br>
+[ns] Fair. Updated.<br>
+<br>
+=C2=A0 =C2=A0The API should return a failure if the certificate_request_con=
+text of<br>
+=C2=A0 =C2=A0the authenticator was used in a previously validated authentic=
+ator.<br>
+<br>
+Is the intent for this to be a &quot;distinct previously validated<br>
+authenticator&quot; (i.e., that the API returns the same value when given t=
+he<br>
+same inputs subsequently)?=C2=A0 That does not seem to be the meaning<br>
+conveyed by the current text.<br>
+<br>
+[ns] Yes, this is about distinct validators. Updated.<br>
+<br>
+Section 8.2<br>
+<br>
+=C2=A0 =C2=A0IANA is requested to add the following entries to the registry=
+ for<br>
+=C2=A0 =C2=A0Exporter Labels (defined in [RFC5705]): &quot;EXPORTER-server<=
+br>
+=C2=A0 =C2=A0authenticator handshake context&quot;, &quot;EXPORTER-client a=
+uthenticator<br>
+=C2=A0 =C2=A0finished key&quot; and &quot;EXPORTER-server authenticator fin=
+ished key&quot; with<br>
+<br>
+Don&#39;t we also need &quot;EXPORTER-client authenticator handshake contex=
+t&quot;?<br>
+<br>
+[ns] Yes, added.<br>
+<br>
+Section 9<br>
+<br>
+I think we should more explicitly incorporate the TLS 1.3 security<br>
+considerations by reference.<br>
+<br>
+[ns] Yes.<br>
+<br>
+Section 11.1<br>
+<br>
+I don&#39;t think [QUIC-TLS] or RFCs 7250 and 7540 are normative references=
+.<br>
+<br>
+[ns] Updated<br>
+<br>
+<br>
+Murray Kucherawy&#39;s No Objection<br>
+<br>
+Why are the SHOULDs in Section 4 only SHOULDs?=C2=A0 Why might an implement=
+er<br>
+reasonably not do what this says?<br>
+<br>
+[ns] Addressed after discussion on list and in reply above.<br>
+<br>
+Similarly, the SHOULDs in Section 7 seem awkward, as they have little to do=
+<br>
+with interoperability.<br>
+<br>
+[ns] It=E2=80=99s true that this is about interoperability. I=E2=80=99m ope=
+n to<br>
+changing these to lower-case shoulds since they reflect implementation<br>
+recommendations rather than interoperability.<br>
+<br>
+- Nick<br>
+<br>
+_______________________________________________<br>
+TLS mailing list<br>
+<a href=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.org</a><br>
+<a href=3D"https://www.ietf.org/mailman/listinfo/tls" rel=3D"noreferrer" ta=
+rget=3D"_blank">https://www.ietf.org/mailman/listinfo/tls</a><br>
+</blockquote></div>
+
+--0000000000002da11505ca543999--
+

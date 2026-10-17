@@ -1,0 +1,115 @@
+From wwwrun@rfcpa.amsl.com  Tue Jan 16 17:00:16 2024
+Return-Path: <wwwrun@rfcpa.amsl.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 01C0DC151535;
+ Tue, 16 Jan 2024 17:00:16 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.658
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.658 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, HEADER_FROM_DIFFERENT_DOMAINS=0.249,
+ RCVD_IN_ZEN_BLOCKED_OPENDNS=0.001, SPF_PASS=-0.001,
+ T_SCC_BODY_TEXT_LINE=-0.01, URIBL_BLOCKED=0.001,
+ URIBL_DBL_BLOCKED_OPENDNS=0.001, URIBL_ZEN_BLOCKED_OPENDNS=0.001]
+ autolearn=no autolearn_force=no
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id mGOww3zLPtZI; Tue, 16 Jan 2024 17:00:12 -0800 (PST)
+Received: from rfcpa.amsl.com (rfcpa.amsl.com [50.223.129.200])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 25093C14F68B;
+ Tue, 16 Jan 2024 16:59:15 -0800 (PST)
+Received: by rfcpa.amsl.com (Postfix, from userid 499)
+ id EE3C41BA410B; Tue, 16 Jan 2024 16:59:14 -0800 (PST)
+To: mt@lowentropy.net, ekr@rtfm.com
+From: RFC Errata System <rfc-editor@rfc-editor.org>
+Cc: paul.wouters@aiven.io, iesg@ietf.org, tls@ietf.org,
+ rfc-editor@rfc-editor.org
+Content-Type: text/plain; charset=UTF-8
+Message-Id: <20240117005914.EE3C41BA410B@rfcpa.amsl.com>
+Date: Tue, 16 Jan 2024 16:59:14 -0800 (PST)
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/FH8-tJQcuf3rBGKeXPOPzVDTK24>
+Subject: [TLS] [Errata Held for Document Update] RFC8446 (6205)
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Wed, 17 Jan 2024 01:00:16 -0000
+
+The following errata report has been held for document update 
+for RFC8446, "The Transport Layer Security (TLS) Protocol Version 1.3". 
+
+--------------------------------------
+You may review the report below and at:
+https://www.rfc-editor.org/errata/eid6205
+
+--------------------------------------
+Status: Held for Document Update
+Type: Editorial
+
+Reported by: Martin Thomson <mt@lowentropy.net>
+Date Reported: 2020-06-04
+Held by: Paul Wouters (IESG)
+
+Section: 4.3.2
+
+Original Text
+-------------
+   Servers which are authenticating with a PSK MUST NOT send the
+   CertificateRequest message in the main handshake, though they MAY
+   send it in post-handshake authentication (see Section 4.6.2) provided
+   that the client has sent the "post_handshake_auth" extension (see
+   Section 4.2.6).
+
+Corrected Text
+--------------
+   Servers which are authenticating with a resumption PSK MUST NOT send the
+   CertificateRequest message in the main handshake, though they MAY
+   send it in post-handshake authentication (see Section 4.6.2) provided
+   that the client has sent the "post_handshake_auth" extension (see
+   Section 4.2.6).  Servers which are authenticating with an external PSK
+   MUST NOT send the CertificateRequest message either in the main handshake
+   or request post-handshake authentication. Future specifications MAY
+   provide an extension to permit this. 
+
+Notes
+-----
+The lack of qualification on "authenticating with a PSK" implies that the statement applies equally to both external and resumption PSKs.  However, there are two conditions being governed: whether a certificate can be requested during the handshake, and whether a certificate can be requested post-handshake.  The latter of these requires different rules depending on the type of PSK.
+
+We know from the analysis of resumption (see https://mailarchive.ietf.org/arch/msg/tls/TugB5ddJu3nYg7chcyeIyUqWSbA/) that combining a PSK handshake of either type with a client certificate is not safe.  Thus, the prohibition on CertificateRequest during the handshake applies equally to both resumption and external PSKs.
+
+For post-handshake, Appendix E.1 already discusses the risks of combining PSKs with certificates, citing the same analysis as above.
+
+   [...]  It is unsafe to use certificate-based client
+   authentication when the client might potentially share the same
+   PSK/key-id pair with two different endpoints.
+
+For this reason an external PSK is not safe to use with post-handshake authentication.  A resumption PSK does not have this property, so the same prohibition doesn't apply.
+
+Splitting the requirements as proposed makes this split clearer.
+
+--------------------------------------
+RFC8446 (draft-ietf-tls-tls13-28)
+--------------------------------------
+Title               : The Transport Layer Security (TLS) Protocol Version 1.3
+Publication Date    : August 2018
+Author(s)           : E. Rescorla
+Category            : PROPOSED STANDARD
+Source              : Transport Layer Security
+Area                : Security
+Stream              : IETF
+Verifying Party     : IESG
+

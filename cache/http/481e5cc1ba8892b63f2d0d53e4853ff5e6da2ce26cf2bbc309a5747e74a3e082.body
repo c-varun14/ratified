@@ -1,0 +1,344 @@
+Return-Path: <davidben@google.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 7EE71130ED4
+ for <tls@ietfa.amsl.com>; Fri,  8 Jun 2018 07:35:28 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -9.951
+X-Spam-Level: 
+X-Spam-Status: No, score=-9.951 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ DKIM_VALID_AU=-0.1, HEADER_FROM_DIFFERENT_DOMAINS=0.249,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_LOW=-0.7, SPF_PASS=-0.001,
+ USER_IN_DEF_SPF_WL=-7.5] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=chromium.org
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id w-pFSamdoNME for <tls@ietfa.amsl.com>;
+ Fri,  8 Jun 2018 07:35:25 -0700 (PDT)
+Received: from mail-qk0-x22f.google.com (mail-qk0-x22f.google.com
+ [IPv6:2607:f8b0:400d:c09::22f])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 77AFA130ED2
+ for <tls@ietf.org>; Fri,  8 Jun 2018 07:35:25 -0700 (PDT)
+Received: by mail-qk0-x22f.google.com with SMTP id k86-v6so8849709qkh.13
+ for <tls@ietf.org>; Fri, 08 Jun 2018 07:35:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=TQYJ/m0dICaJgbwqv9EqXzpjcMziccw30aZkYRm13wg=;
+ b=izHcPRyMhb/dTStuk1+LJ+nyMbkd142g2BX1erLlu3tBX4wOOAv0kdIdpKWlRtJu4R
+ WdVJjfN5bIbdti6xg/P64p2rk05+tzg+XyTjYFqYUEOcOvomhBxeBJ/EXAP1PebHVB/V
+ YPsg7xQeXpoGrN2XxwS1j/qvcAJr+FAc5V/TI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=TQYJ/m0dICaJgbwqv9EqXzpjcMziccw30aZkYRm13wg=;
+ b=e1wVyOMZsXII648zApZzu24TroGqNGX1nPnbk6GIyASdxRrlfj5641R5Mzw7ZCdinP
+ 8fbhWq+tghSEUcdyN6Jhdy+dEJW0wMc6FeVP40f48cqN0a98crLrP8WqBCbOa8ZkFryQ
+ pQiYCbcF/KkyT/KkKRoxT7GrmDc0SWXLT1TGhYkY16OOOgzr9yxP3tuQZE0HwCudj2aX
+ HI0HZupft1mx9j9zwLG0uEasmDK8fca2UfPNqIvt0X8glYBop0orpongKrdYbRCEwRR7
+ ptrS5H+4hvuB4XQWwulSba01tQcx1iE5RdPTBmpS7fVKTu0CVDDOCVmGa8503teO/nDE
+ RECw==
+X-Gm-Message-State: APt69E0Qm3j0W6/cFrkpVhgcXnSY0bm7+vb2Hw8SkCgjwonbQ2Q57KzQ
+ mnzYQQVJg7Zb5vtfg42xONQeEfRfwO2fEQxu/nJG
+X-Google-Smtp-Source: ADUXVKLyoQZeIPym4VOxsqsyYbqBRwQ+uP7fFc8pj4ukTWBDOG9nF0RpkbAyyYLyhXv3A28InjrY+t4JQ4if4ppdejo=
+X-Received: by 2002:a37:9303:: with SMTP id
+ v3-v6mr2026946qkd.318.1528468524252; 
+ Fri, 08 Jun 2018 07:35:24 -0700 (PDT)
+MIME-Version: 1.0
+References: <152830634989.6264.3566629916218895862@ietfa.amsl.com>
+ <CAF8qwaC+NpLo1c=7KTD02-Wjo5Akp+5GtCF9ZBs8iF=Jtun1Vg@mail.gmail.com>
+ <20180607210040.GA13834@akamai.com>
+ <CAF8qwaCUmk9+iQ76VL1EL5S+MufmUk2-SsZ1rH6CgJLsYQC5ZQ@mail.gmail.com>
+ <163dfb8ceb7.fef8d66b166467.2392907059047091602@nerd.ninja>
+In-Reply-To: <163dfb8ceb7.fef8d66b166467.2392907059047091602@nerd.ninja>
+From: David Benjamin <davidben@chromium.org>
+Date: Fri, 8 Jun 2018 10:35:11 -0400
+Message-ID: <CAF8qwaCQRS00nJWtk3RBob82NbCfuD32uUJpzjgx=-FhxdWNDQ@mail.gmail.com>
+To: R duToit <r@nerd.ninja>
+Cc: Benjamin Kaduk <bkaduk@akamai.com>, tls@ietf.org
+Content-Type: multipart/alternative; boundary="0000000000007114bd056e224fa4"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/-k6VRgcNe6McPDp6JPc_covgizc>
+Subject: Re: [TLS] I-D Action: draft-ietf-tls-grease-01.txt
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.26
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Fri, 08 Jun 2018 14:35:29 -0000
+
+--0000000000007114bd056e224fa4
+Content-Type: text/plain; charset="UTF-8"
+
+On Fri, Jun 8, 2018 at 10:07 AM R duToit <r@nerd.ninja> wrote:
+
+> > GREASE values should not make their way into code. The whole point is to
+> get code used to the fact that unknown values exist.
+>
+> The GREASE mechanism is useful, but it will definitely make its way into
+> code and become ossified itself.
+> Example:  https://github.com/salesforce/ja3
+>
+
+Indeed. GREASE was targeting normal sensible endpoint implementations. The
+assumption is that our interop problems are merely benign mistakes, and
+that if something triggers the developer to notice early enough, they will
+simply fix it. For a normal well-behaving server, there is no reason to
+special-case GREASE over following the protocol. So the goal is to avoid
+accidental special-cases, not folks intentionally trying to fixate on
+things that will obviously not remain stable.
+
+Of course, since we first tried this, TLS 1.3 has demonstrated that there
+are other players in the ecosystem that are rampantly non-compliant in
+exactly that way, notably various middlewave devices. Those are rather a
+problem and will need other ideas enforce TLS's long-standing but evidently
+ignored protocol invariants
+<https://tlswg.github.io/tls13-spec/draft-ietf-tls-tls13.html#rfc.section.9.3>.
+I did not propose any new ideas in this document update, as this was just
+about updating it to match the prior discussion of rebasing atop TLS 1.3.
+
+David
+
+---- On Thu, 07 Jun 2018 17:05:47 -0400 *David Benjamin
+> <davidben@chromium.org <davidben@chromium.org>>* wrote ----
+>
+> On Thu, Jun 7, 2018 at 5:00 PM Benjamin Kaduk <bkaduk@akamai.com> wrote:
+>
+> On Wed, Jun 06, 2018 at 03:08:28PM -0400, David Benjamin wrote:
+> > Hi all,
+> >
+> > Apologies for the probably record time delay in actually updating this
+> > thing. I like the graph... apparently -00 was expired for nearly twice as
+> > long as it was valid? Oops!
+> >
+> > Per the discussion from a really really long while ago, I've rebased the
+> > document atop TLS 1.3 and added values for the many more bits added in
+> TLS
+> > 1.3.
+> >
+> > Since TLS 1.3 has server-offered extensions, this needed a bit of
+> > reorganization. For the one-bit PSK KE values, I borrowed the pattern
+> from
+> > draft-bishop-httpbis-grease-00.
+> >
+> > Let me know if folks have any comments. Additionally, I'm curious what
+> > folks thoughts are on the following (not incorporated into the document):
+> >
+> > 1) "ignore/" is a pretty long ALPN prefix and also might encourage folks
+> to
+> > parse out the "ignore/" string. Instead, what do folks think about just
+> > using two byte strings. Perhaps the same two byte pattern we're currently
+> > doing?
+> >
+> > 2) This is somewhat of a "how much badly I abuse the registries" thing.
+> :-)
+> > I have observed one TLS implementation which just transcribed the
+> registry
+> > directly into their source code. This was done all the way down to
+> mapping
+> > "Reserved for Private Use" to some dedicated symbol. They successfully
+> > ignored the private use value, but the actual unallocated values for each
+> > of NamedGroup, HashAlgorithm, and SignatureAlgorithm were unmapped and
+> > treated as syntax errors!
+> >
+> > This was just a single implementation, but it suggests GREASE works
+> better
+> > when it's not so obviously allocated in the registry. Of course, not
+> > recording the values at all is unreasonable as we must avoid allocating
+> the
+> > values for real. What do folks think about leaving them out of the table
+> > but instead adding a note in the registry like:
+> >
+> > "The values 0x0A0A, 0x1A1A, 0x2A2A, 0x3A3A, 0x4A4A, 0x5A5A, 0x6A6A,
+> 0x7A7A,
+> > 0x8A8A, 0x9A9A, 0xAAAA, 0xBABA, 0xCACA, 0xDADA, 0xEAEA, and 0xFAFA are
+> used
+> > by [[this document]] for testing implementation correctness. They should
+> be
+> > left permanently unassigned."
+> >
+> > An implementor infinitely bad at reading may well still special-case the
+> > and defeat all these measures, but that was always the case. Rather, the
+> > goal is to find inexpensive ways to lower the failure probability. It
+> seems
+> > inexpensive to me, but I don't know how much trouble it would cause for
+> > IANA.
+>
+> Unfortunately, (my understanding is that) IANA is moving towards a proper
+> database
+> for codepoints, and prefer to actually have all values matched up with
+> their
+> corresponding metadata; I expect that they would not be happy to do
+> something
+>
+> like this.  But, of course, we should actually ask instead of guessing....
+>
+>
+> I suppose the question is what the database is meant to be used for. I can
+> imagine wanting it to be properly queryable so you can transform it into
+> code. GREASE values should not make their way into code. The whole point is
+> to get code used to the fact that unknown values exist.
+>
+> I can also imagine wanting to make it easier to allocate values
+> mechnically. Then, yeah, you want the GREASE values in there. But the
+> allocations need occasional human input anyway (e.g. 26 and 40), so maybe
+> it's fine not to have those in there in a completely structured way?
+>
+> David
+>
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+>
+>
+
+--0000000000007114bd056e224fa4
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div class=3D"gmail_quote"><div dir=3D"ltr">On Fri, Jun 8,=
+ 2018 at 10:07 AM R duToit &lt;r@nerd.ninja&gt; wrote:<br></div><blockquote=
+ class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc soli=
+d;padding-left:1ex"><div><div style=3D"font-size:10pt;font-family:Verdana,A=
+rial,Helvetica,sans-serif"><div>&gt;=C2=A0GREASE values should not make the=
+ir way into code. The whole point is to get code used to the fact that unkn=
+own values exist.<br></div><div><br></div></div></div><div><div style=3D"fo=
+nt-size:10pt;font-family:Verdana,Arial,Helvetica,sans-serif"><div>The GREAS=
+E mechanism is  useful, but it will definitely make its way into code and b=
+ecome ossified itself. =C2=A0<br></div><div>Example: =C2=A0<a href=3D"https=
+://github.com/salesforce/ja3" target=3D"_blank">https://github.com/salesfor=
+ce/ja3</a></div></div></div></blockquote><div><br></div></div><div dir=3D"l=
+tr"><div dir=3D"ltr"><div class=3D"gmail_quote"><div>Indeed. GREASE was tar=
+geting normal sensible endpoint implementations. The assumption is that our=
+ interop problems are merely benign mistakes, and that if something trigger=
+s the developer to notice early enough, they will simply fix it. For a norm=
+al well-behaving server, there is no reason to special-case GREASE over fol=
+lowing the protocol. So the goal is to avoid accidental special-cases, not =
+folks intentionally trying to fixate on things that will obviously not rema=
+in stable.</div><div><br></div><div>Of course, since we first tried this, T=
+LS 1.3 has demonstrated that there are other players in the ecosystem that =
+are rampantly non-compliant in exactly that way, notably various middlewave=
+ devices. Those are rather a problem and will need other ideas enforce TLS&=
+#39;s long-standing but evidently ignored <a href=3D"https://tlswg.github.i=
+o/tls13-spec/draft-ietf-tls-tls13.html#rfc.section.9.3">protocol invariants=
+</a>. I did not propose any new ideas in this document update, as this was =
+just about updating it to match the prior discussion of rebasing atop TLS 1=
+.3.</div></div></div></div><div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"=
+gmail_quote"><div><br></div><div>David</div></div></div></div><div dir=3D"l=
+tr"><div dir=3D"ltr"><div class=3D"gmail_quote"><div><br></div><blockquote =
+class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid=
+;padding-left:1ex"><div><div style=3D"font-size:10pt;font-family:Verdana,Ar=
+ial,Helvetica,sans-serif"><div class=3D"m_-8314091994264898654m_76499665798=
+61366907m_-3568784612716859022zmail_extra"><div id=3D"m_-831409199426489865=
+4m_7649966579861366907m_-3568784612716859022Zm-_Id_-Sgn1"><div>---- On Thu,=
+ 07 Jun 2018 17:05:47 -0400=C2=A0<b>David Benjamin &lt;<a href=3D"mailto:da=
+vidben@chromium.org" target=3D"_blank">davidben@chromium.org</a>&gt;</b> wr=
+ote ----<br></div></div><div><br></div><blockquote style=3D"border-left:1px=
+ solid #cccccc;padding-left:6px;margin:0 0 0 5px"><div><div dir=3D"ltr"><di=
+v></div></div></div></blockquote></div></div></div><div><div style=3D"font-=
+size:10pt;font-family:Verdana,Arial,Helvetica,sans-serif"><div class=3D"m_-=
+8314091994264898654m_7649966579861366907m_-3568784612716859022zmail_extra">=
+<blockquote style=3D"border-left:1px solid #cccccc;padding-left:6px;margin:=
+0 0 0 5px"><div><div dir=3D"ltr"><div><div dir=3D"ltr">On Thu, Jun 7, 2018 =
+at 5:00 PM Benjamin Kaduk &lt;<a href=3D"mailto:bkaduk@akamai.com" target=
+=3D"_blank">bkaduk@akamai.com</a>&gt; wrote:<br></div></div></div></div></b=
+lockquote></div></div></div><div><div style=3D"font-size:10pt;font-family:V=
+erdana,Arial,Helvetica,sans-serif"><div class=3D"m_-8314091994264898654m_76=
+49966579861366907m_-3568784612716859022zmail_extra"><blockquote style=3D"bo=
+rder-left:1px solid #cccccc;padding-left:6px;margin:0 0 0 5px"><div><div di=
+r=3D"ltr"><div><blockquote style=3D"margin:0 0 0 0.8ex;border-left:1px rgb(=
+204,204,204) solid;padding-left:1ex"><div>On Wed, Jun 06, 2018 at 03:08:28P=
+M -0400, David Benjamin wrote:<br></div><div> &gt; Hi all,<br></div><div> &=
+gt; <br></div><div> &gt; Apologies for the probably record time delay in ac=
+tually updating this<br></div><div> &gt; thing. I like the graph... apparen=
+tly -00 was expired for nearly twice as<br></div><div> &gt; long as it was =
+valid? Oops!<br></div><div> &gt; <br></div><div> &gt; Per the discussion fr=
+om a really really long while ago, I&#39;ve rebased the<br></div><div> &gt;=
+ document atop TLS 1.3 and added values for the many more bits added in TLS=
+<br></div><div> &gt; 1.3.<br></div><div> &gt; <br></div><div> &gt; Since TL=
+S 1.3 has server-offered extensions, this needed a bit of<br></div><div> &g=
+t; reorganization. For the one-bit PSK KE values, I borrowed the pattern fr=
+om<br></div><div> &gt; draft-bishop-httpbis-grease-00.<br></div><div> &gt; =
+<br></div><div> &gt; Let me know if folks have any comments. Additionally, =
+I&#39;m curious what<br></div><div> &gt; folks thoughts are on the followin=
+g (not incorporated into the document):<br></div><div> &gt; <br></div><div>=
+ &gt; 1) &quot;ignore/&quot; is a pretty long ALPN prefix and also might en=
+courage folks to<br></div><div> &gt; parse out the &quot;ignore/&quot; stri=
+ng. Instead, what do folks think about just<br></div><div> &gt; using two b=
+yte strings. Perhaps the same two byte pattern we&#39;re currently<br></div=
+><div> &gt; doing?<br></div><div> &gt; <br></div><div> &gt; 2) This is some=
+what of a &quot;how much badly I abuse the registries&quot; thing. :-)<br><=
+/div><div> &gt; I have observed one TLS implementation which just transcrib=
+ed the registry<br></div><div> &gt; directly into their source code. This w=
+as done all the way down to mapping<br></div><div> &gt; &quot;Reserved for =
+Private Use&quot; to some dedicated symbol. They successfully<br></div><div=
+> &gt; ignored the private use value, but the actual unallocated values for=
+ each<br></div><div> &gt; of NamedGroup, HashAlgorithm, and SignatureAlgori=
+thm were unmapped and<br></div><div> &gt; treated as syntax errors!<br></di=
+v><div> &gt; <br></div><div> &gt; This was just a single implementation, bu=
+t it suggests GREASE works better<br></div><div> &gt; when it&#39;s not so =
+obviously allocated in the registry. Of course, not<br></div><div> &gt; rec=
+ording the values at all is unreasonable as we must avoid allocating the<br=
+></div><div> &gt; values for real. What do folks think about leaving them o=
+ut of the table<br></div><div> &gt; but instead adding a note in the regist=
+ry like:<br></div><div> &gt; <br></div><div> &gt; &quot;The values 0x0A0A, =
+0x1A1A, 0x2A2A, 0x3A3A, 0x4A4A, 0x5A5A, 0x6A6A, 0x7A7A,<br></div><div> &gt;=
+ 0x8A8A, 0x9A9A, 0xAAAA, 0xBABA, 0xCACA, 0xDADA, 0xEAEA, and 0xFAFA are use=
+d<br></div><div> &gt; by [[this document]] for testing implementation corre=
+ctness. They should be<br></div><div> &gt; left permanently unassigned.&quo=
+t;<br></div><div> &gt; <br></div><div> &gt; An implementor infinitely bad a=
+t reading may well still special-case the<br></div><div> &gt; and defeat al=
+l these measures, but that was always the case. Rather, the<br></div><div> =
+&gt; goal is to find inexpensive ways to lower the failure probability. It =
+seems<br></div><div> &gt; inexpensive to me, but I don&#39;t know how much =
+trouble it would cause for<br></div><div> &gt; IANA.<br></div><div> <br></d=
+iv><div> Unfortunately, (my understanding is that) IANA is moving towards a=
+ proper database<br></div><div> for codepoints, and prefer to actually have=
+ all values matched up with their<br></div><div> corresponding metadata; I =
+expect that they would not be happy to do something<br></div></blockquote><=
+/div></div></div></blockquote></div></div></div><div><div style=3D"font-siz=
+e:10pt;font-family:Verdana,Arial,Helvetica,sans-serif"><div class=3D"m_-831=
+4091994264898654m_7649966579861366907m_-3568784612716859022zmail_extra"><bl=
+ockquote style=3D"border-left:1px solid #cccccc;padding-left:6px;margin:0 0=
+ 0 5px"><div><div dir=3D"ltr"><div><blockquote style=3D"margin:0 0 0 0.8ex;=
+border-left:1px rgb(204,204,204) solid;padding-left:1ex"><div> like this.=
+=C2=A0 But, of course, we should actually ask instead of guessing....<br></=
+div></blockquote></div></div></div></blockquote></div></div></div><div><div=
+ style=3D"font-size:10pt;font-family:Verdana,Arial,Helvetica,sans-serif"><d=
+iv class=3D"m_-8314091994264898654m_7649966579861366907m_-35687846127168590=
+22zmail_extra"><blockquote style=3D"border-left:1px solid #cccccc;padding-l=
+eft:6px;margin:0 0 0 5px"><div><div dir=3D"ltr"><div><div><br></div><div>I =
+suppose the question is what the database is meant to be used for. I can im=
+agine wanting it to be properly queryable so you can transform it into code=
+. GREASE values should not make their way into code. The whole point is to =
+get code used to the fact that unknown values exist.<br></div><div><br></di=
+v><div>I can also imagine wanting to make it easier to allocate values mech=
+nically. Then, yeah, you want the GREASE values in there. But the allocatio=
+ns need occasional human input anyway (e.g. 26 and 40), so maybe it&#39;s f=
+ine not to have those in there in a completely structured way?<br></div><di=
+v><br></div><div>David<br></div></div></div></div></blockquote></div></div>=
+</div><div><div style=3D"font-size:10pt;font-family:Verdana,Arial,Helvetica=
+,sans-serif"><div class=3D"m_-8314091994264898654m_7649966579861366907m_-35=
+68784612716859022zmail_extra"><blockquote style=3D"border-left:1px solid #c=
+ccccc;padding-left:6px;margin:0 0 0 5px"><div><div>________________________=
+_______________________<br></div><div>TLS mailing list <br></div><div><a hr=
+ef=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.org</a> <br></div><di=
+v><a href=3D"https://www.ietf.org/mailman/listinfo/tls" target=3D"_blank">h=
+ttps://www.ietf.org/mailman/listinfo/tls</a> <br></div></div></blockquote><=
+/div></div></div></blockquote></div></div></div></div>
+
+--0000000000007114bd056e224fa4--
+

@@ -1,0 +1,188 @@
+Return-Path: <john.mattsson@ericsson.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id C26671205F0
+ for <tls@ietfa.amsl.com>; Tue, 20 Mar 2018 16:46:05 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: 0.679
+X-Spam-Level: 
+X-Spam-Status: No, score=0.679 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ DKIM_VALID_AU=-0.1, GB_SUMOF=5, RCVD_IN_DNSWL_MED=-2.3,
+ RCVD_IN_MSPIKE_H3=-0.01, RCVD_IN_MSPIKE_WL=-0.01, SPF_PASS=-0.001]
+ autolearn=no autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=ericsson.com header.b=LnVOo5Gs;
+ dkim=pass (1024-bit key)
+ header.d=ericsson.com header.b=jA7vLWzh
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 0S4Q3eDrwXDX for <tls@ietfa.amsl.com>;
+ Tue, 20 Mar 2018 16:46:03 -0700 (PDT)
+Received: from sesbmg23.ericsson.net (sesbmg23.ericsson.net [193.180.251.37])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 95C34126B72
+ for <TLS@ietf.org>; Tue, 20 Mar 2018 16:46:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; d=ericsson.com; s=mailgw201801;
+ c=relaxed/simple; q=dns/txt; i=@ericsson.com; t=1521589561;
+ h=From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+ Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+ Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+ List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=SKV3QVkCI5E8GB5NkEzOZ2waWYDZ+hstoGxoUPvi7S8=;
+ b=LnVOo5Gsbs9pl5+w9Cfb8gFIDvffAkvAfa6OaHdlTWQBVycNxfBlak8Y6MdWkdIr
+ EJsB+5FtVrJZzl0it4wxCFom+lSFLAkMu24cHDtpQG9RaHouaXlVOrsSEwps4C16
+ Qjl30Peqrc99nAMgpREiLxKpikBbj86evat4j9tvbg8=;
+X-AuditID: c1b4fb25-669ff70000006222-1c-5ab19d394a3b
+Received: from ESESSHC015.ericsson.se (Unknown_Domain [153.88.183.63])
+ by sesbmg23.ericsson.net (Symantec Mail Security) with SMTP id
+ DA.6F.25122.93D91BA5; Wed, 21 Mar 2018 00:46:01 +0100 (CET)
+Received: from ESESSMB504.ericsson.se (153.88.183.165) by
+ ESESSHC015.ericsson.se (153.88.183.63) with Microsoft SMTP Server (TLS) id
+ 14.3.382.0; Wed, 21 Mar 2018 00:46:00 +0100
+Received: from ESESSMB505.ericsson.se (153.88.183.166) by
+ ESESSMB504.ericsson.se (153.88.183.165) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1034.26; Wed, 21 Mar 2018 00:46:01 +0100
+Received: from EUR01-DB5-obe.outbound.protection.outlook.com (153.88.183.157)
+ by ESESSMB505.ericsson.se (153.88.183.166) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1034.26 via Frontend Transport; Wed, 21 Mar 2018 00:46:00 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ericsson.com;
+ s=selector1; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=SKV3QVkCI5E8GB5NkEzOZ2waWYDZ+hstoGxoUPvi7S8=;
+ b=jA7vLWzhXds0KkD/0dvPLgaGbCDAgrRc3rbZMiU7p1vzUxC8Ai74qIYlJUrq37lKvUg7KXcwefEdjUFdVmTepx//Z90eMMDa1Xflj2mBBC8MNx3hoLYZGI5dodhJ3FLV7gwSyUxIRSlDkiO+AsJx/QRdcqAAh1JgwIkgcNd7+gM=
+Received: from HE1PR0701MB2011.eurprd07.prod.outlook.com (10.167.189.149) by
+ HE1PR0701MB1836.eurprd07.prod.outlook.com (10.167.247.12) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.609.6; Tue, 20 Mar 2018 23:45:59 +0000
+Received: from HE1PR0701MB2011.eurprd07.prod.outlook.com
+ ([fe80::7d80:1860:283c:5ef2]) by HE1PR0701MB2011.eurprd07.prod.outlook.com
+ ([fe80::7d80:1860:283c:5ef2%3]) with mapi id 15.20.0609.010; Tue, 20 Mar 2018
+ 23:45:59 +0000
+From: John Mattsson <john.mattsson@ericsson.com>
+To: Stephen Checkoway <s@pahtak.org>, "TLS@ietf.org" <TLS@ietf.org>
+Thread-Topic: [TLS] Connection ID in TLS
+Thread-Index: AQHTwGnkwvAZxp1gyEKT8PsOGHiqCqPZgoiAgABYmYA=
+Date: Tue, 20 Mar 2018 23:45:59 +0000
+Message-ID: <EF62879E-C621-4E51-8006-727328E69BF7@ericsson.com>
+References: <1C32782E-02E4-4743-9E26-E5C0593C1BCF@ericsson.com>
+ <6964A867-2406-4190-AFFE-E52C15A10A8A@pahtak.org>
+In-Reply-To: <6964A867-2406-4190-AFFE-E52C15A10A8A@pahtak.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Microsoft-MacOutlook/10.a.0.180210
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=john.mattsson@ericsson.com; 
+x-originating-ip: [80.5.95.90]
+x-ms-publictraffictype: Email
+x-microsoft-exchange-diagnostics: 1; HE1PR0701MB1836;
+ 7:52CUSPRi/T4nBWYU4Ctfq4aFJW1P4OlGaItvohYBUGANV839WvwXsrM2y+KvVU8t3fueIAQ3u6MNdbEyarSWzNY66iUq9uEY1MT1O8SJzGG8FJQ30oQ4dWtzkMIOrbxux+OaPGzEerSS1rUZ+ALALKI1QnKd5eGpjGdRCd7YwameUcuR3IcZx192ERk62VcnxBdFJqDqpuWJUAM9EsJsJ9hHIhmRB6dppQmiCDkIzNsGgKzlDl2+si8f5cDvpT4Z
+x-ms-exchange-antispam-srfa-diagnostics: SOS;
+x-ms-office365-filtering-correlation-id: 75564800-e712-45e4-3405-08d58ebcbbcc
+x-microsoft-antispam: UriScan:; BCL:0; PCL:0;
+ RULEID:(7020095)(4652020)(5600026)(4604075)(3008032)(4534165)(4627221)(201703031133081)(201702281549075)(2017052603328)(7153060)(7193020);
+ SRVR:HE1PR0701MB1836; 
+x-ms-traffictypediagnostic: HE1PR0701MB1836:
+x-microsoft-antispam-prvs: <HE1PR0701MB183648A47406F8ABBB2A509689AB0@HE1PR0701MB1836.eurprd07.prod.outlook.com>
+x-exchange-antispam-report-test: UriScan:(37575265505322)(192374486261705);
+x-exchange-antispam-report-cfa-test: BCL:0; PCL:0;
+ RULEID:(8211001083)(6040522)(2401047)(5005006)(8121501046)(3231221)(944501316)(52105095)(93006095)(93001095)(10201501046)(3002001)(6041310)(20161123560045)(20161123558120)(20161123564045)(201703131423095)(201702281528075)(20161123555045)(201703061421075)(201703061406153)(20161123562045)(6072148)(201708071742011);
+ SRVR:HE1PR0701MB1836; BCL:0; PCL:0; RULEID:; SRVR:HE1PR0701MB1836; 
+x-forefront-prvs: 061725F016
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10009020)(346002)(396003)(39380400002)(39860400002)(376002)(366004)(199004)(189003)(377424004)(58126008)(316002)(99286004)(76176011)(105586002)(305945005)(106356001)(110136005)(551984002)(7736002)(14454004)(36756003)(83716003)(966005)(5660300001)(102836004)(478600001)(25786009)(6506007)(86362001)(59450400001)(186003)(26005)(82746002)(97736004)(53546011)(6116002)(81166006)(81156014)(8936002)(6246003)(6436002)(6486002)(2900100001)(33656002)(53936002)(3846002)(66066001)(6512007)(229853002)(68736007)(2950100002)(3280700002)(2906002)(6306002)(3660700001)(2501003)(5250100002)(8676002)(781001);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:HE1PR0701MB1836;
+ H:HE1PR0701MB2011.eurprd07.prod.outlook.com; FPR:; SPF:None; PTR:InfoNoRecords;
+ A:1; MX:1; LANG:en; 
+received-spf: None (protection.outlook.com: ericsson.com does not designate
+ permitted sender hosts)
+x-microsoft-antispam-message-info: 5jR0b6o1CZkZgBO6m5tLHJOG7xyKx2E1jyYsUeZECIvlSf1U+8p8xcL08+C0KABhXV57F5KTh3b7QAS/kzfJobd7t19bXRH/KgA/+bOCPQMC74QXTJ33UzMiSu7Oa73OlVifEbpyWRVym1N9xWvPlVRw9olkm8JkozGXLsdw+RdQYCYLgGPeXAo8NCmxrkfj4UPQhUGj+xuCMDe1V3ZbLVwLmp/ytrtbhTl01efIVfpQZaA6vGfQoT0usuk1eFPIiMFy3etokm7pMI3QzpdWplbuMrwzsKuVZI3yEYHc92CkAJOROdibJjzo2KYske/RWn0dikRjDOVNKnqkzR76bg==
+spamdiagnosticoutput: 1:99
+spamdiagnosticmetadata: NSPM
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <854D5DDDED0C9A43BD6AE060F4CD2732@eurprd07.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: 75564800-e712-45e4-3405-08d58ebcbbcc
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Mar 2018 23:45:59.7104 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 92e84ceb-fbfd-47ab-be52-080c6b87953f
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0701MB1836
+X-OriginatorOrg: ericsson.com
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SbUhTURjHOffu5W42O01tD1pBI6msqZkfNEyLIAyT7JsNoq55mZJO3V2m
+ EjFSyzbJiJZommWaJZaoQ236wbYiW05bCtGLlLSkmoGJNbWytp2Cvv3O//k9z3kOHIaWm4Th
+ TK5Wz+m0bJ5SJBXUZfalqBIbu9Sx9oeqhJlH3VTC3JgR7aJSW1oWqVRj85wgg1JLk7K5vNxi
+ TheTfFSaM/yrkyqcUZQMWadoA2pQGBHDAI4H10SWEUkYObYjOLt4gLAFwbVKqRFJfexFYFke
+ ocmhlYLRiV6x3xLgOQpe9iSQjisUuL0qIk0jcDZ5RP6CCMdC46AhwKF4D9QMLCA/h+CN8MZm
+ EJN8Ewx7zLR/o1C8AyZr1pD5kTA7PxlQZDgFbp/pp8ldPIxcGBT7dQlOhqGFQIzwavA6Oig/
+ 01gBr9xNAQaMoWVwjCYcBp/eLwv9HIajoXzuhZj0HobKylohcdaB88MlEeG18LzJhPzPAtxL
+ gePZ/N9BKpg1k5UBp4PLpiKOA8FTi1VAnK3gNjn/+gVgHTUgwmlgqneLL6K4+v92rfeNovFm
+ 6LTGkDgVHo9Piwmvh8umqQDL8Cp4UucWXEfCdhTGc3xWviZuezSnyz3G8wXaaC2n70a+L/LA
+ 8iOyH43P7LYhzCDlCpm9qkstF7LFfGm+DQFDK0NltkxfJMtmS8s4XcER3Yk8jrehCEagVMga
+ Qs6p5VjD6rnjHFfI6f5VKUYSbkAV+cH3glsdrpGJQ2zQdzbvm1A/wGTZ4X78PkWopK+iNqjI
+ u78mvdTg2VnVXPY27qCm3KywsrPnV0bc3WKOGkm6+vpOZ8/JL78n3rVNRmjki1HVYz/3xrpP
+ 36QqPJ9vJJnTvi7Zb31MzChKW2pTy6pLOihXI2/u7OtrNxWc2uBUCvgcdlsUrePZPwQTa5Ee
+ AwAA
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/QzR6lB7rXhwJYLzDVPZH6nRSsno>
+Subject: Re: [TLS] Connection ID in TLS
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Tue, 20 Mar 2018 23:46:07 -0000
+
+Q29ycmVjdCwgSSBqdXN0IGNvcGllZCBwYXN0ZWQgdGhlIGxlbmd0aCBvZiB0aGUgYXJyYXlzLCBz
+aG91bGQgYmUgbGVuZ3RoID0gY2lkX2xlbmd0aCArIGVuY3J5cHRlZF9yZWNvcmQubGVuZ3RoLg0K
+DQpUaGUgZXhhbXBsZSB3YXMgdGFrZW4gZnJvbSBkcmFmdC1pZXRmLXRscy10bHMxMy0yNy4gSWYg
+SSB1bmRlcnN0YW5kIGNvcnJlY3RseSwgSXQgc2VlbXMgbGlrZSB0aGUgc2FtZSBjaXJjdWxhciBk
+ZWZpbml0aW9uIGlzIGRvbmUgdGhlcmUgYXMgd2VsbC4uLi4NCg0KLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCiAgICAgIHN0cnVjdCB7DQogICAg
+ICAgICAgQ29udGVudFR5cGUgb3BhcXVlX3R5cGUgPSBhcHBsaWNhdGlvbl9kYXRhOyAvKiAyMyAq
+Lw0KICAgICAgICAgIFByb3RvY29sVmVyc2lvbiBsZWdhY3lfcmVjb3JkX3ZlcnNpb24gPSAweDAz
+MDM7IC8qIFRMUyB2MS4yICovDQogICAgICAgICAgdWludDE2IGxlbmd0aDsNCiAgICAgICAgICBv
+cGFxdWUgZW5jcnlwdGVkX3JlY29yZFtUTFNDaXBoZXJ0ZXh0Lmxlbmd0aF07DQogICAgICB9IFRM
+U0NpcGhlcnRleHQ7DQotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLQ0KDQpTaG91bGRuJ3QgdGhpcyBiZS4uLg0KDQotLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KICAgICAgc3RydWN0IHsNCiAgICAg
+ICAgICBDb250ZW50VHlwZSBvcGFxdWVfdHlwZSA9IGFwcGxpY2F0aW9uX2RhdGE7IC8qIDIzICov
+DQogICAgICAgICAgUHJvdG9jb2xWZXJzaW9uIGxlZ2FjeV9yZWNvcmRfdmVyc2lvbiA9IDB4MDMw
+MzsgLyogVExTIHYxLjIgKi8NCiAgICAgICAgICB1aW50MTYgbGVuZ3RoOw0KICAgICAgICAgIG9w
+YXF1ZSBlbmNyeXB0ZWRfcmVjb3JkW2VuY3J5cHRlZF9yZWNvcmQubGVuZ3RoXTsNCiAgICAgIH0g
+VExTQ2lwaGVydGV4dDsNCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tDQoNCkRvZXMgdGhpcyBtZWFuIHRoZSANCu+7v09uIDIwMTgtMDMtMjAsIDE5
+OjI5LCAiU3RlcGhlbiBDaGVja293YXkiIDxzQHBhaHRhay5vcmc+IHdyb3RlOg0KDQogICAgDQog
+ICAgDQogICAgPiBPbiBNYXIgMjAsIDIwMTgsIGF0IDExOjM4LCBKb2huIE1hdHRzc29uIDxqb2hu
+Lm1hdHRzc29uQGVyaWNzc29uLmNvbT4gd3JvdGU6DQogICAgPiANCiAgICA+IEkgdGhpbmsgQ29u
+bmVjdGlvbiBJRCBpcyBhbiBpbXBvcnRhbnQgZW5hYmxlciBmb3IgZW5kLXRvLWVuZCBzZWN1cml0
+eSB3aXRoIChEKVRMUy4gVGhlcmUgc2VlbXMgdG8gYmUgaW1wb3J0YW50IHVzZSBjYXNlcyBmb3Ig
+Y29ubmVjdGlvbiBJRCBpbiBUTFMgYXMgd2VsbCwgc2VlIGh0dHBzOi8vd3d3LmlldGYub3JnL21h
+aWxtYW4vbGlzdGluZm8vYXRsYXMuIEF0IHRoZSBNb25kYXkgYWZ0ZXJub29uIFRMUyBzZXNzaW9u
+LCBpdCB3YXMgc3RhdGVkIHRoYXQgQ29ubmVjdGlvbiBJRCBpbiBUTFMgd2FzIHVuZW1wbG95YWJs
+ZSBpbiB0aGUgd2lsZCBkdWUgdG8gbWlkZGxlYm94ZXMuIENvdWxkbid0IHRoYXQgYmUgc29sdmVk
+IGJ5IHBsYWNpbmcgdGhlIGNpZCBmaWVsZCBhZnRlciB0aGUgbGVuZ3RoIGZpZWxkPyBFLmcuDQog
+ICAgPiANCiAgICA+ICAgc3RydWN0IHsNCiAgICA+ICAgICAgQ29udGVudFR5cGUgb3BhcXVlX3R5
+cGUgPSBhcHBsaWNhdGlvbl9kYXRhOyAvKiAyMyAqLw0KICAgID4gICAgICBQcm90b2NvbFZlcnNp
+b24gbGVnYWN5X3JlY29yZF92ZXJzaW9uID0gMHgwMzAzOyAvKiBUTFMgdjEuMiAqLw0KICAgID4g
+ICAgICB1aW50MTYgbGVuZ3RoOw0KICAgID4gICAgICBvcGFxdWUgY2lkW2NpZF9sZW5ndGhdOyAg
+ICAgICAgICAgICAgIC8vIE5ldyBmaWVsZA0KICAgID4gICAgICBvcGFxdWUgZW5jcnlwdGVkX3Jl
+Y29yZFtUTFNDaXBoZXJ0ZXh0Lmxlbmd0aF07DQogICAgPiAgIH0gVExTQ2lwaGVydGV4dDsNCiAg
+ICA+IA0KICAgID4gICBsZW5ndGggIFRoZSBzdW0gb2YgY2lkX2xlbmd0aCBhbmQgVExTQ2lwaGVy
+dGV4dC5sZW5ndGgNCiAgICANCiAgICBUaGlzIGRlZmluZXMgbGVuZ3RoIGluIHRlcm1zIG9mIGl0
+c2VsZiBzaW5jZSBsZW5ndGggaXMgVExTQ2lwaGVydGV4dC5sZW5ndGguDQogICAgDQogICAgLS0g
+DQogICAgU3RlcGhlbiBDaGVja293YXkNCiAgICANCiAgICANCiAgICANCiAgICANCiAgICANCiAg
+ICANCg0K
+

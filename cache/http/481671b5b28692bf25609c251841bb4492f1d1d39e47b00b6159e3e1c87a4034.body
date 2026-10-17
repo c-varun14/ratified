@@ -1,0 +1,373 @@
+Return-Path: <ekr@rtfm.com>
+X-Original-To: tls@mail2.ietf.org
+Delivered-To: tls@mail2.ietf.org
+Received: from localhost (localhost [127.0.0.1])
+	by mail2.ietf.org (Postfix) with ESMTP id 64DE6671DBC8
+	for <tls@mail2.ietf.org>; Mon, 22 Sep 2025 17:02:39 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at ietf.org
+X-Spam-Flag: NO
+X-Spam-Score: -1.897
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.897 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+	HTML_MESSAGE=0.001, RCVD_IN_DNSWL_NONE=-0.0001, SPF_HELO_NONE=0.001,
+	SPF_NONE=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: mail2.ietf.org (amavisd-new); dkim=pass (2048-bit key)
+	header.d=rtfm-com.20230601.gappssmtp.com
+Received: from mail2.ietf.org ([166.84.6.31])
+	by localhost (mail2.ietf.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id X3coumKhHPnn for <tls@mail2.ietf.org>;
+	Mon, 22 Sep 2025 17:02:38 -0700 (PDT)
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com
+ [IPv6:2607:f8b0:4864:20::b32])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail2.ietf.org (Postfix) with ESMTPS id 5D671671DB6F
+	for <tls@ietf.org>; Mon, 22 Sep 2025 17:02:35 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id
+ 3f1490d57ef6-ea3dbcc5525so3513781276.2
+        for <tls@ietf.org>; Mon, 22 Sep 2025 17:02:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rtfm-com.20230601.gappssmtp.com; s=20230601; t=1758585755;
+ x=1759190555; darn=ietf.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=sOxsn1ikwzAvUKVIjgPy0NJpqzkE9PCT3eGwUhR+bWc=;
+        b=J2MsEi/gakg1jKpUzHowHAV97Z1PQMuIy+XGPty5RRWA0YTFVflqGqfmfd53J+fvSj
+         0Mr+UaTf5lOWHZgVAP1MAULEKpw2RiOQ0/VFo0srm5HWFsofc4aJwhDErDAw16+iWEj6
+         zmbzIxF5cXSzR48/zKgDc9vVpqBO/U4GT8vL6MC/WpPwIa6B6AQohB0KMqh4lcn/p7Dw
+         1DD0A/eY6YCvHGkJuLk1aq3wLsZWKqipMZRoCl3TGhhv8vG2s3/pS8cmmNjvKANVq9HU
+         gkrPeOCbFG5Fo0a8pmAHr9Wu1e/vbKXu7RyL96J74WLKTSbWg3b4941GeqYPM/2R/X7W
+         5voA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758585755; x=1759190555;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sOxsn1ikwzAvUKVIjgPy0NJpqzkE9PCT3eGwUhR+bWc=;
+        b=i7nSTPT+UUH+qfh4WQl0jygw9g406xaWvOJv9ivSVOP+jo7ZyYearfybpwyTd7rMAI
+         L1YsxGZozVX7QrzOwsTC9s9c7HZqn8hdfIdq8ZJJHwpEX8n2VLAQw5RydPlBr63v545i
+         vAofhH2Arl7lyyXd9I581DBS76DAgJvzNZOe9a6OzQwifo8LOrmhFkRDtPn3b+gUl5hc
+         zM1i8XOyjxK02c2VGbR1S45e532ehZFiMwBYcPK6dSUmsBbonJgE1YPR6ktAL/cLhQJx
+         jjmZJN1n/Df2mcpzV13gj5vKLA1raD2BAKr+z1zfma+6TOBnV7vhtavMq+3Zv48dZJnb
+         3C+w==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCV+9hREUqrnS6dZwm1AZYeQIZqzKPxAnALKhD5DSb4NeAg2A1Zmmlm44AESZ1c+/pkeBeQ=@ietf.org
+X-Gm-Message-State: AOJu0Yxqz+9ybBG/fPjAl4iN2FKeazLFFxltHQ1OKNMIXYB5qxDxMfvg
+	2dyJrapSNjm3k+wRdkWLihSyED1Wnzfj2FFdSj2XiGlnZ5xdqVy/mpjf9DtrKf8Aspp7JDdLTSA
+	ZhJeBd8HJHGEIEvo+MWshpN7WuH7AuoRu3GJYZEQrnkH9akNDfHu6D0Typw==
+X-Gm-Gg: ASbGncs0xox7YsR2Yb27LpqEK6bEZQ1aQAXdLiuE0SU1+OvMCiUFayFMlGg7ffX5FpQ
+	1VAxMaLbkorDSeVWPaw2iK71N+2U7a1p83tfE6+xnZ1X6eKztFL/z+OK7OUB1Asx5sKd6AcUlXD
+	p97FdL8LjtfdHIMd6B/XoXnvtFZQc2EqorisV6ZmMmqsLfgQ84yAjkVfhzr+0yhjB2JgwAxg+PK
+	PiezzkjbrJxbPStpr+HVAN+Ihnc6dnUjLQnCL34NJYhlx+SuxMonhs6YEOdIWnxzNfc2GWOnxWG
+	bXhyGOiCOqx+t/V0tBIF7A==
+X-Google-Smtp-Source: 
+ AGHT+IGitip9x4QtpR4+G0dEvJimxpf6BpVgEPSKgYXEIKzgo68HapHxxPRb1+XGJN9mD5Y/gtYxn+xlGwksHAWt/6E=
+X-Received: by 2002:a53:8505:0:b0:635:4ecd:5fd3 with SMTP id
+ 956f58d0204a3-636047887e8mr641858d50.48.1758585754491; Mon, 22 Sep 2025
+ 17:02:34 -0700 (PDT)
+MIME-Version: 1.0
+References: <47725276-0b96-2731-4861-af69472bf9f9@nohats.ca>
+ <CABcZeBMvXoHvuZJfR0a0gHqS9bXqRwVPT5VUN4xpAMXEjVGZSQ@mail.gmail.com>
+ <907fef63-8ec2-4956-8c4d-787e9ff085c9@betaapp.fastmail.com>
+In-Reply-To: <907fef63-8ec2-4956-8c4d-787e9ff085c9@betaapp.fastmail.com>
+From: Eric Rescorla <ekr@rtfm.com>
+Date: Mon, 22 Sep 2025 17:01:57 -0700
+X-Gm-Features: AS18NWC9NChn8AANDMCzsPe4T8sLZTzrGu4ZG1phqRYrKe4vwHtT7oAdpeQ146Q
+Message-ID: 
+ <CABcZeBN2gpTNVQZm+G6YT98VStkPyPcnHvdQc=Unzg6cGcFPYw@mail.gmail.com>
+To: Martin Thomson <mt@lowentropy.net>
+Content-Type: multipart/alternative; boundary="000000000000342ee1063f6ca7bb"
+Message-ID-Hash: VXJY6IML4JAD4L2KAK52ADEXKWY4V7SE
+X-Message-ID-Hash: VXJY6IML4JAD4L2KAK52ADEXKWY4V7SE
+X-MailFrom: ekr@rtfm.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+CC: Paul Wouters <paul=40nohats.ca@dmarc.ietf.org>, tls@ietf.org
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Re=3A_KeyShareEntry_MUST_be_generated_independently_-_wa?=
+ =?utf-8?q?s_Re=3A_Mohamed_Boucadair=27s_No_Objection_on_draft-ietf-tls-hybr?=
+ =?utf-8?q?id-design-15=3A_=28with_COMMENT=29_=28fwd=29?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/IjR-VfuGbJOwspu_4AIdgvnq8mk>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+--000000000000342ee1063f6ca7bb
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Sep 22, 2025 at 4:51=E2=80=AFPM Martin Thomson <mt@lowentropy.net> =
+wrote:
+
+> If this is removed, so that we effectively require two X25519 (or P-256 o=
+r
+> whatever) key generation runs for each handshake, then the MUST will be
+> ignored.  We have evidence[1] of this having a material effect on
+> performance and multiple implementations already do it.
+>
+> I believe Eric, as author of RFC 6919, knows how to recognize MUST (BUT W=
+E
+> KNOW YOU WON'T).
+>
+> [1] https://mailarchive.ietf.org/arch/msg/tls/kDPOovPkJ1TO8mcqh_3YuOvcdCs=
+/
+> and replies
+>
+
+It's possible the MUST will be ignored, which is why I asked to hear
+about implementor's views on this. I agree that if people will ignore
+it, we shouldn't mandate it.
+
+I'm not going to argue about the definition of "material" but for reference=
+,
+here are the measurements with rustls:
+
+https://rustls.dev/perf/2024-12-17-pq-kx/
+
+The post in question describes the difference "as small but measurable"
+which is to say 4.3% in the (worst) resumed case, which is already less
+than half as fast as with just X25519. Given that this burden is carried
+entirely by the client and that most clients do not in fact do huge number
+of
+successive TLS handshakes, I'd be interested in hearing from someone who
+has a
+system where this would be a noticeable difference in the field as
+opposed to in a benchmark.
+
+-Ekr
+
+
+
+
+> On Tue, Sep 23, 2025, at 03:56, Eric Rescorla wrote:
+> > My view is it would be better to have one rule, potentially at the cost
+> of
+> > some slight overhead, and the measurements I've seen seem quite
+> > slight. However, given that it's been this way for some time and there
+> > are implementors who do this, I do want to be sure we take their
+> > views into account.
+> >
+> > I do want to mention that I don't think imposing a requirement now need
+> > create an interop problem with the installed base: we could, for
+> instance,
+> > forbid people to check this one thing.
+> >
+> > -Ekr
+> >
+> >
+> > On Mon, Sep 22, 2025 at 10:30=E2=80=AFAM Paul Wouters
+> > <paul=3D40nohats.ca@dmarc.ietf.org> wrote:
+> >>
+> >> Hi,
+> >>
+> >> While I did approve the draft-ietf-tls-hybrid-design as there were no
+> >> blocking items left, there was a comment by Med and supported by Eric
+> >> to at least talk again about the Key Sharing being allowed or not, eg:
+> >>
+> >> Med said:
+> >>
+> >>        # Relaxing a MUST in the base TLS spec?
+> >>
+> >>        CURRENT:
+> >>           [TLS13] requires that ``The key_exchange values for each
+> >>           KeyShareEntry MUST be generated independently.'' In the
+> context of
+> >>           this document, since the same algorithm may appear in
+> multiple named
+> >>           groups, this document relaxes the above requirement to allow
+> the same
+> >>           key_exchange value for the same algorithm to be reused in
+> multiple
+> >>           KeyShareEntry records sent in within the same ClientHello.
+> >>
+> >>        Isn=E2=80=99t this modifying aspects of the base TLS? How to re=
+concile
+> this with the
+> >>        claim in the previous point?
+> >>
+> >>
+> >> Eric said:
+> >>
+> >>       From a technical perspective I'd like to revisit this point. My
+> memory is that the
+> >>       plausible KEMs actually have fast key generation, as does EC. Wh=
+y
+> not just
+> >>       keep the requirement as-is?
+> >>
+> >> We also had two implementations that seemed to do key sharing.
+> >>
+> >>
+> >> Please let me know if you agree with the curent document for the
+> >> relaxing of the TLS 1.3 rules that these "MUST be generated
+> >> independently" to be relaxed, or whether you think the relaxing is
+> >> not neccessary. Please do state _why_ you believe one or the other
+> >> is the right choice.
+> >>
+> >> If this turns out to be a longer dicsussion, I will inform the RFC
+> >> Editor to pause processing of the document in the next few days.
+> >> (In the unlikely even that the authors receive the AUTH48 email, pleas=
+e
+> >> let it sit in your inbox for now)
+> >>
+> >> Paul
+> >>
+> >> _______________________________________________
+> >> TLS mailing list -- tls@ietf.org
+> >> To unsubscribe send an email to tls-leave@ietf.org
+> > _______________________________________________
+> > TLS mailing list -- tls@ietf.org
+> > To unsubscribe send an email to tls-leave@ietf.org
+>
+
+--000000000000342ee1063f6ca7bb
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><br></div><br><div class=3D"gmail_quote g=
+mail_quote_container"><div dir=3D"ltr" class=3D"gmail_attr">On Mon, Sep 22,=
+ 2025 at 4:51=E2=80=AFPM Martin Thomson &lt;<a href=3D"mailto:mt@lowentropy=
+.net">mt@lowentropy.net</a>&gt; wrote:<br></div><blockquote class=3D"gmail_=
+quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,=
+204);padding-left:1ex">If this is removed, so that we effectively require t=
+wo X25519 (or P-256 or whatever) key generation runs for each handshake, th=
+en the MUST will be ignored.=C2=A0 We have evidence[1] of this having a mat=
+erial effect on performance and multiple implementations already do it.<br>
+<br>
+I believe Eric, as author of RFC 6919, knows how to recognize MUST (BUT WE =
+KNOW YOU WON&#39;T).<br>
+<br>
+[1] <a href=3D"https://mailarchive.ietf.org/arch/msg/tls/kDPOovPkJ1TO8mcqh_=
+3YuOvcdCs/" rel=3D"noreferrer" target=3D"_blank">https://mailarchive.ietf.o=
+rg/arch/msg/tls/kDPOovPkJ1TO8mcqh_3YuOvcdCs/</a> and replies<br></blockquot=
+e><div><br></div><div>It&#39;s possible the MUST will be ignored, which is =
+why I asked to hear</div><div>about implementor&#39;s views on this. I agre=
+e that if people will ignore</div><div>it, we shouldn&#39;t mandate it.</di=
+v><div><br></div><div>I&#39;m not going to argue about=C2=A0the definition =
+of &quot;material&quot; but for reference,</div><div>here are the measureme=
+nts with rustls:</div><div><br></div><div><a href=3D"https://rustls.dev/per=
+f/2024-12-17-pq-kx/">https://rustls.dev/perf/2024-12-17-pq-kx/</a></div><di=
+v><br></div><div>The post in question describes the difference &quot;as sma=
+ll but measurable&quot;</div><div>which is to say 4.3% in the (worst) resum=
+ed case, which is already less</div><div>than half as fast as with just X25=
+519. Given that this burden is carried</div><div>entirely by the client and=
+ that most clients do not in fact do huge number of</div><div>successive TL=
+S handshakes, I&#39;d be interested in hearing from someone who has a</div>=
+<div>system where=C2=A0this would be a noticeable difference in the field a=
+s</div><div>opposed to in a benchmark.</div><div><br></div><div>-Ekr</div><=
+div><br></div><div><br></div><div><br></div><blockquote class=3D"gmail_quot=
+e" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204)=
+;padding-left:1ex">
+<br>
+On Tue, Sep 23, 2025, at 03:56, Eric Rescorla wrote:<br>
+&gt; My view is it would be better to have one rule, potentially at the cos=
+t of<br>
+&gt; some slight overhead, and the measurements I&#39;ve seen seem quite<br=
+>
+&gt; slight. However, given that it&#39;s been this way for some time and t=
+here<br>
+&gt; are implementors who do this, I do want to be sure we take their<br>
+&gt; views into account.<br>
+&gt;<br>
+&gt; I do want to mention that I don&#39;t think imposing a requirement now=
+ need<br>
+&gt; create an interop problem with the installed base: we could, for insta=
+nce,<br>
+&gt; forbid people to check this one thing.<br>
+&gt;<br>
+&gt; -Ekr<br>
+&gt;<br>
+&gt;<br>
+&gt; On Mon, Sep 22, 2025 at 10:30=E2=80=AFAM Paul Wouters <br>
+&gt; &lt;paul=3D<a href=3D"mailto:40nohats.ca@dmarc.ietf.org" target=3D"_bl=
+ank">40nohats.ca@dmarc.ietf.org</a>&gt; wrote:<br>
+&gt;&gt; <br>
+&gt;&gt; Hi,<br>
+&gt;&gt; <br>
+&gt;&gt; While I did approve the draft-ietf-tls-hybrid-design as there were=
+ no<br>
+&gt;&gt; blocking items left, there was a comment by Med and supported by E=
+ric<br>
+&gt;&gt; to at least talk again about the Key Sharing being allowed or not,=
+ eg:<br>
+&gt;&gt; <br>
+&gt;&gt; Med said:<br>
+&gt;&gt; <br>
+&gt;&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 # Relaxing a MUST in the base TLS spec?=
+<br>
+&gt;&gt; <br>
+&gt;&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 CURRENT:<br>
+&gt;&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0[TLS13] requires that ``Th=
+e key_exchange values for each<br>
+&gt;&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0KeyShareEntry MUST be gene=
+rated independently.&#39;&#39; In the context of<br>
+&gt;&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0this document, since the s=
+ame algorithm may appear in multiple named<br>
+&gt;&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0groups, this document rela=
+xes the above requirement to allow the same<br>
+&gt;&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0key_exchange value for the=
+ same algorithm to be reused in multiple<br>
+&gt;&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0KeyShareEntry records sent=
+ in within the same ClientHello.<br>
+&gt;&gt; <br>
+&gt;&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 Isn=E2=80=99t this modifying aspects of=
+ the base TLS? How to reconcile this with the<br>
+&gt;&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 claim in the previous point?<br>
+&gt;&gt; <br>
+&gt;&gt; <br>
+&gt;&gt; Eric said:<br>
+&gt;&gt; <br>
+&gt;&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0From a technical perspective I&#39;d lik=
+e to revisit this point. My memory is that the<br>
+&gt;&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0plausible KEMs actually have fast key ge=
+neration, as does EC. Why not just<br>
+&gt;&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0keep the requirement as-is?<br>
+&gt;&gt; <br>
+&gt;&gt; We also had two implementations that seemed to do key sharing.<br>
+&gt;&gt; <br>
+&gt;&gt; <br>
+&gt;&gt; Please let me know if you agree with the curent document for the<b=
+r>
+&gt;&gt; relaxing of the TLS 1.3 rules that these &quot;MUST be generated<b=
+r>
+&gt;&gt; independently&quot; to be relaxed, or whether you think the relaxi=
+ng is<br>
+&gt;&gt; not neccessary. Please do state _why_ you believe one or the other=
+<br>
+&gt;&gt; is the right choice.<br>
+&gt;&gt; <br>
+&gt;&gt; If this turns out to be a longer dicsussion, I will inform the RFC=
+<br>
+&gt;&gt; Editor to pause processing of the document in the next few days.<b=
+r>
+&gt;&gt; (In the unlikely even that the authors receive the AUTH48 email, p=
+lease<br>
+&gt;&gt; let it sit in your inbox for now)<br>
+&gt;&gt; <br>
+&gt;&gt; Paul<br>
+&gt;&gt; <br>
+&gt;&gt; _______________________________________________<br>
+&gt;&gt; TLS mailing list -- <a href=3D"mailto:tls@ietf.org" target=3D"_bla=
+nk">tls@ietf.org</a><br>
+&gt;&gt; To unsubscribe send an email to <a href=3D"mailto:tls-leave@ietf.o=
+rg" target=3D"_blank">tls-leave@ietf.org</a><br>
+&gt; _______________________________________________<br>
+&gt; TLS mailing list -- <a href=3D"mailto:tls@ietf.org" target=3D"_blank">=
+tls@ietf.org</a><br>
+&gt; To unsubscribe send an email to <a href=3D"mailto:tls-leave@ietf.org" =
+target=3D"_blank">tls-leave@ietf.org</a><br>
+</blockquote></div></div>
+
+--000000000000342ee1063f6ca7bb--
+

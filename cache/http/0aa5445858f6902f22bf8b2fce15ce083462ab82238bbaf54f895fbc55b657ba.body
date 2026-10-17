@@ -1,0 +1,635 @@
+Return-Path: <ilariliusvaara@welho.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 144D3128E19
+ for <tls@ietfa.amsl.com>; Mon, 11 Jul 2016 21:16:36 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -3.187
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.187 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, RP_MATCHES_RCVD=-1.287]
+ autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id RD6vNZ5tFCxX for <tls@ietfa.amsl.com>;
+ Mon, 11 Jul 2016 21:16:32 -0700 (PDT)
+Received: from welho-filter1.welho.com (welho-filter1.welho.com [83.102.41.23])
+ by ietfa.amsl.com (Postfix) with ESMTP id 49104128B44
+ for <tls@ietf.org>; Mon, 11 Jul 2016 21:16:31 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+ by welho-filter1.welho.com (Postfix) with ESMTP id F09FE7E41;
+ Tue, 12 Jul 2016 07:16:29 +0300 (EEST)
+X-Virus-Scanned: Debian amavisd-new at pp.htv.fi
+Received: from welho-smtp1.welho.com ([IPv6:::ffff:83.102.41.84])
+ by localhost (welho-filter1.welho.com [::ffff:83.102.41.23]) (amavisd-new,
+ port 10024)
+ with ESMTP id AlT0Qcj53DQY; Tue, 12 Jul 2016 07:16:27 +0300 (EEST)
+Received: from LK-Perkele-V2 (87-100-177-32.bb.dnainternet.fi [87.100.177.32])
+ (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by welho-smtp1.welho.com (Postfix) with ESMTPSA id CF327C4;
+ Tue, 12 Jul 2016 07:16:27 +0300 (EEST)
+Date: Tue, 12 Jul 2016 07:16:24 +0300
+From: Ilari Liusvaara <ilariliusvaara@welho.com>
+To: Eric Rescorla <ekr@rtfm.com>
+Message-ID: <20160712041624.GA30472@LK-Perkele-V2.elisa-laajakaista.fi>
+References: <CABcZeBMiLmwBeuLt=v4qdcJwe5rdsK_9R4-2TUXYC=sttmwH-g@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CABcZeBMiLmwBeuLt=v4qdcJwe5rdsK_9R4-2TUXYC=sttmwH-g@mail.gmail.com>
+User-Agent: Mutt/1.6.0 (2016-04-01)
+Sender: ilariliusvaara@welho.com
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/uemCG1PjzCRkDFTjKYVYNNR7Emw>
+Cc: "tls@ietf.org" <tls@ietf.org>
+Subject: Re: [TLS] New draft: draft-ietf-tls-tls13-14.txt
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.17
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Tue, 12 Jul 2016 04:16:36 -0000
+
+On Mon, Jul 11, 2016 at 12:08:00PM -0700, Eric Rescorla wrote:
+> Folks,
+> 
+> I've just submitted draft-ietf-tls-tls13-14.txt and it should
+> show up on the draft repository shortly. In the meantime you
+> can find the editor's copy in the usual location at:
+
+> As usual, comments welcome.
+> -Ekr
+
+Did a readthrough, here's a bunch of comments (didn't check the
+issues list):
+
+-----------------------------------------------------------------------
+> ## Zero-RTT Data
+>
+>
+> [[OPEN ISSUE: Should it be possible to combine 0-RTT with the
+> server authenticating via a signature
+> https://github.com/tlswg/tls13-spec/issues/443]]
+
+One should note that it is not clear what sort of continuity properties
+should be provoded:
+
+- Certificate valid for hostname
+- The same key as in last time
+- The same certificate as in last time
+
+The last choice obviously limits lifetime of derived PSK to
+the parent certificate.
+
+Also, extension matching is quite different between those three (and the
+last two are rather different from the current rules, tuned for 0-RTT
+only being used with PSK.
+
+
+> ##  Numbers
+> 
+> Note that in some cases (e.g., DH parameters) it is necessary to represent
+> integers as opaque vectors. In such cases, they are represented as unsigned
+> integers (i.e., additional leading zero octets are not used even if the most
+> significant bit is set).
+
+Well, I think the DH parameters are gone, but DH public keys are still there,
+and those AFAIK are padded with zeroes.
+
+> ###  Client Hello
+> 
+> When this message will be sent:
+> 
+> > When a client first connects to a server, it is required to send the
+> ClientHello as its first message. The client will also send a
+> ClientHello when the server has responded to its ClientHello with a
+> ServerHello that selects cryptographic parameters that don't match the
+> client's "key_share" extension. In that case, the client MUST send the same
+> ClientHello (without modification) except:
+
+Should the "ServerHello" be "HelloRetryRequest"?
+
+> - Including a new KeyShareEntry as the lowest priority share
+>   (i.e., appended to the list of shares in the "key_share" extension).
+> 
+> - Removing the EarlyDataIndication {{early-data-indication}} extension
+>   if one was present. Early data is not permitted after HelloRetryRequest.
+
+Also, adding cookie extension if that was present in HRR?
+
+BTW, with the early_data context and cross-connection cookies gone, I
+have figured out how to delta-compress the first client_hello and its
+rejection against to-be-sent second client hello plus connection
+parameters server selected into 6 bytes(!) of space (not including
+return-reachability check or MAC).
+
+> ###  Server Hello
+> 
+> cipher_suite
+> : The single cipher suite selected by the server from the list in
+>   ClientHello.cipher_suites.  For resumed sessions, this field is
+>   the value from the state of the session being resumed.
+>   [[TODO: interaction with PSK.]]
+
+Isn't this the true ciphersuite used on this connection, "resumption"
+or not? Otherwise you can get into all sorts of crazy situations that
+WILL be sources of implementation bugs.
+
+The idea that it isn't true ciphersuite brings me bad flashbacks about
+TLS 1.2 ticket "maybe resume" craziness (except this would be even
+worse).
+
+> extensions
+> : A list of extensions.  Note that only extensions offered by the
+>   client can appear in the server's list. In TLS 1.3, as opposed to
+>   previous versions of TLS, the server's extensions are split between
+>   the ServerHello and the EncryptedExtensions {{encrypted-extensions}}
+>   message. The ServerHello MUST only include extensions which are
+>   required to establish the cryptographic context. Currently the only
+>   such extensions are "key_share", "pre_shared_key", and "early_data".
+>   Clients MUST check the ServerHello for the presence of any forbidden
+>   extensions and if any are found MUST terminate the handshake with a
+>   "illegal_parameter" alert. In prior versions of TLS, the extensions
+>   field could be omitted entirely if not needed, similar to
+>   ClientHello. As of TLS 1.3, all clients and servers will send at
+>   least one extension (at least "key_share" or "pre_shared_key").
+
+Hasn't early_data just moved to EncryptedExtensions?
+
+
+###  Hello Retry Request
+
+> selected_group
+> : The mutually supported group the server intends to negotiate and
+>   is requesting a retried ClientHello/KeyShare for.
+> {:br }
+
+What is written into this field if server selects pure-PSK ciphersuite
+and then decides to reject the ClientHello? Or connections that use
+pure-PSK just plain can't be rejected for any reason (including IP
+address verification in DTLS?)
+
+> [[NOTE: cipher_suite may disappear. https://github.com/tlswg/tls13-spec/issues/528]]
+
+Currently assuming pure-PSK rejections are possible, cipher_suite is
+needed to tell if the next group field contains anything sane or
+not...
+
+> The
+> server SHOULD send only the extensions necessary for the client to
+> generate a correct ClientHello pair (currently no such extensions
+> exist). As with ServerHello, a
+> HelloRetryRequest MUST NOT contain any extensions that were not first
+> offered by the client in its ClientHello.
+
+What about cookie? IIRC, it is allowed to be in HRR even without
+being in CH...
+
+> Upon receipt of a HelloRetryRequest, the client MUST first verify that
+> the selected_group field corresponds to a group which was provided
+> in the "supported_groups" extension in the original ClientHello.  It
+> MUST then verify that the selected_group field does not correspond
+> to a group which was provided in the "key_share" extension in the
+> original ClientHello. If either of these checks fails, then the client
+> MUST abort the handshake with a fatal "handshake_failure"
+> alert. Clients SHOULD also abort with "handshake_failure" in response
+> to any second HelloRetryRequest which was sent in the same connection
+> (i.e., where the ClientHello was itself in response to a
+> HelloRetryRequest).
+>
+> Otherwise, the client MUST send a ClientHello with an updated KeyShare
+> extension to the server. The client MUST append a new KeyShareEntry
+> for the group indicated in the selected_group field to the groups
+> in its original KeyShare.
+
+Again, rejections with cookie aren't spurious, and the cookie needs to
+be added.
+
+##  Hello Extensions
+
+
+> An extension type MUST NOT appear in the ServerHello or HelloRetryRequest
+> unless the same extension type appeared in the corresponding ClientHello.
+> If a client receives an extension type in ServerHello or HelloRetryRequest
+> that it did not request in the associated ClientHello, it MUST abort the
+> handshake with an "unsupported_extension" fatal alert.
+
+Cookie in HRR might not follow that....
+
+> In general, the specification of each extension type needs to describe the
+> effect of the extension both during full handshake and session resumption. Most
+> current TLS extensions are relevant only when a session is initiated: when an
+> older session is resumed, the server does not process these extensions in
+> ClientHello, and does not include them in ServerHello. However, some
+> extensions may specify different behavior during session resumption.
+> [[TODO: update this and the previous paragraph to cover PSK-based resumption.]]
+
+I would say that it is a bad idea for any extension to do anything
+special with "resumption" without very good reasons.
+
+In fact, the only non-connection-control extension that is relevant for
+PSK I know is server_name.
+
+Now, ALPN (connection-control by definition!) behaves specially with
+early_data for darn good reasons (the ALP is locked). 
+
+This is made worse by the fact that what consistutes "resumption" is not
+clearly defined (the ALPN rules are related to early_data, not choosing
+PSK #0!).
+
+
+> ###  Signature Algorithms
+>
+> * In TLS 1.2, the extension contained hash/signature pairs. The pairs are
+>   encoded in two octets, so SignatureScheme values have been allocated to
+>   align with TLS 1.2's encoding. Some legacy pairs are left unallocated. These
+>   algorithms are deprecated as of TLS 1.3. They MUST NOT be offered or
+>   negotiated by any implementation. In particular, MD5 {{SLOTH}} and SHA-224
+>   MUST NOT be used.
+>
+> * ecdsa_secp256r1_sha256, etc., align with TLS 1.2's ECDSA hash/signature pairs.
+>   However, the old semantics did not constrain the signing curve.
+
+Also, for interoperability, any legal TLS 1.3 meaning of these algorithms must
+be extended to apply to TLS 1.2, even for TLS 1.2 ClientHello. Anything else
+would be pointless trap.
+
+This impiles that RSA PSS and EdDSA work in TLS 1.2 and also how those work.
+
+Also, even if meaning of the ECDSA codepoints changed, those would not break
+that rule, since new definition is strict subset of old.
+
+> ### Negotiated Groups
+> 
+> As of TLS 1.3, servers are permitted to send the "supported_groups"
+> extension to the client.  If the server has a group it prefers to the
+> ones in the "key_share" extension but is still willing to accept the
+> ClientHello, it SHOULD send "supported_groups" to update the client's
+> view of its preferences.  Clients MUST NOT act upon any information
+> found in "supported_groups" prior to successful completion of the
+> handshake, but MAY use the information learned from a successfully
+> completed handshake to change what groups they offer to a server in
+> subsequent connections.
+
+Are those supposed to be filtered to be subset of ones client advertised
+or not? E.g. if client didn't indicate support for x448, can the server
+still send x448?
+
+
+> ### Key Share
+> 
+> If this extension is not provided in a ServerHello or ClientHello,
+> and the peer is offering (EC)DHE cipher suites, then the endpoint MUST close
+> the connection with a fatal "missing_extension" alert.
+> (see {{mti-extensions}})
+
+Doesn't seem to consistent with the other descriptions of this and
+pre_shared_key (those are just "MUST NOT select covered ciphersuite if
+missing"). Of course, in practice, it might be more this (at least
+that's how I would implement it)...
+
+> [[TODO: Recommendation about what the client offers.
+> Presumably which integer DH groups and which curves.]]
+
+Bit crazy algorithm: If you haven't heard of this server before,
+pick smallest you support, if you have, pick the one it selected
+the last time.
+
+> ### Pre-Shared Key Extension
+> 
+> Note that although 0-RTT data is encrypted with the first PSK identity, the
+> server MAY fall back to 1-RTT and select a different PSK identity if multiple
+> identities are offered.
+
+The temporal ordering in messages is actually selecting different PSK
+and then rejecting 0-RTT.
+
+> ### Early Data Indication
+> 
+> obfuscated_ticket_age
+> : The time since the client learned about the server configuration that it is
+>   using, in milliseconds.  This value is added modulo 2^32 to with the
+>   "ticket_age_add" value that was included with the ticket, see
+>   {{NewSessionTicket}}.  This addition prevents passive observers from
+>   correlating sessions unless tickets are reused.  Note: because ticket
+>   lifetimes are restricted to a week, 32 bits is enough to represent any
+>   plausible age, even in milliseconds.
+ 
+And the addition also prevents correlating session with its parent,
+even in case of reuse (this was the reason for switching to addition
+from XOR).
+
+> A server MUST validate that the ticket_age is within a small
+> tolerance of the time since the ticket was issued (see {{replay-time}}).
+
+Good luck with that...
+
+Also, requirement that the server MUST proceed with the handshake and
+reject 0-RTT if that validation fails would be good here...
+
+> 0-RTT messages sent in the first flight have the same content types
+> as their corresponding messages sent in other flights (handshake,
+> application_data, and alert respectively) but are protected under
+> different keys. After all the 0-RTT application data messages (if
+> any) have been sent, an "end_of_early_data" alert of type
+> "warning" is sent to indicate the end of the flight.
+> 0-RTT MUST always be followed by an "end_of_early_data" alert.
+
+This does not talk about if end_of_early_data alert is encrypted or
+not (obviously encrypted one won't work if server rejected 0-RTT,
+unless server trial-decrypts).
+
+> If any of these checks fail, the server MUST NOT respond
+> with the extension and must discard all the remaining first
+> flight data (thus falling back to 1-RTT). If the client attempts
+> a 0-RTT handshake but the server rejects it, it will generally
+> not have the 0-RTT record protection keys and must instead
+> trial decrypt each record with the 1-RTT handshake keys
+> until it finds one that decrypts properly, and then pick up
+> the handshake from that point.
+
+Oh, still trial decryption... Got it.
+
+> #### Processing Order
+> 
+> Clients are permitted to "stream" 0-RTT data until they
+> receive the server's Finished, only then sending the "end_of_early_data"
+> alert. In order to avoid deadlock, when accepting "early_data",
+> servers MUST process the client's Finished and then immediately
+> send the ServerHello, rather than waiting for the client's
+> "end_of_early_data" alert.
+
+I think there was some proposal to dump the Finished. Would simplify
+implementation. In TLS, there is at least one appdata record with its
+MAC to be deprotected. That's not true in DTLS. 
+
+However, even in DTLS, any wrong keys almost certainly cause handshake
+to immediately blow up as handshake keys won't match up...
+
+> #### Replay Properties {#replay-time}
+> 
+> There are several potential sources of error that make an exact
+> measurement of time difficult.  Variations in client and server clocks
+> are likely to be minimal, outside of gross time corrections.  Network
+> propagation delays are most likely causes of a mismatch in legitimate
+> values for elapsed time.  Both the NewSessionTicket and ClientHello
+> messages might be retransmitted and therefore delayed, which might be
+> hidden by TCP.
+
+I don't think variations in clocks are minimal...
+
+I wonder what 95% timeskew interval per day is...
+
+(Oh, and have fun with leap seconds!)
+
+> ###  Encrypted Extensions
+> 
+> The same extension types MUST NOT appear in both the ServerHello and
+> EncryptedExtensions.  If the same extension appears in both locations,
+> the client MUST rely only on the value in the EncryptedExtensions
+> block.  All server-sent extensions other than those explicitly listed
+> in {{server-hello}} or designated in the IANA registry MUST only
+> appear in EncryptedExtensions. Extensions which are designated to
+> appear in ServerHello MUST NOT appear in EncryptedExtensions. Clients
+> MUST check EncryptedExtensions for the presence of any forbidden
+> extensions and if any are found MUST terminate the handshake with an
+> "illegal_parameter" alert.
+
+This seems inconsistent. In implementation, I would write explicit disjoint
+whitelists of extensions for both (and non-whitelisted one is a fatal
+error). Explicit whitelisting is safe even on client side, since the
+extensions are bounded by client-supported ones.
+
+> ###  Certificate Request
+> 
+>   - The Extended Key Usage extension in a certificate matches the
+>   request when all key purpose OIDs present in the request are also
+>   found in the Extended Key Usage certificate extension. The special
+>   anyExtendedKeyUsage OID MUST NOT be used in the request.
+
+How are multiple OIDs represented? Multiple EKU OID/value pairs?
+
+> #### Server Certificate Selection
+> 
+> 
+> - The "server_name" and "trusted_ca_keys" extensions {{RFC6066}} are used to
+>   guide certificate selection. As servers MAY require the presence of the "server_name"
+>   extension, clients SHOULD send this extension, when applicable.
+
+I think the certificate should be REQUIRED to match (as in, not be
+inconsistent with it) server_name, even if not ACK'd.
+
+
+> ###  Certificate Verify
+> 
+> If sent by a server, the signature algorithm MUST be one offered in the
+> client's "signature_algorithms" extension unless no valid certificate chain can be
+> produced without unsupported algorithms (see {{signature-algorithms}}). Note that
+> there is a possibility for inconsistencies here. For instance, the client might
+> offer an ECDHE_ECDSA cipher suite but omit any ECDSA and EdDSA values from its
+> "signature_algorithms" extension. In order to negotiate correctly, the server
+> MUST check any candidate cipher suites against the "signature_algorithms"
+> extension before selecting them. This is somewhat inelegant but is a compromise
+> designed to minimize changes to the original cipher suite design.
+
+The exception on not having valid value can not work at all. With
+certificates, even if the EE cert is signed with unknown algorithm,
+there is a small chance things will work. In contrast, there is
+absolutely no chance of success if either endpoint tries ot use this
+fallback.
+
+> Note: When used with non-certificate-based handshakes (e.g., PSK), the
+> client's signature does not cover the server's certificate directly,
+> although it does cover the server's Finished message, which
+> transitively includes the server's certificate when the PSK derives
+> from a certificate-authenticated handshake.  {{PSK-FINISHED}}
+> describes a concrete attack on this mode if the Finished is omitted
+> from the signature. It is unsafe to use certificate-based client
+> authentication when the client might potentially share the same
+> PSK/key-id pair with two different endpoints. In order to ensure
+> this, implementations MUST NOT mix certificate-based client
+> authentication with pure PSK modes (i.e., those where the
+> PSK was not derived from a previous non-PSK handshake).
+
+Does this apply to in-handshake or post-handshake auth? I thought
+in-handshake auth with PSK is not possible.
+
+If it is intended to be possible, that's certainly going to be
+surprising to implementers, and there are probably going to be multiple
+implementations that outright choke if one tries to send
+CertificateRequest in (DHE-)PSK mode
+
+> ## Record Payload Protection
+> 
+> length
+> : The length (in bytes) of the following TLSCiphertext.fragment, which
+>   is the sum of the lengths of the content and the padding, plus one
+>   for the inner content type. The length MUST NOT exceed 2^14 + 256.
+>   An endpoint that receives a record that exceeds this length MUST
+>   generate a fatal "record_overflow" alert.
+
+Later the document seems to imply that the limit for for content+type+
+padding is in fact 16385 bytes.
+
+
+> ## Per-Record Nonce {#nonce}
+> 
+> Sequence numbers do not wrap.  If a TLS implementation would need to
+> wrap a sequence number, it MUST either rekey ({{key-update}}) or
+> terminate the connection.
+
+Maybe add requirement that record with sequence number of 2^64-1 MUST
+be either fatal alert or KeyUpdate.
+
+> ## Limits on Key Usage
+> 
+> For AES-GCM, up to 2^24.5 full-size records may be encrypted on a
+> given connection while keeping a safety margin of approximately
+> 2^-57 for Authenticated Encryption (AE) security. For
+> ChaCha20/Poly1305, the record sequence number will wrap before the
+> safety limit is reached.
+
+I would expand that 2^24.5 to some rough number ("about 24 million"?).
+
+And also "will wrap" -> "would wrap". Because such wrapping can't
+happen (even if endpoint delays KeyUpdate to RSN 2^64-1).
+
+> ## Key Schedule
+> 
+> If a given secret is not available, then the 0-value consisting of
+> a string of Hash.length zeroes is used.  Note that this does not mean skipping
+> rounds, so if PSK is not in use Early Secret will still be
+> HKDF-Extract(0, 0).
+
+This might cause fun with future key exchange types...
+
+> # IANA Considerations
+
+> | Extension                                | Recommended |  TLS 1.3  |
+> |:-----------------------------------------|------------:|----------:|
+> | max_fragment_length [RFC6066]            |         Yes | Encrypted |
+
+I think this needs to be in ServerHello on server-side, given how low-
+level it is.
+
+> | user_mapping [RFC4681]                   |         Yes | Encrypted |
+> | client_authz [RFC5878]                   |          No | Encrypted |
+> | server_authz [RFC5878]                   |          No | Encrypted |
+
+These darn things use Supplemental Data messages, would need to define
+where the data goes.  And one can't stick it to extension for
+user_mapping and client_authz, because those are sent by the client,
+not the server.
+
+> | cookie [[this document]]                 |         Yes | Encrypted/HelloRetryRequest |
+
+Isn't that "Client/HelloRetryRequest"? I don't think EncryptedExtensions
+can have Cookie...
+
+> -  TLS SignatureScheme Registry: Values with the first byte in the range
+>   0-254 (decimal) are assigned via Specification Required {{RFC2434}}.
+>   Values with the first byte 255 (decimal) are reserved for Private
+>   Use {{RFC2434}}. This registry SHALL have a "Recommended" column.
+>   The registry [shall be/ has been] initially populated with the values described in
+>   {{signature-algorithms}}. The following values SHALL be marked as
+>   "Recommended": ecdsa_secp256r1_sha256, ecdsa_secp384r1_sha384,
+>   rsa_pss_sha256, rsa_pss_sha384, rsa_pss_sha512, ed25519.
+
+Should the two registeries shadowed by this closed?
+
+
+
+> ## Cipher Suites
+> 
+> Note: The values listed for ECDHE and ChaCha/Poly are preliminary but
+> are being or will be used for interop testing and therefore are likely to be
+> assigned.
+
+Isn't the RFC already published, so the codepoints are stable?
+
+> ## Random Number Generation and Seeding
+> 
+> To estimate the amount of seed material being produced, add the number of bits
+> of unpredictable information in each seed byte. For example, keystroke timing
+> values taken from a PC compatible 18.2 Hz timer provide 1 or 2 secure bits
+> each, even though the total size of the counter value is 16 bits or more.
+> Seeding a 128-bit PRNG would thus require approximately 100 such timer values.
+
+This seems really obsolete. The timers have not been 18.2Hz for years, and
+applications running on operating systems damn better use OS services for
+random numbers, given that anything else is fraught with peril.
+
+
+> ## Implementation Pitfalls
+> 
+> -  Have you ensured that all support for SSL, RC4, EXPORT ciphers, and
+>   MD5 (via the "signature_algorithm" extension) is completely removed from
+>   all possible configurations that support TLS 1.3 or later, and that
+>   attempts to use these obsolete capabilities fail correctly?
+>   (see {{backward-compatibility}})
+
+Better to just nuke the code entierely for all versions.
+
+"Disabled" code has nasty tendency of coming back to life.
+
+> -  Do you handle TLS extensions in ClientHello correctly, including
+>   unknown extensions or omitting the extensions field completely?
+
+The extensions field can't be omitted in TLS 1.3. And I would
+consider TLS 1.2 client implementations that send such messages
+as quite pathological.
+
+> Cryptographic details:
+> 
+> -  What countermeasures do you use to prevent timing attacks against
+>   RSA signing operations {{TIMING}}?
+
+Also, ECDSA signing operations do have problems with timing attacks.
+
+> - When verifying RSA signatures, do you accept both NULL and missing parameters?
+>   Do you verify that the RSA padding
+>   doesn't have additional data after the hash value? {{FI06}}
+
+Also, the lengths need to be correct (not verifying this leads to an
+attack). Best just to treat first length bytes >0x82 or >0x83 as
+malformed. There is no way to send legimate message with first length
+byte >0x83 in TLS.
+
+
+> #  Overview of Security Properties {#security-analysis}
+> 
+> [[TODO: This section is still a WIP and needs a bunch more work.]]
+> 
+> A complete security analysis of TLS is outside the scope of this document.
+> In this section, we provide an informal description the desired properties
+> as well as references to more detailed work in the research literature
+> which provides more formal definitions.
+> 
+> We cover properties of the handshake separately from those of the record layer.
+
+I think properties of the exporter should be covered as well:
+
+- Is it intended to generate secret data (yes)
+- Is it intended to generate connection-unique data (yes)
+- Are values for different labels/contexts intended to be computationally
+  independent (yes)
+
+
+(The TLS 1.2 exporter without EMS failed the middle requirement,
+creating security issues in applications that assumed the data was
+connection-unique.
+
+-----------------------------------------------------------------------
+
+
+-Ilari
+

@@ -1,0 +1,248 @@
+From davidben@google.com  Thu Nov 30 10:24:44 2023
+Return-Path: <davidben@google.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 4AAE5C14CEFA
+ for <tls@ietfa.amsl.com>; Thu, 30 Nov 2023 10:24:44 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -9.258
+X-Spam-Level: 
+X-Spam-Status: No, score=-9.258 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIMWL_WL_HIGH=-0.001, DKIM_SIGNED=0.1,
+ DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1,
+ HEADER_FROM_DIFFERENT_DOMAINS=0.249, HTML_MESSAGE=0.001,
+ RCVD_IN_DNSWL_NONE=-0.0001, RCVD_IN_ZEN_BLOCKED_OPENDNS=0.001,
+ SPF_HELO_NONE=0.001, SPF_PASS=-0.001, T_SCC_BODY_TEXT_LINE=-0.01,
+ URIBL_DBL_BLOCKED_OPENDNS=0.001, URIBL_ZEN_BLOCKED_OPENDNS=0.001,
+ USER_IN_DEF_SPF_WL=-7.5] autolearn=no autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=chromium.org
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id FcarmzWqtmFG for <tls@ietfa.amsl.com>;
+ Thu, 30 Nov 2023 10:24:40 -0800 (PST)
+Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com
+ [IPv6:2607:f8b0:4864:20::1136])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 31732C14CEF9
+ for <tls@ietf.org>; Thu, 30 Nov 2023 10:24:40 -0800 (PST)
+Received: by mail-yw1-x1136.google.com with SMTP id
+ 00721157ae682-5d3eb2d465cso564817b3.3
+ for <tls@ietf.org>; Thu, 30 Nov 2023 10:24:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=chromium.org; s=google; t=1701368679; x=1701973479; darn=ietf.org;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=Y9iHo5oitquArjQPU4Z8juC/0uE+X40DLZtsrnBISlI=;
+ b=N9+wdrUoEN7aR5qz4F1ezALHtm07rMqMpFZToyap1jKn+og+ujGZ0CTpwjkmwGneFa
+ fVevUkQietS1ZWwtvkbyA+EvmuULrGi9IiQ9gbMg71QL8Rs34JtOnb4N7C3IT53q/eSc
+ JMNCM/JFJoADhVWgRRJXD4eEI8GIJzoHnvstQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1701368679; x=1701973479;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=Y9iHo5oitquArjQPU4Z8juC/0uE+X40DLZtsrnBISlI=;
+ b=sk5GHb0J6svUwxxSZmlwBcJ9tM3vyQojqWN4G6qI0kMjHNRPFTbfDZm1tJs3gxytfW
+ G9KOMwwtFMR5Hifi9HLPXSW8IIvfko00C1taZG/4avmdlihVZjCwxO9WsXA+NttMtBZq
+ xoj3tsf3WohvCDWyhsr173ClK1uQRe8f/B4lRp2GUU64HK5XVJg/t/ULf3Cve5goYWg3
+ fwmwIMPx4GgFi5u7JJpi/wndjCJSM08ct+5m3LDGOTRRCJBfE4LUcx/UoqJ1fNyVrb8m
+ oS+ITj5DRIFRiP93SksyTPMf7NeQlHN9Y7gdV8bOKF774IkyKmZIldtCjWS5aO5/X8Ko
+ oVnw==
+X-Gm-Message-State: AOJu0YzoJn0v4QkAAZ6GVHl7586GfgbmJ/vxyXdRoRCMeMQpp6J1gpX7
+ UxqFd3AvNnvn2X1WEjPl35vGLmk+htlWG2mAaDlnhG7CV1Ho2XvLhf66
+X-Google-Smtp-Source: AGHT+IF6cZmVwF+um0S1FfwngqmfnQdsSbe/paz4omqyErgGdCX/ST7iM8DSgL7TiIMA9SB14E68kfueWy8NAZySxQY=
+X-Received: by 2002:a05:690c:2e02:b0:5d1:f8ed:b4c5 with SMTP id
+ et2-20020a05690c2e0200b005d1f8edb4c5mr7439170ywb.42.1701368678527; Thu, 30
+ Nov 2023 10:24:38 -0800 (PST)
+MIME-Version: 1.0
+References: <CAOgPGoDiSRno_3QPgyEyY4K2TvFg9RxqXhi10RZRT7tL2cRdQw@mail.gmail.com>
+ <CAOgPGoDN0xWHh48VzjCu48WjFy=-CTGyOz+sATA4ytUGuMJs3g@mail.gmail.com>
+ <CAF8qwaC_uPh430myCbRV72ou=6vLuSxbPFa5yqjW+ieOPkUnOw@mail.gmail.com>
+ <CAOgPGoDoTNezuchP-RpkqqTqER83ANZtxEL+zPLHeD2DtukZDw@mail.gmail.com>
+In-Reply-To: <CAOgPGoDoTNezuchP-RpkqqTqER83ANZtxEL+zPLHeD2DtukZDw@mail.gmail.com>
+From: David Benjamin <davidben@chromium.org>
+Date: Thu, 30 Nov 2023 13:24:20 -0500
+Message-ID: <CAF8qwaCYWnSk2t2datJQ4se4said79WCR+Ji_hBYqpJ=jEgeaQ@mail.gmail.com>
+To: Joseph Salowey <joe@salowey.net>
+Cc: "<tls@ietf.org>" <tls@ietf.org>, draft-davidben-tls13-pkcs1@ietf.org
+Content-Type: multipart/alternative; boundary="000000000000b78a8a060b62c370"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/9YXeEz7fk8oJmmeijH9wCOBVs4w>
+Subject: Re: [TLS] Adoption call for Legacy RSASSA-PKCS1-v1_5 codepoints for
+ TLS 1.3
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Thu, 30 Nov 2023 18:24:44 -0000
+
+--000000000000b78a8a060b62c370
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Whoops, I thought something seemed off! Here it is under the new name:
+https://datatracker.ietf.org/doc/draft-ietf-tls-tls13-pkcs1/
+
+On Thu, Nov 30, 2023 at 11:54=E2=80=AFAM Joseph Salowey <joe@salowey.net> w=
+rote:
+
+> I misdirected you with the name it should be draft-ietf-tls-tls13-pkcs1,
+> can you please submit under this name?  It would be better to have in the
+> tlswg repo, we'll follow up offline.
+>
+> Thanks,
+>
+> Joe
+>
+> On Wed, Nov 29, 2023 at 9:41=E2=80=AFAM David Benjamin <davidben@chromium=
+.org>
+> wrote:
+>
+>> Done, although I'm not sure if I got all the metadata right. (How does
+>> one mark it as replacing the old one?)
+>> https://datatracker.ietf.org/doc/draft-tls-tls13-pkcs1/
+>>
+>> The GitHub is still under my account, but happy to move it to the TLSWG
+>> if preferred. (How would we go about doing that?)
+>>
+>> On Wed, Nov 29, 2023 at 11:07=E2=80=AFAM Joseph Salowey <joe@salowey.net=
+> wrote:
+>>
+>>> The adoption call for this draft has completed.  There is sufficient
+>>> interest in the draft and no objections. Authors, please submit this dr=
+aft
+>>> with the file name draft-tls-tls13-pkcs1-00.txt.
+>>>
+>>> Cheers,
+>>> Joe
+>>>
+>>> On Mon, Nov 6, 2023 at 9:25=E2=80=AFAM Joseph Salowey <joe@salowey.net>=
+ wrote:
+>>>
+>>>> At the TLS meeting at IETF 118 there was significant support for the
+>>>> draft  Legacy RSASSA-PKCS1-v1_5 codepoints for TLS 1.3
+>>>> <https://datatracker.ietf.org/doc/draft-davidben-tls13-pkcs1/01/> (
+>>>> https://datatracker.ietf.org/doc/draft-davidben-tls13-pkcs1/01/)  This
+>>>> call is to confirm this on the list.  Please indicate if you support t=
+he
+>>>> adoption of this draft and are willing to review and contribute text. =
+ If
+>>>> you do not support adoption of this draft please indicate why.  This c=
+all
+>>>> will close on November 27, 2023.
+>>>>
+>>>> Thanks,
+>>>>
+>>>> Sean, Chris and Joe
+>>>>
+>>> _______________________________________________
+>>> TLS mailing list
+>>> TLS@ietf.org
+>>> https://www.ietf.org/mailman/listinfo/tls
+>>>
+>>
+
+--000000000000b78a8a060b62c370
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">Whoops, I thought something seemed off! Here it is under t=
+he new name:<br><a href=3D"https://datatracker.ietf.org/doc/draft-ietf-tls-=
+tls13-pkcs1/">https://datatracker.ietf.org/doc/draft-ietf-tls-tls13-pkcs1/<=
+/a><br></div><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail=
+_attr">On Thu, Nov 30, 2023 at 11:54=E2=80=AFAM Joseph Salowey &lt;<a href=
+=3D"mailto:joe@salowey.net">joe@salowey.net</a>&gt; wrote:<br></div><blockq=
+uote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1p=
+x solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr"><div>I misdirec=
+ted you with the name it should be=C2=A0<span style=3D"color:rgb(0,0,0);fon=
+t-family:Inter,system-ui,-apple-system,&quot;Segoe UI&quot;,Roboto,&quot;He=
+lvetica Neue&quot;,&quot;Noto Sans&quot;,&quot;Liberation Sans&quot;,Arial,=
+sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;S=
+egoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;">draft-ietf-tls-tls13-pkc=
+s1, can you please submit under this name?</span><span style=3D"color:rgb(0=
+,0,0);font-family:Inter,system-ui,-apple-system,&quot;Segoe UI&quot;,Roboto=
+,&quot;Helvetica Neue&quot;,&quot;Noto Sans&quot;,&quot;Liberation Sans&quo=
+t;,Arial,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot=
+;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;;font-size:16px">=
+=C2=A0=C2=A0</span><span style=3D"color:rgb(0,0,0);font-family:Inter,system=
+-ui,-apple-system,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,&q=
+uot;Noto Sans&quot;,&quot;Liberation Sans&quot;,Arial,sans-serif,&quot;Appl=
+e Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,=
+&quot;Noto Color Emoji&quot;">It would be better to have in the tlswg repo,=
+ we&#39;ll follow up offline.=C2=A0</span></div><div><span style=3D"color:r=
+gb(0,0,0);font-family:Inter,system-ui,-apple-system,&quot;Segoe UI&quot;,Ro=
+boto,&quot;Helvetica Neue&quot;,&quot;Noto Sans&quot;,&quot;Liberation Sans=
+&quot;,Arial,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&=
+quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;"><br></span>=
+</div><div><span style=3D"color:rgb(0,0,0);font-family:Inter,system-ui,-app=
+le-system,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,&quot;Noto=
+ Sans&quot;,&quot;Liberation Sans&quot;,Arial,sans-serif,&quot;Apple Color =
+Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;No=
+to Color Emoji&quot;">Thanks,</span></div><div><span style=3D"color:rgb(0,0=
+,0);font-family:Inter,system-ui,-apple-system,&quot;Segoe UI&quot;,Roboto,&=
+quot;Helvetica Neue&quot;,&quot;Noto Sans&quot;,&quot;Liberation Sans&quot;=
+,Arial,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,=
+&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;"><br></span></div>=
+<div><span style=3D"color:rgb(0,0,0);font-family:Inter,system-ui,-apple-sys=
+tem,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,&quot;Noto Sans&=
+quot;,&quot;Liberation Sans&quot;,Arial,sans-serif,&quot;Apple Color Emoji&=
+quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Col=
+or Emoji&quot;">Joe</span></div><br><div class=3D"gmail_quote"><div dir=3D"=
+ltr" class=3D"gmail_attr">On Wed, Nov 29, 2023 at 9:41=E2=80=AFAM David Ben=
+jamin &lt;<a href=3D"mailto:davidben@chromium.org" target=3D"_blank">davidb=
+en@chromium.org</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" s=
+tyle=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);pad=
+ding-left:1ex"><div dir=3D"ltr"><div>Done, although I&#39;m not sure if I g=
+ot all the metadata right. (How does one mark it as replacing the old one?)=
+</div><a href=3D"https://datatracker.ietf.org/doc/draft-tls-tls13-pkcs1/" t=
+arget=3D"_blank">https://datatracker.ietf.org/doc/draft-tls-tls13-pkcs1/</a=
+><br><div><br></div><div>The GitHub is still under my account, but happy to=
+ move it to the TLSWG if preferred. (How would we go about doing that?)</di=
+v></div><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr=
+">On Wed, Nov 29, 2023 at 11:07=E2=80=AFAM Joseph Salowey &lt;<a href=3D"ma=
+ilto:joe@salowey.net" target=3D"_blank">joe@salowey.net</a>&gt; wrote:<br><=
+/div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;bo=
+rder-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr">The=
+ adoption call for this draft has completed.=C2=A0 There is sufficient inte=
+rest in the draft and no objections. Authors, please submit this draft with=
+ the file name draft-tls-tls13-pkcs1-00.txt.<div><br></div><div>Cheers,</di=
+v><div>Joe</div></div><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=
+=3D"gmail_attr">On Mon, Nov 6, 2023 at 9:25=E2=80=AFAM Joseph Salowey &lt;<=
+a href=3D"mailto:joe@salowey.net" target=3D"_blank">joe@salowey.net</a>&gt;=
+ wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px =
+0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=
+=3D"ltr">At the TLS meeting at IETF 118 there was significant support for t=
+he draft=C2=A0=C2=A0<a href=3D"https://datatracker.ietf.org/doc/draft-david=
+ben-tls13-pkcs1/01/" target=3D"_blank">Legacy RSASSA-PKCS1-v1_5 codepoints =
+for TLS 1.3</a>=C2=A0(<a href=3D"https://datatracker.ietf.org/doc/draft-dav=
+idben-tls13-pkcs1/01/" target=3D"_blank">https://datatracker.ietf.org/doc/d=
+raft-davidben-tls13-pkcs1/01/</a>)=C2=A0 This call is to confirm this on th=
+e list.=C2=A0 Please indicate if you support the adoption of this draft and=
+ are willing to review and contribute text.=C2=A0 If you do not support ado=
+ption of this draft please indicate why.=C2=A0 This call will close on Nove=
+mber 27, 2023.=C2=A0<div><br></div><div>Thanks,</div><div><br></div><div>Se=
+an, Chris and Joe</div></div>
+</blockquote></div>
+_______________________________________________<br>
+TLS mailing list<br>
+<a href=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.org</a><br>
+<a href=3D"https://www.ietf.org/mailman/listinfo/tls" rel=3D"noreferrer" ta=
+rget=3D"_blank">https://www.ietf.org/mailman/listinfo/tls</a><br>
+</blockquote></div>
+</blockquote></div></div>
+</blockquote></div>
+
+--000000000000b78a8a060b62c370--
+

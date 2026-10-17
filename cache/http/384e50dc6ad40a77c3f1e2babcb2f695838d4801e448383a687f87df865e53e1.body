@@ -1,0 +1,381 @@
+Return-Path: <davidben@google.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id ACBCF130DE4
+ for <tls@ietfa.amsl.com>; Wed, 26 Sep 2018 15:00:52 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -9.706
+X-Spam-Level: 
+X-Spam-Status: No, score=-9.706 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIMWL_WL_HIGH=-0.456, DKIM_SIGNED=0.1,
+ DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1,
+ HEADER_FROM_DIFFERENT_DOMAINS=0.25, HTML_MESSAGE=0.001,
+ RCVD_IN_DNSWL_NONE=-0.0001, SPF_PASS=-0.001, USER_IN_DEF_SPF_WL=-7.5]
+ autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=chromium.org
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id d4pjdYaz54XL for <tls@ietfa.amsl.com>;
+ Wed, 26 Sep 2018 15:00:49 -0700 (PDT)
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com
+ [IPv6:2607:f8b0:4864:20::843])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 197F5130DDE
+ for <tls@ietf.org>; Wed, 26 Sep 2018 15:00:49 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id e9-v6so625126qtp.7
+ for <tls@ietf.org>; Wed, 26 Sep 2018 15:00:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=Vg0iScLyR2A9g5SWw09Lr7muTjFCgdTwDEOKrRCxS90=;
+ b=gf+cbvld55kzBDtxn9ODM4lUrjNUhrh5GSvlO2f7vJ7+Q5FYw01vvhSkI2o5iAi8gb
+ +vqdNRRxMeLEOnVNTXcRMuyNDitNFjLojL4GyIuL7EsPQer1yHYe9EHBV1C5K5iJTbOz
+ 1Eb832EqEn4egq7WrcL7xoN5fbE7IZQR4wUng=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=Vg0iScLyR2A9g5SWw09Lr7muTjFCgdTwDEOKrRCxS90=;
+ b=c1ccLC+rJnuSIzVYKa26xjZQqi0GOSJ0XlfT0YkdRZD3WBZruVdGa4/YfJE6JNk9nI
+ 0D1OiCzsmsGTeRU1T8oBj9eXaNoMPkptB7pbwDKhM8Lu3Zsrzpp8QkRTjy9f9GSLM0aH
+ 6AO75SF4fAyrLrosmyWG0mAZBXrJQMt6h2udzC76ZCifRq/Addv/R0hXH7vH0nGKO4Va
+ EXgXD+4haycDOYjDKWRyBp95Z7/Y84puxnrMQciK+YgZMf7Pfl5iOwnswR9odXTaS8y8
+ UT4Ue1EO/6KDw3oLx4oLlSjFQpbVzkSA7e+y4vqtJ6yfX4iNA7OjU/U2fS5CW+MSHxyV
+ QV8Q==
+X-Gm-Message-State: ABuFfoiXPCvU089epDz7k+478CZhapYW4vI8xNOgcsL4yhOfPsBHfsVg
+ ML8cc3g2u1y+jlSkfzjNSKFgzSO/cCcVJiUUIXj9KwA=
+X-Google-Smtp-Source: ACcGV62TpxS1evwLwlqsMsqXZ6klM+G2U1x27y/xLNTt549PqRW88S/Rh7sx6IdVc8aweVa+c71L3Td5C2ywdTgRNQU=
+X-Received: by 2002:ac8:3ac3:: with SMTP id
+ x61-v6mr6261805qte.85.1537999247881; 
+ Wed, 26 Sep 2018 15:00:47 -0700 (PDT)
+MIME-Version: 1.0
+References: <153799218618.21570.4180339323156754253@ietfa.amsl.com>
+ <BA3B6083-F8BD-42ED-BE42-E53B7541EC5D@vigilsec.com>
+In-Reply-To: <BA3B6083-F8BD-42ED-BE42-E53B7541EC5D@vigilsec.com>
+From: David Benjamin <davidben@chromium.org>
+Date: Wed, 26 Sep 2018 17:00:36 -0500
+Message-ID: <CAF8qwaCok2EXEZ+1VC5+YMboRaQKmwGhNj7pgSpnTDf-opScnQ@mail.gmail.com>
+To: Russ Housley <housley@vigilsec.com>
+Cc: IETF TLS <tls@ietf.org>
+Content-Type: multipart/alternative; boundary="000000000000d6538e0576cd5a53"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/NOqD7mnHYwKIQPAFf3gTOQ6WN_8>
+Subject: Re: [TLS] I-D Action:
+ draft-housley-tls-tls13-cert-with-extern-psk-02.txt
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Wed, 26 Sep 2018 22:00:53 -0000
+
+--000000000000d6538e0576cd5a53
+Content-Type: text/plain; charset="UTF-8"
+
+The resumption flow in this draft looks odd to me. While the handshake flow
+is the same, the use cases differ between which identity should be in play
+and when to use it. Separate extensions and documents may be better. (I
+suppose saying the semantics change completely between resumption and
+external PSK is also an option, but that seems weird?)
+
+First, identities:
+
+In the external PSK use case, my read is you intend for the certificate to
+still be the server identity? It seems external PSK is just meant as extra
+input to the key schedule and not authentication since it may be shared
+amongst a group. (I'll note that, if your concern is we've lost all our
+asymmetric crypto, trusting the CertificateVerify for authentication is a
+little fuzzy. Is the scenario that the group is trusted not to attack each
+other?)
+
+The use case for resumption is very different. The one I'm familiar with is
+to avoid a resumption/0-RTT cliff when the client considers the
+CertificateVerify expired. As before, It needs to be clearly defined which
+identity is in use. This is particularly complicated with 0-RTT, where only
+the PSK is available for early data, and swapping identities is
+problematic. (HTTP/2 cross-name pooling gets especially messy.)
+
+This conflicts with the external PSK case which wants the certificate
+identity. The document addresses this in 3.3, by requiring the two to be
+identical, but this breaks much of the use case. It's rather common for
+servers to rotate certificates without dropping their session cache, to
+avoid a resumption cliff. (This assumes the protocol, e.g., HTTPS, does not
+care exactly which certificate is used, just that they are valid for a
+name.) This proposal leaves a gap in that scenario and means such servers
+must add extra state to sessions and conditionally disable 0-RTT in some
+cases.
+
+Such servers could fall back to 1-RTT resumption, which could use the
+certificate and ignore the PSK, but this mechanism is not very useful
+without 0-RTT. The benefit of 1-RTT resumption is bandwidth and CPU from
+not sending the certificate. But 1-RTT resumption/certs sends the
+certificate anyway. You may as well just do a full handshake.
+
+
+Second, when to use it:
+
+In the external PSK case, I gather the goal is to use the external PSK all
+the time? It carries no auth, so expiry is fuzzy. If you support it, you
+enable it.
+
+The resumption use case involves the client expiring the CertificateVerify
+signature. This is purely client policy which the server doesn't know a
+priori. Long before the signature is expired, the server shouldn't use
+tls_cert_with_psk because it's a bandwidth+CPU waste. After the signature
+has expired is too late. The client wouldn't be willing to encrypt early
+data at that point. (The client would also need to account for servers that
+don't support this draft.) tls_cert_with_psk should be used before but near
+expiry.
+
+The advertisement then wants extra meaning: I offered you a PSK identity
+(with some early data if you accept it) that I will accept instead of your
+certificate, but it is nearing expiry. Renewals will be rejected soon. So,
+in addition to using the PSK, consider re-asserting ownership of your
+certificate, to keep renewals useful.
+
+
+These two together suggest a slightly different design for in the
+resumption case.
+1. If the client's session is, say, 75% of the way through the
+CertificateVerify life adds the extension. Otherwise, it omits it.
+2. The server can acknowledge this extension to do PSK+Certs. Probably with
+0-RTT as it's largely pointless otherwise.
+3. The connection is authenticated with the PSK as before.
+4. But any tickets issued off the connection authenticated with the
+certificate, which may be different.
+
+
+Finally, on a more minor note:
+
+   TLS 1.3 does not permit the server to send a CertificateRequest
+   message when a PSK is being used.  This restriction is removed when
+   the "tls_cert_with_psk" extension is negotiated, allowing the
+   certificate-based authentication for both the client and the server.
+   If certificate-based client authentication is desired, this is
+   accomplished by the client sending the Certificate and
+   CertificateVerify messages as described in Sections 4.4.2 and 4.4.3
+   of [RFC8446].
+
+This restriction should be retained with 0-RTT, otherwise things become
+really strange with the connection's client identity changing partway
+through.
+
+David
+
+On Wed, Sep 26, 2018 at 3:10 PM Russ Housley <housley@vigilsec.com> wrote:
+
+> I believe that this version resolves all of the issues that were raised
+> during the Montreal meeting and the mail list.
+>
+> The biggest change: This version allows external PSKs and resumption PSKs
+> to be used withe certificates.
+>
+> Russ
+>
+>
+>
+> > A New Internet-Draft is available from the on-line Internet-Drafts
+> directories.
+> > This draft is a work item of the Transport Layer Security WG of the IETF.
+> >
+> >        Title           : TLS 1.3 Extension for Certificate-based
+> Authentication with an External Pre-Shared Key
+> >        Author          : Russ Housley
+> >       Filename        :
+> draft-housley-tls-tls13-cert-with-extern-psk-02.txt
+> >       Pages           : 11
+> >       Date            : 2018-09-26
+> >
+> > Abstract:
+> >   This document specifies a TLS 1.3 extension that allows a server to
+> >   authenticate with a certificate while also providing a pre-shared key
+> >   (PSK) as an input to the key schedule.
+> >
+> >
+> > The IETF datatracker status page for this draft is:
+> >
+> https://datatracker.ietf.org/doc/draft-housley-tls-tls13-cert-with-extern-psk/
+> >
+> > There are also htmlized versions available at:
+> >
+> https://tools.ietf.org/html/draft-housley-tls-tls13-cert-with-extern-psk-02
+> >
+> https://datatracker.ietf.org/doc/html/draft-housley-tls-tls13-cert-with-extern-psk-02
+> >
+> > A diff from the previous version is available at:
+> >
+> https://www.ietf.org/rfcdiff?url2=draft-housley-tls-tls13-cert-with-extern-psk-02
+> >
+> >
+> > Please note that it may take a couple of minutes from the time of
+> submission
+> > until the htmlized version and diff are available at tools.ietf.org.
+> >
+> > Internet-Drafts are also available by anonymous FTP at:
+> > ftp://ftp.ietf.org/internet-drafts/
+>
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+>
+
+--000000000000d6538e0576cd5a53
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">The resumption flow in this draft looks odd to me. While t=
+he handshake flow is the same, the use cases differ between which identity =
+should be in play and when to use it. Separate extensions and documents may=
+ be better. (I suppose saying the semantics change completely between resum=
+ption and external PSK is also an option, but that seems weird?)<div><br></=
+div><div>First, identities:</div><div><br></div><div>In the external PSK us=
+e case, my read is you intend for the certificate to still be the server id=
+entity?=C2=A0It seems external PSK is just meant as extra input to the key =
+schedule and not authentication since it may be shared amongst a group. (I&=
+#39;ll note that, if your concern is we&#39;ve lost all our asymmetric cryp=
+to, trusting the CertificateVerify for authentication is a little fuzzy. Is=
+ the scenario that the group is trusted not to attack each other?)</div><di=
+v><br></div><div>The use case for resumption is very different. The one I&#=
+39;m familiar with is to avoid a resumption/0-RTT cliff when the client con=
+siders the CertificateVerify expired. As before, It needs to be clearly def=
+ined which identity is in use. This is particularly complicated with 0-RTT,=
+ where only the PSK is available for early data, and swapping identities is=
+ problematic. (HTTP/2 cross-name pooling gets especially messy.)</div><div>=
+<br></div><div><div>This conflicts with the external PSK case which wants t=
+he certificate identity. The document addresses this in 3.3, by requiring t=
+he two to be identical, but this breaks much of the use case. It&#39;s rath=
+er common for servers to rotate certificates without dropping their session=
+ cache, to avoid a resumption cliff. (This assumes the protocol, e.g., HTTP=
+S, does not care exactly which certificate is used, just that they are vali=
+d for a name.) This proposal leaves a gap in that scenario and means such s=
+ervers must add extra state to sessions and conditionally disable 0-RTT in =
+some cases.</div></div><div><br></div><div>Such servers could fall back to =
+1-RTT resumption, which could use the certificate and ignore the PSK, but t=
+his mechanism is not very useful without 0-RTT. The benefit of 1-RTT resump=
+tion is bandwidth and CPU from not sending the certificate. But 1-RTT resum=
+ption/certs sends the certificate anyway. You may as well just do a full ha=
+ndshake.</div><div><br></div><div><br></div><div>Second, when to use it:</d=
+iv><div><br></div><div>In the external PSK case, I gather the goal is to us=
+e the external PSK all the time? It carries no auth, so expiry is fuzzy. If=
+ you support it, you enable it.</div><div><br></div><div>The resumption use=
+ case involves the client expiring the CertificateVerify signature. This is=
+ purely client policy which the server doesn&#39;t know a priori. Long befo=
+re the signature is expired, the server shouldn&#39;t use tls_cert_with_psk=
+ because it&#39;s a bandwidth+CPU waste. After the signature has expired is=
+ too late. The client wouldn&#39;t be willing to encrypt early data at that=
+ point. (The client would also need to account for servers that don&#39;t s=
+upport this draft.)=C2=A0tls_cert_with_psk should be used before but near e=
+xpiry.</div><div><br></div><div>The advertisement then wants extra meaning:=
+ I offered you a PSK identity (with some early data if you accept it) that =
+I will accept instead of your certificate, but it is nearing expiry. Renewa=
+ls will be rejected soon. So, in addition to using the PSK, consider re-ass=
+erting ownership of your certificate, to keep renewals useful.</div><div><b=
+r></div><div><br></div><div>These two together suggest a slightly different=
+ design for in the resumption case.</div><div>1. If the client&#39;s sessio=
+n is, say, 75% of the way through the CertificateVerify life adds the exten=
+sion. Otherwise, it omits it.<br>2. The server can acknowledge this extensi=
+on to do PSK+Certs. Probably with 0-RTT as it&#39;s largely pointless other=
+wise.<br>3. The connection is authenticated with the PSK as before.</div><d=
+iv>4. But any tickets issued off the connection authenticated with the cert=
+ificate, which may be different.</div><div><br></div><div><div><br></div><d=
+iv>Finally, on a more minor note:<br><br></div><div><div>=C2=A0 =C2=A0TLS 1=
+.3 does not permit the server to send a CertificateRequest</div><div>=C2=A0=
+ =C2=A0message when a PSK is being used.=C2=A0 This restriction is removed =
+when</div><div>=C2=A0 =C2=A0the &quot;tls_cert_with_psk&quot; extension is =
+negotiated, allowing the</div><div>=C2=A0 =C2=A0certificate-based authentic=
+ation for both the client and the server.</div><div>=C2=A0 =C2=A0If certifi=
+cate-based client authentication is desired, this is</div><div>=C2=A0 =C2=
+=A0accomplished by the client sending the Certificate and</div><div>=C2=A0 =
+=C2=A0CertificateVerify messages as described in Sections 4.4.2 and 4.4.3</=
+div><div>=C2=A0 =C2=A0of [RFC8446].<br><br>This restriction should be retai=
+ned with 0-RTT, otherwise things become really strange with the connection&=
+#39;s client identity changing partway through.</div></div><div><br></div><=
+div>David</div><div><div><div><div><div><br><div class=3D"gmail_quote"><div=
+ dir=3D"ltr">On Wed, Sep 26, 2018 at 3:10 PM Russ Housley &lt;<a href=3D"ma=
+ilto:housley@vigilsec.com">housley@vigilsec.com</a>&gt; wrote:<br></div><bl=
+ockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #=
+ccc solid;padding-left:1ex">I believe that this version resolves all of the=
+ issues that were raised during the Montreal meeting and the mail list.<br>
+<br>
+The biggest change: This version allows external PSKs and resumption PSKs t=
+o be used withe certificates.<br>
+<br>
+Russ<br>
+<br>
+<br>
+<br>
+&gt; A New Internet-Draft is available from the on-line Internet-Drafts dir=
+ectories.<br>
+&gt; This draft is a work item of the Transport Layer Security WG of the IE=
+TF.<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 Title=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0: TLS 1.3 Extension for Certificate-based Authentication with an Externa=
+l Pre-Shared Key<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 Author=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 : =
+Russ Housley<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0Filename=C2=A0 =C2=A0 =C2=A0 =C2=A0 : draft-=
+housley-tls-tls13-cert-with-extern-psk-02.txt<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0Pages=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0: 11<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0Date=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 : 2018-09-26<br>
+&gt; <br>
+&gt; Abstract:<br>
+&gt;=C2=A0 =C2=A0This document specifies a TLS 1.3 extension that allows a =
+server to<br>
+&gt;=C2=A0 =C2=A0authenticate with a certificate while also providing a pre=
+-shared key<br>
+&gt;=C2=A0 =C2=A0(PSK) as an input to the key schedule.<br>
+&gt; <br>
+&gt; <br>
+&gt; The IETF datatracker status page for this draft is:<br>
+&gt; <a href=3D"https://datatracker.ietf.org/doc/draft-housley-tls-tls13-ce=
+rt-with-extern-psk/" rel=3D"noreferrer" target=3D"_blank">https://datatrack=
+er.ietf.org/doc/draft-housley-tls-tls13-cert-with-extern-psk/</a><br>
+&gt; <br>
+&gt; There are also htmlized versions available at:<br>
+&gt; <a href=3D"https://tools.ietf.org/html/draft-housley-tls-tls13-cert-wi=
+th-extern-psk-02" rel=3D"noreferrer" target=3D"_blank">https://tools.ietf.o=
+rg/html/draft-housley-tls-tls13-cert-with-extern-psk-02</a><br>
+&gt; <a href=3D"https://datatracker.ietf.org/doc/html/draft-housley-tls-tls=
+13-cert-with-extern-psk-02" rel=3D"noreferrer" target=3D"_blank">https://da=
+tatracker.ietf.org/doc/html/draft-housley-tls-tls13-cert-with-extern-psk-02=
+</a><br>
+&gt; <br>
+&gt; A diff from the previous version is available at:<br>
+&gt; <a href=3D"https://www.ietf.org/rfcdiff?url2=3Ddraft-housley-tls-tls13=
+-cert-with-extern-psk-02" rel=3D"noreferrer" target=3D"_blank">https://www.=
+ietf.org/rfcdiff?url2=3Ddraft-housley-tls-tls13-cert-with-extern-psk-02</a>=
+<br>
+&gt; <br>
+&gt; <br>
+&gt; Please note that it may take a couple of minutes from the time of subm=
+ission<br>
+&gt; until the htmlized version and diff are available at <a href=3D"http:/=
+/tools.ietf.org" rel=3D"noreferrer" target=3D"_blank">tools.ietf.org</a>.<b=
+r>
+&gt; <br>
+&gt; Internet-Drafts are also available by anonymous FTP at:<br>
+&gt; <a href=3D"ftp://ftp.ietf.org/internet-drafts/" rel=3D"noreferrer" tar=
+get=3D"_blank">ftp://ftp.ietf.org/internet-drafts/</a><br>
+<br>
+_______________________________________________<br>
+TLS mailing list<br>
+<a href=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.org</a><br>
+<a href=3D"https://www.ietf.org/mailman/listinfo/tls" rel=3D"noreferrer" ta=
+rget=3D"_blank">https://www.ietf.org/mailman/listinfo/tls</a><br>
+</blockquote></div></div></div></div></div></div></div></div>
+
+--000000000000d6538e0576cd5a53--
+

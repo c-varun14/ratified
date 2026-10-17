@@ -1,0 +1,329 @@
+Return-Path: <cpatton@cloudflare.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 971A4C1D6FAD
+	for <tls@ietfa.amsl.com>; Thu, 15 Aug 2024 09:29:53 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.094
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.094 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIMWL_WL_MED=-0.001, DKIM_SIGNED=0.1,
+	DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1,
+	HTML_MESSAGE=0.001, RCVD_IN_DNSWL_NONE=-0.0001,
+	RCVD_IN_ZEN_BLOCKED_OPENDNS=0.001, SPF_HELO_NONE=0.001,
+	SPF_NONE=0.001, T_KAM_HTML_FONT_INVALID=0.01,
+	T_SCC_BODY_TEXT_LINE=-0.01, URIBL_BLOCKED=0.001,
+	URIBL_DBL_BLOCKED_OPENDNS=0.001, URIBL_ZEN_BLOCKED_OPENDNS=0.001]
+	autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+	header.d=cloudflare.com
+Received: from mail.ietf.org ([50.223.129.194])
+	by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id bgsvVjYM0ruU for <tls@ietfa.amsl.com>;
+	Thu, 15 Aug 2024 09:29:49 -0700 (PDT)
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com
+ [IPv6:2607:f8b0:4864:20::329])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by ietfa.amsl.com (Postfix) with ESMTPS id 8BD1EC1519BA
+	for <tls@ietf.org>; Thu, 15 Aug 2024 09:29:49 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id
+ 46e09a7af769-7093abb12edso779964a34.3
+        for <tls@ietf.org>; Thu, 15 Aug 2024 09:29:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google09082023; t=1723739388; x=1724344188;
+ darn=ietf.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZLFsO6RK1Gdq0eb+15YO7ThfI3oKpLjwSVZ4rIlpVK0=;
+        b=YSmFTSLEFCw1VHCQpeIisyjjBnDwkpfIzZywjgLnz4AnJUygOlBBoIlzkHuN3pSN8w
+         ssdkJpb6hmgBykDv9rzWZCmoelooSgS8JO+DiJGxsKWOZtoQPT6pRY5LuCxXRE3GaxGU
+         9uu8CXTrEVCf8XLAWtuI3rYP7YTAlyj1ZjS6Htj2FsfXQy2pgvxigEPPBQWhKrJGa8vg
+         uZ6K/OlMqi9um7fvlO9q7fd9tMy0UbaWUwVue2pPMHQoMzkK/QlAc2GHuiO8SUs7dfP+
+         Rflvg/zp2WWHOm6EdN+HbXYIi0X9NX3nTaqfPatmSbD7vhZi+lr+hM3VkYfnhikiF6eW
+         oQqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723739388; x=1724344188;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZLFsO6RK1Gdq0eb+15YO7ThfI3oKpLjwSVZ4rIlpVK0=;
+        b=qz0JGhcmhou4LhDmhQ164IMC+8ckhzTO0AuBRLLTYzEIBjGiikgTW32Pny//Zents0
+         U+oLUpDdwVsiSz2u0FmKA1sPokneimxKN/21R86QpO0DflLbUXL7rnHdJVK7WBy8PN66
+         3vF92KHQRcE1UX6JVzC5+VIwGSG9aD5f56IisXwL7SqrWJkX/j6fMihUSVphKpZ5Yx0K
+         RwSMWHmnrkR5Bfmsqw5F3Ow57K3qJvNSxduNt/7UCmzRsuNXOwinFNa/8ianeumqkVX6
+         aP/NiV/RflBMCTEdOiCaA9U/CB74BZ38dRfqF2Z7WyMpQmDP3RhFnp3Bku0UBYwsFBvH
+         9X5Q==
+X-Gm-Message-State: AOJu0YxLLZSQdE43sjMOJJo3bjjn83Hr1u1GiLKg2jsx3Es9kAJxDszX
+	a4CV+jYHhECCTtb6rckyhJ4RZSGW2jP6bqJU+xNgmvPY/+8ANiFcc/icXl3tB9mmWgukK5WGu7V
+	O3gWZ7jDvFKaJsKZuHf8x3A+EdNM8/w2kC0Frn6Tz5vFkzVRzKeFoIw==
+X-Google-Smtp-Source: 
+ AGHT+IHJSSfe23Z4whmjML6+yIUGIn5brBiB6eF/4H22lnQ43zcZJY5A3dpXrhPFT5dPXruVzm3+OSEFqlp54mIK/os=
+X-Received: by 2002:a05:6830:25c3:b0:709:34e4:9b8b with SMTP id
+ 46e09a7af769-70cac8d3c2emr39037a34.32.1723739388362; Thu, 15 Aug 2024
+ 09:29:48 -0700 (PDT)
+MIME-Version: 1.0
+References: 
+ <CAO2B13Q3SvhXCJYZpYri2X4GTomdZYvJcSNY5g+CFqYZbRd2kA@mail.gmail.com>
+In-Reply-To: 
+ <CAO2B13Q3SvhXCJYZpYri2X4GTomdZYvJcSNY5g+CFqYZbRd2kA@mail.gmail.com>
+From: Christopher Patton <cpatton@cloudflare.com>
+Date: Thu, 15 Aug 2024 09:29:37 -0700
+Message-ID: 
+ <CAG2Zi21Jp3tsWeSQBFOh-VShiOyU1U-j18VT7e4uSsgB4BHQkQ@mail.gmail.com>
+To: devi prasad <dprasadm@gmail.com>
+Content-Type: multipart/alternative; boundary="000000000000ede969061fbb59e1"
+Message-ID-Hash: BGDRMSZQ66ESNSZHBJGKCUQEABTBN2IX
+X-Message-ID-Hash: BGDRMSZQ66ESNSZHBJGKCUQEABTBN2IX
+X-MailFrom: cpatton@cloudflare.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+CC: tls@ietf.org
+X-Mailman-Version: 3.3.9rc4
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5DRe=3A_Additional_Data_in_TLS_1=2E3?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/0wkrU4z1_wx-dHqpRfomZsijoKM>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+--000000000000ede969061fbb59e1
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+HI Devi,
+
+This decision was made in large part due to the (arguably too conservative)
+analysis in this paper: https://eprint.iacr.org/2018/634
+Here is the issue where it was discussed:
+https://github.com/tlswg/tls13-spec/issues/1145
+
+I don't know why the AD was empty ... I'd also be very interested in this
+history.
+
+Chris P.
+
+On Thu, Aug 15, 2024 at 7:53=E2=80=AFAM devi prasad <dprasadm@gmail.com> wr=
+ote:
+
+> I've been reading about TLS 1.3, referring to RFC 8446, simply out of
+> technical curiosity.
+>
+>
+> While trying to figure out a few details from the mail archive, I
+> couldn't find conversations about the decision to include "additional
+> data" (AD) in the AEAD scheme. Trawling through the drafts I noticed
+> something interesting - AD went from being an empty input to being the
+> record header, from draft 24 to draft 25, in the span of about 15 days.
+>
+> It's obvious I've no access to the technical conversations that must have
+> happened.
+>
+> Can someone help me understand the reasons for including AD only in the
+> last few iterations of the draft. Why was AD an empty input, initially?
+> Are there any threads on the mailing list that I've missed?
+>
+> Thank you very much.
+> Devi Prasad
+>
+>
+> Here's the reference for the text in drafts 24 and 25:
+>
+> draft-ietf-tls-tls13-24, February 15, 2018
+>
+> page 82
+>
+> Section 5.2. Record Payload Protection
+>
+> "... the additional data input is empty (zero length)."
+>
+> draft-ietf-tls-tls13-25, March 02, 2018
+>
+> page 82
+>
+> 5.2.  Record Payload Protection.
+>
+> "... and the additional data input is the record header.
+>
+>   I.e.,
+>
+>      additional_data =3D TLSCiphertext.opaque_type ||
+>
+>                        TLSCiphertext.legacy_record_version ||
+>
+>                        TLSCiphertext.length
+>
+> ... "
+>
+>
+>
+> _______________________________________________
+> TLS mailing list -- tls@ietf.org
+> To unsubscribe send an email to tls-leave@ietf.org
+>
+
+--000000000000ede969061fbb59e1
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div>HI Devi,</div><div><br></div><div>This decision was m=
+ade in large part due to the (arguably too conservative) analysis in this p=
+aper: <a href=3D"https://eprint.iacr.org/2018/634">https://eprint.iacr.org/=
+2018/634</a></div><div>Here is the issue where it was discussed: <a href=3D=
+"https://github.com/tlswg/tls13-spec/issues/1145">https://github.com/tlswg/=
+tls13-spec/issues/1145</a></div><div><br></div><div>I don&#39;t know why th=
+e AD was empty ... I&#39;d also be very interested in this history.<br></di=
+v><div><br></div><div>Chris P.<br></div></div><br><div class=3D"gmail_quote=
+"><div dir=3D"ltr" class=3D"gmail_attr">On Thu, Aug 15, 2024 at 7:53=E2=80=
+=AFAM devi prasad &lt;<a href=3D"mailto:dprasadm@gmail.com">dprasadm@gmail.=
+com</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"marg=
+in:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1e=
+x"><div dir=3D"ltr"><div style=3D"font-family:Menlo,Monaco,&quot;Courier Ne=
+w&quot;,monospace;line-height:23px;white-space:pre-wrap"><span id=3D"m_2853=
+095743758015046gmail-docs-internal-guid-fa7fed51-7fff-a244-7717-0ee9a5bab4a=
+a"><p dir=3D"ltr" style=3D"line-height:1.38;margin-top:0pt;margin-bottom:0p=
+t"><span style=3D"background-color:transparent;color:rgb(0,0,0);font-family=
+:&quot;JetBrains Mono&quot;,monospace">I&#39;ve been reading about TLS 1.3,=
+ referring to RFC 8446, simply out of technical curiosity. </span><br></p><=
+p dir=3D"ltr" style=3D"line-height:1.38;margin-top:0pt;margin-bottom:0pt"><=
+span style=3D"font-family:&quot;JetBrains Mono&quot;,monospace;color:rgb(0,=
+0,0);background-color:transparent;font-variant-numeric:normal;font-variant-=
+east-asian:normal;font-variant-alternates:normal;vertical-align:baseline"><=
+br></span></p><p dir=3D"ltr" style=3D"line-height:1.38;margin-top:0pt;margi=
+n-bottom:0pt"><span style=3D"font-family:&quot;JetBrains Mono&quot;,monospa=
+ce;color:rgb(0,0,0);background-color:transparent;font-variant-numeric:norma=
+l;font-variant-east-asian:normal;font-variant-alternates:normal;vertical-al=
+ign:baseline">While trying to figure out a few details from the mail archiv=
+e, </span><span style=3D"background-color:transparent;font-variant-numeric:=
+normal;font-variant-east-asian:normal;font-variant-alternates:normal;font-f=
+amily:&quot;JetBrains Mono&quot;,monospace;color:rgb(0,0,0);vertical-align:=
+baseline">I couldn&#39;t find conversations about the decision to include <=
+/span><span style=3D"background-color:transparent;font-variant-numeric:norm=
+al;font-variant-east-asian:normal;font-variant-alternates:normal;font-famil=
+y:&quot;JetBrains Mono&quot;,monospace;color:rgb(0,0,0);vertical-align:base=
+line">&quot;additional data&quot; (AD) in the AEAD scheme. Trawling through=
+ the </span><span style=3D"background-color:transparent;font-variant-numeri=
+c:normal;font-variant-east-asian:normal;font-variant-alternates:normal;font=
+-family:&quot;JetBrains Mono&quot;,monospace;color:rgb(0,0,0);vertical-alig=
+n:baseline">drafts I noticed something interesting - AD went from being </s=
+pan><span style=3D"background-color:transparent;font-variant-numeric:normal=
+;font-variant-east-asian:normal;font-variant-alternates:normal;font-family:=
+&quot;JetBrains Mono&quot;,monospace;color:rgb(0,0,0);vertical-align:baseli=
+ne">an empty input to being the record header, from draft 24 to </span><spa=
+n style=3D"background-color:transparent;color:rgb(0,0,0);font-family:&quot;=
+JetBrains Mono&quot;,monospace">draft 25, in the span of about 15 days.</sp=
+an></p><br><p dir=3D"ltr" style=3D"line-height:1.38;margin-top:0pt;margin-b=
+ottom:0pt"><span style=3D"font-family:&quot;JetBrains Mono&quot;,monospace;=
+color:rgb(0,0,0);background-color:transparent;font-variant-numeric:normal;f=
+ont-variant-east-asian:normal;font-variant-alternates:normal;vertical-align=
+:baseline">It&#39;s obvious I&#39;ve no access to the technical conversatio=
+ns that must </span><span style=3D"background-color:transparent;color:rgb(0=
+,0,0);font-family:&quot;JetBrains Mono&quot;,monospace">have happened.</spa=
+n></p><br><p dir=3D"ltr" style=3D"line-height:1.38;margin-top:0pt;margin-bo=
+ttom:0pt"><span style=3D"font-family:&quot;JetBrains Mono&quot;,monospace;c=
+olor:rgb(0,0,0);background-color:transparent;font-variant-numeric:normal;fo=
+nt-variant-east-asian:normal;font-variant-alternates:normal;vertical-align:=
+baseline">Can someone help me understand the reasons for </span><span style=
+=3D"background-color:transparent;color:rgb(0,0,0);font-family:&quot;JetBrai=
+ns Mono&quot;,monospace">including AD only in the last few iterations of th=
+e draft. Why was AD </span><span style=3D"background-color:transparent;colo=
+r:rgb(0,0,0);font-family:&quot;JetBrains Mono&quot;,monospace">an empty inp=
+ut, initially? Are there any threads on the mailing list that I&#39;ve miss=
+ed?</span></p><div style=3D"font-family:Menlo,Monaco,&quot;Courier New&quot=
+;,monospace;line-height:23px;white-space:pre-wrap"><span><br></span></div><=
+div style=3D"font-family:Menlo,Monaco,&quot;Courier New&quot;,monospace;lin=
+e-height:23px;white-space:pre-wrap"><span>Thank you very much.</span></div>=
+<div style=3D"font-family:Menlo,Monaco,&quot;Courier New&quot;,monospace;li=
+ne-height:23px;white-space:pre-wrap"><span>Devi Prasad</span></div><div sty=
+le=3D"font-family:Menlo,Monaco,&quot;Courier New&quot;,monospace;line-heigh=
+t:23px;white-space:pre-wrap"><span><br></span></div><br><p dir=3D"ltr" styl=
+e=3D"line-height:1.38;margin-top:0pt;margin-bottom:0pt"><span style=3D"font=
+-family:&quot;JetBrains Mono&quot;,monospace;color:rgb(0,0,0);background-co=
+lor:transparent;font-variant-numeric:normal;font-variant-east-asian:normal;=
+font-variant-alternates:normal;vertical-align:baseline">Here&#39;s the refe=
+rence for the text in drafts 24 and 25:</span></p><br><p dir=3D"ltr" style=
+=3D"line-height:1.38;margin-top:0pt;margin-bottom:0pt"><span style=3D"font-=
+family:&quot;JetBrains Mono&quot;,monospace;color:rgb(0,0,0);background-col=
+or:transparent;font-variant-numeric:normal;font-variant-east-asian:normal;f=
+ont-variant-alternates:normal;vertical-align:baseline">draft-ietf-tls-tls13=
+-24, February 15, 2018</span></p><p dir=3D"ltr" style=3D"line-height:1.38;m=
+argin-top:0pt;margin-bottom:0pt"><span style=3D"font-family:&quot;JetBrains=
+ Mono&quot;,monospace;color:rgb(0,0,0);background-color:transparent;font-va=
+riant-numeric:normal;font-variant-east-asian:normal;font-variant-alternates=
+:normal;vertical-align:baseline">page 82</span></p><p dir=3D"ltr" style=3D"=
+line-height:1.38;margin-top:0pt;margin-bottom:0pt"><span style=3D"font-fami=
+ly:&quot;JetBrains Mono&quot;,monospace;color:rgb(0,0,0);background-color:t=
+ransparent;font-variant-numeric:normal;font-variant-east-asian:normal;font-=
+variant-alternates:normal;vertical-align:baseline">Section 5.2. Record Payl=
+oad Protection</span></p><p dir=3D"ltr" style=3D"line-height:1.38;margin-to=
+p:0pt;margin-bottom:0pt"><span style=3D"font-family:&quot;JetBrains Mono&qu=
+ot;,monospace;color:rgb(0,0,0);background-color:transparent;font-variant-nu=
+meric:normal;font-variant-east-asian:normal;font-variant-alternates:normal;=
+vertical-align:baseline">&quot;... the additional data input is empty (zero=
+ length).&quot;</span></p><br><p dir=3D"ltr" style=3D"line-height:1.38;marg=
+in-top:0pt;margin-bottom:0pt"><span style=3D"font-family:&quot;JetBrains Mo=
+no&quot;,monospace;color:rgb(0,0,0);background-color:transparent;font-varia=
+nt-numeric:normal;font-variant-east-asian:normal;font-variant-alternates:no=
+rmal;vertical-align:baseline">draft-ietf-tls-tls13-25, March 02, 2018</span=
+></p><p dir=3D"ltr" style=3D"line-height:1.38;margin-top:0pt;margin-bottom:=
+0pt"><span style=3D"font-family:&quot;JetBrains Mono&quot;,monospace;color:=
+rgb(0,0,0);background-color:transparent;font-variant-numeric:normal;font-va=
+riant-east-asian:normal;font-variant-alternates:normal;vertical-align:basel=
+ine">page 82</span></p><p dir=3D"ltr" style=3D"line-height:1.38;margin-top:=
+0pt;margin-bottom:0pt"><span style=3D"font-family:&quot;JetBrains Mono&quot=
+;,monospace;color:rgb(0,0,0);background-color:transparent;font-variant-nume=
+ric:normal;font-variant-east-asian:normal;font-variant-alternates:normal;ve=
+rtical-align:baseline">5.2.=C2=A0 Record Payload Protection.</span></p><p d=
+ir=3D"ltr" style=3D"line-height:1.38;margin-top:0pt;margin-bottom:0pt"><spa=
+n style=3D"font-family:&quot;JetBrains Mono&quot;,monospace;color:rgb(0,0,0=
+);background-color:transparent;font-variant-numeric:normal;font-variant-eas=
+t-asian:normal;font-variant-alternates:normal;vertical-align:baseline">&quo=
+t;... and the additional data input is the record header.</span></p><p dir=
+=3D"ltr" style=3D"line-height:1.38;margin-top:0pt;margin-bottom:0pt"><span =
+style=3D"font-family:&quot;JetBrains Mono&quot;,monospace;color:rgb(0,0,0);=
+background-color:transparent;font-variant-numeric:normal;font-variant-east-=
+asian:normal;font-variant-alternates:normal;vertical-align:baseline">=C2=A0=
+=C2=A0I.e.,</span></p><p dir=3D"ltr" style=3D"line-height:1.38;margin-top:0=
+pt;margin-bottom:0pt"><span style=3D"font-family:&quot;JetBrains Mono&quot;=
+,monospace;color:rgb(0,0,0);background-color:transparent;font-variant-numer=
+ic:normal;font-variant-east-asian:normal;font-variant-alternates:normal;ver=
+tical-align:baseline">=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0additional_data =3D TLS=
+Ciphertext.opaque_type ||</span></p><p dir=3D"ltr" style=3D"line-height:1.3=
+8;margin-top:0pt;margin-bottom:0pt"><span style=3D"font-family:&quot;JetBra=
+ins Mono&quot;,monospace;color:rgb(0,0,0);background-color:transparent;font=
+-variant-numeric:normal;font-variant-east-asian:normal;font-variant-alterna=
+tes:normal;vertical-align:baseline">=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0TLSCiphertext.legacy_record_version ||</span></p><p=
+ dir=3D"ltr" style=3D"line-height:1.38;margin-top:0pt;margin-bottom:0pt"><s=
+pan style=3D"font-family:&quot;JetBrains Mono&quot;,monospace;color:rgb(0,0=
+,0);background-color:transparent;font-variant-numeric:normal;font-variant-e=
+ast-asian:normal;font-variant-alternates:normal;vertical-align:baseline">=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0TLSCiphertex=
+t.length</span></p><p dir=3D"ltr" style=3D"line-height:1.38;margin-top:0pt;=
+margin-bottom:0pt"><span style=3D"font-family:&quot;JetBrains Mono&quot;,mo=
+nospace;color:rgb(0,0,0);background-color:transparent;font-variant-numeric:=
+normal;font-variant-east-asian:normal;font-variant-alternates:normal;vertic=
+al-align:baseline">... &quot;</span></p><br><span style=3D"font-size:15px">=
+<br><br></span></span></div></div>
+_______________________________________________<br>
+TLS mailing list -- <a href=3D"mailto:tls@ietf.org" target=3D"_blank">tls@i=
+etf.org</a><br>
+To unsubscribe send an email to <a href=3D"mailto:tls-leave@ietf.org" targe=
+t=3D"_blank">tls-leave@ietf.org</a><br>
+</blockquote></div>
+
+--000000000000ede969061fbb59e1--
+

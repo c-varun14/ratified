@@ -1,0 +1,189 @@
+Return-Path: <hkario@redhat.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 7931F126BF0;
+ Mon, 12 Mar 2018 08:27:57 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -4.201
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.201 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, RCVD_IN_DNSWL_MED=-2.3, SPF_PASS=-0.001,
+ T_RP_MATCHES_RCVD=-0.01, T_SPF_HELO_PERMERROR=0.01]
+ autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id zQKcd7f08zl4; Mon, 12 Mar 2018 08:27:55 -0700 (PDT)
+Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id A8243120227;
+ Mon, 12 Mar 2018 08:27:55 -0700 (PDT)
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.6])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mx1.redhat.com (Postfix) with ESMTPS id BAE62406F8AB;
+ Mon, 12 Mar 2018 15:27:54 +0000 (UTC)
+Received: from pintsize.usersys.redhat.com (unknown [10.43.21.223])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 252FB2166BAE;
+ Mon, 12 Mar 2018 15:27:52 +0000 (UTC)
+From: Hubert Kario <hkario@redhat.com>
+To: TLS WG <tls@ietf.org>, The IESG <iesg@ietf.org>,
+ tls-chairs <tls-chairs@ietf.org>
+Date: Mon, 12 Mar 2018 16:27:46 +0100
+Message-ID: <6112806.hxzZ6NivhB@pintsize.usersys.redhat.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="nextPart2013974.uCjqpthf2c";
+ micalg="pgp-sha512"; protocol="application/pgp-signature"
+X-Scanned-By: MIMEDefang 2.78 on 10.11.54.6
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16
+ (mx1.redhat.com [10.11.55.7]); Mon, 12 Mar 2018 15:27:54 +0000 (UTC)
+X-Greylist: inspected by milter-greylist-4.5.16 (mx1.redhat.com [10.11.55.7]); 
+ Mon, 12 Mar 2018 15:27:54 +0000 (UTC) for IP:'10.11.54.6'
+ DOMAIN:'int-mx06.intmail.prod.int.rdu2.redhat.com'
+ HELO:'smtp.corp.redhat.com' FROM:'hkario@redhat.com' RCPT:''
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/Dtw1It5B6PAlTB_pJgzm_FzDLiU>
+Subject: [TLS] draft-ietf-tls-tls13-26 is vulnerable to externally set PSK
+ identity enumeration
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Mon, 12 Mar 2018 15:27:57 -0000
+
+--nextPart2013974.uCjqpthf2c
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
+
+When the server supports externally set PSKs that use human readable=20
+identities (or, in general, guessable identities), the current text makes i=
+t=20
+trivial to perform enumeration attack.
+
+The proposed fix was identified as conflicting with the "Client Hello=20
+Recording" security section, the severity of that conflict wasn't quantifie=
+d=20
+though.
+
+
+Issue in detail:
+
+Problematic paragraph as it stands in draft-ietf-tls-tls13-26 (section=20
+4.2.11):
+   Prior to accepting PSK key establishment, the server MUST validate
+   the corresponding binder value (see Section 4.2.11.2 below).  If this
+   value is not present or does not validate, the server MUST abort the
+   handshake.  Servers SHOULD NOT attempt to validate multiple binders;
+   rather they SHOULD select a single PSK and validate solely the binder
+   that corresponds to that PSK.  In order to accept PSK key
+   establishment, the server sends a "pre_shared_key" extension
+   indicating the selected identity.
+
+That means, given a server with both PSK and PKI authentication, if attacke=
+r=20
+sends multiple PSK identities with garbage binders, the server will abort t=
+he=20
+connection if and only if at least one of the identities was recognised by=
+=20
+server. Applying the well known binary search method allows the attacker to=
+=20
+then narrow it down to a single identity in O(log_2(n)) steps.
+
+The solution to ignore that one selected binder, and continuing the connect=
+ion=20
+in case that binder does not validate (this is the version in the PR mentio=
+ned=20
+below), unfortunately doesn't solve this issue either;
+
+If the attacker is in possession of a known good PSK secret (established=20
+either through session resumption mechanism or of a less-privileged identit=
+y),=20
+it can list the known good one as the very last one in the PSK extension. I=
+f=20
+server recognises one of the identities earlier in the list it will choose =
+no=20
+identity (as the binder didn't validate) or the known good identity if none=
+ of=20
+the previous identities were recognised. Again, applying binary search meth=
+od=20
+allows the attacker to narrow the list to a single entry in just O(log_2(n)=
+)=20
+steps.
+
+
+Proposed solution:
+
+in paragraph above, in description of `binders`:
+  binders
+  : A series of HMAC values, one for
+   each PSK offered in the "pre_shared_keys" extension and in the same
+   order, computed as described below. If the number of binders does not ma=
+tch
+   number of identities the server MUST abort the connection with
+   "illegal_parameter" alert.
+
+problematic paragraph after changes:
+   Prior to accepting PSK key establishment, the server MUST validate
+   the corresponding binder value (see Section 4.2.11.2 below).  If this
+   value does not validate, the server MUST ignore the
+   associated identity and retry selection of identity. If no identity is=20
+   recognised or, for recognised identities, no binder could be validated
+   the server MUST continue connection as if PSK key establishment wasn't
+   attempted.  In order to accept PSK key
+   establishment, the server sends a "pre_shared_key" extension
+   indicating the selected identity.
+
+Unfortunately that solution was identified as conflicting with "Client Hell=
+o=20
+Recording" section.
+
+Do we consider that conflict to be severe enough to block this change?
+
+Or should we just add more information to that security section, that it ne=
+eds=20
+to deal with this kind of attack?
+
+PS: some discussion on this issue already happened in the github PR:=20
+https://github.com/tlswg/tls13-spec/pull/1167
+=2D-=20
+Regards,
+Hubert Kario
+Senior Quality Engineer, QE BaseOS Security team
+Web: www.cz.redhat.com
+Red Hat Czech s.r.o., Purky=C5=88ova 115, 612 00  Brno, Czech Republic
+--nextPart2013974.uCjqpthf2c
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEYeeuxEU+3unL/K+dkqjRuAHS9fUFAlqmnHIACgkQkqjRuAHS
+9fVXcg/+MKAmC0c/2AQE0OL8MxeAXYp5SVVW7OdkGDiGjZ51xkxZYKe+9BYsBvK0
+YHUpWjzuOcpmFML9LxtEA+j62KxC3atLclCn4wyNjUBttQ3yzlO6Hn7nsRivmp2K
+OfVPeAPvA0rb9gKXYzFSnRklbvkhev9spTbECFAda6o1zevk7SncHZgI+b/hZ9ZV
+crT/f1Q7mHpmUCKN0qWHJdEjbReg/eQ6RnJM/ndtqYY1ro6lII2jrDpamnyfmj0D
+1RgQE1e8ShKBE6VQBTTBuaI8mYhKMKHCdYcyVuPrOsTWV8j6cuMvPN7NTmdOVm72
+tfZOKzZ3zr652L+VizDo/4CkFUSJZTtno2/t3Q8w/D1q3dXp7waNfoBnqS1kG59g
+7Go/jLKyb+iwN1mS0cnGgf82TKFXhpsNiiY6XN9nYPZl/L0NiM3aOICLGfwkCzTa
+w0vS7bimJTMLVHZT2jGMMn2NggEfUvgP65nEovJzPtfpTvwoDe4tWfu2hC/lcFZg
+JiMeURsz1FVEpfDs+0OHt9icKWaFjXLQYVP9rng+u00ej8Pi6fXNxR2mnHYBqKMH
+wEJTKzA4DtsHfPLhPItlPaeBt0t93MhGjH9UXu9Rx+VsZGmLCw97gDbDot9y5uxX
+6GVsM2Jlb+nfpOpJm3zj2cd44vUesGx1JnkE7bnuW75Ay5iIVwA=
+=mLJH
+-----END PGP SIGNATURE-----
+
+--nextPart2013974.uCjqpthf2c--
+
+
+

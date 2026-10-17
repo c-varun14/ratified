@@ -1,0 +1,165 @@
+Return-Path: <mrex@sap.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 1F4DA129669
+ for <tls@ietfa.amsl.com>; Wed,  9 Nov 2016 01:31:27 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -6.922
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.922 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, RCVD_IN_DNSWL_HI=-5, RCVD_IN_MSPIKE_H3=-0.01,
+ RCVD_IN_MSPIKE_WL=-0.01, SPF_HELO_PASS=-0.001, SPF_PASS=-0.001]
+ autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id wKiRRPMogW6S for <tls@ietfa.amsl.com>;
+ Wed,  9 Nov 2016 01:31:25 -0800 (PST)
+Received: from smtpde01.smtp.sap-ag.de (smtpde01.smtp.sap-ag.de
+ [155.56.68.170])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id E09041295B6
+ for <tls@ietf.org>; Wed,  9 Nov 2016 01:31:24 -0800 (PST)
+Received: from mail06.wdf.sap.corp (mail06.sap.corp [194.39.131.54])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by smtpde01.smtp.sap-ag.de (Postfix) with ESMTPS id 3tDLXV6QGnz1HsZ;
+ Wed,  9 Nov 2016 10:31:22 +0100 (CET)
+X-purgate-ID: 152705::1478683882-0000521C-CED8B378/0/0
+X-purgate-size: 4407
+X-purgate: clean
+X-purgate: This mail is considered clean (visit http://www.eleven.de for
+ further information)
+X-purgate-Ad: Categorized by eleven eXpurgate (R) http://www.eleven.de
+X-purgate-type: clean
+X-SAP-SPAM-Status: clean
+Received: from ld9781.wdf.sap.corp (ld9781.wdf.sap.corp [10.21.82.193])
+ by mail06.wdf.sap.corp (Postfix) with ESMTP id 3tDLXV3Wq8zklgV;
+ Wed,  9 Nov 2016 10:31:22 +0100 (CET)
+Received: by ld9781.wdf.sap.corp (Postfix, from userid 10159)
+ id 6D3111A579; Wed,  9 Nov 2016 10:31:22 +0100 (CET)
+In-Reply-To: <61800c8dd50f4a1a911f8f2c96b65dda@usma1ex-dag1mb1.msg.corp.akamai.com>
+To: "Salz, Rich" <rsalz@akamai.com>
+Date: Wed, 9 Nov 2016 10:31:22 +0100 (CET)
+X-Mailer: ELM [version 2.4ME+ PL125 (25)]
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="US-ASCII"
+Message-Id: <20161109093122.6D3111A579@ld9781.wdf.sap.corp>
+From: mrex@sap.com (Martin Rex)
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/Qets8001w7deNXUgp5XyzjHqrAc>
+Cc: "tls@ietf.org" <tls@ietf.org>
+Subject: Re: [TLS] Working Group Last Call for draft-ietf-tls-tls13-18
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.17
+Precedence: list
+Reply-To: mrex@sap.com
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Wed, 09 Nov 2016 09:31:27 -0000
+
+Salz, Rich wrote:
+>> the PDUs are still pretty much predictable
+>> heuristically (by their ordering), even when they're padded.
+> 
+> ...
+>  
+>> So besides being completely pointless, can you describe any realistic
+>> problem that is worth breaking middleware at the endpoints so badly?
+> 
+> I found the language difference interesting.  We could conduct an
+> interesting thought experiment by reversing the emphasis on each
+> of the above fragments.  But I won't.
+> 
+> Instead, I'll point out that this is in-charter, in-scope, and WG consensus
+> has generally been to "encrypt all the bits" as much as feasible.
+
+The problem here is that this breaks (network) flow control, existing
+(network socket) event management, and direction-independent connection
+closure, and does so completely without value.
+
+When TLS records with AppData can be left in the network socket while
+the application layer is not ready to process & consume it, then TCP flow
+control works better in high load situation.
+
+
+The semantics defined for the TLS Closure Alert in SSLv3->TLSv1.2
+is somewhat difficult for full-duplex communication, direction-independent
+shutdown, and confirmation of receipt:
+
+   https://tools.ietf.org/html/rfc5246#section-7.2.1
+
+   7.2.1.  Closure Alerts
+
+   The client and the server must share knowledge that the connection is
+   ending in order to avoid a truncation attack.  Either party may
+   initiate the exchange of closing messages.
+
+   close_notify
+      This message notifies the recipient that the sender will not send
+      any more messages on this connection.  Note that as of TLS 1.1,
+      failure to properly close a connection no longer requires that a
+      session not be resumed.  This is a change from TLS 1.0 to conform
+      with widespread implementation practice.
+
+   Either party may initiate a close by sending a close_notify alert.
+   Any data received after a closure alert is ignored.
+
+   Unless some other fatal alert has been transmitted, each party is
+   required to send a close_notify alert before closing the write side
+   of the connection.  The other party MUST respond with a close_notify
+   alert of its own and close down the connection immediately,
+   discarding any pending writes.  It is not required for the initiator
+   of the close to wait for the responding close_notify alert before
+   closing the read side of the connection.
+
+
+The issue here is that the receiving TLS stack, when processing an
+incoming TLS CloseNotify Alert, will typically immediately respond
+with a TLS CloseNotifyAlert on its own, precluding the application
+from sending any further data in the other direction in response
+
+When hiding the TLS record ContentType, then pre-reading and coalescing
+(=streaming) application data records suddenly becomes a problem, because
+receiving and processing a hidden TLS CloseNotify Alert will cause
+a TLS CloseNotify Alert response (an alleged indicator for a graceful
+connection closure) being generated and returned even before
+the application has (a) seen and (b) had a chance to respond to the
+latest batch of application data.
+
+
+To prevent this from happening, and leave the decision to the application
+of whether to read a (potential) CloseNotify alert from the wire,
+I would have to go back to trickling TLS records (including those
+pathologically fragmented ones from Google) to the application
+whenever TLSv1.3 is negotiated.
+
+
+There is a similar (slightly smaller) issuer with the coalesced TLS
+handshake/alert/css record processing during the TLS handshake phase,
+Feeding the whole "flight" already waiting in network buffers into
+the TLS stack at once will no longer be possible, with hidden ContentTypes
+I will have to start trickling TLS records with handshake messages into
+the TLS stack, and have to poll the handshake state after each TLS record
+in order to heuristically determine whether the next record waiting in
+the network buffer is (likely) a record with AppData--which I must leave
+in the network buffer until the application caller explicitly calls for it.
+
+
+The really painful issue are constantly mind-changing browsers loosing
+interest in responses and sending TLS CloseNotify instead of TCP RSTs
+-- I don't know how to deal with these without breaking the current
+(network socket) event semantics for the app.
+
+
+-Martin
+

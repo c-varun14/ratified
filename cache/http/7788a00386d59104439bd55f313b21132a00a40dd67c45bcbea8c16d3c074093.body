@@ -1,0 +1,657 @@
+Return-Path: <mglt.ietf@gmail.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 159E2129526;
+ Fri, 19 May 2017 09:58:14 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.399
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.399 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ FREEMAIL_FORGED_FROMDOMAIN=0.199, FREEMAIL_FROM=0.001,
+ HEADER_FROM_DIFFERENT_DOMAINS=0.001, HTML_MESSAGE=0.001,
+ RCVD_IN_DNSWL_LOW=-0.7, SPF_PASS=-0.001]
+ autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=gmail.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id YEOmbOLhX0KY; Fri, 19 May 2017 09:58:10 -0700 (PDT)
+Received: from mail-lf0-x230.google.com (mail-lf0-x230.google.com
+ [IPv6:2a00:1450:4010:c07::230])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 55ED71294F4;
+ Fri, 19 May 2017 09:58:10 -0700 (PDT)
+Received: by mail-lf0-x230.google.com with SMTP id 99so4186874lfu.1;
+ Fri, 19 May 2017 09:58:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025; 
+ h=mime-version:sender:in-reply-to:references:from:date:message-id
+ :subject:to:cc;
+ bh=+V2BlG7CJ4wjwDCI5HgOPAYPEgdbYUi0drEqepx0PpY=;
+ b=GbUP8NcWDSRJL37PEG3lENkC5o5sqFJGz5ZU0eXFG5i8s9C62XHUXcsNn4cI5OxExJ
+ d97SlGJZCfnO1zDzsb2sYcSN5dLE275JNb2lqCZlCn/tySN5g179k1vLBljS2uCXsTVX
+ zye2rF35ktbC/jQefDZfaABSGc+8NYU6zmznNjcgksl5lIS98BCTXce6jlKic5Xvwt86
+ wkmTCDXO1yL0cUbu8HLwil0gNYSFV3f+TH1KPM5GtoGIAvclqGGdi6yemYTvshSnvPfX
+ qLJ7DC2Idah65cy0/hRilitcHS+pdCuw5TbTuCl2/AgY3DWyAzggrKGRF9o858tUGMYi
+ H9tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:sender:in-reply-to:references:from
+ :date:message-id:subject:to:cc;
+ bh=+V2BlG7CJ4wjwDCI5HgOPAYPEgdbYUi0drEqepx0PpY=;
+ b=HuMMTwJAVABH1Z+DtlrYk6zFcbSZomBlIAxR1ttJlCewDJMllGbK7TUhfG8MrtfCxg
+ wzpyaodv7AkbK3ZrZ4X6w5gDfcgzIpUgowQjB6sz/DfPlU2N2c9M3z+8loNrWjkQFlN5
+ q7/1+ytbt7cCskkF8ntE4vR/RqUdm/LHR/p1zu3pLpZxThTGzLThws1tz1GBDjIR074F
+ zDmtBrsfr7yS4gUv/yfTadtL58IK2IYxOoe99YeUPVO+DG9f5D4L4zTm7VxwcR+fbBb+
+ 6VStK2xOt1C/UsaDuxSL5TSXuijlLqWpifSlWCq858zVmzRc8eM7l6WqibY5v+RdCsM2
+ YflQ==
+X-Gm-Message-State: AODbwcBRxwpTAYFV+Ev4iFBYLfpwf0Ib7ogoYG6+SxRKfkTHhkqZ5m+V
+ nlBtL/V+wskUu9dFnwGTp2SAikFITw==
+X-Received: by 10.46.69.8 with SMTP id s8mr2564481lja.55.1495213088509; Fri,
+ 19 May 2017 09:58:08 -0700 (PDT)
+MIME-Version: 1.0
+Sender: mglt.ietf@gmail.com
+Received: by 10.46.0.14 with HTTP; Fri, 19 May 2017 09:58:07 -0700 (PDT)
+In-Reply-To: <20170519162725.GM39245@kduck.kaduk.org>
+References: <20170519043827.GL39245@kduck.kaduk.org>
+ <CADZyTkncMTsTQt6C2S+Z0mw+30uc38bfrTSCOvjWRPn_dJkDLQ@mail.gmail.com>
+ <20170519162725.GM39245@kduck.kaduk.org>
+From: Daniel Migault <daniel.migault@ericsson.com>
+Date: Fri, 19 May 2017 12:58:07 -0400
+X-Google-Sender-Auth: 1raqJXhaY3kI7429EhZs5caQhV8
+Message-ID: <CADZyTk=id9bDfi31R+K6hC+ZKzWsjsvo8JbSCzqYGaK_1X1j7Q@mail.gmail.com>
+To: Benjamin Kaduk <kaduk@mit.edu>
+Cc: tls <tls@ietf.org>, draft-ietf-tls-ecdhe-psk-aead.all@ietf.org, 
+ "ietf@ietf.org" <ietf@ietf.org>, The IESG <iesg@ietf.org>, secdir@ietf.org
+Content-Type: multipart/alternative; boundary="001a114b07fe0114c9054fe36d55"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/XC51zt16yal9ExkjdSlRwQtB5lc>
+Subject: Re: [TLS] secdir review of draft-ietf-tls-ecdhe-psk-aead-03
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Fri, 19 May 2017 16:58:14 -0000
+
+--001a114b07fe0114c9054fe36d55
+Content-Type: text/plain; charset="UTF-8"
+
+Thank you,
+
+Your comments have all been addressed. I have one remaining clarification.
+In my text the SHOULD NOT was intended to the ECDHE_PSK in general, and not
+only for the cipher suites of the draft. In your opinion do we clarify
+this, and should we use something else than SHOULD NOT ?
+
+Thanks for the reviews!
+
+Yours,
+Daniel
+
+> (MD5 and SHA-1) by exclusive-ORing them together. In the case of ECDHE_PSK
+> authentication, the PSK and pre-master are treated by distinct hash
+> function with distinct properties. This may introduce vulnerabilities over
+> the expected security provided by the constructed pre-master. As such
+> TLS1.0 and TLS1.1 SHOULD NOT be used with ECDHE_PSK.
+
+The general tenor of this text addresses my concern, yes, but feel
+free to use editorial discretion and not bother putting it in, if
+you don't think it's useful.  (BTW, I think we are still TLS1.0 and
+TLS1.1 MUST NOT be used with these ciphersuites, so maybe the SHOULD
+NOT in the last sentence is not quite what is intended.)
+
+On Fri, May 19, 2017 at 12:27 PM, Benjamin Kaduk <kaduk@mit.edu> wrote:
+
+> On Fri, May 19, 2017 at 11:55:35AM -0400, Daniel Migault wrote:
+> > Hi Benjamin,
+> >
+> > Thank you for the review. Please find my comments inline and let me know
+> if
+> > you agree with the proposed text. I believe the only point not addressed
+> > concerns the addition of CCM-256 which has been remove after discussion
+> > during the WGLC.
+> >
+> > Thanks you for the review,
+> >
+> > Yours,
+> > Daniel
+> >
+> > On Fri, May 19, 2017 at 12:38 AM, Benjamin Kaduk <kaduk@mit.edu> wrote:
+> >
+> > > Hi all,
+> > >
+> > > I have reviewed this document as part of the security directorate's
+> > > ongoing effort to review all IETF documents being processed by the
+> > > IESG.  These comments were written primarily for the benefit of the
+> > > security area directors.  Document editors and WG chairs should
+> > > treat these comments just like any other last call comments.
+> > >
+> > > This document is ready with nits.
+> > >
+> > > Essentially, we are filling in a gap in the TLS (< 1.3) ciphersuite
+> > > space, thought of as a cross product of key exchange and
+> > > cipher+mac/AEAD -- we have some of the combinations (PSK with ECDHE
+> > > but no AES-[GC]CM, PSK with AES-GCM but only non-EC DH, etc.) but
+> > > not quite this one.
+> > >
+> > > That said, it seems a little silly to only partially fill the gap
+> > > (by omitting the AES_256_CCM* cipher suites), even though there is
+> > > not currently demand for them.
+> > >
+> > > MGLT: TLS_ECDHE_PSK_WITH_AES_256_CCM_8_SHA256 and
+> > TLS_ECDHE_PSK_WITH_AES_256_CCM_SHA384  were mentioned in the 01 and
+> removed
+> > after  the WGLC. [0] The issue was whether or not introducing new ciphers
+> > not supported by TLS1.3. In 01, we though of adding the code point for
+> > TLS1.2 and then specify that TLS1.3 was only implementing a **subset** of
+> > the cipher suites proposed.In case of needs these could still be
+> supported
+> > later by TLS1.3. The consensus seems to not introduce ciphers that would
+> > not be handled by TLS1.3. If the WG decides otherwise, these could still
+> be
+> > added.
+> >
+> > [0]
+> > https://mailarchive.ietf.org/arch/msg/tls/M442CwmUMxrYJR8FjCh3h-a69o4/?
+> qid=6e4713be1d71bae6718c6e6e6c4b8007
+>
+> That seems like a reasonable position for the WG to take, given how
+> close TLS 1.3 is to publication.  (It would also be reasonable to
+> define the full cross-product for TLS 1.2 only and have TLS 1.3 just
+> use a subset, but I have no real preference.)
+>
+> >
+> > > This document is just assembling pieces that were already specified
+> > > elsewhere, so it need not contain much detail itself, which is fine.
+> > > That said, I think section 3 should probably state explicitly which
+> > > pieces it uses, instead of a vague reference of being "based on RFC
+> > > 4279".  So, "The ServerKeyExchange and ClientKeyExchange messages
+> > > from RFC 5489 for ECDHE_PSK are used, and the premaster secret is
+> > > computed in the same manner as for ECDHE_PSK key exchange in RFC
+> > > 5489."  (I am not sure why RFC 4279 is cited in the current text; it
+> > > does not cover ECDHE_PSK.)
+> > >
+> >
+> > MGLT: I agree we coudl be more explicit, here are the changes I propose.
+> I
+> > believe it address your purpose.
+> >
+> > OLD:
+> >
+> > Messages and pre-master secret construction in this
+> > document are based on [RFC4279 <https://tools.ietf.org/html/rfc4279>].
+> >
+> > NEW:
+> >
+> > Messages and pre-master secret construction in this
+> > document are defined in [RFC5489]. The ServerKeyExchange
+> > and ClientKeyExchange messages and premaster secret is
+> > computed as for  the ECDHE_PSK key exchange.
+>
+> That basically works for me, though I'd tweak the phrasing slightly
+> for clarity/grammar:
+>
+> NEW2:
+>
+> Messages and pre-master secret construction in this
+> document are defined in [RFC5489]. The ServerKeyExchange
+> and ClientKeyExchange messages are used and the premaster secret is
+> computed as for the ECDHE_PSK key exchange.
+>
+>
+> >
+> > > The premaster_secret structure so used basically ends up putting the
+> > > ECDH output first followed by the static PSK; with the pre-TLS 1.2
+> > > PRF, that would give the ECDH shared secret to md5 and the PSK to
+> > > sha1, which is perhaps another reason to not use these with pre-1.2
+> > > worth mentioning (in addition to the AEAD availability).
+> > >
+> >
+> > MGLT: I believe the following text address your concern, however I am
+> > wondering if we are not going beyond the scope of expected
+> considerations.
+>
+> It perhaps is and perhaps is not worth mentioning, yes.
+>
+> > In addition, it is worth noting that TLS1.0 <xref target="RFC2246"/> and
+> > TL1.2 <xref target="RFC4346"/> splits the premaster in two parts. The PRF
+> > results of mixing the two pseudorandom streams with distinct hash
+> functions
+>
+> "results of" is an unusual phrasing; "results from" might be more
+> familiar.
+>
+> > (MD5 and SHA-1) by exclusive-ORing them together. In the case of
+> ECDHE_PSK
+> > authentication, the PSK and pre-master are treated by distinct hash
+> > function with distinct properties. This may introduce vulnerabilities
+> over
+> > the expected security provided by the constructed pre-master. As such
+> > TLS1.0 and TLS1.1 SHOULD NOT be used with ECDHE_PSK.
+>
+> The general tenor of this text addresses my concern, yes, but feel
+> free to use editorial discretion and not bother putting it in, if
+> you don't think it's useful.  (BTW, I think we are still TLS1.0 and
+> TLS1.1 MUST NOT be used with these ciphersuites, so maybe the SHOULD
+> NOT in the last sentence is not quite what is intended.)
+>
+> >
+> > > The security considerations largely refer to those of the other
+> > > documents providing the pieces that are combined together here;
+> > > those referenced security considerations sections are more than
+> > > adequate here, as this document itself does not really do anything
+> > > particularly novel.  That said, if we are going to reiterate the
+> > > entropy requirement for PSKs inline, we probably ought to also
+> > > reiterate the nonce-reuse considerations for GCM and CCM.  The
+> > > relevant constructions help, but there are still ways to mess up and
+> > > reuse a nonce when doing crypto in parallel, if I remember the
+> > > GCM/TLS document's security considerations correctly.
+> > >
+> >
+> > MGLT: I believe the following text address your comments.
+> >
+> >  <t>GCM or CCM encryption - even of different clear text - re-using a
+> > nonce with a same key undermines the security of GCM and CCM. As a
+> > result, GCM and CCM MUST only be used with system guaranteeing nonce
+> > uniqueness <xref target="RFC5116"/>.</t>
+>
+> Sure, sounds good.  (Grammar nit: "a system".)
+>
+> >
+> > >
+> > > Some other editorial nits follow.
+> > >
+> >
+> > > In section 2, the RFC 7525 reference that "AEAD algorithms [...] are
+> > > strongly recommended" is scoped to just (D)TLS, so the text here
+> > > should probably also list that qualification.
+> > >
+> >
+> > MGLT: I believe the following text address your concern:
+> >
+> > OLD text:
+> > <t>AEAD algorithms that combine encryption and integrity protection are
+> > strongly recommended for <xref target="RFC7525" /> and non-AEAD
+> algorithms
+> > are forbidden to use in TLS 1.3 <xref target="I-D.ietf-tls-tls13"/>.
+> >
+> > NEW text:
+> > <t>AEAD algorithms that combine encryption and integrity protection are
+> > strongly recommended for (D)TLS <xref target="RFC7525" /> and non-AEAD
+> > algorithms
+> > are forbidden to use in TLS 1.3 <xref target="I-D.ietf-tls-tls13"/>.
+>
+> Yes, thanks.
+>
+> > > In section 4, "... make use of the authenticated encryption with
+> > > additional data (AEAD) defined in TLS 1.2" seems to make AEAD into
+> > > something of a unique object, as opposed to a class of things with
+> > > multiple possible instantiations.  I would consider something like
+> > > "... (AEAD) concept".
+> > >
+> > > In section 4, "these cipher suites MUST NOT be negotiated in TLS
+> > > versions prior to 1.2" should probably clarify that "these" cipher
+> > > suites are the new ones specified by this document.
+> > >
+> > > MGLT: I believe the following text address your comment:
+> >
+> > OLD:
+> > these cipher suites MUST NOT be negotiated in TLS  versions prior to 1.2.
+> >
+> > NEW:
+> > the cipher suites defined in this document MUST NOT be negotiated in TLS
+> > versions prior to 1.2.
+> >
+> >  OLD:
+> > Clients MUST NOT offer these cipher suites
+> >
+> > NEW:
+> > Clients MUST NOT offer these cipher suites defined in this document
+>
+> I think I only intended to comment about the first one, but there is
+> no harm in changing both.  Thanks!
+>
+>
+> -Ben
+>
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+>
+
+--001a114b07fe0114c9054fe36d55
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div><div><div>Thank you, <br><br></div>Your comments have=
+ all been addressed. I have one remaining clarification. In my text the SHO=
+ULD NOT was intended to the ECDHE_PSK in general, and not only for the ciph=
+er suites of the draft. In your opinion do we clarify this, and should we u=
+se something else than SHOULD NOT ?<br><br></div><div>Thanks for the review=
+s!<br><br></div>Yours, <br></div>Daniel<br><div><div><br><span class=3D"gma=
+il-im">&gt; (MD5 and SHA-1) by exclusive-ORing them together. In the case o=
+f ECDHE_PSK<br>
+&gt; authentication, the PSK and pre-master are treated by distinct hash<br=
+>
+&gt; function with distinct properties. This may introduce vulnerabilities =
+over<br>
+&gt; the expected security provided by the constructed pre-master. As such<=
+br>
+&gt; TLS1.0 and TLS1.1 SHOULD NOT be used with ECDHE_PSK.<br>
+<br>
+</span>The general tenor of this text addresses my concern, yes, but feel<b=
+r>
+free to use editorial discretion and not bother putting it in, if<br>
+you don&#39;t think it&#39;s useful.=C2=A0 (BTW, I think we are still TLS1.=
+0 and<br>
+TLS1.1 MUST NOT be used with these ciphersuites, so maybe the SHOULD<br>
+NOT in the last sentence is not quite what is intended.)</div></div></div><=
+div class=3D"gmail_extra"><br><div class=3D"gmail_quote">On Fri, May 19, 20=
+17 at 12:27 PM, Benjamin Kaduk <span dir=3D"ltr">&lt;<a href=3D"mailto:kadu=
+k@mit.edu" target=3D"_blank">kaduk@mit.edu</a>&gt;</span> wrote:<br><blockq=
+uote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc =
+solid;padding-left:1ex"><div class=3D"HOEnZb"><div class=3D"h5">On Fri, May=
+ 19, 2017 at 11:55:35AM -0400, Daniel Migault wrote:<br>
+&gt; Hi Benjamin,<br>
+&gt;<br>
+&gt; Thank you for the review. Please find my comments inline and let me kn=
+ow if<br>
+&gt; you agree with the proposed text. I believe the only point not address=
+ed<br>
+&gt; concerns the addition of CCM-256 which has been remove after discussio=
+n<br>
+&gt; during the WGLC.<br>
+&gt;<br>
+&gt; Thanks you for the review,<br>
+&gt;<br>
+&gt; Yours,<br>
+&gt; Daniel<br>
+&gt;<br>
+&gt; On Fri, May 19, 2017 at 12:38 AM, Benjamin Kaduk &lt;<a href=3D"mailto=
+:kaduk@mit.edu">kaduk@mit.edu</a>&gt; wrote:<br>
+&gt;<br>
+&gt; &gt; Hi all,<br>
+&gt; &gt;<br>
+&gt; &gt; I have reviewed this document as part of the security directorate=
+&#39;s<br>
+&gt; &gt; ongoing effort to review all IETF documents being processed by th=
+e<br>
+&gt; &gt; IESG.=C2=A0 These comments were written primarily for the benefit=
+ of the<br>
+&gt; &gt; security area directors.=C2=A0 Document editors and WG chairs sho=
+uld<br>
+&gt; &gt; treat these comments just like any other last call comments.<br>
+&gt; &gt;<br>
+&gt; &gt; This document is ready with nits.<br>
+&gt; &gt;<br>
+&gt; &gt; Essentially, we are filling in a gap in the TLS (&lt; 1.3) cipher=
+suite<br>
+&gt; &gt; space, thought of as a cross product of key exchange and<br>
+&gt; &gt; cipher+mac/AEAD -- we have some of the combinations (PSK with ECD=
+HE<br>
+&gt; &gt; but no AES-[GC]CM, PSK with AES-GCM but only non-EC DH, etc.) but=
+<br>
+&gt; &gt; not quite this one.<br>
+&gt; &gt;<br>
+&gt; &gt; That said, it seems a little silly to only partially fill the gap=
+<br>
+&gt; &gt; (by omitting the AES_256_CCM* cipher suites), even though there i=
+s<br>
+&gt; &gt; not currently demand for them.<br>
+&gt; &gt;<br>
+&gt; &gt; MGLT: TLS_ECDHE_PSK_WITH_AES_256_<wbr>CCM_8_SHA256 and<br>
+&gt; TLS_ECDHE_PSK_WITH_AES_256_<wbr>CCM_SHA384=C2=A0 were mentioned in the=
+ 01 and removed<br>
+&gt; after=C2=A0 the WGLC. [0] The issue was whether or not introducing new=
+ ciphers<br>
+&gt; not supported by TLS1.3. In 01, we though of adding the code point for=
+<br>
+&gt; TLS1.2 and then specify that TLS1.3 was only implementing a **subset**=
+ of<br>
+&gt; the cipher suites proposed.In case of needs these could still be suppo=
+rted<br>
+&gt; later by TLS1.3. The consensus seems to not introduce ciphers that wou=
+ld<br>
+&gt; not be handled by TLS1.3. If the WG decides otherwise, these could sti=
+ll be<br>
+&gt; added.<br>
+&gt;<br>
+&gt; [0]<br>
+&gt; <a href=3D"https://mailarchive.ietf.org/arch/msg/tls/M442CwmUMxrYJR8Fj=
+Ch3h-a69o4/?qid=3D6e4713be1d71bae6718c6e6e6c4b8007" rel=3D"noreferrer" targ=
+et=3D"_blank">https://mailarchive.ietf.org/<wbr>arch/msg/tls/<wbr>M442CwmUM=
+xrYJR8FjCh3h-a69o4/?<wbr>qid=3D<wbr>6e4713be1d71bae6718c6e6e6c4b80<wbr>07</=
+a><br>
+<br>
+</div></div>That seems like a reasonable position for the WG to take, given=
+ how<br>
+close TLS 1.3 is to publication.=C2=A0 (It would also be reasonable to<br>
+define the full cross-product for TLS 1.2 only and have TLS 1.3 just<br>
+use a subset, but I have no real preference.)<br>
+<span class=3D""><br>
+&gt;<br>
+&gt; &gt; This document is just assembling pieces that were already specifi=
+ed<br>
+&gt; &gt; elsewhere, so it need not contain much detail itself, which is fi=
+ne.<br>
+&gt; &gt; That said, I think section 3 should probably state explicitly whi=
+ch<br>
+&gt; &gt; pieces it uses, instead of a vague reference of being &quot;based=
+ on RFC<br>
+&gt; &gt; 4279&quot;.=C2=A0 So, &quot;The ServerKeyExchange and ClientKeyEx=
+change messages<br>
+&gt; &gt; from RFC 5489 for ECDHE_PSK are used, and the premaster secret is=
+<br>
+&gt; &gt; computed in the same manner as for ECDHE_PSK key exchange in RFC<=
+br>
+&gt; &gt; 5489.&quot;=C2=A0 (I am not sure why RFC 4279 is cited in the cur=
+rent text; it<br>
+&gt; &gt; does not cover ECDHE_PSK.)<br>
+&gt; &gt;<br>
+&gt;<br>
+&gt; MGLT: I agree we coudl be more explicit, here are the changes I propos=
+e. I<br>
+&gt; believe it address your purpose.<br>
+&gt;<br>
+&gt; OLD:<br>
+&gt;<br>
+&gt; Messages and pre-master secret construction in this<br>
+</span>&gt; document are based on [RFC4279 &lt;<a href=3D"https://tools.iet=
+f.org/html/rfc4279" rel=3D"noreferrer" target=3D"_blank">https://tools.ietf=
+.org/html/<wbr>rfc4279</a>&gt;].<br>
+<span class=3D"">&gt;<br>
+&gt; NEW:<br>
+&gt;<br>
+&gt; Messages and pre-master secret construction in this<br>
+&gt; document are defined in [RFC5489]. The ServerKeyExchange<br>
+&gt; and ClientKeyExchange messages and premaster secret is<br>
+&gt; computed as for=C2=A0 the ECDHE_PSK key exchange.<br>
+<br>
+</span>That basically works for me, though I&#39;d tweak the phrasing sligh=
+tly<br>
+for clarity/grammar:<br>
+<br>
+NEW2:<br>
+<span class=3D""><br>
+Messages and pre-master secret construction in this<br>
+document are defined in [RFC5489]. The ServerKeyExchange<br>
+</span>and ClientKeyExchange messages are used and the premaster secret is<=
+br>
+<span class=3D"">computed as for the ECDHE_PSK key exchange.<br>
+<br>
+<br>
+&gt;<br>
+&gt; &gt; The premaster_secret structure so used basically ends up putting =
+the<br>
+&gt; &gt; ECDH output first followed by the static PSK; with the pre-TLS 1.=
+2<br>
+&gt; &gt; PRF, that would give the ECDH shared secret to md5 and the PSK to=
+<br>
+&gt; &gt; sha1, which is perhaps another reason to not use these with pre-1=
+.2<br>
+&gt; &gt; worth mentioning (in addition to the AEAD availability).<br>
+&gt; &gt;<br>
+&gt;<br>
+&gt; MGLT: I believe the following text address your concern, however I am<=
+br>
+&gt; wondering if we are not going beyond the scope of expected considerati=
+ons.<br>
+<br>
+</span>It perhaps is and perhaps is not worth mentioning, yes.<br>
+<span class=3D""><br>
+&gt; In addition, it is worth noting that TLS1.0 &lt;xref target=3D&quot;RF=
+C2246&quot;/&gt; and<br>
+&gt; TL1.2 &lt;xref target=3D&quot;RFC4346&quot;/&gt; splits the premaster =
+in two parts. The PRF<br>
+&gt; results of mixing the two pseudorandom streams with distinct hash func=
+tions<br>
+<br>
+</span>&quot;results of&quot; is an unusual phrasing; &quot;results from&qu=
+ot; might be more<br>
+familiar.<br>
+<span class=3D""><br>
+&gt; (MD5 and SHA-1) by exclusive-ORing them together. In the case of ECDHE=
+_PSK<br>
+&gt; authentication, the PSK and pre-master are treated by distinct hash<br=
+>
+&gt; function with distinct properties. This may introduce vulnerabilities =
+over<br>
+&gt; the expected security provided by the constructed pre-master. As such<=
+br>
+&gt; TLS1.0 and TLS1.1 SHOULD NOT be used with ECDHE_PSK.<br>
+<br>
+</span>The general tenor of this text addresses my concern, yes, but feel<b=
+r>
+free to use editorial discretion and not bother putting it in, if<br>
+you don&#39;t think it&#39;s useful.=C2=A0 (BTW, I think we are still TLS1.=
+0 and<br>
+TLS1.1 MUST NOT be used with these ciphersuites, so maybe the SHOULD<br>
+NOT in the last sentence is not quite what is intended.)<br>
+<span class=3D""><br>
+&gt;<br>
+&gt; &gt; The security considerations largely refer to those of the other<b=
+r>
+&gt; &gt; documents providing the pieces that are combined together here;<b=
+r>
+&gt; &gt; those referenced security considerations sections are more than<b=
+r>
+&gt; &gt; adequate here, as this document itself does not really do anythin=
+g<br>
+&gt; &gt; particularly novel.=C2=A0 That said, if we are going to reiterate=
+ the<br>
+&gt; &gt; entropy requirement for PSKs inline, we probably ought to also<br=
+>
+&gt; &gt; reiterate the nonce-reuse considerations for GCM and CCM.=C2=A0 T=
+he<br>
+&gt; &gt; relevant constructions help, but there are still ways to mess up =
+and<br>
+&gt; &gt; reuse a nonce when doing crypto in parallel, if I remember the<br=
+>
+&gt; &gt; GCM/TLS document&#39;s security considerations correctly.<br>
+&gt; &gt;<br>
+&gt;<br>
+&gt; MGLT: I believe the following text address your comments.<br>
+&gt;<br>
+&gt;=C2=A0 &lt;t&gt;GCM or CCM encryption - even of different clear text - =
+re-using a<br>
+&gt; nonce with a same key undermines the security of GCM and CCM. As a<br>
+&gt; result, GCM and CCM MUST only be used with system guaranteeing nonce<b=
+r>
+&gt; uniqueness &lt;xref target=3D&quot;RFC5116&quot;/&gt;.&lt;/t&gt;<br>
+<br>
+</span>Sure, sounds good.=C2=A0 (Grammar nit: &quot;a system&quot;.)<br>
+<span class=3D""><br>
+&gt;<br>
+&gt; &gt;<br>
+&gt; &gt; Some other editorial nits follow.<br>
+&gt; &gt;<br>
+&gt;<br>
+</span><span class=3D"">&gt; &gt; In section 2, the RFC 7525 reference that=
+ &quot;AEAD algorithms [...] are<br>
+&gt; &gt; strongly recommended&quot; is scoped to just (D)TLS, so the text =
+here<br>
+&gt; &gt; should probably also list that qualification.<br>
+&gt; &gt;<br>
+&gt;<br>
+&gt; MGLT: I believe the following text address your concern:<br>
+&gt;<br>
+&gt; OLD text:<br>
+&gt; &lt;t&gt;AEAD algorithms that combine encryption and integrity protect=
+ion are<br>
+&gt; strongly recommended for &lt;xref target=3D&quot;RFC7525&quot; /&gt; a=
+nd non-AEAD algorithms<br>
+&gt; are forbidden to use in TLS 1.3 &lt;xref target=3D&quot;I-D.ietf-tls-t=
+ls13&quot;/&gt;.<br>
+&gt;<br>
+&gt; NEW text:<br>
+&gt; &lt;t&gt;AEAD algorithms that combine encryption and integrity protect=
+ion are<br>
+&gt; strongly recommended for (D)TLS &lt;xref target=3D&quot;RFC7525&quot; =
+/&gt; and non-AEAD<br>
+&gt; algorithms<br>
+&gt; are forbidden to use in TLS 1.3 &lt;xref target=3D&quot;I-D.ietf-tls-t=
+ls13&quot;/&gt;.<br>
+<br>
+</span>Yes, thanks.<br>
+<span class=3D""><br>
+&gt; &gt; In section 4, &quot;... make use of the authenticated encryption =
+with<br>
+&gt; &gt; additional data (AEAD) defined in TLS 1.2&quot; seems to make AEA=
+D into<br>
+&gt; &gt; something of a unique object, as opposed to a class of things wit=
+h<br>
+&gt; &gt; multiple possible instantiations.=C2=A0 I would consider somethin=
+g like<br>
+&gt; &gt; &quot;... (AEAD) concept&quot;.<br>
+&gt; &gt;<br>
+&gt; &gt; In section 4, &quot;these cipher suites MUST NOT be negotiated in=
+ TLS<br>
+&gt; &gt; versions prior to 1.2&quot; should probably clarify that &quot;th=
+ese&quot; cipher<br>
+&gt; &gt; suites are the new ones specified by this document.<br>
+&gt; &gt;<br>
+&gt; &gt; MGLT: I believe the following text address your comment:<br>
+&gt;<br>
+&gt; OLD:<br>
+&gt; these cipher suites MUST NOT be negotiated in TLS=C2=A0 versions prior=
+ to 1.2.<br>
+&gt;<br>
+&gt; NEW:<br>
+&gt; the cipher suites defined in this document MUST NOT be negotiated in T=
+LS<br>
+&gt; versions prior to 1.2.<br>
+&gt;<br>
+&gt;=C2=A0 OLD:<br>
+&gt; Clients MUST NOT offer these cipher suites<br>
+&gt;<br>
+&gt; NEW:<br>
+&gt; Clients MUST NOT offer these cipher suites defined in this document<br=
+>
+<br>
+</span>I think I only intended to comment about the first one, but there is=
+<br>
+no harm in changing both.=C2=A0 Thanks!<br>
+<div class=3D"HOEnZb"><div class=3D"h5"><br>
+<br>
+-Ben<br>
+<br>
+______________________________<wbr>_________________<br>
+TLS mailing list<br>
+<a href=3D"mailto:TLS@ietf.org">TLS@ietf.org</a><br>
+<a href=3D"https://www.ietf.org/mailman/listinfo/tls" rel=3D"noreferrer" ta=
+rget=3D"_blank">https://www.ietf.org/mailman/<wbr>listinfo/tls</a><br>
+</div></div></blockquote></div><br></div>
+
+--001a114b07fe0114c9054fe36d55--
+

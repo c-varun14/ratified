@@ -1,0 +1,105 @@
+Return-Path: <ietf-dane@dukhovni.org>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 4EAF4128D40
+ for <tls@ietfa.amsl.com>; Mon, 22 May 2017 17:29:16 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.9
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9] autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id JrOHvcZyJ6Xx for <tls@ietfa.amsl.com>;
+ Mon, 22 May 2017 17:29:14 -0700 (PDT)
+Received: from mournblade.imrryr.org (mournblade.imrryr.org [108.5.242.66])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id C20211279E5
+ for <tls@ietf.org>; Mon, 22 May 2017 17:29:14 -0700 (PDT)
+Received: from [172.31.31.193] (gzac12-mdf2-1.aoa.twosigma.com
+ [208.77.215.155])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mournblade.imrryr.org (Postfix) with ESMTPSA id 182C07A32F1
+ for <tls@ietf.org>; Tue, 23 May 2017 00:29:14 +0000 (UTC)
+ (envelope-from ietf-dane@dukhovni.org)
+Content-Type: text/plain; charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+From: Viktor Dukhovni <ietf-dane@dukhovni.org>
+In-Reply-To: <201705222019.46521.davemgarrett@gmail.com>
+Date: Mon, 22 May 2017 20:29:13 -0400
+Content-Transfer-Encoding: quoted-printable
+Reply-To: TLS WG <tls@ietf.org>
+Message-Id: <F589FF5F-3F77-4125-B8F0-B9701925B9EF@dukhovni.org>
+References: <f262447d-5bd1-68c8-dac6-ad2224733235@akamai.com>
+ <CABcZeBMMfp4DUcNCFUYCCP6B+UQn85bq2LSoumJdywy=0GOq4Q@mail.gmail.com>
+ <E3BB180E-EC66-4F92-868B-E04F9E63CDF6@dukhovni.org>
+ <201705222019.46521.davemgarrett@gmail.com>
+To: TLS WG <tls@ietf.org>
+X-Mailer: Apple Mail (2.3273)
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/mmRTm8wL_pYEEDZmlEw46vBtM-E>
+Subject: Re: [TLS] Better weak hash language (was Re: AD Review of
+ draft-ietf-tls-tls13)
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Tue, 23 May 2017 00:29:16 -0000
+
+
+> On May 22, 2017, at 8:19 PM, Dave Garrett <davemgarrett@gmail.com> =
+wrote:
+>=20
+> My issue with this area is that we've got this fairly weird two tiered
+> problem where we're still pretending SHA-1 is vaguely acceptable in =
+some
+> scenarios where certificates are being validated, and thus we need two
+> sets of language: one for weak hash MUST NOTs and another for weak =
+hash
+> SHOULD NOT. The current text was written before SHA-1 was broken back =
+in
+> February, so, while the topic of changing language we had consensus on =
+is
+> up, I'd really like to make SHA-1 completely banned for standard =
+certificate
+> authenticated TLS 1.3+ connections alongside MD5. To do this in a
+> non-messy way, we'd have to delete the SHA-1 special-casing and state
+> that TLS 1.3+ implementations can only use deprecated hashes
+> (MD5/SHA1/SHA224/etc) if explicitly doing opportunistic encryption or =
+some
+> scenario where trust can be established without validating them.
+
+Works for me.  In all the use-cases I care about the hash algorithm in
+question is never actually used to validate any certificate signatures,
+but the spec seems to require that the handshake be aborted anyway, just
+because the codepoint is present in the chain.
+
+I have no objections to banning *actual* use for making verification
+decisions of all hash functions with collision resistance less than
+say 120 bits (128 - modest fuzz for attacks that don't significantly
+damage the algorithm).
+
+What I am trying to avoid is having implementations just hang up
+because the peer's certificate message contains "toxic" codepoints,
+that will never actually get used, because verification is not
+performed at all, or performed by means other than PKIX, or with
+different intermediate certificates than presented.
+
+Setting a collision-resistance floor rather than naming some list
+of algorithms makes more sense to me, but if the WG really feels
+that naming some "verbotten" algorithms is better, so be it.
+
+--=20
+	Viktor.
+

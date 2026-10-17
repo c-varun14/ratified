@@ -1,0 +1,1254 @@
+Return-Path: <joe@salowey.net>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 21C3D128B37
+ for <tls@ietfa.amsl.com>; Wed, 24 May 2017 08:03:58 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.899
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.899 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_NONE=-0.0001, SPF_PASS=-0.001,
+ URIBL_BLOCKED=0.001] autolearn=unavailable autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=salowey-net.20150623.gappssmtp.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id Llz22jDLQcP2 for <tls@ietfa.amsl.com>;
+ Wed, 24 May 2017 08:03:53 -0700 (PDT)
+Received: from mail-pf0-x233.google.com (mail-pf0-x233.google.com
+ [IPv6:2607:f8b0:400e:c00::233])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 65B3F1293D6
+ for <tls@ietf.org>; Wed, 24 May 2017 08:03:53 -0700 (PDT)
+Received: by mail-pf0-x233.google.com with SMTP id m17so140676196pfg.3
+ for <tls@ietf.org>; Wed, 24 May 2017 08:03:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=salowey-net.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+ :cc; bh=GjvWcvqKNcG8G12aCKaSiP+Trcj9IfD2lSxKVcsn5eU=;
+ b=G6tI+os0oP94fk1F9awDmqJcwLBlKezwmYzHSsveyTGUixoxvhqqxErOUvRkNi0etr
+ 2Rqv1bYWx+N/LxbcGRHIHkDqUdOzqShAhJNBJaIWYaRjoHHDHt/VCwiT8swo6dLtDGNG
+ GtJvR2g99zDfN+aTD68mMyGpJBYfLWKECfDEKGSDtHxndMFKiRa/RoB32nmhlXwdbQgS
+ ObZmG3HfvHLZZDfaUkt1MqGLL9eSmKm8EMUdywcHoscum7g3onrh9+FOi6c4DkafSe9g
+ yLdYLtvovRjmi8W6FNdr73VfPUvmEnaNeqJrTOxEr6XSzUM0KiZBuH3vys1RIzBSlrhp
+ aouw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+ :message-id:subject:to:cc;
+ bh=GjvWcvqKNcG8G12aCKaSiP+Trcj9IfD2lSxKVcsn5eU=;
+ b=i/1BGZStO/ic0ESE2nL827MnOhXACY2p+sJHYJS5n3kDXR6Vr8fLWH7Yy/6OtOyzXp
+ MwWkbanxLcpxWJVMlBfaacIF1tq4TvvLI01s2Upjrkx/fFMJsUEQMNDZpbkm4KDKc2gy
+ 4/fOOVcLGIw75Rc1G1wWSRnYyDsY/p4I4IPo5+TV/HMpE1oE2rC5hafzastkpDOf1rJe
+ 5WwvIdGwD3L1jiOYnKHtrCZuxSdTG6eTF1/jqNaHamfDacFx16orhPH25rJcnFMHsnz5
+ WX3AXU2AIDlobyILle975TxCRx6urSgGiF8RId+znB46DBzolLdDayTeSbpgXephmKSf
+ WWrA==
+X-Gm-Message-State: AODbwcDogmwX7qjiQLKkBIH4GOOuoX1azo2zHOcbs3n89KyMCuF+JGsR
+ n5lFVcB4bbPvxUFdItHVf/IVm67UdMWO
+X-Received: by 10.84.162.204 with SMTP id o12mr43425730plg.23.1495638232791;
+ Wed, 24 May 2017 08:03:52 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 10.100.177.204 with HTTP; Wed, 24 May 2017 08:03:32 -0700 (PDT)
+In-Reply-To: <CADZyTknBzV6Z_wwBtPw-=9VOw1Z0X8UQPRorwvg_cRQuRNFQLw@mail.gmail.com>
+References: <149550551972.4974.3201248950751611020.idtracker@ietfa.amsl.com>
+ <CADZyTknOk=skkKXFtrvVWuKVU_PLV3tecaeo9kdLe77a9YxkNQ@mail.gmail.com>
+ <CABcZeBM-4_xqBOum3vCd2Sb5327CYpU08kxadqYwW+qh0W3eJw@mail.gmail.com>
+ <CADZyTknmXE6UW5e9SbSwwSUZWU-wHw_+9sTB_xnYUmo8KBOJxg@mail.gmail.com>
+ <CADZyTk=K8dzYaEL3TBjHMzsHnF+X52RvZiUsSBJQmNi0CkH=CA@mail.gmail.com>
+ <CABkgnnVq8N+vEXZ-=yU+EWR9GYTh9K64D8MP0Yu7Pn0enE=iRQ@mail.gmail.com>
+ <CADZyTknBzV6Z_wwBtPw-=9VOw1Z0X8UQPRorwvg_cRQuRNFQLw@mail.gmail.com>
+From: Joseph Salowey <joe@salowey.net>
+Date: Wed, 24 May 2017 08:03:32 -0700
+Message-ID: <CAOgPGoBzZ9e4amR0q2tHMqjErqWZFd17noqtUkmYHQg3a1Cm7g@mail.gmail.com>
+To: Daniel Migault <daniel.migault@ericsson.com>
+Cc: Martin Thomson <martin.thomson@gmail.com>, Eric Rescorla <ekr@rtfm.com>, 
+ tls-chairs <tls-chairs@ietf.org>, The IESG <iesg@ietf.org>,
+ tls <tls@ietf.org>, draft-ietf-tls-ecdhe-psk-aead@ietf.org
+Content-Type: multipart/alternative; boundary="94eb2c1483a0941ad805504669a0"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/LVvWtNzNJo04ZORDfeCQFqgnYHw>
+Subject: Re: [TLS] Eric Rescorla's Discuss on
+ draft-ietf-tls-ecdhe-psk-aead-04: (with DISCUSS and COMMENT)
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Wed, 24 May 2017 15:03:58 -0000
+
+--94eb2c1483a0941ad805504669a0
+Content-Type: text/plain; charset="UTF-8"
+
+Hi Daniel,
+
+Thanks for putting this revision together.  The original text in draft 4
+went beyond the scope of what should be in the document (I was too hasty in
+my review of the document and discussion on the list).   Your current
+proposal is an improvement, but it still discusses behavior that could
+either conflict with other documents or discusses behavior that is not in
+scope.
+
+My suggestion is to replace section 4 with the following paragraph (I think
+this is similar to what Martin suggests):
+
+"The cipher suites defined in this document MUST NOT be negotiated for any
+version of (D)TLS other than TLS 1.2.  Servers MUST NOT select one of these
+cipher suites when selecting TLS version other than TLS 1.2.  A client MUST
+treat the selection of these cipher suites in combination with a different
+version of TLS as an error and generate a fatal 'illegal_parameter' TLS
+alert."
+
+I think it would also be OK to add the following to point readers to
+equivalent ciphers in 1.3.  Here is some suggested text that could go in
+the revised section 4:
+
+"Cipher suites TLS_AES_128_GCM_SHA256, TLS_AES_256_GCM_SHA384,
+TLS_AES_128_CCM_8_SHA256 and TLS_AES_128_CCM_SHA256 are used to support
+equivalent functionality in TLS 1.3 [TLS 1.3]."
+
+Thanks,
+
+Joe
+
+
+On Wed, May 24, 2017 at 7:04 AM, Daniel Migault <daniel.migault@ericsson.com
+> wrote:
+
+> Hi Martin,
+>
+> Thank you for your review. Some comment were about text in the
+> applicability section. I think I agree with you that this section details
+> and clarifies  the following sentence of the previous section:  """ The
+> assigned code points can only be used for TLS 1.2.""". Most of the text of
+> this section has been added in order to address comments, thus in order to
+> make this section helpful for many readers, I prefer to keep most of the
+> text you mentioned as not useful.
+>
+> Please see inline for more detail responses and let me know if that
+> address your comments.
+>
+> Yours,
+> Daniel
+>
+> On Wed, May 24, 2017 at 12:09 AM, Martin Thomson <martin.thomson@gmail.com
+> > wrote:
+>
+>> Hi Daniel,
+>>
+>> This removes the offending text.
+>>
+>> This is incorrect:
+>>
+>> > Clients MUST NOT offer one of these cipher suites with a (D)TLS version
+>> that differs from TLS 1.2.
+>>
+>> It should be possible to offer these when attempting to negotiate TLS
+>> 1.3.  The server simply cannot negotiate these cipher suites if it
+>> chooses to use 1.3.  I'd remove that sentence (and the one following
+>> it, since it's redundant with the first sentence of the paragraph).
+>>
+>> My understanding is that you suggest to remove "Clients MUST NOT offer
+> one ..." for the following reasons:
+>
+> A) it is redundant with the first sentence of the paragraph: "The cipher
+> suites defined in this document MUST NOT be negotiated ...".  This sentence
+> clarifies on the client side what "MUST NOT be negotiated" means, and the
+> same is done for the server side. If we provide clarification for the
+> server side, I would prefer to keep a clarification for the client side as
+> well.
+>
+> B) It is not true as TLS1.3 enables these cipher suites to be negotiated
+> with TLS1.3. In the text cipher suites stands for the cipher suites code
+> points of the IANA registry.  Maybe we can have a better wording. However I
+> believe the next paragraph clarifies that TLS1.3 negotiates these ciphers
+> suites in a different way. Would the following wording address your
+> comment. If so I will update the section to remove the confusion.
+>
+> "Clients MUST NOT offer one of the cipher suites code points defined in
+> the document with a (D)TLS version that differs from TLS 1.2."
+>
+> The text in question is:
+> """
+>    The cipher suites defined in this document MUST NOT be negotiated for
+>    any version of (D)TLS other than TLS 1.2.  Clients MUST NOT offer one
+>    of these cipher suites with a (D)TLS version that differs from TLS
+>    1.2.  Servers MUST NOT select one of these cipher suites with a TLS
+>    version that differs from TLS 1.2.  A client MUST treat the selection
+>    of these cipher suites in combination with a version of TLS as an
+>    error and generate a fatal 'illegal_parameter' TLS alert.
+>
+> """
+>
+>
+>> As others have noted, the paragraph about TLS 1.3 isn't helpful and
+>> should be removed.
+>>
+>>
+> Suggestion to remove TLS1.3 related text was to clarify that the cipher
+> suites were only defined for TLS1.2. Unless I missed something we have
+> removed most of the text that could cause confusion. On the other hand,
+> TLS1.3 has been designed, and we also have received comments to position
+> the defined cipher suites toward TLS1.3 as we do fro TLS1.0 and TLS1.1.
+> This is the intent of the remaining text mentioning TLS1.3.
+>
+> In the applicable version section, the text for TLS1.3 is intended to
+> clarify why the cipher suites are restricted to TLS1.2. I believe this is
+> useful for readers not so familiar with TLS1.3 that may not be aware of how
+> TLS1.3 negotiate ciphers. My personal opinion is that it might be better to
+> have it explicit rather than implicit, and I would prefer to keep the text
+> below:
+>
+> """
+>    TLS version 1.3 and later negotiate these features in a different
+>    manner.  Unlike TLS 1.2, TLS 1.3 separates authentication and cipher
+>    suite negotiation [I-D.ietf-tls-tls13] Section 1.2.  TLS 1.3 supports
+>    PSK with ECDHE key exchange and the cipher suites
+>    TLS_AES_128_GCM_SHA256, TLS_AES_256_GCM_SHA384,
+>    TLS_AES_128_CCM_8_SHA256 and TLS_AES_128_CCM_SHA256 are part of the
+>    specification.  As a result, TLS 1.3 and higher versions, negotiate
+>    and support these cipher suites in a different way.
+>
+> """
+>
+>
+>
+>
+>> This:
+>>
+>> > In addition, it is worth noting that TLS 1.0 [RFC2246] and TLS 1.2
+>> [RFC4346] split the pre-master into two  parts.  The PRF results from
+>> mixing the two pseudorandom streams with distinct hash functions (MD5 and
+>> SHA-1) by exclusive-ORing them together.
+>>
+>> You mean TLS 1.1 rather than 1.2.  But as with the former paragraph,
+>> talking about the limitations of TLS versions that you explicitly
+>> don't support isn't useful.  Remove this paragraph also.
+>>
+>>
+> Yes that is TLS1.1. I updated it. I believe the text is useful as it
+> provides a clear justification on why it should not be used on TLS version
+> lower than 1.2. More specifically, previous version do not support AEAD,
+> but this may not prevent someone using AEAD with these versions. The reason
+> provided is not AEAD related but PSK related. I believe it is useful to
+> explicitly justify why the cipher suites defined in the document should not
+> be used with previous TLS versions. The text has bee suggested by the
+> secdir and I would prefer to keep it, unless there is a strong willingness
+> to remove it.
+>
+>
+>> Nits:
+>> s/pre-master(| secret)/premaster secret/g
+>>
+>
+> Corrected: The text only have premaster secret.
+>
+>
+>> You don't anywhere state that TLS_ECDHE_PSK_WITH_AES_128_GCM_SHA256
+>> means to use AEAD_AES_128_GCM (and the same for the other
+>> ciphersuites).  I mention this because the order in which the AEAD
+>> algorithms are mentioned is different to the order of the ciphersuites
+>> in the list.
+>>
+>>
+> Unless I miss your comment, I believe the section 3 already addresses it.
+> If not please let me knoe what text you would like to see.
+>
+> """
+> 3.  ECDHE_PSK with AES-GCM and AES-CCM Cipher Suites
+>
+>    The cipher suites defined in this document are based on the AES-GCM
+>    and AES-CCM Authenticated Encryption with Associated Data (AEAD)
+>    algorithms AEAD_AES_128_GCM, AEAD_AES_256_GCM and AEAD_AES_128_CCM
+>    defined in [RFC5116], and AEAD_AES_128_CCM_8 defined in [RFC6655].
+>
+> """
+>
+>>
+>> On 24 May 2017 at 12:37, Daniel Migault <daniel.migault@ericsson.com>
+>> wrote:
+>> > re-sending with the version 05 but removing the diff to be under the
+>> 100 KB
+>> > limit.
+>> > Yours,
+>> > Daniel
+>> >
+>> > On Tue, May 23, 2017 at 9:28 PM, Daniel Migault
+>> > <daniel.migault@ericsson.com> wrote:
+>> >>
+>> >> Hi Eric,
+>> >>
+>> >> Thank you for the feed backs. The version 05 contains all text changes
+>> you
+>> >> agreed. In addition, the text explaining dictionary/brute force has
+>> been
+>> >> removed and replace by a reference to 4279. The recommendation
+>> regarding to
+>> >> all PSK ciphers has been limited to the one of the document.  Please
+>> see
+>> >> inline for more details.
+>> >>
+>> >> For some reasons I am not able to validate the submission of version
+>> 05. I
+>> >> have attached the diff with version 04 as well as the locally generated
+>> >> version 05.
+>> >>
+>> >> Yours,
+>> >> Daniel
+>> >>
+>> >> On Tue, May 23, 2017 at 7:40 PM, Eric Rescorla <ekr@rtfm.com> wrote:
+>> >>>
+>> >>>
+>> >>>
+>> >>> On Wed, May 24, 2017 at 6:00 AM, Daniel Migault
+>> >>> <daniel.migault@ericsson.com> wrote:
+>> >>>>
+>> >>>> Hi Eric,
+>> >>>>
+>> >>>> Thank you for your reviews. Please see my responses inline. If you
+>> agree
+>> >>>> with the text I will update the draft.
+>> >>>>
+>> >>>> Yours,
+>> >>>> Daniel
+>> >>>>
+>> >>>> On Mon, May 22, 2017 at 10:11 PM, Eric Rescorla <ekr@rtfm.com>
+>> wrote:
+>> >>>>>
+>> >>>>> Eric Rescorla has entered the following ballot position for
+>> >>>>> draft-ietf-tls-ecdhe-psk-aead-04: Discuss
+>> >>>>>
+>> >>>>> When responding, please keep the subject line intact and reply to
+>> all
+>> >>>>> email addresses included in the To and CC lines. (Feel free to cut
+>> this
+>> >>>>> introductory paragraph, however.)
+>> >>>>>
+>> >>>>>
+>> >>>>> Please refer to
+>> >>>>> https://www.ietf.org/iesg/statement/discuss-criteria.html
+>> >>>>> for more information about IESG DISCUSS and COMMENT positions.
+>> >>>>>
+>> >>>>>
+>> >>>>> The document, along with other ballot positions, can be found here:
+>> >>>>> https://datatracker.ietf.org/doc/draft-ietf-tls-ecdhe-psk-aead/
+>> >>>>>
+>> >>>>>
+>> >>>>>
+>> >>>>> ------------------------------------------------------------
+>> ----------
+>> >>>>> DISCUSS:
+>> >>>>> ------------------------------------------------------------
+>> ----------
+>> >>>>>
+>> >>>>> The following text appears to have been added in -04
+>> >>>>>
+>> >>>>>    A server receiving a ClientHello and a client_version indicating
+>> >>>>>    (3,1) "TLS 1.0" or (3,2) "TLS 1.1" and any of the cipher suites
+>> from
+>> >>>>>    this document in ClientHello.cipher_suites can safely assume that
+>> >>>>> the
+>> >>>>>    client supports TLS 1.2 and is willing to use it.  The server
+>> MUST
+>> >>>>>    NOT negotiate these cipher suites with TLS protocol versions
+>> earlier
+>> >>>>>    than TLS 1.2.  Not requiring clients to indicate their support
+>> for
+>> >>>>>    TLS 1.2 cipher suites exclusively through
+>> ClientHello.client_hello
+>> >>>>>    improves the interoperability in the installed base and use of
+>> TLS
+>> >>>>>    1.2 AEAD cipher suites without upsetting the installed base of
+>> >>>>>    version-intolerant TLS servers, results in more TLS handshakes
+>> >>>>>    succeeding and obviates fallback mechanisms.
+>> >>>>>
+>> >>>>> This is a major technical change from -03, which, AFAIK, prohibited
+>> >>>>> the server from negotiating these algorithms with TLS 1.1 and below
+>> >>>>> and maintained the usual TLS version 1.2 negotiation rules.
+>> >>>>>
+>> >>>>> This is a very material technical change. I don't consider it wise,
+>> >>>>> but in any case it would absolutely need WG consensus, which I
+>> >>>>> don't believe that it has given the recent introduction.
+>> >>>>
+>> >>>>
+>> >>>> I agree that the text is a technical change, and that it may not be
+>> >>>> appropriated to do so now. The reason I included it was that it was
+>> conform
+>> >>>> to the previous text, but I agree that implicit assumption of
+>> version 1.2
+>> >>>> may need some additional discussion especially regarding RFC5246
+>> Appendix E.
+>> >>>> Unless you prefer further discussion I assume the text below address
+>> your
+>> >>>> concern.
+>> >>>>
+>> >>>> <t>The cipher suites defined in this document MUST NOT be negotiated
+>> for
+>> >>>> any version of (D)TLS other than TLS 1.2. Clients MUST NOT offer one
+>> of
+>> >>>> these cipher suites with a (D)TLS version that differs from TLS 1.2.
+>> Servers
+>> >>>> MUST NOT select one of these cipher suites with a TLS version that
+>> differs
+>> >>>> from TLS 1.2. A client MUST treat the selection of these cipher
+>> suites in
+>> >>>> combination with a version of TLS as an error and generate a fatal
+>> >>>> 'illegal_parameter' TLS alert. </t>
+>> >>>
+>> >>>
+>> >>> Yes, this seems fine
+>> >>>
+>> >>>
+>> >>>>> The discussion of dictionary attacks here seems inferior to that
+>> >>>>> in 4279. In particular, you only need to actively attack one
+>> >>>>> connection to capture the data you need for a brute force attack
+>> >>>>> despite the text there referring to trying "different keys".
+>> >>>>> Please correct that.
+>> >>>>>
+>> >>>> I believe the text below address your concern:
+>> >>>>
+>> >>>> OLD:
+>> >>>> <t>Use of Pre-Shared Keys of limited entropy may allow an active
+>> >>>> attacker attempts to connect to the server and try different keys.
+>> >>>> For example, limited entropy may be provided by using a short PSK in
+>> >>>> which
+>> >>>> case an attacker may perform a brute-force attack. Another example
+>> >>>> includes the use of a PSK  chosen by a human which thus may be
+>> exposed
+>> >>>> to
+>> >>>> dictionary attacks.</t>
+>> >>>>
+>> >>>> NEW:
+>> >>>> <t>Pre-Shared Keys security relies on its associated entropy, and it
+>> is
+>> >>>> RECOMMENDED to follow <xref target="4086"/> to ensure the PSK has
+>> enough
+>> >>>> entropy. Possible reasons for low entropy includes PSK chosen by
+>> humans or
+>> >>>> PSK of small length as well as using random generators with limited
+>> entropy.
+>> >>>> </t>
+>> >>>>
+>> >>>> <t>PSK of limited entropy may allow an attacker to test different PSK
+>> >>>> values against a valid output such as master secret or any output
+>> derived
+>> >>>> from it. In this document, the master secret is generated using the
+>> PSK as
+>> >>>> well as the ECDHE shared secret. The use of ECDHE limits the
+>> possibilities
+>> >>>> of passive eavesdropping attackers, as the ECDHE shared secret is not
+>> >>>> expected to be derived from the observed ECDH parameters. As a
+>> result,
+>> >>>> passive eavesdropping is unlikely to happen, and the collection of
+>> all
+>> >>>> necessary material relies on an active attack.
+>> >>>> An active attacker may collect the necessary material by setting a
+>> TLS
+>> >>>> session as a client with the legitimate server. One PSK is tested
+>> for each
+>> >>>> session, and a match occurs when key exchange succeeds. On the other
+>> hand,
+>> >>>> an active attacker may also consider gathering the necessary
+>> information for
+>> >>>> offline computation. One way consists in getting a legitimate client
+>> to
+>> >>>> establish a connection with the attacker. It is also assumed that
+>> the client
+>> >>>> will accept the ECDH parameters authenticated by the attacker's
+>> private key
+>> >>>> and finally returns the Finished message authenticating the
+>> exchange. The
+>> >>>> attacker will be then in possession of all the necessary information
+>> to
+>> >>>> perform a brute force attack.</t>
+>> >>>
+>> >>>
+>> >>> Is there a reason to not just point directly to the 4279 security
+>> >>> considerations?
+>> >>
+>> >>
+>> >> No, basically I tried to complete the previous text that missed the
+>> >> offline use case. The current version just point to 4279, without
+>> having the
+>> >> above text. If you think the text above is clarifying I can add it as
+>> well.
+>> >>>
+>> >>> -
+>> >>>>
+>> >>>>
+>> >>>>>
+>> >>>>>
+>> >>>>> ------------------------------------------------------------
+>> ----------
+>> >>>>> COMMENT:
+>> >>>>> ------------------------------------------------------------
+>> ----------
+>> >>>>>
+>> >>>>> The citations to TLS 1.3 still seem pretty muddled. I think you
+>> >>>>> should just stop referencing and discussing 1.3.
+>> >>>>
+>> >>>>
+>> >>>> My understanding of your comment is that mentioning TLS 1.3 to
+>> further
+>> >>>> insisting that the code point are not valid for TLS 1.3 is
+>> confusing. I
+>> >>>> propose to:
+>> >>>>
+>> >>>> Explicitly mention the TLS version in the title:
+>> >>>>
+>> >>>> OLD title:
+>> >>>> ECDHE_PSK with AES-GCM and AES-CCM Cipher Suites for Transport Layer
+>> >>>> Security (TLS)
+>> >>>>
+>> >>>> NEW title:
+>> >>>> ECDHE_PSK with AES-GCM and AES-CCM Cipher Suites for Transport Layer
+>> >>>> Security (TLS)
+>> >>>>
+>> >>>> OLD Introduction:
+>> >>>>
+>> >>>>     The cipher
+>> >>>>    suites are defined for version 1.2 of the Transport Layer Security
+>> >>>>    (TLS) [RFC5246] protocol, version 1.2 of the Datagram Transport
+>> Layer
+>> >>>>    Security (DTLS) protocol [RFC6347], as well as version 1.3 of TLS
+>> >>>>    [I-D.ietf-tls-tls13].
+>> >>>>
+>> >>>> NEW introduction
+>> >>>>
+>> >>>> The cipher
+>> >>>>    suites are defined for version 1.2 of the Transport Layer Security
+>> >>>>    (TLS) [RFC5246] protocol, version 1.2 of the Datagram Transport
+>> Layer
+>> >>>>    Security (DTLS) protocol [RFC6347].
+>> >>>>
+>> >>>>
+>> >>>> I suggest to keep the following text of the introduction:
+>> >>>>
+>> >>>>
+>> >>>> AEAD algorithms that combine encryption and integrity protection are
+>> >>>>    strongly recommended for (D)TLS [RFC7525] and non-AEAD algorithms
+>> are
+>> >>>>    forbidden to use in TLS 1.3 [I-D.ietf-tls-tls13].  The AEAD
+>> >>>>    algorithms considered in this document are AES-GCM and AES-CCM.
+>> The
+>> >>>>    use of AES-GCM in TLS is defined in [RFC5288] and the use of
+>> AES-CCM
+>> >>>>    is defined in [RFC6655].
+>> >>>
+>> >>>
+>> >>> Yes, this seems fine.
+>> >>>
+>> >>>
+>> >>>>
+>> >>>> I suggest to keep the following text of the Applicable versions
+>> >>>> sections, as I believe the section discusses the cipher suites
+>> against all
+>> >>>> existing TLS versions. In addition, it also justifies somewhat that
+>> we only
+>> >>>> defined cipher suites that are compatible with TLS1.3.
+>> >>>>
+>> >>>>    TLS version 1.3 and later negotiate these features in a different
+>> >>>>    manner.  Unlike TLS 1.2, TLS 1.3 separates authentication and
+>> cipher
+>> >>>>    suite negotiation [I-D.ietf-tls-tls13] Section 1.2.  TLS 1.3
+>> supports
+>> >>>>    PSK with ECDHE key exchange and the cipher suites
+>> >>>>    TLS_AES_128_GCM_SHA256, TLS_AES_256_GCM_SHA384,
+>> >>>>    TLS_AES_128_CCM_8_SHA256 and TLS_AES_128_CCM_SHA256 are part of
+>> the
+>> >>>>    specification.  As a result, TLS 1.3 and higher versions,
+>> negotiate
+>> >>>>    and support these cipher suites in a different way.
+>> >>>
+>> >>>
+>> >>> OK.
+>> >>>
+>> >>>>
+>> >>>> I suggest to remove the reference to TLS1.3 in the security
+>> >>>> considerations
+>> >>>>
+>> >>>> OLD
+>> >>>>
+>> >>>>  The security considerations in TLS 1.2 [RFC5246], DTLS 1.2
+>> [RFC6347],
+>> >>>>    TLS 1.3 [I-D.ietf-tls-tls13], ECDHE_PSK [RFC5489], AES-GCM
+>> [RFC5288],
+>> >>>>    and AES-CCM [RFC6655] apply to this document as well.
+>> >>>>
+>> >>>> NEW
+>> >>>>
+>> >>>>  The security considerations in TLS 1.2 [RFC5246], DTLS 1.2
+>> [RFC6347],
+>> >>>>  ECDHE_PSK [RFC5489], AES-GCM [RFC5288],and AES-CCM [RFC6655] apply
+>> >>>>  to this document as well.
+>> >>>>>
+>> >>>>>
+>> >>>>> S 2.
+>> >>>>> I'm not sure that the discussion of the PRF is helpful here in
+>> >>>>> mandating the non-use of these cipher suites with TLS 1.1 and
+>> >>>>> below.
+>> >>>>
+>> >>>>
+>> >>>> I find the text useful as it gives an idea why even introducing AEAD
+>> in
+>> >>>> TLS version lower than 1.2 is a bad idea, so I would prefer to keep
+>> it. The
+>> >>>> text has been changed to
+>> >>>>
+>> >>>> OLD:
+>> >>>> As such TLS 1.0 and TLS 1.1 should not be used with ECDHE_PSK.
+>> >>>>
+>> >>>> NEW:
+>> >>>> As such,  all ECDHE_PSK
+>> >>>> ciphers, including those defined outside this document, SHOULD NOT be
+>> >>>> negotiated in TLS versions prior to 1.2.
+>> >>>
+>> >>>
+>> >>> I don't think you should be levying a new normative requirement like
+>> this
+>> >>> for other ciphers
+>> >>> i this document
+>> >>
+>> >>
+>> >> Consideration for other ciphers has been removed. The requirement is
+>> >> limited to the ciphers of the document. The new text is:
+>> >>
+>> >> As such, all ECDHE_PSK ciphers, including those defined in this
+>> document,
+>> >> SHOULD NOT be
+>> >> negotiated in TLS versions prior to 1.2.
+>> >>>
+>> >>>
+>> >>> -Ek
+>> >>> r
+>> >>>
+>> >>
+>> >
+>> >
+>> > _______________________________________________
+>> > TLS mailing list
+>> > TLS@ietf.org
+>> > https://www.ietf.org/mailman/listinfo/tls
+>> >
+>>
+>
+>
+
+--94eb2c1483a0941ad805504669a0
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div class=3D"gmail_extra">Hi Daniel,</div><div class=3D"g=
+mail_extra"><br></div><div class=3D"gmail_extra">Thanks for putting this re=
+vision together.=C2=A0 The original text in draft 4 went beyond the scope o=
+f what should be in the document (I was too hasty in my review of the docum=
+ent and discussion on the list). =C2=A0 Your current proposal is an improve=
+ment, but it still discusses behavior that could either conflict with other=
+ documents or discusses behavior that is not in scope.=C2=A0=C2=A0</div><di=
+v class=3D"gmail_extra"><br></div><div class=3D"gmail_extra">My suggestion =
+is to replace section 4 with the following paragraph (I think this is simil=
+ar to what Martin suggests):<br></div><div class=3D"gmail_extra"><br></div>=
+<font face=3D"monospace, monospace">&quot;The cipher suites defined in this=
+ document MUST NOT be negotiated for any version of (D)TLS other than TLS 1=
+.2.=C2=A0 Servers MUST NOT select one of these cipher suites when selecting=
+ TLS version other than TLS 1.2.=C2=A0 A client MUST treat the selection of=
+ these cipher suites in combination with a different version of TLS as an e=
+rror and generate a fatal &#39;illegal_parameter&#39; TLS alert.&quot;=C2=
+=A0</font><div><br></div><div>I think it would also be OK to add the follow=
+ing to point readers to equivalent ciphers in 1.3.=C2=A0 Here is some sugge=
+sted text that could go in the revised section 4:</div><div><br></div><font=
+ face=3D"monospace, monospace">&quot;Cipher suites TLS_AES_128_GCM_SHA256, =
+TLS_AES_256_GCM_SHA384, TLS_AES_128_CCM_8_SHA256 and TLS_AES_128_CCM_SHA256=
+ are used to support equivalent functionality in TLS 1.3 [TLS 1.3].&quot;</=
+font><div><font face=3D"monospace, monospace"><br></font></div><div><font f=
+ace=3D"arial, helvetica, sans-serif">Thanks,</font></div><div><font face=3D=
+"arial, helvetica, sans-serif"><br></font></div><div><font face=3D"arial, h=
+elvetica, sans-serif">Joe</font></div><div><font face=3D"monospace, monospa=
+ce"><br></font><div><div class=3D"gmail_extra"><br><div class=3D"gmail_quot=
+e">On Wed, May 24, 2017 at 7:04 AM, Daniel Migault <span dir=3D"ltr">&lt;<a=
+ href=3D"mailto:daniel.migault@ericsson.com" target=3D"_blank">daniel.migau=
+lt@ericsson.com</a>&gt;</span> wrote:<br><blockquote class=3D"gmail_quote" =
+style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);pa=
+dding-left:1ex"><div dir=3D"ltr"><div><div><div>Hi Martin, <br><br></div>Th=
+ank you for your review. Some comment were about text in the applicability =
+section. I think I agree with you that this section details and clarifies=
+=C2=A0 the following sentence of the previous section:=C2=A0 &quot;&quot;&q=
+uot;   The assigned code points can only be used for TLS 1.2.&quot;&quot;&q=
+uot;. Most of the text of this section has been added in order to address c=
+omments, thus in order to make this section helpful for many readers, I pre=
+fer to keep most of the text you mentioned as not useful. <br><br>Please se=
+e inline for more detail responses and let me know if that address your com=
+ments.<br><br></div>Yours, <br></div>Daniel<br><div><div><br><div><div clas=
+s=3D"gmail_extra"><div class=3D"gmail_quote"><span class=3D"m_8333218958734=
+637850m_1573899747296649915gmail-">On Wed, May 24, 2017 at 12:09 AM, Martin=
+ Thomson <span dir=3D"ltr">&lt;<a href=3D"mailto:martin.thomson@gmail.com" =
+target=3D"_blank">martin.thomson@gmail.com</a>&gt;</span> wrote:<br><blockq=
+uote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1p=
+x solid rgb(204,204,204);padding-left:1ex">Hi Daniel,<br>
+<br>
+This removes the offending text.<br>
+<br>
+This is incorrect:<br>
+<span class=3D"m_8333218958734637850m_1573899747296649915gmail-m_-654276746=
+4740083122gmail-"><br>
+&gt; Clients MUST NOT offer one of these cipher suites with a (D)TLS versio=
+n that differs from TLS 1.2.<br>
+<br>
+</span>It should be possible to offer these when attempting to negotiate TL=
+S<br>
+1.3.=C2=A0 The server simply cannot negotiate these cipher suites if it<br>
+chooses to use 1.3.=C2=A0 I&#39;d remove that sentence (and the one followi=
+ng<br>
+it, since it&#39;s redundant with the first sentence of the paragraph).<br>
+<br></blockquote></span><div>My understanding is that you suggest to remove=
+ &quot;Clients MUST NOT offer one ...&quot; for the following reasons:<br><=
+br>A)
+ it is redundant with the first sentence of the paragraph: &quot;The cipher=
+=20
+suites defined in this document MUST NOT be negotiated ...&quot;.=C2=A0 Thi=
+s=20
+sentence clarifies on the client side what &quot;MUST NOT be negotiated&quo=
+t;=20
+means, and the same is done for the server side. If we provide=20
+clarification for the server side, I would prefer to keep a=20
+clarification for the client side as well.=C2=A0 <br><br><div class=3D"gmai=
+l_quote">B)
+ It is not true as TLS1.3 enables these cipher suites to be negotiated=20
+with TLS1.3. In the text cipher suites stands for the cipher suites code
+ points of the IANA registry.=C2=A0 Maybe we can have a better wording.=20
+However I believe the next paragraph clarifies that TLS1.3 negotiates=20
+these ciphers suites in a different way. Would the following wording addres=
+s your comment. If so I will update the section to remove the confusion.<br=
+><br>&quot;<span class=3D"m_8333218958734637850m_1573899747296649915gmail-m=
+_-6542767464740083122gmail-">Clients MUST NOT offer one of the cipher suite=
+s code points defined in the document with a (D)TLS version that differs fr=
+om TLS 1.2.&quot;</span></div><br>The text in question is:<span class=3D"m_=
+8333218958734637850m_1573899747296649915gmail-"><br>&quot;&quot;&quot;<br>=
+=C2=A0=C2=A0 The cipher suites defined in this document MUST NOT be negotia=
+ted for<br>=C2=A0=C2=A0 any version of (D)TLS other than TLS 1.2.=C2=A0 Cli=
+ents MUST NOT offer one<br>=C2=A0=C2=A0 of these cipher suites with a (D)TL=
+S version that differs from TLS<br>=C2=A0=C2=A0 1.2.=C2=A0 Servers MUST NOT=
+ select one of these cipher suites with a TLS<br>=C2=A0=C2=A0 version that =
+differs from TLS 1.2.=C2=A0 A client MUST treat the selection<br>=C2=A0=C2=
+=A0 of these cipher suites in combination with a version of TLS as an<br>=
+=C2=A0=C2=A0 error and generate a fatal &#39;illegal_parameter&#39; TLS ale=
+rt.<br><br>&quot;&quot;&quot;<br>=C2=A0</span></div><blockquote class=3D"gm=
+ail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,=
+204,204);padding-left:1ex">
+As others have noted, the paragraph about TLS 1.3 isn&#39;t helpful and<br>
+should be removed.<br>
+<br></blockquote><div><br></div><div>Suggestion to remove TLS1.3 related te=
+xt was to clarify that the cipher suites were only defined for TLS1.2. Unle=
+ss I missed something we have removed most of the text that could cause con=
+fusion. On the other hand, TLS1.3 has been designed, and we also have recei=
+ved comments to position the defined cipher suites toward TLS1.3 as we do f=
+ro TLS1.0 and TLS1.1. This is the intent of the remaining text mentioning T=
+LS1.3. <br></div><br></div><div class=3D"gmail_quote">In the applicable ver=
+sion section, the text for TLS1.3 is intended to clarify why the cipher sui=
+tes are restricted to TLS1.2. I believe this is useful for  readers not so =
+familiar with TLS1.3 that may not be aware of how TLS1.3=20
+negotiate ciphers. My personal opinion is that it might be better to have i=
+t explicit rather than implicit, and I would prefer to keep the text below:=
+<br><br></div><span class=3D"m_8333218958734637850m_1573899747296649915gmai=
+l-"><div class=3D"gmail_quote">&quot;&quot;&quot;<br>=C2=A0=C2=A0 TLS versi=
+on 1.3 and later negotiate these features in a different<br>=C2=A0=C2=A0 ma=
+nner.=C2=A0 Unlike TLS 1.2, TLS 1.3 separates authentication and cipher<br>=
+=C2=A0=C2=A0 suite negotiation [I-D.ietf-tls-tls13] Section 1.2.=C2=A0 TLS =
+1.3 supports<br>=C2=A0=C2=A0 PSK with ECDHE key exchange and the cipher sui=
+tes<br>=C2=A0=C2=A0 TLS_AES_128_GCM_SHA256, TLS_AES_256_GCM_SHA384,<br>=C2=
+=A0=C2=A0 TLS_AES_128_CCM_8_SHA256 and TLS_AES_128_CCM_SHA256 are part of t=
+he<br>=C2=A0=C2=A0 specification.=C2=A0 As a result, TLS 1.3 and higher ver=
+sions, negotiate<br>=C2=A0=C2=A0 and support these cipher suites in a diffe=
+rent way.<br><br>&quot;&quot;&quot; <br>=C2=A0</div><br>=C2=A0</span><div c=
+lass=3D"gmail_quote"><blockquote class=3D"gmail_quote" style=3D"margin:0px =
+0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">
+This:<span class=3D"m_8333218958734637850m_1573899747296649915gmail-"><br>
+<br>
+&gt; In addition, it is worth noting that TLS 1.0 [RFC2246] and TLS 1.2 [RF=
+C4346] split the pre-master into two=C2=A0 parts.=C2=A0 The PRF results fro=
+m mixing the two pseudorandom streams with distinct hash functions (MD5 and=
+ SHA-1) by exclusive-ORing them together.<br>
+<br>
+You mean TLS 1.1 rather than 1.2.=C2=A0 But as with the former paragraph,<b=
+r>
+talking about the limitations of TLS versions that you explicitly<br>
+don&#39;t support isn&#39;t useful.=C2=A0 Remove this paragraph also.<br>
+<br></span></blockquote><div><br>Yes that is TLS1.1. I updated it. I believ=
+e the text is useful as it provides a clear justification on why it should =
+not be used on TLS version lower than 1.2. More specifically, previous vers=
+ion do not support AEAD, but this may not prevent someone using AEAD with t=
+hese versions. The reason provided is not AEAD related but PSK related. I b=
+elieve it is useful to explicitly justify why the cipher suites defined in =
+the document should not be used with previous TLS versions. The text has be=
+e suggested by the secdir and I would prefer to keep it, unless there is a =
+strong willingness to remove it. =C2=A0 =C2=A0 <br>=C2=A0 <br></div><blockq=
+uote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1p=
+x solid rgb(204,204,204);padding-left:1ex">
+Nits:<br>
+s/pre-master(| secret)/premaster secret/g<br></blockquote><div><br></div><d=
+iv>Corrected: The text only have premaster secret. =C2=A0 <br></div><span c=
+lass=3D"m_8333218958734637850m_1573899747296649915gmail-"><div>=C2=A0</div>=
+<blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-=
+left:1px solid rgb(204,204,204);padding-left:1ex">
+You don&#39;t anywhere state that TLS_ECDHE_PSK_WITH_AES_128_GCM<wbr>_SHA25=
+6<br>
+means to use AEAD_AES_128_GCM (and the same for the other<br>
+ciphersuites).=C2=A0 I mention this because the order in which the AEAD<br>
+algorithms are mentioned is different to the order of the ciphersuites<br>
+in the list.<br>
+<div><div class=3D"m_8333218958734637850m_1573899747296649915gmail-m_-65427=
+67464740083122gmail-h5"><br></div></div></blockquote><div><br></div></span>=
+<div>Unless I miss your comment, I believe the section 3 already addresses =
+it. If not please let me knoe what text you would like to see. <br>=C2=A0<b=
+r></div><div>&quot;&quot;&quot;<br>3.=C2=A0 ECDHE_PSK with AES-GCM and AES-=
+CCM Cipher Suites<br><br>=C2=A0=C2=A0 The cipher suites defined in this doc=
+ument are based on the AES-GCM<br>=C2=A0=C2=A0 and AES-CCM Authenticated En=
+cryption with Associated Data (AEAD)<br>=C2=A0=C2=A0 algorithms AEAD_AES_12=
+8_GCM, AEAD_AES_256_GCM and AEAD_AES_128_CCM<br>=C2=A0=C2=A0 defined in [RF=
+C5116], and AEAD_AES_128_CCM_8 defined in [RFC6655].<br><br>&quot;&quot;&qu=
+ot;=C2=A0 <br></div><div><div class=3D"m_8333218958734637850m_1573899747296=
+649915gmail-h5"><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0=
+px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div><div=
+ class=3D"m_8333218958734637850m_1573899747296649915gmail-m_-65427674647400=
+83122gmail-h5">
+<br>
+On 24 May 2017 at 12:37, Daniel Migault &lt;<a href=3D"mailto:daniel.migaul=
+t@ericsson.com" target=3D"_blank">daniel.migault@ericsson.com</a>&gt; wrote=
+:<br>
+&gt; re-sending with the version 05 but removing the diff to be under the 1=
+00 KB<br>
+&gt; limit.<br>
+&gt; Yours,<br>
+&gt; Daniel<br>
+&gt;<br>
+&gt; On Tue, May 23, 2017 at 9:28 PM, Daniel Migault<br>
+&gt; &lt;<a href=3D"mailto:daniel.migault@ericsson.com" target=3D"_blank">d=
+aniel.migault@ericsson.com</a>&gt; wrote:<br>
+&gt;&gt;<br>
+&gt;&gt; Hi Eric,<br>
+&gt;&gt;<br>
+&gt;&gt; Thank you for the feed backs. The version 05 contains all text cha=
+nges you<br>
+&gt;&gt; agreed. In addition, the text explaining dictionary/brute force ha=
+s been<br>
+&gt;&gt; removed and replace by a reference to 4279. The recommendation reg=
+arding to<br>
+&gt;&gt; all PSK ciphers has been limited to the one of the document.=C2=A0=
+ Please see<br>
+&gt;&gt; inline for more details.<br>
+&gt;&gt;<br>
+&gt;&gt; For some reasons I am not able to validate the submission of versi=
+on 05. I<br>
+&gt;&gt; have attached the diff with version 04 as well as the locally gene=
+rated<br>
+&gt;&gt; version 05.<br>
+&gt;&gt;<br>
+&gt;&gt; Yours,<br>
+&gt;&gt; Daniel<br>
+&gt;&gt;<br>
+&gt;&gt; On Tue, May 23, 2017 at 7:40 PM, Eric Rescorla &lt;<a href=3D"mail=
+to:ekr@rtfm.com" target=3D"_blank">ekr@rtfm.com</a>&gt; wrote:<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt; On Wed, May 24, 2017 at 6:00 AM, Daniel Migault<br>
+&gt;&gt;&gt; &lt;<a href=3D"mailto:daniel.migault@ericsson.com" target=3D"_=
+blank">daniel.migault@ericsson.com</a>&gt; wrote:<br>
+&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt; Hi Eric,<br>
+&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt; Thank you for your reviews. Please see my responses inline=
+. If you agree<br>
+&gt;&gt;&gt;&gt; with the text I will update the draft.<br>
+&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt; Yours,<br>
+&gt;&gt;&gt;&gt; Daniel<br>
+&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt; On Mon, May 22, 2017 at 10:11 PM, Eric Rescorla &lt;<a hre=
+f=3D"mailto:ekr@rtfm.com" target=3D"_blank">ekr@rtfm.com</a>&gt; wrote:<br>
+&gt;&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt;&gt; Eric Rescorla has entered the following ballot positio=
+n for<br>
+&gt;&gt;&gt;&gt;&gt; draft-ietf-tls-ecdhe-psk-aead-<wbr>04: Discuss<br>
+&gt;&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt;&gt; When responding, please keep the subject line intact a=
+nd reply to all<br>
+&gt;&gt;&gt;&gt;&gt; email addresses included in the To and CC lines. (Feel=
+ free to cut this<br>
+&gt;&gt;&gt;&gt;&gt; introductory paragraph, however.)<br>
+&gt;&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt;&gt; Please refer to<br>
+&gt;&gt;&gt;&gt;&gt; <a href=3D"https://www.ietf.org/iesg/statement/discuss=
+-criteria.html" rel=3D"noreferrer" target=3D"_blank">https://www.ietf.org/i=
+esg/stat<wbr>ement/discuss-criteria.html</a><br>
+&gt;&gt;&gt;&gt;&gt; for more information about IESG DISCUSS and COMMENT po=
+sitions.<br>
+&gt;&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt;&gt; The document, along with other ballot positions, can b=
+e found here:<br>
+&gt;&gt;&gt;&gt;&gt; <a href=3D"https://datatracker.ietf.org/doc/draft-ietf=
+-tls-ecdhe-psk-aead/" rel=3D"noreferrer" target=3D"_blank">https://datatrac=
+ker.ietf.org/d<wbr>oc/draft-ietf-tls-ecdhe-psk-ae<wbr>ad/</a><br>
+&gt;&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt;&gt; ------------------------------<wbr>-------------------=
+-----------<wbr>----------<br>
+&gt;&gt;&gt;&gt;&gt; DISCUSS:<br>
+&gt;&gt;&gt;&gt;&gt; ------------------------------<wbr>-------------------=
+-----------<wbr>----------<br>
+&gt;&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt;&gt; The following text appears to have been added in -04<b=
+r>
+&gt;&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt;&gt;=C2=A0 =C2=A0 A server receiving a ClientHello and a cl=
+ient_version indicating<br>
+&gt;&gt;&gt;&gt;&gt;=C2=A0 =C2=A0 (3,1) &quot;TLS 1.0&quot; or (3,2) &quot;=
+TLS 1.1&quot; and any of the cipher suites from<br>
+&gt;&gt;&gt;&gt;&gt;=C2=A0 =C2=A0 this document in ClientHello.cipher_suite=
+s can safely assume that<br>
+&gt;&gt;&gt;&gt;&gt; the<br>
+&gt;&gt;&gt;&gt;&gt;=C2=A0 =C2=A0 client supports TLS 1.2 and is willing to=
+ use it.=C2=A0 The server MUST<br>
+&gt;&gt;&gt;&gt;&gt;=C2=A0 =C2=A0 NOT negotiate these cipher suites with TL=
+S protocol versions earlier<br>
+&gt;&gt;&gt;&gt;&gt;=C2=A0 =C2=A0 than TLS 1.2.=C2=A0 Not requiring clients=
+ to indicate their support for<br>
+&gt;&gt;&gt;&gt;&gt;=C2=A0 =C2=A0 TLS 1.2 cipher suites exclusively through=
+ ClientHello.client_hello<br>
+&gt;&gt;&gt;&gt;&gt;=C2=A0 =C2=A0 improves the interoperability in the inst=
+alled base and use of TLS<br>
+&gt;&gt;&gt;&gt;&gt;=C2=A0 =C2=A0 1.2 AEAD cipher suites without upsetting =
+the installed base of<br>
+&gt;&gt;&gt;&gt;&gt;=C2=A0 =C2=A0 version-intolerant TLS servers, results i=
+n more TLS handshakes<br>
+&gt;&gt;&gt;&gt;&gt;=C2=A0 =C2=A0 succeeding and obviates fallback mechanis=
+ms.<br>
+&gt;&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt;&gt; This is a major technical change from -03, which, AFAI=
+K, prohibited<br>
+&gt;&gt;&gt;&gt;&gt; the server from negotiating these algorithms with TLS =
+1.1 and below<br>
+&gt;&gt;&gt;&gt;&gt; and maintained the usual TLS version 1.2 negotiation r=
+ules.<br>
+&gt;&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt;&gt; This is a very material technical change. I don&#39;t =
+consider it wise,<br>
+&gt;&gt;&gt;&gt;&gt; but in any case it would absolutely need WG consensus,=
+ which I<br>
+&gt;&gt;&gt;&gt;&gt; don&#39;t believe that it has given the recent introdu=
+ction.<br>
+&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt; I agree that the text is a technical change, and that it m=
+ay not be<br>
+&gt;&gt;&gt;&gt; appropriated to do so now. The reason I included it was th=
+at it was conform<br>
+&gt;&gt;&gt;&gt; to the previous text, but I agree that implicit assumption=
+ of version 1.2<br>
+&gt;&gt;&gt;&gt; may need some additional discussion especially regarding R=
+FC5246 Appendix E.<br>
+&gt;&gt;&gt;&gt; Unless you prefer further discussion I assume the text bel=
+ow address your<br>
+&gt;&gt;&gt;&gt; concern.<br>
+&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt; &lt;t&gt;The cipher suites defined in this document MUST N=
+OT be negotiated for<br>
+&gt;&gt;&gt;&gt; any version of (D)TLS other than TLS 1.2. Clients MUST NOT=
+ offer one of<br>
+&gt;&gt;&gt;&gt; these cipher suites with a (D)TLS version that differs fro=
+m TLS 1.2. Servers<br>
+&gt;&gt;&gt;&gt; MUST NOT select one of these cipher suites with a TLS vers=
+ion that differs<br>
+&gt;&gt;&gt;&gt; from TLS 1.2. A client MUST treat the selection of these c=
+ipher suites in<br>
+&gt;&gt;&gt;&gt; combination with a version of TLS as an error and generate=
+ a fatal<br>
+&gt;&gt;&gt;&gt; &#39;illegal_parameter&#39; TLS alert. &lt;/t&gt;<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt; Yes, this seems fine<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt;&gt; The discussion of dictionary attacks here seems inferi=
+or to that<br>
+&gt;&gt;&gt;&gt;&gt; in 4279. In particular, you only need to actively atta=
+ck one<br>
+&gt;&gt;&gt;&gt;&gt; connection to capture the data you need for a brute fo=
+rce attack<br>
+&gt;&gt;&gt;&gt;&gt; despite the text there referring to trying &quot;diffe=
+rent keys&quot;.<br>
+&gt;&gt;&gt;&gt;&gt; Please correct that.<br>
+&gt;&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt; I believe the text below address your concern:<br>
+&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt; OLD:<br>
+&gt;&gt;&gt;&gt; &lt;t&gt;Use of Pre-Shared Keys of limited entropy may all=
+ow an active<br>
+&gt;&gt;&gt;&gt; attacker attempts to connect to the server and try differe=
+nt keys.<br>
+&gt;&gt;&gt;&gt; For example, limited entropy may be provided by using a sh=
+ort PSK in<br>
+&gt;&gt;&gt;&gt; which<br>
+&gt;&gt;&gt;&gt; case an attacker may perform a brute-force attack. Another=
+ example<br>
+&gt;&gt;&gt;&gt; includes the use of a PSK=C2=A0 chosen by a human which th=
+us may be exposed<br>
+&gt;&gt;&gt;&gt; to<br>
+&gt;&gt;&gt;&gt; dictionary attacks.&lt;/t&gt;<br>
+&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt; NEW:<br>
+&gt;&gt;&gt;&gt; &lt;t&gt;Pre-Shared Keys security relies on its associated=
+ entropy, and it is<br>
+&gt;&gt;&gt;&gt; RECOMMENDED to follow &lt;xref target=3D&quot;4086&quot;/&=
+gt; to ensure the PSK has enough<br>
+&gt;&gt;&gt;&gt; entropy. Possible reasons for low entropy includes PSK cho=
+sen by humans or<br>
+&gt;&gt;&gt;&gt; PSK of small length as well as using random generators wit=
+h limited entropy.<br>
+&gt;&gt;&gt;&gt; &lt;/t&gt;<br>
+&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt; &lt;t&gt;PSK of limited entropy may allow an attacker to t=
+est different PSK<br>
+&gt;&gt;&gt;&gt; values against a valid output such as master secret or any=
+ output derived<br>
+&gt;&gt;&gt;&gt; from it. In this document, the master secret is generated =
+using the PSK as<br>
+&gt;&gt;&gt;&gt; well as the ECDHE shared secret. The use of ECDHE limits t=
+he possibilities<br>
+&gt;&gt;&gt;&gt; of passive eavesdropping attackers, as the ECDHE shared se=
+cret is not<br>
+&gt;&gt;&gt;&gt; expected to be derived from the observed ECDH parameters. =
+As a result,<br>
+&gt;&gt;&gt;&gt; passive eavesdropping is unlikely to happen, and the colle=
+ction of all<br>
+&gt;&gt;&gt;&gt; necessary material relies on an active attack.<br>
+&gt;&gt;&gt;&gt; An active attacker may collect the necessary material by s=
+etting a TLS<br>
+&gt;&gt;&gt;&gt; session as a client with the legitimate server. One PSK is=
+ tested for each<br>
+&gt;&gt;&gt;&gt; session, and a match occurs when key exchange succeeds. On=
+ the other hand,<br>
+&gt;&gt;&gt;&gt; an active attacker may also consider gathering the necessa=
+ry information for<br>
+&gt;&gt;&gt;&gt; offline computation. One way consists in getting a legitim=
+ate client to<br>
+&gt;&gt;&gt;&gt; establish a connection with the attacker. It is also assum=
+ed that the client<br>
+&gt;&gt;&gt;&gt; will accept the ECDH parameters authenticated by the attac=
+ker&#39;s private key<br>
+&gt;&gt;&gt;&gt; and finally returns the Finished message authenticating th=
+e exchange. The<br>
+&gt;&gt;&gt;&gt; attacker will be then in possession of all the necessary i=
+nformation to<br>
+&gt;&gt;&gt;&gt; perform a brute force attack.&lt;/t&gt;<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt; Is there a reason to not just point directly to the 4279 secur=
+ity<br>
+&gt;&gt;&gt; considerations?<br>
+&gt;&gt;<br>
+&gt;&gt;<br>
+&gt;&gt; No, basically I tried to complete the previous text that missed th=
+e<br>
+&gt;&gt; offline use case. The current version just point to 4279, without =
+having the<br>
+&gt;&gt; above text. If you think the text above is clarifying I can add it=
+ as well.<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt; -<br>
+&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt;&gt; ------------------------------<wbr>-------------------=
+-----------<wbr>----------<br>
+&gt;&gt;&gt;&gt;&gt; COMMENT:<br>
+&gt;&gt;&gt;&gt;&gt; ------------------------------<wbr>-------------------=
+-----------<wbr>----------<br>
+&gt;&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt;&gt; The citations to TLS 1.3 still seem pretty muddled. I =
+think you<br>
+&gt;&gt;&gt;&gt;&gt; should just stop referencing and discussing 1.3.<br>
+&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt; My understanding of your comment is that mentioning TLS 1.=
+3 to further<br>
+&gt;&gt;&gt;&gt; insisting that the code point are not valid for TLS 1.3 is=
+ confusing. I<br>
+&gt;&gt;&gt;&gt; propose to:<br>
+&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt; Explicitly mention the TLS version in the title:<br>
+&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt; OLD title:<br>
+&gt;&gt;&gt;&gt; ECDHE_PSK with AES-GCM and AES-CCM Cipher Suites for Trans=
+port Layer<br>
+&gt;&gt;&gt;&gt; Security (TLS)<br>
+&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt; NEW title:<br>
+&gt;&gt;&gt;&gt; ECDHE_PSK with AES-GCM and AES-CCM Cipher Suites for Trans=
+port Layer<br>
+&gt;&gt;&gt;&gt; Security (TLS)<br>
+&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt; OLD Introduction:<br>
+&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt;=C2=A0 =C2=A0 =C2=A0The cipher<br>
+&gt;&gt;&gt;&gt;=C2=A0 =C2=A0 suites are defined for version 1.2 of the Tra=
+nsport Layer Security<br>
+&gt;&gt;&gt;&gt;=C2=A0 =C2=A0 (TLS) [RFC5246] protocol, version 1.2 of the =
+Datagram Transport Layer<br>
+&gt;&gt;&gt;&gt;=C2=A0 =C2=A0 Security (DTLS) protocol [RFC6347], as well a=
+s version 1.3 of TLS<br>
+&gt;&gt;&gt;&gt;=C2=A0 =C2=A0 [I-D.ietf-tls-tls13].<br>
+&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt; NEW introduction<br>
+&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt; The cipher<br>
+&gt;&gt;&gt;&gt;=C2=A0 =C2=A0 suites are defined for version 1.2 of the Tra=
+nsport Layer Security<br>
+&gt;&gt;&gt;&gt;=C2=A0 =C2=A0 (TLS) [RFC5246] protocol, version 1.2 of the =
+Datagram Transport Layer<br>
+&gt;&gt;&gt;&gt;=C2=A0 =C2=A0 Security (DTLS) protocol [RFC6347].<br>
+&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt; I suggest to keep the following text of the introduction:<=
+br>
+&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt; AEAD algorithms that combine encryption and integrity prot=
+ection are<br>
+&gt;&gt;&gt;&gt;=C2=A0 =C2=A0 strongly recommended for (D)TLS [RFC7525] and=
+ non-AEAD algorithms are<br>
+&gt;&gt;&gt;&gt;=C2=A0 =C2=A0 forbidden to use in TLS 1.3 [I-D.ietf-tls-tls=
+13].=C2=A0 The AEAD<br>
+&gt;&gt;&gt;&gt;=C2=A0 =C2=A0 algorithms considered in this document are AE=
+S-GCM and AES-CCM.=C2=A0 The<br>
+&gt;&gt;&gt;&gt;=C2=A0 =C2=A0 use of AES-GCM in TLS is defined in [RFC5288]=
+ and the use of AES-CCM<br>
+&gt;&gt;&gt;&gt;=C2=A0 =C2=A0 is defined in [RFC6655].<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt; Yes, this seems fine.<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt; I suggest to keep the following text of the Applicable ver=
+sions<br>
+&gt;&gt;&gt;&gt; sections, as I believe the section discusses the cipher su=
+ites against all<br>
+&gt;&gt;&gt;&gt; existing TLS versions. In addition, it also justifies some=
+what that we only<br>
+&gt;&gt;&gt;&gt; defined cipher suites that are compatible with TLS1.3.<br>
+&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt;=C2=A0 =C2=A0 TLS version 1.3 and later negotiate these fea=
+tures in a different<br>
+&gt;&gt;&gt;&gt;=C2=A0 =C2=A0 manner.=C2=A0 Unlike TLS 1.2, TLS 1.3 separat=
+es authentication and cipher<br>
+&gt;&gt;&gt;&gt;=C2=A0 =C2=A0 suite negotiation [I-D.ietf-tls-tls13] Sectio=
+n 1.2.=C2=A0 TLS 1.3 supports<br>
+&gt;&gt;&gt;&gt;=C2=A0 =C2=A0 PSK with ECDHE key exchange and the cipher su=
+ites<br>
+&gt;&gt;&gt;&gt;=C2=A0 =C2=A0 TLS_AES_128_GCM_SHA256, TLS_AES_256_GCM_SHA38=
+4,<br>
+&gt;&gt;&gt;&gt;=C2=A0 =C2=A0 TLS_AES_128_CCM_8_SHA256 and TLS_AES_128_CCM_=
+SHA256 are part of the<br>
+&gt;&gt;&gt;&gt;=C2=A0 =C2=A0 specification.=C2=A0 As a result, TLS 1.3 and=
+ higher versions, negotiate<br>
+&gt;&gt;&gt;&gt;=C2=A0 =C2=A0 and support these cipher suites in a differen=
+t way.<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt; OK.<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt; I suggest to remove the reference to TLS1.3 in the securit=
+y<br>
+&gt;&gt;&gt;&gt; considerations<br>
+&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt; OLD<br>
+&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt;=C2=A0 The security considerations in TLS 1.2 [RFC5246], DT=
+LS 1.2 [RFC6347],<br>
+&gt;&gt;&gt;&gt;=C2=A0 =C2=A0 TLS 1.3 [I-D.ietf-tls-tls13], ECDHE_PSK [RFC5=
+489], AES-GCM [RFC5288],<br>
+&gt;&gt;&gt;&gt;=C2=A0 =C2=A0 and AES-CCM [RFC6655] apply to this document =
+as well.<br>
+&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt; NEW<br>
+&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt;=C2=A0 The security considerations in TLS 1.2 [RFC5246], DT=
+LS 1.2 [RFC6347],<br>
+&gt;&gt;&gt;&gt;=C2=A0 ECDHE_PSK [RFC5489], AES-GCM [RFC5288],and AES-CCM [=
+RFC6655] apply<br>
+&gt;&gt;&gt;&gt;=C2=A0 to this document as well.<br>
+&gt;&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt;&gt; S 2.<br>
+&gt;&gt;&gt;&gt;&gt; I&#39;m not sure that the discussion of the PRF is hel=
+pful here in<br>
+&gt;&gt;&gt;&gt;&gt; mandating the non-use of these cipher suites with TLS =
+1.1 and<br>
+&gt;&gt;&gt;&gt;&gt; below.<br>
+&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt; I find the text useful as it gives an idea why even introd=
+ucing AEAD in<br>
+&gt;&gt;&gt;&gt; TLS version lower than 1.2 is a bad idea, so I would prefe=
+r to keep it. The<br>
+&gt;&gt;&gt;&gt; text has been changed to<br>
+&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt; OLD:<br>
+&gt;&gt;&gt;&gt; As such TLS 1.0 and TLS 1.1 should not be used with ECDHE_=
+PSK.<br>
+&gt;&gt;&gt;&gt;<br>
+&gt;&gt;&gt;&gt; NEW:<br>
+&gt;&gt;&gt;&gt; As such,=C2=A0 all ECDHE_PSK<br>
+&gt;&gt;&gt;&gt; ciphers, including those defined outside this document, SH=
+OULD NOT be<br>
+&gt;&gt;&gt;&gt; negotiated in TLS versions prior to 1.2.<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt; I don&#39;t think you should be levying a new normative requir=
+ement like this<br>
+&gt;&gt;&gt; for other ciphers<br>
+&gt;&gt;&gt; i this document<br>
+&gt;&gt;<br>
+&gt;&gt;<br>
+&gt;&gt; Consideration for other ciphers has been removed. The requirement =
+is<br>
+&gt;&gt; limited to the ciphers of the document. The new text is:<br>
+&gt;&gt;<br>
+&gt;&gt; As such, all ECDHE_PSK ciphers, including those defined in this do=
+cument,<br>
+&gt;&gt; SHOULD NOT be<br>
+&gt;&gt; negotiated in TLS versions prior to 1.2.<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt; -Ek<br>
+&gt;&gt;&gt; r<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;<br>
+&gt;<br>
+&gt;<br>
+</div></div>&gt; ______________________________<wbr>_________________<br>
+&gt; TLS mailing list<br>
+&gt; <a href=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.org</a><br>
+&gt; <a href=3D"https://www.ietf.org/mailman/listinfo/tls" rel=3D"noreferre=
+r" target=3D"_blank">https://www.ietf.org/mailman/l<wbr>istinfo/tls</a><br>
+&gt;<br>
+</blockquote></div></div></div><br></div></div></div></div></div>
+</blockquote></div><br></div></div></div></div>
+
+--94eb2c1483a0941ad805504669a0--
+

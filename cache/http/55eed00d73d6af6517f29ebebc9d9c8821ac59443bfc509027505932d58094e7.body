@@ -1,0 +1,481 @@
+Return-Path: <john.mattsson@ericsson.com>
+X-Original-To: tls@mail2.ietf.org
+Delivered-To: tls@mail2.ietf.org
+Received: from localhost (localhost [127.0.0.1])
+	by mail2.ietf.org (Postfix) with ESMTP id 69BD2952360
+	for <tls@mail2.ietf.org>; Sun,  9 Mar 2025 05:33:43 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at ietf.org
+X-Spam-Flag: NO
+X-Spam-Score: -2.437
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.437 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIMWL_WL_HIGH=-0.442, DKIM_SIGNED=0.1,
+	DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1,
+	HTML_MESSAGE=0.001, RCVD_IN_DNSWL_NONE=-0.0001,
+	RCVD_IN_MSPIKE_H2=0.001, RCVD_IN_VALIDITY_RPBL_BLOCKED=0.001,
+	RCVD_IN_VALIDITY_SAFE_BLOCKED=0.001, SPF_NONE=0.001, URIBL_SBL_A=0.1]
+	autolearn=ham autolearn_force=no
+Authentication-Results: mail2.ietf.org (amavisd-new); dkim=pass (2048-bit key)
+	header.d=ericsson.com
+Received: from mail2.ietf.org ([166.84.6.31])
+	by localhost (mail2.ietf.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id swIy_XZlzBBQ for <tls@mail2.ietf.org>;
+	Sun,  9 Mar 2025 05:33:42 -0700 (PDT)
+Received: from AS8PR04CU009.outbound.protection.outlook.com
+ (mail-westeuropeazon11011014.outbound.protection.outlook.com [52.101.70.14])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-384) server-signature ECDSA (P-256) server-digest
+ SHA256)
+	(No client certificate requested)
+	by mail2.ietf.org (Postfix) with ESMTPS id 009DF952359
+	for <tls@ietf.org>; Sun,  9 Mar 2025 05:33:41 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=ux0Hv8MTCy/6r0qYNRaewtKGlBnieSY99HqeYFLpCC2UvODdQTcZWBtScNvneSyZpZpcFKd0XBuxNr+Fz7Vgek5kKOfYTkZx7R79OqGRJ/h8ln7rLv1F7MYMGFay8QRca4LawzD66lX2HTIebmgB7+1MRfJtYhnTuH6e+xG4Ku78xqx0i1B7eD+4bu3s41SAxVHjRuewBqcnCHc+UGrOJQajOm8n+wkSX6WoyI0CQavlR+t+5L8tbCfk5TIzMX5vB6CkYPl6X4y50VlJt8NVdPbow0UXQIUwr00wcJHr2pXjrYjlnao1RDkj35LDog8YTth5qBeYodJgznaBdbL4pQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ynvF+V96AoOuc9aSJ6nOpIWjcX6FZ1xEJ7946FNGFFk=;
+ b=B3dykMTHzjsKsXCx2fVPqpHC2JacM71kc/ZEFtj9iqcZIZcUkzHEjKeErZfLNcqov7xZUHfW8B2UaQjSkUAurmJH7Lp48cfxc3DIwUe4FNYdClaKtlVY4TRmUvOP+1IpqQgVzTO2mXUrSeFFMi/vRaWJ50GWa7ozk2LY1nF2kRd1rWcOhk8j56r+gIjAaKIadsj5/mCPi+nu5xEgtndWcMLYkQfXP3gOwIJlx1lqex7+y2KY2bWZO2+kpVzOJoeHKbsa1qUC0MYvN/w29IF5IY/W0m/E+dVdEWaIp0qO1DcfM7jIcyamaskDAvJs+9rte9aYkxYl/SBBC/QOWcE7xw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=ericsson.com; dmarc=pass action=none header.from=ericsson.com;
+ dkim=pass header.d=ericsson.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ericsson.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ynvF+V96AoOuc9aSJ6nOpIWjcX6FZ1xEJ7946FNGFFk=;
+ b=mPgMiKCrWLclDhswxTmt8s19807gd8sbmQfNDUHIouetp04iEB4GIUFLWHjNPk1vGoKaz/e3gNdQ76+pxW640Ps/ubeOTlkh977IPCUxFaJ9WYmYwXGabBKtwgDZIo6BcSRZO57QVUEdohFDS3qr6941O3R2OHcSb8zwy8UVgshPZHt67o41Pr5r4BdbZTZM5Ui+gUtRRAdqVOibv78f5LmroTuD0ISg2mH5Tmo//2ELDbUn50T2dTTIfhR3vfUUlfGV+BXS4fWRcuMDue6rzcGkBQb7sJ/Pgw/GxWKo8pr4Kab7msEur8DOfPVzlGX2UqAIW85rjV+orUaH6PqhXg==
+Received: from GVXPR07MB9678.eurprd07.prod.outlook.com (2603:10a6:150:114::10)
+ by DU0PR07MB9362.eurprd07.prod.outlook.com (2603:10a6:10:44a::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8511.26; Sun, 9 Mar
+ 2025 12:33:38 +0000
+Received: from GVXPR07MB9678.eurprd07.prod.outlook.com
+ ([fe80::bcf3:3f45:888e:a4b8]) by GVXPR07MB9678.eurprd07.prod.outlook.com
+ ([fe80::bcf3:3f45:888e:a4b8%7]) with mapi id 15.20.8511.025; Sun, 9 Mar 2025
+ 12:33:38 +0000
+From: John Mattsson <john.mattsson@ericsson.com>
+To: "TLS@ietf.org" <tls@ietf.org>
+Thread-Topic: I-D Action: draft-kwiatkowski-tls-ecdhe-mlkem-03.txt
+Thread-Index: AQHbkO2ehAcnOcvdxk63BWeYOC61mg==
+Date: Sun, 9 Mar 2025 12:33:38 +0000
+Message-ID: 
+ <GVXPR07MB9678E29CF1D00E59164EB89089D72@GVXPR07MB9678.eurprd07.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-GB
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-reactions: allow
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=ericsson.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: GVXPR07MB9678:EE_|DU0PR07MB9362:EE_
+x-ms-office365-filtering-correlation-id: 208f60f6-8081-482d-5294-08dd5f069dfb
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: 
+ BCL:0;ARA:13230040|376014|1800799024|366016|38070700018|13003099007|8096899003;
+x-microsoft-antispam-message-info: 
+ =?Windows-1252?Q?XI7ISLGJy11sYjiIKG6ZXPndKs1EfpvQxvdsRlmrDcphFhehHWcGcoFX?=
+ =?Windows-1252?Q?UN42EG/nmsWGRAHHDzKvaEJK/5x9QsBDh5Vp2kK9oK4ypPm9w9iuuP5m?=
+ =?Windows-1252?Q?s8dlbmLPa21B2eFQUX8ZrYybAOURNFHPLEvfaZDnwu5LTqm1eBzwgLj6?=
+ =?Windows-1252?Q?WmTCoFKGaM3G+uDOB8JvzPlF91owIWaGUGRZgdg4yHoRvbPZHyLVNu3Z?=
+ =?Windows-1252?Q?UC02FxHnKrlZpym/BLs4nwApOzYz7JV5um4jGmFkD3ZZrfI3cWnHeYjL?=
+ =?Windows-1252?Q?MTdBZ9JdWlrecbqieS+XLqWuB6O4hdBMt6OkFFz19tqdU0z4ZR1ujOHk?=
+ =?Windows-1252?Q?eKIkKQKch84e0fAxjqlNvF84dmWgemxku+6naIioCL5HkzWAPlRqlu1J?=
+ =?Windows-1252?Q?THU0cdgSwmKBJIb/ACtuxV486CX9w59JVVMA26pFsDv1hQKBkMnbQkDG?=
+ =?Windows-1252?Q?P8Tx+qeZqywmtqKPe41yr1AuyfCsPEGQEac674WhjfJWWq+dLkG6GSR4?=
+ =?Windows-1252?Q?VICaKJpxPrbBd4GAWHvC0ua9aOmtdKJqsHpUpVDItWUdzTuyP3qDgKmb?=
+ =?Windows-1252?Q?c7MqSa5OHnldpgXHQ+f7TTwzwDDU6N0If72RfBL3U2vL9+I340GP4Wjg?=
+ =?Windows-1252?Q?K/KcbBrY3eR26S+0di8GSQCDaukeWH+ydT7XrigCZM9cihHxQqxeMsyA?=
+ =?Windows-1252?Q?UNojO8OH4zqRdaL74ftDi7QMgE6Z1imNEDkQj/GXG7sjUwTZrTC8nk6x?=
+ =?Windows-1252?Q?nrk1Nw7PWJVevbs2z9pDMLzjt4e2tkmK48B5umTI3+Sut1Dyfqqy4VG3?=
+ =?Windows-1252?Q?T3NZSsEItVldtF7HS8zgo0jW+Y/w7Y+2dK+Y5IBBMuL4YI4ZaPUk/Fxh?=
+ =?Windows-1252?Q?+vEDGmoD7Wl7V7VMkDxhlNAemFu28iD76a3uxg/vqZGnIb50zfuzp5s3?=
+ =?Windows-1252?Q?PD6Ei4Nclv4PddqogIGJq7TWaAjbzOXQ5cHxvYsP1BvReJmpKrerCIbm?=
+ =?Windows-1252?Q?bOYgmmdRMqXV+lqL3Db5D5eu615jt7CGPeuaoNI2XHwtwEeCr9xp4org?=
+ =?Windows-1252?Q?kJKJUNC5/Hvyjre4BeUj77e6mGYDKMPngRLdF010jc5JAO98IwF+FDxo?=
+ =?Windows-1252?Q?b72lcPYbgTZf0L1KamQDxzwsRtZ282KtLzkicLryvh9qH2smrbSO5Lhj?=
+ =?Windows-1252?Q?sHpbfzaOpY9qgoTTKEivpfg+L2M87oOsirFo1XFHyCeqstNglPGmCl1N?=
+ =?Windows-1252?Q?BSjc9J1CuBDTnlAkOE4Fg6Z5iNhuyIQwDXBpOJsQ183g2pMBB1MEPAQE?=
+ =?Windows-1252?Q?xf1cNY1bv+Kp+sRdKxpcLwlh7OOYNlIpPwYSALSTSbnKrxQCt4yaBXif?=
+ =?Windows-1252?Q?3xdTOBgB9nXMde1ajvEYvimMVhpTSiE3xNi7kIu92kcatRcwqU3wucY2?=
+ =?Windows-1252?Q?iowXDs962OiTDv4/TTOiLWJuW39YSWqtIFi5QMW5V9ST3Nfh0me2WJoM?=
+ =?Windows-1252?Q?qS5AlXZF?=
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:GVXPR07MB9678.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(366016)(38070700018)(13003099007)(8096899003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?Windows-1252?Q?SX39/0SBi2IGzud7BCFzzeSL+ATbAotFz6Y0zE3Mw9IBDK9Fao8ElIkk?=
+ =?Windows-1252?Q?umanXpGCdZuLbvbJSgcc4CUYlL4Zaw+R01MLCon2suU9OxJXl2qKuWr7?=
+ =?Windows-1252?Q?mpGYpifdnjuZqRP+xLxr8I1gT0jzcLpIhatq4N8ufSkCgfaECdG1F84X?=
+ =?Windows-1252?Q?/Dmcad9yDfH/ObSZMALKmxkovVZRCG/D96ypROQY7FtqKHEos7iu0hKm?=
+ =?Windows-1252?Q?zT4L99FTFSGOVjxnA/pTBPf8wWi+DhO5ipmfCbPzk09Dqnb9KbPHng5e?=
+ =?Windows-1252?Q?hdOF87I4weMrkDXUWSwFFHY7JChPShZlxcsZfbkdCjurewWF69O7bMxo?=
+ =?Windows-1252?Q?JCCqcurRQRc1EGYN15aJUDGyUip0Oc2B03bUDVW+0zLd1LoT8Q7Ud4Ux?=
+ =?Windows-1252?Q?cSZnPS4Owb+vfMp+md1QBGd9oB96ESDhLv7S6m5K9arHRzi2c6yn3nyB?=
+ =?Windows-1252?Q?nwaQHoTWHqaYnPrzbSDscjCSb4jUBqxBWNb/wdJPvPh5NHiA9HYk8WTA?=
+ =?Windows-1252?Q?5UAYU1WaEV7eQqR9yPx+lSrgb/6Fl0h0rHbtpLV4/yUnkpqhD5oMs5R3?=
+ =?Windows-1252?Q?R1LAehZVcgT2Zcijge8p2E64avP2kNqXU1VU0m/ktC/m6gGgY1VHe6VW?=
+ =?Windows-1252?Q?NKJZ0N/t8CK9z9PXPcI3URTLvj1ZdW+TJ69lZM8e7rGWAjDRcgNdhrgW?=
+ =?Windows-1252?Q?QM3aMK/DbL1tkeswSIfelfcFE+jvb8sEYLkvo0nBzsEuhuub1fVT1JAT?=
+ =?Windows-1252?Q?dZouEv3N7JnqRkgvOGGgPKcByqWtjGISsqqk3UxN/gG30BS3tFQwy93Z?=
+ =?Windows-1252?Q?K2FNz6L5tCqE5l7o4NzGfc2G8G5h082CFnRlX0Q7uTR9gc1cuDsmePHH?=
+ =?Windows-1252?Q?31cSsia4iTl1NBOyyfyNCwWBubDdsKFXaIgR3B9+opxU5RqNt8xvyvJR?=
+ =?Windows-1252?Q?zwxXy/UIq0bNRy4TtjJmnbQbgtwvRA0VGOJIlp+eLrnyMBj8qEiLm0Ff?=
+ =?Windows-1252?Q?wEW9f31MmKkUDWqmrMyf2aRKOzNotBc/Lf18NAsqRS+ywdo9UmZuJT5/?=
+ =?Windows-1252?Q?1aEzpqgWeRqHy1ERxVjQ+gphrVFjFqR3f/x8BVwCAtoS9o4CsEi7zRiD?=
+ =?Windows-1252?Q?m6/FVbQcZho6REgTg263a5Dk/uPZ6A7ZFkFY1yoKj2IfKyjPYXjb+IO2?=
+ =?Windows-1252?Q?lQHj11/4Rl4CdLHS0yQXxtf2YsrKymxdJSgrrsFFoKbR/K1l7W9YlDgM?=
+ =?Windows-1252?Q?psChkSj8ouVjk59/J1SWjaxI1iv6iLUVdZKnT/8dXgdJvlSKBlV6+gdL?=
+ =?Windows-1252?Q?zOC3XFvNfVgGHfNOLa0/QOC9eajTwgAzUjfO20pXWSG6eu+kQplcGGX9?=
+ =?Windows-1252?Q?vZahIUKMZ75KXNBHXIAd+tLIPVM5LxSsmkrokcOK/fHXxGoucm8zbOw/?=
+ =?Windows-1252?Q?jAdYz2fjJDq+Kb33g/mRTgNTx6+zFlZVneVGkKPCB7FeC25qb+GLHajk?=
+ =?Windows-1252?Q?z07Nw/EfFg7WlBENXKRoB1ZiAXC2bHHjINauhX+xigRRo80/xB1xXHRh?=
+ =?Windows-1252?Q?7D/9J9XVnc058SZmz7CqdYmTseVXtDtwqhhXHrVubAUKrOyjnIkat8e4?=
+ =?Windows-1252?Q?vbt628t3lS7gEsgigDQbR+99757K/aK8/m1ZCpcnEYdRfs+kbwztcvwQ?=
+ =?Windows-1252?Q?t0fB19+oio0jteJsE/QFbj0pLJv+xfLEF/EpSM7EZimTuwWaNqiJ0xZZ?=
+ =?Windows-1252?Q?oWlzYall4ZkQjldwur8=3D?=
+Content-Type: multipart/alternative;
+	boundary="_000_GVXPR07MB9678E29CF1D00E59164EB89089D72GVXPR07MB9678eurp_"
+MIME-Version: 1.0
+X-OriginatorOrg: ericsson.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: GVXPR07MB9678.eurprd07.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ 208f60f6-8081-482d-5294-08dd5f069dfb
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Mar 2025 12:33:38.1103
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 92e84ceb-fbfd-47ab-be52-080c6b87953f
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 
+ cl3nPs5NizLMLWpTFQA9+b9XQTnKgDywjDodzfwD6+FNpNdjXZkF4x3sezwoZtnCNLXi455QPZOWFzy/Q79PLXSB6oMJ62Op3A+biU1Pp4I=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR07MB9362
+Message-ID-Hash: 6FDEC6EASZDQ3K7ELJMYRX4MI3UQILT6
+X-Message-ID-Hash: 6FDEC6EASZDQ3K7ELJMYRX4MI3UQILT6
+X-MailFrom: john.mattsson@ericsson.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_FW=3A_I-D_Action=3A_draft-kwiatkowski-tls-ecdhe-mlkem-03?=
+	=?utf-8?q?=2Etxt?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/Ly_c5gcWnvvgtbP0EUM8CPbnO4E>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+--_000_GVXPR07MB9678E29CF1D00E59164EB89089D72GVXPR07MB9678eurp_
+Content-Type: text/plain; charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+When using X25519MLKEM768, I would like to know that the other peer is not =
+reusing its key share (as long as it is compliant). As a server reusing a k=
+ey share can have catastrophic security consequences for the client, I thin=
+k this is a _very_ reasonable request.
+https://emanjon.github.io/NIST-comments/2025%20-%20SP%20800-227.pdf
+
+I don't care about x25519, secp256r1, etc., We are planning to support X255=
+19MLKEM768 as soon as possible and then disable all groups that are not qua=
+ntum-resistant as soon as possible. I also don=92t care about SecP256r1MLKE=
+M768 and SecP384r1MLKEM1024 as we are not planning to support them.
+
+I don't care about what other people do. If someone want to use (semi-)stat=
+ic keys for performance or visibility, that is fine with me as long as I ha=
+ve the option to not communicate with such implementations.
+
+I see three solutions:
+
+1. Add normative text for X25519MLKEM768, MUST NOT reuse key share.
+2. Add signaling that the key share is reused so peers have the option to a=
+bort the connection (similar to draft-rhrd-tls-tls13-visibility).
+3. Register two different X25519MLKEM768 groups. One forbidding reuse and o=
+ne allowing reuse (similar to TLS_ECDHE_ECDSA vs. TLS_ECDH_ECDSA).
+
+I find the current situation of key shares being reused without the other p=
+eer knowing inacceptable and frankly the worst possible option.
+
+As the old PRs were closed in the hope the issue was already solved and cha=
+nges to draft-ietf-tls-hybrid-design does not solve the issue unless normat=
+ively referenced form draft-kwiatkowski-tls-ecdhe-mlkem, I opened a new iss=
+ue.
+https://github.com/post-quantum-cryptography/draft-kwiatkowski-tls-ecdhe-ml=
+kem/issues/34
+
+Cheers,
+John
+
+On 2024-12-25, 07:08, "internet-drafts@ietf.org" <internet-drafts@ietf.org>=
+ wrote:
+Internet-Draft draft-kwiatkowski-tls-ecdhe-mlkem-03.txt is now available.
+
+   Title:   Post-quantum hybrid ECDHE-MLKEM Key Agreement for TLSv1.3
+   Authors: Kris Kwiatkowski
+            Panos Kampanakis
+            Bas Westerbaan
+            Douglas Stebila
+   Name:    draft-kwiatkowski-tls-ecdhe-mlkem-03.txt
+   Pages:   9
+   Dates:   2024-12-24
+
+Abstract:
+
+   This draft defines three hybrid key agreements for TLS 1.3:
+   X25519MLKEM768, SecP256r1MLKEM768, and SecP384r1MLKEM1024 which
+   combine a post-quantum KEM with an elliptic curve Diffie-Hellman
+   (ECDHE).
+
+The IETF datatracker status page for this Internet-Draft is:
+https://datatracker.ietf.org/doc/draft-kwiatkowski-tls-ecdhe-mlkem/
+
+There is also an HTML version available at:
+https://www.ietf.org/archive/id/draft-kwiatkowski-tls-ecdhe-mlkem-03.html
+
+A diff from the previous version is available at:
+https://author-tools.ietf.org/iddiff?url2=3Ddraft-kwiatkowski-tls-ecdhe-mlk=
+em-03
+
+Internet-Drafts are also available by rsync at:
+rsync.ietf.org::internet-drafts
+
+
+
+
+--_000_GVXPR07MB9678E29CF1D00E59164EB89089D72GVXPR07MB9678eurp_
+Content-Type: text/html; charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-micr=
+osoft-com:office:office" xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" xmlns=3D"http:=
+//www.w3.org/TR/REC-html40">
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3DWindows-1=
+252">
+<meta name=3D"Generator" content=3D"Microsoft Word 15 (filtered medium)">
+<style><!--
+/* Font Definitions */
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Aptos;
+	panose-1:2 11 0 4 2 2 2 2 2 4;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	font-size:12.0pt;
+	font-family:"Aptos",sans-serif;}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:blue;
+	text-decoration:underline;}
+span.EmailStyle18
+	{mso-style-type:personal-reply;
+	font-family:"Aptos",sans-serif;
+	color:windowtext;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	font-size:10.0pt;
+	mso-ligatures:none;}
+@page WordSection1
+	{size:612.0pt 792.0pt;
+	margin:72.0pt 72.0pt 72.0pt 72.0pt;}
+div.WordSection1
+	{page:WordSection1;}
+--></style>
+</head>
+<body lang=3D"en-SE" link=3D"blue" vlink=3D"purple" style=3D"word-wrap:brea=
+k-word">
+<div class=3D"WordSection1">
+<p class=3D"MsoNormal"><span lang=3D"EN-US">Hi,</span><span lang=3D"EN-US">=
+<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US">When using X25519MLKEM768, I wo=
+uld like to know that the other peer is not reusing its key share (as long =
+as it is compliant). As a server reusing a key share can have catastrophic =
+security consequences for the client,
+ I think this is a _very_ reasonable request.<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US"><a href=3D"https://emanjon.gith=
+ub.io/NIST-comments/2025%20-%20SP%20800-227.pdf">https://emanjon.github.io/=
+NIST-comments/2025%20-%20SP%20800-227.pdf</a><o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US">I don't care about x25519, secp=
+256r1, etc., We are planning to support X25519MLKEM768 as soon as possible =
+and then disable all groups that are not quantum-resistant as soon as possi=
+ble. I also don=92t care about SecP256r1MLKEM768
+ and SecP384r1MLKEM1024 as we are not planning to support them.<o:p></o:p><=
+/span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US">I don't care about what other p=
+eople do. If someone want to use (semi-)static keys for performance or visi=
+bility, that is fine with me as long as I have the option to not communicat=
+e with such implementations.<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US">I see three solutions:<o:p></o:=
+p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US">1. Add normative text for X2551=
+9MLKEM768, MUST NOT reuse key share.<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US">2. Add signaling that the key s=
+hare is reused so peers have the option to abort the connection (similar to=
+ draft-rhrd-tls-tls13-visibility).<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US">3. Register two different X2551=
+9MLKEM768 groups. One forbidding reuse and one allowing reuse (similar to
+</span>TLS_ECDHE_ECDSA vs. TLS_ECDH_ECDSA<span lang=3D"EN-US">).<o:p></o:p>=
+</span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US">I find the current situation of=
+ key shares being reused without the other peer knowing inacceptable and fr=
+ankly the worst possible option.<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US">As the old PRs were closed in t=
+he hope the issue was already solved and changes to draft-ietf-tls-hybrid-d=
+esign does not solve the issue unless normatively referenced form draft-kwi=
+atkowski-tls-ecdhe-mlkem, I opened a
+ new issue.<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US"><a href=3D"https://github.com/p=
+ost-quantum-cryptography/draft-kwiatkowski-tls-ecdhe-mlkem/issues/34">https=
+://github.com/post-quantum-cryptography/draft-kwiatkowski-tls-ecdhe-mlkem/i=
+ssues/34</a><o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US">Cheers,<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US">John<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;mso-fareast-language=
+:EN-US"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal" style=3D"margin-bottom:12.0pt">On 2024-12-25, 07:08,=
+ &quot;internet-drafts@ietf.org&quot; &lt;internet-drafts@ietf.org&gt; wrot=
+e:<o:p></o:p></p>
+<div>
+<p class=3D"MsoNormal">Internet-Draft draft-kwiatkowski-tls-ecdhe-mlkem-03.=
+txt is now available.<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&nbsp;&nbsp; Title:&nbsp;&nbsp; Post-quantum hybrid =
+ECDHE-MLKEM Key Agreement for TLSv1.3<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&nbsp;&nbsp; Authors: Kris Kwiatkowski<o:p></o:p></p=
+>
+</div>
+<div>
+<p class=3D"MsoNormal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;Panos Kampanakis<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;Bas Westerbaan<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;Douglas Stebila<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&nbsp;&nbsp; Name:&nbsp;&nbsp;&nbsp;&nbsp;draft-kwia=
+tkowski-tls-ecdhe-mlkem-03.txt<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&nbsp;&nbsp; Pages:&nbsp;&nbsp; 9<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&nbsp;&nbsp; Dates:&nbsp;&nbsp; 2024-12-24<o:p></o:p=
+></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">Abstract:<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&nbsp;&nbsp; This draft defines three hybrid key agr=
+eements for TLS 1.3:<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&nbsp;&nbsp; X25519MLKEM768, SecP256r1MLKEM768, and =
+SecP384r1MLKEM1024 which<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&nbsp;&nbsp; combine a post-quantum KEM with an elli=
+ptic curve Diffie-Hellman<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&nbsp;&nbsp; (ECDHE).<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">The IETF datatracker status page for this Internet-D=
+raft is:<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><a href=3D"https://datatracker.ietf.org/doc/draft-kw=
+iatkowski-tls-ecdhe-mlkem/">https://datatracker.ietf.org/doc/draft-kwiatkow=
+ski-tls-ecdhe-mlkem/</a><o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">There is also an HTML version available at:<o:p></o:=
+p></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><a href=3D"https://www.ietf.org/archive/id/draft-kwi=
+atkowski-tls-ecdhe-mlkem-03.html">https://www.ietf.org/archive/id/draft-kwi=
+atkowski-tls-ecdhe-mlkem-03.html</a><o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">A diff from the previous version is available at:<o:=
+p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><a href=3D"https://author-tools.ietf.org/iddiff?url2=
+=3Ddraft-kwiatkowski-tls-ecdhe-mlkem-03">https://author-tools.ietf.org/iddi=
+ff?url2=3Ddraft-kwiatkowski-tls-ecdhe-mlkem-03</a><o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">Internet-Drafts are also available by rsync at:<o:p>=
+</o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">rsync.ietf.org::internet-drafts<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+</div>
+</div>
+</body>
+</html>
+
+--_000_GVXPR07MB9678E29CF1D00E59164EB89089D72GVXPR07MB9678eurp_--
+

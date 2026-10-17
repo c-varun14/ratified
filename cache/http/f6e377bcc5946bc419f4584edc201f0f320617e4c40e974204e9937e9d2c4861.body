@@ -1,0 +1,884 @@
+Return-Path: <ekr@rtfm.com>
+X-Original-To: tls@mail2.ietf.org
+Delivered-To: tls@mail2.ietf.org
+Received: from localhost (localhost [127.0.0.1])
+	by mail2.ietf.org (Postfix) with ESMTP id 13265612553D
+	for <tls@mail2.ietf.org>; Thu, 11 Sep 2025 11:20:44 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at ietf.org
+X-Spam-Flag: NO
+X-Spam-Score: -1.897
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.897 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+	HTML_MESSAGE=0.001, RCVD_IN_DNSWL_NONE=-0.0001, SPF_HELO_NONE=0.001,
+	SPF_NONE=0.001] autolearn=unavailable autolearn_force=no
+Authentication-Results: mail2.ietf.org (amavisd-new); dkim=pass (2048-bit key)
+	header.d=rtfm-com.20230601.gappssmtp.com
+Received: from mail2.ietf.org ([166.84.6.31])
+	by localhost (mail2.ietf.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id d51nOzSJX1vz for <tls@mail2.ietf.org>;
+	Thu, 11 Sep 2025 11:20:42 -0700 (PDT)
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com
+ [IPv6:2607:f8b0:4864:20::b33])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail2.ietf.org (Postfix) with ESMTPS id 31E43612552C
+	for <tls@ietf.org>; Thu, 11 Sep 2025 11:20:42 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id
+ 3f1490d57ef6-ea1679ba47eso726089276.1
+        for <tls@ietf.org>; Thu, 11 Sep 2025 11:20:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rtfm-com.20230601.gappssmtp.com; s=20230601; t=1757614842;
+ x=1758219642; darn=ietf.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=yZQ3TE0SSpiYaakaGBUrK6e7W7u1hneLZa3insBp5JA=;
+        b=qFoaUCS1ASGiR1EutXa9YVoTARK/ZEsxjp9wmzzEHFH4Lmk6e0J+INtb/KvXkbfrF/
+         bRoNcwxF+7VgENevHuO4bpjIzjMTPt2GUxeMgzprS8KbAMj3KSmYVEANdLjuD250dMU7
+         3yXnjunF4IIW2J0Ox/o/5hox6zVi9EZn4ADwBbniNwLhmUX7LZ+zsAtZHvT0c+nubk0N
+         EElJRFtvM1BpzedNtT2ratDErZ54Oyo02OiZnhBxx3aGaajVnLRU4sLZoMkOAXe4Kw4o
+         biGH7ODohMdXFLHMq8Z5dTHKYlOVDcUOLaclMMc9dO1wwBYpJI/7nmFBafbZUuaT0ntc
+         wCaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1757614842; x=1758219642;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yZQ3TE0SSpiYaakaGBUrK6e7W7u1hneLZa3insBp5JA=;
+        b=szOCGsFa5sMgCZL8aDruWY3j+CAjB2kxvt/VnsGy0Rkxc0edFt/TLoto5mJEQ3HQIA
+         FuLDIbvG2QV1C2d29+UHJzerwnkaKisYge2/w7BqHEwPp2BFxZjgwVDvbi1XAvJO4id/
+         NeSIVik0u8xPTxXpOtHbwUZKgg1esm6HM2mxizzZzNshInug70eCshP8b6A8djqm85wy
+         jICSDT/CSKli4OnTyTCF16dgO3mdpN2I3M0ZkUskMLcH9DYLtEKoGoHhzFlaTn7cBgYe
+         fGSyRDgRR0aDoKgTX6gM/xKalo6wpFBwBs1BwZBrpIo6bKwpEpNCQZd5pd24y526a4Q1
+         P+Ig==
+X-Gm-Message-State: AOJu0Yz3no3CmfMtoIijWkk/uOzZHJ844FUA5RQFsn+/sLkiCpqCwEqA
+	GjeneakHPVkiiDzHPl45+Qs4hQ4FPYgM1opxZAF5B92xL4mZ3vFXu7R27PIh8v478wjBdYft9N6
+	KSg5IY12FHM4JtwDbZJsfrfFCQVNc+nB8HlSOmhDzkUtJtTdYCwJ8ugdSmQ==
+X-Gm-Gg: ASbGnctOAotPKFS3O3eet0Kq5wXR8Z1qZGk+Dxn3Im6yiwb+UyuoVwUWYbqeVZdfl2c
+	SXFGSfLZZO4gJuAMiC/ubBVN41cSZORcrqkkLXJwicbU4sw62jwi6fQAbvex08S7eTDKe7u7MNv
+	LCuvYoSe7Xo9i8MKX/Fxt/Wiw9wWZeezpjvjmTb5lha0ajIVsCKNsFt2wK9G8bVPkLZbAcIWTI+
+	+D81wwQIpnbpMulyi6RyE1dAtb+Q7lHIFBhSwAXm48nZOoY97fqEi4DR9uyZxWAWP1lI2pWPPHY
+	GDcIMjsGtCkeY7OcLY3jsqwXSXycwGBU
+X-Google-Smtp-Source: 
+ AGHT+IGaRHMx5StHDV4qasNy2pLXg2cmLO2VkZsCkNeUFl3thaZnQeQPo9I69GuBAZZ8ZijUUWb0x1oRUjAS7zBFygI=
+X-Received: by 2002:a05:6902:6315:b0:e9d:7515:c276 with SMTP id
+ 3f1490d57ef6-ea3d9b361f5mr136553276.30.1757614841577; Thu, 11 Sep 2025
+ 11:20:41 -0700 (PDT)
+MIME-Version: 1.0
+References: <28bbcb0ed0344c6395e7e718eb59e225@bsu.by>
+In-Reply-To: <28bbcb0ed0344c6395e7e718eb59e225@bsu.by>
+From: Eric Rescorla <ekr@rtfm.com>
+Date: Thu, 11 Sep 2025 11:20:05 -0700
+X-Gm-Features: Ac12FXzmbc9jsThrCuid5Miprop00xOXMRG8E4h5NHE70u0Z7CFJ3wP1D2gykk8
+Message-ID: 
+ <CABcZeBPVgqbx5c052De6n0Pj3YRgevBWoqVufHOfc_GDvmkQ8g@mail.gmail.com>
+To: Sergey Agievich <Agievich=40bsu.by@dmarc.ietf.org>
+Content-Type: multipart/alternative; boundary="00000000000048d39a063e8a9858"
+Message-ID-Hash: WGQRLCXDPCDRTQVKGTPOSGGIF5RNUPNT
+X-Message-ID-Hash: WGQRLCXDPCDRTQVKGTPOSGGIF5RNUPNT
+X-MailFrom: ekr@rtfm.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+CC: "tls@ietf.org" <tls@ietf.org>
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Re=3A_Comments_on_draft-ietf-tls-rfc8446bis-13?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/5hBdR59T3U9qSFJlCANqFObFPQs>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+--00000000000048d39a063e8a9858
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Thanks for your comments. I have created
+https://github.com/tlswg/tls13-spec/pull/1396 to address
+the ones I think need changes. Responses below.
+
+
+> > If a TLS 1.3 ClientHello is received with any other value in this
+> field, the server MUST abort the handshake with an "illegal_parameter"
+> alert.
+>
+> `ClientHello` -> `ServerHello`, server -> client.
+
+Yes, this is correct.I have fixed it.
+
+
+> > Upon receipt of a HelloRetryRequest, the client MUST ... process the
+> extensions .... Otherwise, the client MUST process all extensions in
+> the HelloRetryRequest...
+>
+> Twice about the same thing (processing the extensions).
+
+I don't see a problem here. The first statement is generally about the
+order of operations and the second is a mandate to process all
+all extensions.
+
+
+> ## 4.1.4
+>
+> > As with the ServerHello, a HelloRetryRequest MUST NOT contain any
+> extensions that were not first offered by the client.
+>
+> It appears to be the first explanation that the ServerHello /
+> HelloRetryRequest extensions must match the ClientHello ones.
+> So "As with the ServerHello" does not work.
+
+I don't think this is actually a problem, but I agree it's slightly
+clearer.
+
+
+
+> ## 4.2.1
+>
+> > A server which negotiates a version of TLS prior to TLS 1.3 MUST set
+> ServerHello.version and MUST NOT send the "supported_versions"
+> extension.
+>
+> `ServerHello.version` -> `ServerHello.legacy_version`.
+
+Fixed.
+
+> ## 4.2.8
+>
+> > Each KeyShareEntry value MUST correspond to a group offered in the
+> "supported_groups" extension and MUST appear in the same order. [A]
+> .
+> > If using (EC)DHE key establishment, servers offer exactly one
+> KeyShareEntry in the ServerHello. This value MUST be in the same group
+> as the KeyShareEntry value offered by the client that the server has
+> selected for the negotiated key exchange. [B]
+> .
+> > Servers MUST NOT send a KeyShareEntry for any group not indicated in
+> the client's "supported_groups". [C]
+>
+> [C] is redundant: it automatically holds if [A] and [B] hold.
+
+I agree it's redundant, but I think it's clearer.
+
+
+> ## 4.2.11.3
+>
+> > Clients are permitted to "stream" 0-RTT data until they receive the
+> server's Finished, only then sending the EndOfEarlyData message,
+> followed by the rest of the handshake. In order to avoid deadlocks,
+> when accepting "early_data", servers MUST process the client's
+> ClientHello and then immediately send their flight of messages, rather
+> than waiting for the client's EndOfEarlyData message before sending
+> its ServerHello.
+>
+> A better place for this paragraph seems to be 4.2.10 (early_data) or
+> 4.5 (EndOfEarlyData).
+
+I think this is fine as-is.
+
+
+
+> ## 4.6.1
+>
+> > The value of zero indicates that the ticket should be discarded
+> immediately.
+>
+> "discarded immediately" -> "discarded immediately after use".
+
+Agreed. Fixed.
+
+
+> > If such an indication is provided (externally or by any other
+> means), clients MAY resume with a different SNI value.
+>
+> It is difficult to understand that "indication" refers (indeed?) to
+> the beginning of the paragraph.
+
+I think this is clear enough as is.
+
+
+> ## 6.1
+>
+> > close_notify: ... Any data received after a closure alert has been
+> received MUST be ignored.
+>
+> > Any data received after a close_notify alert has been received MUST
+> be ignored.
+>
+> Duplication.
+
+Removed the second one.
+
+
+>
+> ## 7.2
+>
+> > Once the handshake is complete, it is possible for either side to
+> update its sending traffic keys.
+>
+> keys -> key.
+>
+> > application_traffic_secret_0 ... application_traffic_secret_N ...
+> application_traffic_secret_N+1
+>
+> It might be better to use a single `application_traffic_secret`
+> instead of multiple `application_traffic_secret_XXX`:
+>
+> ```
+> application_traffic_secret =3D
+>         HKDF-Expand-Label(application_traffic_secret,
+>                           "traffic upd", "", Hash.length)
+> ```
+
+In my opinion this would be less clear.
+
+
+> ## Presentation Language
+>
+> Formally, it is necessary to explain `a^b`.
+
+I think this is well-enough known that it's not necessary. It
+hasn't been an issue in the past AFAICT.
+
+
+> Recommendation: define `+=3D` for enums:
+> ```
+> NamedGroup +=3D group_a(0xFEFF);
+> ...
+> NamedGroup +=3D { group_b(0xFEFE), group_c(0xFEFD) };
+> ```
+> This facilitates extending enums in external specifications.
+
+We usually just do this verbally. I'm opposed to adding new
+syntax at this time.
+
+
+> # Questions
+>
+> ## 4.1.2
+>
+> > The client will also send a ClientHello when the server has
+> responded to its ClientHello with a HelloRetryRequest. In that case,
+> the client MUST send the same ClientHello without modification, except
+> as follows: ...
+> * Optionally adding, removing, or changing the length of the "padding"
+>   extension [RFC7685].
+>
+> Q: Allowing the "padding" extension to be modified makes it
+> problematic to reconstruct the first ClientHello from the second, does
+> not it? (The reconstruction is mentioned in
+> [https://mailarchive.ietf.org/arch/msg/tls/7rLQEHrqKaYo7u31iNBNsPI_OVg/]
+> but not in the specification).
+
+As you say it's not in the specification, so it's the job of the
+receiver to figure out what to do, potentially by memoizing
+the extension in the cookie, or just memoizing the whole hash
+state.
+
+
+> ## 4.6.2
+>
+> > In addition, clients which receive multiple CertificateRequests in
+> close succession MAY respond to them in a different order than they
+> were received (the certificate_request_context value allows the server
+> to disambiguate the responses).
+>
+> Q: Can messages from different responses to CertificateRequests be
+> interleaved? Is it possible, for example, to obtain the following
+> transcript:
+> ```
+> CR_1, CR_2, CT_1, CT_2, CV_2, CV_1, F_1, F_2
+> ```
+> ? If so, how does the server differentiate between CV_1 and CV_2 or
+> between F_2 and F_1 considering that these messages don't contain
+> `certificate_request_context`?
+
+No. This is forbidden earlier.
+
+   All of the client's messages for a given response MUST appear
+   consecutively on the wire with no intervening messages of other
+   types.
+
+I sharpened this slightly in the current text by adding:
+
+   "or from other responses."
+
+
+-Ekr
+
+
+
+
+
+
+On Thu, Jul 24, 2025 at 5:32=E2=80=AFAM Sergey Agievich <Agievich=3D
+40bsu.by@dmarc.ietf.org> wrote:
+
+> Hi,
+>
+> I have enough carefully read draft-ietf-tls-rfc8446bis and prepared
+> some comments. I hope they will help improve the editorial quality of
+> the specification.
+>
+> I also have 2 technical questions. It would be great to have answers.
+>
+> Best,
+> Sergey
+>
+> # Comments
+>
+> ## 4.1.3
+>
+> > If a TLS 1.3 ClientHello is received with any other value in this
+> field, the server MUST abort the handshake with an "illegal_parameter"
+> alert.
+>
+> `ClientHello` -> `ServerHello`, server -> client.
+>
+> > Upon receipt of a HelloRetryRequest, the client MUST ... process the
+> extensions .... Otherwise, the client MUST process all extensions in
+> the HelloRetryRequest...
+>
+> Twice about the same thing (processing the extensions).
+>
+> ## 4.1.4
+>
+> > As with the ServerHello, a HelloRetryRequest MUST NOT contain any
+> extensions that were not first offered by the client.
+>
+> It appears to be the first explanation that the ServerHello /
+> HelloRetryRequest extensions must match the ClientHello ones.
+> So "As with the ServerHello" does not work.
+>
+> ## 4.2.1
+>
+> > A server which negotiates a version of TLS prior to TLS 1.3 MUST set
+> ServerHello.version and MUST NOT send the "supported_versions"
+> extension.
+>
+> `ServerHello.version` -> `ServerHello.legacy_version`.
+>
+> ## 4.2.8
+>
+> > Each KeyShareEntry value MUST correspond to a group offered in the
+> "supported_groups" extension and MUST appear in the same order. [A]
+> .
+> > If using (EC)DHE key establishment, servers offer exactly one
+> KeyShareEntry in the ServerHello. This value MUST be in the same group
+> as the KeyShareEntry value offered by the client that the server has
+> selected for the negotiated key exchange. [B]
+> .
+> > Servers MUST NOT send a KeyShareEntry for any group not indicated in
+> the client's "supported_groups". [C]
+>
+> [C] is redundant: it automatically holds if [A] and [B] hold.
+>
+> ## 4.2.11.3
+>
+> > Clients are permitted to "stream" 0-RTT data until they receive the
+> server's Finished, only then sending the EndOfEarlyData message,
+> followed by the rest of the handshake. In order to avoid deadlocks,
+> when accepting "early_data", servers MUST process the client's
+> ClientHello and then immediately send their flight of messages, rather
+> than waiting for the client's EndOfEarlyData message before sending
+> its ServerHello.
+>
+> A better place for this paragraph seems to be 4.2.10 (early_data) or
+> 4.5 (EndOfEarlyData).
+>
+> ## 4.6.1
+>
+> > The value of zero indicates that the ticket should be discarded
+> immediately.
+>
+> "discarded immediately" -> "discarded immediately after use".
+>
+> > If such an indication is provided (externally or by any other
+> means), clients MAY resume with a different SNI value.
+>
+> It is difficult to understand that "indication" refers (indeed?) to
+> the beginning of the paragraph.
+>
+> ## 6.1
+>
+> > close_notify: ... Any data received after a closure alert has been
+> received MUST be ignored.
+>
+> > Any data received after a close_notify alert has been received MUST
+> be ignored.
+>
+> Duplication.
+>
+> ## 7.2
+>
+> > Once the handshake is complete, it is possible for either side to
+> update its sending traffic keys.
+>
+> keys -> key.
+>
+> > application_traffic_secret_0 ... application_traffic_secret_N ...
+> application_traffic_secret_N+1
+>
+> It might be better to use a single `application_traffic_secret`
+> instead of multiple `application_traffic_secret_XXX`:
+>
+> ```
+> application_traffic_secret =3D
+>         HKDF-Expand-Label(application_traffic_secret,
+>                           "traffic upd", "", Hash.length)
+> ```
+>
+> ## Presentation Language
+>
+> Formally, it is necessary to explain `a^b`.
+>
+> Recommendation: define `+=3D` for enums:
+> ```
+> NamedGroup +=3D group_a(0xFEFF);
+> ...
+> NamedGroup +=3D { group_b(0xFEFE), group_c(0xFEFD) };
+> ```
+> This facilitates extending enums in external specifications.
+>
+> # Questions
+>
+> ## 4.1.2
+>
+> > The client will also send a ClientHello when the server has
+> responded to its ClientHello with a HelloRetryRequest. In that case,
+> the client MUST send the same ClientHello without modification, except
+> as follows: ...
+> * Optionally adding, removing, or changing the length of the "padding"
+>   extension [RFC7685].
+>
+> Q: Allowing the "padding" extension to be modified makes it
+> problematic to reconstruct the first ClientHello from the second, does
+> not it? (The reconstruction is mentioned in
+> [https://mailarchive.ietf.org/arch/msg/tls/7rLQEHrqKaYo7u31iNBNsPI_OVg/]
+> but not in the specification).
+>
+> ## 4.6.2
+>
+> > In addition, clients which receive multiple CertificateRequests in
+> close succession MAY respond to them in a different order than they
+> were received (the certificate_request_context value allows the server
+> to disambiguate the responses).
+>
+> Q: Can messages from different responses to CertificateRequests be
+> interleaved? Is it possible, for example, to obtain the following
+> transcript:
+> ```
+> CR_1, CR_2, CT_1, CT_2, CV_2, CV_1, F_1, F_2
+> ```
+> ? If so, how does the server differentiate between CV_1 and CV_2 or
+> between F_2 and F_1 considering that these messages don't contain
+> `certificate_request_context`?
+>
+>
+> _______________________________________________
+> TLS mailing list -- tls@ietf.org
+> To unsubscribe send an email to tls-leave@ietf.org
+>
+
+--00000000000048d39a063e8a9858
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div>Thanks for your comments. I have created=C2=A0<a href=
+=3D"https://github.com/tlswg/tls13-spec/pull/1396">https://github.com/tlswg=
+/tls13-spec/pull/1396</a> to address</div><div>the ones I think need change=
+s. Responses below.</div><div><br></div><div><br></div><div>&gt; &gt; If a =
+TLS 1.3 ClientHello is received with any other value in this<br>&gt; field,=
+ the server MUST abort the handshake with an &quot;illegal_parameter&quot;<=
+br>&gt; alert.<br>&gt; <br>&gt; `ClientHello` -&gt; `ServerHello`, server -=
+&gt; client.<br><br>Yes, this is correct.I have fixed it.<br><br><br>&gt; &=
+gt; Upon receipt of a HelloRetryRequest, the client MUST ... process the<br=
+>&gt; extensions .... Otherwise, the client MUST process all extensions in<=
+br>&gt; the HelloRetryRequest...<br>&gt; <br>&gt; Twice about the same thin=
+g (processing the extensions).<br><br>I don&#39;t see a problem here. The f=
+irst statement is generally about the<br>order of operations and the second=
+ is a mandate to process all<br>all extensions.<br><br><br>&gt; ## 4.1.4<br=
+>&gt; <br>&gt; &gt; As with the ServerHello, a HelloRetryRequest MUST NOT c=
+ontain any<br>&gt; extensions that were not first offered by the client.<br=
+>&gt; <br>&gt; It appears to be the first explanation that the ServerHello =
+/<br>&gt; HelloRetryRequest extensions must match the ClientHello ones.<br>=
+&gt; So &quot;As with the ServerHello&quot; does not work.<br><br>I don&#39=
+;t think this is actually a problem, but I agree it&#39;s slightly<br>clear=
+er.<br><br><br><br>&gt; ## 4.2.1<br>&gt; <br>&gt; &gt; A server which negot=
+iates a version of TLS prior to TLS 1.3 MUST set<br>&gt; ServerHello.versio=
+n and MUST NOT send the &quot;supported_versions&quot;<br>&gt; extension.<b=
+r>&gt; <br>&gt; `ServerHello.version` -&gt; `ServerHello.legacy_version`.<b=
+r><br>Fixed.<br><br>&gt; ## 4.2.8<br>&gt; <br>&gt; &gt; Each KeyShareEntry =
+value MUST correspond to a group offered in the<br>&gt; &quot;supported_gro=
+ups&quot; extension and MUST appear in the same order. [A]<br>&gt; .<br>&gt=
+; &gt; If using (EC)DHE key establishment, servers offer exactly one<br>&gt=
+; KeyShareEntry in the ServerHello. This value MUST be in the same group<br=
+>&gt; as the KeyShareEntry value offered by the client that the server has<=
+br>&gt; selected for the negotiated key exchange. [B]<br>&gt; .<br>&gt; &gt=
+; Servers MUST NOT send a KeyShareEntry for any group not indicated in<br>&=
+gt; the client&#39;s &quot;supported_groups&quot;. [C]<br>&gt; <br>&gt; [C]=
+ is redundant: it automatically holds if [A] and [B] hold.<br><br>I agree i=
+t&#39;s redundant, but I think it&#39;s clearer.<br><br><br>&gt; ## 4.2.11.=
+3<br>&gt; <br>&gt; &gt; Clients are permitted to &quot;stream&quot; 0-RTT d=
+ata until they receive the<br>&gt; server&#39;s Finished, only then sending=
+ the EndOfEarlyData message,<br>&gt; followed by the rest of the handshake.=
+ In order to avoid deadlocks,<br>&gt; when accepting &quot;early_data&quot;=
+, servers MUST process the client&#39;s<br>&gt; ClientHello and then immedi=
+ately send their flight of messages, rather<br>&gt; than waiting for the cl=
+ient&#39;s EndOfEarlyData message before sending<br>&gt; its ServerHello.<b=
+r>&gt; <br>&gt; A better place for this paragraph seems to be 4.2.10 (early=
+_data) or<br>&gt; 4.5 (EndOfEarlyData).<br><br>I think this is fine as-is.<=
+br><br><br><br>&gt; ## 4.6.1<br>&gt; <br>&gt; &gt; The value of zero indica=
+tes that the ticket should be discarded<br>&gt; immediately.<br>&gt; <br>&g=
+t; &quot;discarded immediately&quot; -&gt; &quot;discarded immediately afte=
+r use&quot;.<br><br>Agreed. Fixed.<br><br><br>&gt; &gt; If such an indicati=
+on is provided (externally or by any other<br>&gt; means), clients MAY resu=
+me with a different SNI value.<br>&gt; <br>&gt; It is difficult to understa=
+nd that &quot;indication&quot; refers (indeed?) to<br>&gt; the beginning of=
+ the paragraph.<br><br>I think this is clear enough as is.<br><br><br>&gt; =
+## 6.1<br>&gt; <br>&gt; &gt; close_notify: ... Any data received after a cl=
+osure alert has been<br>&gt; received MUST be ignored.<br>&gt; <br>&gt; &gt=
+; Any data received after a close_notify alert has been received MUST<br>&g=
+t; be ignored.<br>&gt; <br>&gt; Duplication.<br><br>Removed the second one.=
+<br><br><br>&gt; <br>&gt; ## 7.2<br>&gt; <br>&gt; &gt; Once the handshake i=
+s complete, it is possible for either side to<br>&gt; update its sending tr=
+affic keys.<br>&gt; <br>&gt; keys -&gt; key.<br>&gt; <br>&gt; &gt; applicat=
+ion_traffic_secret_0 ... application_traffic_secret_N ...<br>&gt; applicati=
+on_traffic_secret_N+1<br>&gt; <br>&gt; It might be better to use a single `=
+application_traffic_secret`<br>&gt; instead of multiple `application_traffi=
+c_secret_XXX`:<br>&gt; <br>&gt; ```<br>&gt; application_traffic_secret =3D<=
+br>&gt; =C2=A0 =C2=A0 =C2=A0 =C2=A0 HKDF-Expand-Label(application_traffic_s=
+ecret,<br>&gt; =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 &quot;traffic upd&quot;, &quot;&quot;, Hash=
+.length)<br>&gt; ```<br><br>In my opinion this would be less clear.<br><br>=
+<br>&gt; ## Presentation Language<br>&gt; <br>&gt; Formally, it is necessar=
+y to explain `a^b`.<br><br>I think this is well-enough known that it&#39;s =
+not necessary. It<br>hasn&#39;t been an issue in the past AFAICT.<br><br><b=
+r>&gt; Recommendation: define `+=3D` for enums:<br>&gt; ```<br>&gt; NamedGr=
+oup +=3D group_a(0xFEFF);<br>&gt; ...<br>&gt; NamedGroup +=3D { group_b(0xF=
+EFE), group_c(0xFEFD) };<br>&gt; ```<br>&gt; This facilitates extending enu=
+ms in external specifications.<br><br>We usually just do this verbally. I&#=
+39;m opposed to adding new<br>syntax at this time.<br><br><br>&gt; # Questi=
+ons<br>&gt; <br>&gt; ## 4.1.2<br>&gt; <br>&gt; &gt; The client will also se=
+nd a ClientHello when the server has<br>&gt; responded to its ClientHello w=
+ith a HelloRetryRequest. In that case,<br>&gt; the client MUST send the sam=
+e ClientHello without modification, except<br>&gt; as follows: ...<br>&gt; =
+* Optionally adding, removing, or changing the length of the &quot;padding&=
+quot;<br>&gt; =C2=A0 extension [RFC7685].<br>&gt; <br>&gt; Q: Allowing the =
+&quot;padding&quot; extension to be modified makes it<br>&gt; problematic t=
+o reconstruct the first ClientHello from the second, does<br>&gt; not it? (=
+The reconstruction is mentioned in<br>&gt; [<a href=3D"https://mailarchive.=
+ietf.org/arch/msg/tls/7rLQEHrqKaYo7u31iNBNsPI_OVg/">https://mailarchive.iet=
+f.org/arch/msg/tls/7rLQEHrqKaYo7u31iNBNsPI_OVg/</a>]<br>&gt; but not in the=
+ specification).<br><br>As you say it&#39;s not in the specification, so it=
+&#39;s the job of the<br>receiver to figure out what to do, potentially by =
+memoizing<br>the extension in the cookie, or just memoizing the whole hash<=
+br>state.<br><br><br>&gt; ## 4.6.2<br>&gt; <br>&gt; &gt; In addition, clien=
+ts which receive multiple CertificateRequests in<br>&gt; close succession M=
+AY respond to them in a different order than they<br>&gt; were received (th=
+e certificate_request_context value allows the server<br>&gt; to disambigua=
+te the responses).<br>&gt; <br>&gt; Q: Can messages from different response=
+s to CertificateRequests be<br>&gt; interleaved? Is it possible, for exampl=
+e, to obtain the following<br>&gt; transcript:<br>&gt; ```<br>&gt; CR_1, CR=
+_2, CT_1, CT_2, CV_2, CV_1, F_1, F_2<br>&gt; ```<br>&gt; ? If so, how does =
+the server differentiate between CV_1 and CV_2 or<br>&gt; between F_2 and F=
+_1 considering that these messages don&#39;t contain<br>&gt; `certificate_r=
+equest_context`?<br><br>No. This is forbidden earlier.<br>=C2=A0 <br>=C2=A0=
+ =C2=A0All of the client&#39;s messages for a given response MUST appear<br=
+>=C2=A0 =C2=A0consecutively on the wire with no intervening messages of oth=
+er<br>=C2=A0 =C2=A0types.<br><br>I sharpened this slightly in the current t=
+ext by adding:<br><br>=C2=A0 =C2=A0&quot;or from other responses.&quot;<br>=
+<br><br>-Ekr<br><br><br><br></div><div><br></div><div><br></div></div><br><=
+div class=3D"gmail_quote gmail_quote_container"><div dir=3D"ltr" class=3D"g=
+mail_attr">On Thu, Jul 24, 2025 at 5:32=E2=80=AFAM Sergey Agievich &lt;Agie=
+vich=3D<a href=3D"mailto:40bsu.by@dmarc.ietf.org">40bsu.by@dmarc.ietf.org</=
+a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0p=
+x 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><d=
+iv class=3D"msg3460240557453431598">
+
+
+
+
+<div dir=3D"ltr">
+<div id=3D"m_3460240557453431598divtagdefaultwrapper" style=3D"font-size:12=
+pt;color:rgb(0,0,0);font-family:Calibri,Helvetica,sans-serif" dir=3D"ltr">
+<p></p>
+<div></div>
+<div>Hi,=C2=A0</div>
+<div><br>
+</div>
+<div>I have enough carefully read draft-ietf-tls-rfc8446bis and prepared</d=
+iv>
+<div>some comments. I hope they will help improve the editorial quality of<=
+/div>
+<div>the specification.</div>
+<div><br>
+</div>
+<div>I also have 2 technical questions. It would be great to have answers.<=
+/div>
+<div><br>
+</div>
+<div>Best,</div>
+<div>Sergey</div>
+<div><br>
+</div>
+<div># Comments</div>
+<div><br>
+</div>
+<div>## 4.1.3</div>
+<div><br>
+</div>
+<div>&gt; If a TLS 1.3 ClientHello is received with any other value in this=
+</div>
+<div>field, the server MUST abort the handshake with an &quot;illegal_param=
+eter&quot;</div>
+<div>alert.</div>
+<div><br>
+</div>
+<div>`ClientHello` -&gt; `ServerHello`, server -&gt; client.</div>
+<div><br>
+</div>
+<div>&gt; Upon receipt of a HelloRetryRequest, the client MUST ... process =
+the</div>
+<div>extensions .... Otherwise, the client MUST process all extensions in</=
+div>
+<div>the HelloRetryRequest...</div>
+<div><br>
+</div>
+<div>Twice about the same thing (processing the extensions).</div>
+<div><br>
+</div>
+<div>## 4.1.4</div>
+<div><br>
+</div>
+<div>&gt; As with the ServerHello, a HelloRetryRequest MUST NOT contain any=
+</div>
+<div>extensions that were not first offered by the client.</div>
+<div><br>
+</div>
+<div>It appears to be the first explanation that the ServerHello /</div>
+<div>HelloRetryRequest extensions must match the ClientHello ones.=C2=A0</d=
+iv>
+<div>So &quot;As with the ServerHello&quot; does not work.</div>
+<div><br>
+</div>
+<div>## 4.2.1</div>
+<div><br>
+</div>
+<div>&gt; A server which negotiates a version of TLS prior to TLS 1.3 MUST =
+set</div>
+<div>ServerHello.version and MUST NOT send the &quot;supported_versions&quo=
+t;</div>
+<div>extension.</div>
+<div><br>
+</div>
+<div>`ServerHello.version` -&gt; `ServerHello.legacy_version`.</div>
+<div><br>
+</div>
+<div>## 4.2.8</div>
+<div><br>
+</div>
+<div>&gt; Each KeyShareEntry value MUST correspond to a group offered in th=
+e</div>
+<div>&quot;supported_groups&quot; extension and MUST appear in the same ord=
+er. [A]</div>
+<div>.</div>
+<div><span style=3D"font-size:12pt">&gt; If using (EC)DHE key establishment=
+, servers offer exactly one</span></div>
+<div>KeyShareEntry in the ServerHello. This value MUST be in the same group=
+</div>
+<div>as the KeyShareEntry value offered by the client that the server has</=
+div>
+<div>selected for the negotiated key exchange. [B]</div>
+<div>.</div>
+<div><span style=3D"font-size:12pt">&gt; Servers MUST NOT send a KeyShareEn=
+try for any group not indicated in</span></div>
+<div>the client&#39;s &quot;supported_groups&quot;. [C]</div>
+<div><br>
+</div>
+<div>[C] is redundant: it automatically holds if [A] and [B] hold.</div>
+<div><br>
+</div>
+<div>## 4.2.11.3</div>
+<div><br>
+</div>
+<div>&gt; Clients are permitted to &quot;stream&quot; 0-RTT data until they=
+ receive the</div>
+<div>server&#39;s Finished, only then sending the EndOfEarlyData message,</=
+div>
+<div>followed by the rest of the handshake. In order to avoid deadlocks,</d=
+iv>
+<div>when accepting &quot;early_data&quot;, servers MUST process the client=
+&#39;s</div>
+<div>ClientHello and then immediately send their flight of messages, rather=
+</div>
+<div>than waiting for the client&#39;s EndOfEarlyData message before sendin=
+g</div>
+<div>its ServerHello.</div>
+<div><br>
+</div>
+<div>A better place for this paragraph seems to be 4.2.10=C2=A0<span style=
+=3D"font-size:12pt">(early_data) or=C2=A0</span></div>
+<div><span style=3D"font-size:12pt">4.5 (EndOfEarlyData).</span></div>
+<div><br>
+</div>
+<div>## 4.6.1</div>
+<div><br>
+</div>
+<div>&gt; The value of zero indicates that the ticket should be discarded</=
+div>
+<div>immediately.</div>
+<div><br>
+</div>
+<div>&quot;discarded immediately&quot; -&gt; &quot;discarded immediately af=
+ter use&quot;.</div>
+<div><br>
+</div>
+<div>&gt; If such an indication is provided (externally or by any other</di=
+v>
+<div>means), clients MAY resume with a different SNI value.</div>
+<div><br>
+</div>
+<div>It is difficult to understand that &quot;indication&quot; refers (inde=
+ed?) to</div>
+<div>the beginning of the paragraph.</div>
+<div><br>
+</div>
+<div>## 6.1</div>
+<div><br>
+</div>
+<div>&gt; close_notify: ... Any data received after a closure alert has bee=
+n</div>
+<div>received MUST be ignored.</div>
+<div><br>
+</div>
+<div>&gt; Any data received after a close_notify alert has been received MU=
+ST</div>
+<div>be ignored.</div>
+<div><br>
+</div>
+<div>Duplication.</div>
+<div><br>
+</div>
+<div>## 7.2</div>
+<div><br>
+</div>
+<div>&gt; Once the handshake is complete, it is possible for either side to=
+</div>
+<div>update its sending traffic keys.</div>
+<div><br>
+</div>
+<div>keys -&gt; key.</div>
+<div><br>
+</div>
+<div>&gt; application_traffic_secret_0 ... application_traffic_secret_N ...=
+</div>
+<div>application_traffic_secret_N+1</div>
+<div><br>
+</div>
+<div>It might be better to use a single `application_traffic_secret`=C2=A0<=
+/div>
+<div>instead of multiple `application_traffic_secret_XXX`:=C2=A0</div>
+<div><br>
+</div>
+<div>```</div>
+<div>application_traffic_secret =3D</div>
+<div>=C2=A0 =C2=A0 =C2=A0 =C2=A0 HKDF-Expand-Label(application_traffic_secr=
+et,</div>
+<div>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 &quot;traffic upd&quot;, &quot;&quot;, Hash.length)</d=
+iv>
+<div>```</div>
+<div><br>
+</div>
+<div>## Presentation Language</div>
+<div><br>
+</div>
+<div>Formally, it is necessary to explain `a^b`.</div>
+<div><br>
+</div>
+<div>Recommendation: define `+=3D` for enums:</div>
+<div>```</div>
+<div>NamedGroup +=3D group_a(0xFEFF);</div>
+<div>...</div>
+<div>NamedGroup +=3D { group_b(0xFEFE), group_c(0xFEFD) };</div>
+<div>```</div>
+<div>This facilitates extending enums in external specifications.</div>
+<div><br>
+</div>
+<div># Questions</div>
+<div><br>
+</div>
+<div>## 4.1.2</div>
+<div><br>
+</div>
+<div>&gt; The client will also send a ClientHello when the server has</div>
+<div>responded to its ClientHello with a HelloRetryRequest. In that case,</=
+div>
+<div>the client MUST send the same ClientHello without modification, except=
+</div>
+<div>as follows: ...</div>
+<div>* Optionally adding, removing, or changing the length of the &quot;pad=
+ding&quot;</div>
+<div>=C2=A0 extension [RFC7685].</div>
+<div><br>
+</div>
+<div>Q: Allowing the &quot;padding&quot; extension to be modified makes it<=
+/div>
+<div>problematic to reconstruct the first ClientHello from the second, does=
+</div>
+<div>not it? (The reconstruction is mentioned in</div>
+<div>[<a href=3D"https://mailarchive.ietf.org/arch/msg/tls/7rLQEHrqKaYo7u31=
+iNBNsPI_OVg/" target=3D"_blank">https://mailarchive.ietf.org/arch/msg/tls/7=
+rLQEHrqKaYo7u31iNBNsPI_OVg/</a>]=C2=A0</div>
+<div>but not in the specification).</div>
+<div><br>
+</div>
+<div>## 4.6.2</div>
+<div><br>
+</div>
+<div>&gt; In addition, clients which receive multiple CertificateRequests i=
+n</div>
+<div>close succession MAY respond to them in a different order than they</d=
+iv>
+<div>were received (the certificate_request_context value allows the server=
+</div>
+<div>to disambiguate the responses).</div>
+<div><br>
+</div>
+<div>Q: Can messages from different responses to CertificateRequests be=C2=
+=A0</div>
+<div>interleaved? Is it possible, for example, to obtain the following=C2=
+=A0</div>
+<div>transcript:=C2=A0</div>
+<div>```</div>
+<div>CR_1, CR_2, CT_1, CT_2, CV_2, CV_1, F_1, F_2</div>
+<div>```</div>
+<div>? If so, how does the server differentiate between CV_1 and CV_2 or</d=
+iv>
+<div>between F_2 and F_1 considering that these messages don&#39;t contain<=
+/div>
+<div>`certificate_request_context`?</div>
+<div><br>
+</div>
+<br>
+<p></p>
+</div>
+</div>
+
+_______________________________________________<br>
+TLS mailing list -- <a href=3D"mailto:tls@ietf.org" target=3D"_blank">tls@i=
+etf.org</a><br>
+To unsubscribe send an email to <a href=3D"mailto:tls-leave@ietf.org" targe=
+t=3D"_blank">tls-leave@ietf.org</a><br>
+</div></blockquote></div>
+
+--00000000000048d39a063e8a9858--
+

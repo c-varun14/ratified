@@ -1,0 +1,255 @@
+Return-Path: <ekr@rtfm.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id AD817124B18
+ for <tls@ietfa.amsl.com>; Tue, 20 Mar 2018 07:55:07 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.899
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.899 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_NONE=-0.0001]
+ autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=rtfm-com.20150623.gappssmtp.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id OxMg1mLpx7_H for <tls@ietfa.amsl.com>;
+ Tue, 20 Mar 2018 07:55:05 -0700 (PDT)
+Received: from mail-qt0-x236.google.com (mail-qt0-x236.google.com
+ [IPv6:2607:f8b0:400d:c0d::236])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 852211200B9
+ for <tls@ietf.org>; Tue, 20 Mar 2018 07:55:05 -0700 (PDT)
+Received: by mail-qt0-x236.google.com with SMTP id n12so1869893qtl.5
+ for <tls@ietf.org>; Tue, 20 Mar 2018 07:55:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=rtfm-com.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+ :cc; bh=KWBNGQTlXaHj1hwGagtqQy3zgJTzTiG4qjvreGopP70=;
+ b=zS9unGbGjeVNq+/heguBCv59m8bWEYnek1jd/Bx9np17p4hTKkCmLZy7+bghLzW8yK
+ mO10kgRxuATIDQY8obcyDSDDd6bGzCT3hwXhQIshTJkQAUCxFFKLNK1WsRpe0RtzFT/2
+ 2WOBFlMvSBLGozWC58KJOvBiifsYNq0eF7PNxO2ttMa81KfnF3lq3exGIpCQErI/to5+
+ bjEt6GPDASI2fMr2VGcEecMbUgtGHMEQqta7W0gO8eODCfHLbYHiaXv7l+57mkHkYeUg
+ wFDCYVLq1w7AHlo+pzUN4qxntNQdFuadxlMyhJsxzapXC7/z/l07Dt/dseJM4ko9GEHi
+ PLYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+ :message-id:subject:to:cc;
+ bh=KWBNGQTlXaHj1hwGagtqQy3zgJTzTiG4qjvreGopP70=;
+ b=nbXStXRbg0uM63bpCnxaIacIqrPUT1LIljyecgPlS+47Yntqlzhr6GnANXa4bAX/RE
+ 578okRnfWcdj6dLpM9XEe22eKw8jbkMdUVjtCyMCpYJuxEFgp9GuaWHKhIFa7wywx6xy
+ BeilAZ3hSKZIcnV404nXp8ObmDlP3qgJdCRKV/BhIGKF6XVlQh5sW2jtT8V5aEXK4Vyr
+ zlNV/Ix4zIsWU0IDUAZdO2Lz/6YoR8ZJ+pRTBFe0iMPhXt8eqDYJA9BF8vhYpqOO6QK7
+ 4dpDpNCyZJtxyqujssT8r5FRfJhlizkd7VqSP4WKg0cXDMBV/gRuRNFms/ziYIfVy7bI
+ Gilg==
+X-Gm-Message-State: AElRT7HZyg/91tHtWf+qM8cY9hmqdvPuiEV0QhkYH9PfRU04ZcqWoE4t
+ zi07JXVKikjos6/KBZ9Wwlf+toy+jbnKOcEKQwXDtw==
+X-Google-Smtp-Source: AG47ELuLkJKDlWUHOuaGB2EVwHrOQM0U06z5OoytQqgToMuo/nY+Cq6DFJVpF9sBRX0OEWq+RRIlB3eQpYBFper1a8U=
+X-Received: by 10.200.13.75 with SMTP id r11mr25024710qti.133.1521557704531;
+ Tue, 20 Mar 2018 07:55:04 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 10.200.37.234 with HTTP; Tue, 20 Mar 2018 07:54:24 -0700 (PDT)
+In-Reply-To: <dc28999a-b476-474f-a12b-d5170df76dec@gmail.com>
+References: <505FCF83-C92E-4A90-83BF-4B2C4796EBE6@sn3rd.com>
+ <dc28999a-b476-474f-a12b-d5170df76dec@gmail.com>
+From: Eric Rescorla <ekr@rtfm.com>
+Date: Tue, 20 Mar 2018 14:54:24 +0000
+Message-ID: <CABcZeBOW9rJUqcx9NBnE9iy_xp14K_i=CN2LVrGe1cUwNCkv4Q@mail.gmail.com>
+To: Rene Struik <rstruik.ext@gmail.com>
+Cc: Sean Turner <sean@sn3rd.com>, "<tls@ietf.org>" <tls@ietf.org>
+Content-Type: multipart/alternative; boundary="089e08229d687bf1070567d94208"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/xBL0XOe5jBXT5TmK5ChfnXDSaW4>
+Subject: Re: [TLS] (crypto agility may benefit from private extensions) Re:
+ Additional changes for draft-ietf-tls-iana-registry-updates
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Tue, 20 Mar 2018 14:55:08 -0000
+
+--089e08229d687bf1070567d94208
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Mar 20, 2018 at 2:51 PM, Rene Struik <rstruik.ext@gmail.com> wrote:
+
+> Hi Sean:
+>
+> Quick question: does "closing the registry" not contradict catering
+> towards crypto agility? What happens if, say, one wishes to add another
+> signature scheme, besides Ed25519, to the mix. If there is no private
+> field, does this mean that, e.g., Schnorr+BSI Brainpool256r1 is now ruled
+> out?
+>
+
+No. Private just means "we're not going to allocate these code points, so
+you should use them without coordination".
+
+The key point here is that this is a big space and so we're instead going
+to make it easy for people to reserve code points by writing a stable spec,
+that need not be an IETF standard, and that's what they should do.
+
+
+-Ekr
+
+
+>
+> My more serious concern is, however, that if the Private Use case is
+> "verboten", there is no chance for people to signal private extensions
+> (since IETF will just have killed this off).
+>
+> I do not think it is prudent to have a slow process in place (IETF
+> standardization) to effectuate crypto agility, if private use can already
+> do this without waiting for 3-year public discussions and heated debate (=
+if
+> a weakness is discovered, dark forces will exploit this right away and
+> won't wait for IETF to catch up to exploit an issue).
+>
+> As case in point, suppose US Gov't wants to roll its own "Suite A" scheme=
+,
+> or if one wants to use TLS with something tailored towards the sensor wor=
+ld
+> (which operates in quite a hostile environment for implementation
+> security), how is one going to do this in context of TLS if the signaling
+> required has just been removed?
+>
+> NOTE: this is not an invite for endless discussions on the legitimacy of
+> whoever may wish a private extensions (it is private after all), it does
+> question though the wisdom of removing the option for using this. If Zulu
+> hour arrives, one should have tools to act...
+>
+> Best regards, Rene
+>
+> On 3/16/2018 10:01 AM, Sean Turner wrote:
+> > During Adam Roach=E2=80=99s AD review of draft-ietf-tls-tls13, he noted
+> something about the HashAlgorithm and that made me go look at what was sa=
+id
+> in draft-ietf-tls-iana-registry-updates.  Turns out that 4492bis assigned
+> some values draft-ietf-tls-iana-registry-updates was marking as
+> reserved.  I have fixed that up in:
+> > https://github.com/tlswg/draft-ietf-tls-iana-registry-updates/pull/65
+> >
+> > One further point brought out in discussions with Adam was that if we=
+=E2=80=99re
+> really closing the HashAlgorithm and SignatureAlgorithms registry we need
+> to also mark 224-255 as deprecated.  Currently these are marked as Reserv=
+ed
+> for Private Use.  So the question is should we mark 224-255 as deprecated
+> in these two registries?
+> >
+> > spt
+> > _______________________________________________
+> > TLS mailing list
+> > TLS@ietf.org
+> > https://www.ietf.org/mailman/listinfo/tls
+>
+>
+> --
+> email: rstruik.ext@gmail.com | Skype: rstruik
+> cell: +1 (647) 867-5658 | US: +1 (415) 690-7363
+>
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+>
+
+--089e08229d687bf1070567d94208
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><br><div class=3D"gmail_extra"><br><div class=3D"gmail_quo=
+te">On Tue, Mar 20, 2018 at 2:51 PM, Rene Struik <span dir=3D"ltr">&lt;<a h=
+ref=3D"mailto:rstruik.ext@gmail.com" target=3D"_blank">rstruik.ext@gmail.co=
+m</a>&gt;</span> wrote:<br><blockquote class=3D"gmail_quote" style=3D"margi=
+n:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex">Hi Sean:<br>
+<br>
+Quick question: does &quot;closing the registry&quot; not contradict cateri=
+ng towards crypto agility? What happens if, say, one wishes to add another =
+signature scheme, besides Ed25519, to the mix. If there is no private field=
+, does this mean that, e.g., Schnorr+BSI Brainpool256r1 is now ruled out?<b=
+r></blockquote><div><br></div><div>No. Private just means &quot;we&#39;re n=
+ot going to allocate these code points, so you should use them without coor=
+dination&quot;.</div><div><br></div><div>The key point here is that this is=
+ a big space and so we&#39;re instead going to make it easy for people to r=
+eserve code points by writing a stable spec, that need not be an IETF stand=
+ard, and that&#39;s what they should do.</div><div><br></div><div><br></div=
+><div>-Ekr</div><div>=C2=A0</div><blockquote class=3D"gmail_quote" style=3D=
+"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex">
+<br>
+My more serious concern is, however, that if the Private Use case is &quot;=
+verboten&quot;, there is no chance for people to signal private extensions =
+(since IETF will just have killed this off).<br>
+<br>
+I do not think it is prudent to have a slow process in place (IETF standard=
+ization) to effectuate crypto agility, if private use can already do this w=
+ithout waiting for 3-year public discussions and heated debate (if a weakne=
+ss is discovered, dark forces will exploit this right away and won&#39;t wa=
+it for IETF to catch up to exploit an issue).<br>
+<br>
+As case in point, suppose US Gov&#39;t wants to roll its own &quot;Suite A&=
+quot; scheme, or if one wants to use TLS with something tailored towards th=
+e sensor world (which operates in quite a hostile environment for implement=
+ation security), how is one going to do this in context of TLS if the signa=
+ling required has just been removed?<br>
+<br>
+NOTE: this is not an invite for endless discussions on the legitimacy of wh=
+oever may wish a private extensions (it is private after all), it does ques=
+tion though the wisdom of removing the option for using this. If Zulu hour =
+arrives, one should have tools to act...<br>
+<br>
+Best regards, Rene<br>
+<br>
+On 3/16/2018 10:01 AM, Sean Turner wrote:<br>
+&gt; During Adam Roach=E2=80=99s AD review of draft-ietf-tls-tls13, he note=
+d something about the HashAlgorithm and that made me go look at what was sa=
+id in draft-ietf-tls-iana-registry-<wbr>updates.=C2=A0 Turns out that 4492b=
+is assigned some values draft-ietf-tls-iana-registry-<wbr>updates was marki=
+ng as reserved.=C2=A0 I have fixed that up in:<br>
+&gt; <a href=3D"https://github.com/tlswg/draft-ietf-tls-iana-registry-updat=
+es/pull/65" rel=3D"noreferrer" target=3D"_blank">https://github.com/tlswg/<=
+wbr>draft-ietf-tls-iana-registry-<wbr>updates/pull/65</a><br>
+&gt;<br>
+&gt; One further point brought out in discussions with Adam was that if we=
+=E2=80=99re really closing the HashAlgorithm and SignatureAlgorithms regist=
+ry we need to also mark 224-255 as deprecated.=C2=A0 Currently these are ma=
+rked as Reserved for Private Use.=C2=A0 So the question is should we mark 2=
+24-255 as deprecated in these two registries?<br>
+&gt;<br>
+&gt; spt<br>
+&gt; ______________________________<wbr>_________________<br>
+&gt; TLS mailing list<br>
+&gt; <a href=3D"mailto:TLS@ietf.org">TLS@ietf.org</a><br>
+&gt; <a href=3D"https://www.ietf.org/mailman/listinfo/tls" rel=3D"noreferre=
+r" target=3D"_blank">https://www.ietf.org/mailman/<wbr>listinfo/tls</a><br>
+<span class=3D"HOEnZb"><font color=3D"#888888"><br>
+<br>
+--<br>
+email: <a href=3D"mailto:rstruik.ext@gmail.com">rstruik.ext@gmail.com</a> |=
+ Skype: rstruik<br>
+cell: <a href=3D"tel:%2B1%20%28647%29%20867-5658" value=3D"+16478675658">+1=
+ (647) 867-5658</a> | US: <a href=3D"tel:%2B1%20%28415%29%20690-7363" value=
+=3D"+14156907363">+1 (415) 690-7363</a><br>
+<br>
+______________________________<wbr>_________________<br>
+TLS mailing list<br>
+<a href=3D"mailto:TLS@ietf.org">TLS@ietf.org</a><br>
+<a href=3D"https://www.ietf.org/mailman/listinfo/tls" rel=3D"noreferrer" ta=
+rget=3D"_blank">https://www.ietf.org/mailman/<wbr>listinfo/tls</a><br>
+</font></span></blockquote></div><br></div></div>
+
+--089e08229d687bf1070567d94208--
+

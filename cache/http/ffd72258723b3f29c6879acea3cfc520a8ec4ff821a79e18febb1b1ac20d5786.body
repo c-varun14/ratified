@@ -1,0 +1,1888 @@
+Return-Path: <alissa@cooperw.in>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 959E212D7E4;
+ Tue,  6 Mar 2018 11:43:19 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.721
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.721 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ DKIM_VALID_AU=-0.1, RCVD_IN_DNSWL_LOW=-0.7, RCVD_IN_MSPIKE_H3=-0.01,
+ RCVD_IN_MSPIKE_WL=-0.01, SPF_PASS=-0.001]
+ autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=cooperw.in header.b=M0JLJjhd;
+ dkim=pass (2048-bit key)
+ header.d=messagingengine.com header.b=Gz9lr4o3
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id Z3BQnKFEd1nM; Tue,  6 Mar 2018 11:43:12 -0800 (PST)
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+ [66.111.4.25])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id A4FE6126BF3;
+ Tue,  6 Mar 2018 11:43:12 -0800 (PST)
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
+ by mailout.nyi.internal (Postfix) with ESMTP id 2625C20CDD;
+ Tue,  6 Mar 2018 14:33:29 -0500 (EST)
+Received: from frontend1 ([10.202.2.160])
+ by compute7.internal (MEProxy); Tue, 06 Mar 2018 14:33:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cooperw.in; h=cc
+ :content-transfer-encoding:content-type:date:from:in-reply-to
+ :message-id:mime-version:references:subject:to:x-me-sender
+ :x-me-sender:x-sasl-enc; s=fm2; bh=GdSwhJzglxUw7vZ77DFFOssmG3R4s
+ rwA6wIeh4Rtz2E=; b=M0JLJjhd6oQQA4HW1Ug85nbVMLJfVAVqarR9gYpUXhLNv
+ 8B66iyWsT4ToYGIbjBXPg5/WESQIRjjsYn9MiFjsq0SHVr4QwQ9sme2CjDHYm4jR
+ M9xUht44/8Ram90pVNUIqFWHkJXzJZ+ipZbHRz0nl/PfyIxU4yJD/9N2UMUdWaTb
+ iBSBi0RQVRdVHjUDoUG2390fuw9apL/Rs9XqYFnSjDJQpkLWyl7rsMcqLLqscmKJ
+ 1B6ZSwTa/k7kfPUt65EnYf+qCKp7ern2sQloWqfD3lMY972uW4soHgr3xGfFYtCb
+ PR7GXBLi7RC9iZqryRt3/X8Gx/MX56jazAJRCo/3g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-transfer-encoding:content-type
+ :date:from:in-reply-to:message-id:mime-version:references
+ :subject:to:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=GdSwhJ
+ zglxUw7vZ77DFFOssmG3R4srwA6wIeh4Rtz2E=; b=Gz9lr4o3s+KeR7Zid0Bc2J
+ VwCObHJI7rMgXGDJ41dboriv3t7FIX/dOKSt0MwxYcHvWUeWDE8PZQ7NuoxPYyLT
+ URMFuJ3h7tsmm0e94r6m7UfWv9RK0R0XPTtsWM8LUByzi3Bj4AWVKI1AkaPwYDIp
+ lRCHgLA98M0DhdPN4hr97u/mLT63cqk/sg3gMBJiCkVVMSvt5ZsGr11JVyMhwLMQ
+ 2Bo0vfftxmehmhsqJbVBtODUa5iz0rezGmh6z2uxy6Hod8DQ2EyOT0QrPSDqcUrW
+ ++3ttTgCGARFBVvwEPKLaLWI1tynrk4eZuJqYuB6VNz2SJ9nbRop8Yjgnnh3KxLA
+ ==
+X-ME-Sender: <xms:CO2eWoCNvXcWZOPf__OKB_kA-yhPWlOPHMrg2yjg5zOAC7xypryLGg>
+Received: from rtp-vpn3-1053.cisco.com (unknown [173.38.117.86])
+ by mail.messagingengine.com (Postfix) with ESMTPA id 4F1D67E1D8;
+ Tue,  6 Mar 2018 14:33:28 -0500 (EST)
+Content-Type: text/plain; charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
+From: Alissa Cooper <alissa@cooperw.in>
+In-Reply-To: <152004960327.8290.4628820807186314931@ietfa.amsl.com>
+Date: Tue, 6 Mar 2018 14:33:26 -0500
+Cc: General Area Review Team <gen-art@ietf.org>,
+ draft-ietf-tls-tls13.all@ietf.org, TLS WG <tls@ietf.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <DA004B30-5235-405C-9661-C7AD33767E03@cooperw.in>
+References: <152004960327.8290.4628820807186314931@ietfa.amsl.com>
+To: Dale Worley <worley@ariadne.com>
+X-Mailer: Apple Mail (2.3124)
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/x1-vGLGR6HjN1xaSgCKktyViygc>
+Subject: Re: [TLS] [Gen-art] Genart last call review of draft-ietf-tls-tls13-24
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Tue, 06 Mar 2018 19:43:20 -0000
+
+Dale, thanks for your review. I have entered a Yes ballot and encouraged =
+the author/WG to take a look at your comments. I suspect a lot of the =
+stylistic/linguistic items derive from the WG participants having deep =
+experience with the protocol and its previous versions and existing =
+extensions.
+
+Alissa
+
+> On Mar 2, 2018, at 11:00 PM, Dale Worley <worley@ariadne.com> wrote:
+>=20
+> Reviewer: Dale Worley
+> Review result: Ready with Nits
+>=20
+> I am the assigned Gen-ART reviewer for this draft.  The General Area
+> Review Team (Gen-ART) reviews all IETF documents being processed
+> by the IESG for the IETF Chair.  Please treat these comments just
+> like any other last call comments.
+>=20
+> For more information, please see the FAQ at
+> <https://wiki.tools.ietf.org/area/gen/wiki/GenArtfaq>.
+>=20
+> Document:  draft-ietf-tls-tls13-24
+> Reviewer:  Dale R. Worley
+> Review Date:  2018-03-02
+> IETF LC End Date:  2018-03-02
+> IESG Telechat date:  2018-03-08
+>=20
+> Summary:
+>=20
+>       This draft is basically ready for publication, but has nits
+>       that should be fixed before publication.
+>=20
+> This review only covers the general properties of the proposed
+> protocol and the exposition, as I am unqualified to assess its
+> security properties.
+>=20
+> There are various places where the exposition could be made clearer,
+> especially to readers not immersed in security matters.  In many
+> places, it is mostly a matter of making clearer the connections
+> between different points in the exposition.
+>=20
+> In a few places, there seems to be ambiguity regarding the
+> specification that has technical significance.  In particular:
+>=20
+> - There is inexactness about "transcript", "handshake context", and
+>  "context".
+>=20
+> - When a server receives ClientHello, is it obligated to promptly send
+>  not just the ServerHello, but all first-flight messages from
+>  ServerHello through Finished?  (section 4.2.11.3)  I ask this
+>  because the client is only obligated/permitted to send
+>  EndOfEarlyData when it receives the server's Finished.
+>=20
+> - It seems inconsistent that the client can send an empty Certificate
+>  message, but the server cannot, even though the server can omit
+>  sending the Certificate message.  (section 4.4.2.4)
+>=20
+> - Comparing sections 4.2.10 and 4.6.1, when a PSK was established in
+>  an earlier connection, exactly what are the limitations on the
+>  cryptographic parameters that can be used when the PSK is used in a
+>  resumption connection?  4.2.10 suggests that the following must be
+>  the same in both connections:  TLS version, cipher suite, ALPN.  But
+>  4.6.1 suggests that different cipher suites can be used, as long as
+>  they use the same hash algorithm.
+>=20
+> - In regard to section 4.6.1, it seems to require that a client MAY
+>  NOT resume a connection using a ticket issued during a connection in
+>  which the server did not present a certificate for itself, because
+>  in the handshake of the resumption connection, the client is required
+>  to verify that the SNI is compatible with the certificate the server
+>  presented in the original connection.  But that constraint isn't
+>  stated in section 2.2, despite being a global constraint on the
+>  structure of sessions.
+>=20
+> - Presumably implementations MUST NOT send zero-length fragments of =
+alert
+>  messages for the same reasons that they cannot send zero-length
+>  fragments of handshake messages (whatever those reasons are).
+>=20
+> - There are about 28 error codes but nearly 150 places where the text
+>  require the connection to be aborted with an error -- and hence,
+>  nearly 150 distinct constraints that can be violated.  There are 19
+>  alone for "illegal_parameter".  I would like to see an "alert
+>  extension value" which assigns a distinct "minor" code to each
+>  statement in the text that requires an error response (with
+>  implementations being allowed to be a bit sloppy in providing the
+>  correct minor code).
+>=20
+> - I take it that there is no "close read side" operation.  (If that
+>  existed, TLS could generate the "broken pipe" error.)
+>=20
+> There are a number of issues which span the whole text:
+>=20
+> The interaction of this draft with extensions defined for previous
+> versions of TLS is not laid out clearly.  It seems safe enough for
+> this draft to import data structures from earlier extensions with only
+> a reference to the earlier RFC, but if an extension defines behavior
+> (e.g., a negotiation process), exactly what is the specification of
+> that behavior in TLS 1.3, given that the referenced RFC only defines
+> its use in TLS 1.2 or earlier?  At the least, there should be an
+> explicit statement that the behaviors are carried forward in the
+> "obvious way".
+>=20
+> It's also not clear exactly which previously defined extensions are
+> brought forward into TLS 1.3.  I suspect that they are all listed in
+> section 4.2, but is it clearly stated that those, and only those, are
+> grandfathered in?
+>=20
+> Presumably, for any referenced extension, the placement of values in
+> messages in TLS 1.2 has a "natural" analog in TLS 1.3 that at most
+> involves moving the value from one field to another in certain
+> messages.  But it would be reassuring to have a clear statement of
+> this, and an enumeration of any more complex cases.
+>=20
+> There are about 28 error codes but nearly 150 places where the text
+> require the connection to be aborted with an error.  There are 19
+> alone for "illegal_parameter".  I would like to see an "alert
+> extension value" which assigns a distinct "minor" code to each
+> statement in the text that requires an error response.  This code
+> would make it a lot easier to diagnose what is going wrong with a
+> handshake.  To avoid making specifying and implementing these codes
+> too difficult, implementations should be allowed to deviate to a
+> degree from the specification regarding minor codes, and there should
+> be a range of codes reserved for implementation-defined uses.
+> Conversely, there are a couple of places where the implementation MUST
+> NOT distinguish between different causes of an alert, but I believe
+> that those are explicitly mentioned in the text.
+>=20
+> The terms "side", "server side", and "client side" are used in various
+> places, despite that "endpoint" is the defined term.  I suggest
+> replacing these terms with "endpoint", "server", and "client".
+>=20
+> There are a number of places where "fatal alert" is used, but "error
+> alert" seems to be the defined term.
+>=20
+> Detail items are:
+>=20
+> 1.  Introduction
+>=20
+>   TLS is application protocol independent; higher-level protocols can
+>   layer on top of TLS transparently.
+>=20
+> It might be informative to describe the nature of the
+> currently-defined application protocol (a bidirectional, reliable byte
+> stream) and similarly, to describe the requirements on the underlying
+> transport (as far as I can tell, also a bidirectional, reliable byte
+> stream).
+>=20
+> 1.1.  Conventions and Terminology
+>=20
+> There are a number of terms which are frequently used in the text that
+> don't seem to be defined.  It's likely that they are only used in
+> exposition, that if all sentences containing them were deleted, the
+> document would still be complete and accurate.  But it seems like it
+> would be easier on the reader to define them.  Terms that come to mind
+> are:
+>=20
+> flight -- it seems to be thought that messages are grouped into
+> "flights", where the messages of flight N from one sender cannot be
+> sent until (more or less) it receives all messages of flights M (1 <=3D
+> M <=3D N) from the peer.
+>=20
+> MAC and HMAC -- by a simple count, both of these terms are used
+> exactly 11 times in the document.  Is there any functional difference
+> between them?
+>=20
+> ticket -- it's not clear what this means concretely.  Abstractly, it
+> seems to include the set of cryptographic parameters needed to send
+> application data, but concretely I can't figure out if it is the
+> entire block of parameters (struct NewSessionTicket), or whether it is
+> (or can be) just a key that points to the parameters in some database
+> (the ticket *field* of struct NewSessionTicket).
+>=20
+> A related issue is that there is a field "ticket" in the structure
+> "NewSessionTicket", and, at least conceptually, that structure is also
+> considered a "ticket".  I strongly suggest you change the name of the
+> field, and then revise uses of "ticket" to indicate whether they refer
+> to the structure or to the field.  Comparing to other parts of the
+> text, I think you may have intended to call the field "identity", as
+> the value in NewSessionTicket.ticket seems to be intended to be copied
+> into PreSharedKeyExtension.OfferedPsks.PskIdentity.
+>=20
+> RTT, 0-RTT, 1-RTT -- Can these be defined more rigorously?
+>=20
+> server name, SNI -- These two terms seem to be used interchangeably
+> and as if the reader already understands their meaning and use.
+> Suggest you standardize on one (and list the other as a synonym in the
+> glossary).  Also include how "server name" interacts with the server's
+> certificate.
+>=20
+> advertise -- I think this means when an endpoint sends a message
+> containing an extension saying that it implements a feature or option,
+> soliciting the peer to send a message containing the same extension
+> (and thus agreeing to use the feature/option during this connection).
+>=20
+> transcript -- It might be useful to put the definition of this in this
+> section.  Also, define the "context" or "handshake context", which
+> seems to be the sequence of messages included in the transcript hash
+> (or the concatenation thereof).  But doesn't seem clear what messages
+> are in the "handshake context" for any single usage.
+>=20
+> handshake -- This has two meanings:  (1) messages whose content type
+> is "handshake" (see section 5), and (2) messages with content type
+> "handshake" that are part of the initial exchange of such messages.
+> The problem is that there are messages that are (1) but not (2), and
+> so you get confusing language like the title of section 4.6.
+>=20
+> establish vs. provision -- The document mostly adheres to the
+> convention that pre-shared keys are "provisioned" whereas keys that
+> are set up using TLS (possibly in a previous session) are
+> "established".  In particular, "provisioned" is only used as an
+> attribute of keys, whereas "establishing" is an action and
+> "established" keys are ones created by that action.  But there are
+> places where the two terms aren't used distinctly.
+>=20
+> ALPN -- This is used sporadically throughout the document.
+>=20
+> "hash over" -- A personal gripe of mine is that I look at a hash as a
+> function, and so its value is a "hash of (some string)".  I don't mind
+> "hash over X", "hash protects X", and "hash covers X"n when X is
+> conceptualized as a substring of some larger string, that is, there's
+> a Y that is explicitly being excluded.  But in a lot of cases in this
+> document, X is explicitly constructed from various fragments, so
+> there's no Y.  But maybe all these usages are conventional in
+> cryptography.
+>=20
+> 2.  Protocol Overview
+>=20
+>   The cryptographic parameters used by the secure channel are produced
+>   by the TLS handshake protocol.  This sub-protocol of TLS [...]
+>=20
+> I think you want to s/This sub-protocol/The TLS handshake protocol/,
+> since a naive reader (me!) could consider "the secure channel" as a
+> plausible antecedent of "this".
+>=20
+> 2.1.  Incorrect DHE Share
+>=20
+>   Note: The handshake transcript includes the initial ClientHello/
+>   HelloRetryRequest exchange; it is not reset with the new =
+ClientHello.
+>=20
+> "transcript" has not been defined yet.  Perhaps:
+>=20
+>   Note: The handshake transcript (the message input to the MAC in the
+>   Finished message) starts with ...
+>=20
+> 2.2.  Resumption and Pre-Shared Key (PSK)
+>=20
+>   Figure 3 shows a pair of handshakes in which the first establishes a
+>   PSK and the second uses it:
+>=20
+> The first handshake does not point out where the PSK is established.
+> Better would be
+>=20
+>   Figure 3 shows a pair of handshakes in which the first establishes
+>   a PSK and the second uses it.  In the first, a PSK is carried from
+>   the server to the client in the NewSessionTicket message.  In the
+>   second, the identity of the PSK is sent by the client to the server
+>   in the ClientHello.
+>=20
+> 3.1.  Basic Block Size
+>=20
+>   The representation of all data items is explicitly specified.  The
+>   basic data block size is one byte (i.e., 8 bits).
+>=20
+> "byte" appears in the text 91 times, and "octet" appears 20 times.
+> You probably want to change the uses of "octet" to "byte" for
+> consistency.
+>=20
+> 3.3.  Vectors
+>=20
+> You may want to move section 3.4 to before section 3.3, because
+> section 3.3 implicitly depends on all numeric fields being unsigned,
+> whereas the fact that all numeric fields are unsigned is only stated
+> in section 3.4.
+>=20
+> 3.5.  Enumerateds
+>=20
+>   An additional sparse data type is available called enum.  Each
+>=20
+> You probably want s/called enum/called enum or enumerated/.
+>=20
+>   Future extensions or additions to the protocol may define new =
+values.
+>=20
+> Add "... of a previously existing enumerated."
+>=20
+> 4.1.2.  Client Hello
+>=20
+>   In that case, the client MUST send the same
+>   ClientHello (without modification) except:
+>=20
+> s/(without modification) except:/without modification, except:/
+>=20
+>      For every TLS 1.3 ClientHello, this vector
+>      MUST contain exactly one byte set to zero, which corresponds to
+>      the "null" compression method in prior versions of TLS.
+>=20
+> There is an ambiguity in English, where this might mean "the number of
+> bytes in this field which are zero is exactly one".  It's a bit hard
+> avoiding the ambiguity, but this seems to work:
+>=20
+>      For every TLS 1.3 ClientHello, this vector MUST have exactly one
+>      member.  The member MUST be zero, which corresponds to the "null"
+>      compression method in prior versions of TLS.
+>=20
+> --
+>=20
+>      The actual "Extension" format is defined in Section 4.2.
+>=20
+> Probably delete "actual".  Most uses of "actual" in current writing
+> (including mine) can be profitably deleted.
+>=20
+> 4.1.4.  Hello Retry Request
+>=20
+>   This allows the client to avoid having to
+>   compute partial hash transcripts for multiple hashes in the second
+>   ClientHello.
+>=20
+> This seems to be correct but I found it very hard to decode.  This is
+> clearer:
+>=20
+>   This allows the client to avoid having to compute hashes of partial
+>   transcripts using multiple hash functions, to be used in binders in
+>   the second ClientHello.
+>=20
+> 4.2.  Extensions
+>=20
+>   In TLS 1.3, unlike TLS 1.2, extensions are negotiated for each
+>   handshake even when in resumption-PSK mode.  However, 0-RTT
+>   parameters are those negotiated in the previous handshake; =
+mismatches
+>   may require rejecting 0-RTT (see Section 4.2.10).
+>=20
+> I think what you mean is:
+>=20
+>   Even for a session that is resumed using a PSK established in an
+>   earlier session, the applicable extensions are negotiated in its
+>   initial handshake and aren't carried over from the handshake of the
+>   session which established the PSK.  However, the parameters
+>   applicable to 0-RTT data are those negotiated in the previous
+>   handshake; if those parameters are unacceptable to the server, it
+>   may reject use of 0-RTT in the session (see Section 4.2.10).
+>=20
+> --
+>=20
+>   Servers should be prepared to receive
+>   ClientHellos that include this extension but do not include 0x0304 =
+in
+>   the list of versions.
+>=20
+> s/should/SHOULD/
+>=20
+> 4.2.2.  Cookie
+>=20
+>   Clients MUST NOT use cookies in their initial ClientHello in
+>   subsequent connections.
+>=20
+> I think this becomes cleaner if you omit "in subsequent connections".
+>=20
+> 4.2.3.  Signature Algorithms
+>=20
+> Items "RSASSA-PSS RSAE algorithms" and "RSASSA-PSS PSS algorithms"
+> both contain:
+>=20
+>      If the public key is carried in an X.509 certificate,
+>      it MUST use the rsaEncryption OID [RFC5280].
+>=20
+> I think "it" references "certificate", so it would be clearer to say
+>=20
+>      If the public key is carried in an X.509 certificate,
+>      the certificate MUST use the rsaEncryption OID [RFC5280].
+>=20
+> --
+>=20
+>      If the corresponding public key's parameters present, [...]
+>=20
+> s/parameters present/parameters are present/
+>=20
+>   -  Implementations that advertise support for RSASSA-PSS (which is
+>      mandatory in TLS 1.3), [...]
+>=20
+> The phrase "Implementations that advertise" makes me think of the
+> label on the box.  I think you mean "Endpoints that advertise".
+>=20
+>   The "extension_data" field of these extension contains a
+>   SignatureSchemeList value:
+>=20
+> I think s/these extension/these extensions/ (rather than s/these
+> extension/this extension/).
+>=20
+> 4.2.7.  Negotiated Groups
+>=20
+>   Items in named_group_list are ordered according to the client's
+>   preferences (most preferred choice first).
+>=20
+> This can be simplified to "Items in named_group_list are in descending
+> order of the client's preferences."
+>=20
+> 4.2.8.  Key Share
+>=20
+>   group  The named group for the key being exchanged.  Finite Field
+>      Diffie-Hellman [DH] parameters are described in Section 4.2.8.1;
+>      Elliptic Curve Diffie-Hellman parameters are described in
+>      Section 4.2.8.2.
+>=20
+> I think this should be capitalized as "Finite field Diffie-Hellman
+> ..." and "Elliptic curve Diffie-Hellman ...".
+>=20
+>   key_exchange  Key exchange information.  The contents of this field
+>      are determined by the specified group and its corresponding
+>      definition.
+>=20
+> This could be better defined by rearranging the two items, since the
+> parameters don't describe the group, they describe the key being
+> exchanged:
+>=20
+>   group  The value designating the named group for the keys being
+>      exchanged, as defined in section 4.2.7.
+> 						=09
+>   key_exchange  The key exchange information.  Finite field
+>      Diffie-Hellman [DH] parameters are described in Section 4.2.8.1;
+>      Elliptic curve Diffie-Hellman parameters are described in
+>      Section 4.2.8.2.
+>=20
+> --
+>=20
+>   Each KeyShareEntry value MUST correspond to a
+>   group offered in the "supported_groups" extension and MUST appear in
+>   the same order.
+>=20
+> I think you mean to require that for a given group there can be only
+> one KeyShareEntry.  So you could say
+>=20
+>   Each KeyShareEntry value MUST correspond to a distinct group
+>   offered in the "supported_groups" extension, and the KeyShareEntrys
+>   MUST appear in the order their groups appear (possibly
+>   non-consecutively) in "supported_groups".
+>=20
+> 4.2.8.1.  Diffie-Hellman Parameters
+>=20
+>   This check ensures that the remote peer is properly behaved
+>   and isn't forcing the local system into a small subgroup.
+>=20
+> s/into a small subgroup/into insecure operation/?
+>=20
+> 4.2.8.2.  ECDHE Parameters
+>=20
+>   For the curves secp256r1, secp384r1 and secp521r1, peers MUST
+>   validate each other's public value Y by ensuring that the point is a
+>   valid point on the elliptic curve.  The appropriate validation
+>   procedures are defined in Section 4.3.7 of [X962] and alternatively
+>   in Section 5.6.2.3 of [KEYAGREEMENT].  This process consists of =
+three
+>   steps: (1) verify that Y is not the point at infinity (O), (2) =
+verify
+>   that for Y =3D (x, y) both integers are in the correct interval, (3)
+>   ensure that (x, y) is a correct solution to the elliptic curve
+>   equation.  For these curves, implementers do not need to verify
+>   membership in the correct subgroup.
+>=20
+> It seems that the language of this paragraph is a version behind,
+> particularly in that this paragraph seems to use "Y" differently from
+> the definition of UncompressedPointRepresentation.  Comparing with
+> [KEYAGREEMENT], it seems like it ought to read (with changes marked
+>>>> ...<<<):
+>=20
+>   For the curves secp256r1, secp384r1 and secp521r1, peers MUST
+>   validate each other's public value >>>Q =3D (X, Y)<<< by ensuring
+>   that the point is a valid point on the elliptic curve.  The
+>   appropriate validation procedures are defined in Section 4.3.7 of
+>   [X962] >>>or<<< alternatively in Section >>>5.6.2.3.3<<< of
+>   [KEYAGREEMENT].  This process consists of three steps: (1) verify
+>   that >>>Q<<< is not the point at infinity (O), (2) verify that
+>>>> both integers X and Y <<< are in the correct interval, >>>and<<<
+>   (3) ensure that >>>Q<<< is a correct solution to the elliptic curve
+>   equation.  For these curves, implementers do not need to verify
+>   membership in the correct subgroup.
+>=20
+> (You can s/or alternatively/and also/)
+>=20
+> In particular, 5.6.2.3.3 of [KEYAGREEMENT] is "validation without
+> verifying subgroup membership", so it needs to be verified that this
+> procedure expresses the author's intent.
+>=20
+> 4.2.9.  Pre-Shared Key Exchange Modes
+>=20
+>   psk_dhe_ke  PSK with (EC)DHE key establishment.  In this mode, the
+>      client and servers MUST supply "key_share" values as described in
+>      Section 4.2.8.
+>=20
+> s/servers/server/
+>=20
+> 4.2.10.  Early Data Indication
+>=20
+>   For
+>   externally established PSKs, the associated values are those
+>   provisioned along with the key.
+>=20
+> Probably s/externally established/provisioned/.
+>=20
+>   For PSKs provisioned via NewSessionTicket, a server MUST validate
+>   that the ticket age for the selected PSK identity (computed by
+>   subtracting ticket_age_add from PskIdentity.obfuscated_ticket_age
+>   modulo 2^32) is within a small tolerance of the time since the =
+ticket
+>   was issued (see Section 8).
+>=20
+> s/provisioned/established/.
+>=20
+> s/ticket_age_add/ticket_age_add in the ticket/.
+>=20
+>   0-RTT messages sent in the first flight have the same (encrypted)
+>   content types as their corresponding messages sent in other flights
+>   (handshake and application_data) but are protected under different
+>   keys.
+>=20
+> s/as their corresponding messages sent in/as messages of the same =
+types sent in/
+>=20
+>   After receiving the server's Finished message, if the server
+>   has accepted early data, an EndOfEarlyData message will be sent to
+>   indicate the key change.  This message will be encrypted with the
+>   0-RTT traffic keys.
+>=20
+> This is awkward.  Perhaps
+>=20
+>   After receiving the server's Finished message, if the server
+>   has accepted early data, the client will send an EndOfEarlyData =
+message
+>   indicate that following (non-early) application data uses the
+>   negotiated keys.  The EndOfEarlyData message is be encrypted with =
+the
+>   0-RTT traffic keys.
+>=20
+> --
+>=20
+>   -  Return its own extension in EncryptedExtensions, indicating that
+>      it intends to process the early data. =20
+>=20
+> s/its own extension/an early_data extension/
+>=20
+>   "pre_shared_key" extension.  In addition, it MUST verify that the
+>   following values are consistent with those associated with the
+>   selected PSK:
+>=20
+> s/consistent with/the same as/
+>=20
+>   If the server chooses to accept the "early_data" extension, then it
+>   MUST comply with the same error handling requirements specified for
+>   all records when processing early data records.
+>=20
+> It seems like this could be misread by binding "when processing..." to
+> "specified".  This avoids that:
+>=20
+>   If the server chooses to accept the "early_data" extension, then it
+>   MUST apply to early data records the same error handling
+>   requirements specified for other data records.
+>=20
+> --
+>=20
+>   Specifically, if the
+>   server fails to decrypt any 0-RTT record following an accepted
+>   "early_data" extension it MUST terminate the connection with a
+>   "bad_record_mac" alert as per Section 5.2.
+>=20
+> But probably better to s/any/an/.
+>=20
+>   If the server rejects the "early_data" extension, the client
+>   application MAY opt to retransmit early data once the handshake has
+>   been completed. =20
+>=20
+> Better:
+>=20
+>   [...] MAY opt to retransmit as non-early data the application data
+>   contained in the early data records
+>=20
+> --
+>=20
+>   Note that automatic re-transmission of early data
+>   could result in assumptions about the status of the connection being
+>   incorrect. =20
+>=20
+> This doesn't quite say what you want.  Better
+>=20
+>   Note that after connection establishment, the application may
+>   consider the status of the connection to be different than it was
+>   for early data, and so transmitting the same bytes as non-early
+>   application data may not have the same effect as transmitting them
+>   as early application data.
+>=20
+> --
+>=20
+>   Similarly,
+>   if early data assumes anything about the connection state, it might
+>   be sent in error after the handshake completes.
+>=20
+> A bit awkward.  Perhaps
+>=20
+>   Similarly,
+>   if early data assumes anything about the connection state, it might
+>   be erroneous to re-send the same data after the handshake completes.
+>=20
+> 4.2.11.  Pre-Shared Key Extension
+>=20
+>   The "pre_shared_key" extension is used to indicate the identity of
+>   the pre-shared key to be used with a given handshake in association
+>   with PSK key establishment.
+>=20
+> s/indicate/negotiate/ -- because more than one can be offered.
+>=20
+>   selected_identity  The server's chosen identity expressed as a
+>      (0-based) index into the identities in the client's list.
+>=20
+> I think this is intended as an index into the (abstract) vectors
+> OfferedPsks.identities and OfferedPsks.binders, as opposed to an
+> offset into the serialized data structures.  You could be clearer with
+>=20
+>   selected_identity  The server's chosen identity expressed as a
+>      (0-based) index into the vector of identities in OfferedPsks.
+>=20
+> --
+>=20
+>   identity  A label for a key.  For instance, a ticket defined in
+>      Appendix B.3.4 or a label for a pre-shared key established
+>      externally.
+>=20
+> See issues regarding "ticket" in section 1.1.
+>=20
+>   In TLS versions prior to TLS 1.3, the Server Name Identification
+>   (SNI) value was intended to be associated with the session (Section =
+3
+>   of [RFC6066]), with the server being required to enforce that the =
+SNI
+>   value associated with the session matches the one specified in the
+>   resumption handshake.  However, in reality the implementations were
+>   not consistent on which of two supplied SNI values they would use,
+>   leading to the consistency requirement being de-facto enforced by =
+the
+>   clients.  In TLS 1.3, the SNI value is always explicitly specified =
+in
+>   the resumption handshake, and there is no need for the server to
+>   associate an SNI value with the ticket.  Clients, however, SHOULD
+>   store the SNI with the PSK to fulfill the requirements of
+>   Section 4.6.1.
+>=20
+> See issue regarding "SNI" in section 1.1.
+>=20
+>   Implementor's note: the most straightforward way to implement the
+>   PSK/cipher suite matching requirements is to negotiate the cipher
+>   suite first and then exclude any incompatible PSKs.
+>=20
+> I think you mean:
+>=20
+>   Implementor's note: the most straightforward way for the server to
+>   implement the PSK/cipher suite choice requirements is to choose the
+>   cipher suite first and then exclude any PSKs incompatible with the
+>   chosen cipher suite.
+>=20
+> since this doesn't seem to describe an interaction between the server
+> and the client, but simply how the server responds to one message.
+>=20
+>   In order to accept PSK key
+>   establishment, the server sends a "pre_shared_key" extension
+>   indicating the selected identity.
+>=20
+> I think this sentence would read better as a separate paragraph.
+>=20
+>   This extension MUST be the last extension in the ClientHello. (This
+>   facilitates implementation as described below.)
+>=20
+> Given that the previous paragraph discussed the early_data extension,
+> "This extension" isn't clear.  So s/This extension/The
+> "pre_shared_key" extension/.
+>=20
+>   If this
+>   value is not present or does not validate, the server MUST abort the
+>   handshake.
+>=20
+> s/does not validate/is not valid/  (An actor validates a value; a
+> value is validated.)
+>=20
+> 4.2.11.1.  Ticket Age
+>=20
+>   The "obfuscated_ticket_age"
+>   field of each PskIdentity contains an obfuscated version of the
+>   ticket age formed by taking the age in milliseconds and adding the
+>   "ticket_age_add" value that was included with the ticket, see
+>   Section 4.6.1 modulo 2^32.
+>=20
+> Clearer would be
+>=20
+>   [...] "ticket_age_add" value that was in the NewSessionTicket for
+>   the ticket, modulo 2^32.
+>=20
+> --
+>=20
+>   Note that
+>   the "ticket_lifetime" field in the NewSessionTicket message is in
+>   seconds but the "obfuscated_ticket_age" is in milliseconds.
+>=20
+> Expand to
+>=20
+>   Note that
+>   the "ticket_lifetime" field in the NewSessionTicket message is in
+>   seconds but the "obfuscated_ticket_age" and "ticket_age_add" fields
+>   are in milliseconds.
+>=20
+> 4.2.11.3.  Processing Order
+>=20
+>   Clients are permitted to "stream" 0-RTT data until they receive the
+>   server's Finished, only then sending the EndOfEarlyData message,
+>   followed by the rest of the handshake.  In order to avoid deadlocks,
+>   when accepting "early_data", servers MUST process the client's
+>   ClientHello and then immediately send the ServerHello, rather than
+>   waiting for the client's EndOfEarlyData message.
+>=20
+> This is awkward, and omits the remainder of the servers' first flight
+> messages.  Better is
+>=20
+>   Clients are permitted to "stream" 0-RTT data until they receive the
+>   server's Finished message, only then sending the EndOfEarlyData
+>   message, and the rest of the handshake.  In order to avoid
+>   deadlocks, when accepting early data, servers MUST process the
+>   client's ClientHello immediately upon receipt, and immediately send
+>   all of its first flight messages from ServerHello through Finished,
+>   rather than waiting for the client's EndOfEarlyData message.
+>=20
+> 4.4.  Authentication Messages
+>=20
+>   Certificate  The certificate to be used for authentication, and any
+>      supporting certificates in the chain.  Note that =
+certificate-based
+>      client authentication is not available in 0-RTT mode.
+>=20
+> Probably better to say s/in 0-RTT mode/for 0-RTT data/ -- or perhaps
+> "early data".
+>=20
+>   The following table defines the Handshake Context and MAC Base Key
+>   for each scenario:
+>=20
+> Eh, what?  I think what you mean is that this table specifies what
+> base keys are used for which messages.  But "Mode" and "Handshake
+> Context" don't seem to be defined terms.  It seems to me that a better
+> specification is the annotations in the state diagrams in Appendix A,
+> which note for each message that is sent what key applies to it.
+>=20
+> Only after reading the text again do I realize that the "Handshake
+> Context" column is listing what the handshake context *is* at various
+> points in time.  My confusion connects with the need for a more formal
+> definition of "handshake context".
+>=20
+> 4.4.1.  The Transcript Hash
+>=20
+>   Many of the cryptographic computations in TLS make use of a
+>   transcript hash.  This value is computed by hashing the =
+concatenation
+>   of each included handshake message, including the handshake message
+>   header carrying the handshake message type and length fields, but =
+not
+>   including record layer headers.  I.e.,
+>=20
+> There are a number of awkward spots in how this is phrased.  Better:
+>=20
+>   Many of the cryptographic computations in TLS make use of a
+>   transcript hash.  This value is computed by hashing the =
+concatenation
+>   of a sequence of messages in the handshake, with each message
+>   including the TLS message type and length fields, but not any
+>   headers of the underlying transport protocol.
+>=20
+> --
+>=20
+>    Transcript-Hash(M1, M2, ... MN) =3D Hash(M1 || M2 ... MN)
+>=20
+> Usually, symbol for "the n-th message" would use lower-case "n" as the
+> index, and one usually puts the operator before and after "...".  Also
+> add verbal explanation:
+>=20
+>   The transcript hash of messages M1 through Mn is:
+>=20
+>      Transcript-Hash(M1, M2, ... Mn) =3D Hash(M1 || M2 || ... || Mn)
+>=20
+> Continue,
+>=20
+>   As an exception to this general rule, when the server has responded =
+to a
+>   ClientHello with a HelloRetryRequest, the first ClientHello is
+>   replaced with a special synthetic handshake message of message type
+>   "message_hash" whose data part is Hash(first ClientHello).  I.e.,
+>=20
+>  Transcript-Hash(ClientHello1, HelloRetryRequest, ... Mn) =3D
+>      Hash(message_hash ||        /* Handshake type (1 byte) */
+>           00 00 Hash.length ||   /* Handshake message length, in bytes =
+(3 bytes) */
+>           Hash(ClientHello1) ||  /* Hash of ClientHello1 */
+>           HelloRetryRequest || ... || Mn)
+>=20
+>   The reason for this construction is to allow the server not
+>   store state after sending HelloRetryRequest by storing just the
+>   hash of the first ClientHello in the cookie, rather than requiring
+>   it to store all of the ClientHello or the entire intermediate hash
+>   state (see Section 4.2.2).
+>=20
+> --
+>=20
+>   For concreteness, the transcript hash is always taken from the
+>   following sequence of handshake messages, starting at the first
+>=20
+> This is awkward.  Perhaps
+>=20
+>   the transcript hash is always of the following sequence of
+>   handshake messages, starting at the first ClientHello and including
+>   only those messages that we sent/received:
+>=20
+> --
+>=20
+>   In general, implementations can implement the transcript by keeping =
+a
+>   running transcript hash value based on the negotiated hash.
+>=20
+> Probably s/negotiated hash/negotiated hash function/.
+>=20
+> Also, this needs to include the modification of truncating the last
+> message if it is to include the transcript hash.  I think you need
+> something like:
+>=20
+>   If the last message, Mn, is to include the transcript hash, then
+>   the transcript hash is always the last field of the message, and
+>   that message is first truncated by removing that field from the
+>   message.  (The message length field of Mn is unmodified; it includes
+>   the length of the transcript hash.)
+>=20
+>      Transcript-Hash(M1, M2, ... Mn) =3D Hash(M1 || M2 || ... || =
+Truncate(Mn))
+>=20
+> 4.4.2.  Certificate
+>=20
+>   If the corresponding certificate type extension
+>   ("server_certificate_type" or "client_certificate_type") was not
+>   negotiated in Encrypted Extensions, or the X.509 certificate type =
+was
+>   negotiated, then each CertificateEntry contains a DER-encoded X.509
+>   certificate.
+>=20
+> This needs a reference to RFC 7250 to define certificate type
+> extension.  Also, see the general issues regarding extensions.
+>=20
+>   Each following certificate SHOULD
+>   directly certify one preceding it.
+>=20
+> The phrase "one preceding it" allows extraneous certificates in the
+> list, as "one preceding it" doesn't usually require that it be
+> immediately preceding.  I think you mean "the one preceding it", which
+> does require it to be immediately preceding, and thus does not allow
+> extraneous certificates in the chain.
+>=20
+> 4.4.2.1.  OCSP Status and SCT Extensions
+>=20
+>   CertificateStatus message.  In TLS 1.3, the server's OCSP =
+information
+>   is carried in an extension in the CertificateEntry containing the
+>   associated certificate.
+>=20
+> Clearer to phrase it:
+>=20
+>   [...] in the CertificateEntry containing the
+>   associated certificate in the Certificate message.
+>=20
+> --
+>=20
+>   CertificateRequest message.  If the client opts to send an OCSP
+>   response, the body of its "status_request" extension MUST be a
+>   CertificateStatus structure as defined in [RFC6066].
+>=20
+> s/its "status_request" extension"/the "status_request" extension in
+> its Certificate message/.
+>=20
+> 4.4.2.2.  Server Certificate Selection
+>=20
+>   All certificates provided by the server MUST be signed by a =
+signature
+>   algorithm advertised by the client, if they are able to provide such
+>   a chain (see Section 4.2.3).
+>=20
+> Probably better a/All certificates/Each certificate/.
+>=20
+> s/they are/the server is/
+>=20
+>   If the client cannot construct an acceptable chain using [...]
+>=20
+> The purpose of this paragraph is not clear.  Was "server" meant?  If
+> so, it seems to be redundant.  I think it is intended to discuss how
+> the client processes the (alleged) certificate chain presented by the
+> server, in which case, it's a sharp change of focus for this section.
+> That could be aided by moving this paragraph to the end of the section
+> and adding some words:
+>=20
+>   If the client cannot construct an acceptable chain from the
+>   certificates provided by the server and decides to abort the
+>   handshake, then it MUST abort the handshake with an appropriate
+>   certificate-related alert (by default, "unsupported_certificate";
+>   see Section 6.2 for more).
+>=20
+> But it would probably be better to integrate it into section 4.4.2.4.
+>=20
+> 4.4.2.3.  Client Certificate Selection
+>=20
+>   -  If the CertificateRequest message contained a non-empty
+>      "oid_filters" extension, the end-entity certificate MUST match =
+the
+>      extension OIDs recognized by the client, as described in
+>      Section 4.2.5.
+>=20
+> More exact would be "must match the extension OID/value pairs that are
+> recognized by the client."
+>=20
+> 4.4.2.4.  Receiving a Certificate Message
+>=20
+> It seems inconsistent that the client can send an empty Certificate
+> message, but the server cannot, even though the server can omit
+> sending the Certificate message.
+>=20
+> 4.4.3.  Certificate Verify
+>=20
+>   This message is used to provide explicit proof that an endpoint
+>   possesses the private key corresponding to its certificate.
+>=20
+> I'd prefer s/to its certificate/to the certificate it has presented/.
+>=20
+> The discussion of how "signature" is formed is awkward and I'm not
+> sure I understand it.  E.g., the digital signature is computed "over"
+> a string, but one part of that string is "the content to be signed".
+> I think it could be made clearer as:
+>=20
+>   The algorithm field specifies the signature algorithm used (see
+>   Section 4.2.3 for the definition of this field).  The signature is a
+>   digital signature using that algorithm.  The string that is signed
+>   is the concatenation of:
+>=20
+>   -  A string that consists of octet 32 (0x20) repeated 64 times
+>=20
+>   -  The context string
+>=20
+>   -  A single 0 byte which serves as a separator
+>=20
+>   -  Transcript-Hash(Handshake Context, Certificate)
+>=20
+> But that leaves unclear what "context string" and "Handshake Context"
+> are.  I think you want to define those back in 4.4.1 (and probably
+> also in 1.1) as both being the concatenation of the messages that are
+> in the transcript to this point.  I also assume that the Certificate
+> Verify message is truncated when it is put into the Transcript-Hash
+> and "context string", but that needs to be stated.
+>=20
+> 4.4.4.  Finished
+>=20
+>   The key used to compute the finished message is computed from the
+>=20
+> s/finished/Finished/
+>=20
+>   The key used to compute the finished message is computed from the
+>   Base key defined in Section 4.4 using HKDF (see Section 7.1).
+>=20
+> This is correct, but you have to read further to understand the key
+> described here isn't the key that encrypts the finished message.  It
+> would be easier to understand if the text was rearranged:
+>=20
+>   Structure of this message:
+>=20
+>      struct {
+>          opaque verify_data[Hash.length];
+>      } Finished;
+>=20
+>   The verify_data value is computed as follows:
+>=20
+>      finished_key =3D
+>          HKDF-Expand-Label(BaseKey, "finished", "", Hash.length)
+>=20
+>      verify_data =3D
+>          HMAC(finished_key,
+>               Transcript-Hash(Handshake Context,
+>                               Certificate*, CertificateVerify*))
+>=20
+>      * Only included if present.
+>=20
+> And this is another instance where the poorly-defined "Handshake
+> Context" appears.
+>=20
+>   Any records following a 1-RTT Finished message MUST be encrypted
+>   under the appropriate application traffic key as described in
+>   Section 7.2.
+>=20
+> Are there any non-1-RTT Finished messages?  And aren't all application
+> data records encrypted under the "appropriate" key?  Or is an
+> "application traffic key" different from the keys used for application
+> data early in the connection?  This needs to be rephrased somehow, but
+> I can't guess in what way.
+>=20
+> 4.6.  Post-Handshake Messages
+>=20
+> This section name is awkward.  Of course, there are messages after the
+> handshake.  I think the problem is that there are "handshake
+> messages", messages with handshake types (or content type
+> "handshake"), that are not part of "the handshake", the initial
+> exchange of handshake-type messages.  In the end, you need to decide
+> what terminology to use so that the title of this section makes sense.
+>=20
+>   the appropriate application traffic key.
+>=20
+> Is there a strict accounting of what messages are encrypted using
+> which key?
+>=20
+> 4.6.1.  New Session Ticket Message
+>=20
+>   message, it MAY send a NewSessionTicket message.  This message
+>   creates a unique association between the ticket value and a secret
+>   PSK derived from the resumption master secret.
+>=20
+> It would be useful to mention that the resumption_master_secret is
+> defined/computed in section 7.1.
+>=20
+> Does "ticket value" mean the NewSessionTicket structure or the
+> "ticket" field within it.  See issues regarding "ticket" for section
+> 1.1.
+>=20
+>   (Section 4.2.11).  Servers MAY send multiple tickets on a single
+>=20
+> Note the conflation here of "ticket" with "NewSessionTicket message".
+>=20
+>   Any ticket MUST only be resumed with a cipher suite that has the =
+same
+>   KDF hash algorithm as that used to establish the original =
+connection.
+>=20
+> How is a ticket "resumed"?
+>=20
+> Also, since in a "resumption" connection, the ticket that is used is
+> (or refers to) a PSK, the above statement corresponds to=20
+> the statement "In addition, it MUST verify that the
+> following values are consistent with those associated with the
+> selected PSK:" in section 4.2.10.
+>=20
+>   Clients MUST only resume if the new SNI value is valid for the =
+server
+>   certificate presented in the original session, and SHOULD only =
+resume
+>   if the SNI value matches the one used in the original session.
+>=20
+> What does it mean to say a client "resumes"?
+>=20
+> Here we suddenly descend into the usage of what seems to be an
+> extension, server_name, which is presumably optional and logically
+> added on to TLS rather than being an integral part of it.
+>=20
+> Also the logic isn't described very cleanly; I think it means "A
+> client must abort resuming a connection if the ServerHello message
+> does not contain a server_name extension whose value is a valid SNI
+> for the server certificate presented in the original session ...".
+>=20
+> All of this seems to require that a client MAY NOT resume a connection
+> using a ticket issued during a connection in which the server did not
+> present a certificate for itself.  But that constraint wasn't stated
+> in section 2.2, despite being a global constraint on the structure of
+> sessions.
+>=20
+> Or am I wrong in believing that the client chooses to resume the
+> connection by placing the ticket in the ClientHello *before* it
+> receives the ServerHello (which contains the SNI)?  This paragraph
+> seems to be written as if the client decides to resume after receiving
+> ServerHello.
+>=20
+>   ticket_lifetime  Indicates the lifetime in seconds as a 32-bit
+>      unsigned integer in network byte order from the time of ticket
+>      issuance.
+>=20
+> Probably better to s/the time of ticket issuance/the time the
+> NewSessionTicket was sent to the client/, unless "issuance"/"to issue"
+> is explicitly defined somewhere.
+>=20
+>   ticket  The value of the ticket to be used as the PSK identity.  The
+>      ticket itself is an opaque label.
+>=20
+> This shows the ambiguities around "ticket"; this specification says
+> that "'ticket' is the value of the ticket to be used as the PSK
+> identity".
+>=20
+> Is it intended that the "ticket" field of NewSessionTicket will become
+> the "identity" field of PskIdentity.OfferedPsks.PreSharedKeyExtension?
+>=20
+>   max_early_data_size  The maximum amount of 0-RTT data that the =
+client
+>      is allowed to send when using this ticket, in bytes.  Only
+>      Application Data payload (i.e., plaintext but not padding or the
+>      inner content type byte) is counted.  A server receiving more =
+than
+>      max_early_data_size bytes of 0-RTT data SHOULD terminate the
+>      connection with an "unexpected_message" alert.  Note that servers
+>      that reject early data due to lack of cryptographic material will
+>      be unable to differentiate padding from content, so clients =
+SHOULD
+>      NOT depend on being able to send large quantities of padding in
+>      early data records.
+>=20
+> The last sentence assumes that a server that "reject early data due to
+> lack of cryptographic material" will be strict and count all bytes in
+> early data messages against the max_early_data_size quota.  However, a
+> server in such a situation could be liberal and not bother counting
+> any bytes -- since it will be discarding early data messages
+> (immediately after discovering that it can't decrypt them), it never
+> has to buffer more than one of them.  Unless I'm overlooking
+> something, this advice isn't needed, since a server in this situation
+> isn't buffering early data.
+>=20
+> 4.6.2.  Post-Handshake Authentication
+>=20
+>   All of the client's
+>   messages for a given response MUST appear consecutively on the wire
+>   with no intervening messages of other types.
+>=20
+> Better, "consecutively in the underlying transport stream".  But that
+> is a little vague given the message/fragment/record mechanism.  More
+> exactly,
+>=20
+>   All of the client's messages for a given response MUST appear
+>   consecutively on the wire, that is, the records containing the
+>   fragments of the messages composing the client's response must
+>   appear consecutively in the underlying transport stream.
+>=20
+> 4.6.3.  Key and IV Update
+>=20
+> I think you want to promote the first paragraph before the data
+> structure definition.
+>=20
+> 5.  Record Protocol
+> and=20
+> 5.1.  Record Layer
+>=20
+> The text isn't very clear about the message/fragment/record mechanism.
+> The text wants to consider the data for each content type to consist
+> of a series of messages.  The messages are cut into fragments.
+> Adjacent fragments within one content type stream can be concatenated
+> to form the content of TLSPlaintext structures.
+>=20
+> One problem is that despite this model, the boundary between messages
+> isn't carried through the transport.  For application data, message
+> boundaries are lost entirely.  For handshake and alert content types,
+> there are some complex restrictions how their message boundaries show
+> up as record boundaries, but the actual framing of messages is done
+> "in band" by the message length fields.  A closer description of the
+> services TLS provides is that the data for each content type is a
+> stream that can be broken arbitrarily into fragments that are the
+> content of records, except:
+>=20
+> - The boundaries of alert messages must be boundaries of the records
+>  that carry them and no record boundary can be introduced into an
+>  alert message.
+>=20
+> - If two records contain fragments of the same handshake message, all
+>  records between them must contain only fragments of that handshake
+>  message.
+>=20
+> - If there is a key change between the sending of two handshake
+>  messages, there must be a record boundary between them.
+>=20
+>   -  Handshake messages MUST NOT span key changes.  Implementations
+>      MUST verify that all messages immediately preceding a key change
+>      align with a record boundary; if not, then they MUST terminate =
+the
+>      connection with an "unexpected_message" alert.  Because the
+>      ClientHello, EndOfEarlyData, ServerHello, Finished, and KeyUpdate
+>      messages can immediately precede a key change, implementations
+>      MUST send these messages in alignment with a record boundary.
+>=20
+> Is this description correct?  As written, it says "because a key
+> change can happen after message X, there must be a record boundary
+> after message X", which isn't exactly the same as "Handshake messages
+> MUST NOT span key changes" -- unless there is always a key change
+> following these message types, in which case s/can immediately
+> precede/always precede/.  I think the three points listed above give a
+> clearer and more accurate version.
+>=20
+>   Implementations MUST NOT send zero-length fragments of Handshake
+>   types, even if those fragments contain padding.
+>=20
+> Presumably implementations MUST NOT send zero-length fragments of =
+alert
+> messages also.
+>=20
+>   When record protection has not yet been engaged, TLSPlaintext
+>   structures are written directly onto the wire.
+>=20
+> Better "... sent directly using the underlying transport protocol".
+>=20
+> 5.2.  Record Payload Protection
+>=20
+> I *think* what's going on with record protection is:
+>=20
+> - The TLSPlaintext is turned into a TLSInnerPlaintext by moving the
+>  type field, removing the length field, and copying "fragment" to
+>  "content".  (Why do the structures use different names for the data
+>  fragment?)
+>=20
+> - The encryption is done by:
+>=20
+>      AEADEncrypted =3D
+>          AEAD-Encrypt(write_key, nonce, plaintext)
+>=20
+>  where plaintext is TLSInnerPlaintext and AEADEncrypted becomes
+>  TLSCiphertext.encrypted_record.
+>=20
+> - TLSCiphertext is transmitted.
+>=20
+> But the text doesn't say this at all plainly.  I would add before
+> "AEAD algorithms take...":
+>=20
+>   The TLSPlaintext is converted into a TLSInnerPlaintext by copying =
+the
+>   type field, removing the length field, and copying the fragment
+>   field.
+>=20
+> (assuming we rename "content" to "fragment")
+>=20
+> Then replace the equation by:
+>=20
+>   encrypted_record =3D
+>          AEAD-Encrypt(endpoint_write_key, nonce, TLSInnerPlaintext)
+>=20
+> --
+>=20
+>   The key is either the
+>   client_write_key or the server_write_key, the nonce is derived from
+>   the sequence number (see Section 5.3) and the client_write_iv or
+>   server_write_iv, and the additional data input is empty (zero
+>   length).
+>=20
+> It would be clearer to move the reference to read "the nonce is
+> derived from the sequence number and the client_write_iv or
+> server_write_iv (see Section 5.3)" as section 5.3 describes both the
+> sequence number and the derivation.
+>=20
+> Similarly, the decryption algorithm is better expressed by
+>=20
+>      TLSInnerPlaintext =3D
+>          AEAD-Decrypt(peer_write_key, nonce, encrypted_record)
+>=20
+> --
+>=20
+>   This limit
+>   is derived from the maximum TLSPlaintext length of 2^14 octets + 1
+>   octet for ContentType + the maximum AEAD expansion of 255 octets.
+>=20
+> s/TLSPlaintext/TLSInnerPlaintext/ -- the maximum length of
+> TLSPlaintext is 2^14 + 5.
+>=20
+> 5.3.  Per-Record Nonce
+>=20
+>   The appropriate sequence number is incremented by one after reading
+>   or writing each record.  The first record transmitted under a
+>   particular traffic key MUST use sequence number 0.
+>=20
+> I think the first and second paragraphs could be profitably combined:
+>=20
+>   A 64-bit sequence number is maintained separately for reading and
+>   writing records and is incremented by one after reading or writing
+>   each record.  Each sequence number is set to zero at the beginning
+>   of a connection and whenever the key for that direction is changed;
+>   the first record transmitted under a particular traffic key uses
+>   sequence number 0.
+>=20
+> --
+>=20
+>   Because the size of sequence numbers is 64-bit, they should not =
+wrap.
+>=20
+> The sense of "should" is not clear.  I think what you want to say is
+>=20
+>   Because the size of sequence numbers is 64 bits, there is no need to
+>   allow sequence numbers to wrap.
+>=20
+> --
+>=20
+>   Each AEAD algorithm will specify a range of possible lengths for the
+>   per-record nonce, from N_MIN bytes to N_MAX bytes of input
+>=20
+> I think this is clearer (as it makes clear where N_MIN comes from):
+>=20
+>   Each AEAD algorithm specifies an N_MIN and N_MAX, which give the
+>   range of possible lengths in bytes of the per-record nonce.
+>=20
+> 5.4.  Record Padding
+>=20
+>   Padding is a string of zero-valued bytes appended to the
+>   ContentType field before encryption.
+>=20
+> More exact would be
+>=20
+>   Padding is a string of zero-valued bytes following the type field
+>   in TLSInnerPlaintext.
+>=20
+> --
+>=20
+>   The presence of padding does not change the overall record size
+>   limitations - the full encoded TLSInnerPlaintext MUST NOT exceed =
+2^14
+>   + 1 octets.  If the maximum fragment length is reduced, as for
+>   example by the max_fragment_length extension from [RFC6066], then =
+the
+>   reduced limit applies to the full plaintext, including the content
+>   type and padding.
+>=20
+> I think you want s/encoded TLSInnerPlaintext/TLSInnerPlaintext/ -- all
+> data structures are defined with a concrete representation, so
+> "encoded" is redundant, but "encoded" could be confused with
+> "encrypted" and the encrypted plaintext can be longer than the =
+plaintext.
+>=20
+>   If the maximum fragment length is reduced, as for
+>   example by the max_fragment_length extension from [RFC6066], then =
+the
+>   reduced limit applies to the full plaintext, including the content
+>   type and padding.
+>=20
+> This needs clarification.  I think you mean that if the m.f.l. is
+> reduced, then the limit on TLSInnerPlaintext is reduced to m.f.l.+1,
+> but that's not what this says.  OTOH, if this text is accurate, the
+> maximum length of the fragment proper is m.f.l.-1.
+>=20
+> 6.  Alert Protocol
+>=20
+>   Alert messages convey a description of the alert and a legacy field
+>   that conveyed the severity of the message in previous versions of
+>   TLS.  In TLS 1.3, the severity is implicit in the type of alert =
+being
+>   sent, and the 'level' field can safely be ignored.
+>=20
+> I think at this point you want to insert "Alerts are divided into two
+> classes: closure alerts and error alerts."
+>=20
+>   Stateful implementations of tickets (as in many clients)
+>   SHOULD discard tickets associated with failed connections.
+>=20
+> What is a "ticket" here?
+>=20
+> And what are the "associations" in question?  E.g., presumably it
+> includes the ticket used when attempting to establish a connection if
+> the attempt fails.  But if a NewSessionTicket is received during a
+> connection, and the connection is later aborted, does the client have
+> to discard the remembered NewSessionTicket?
+>=20
+>   All the alerts listed in Section 6.2 MUST be sent as fatal and MUST
+>   be treated as fatal regardless of the AlertLevel in the message.
+>   Unknown alert types MUST be treated as fatal.
+>=20
+> This was remarkably confusing until I figured out that the first
+> "fatal" means "with AlertLevel "fatal"" and the second and third
+> "fatal" mean "indicates abortive closure"!  Better:
+>=20
+>   All the alerts listed in Section 6.2 MUST be sent with AlertLevel
+>   "fatal" and when received MUST be treated as error alerts
+>   regardless of the AlertLevel in the message.  Unknown alert types
+>   MUST be treated as error alerts.
+>=20
+> 6.1.  Closure Alerts
+>=20
+>   user_canceled  This alert notifies the recipient that the sender is
+>      canceling the handshake for some reason unrelated to a protocol
+>      failure.  If a user cancels an operation after the handshake is
+>      complete, just closing the connection by sending a "close_notify"
+>      is more appropriate.  This alert SHOULD be followed by a
+>      "close_notify".  This alert is generally a warning.
+>=20
+> What does "This alert is generally a warning." mean?  What is it a
+> warning of?
+>=20
+>   Each party MUST send a "close_notify" alert before closing its write
+>   side of the connection, unless it has already sent some other fatal
+>   alert.
+>=20
+> This implies that close_notify is a "fatal alert" (properly, error
+> alert).  And "before closing the write side of the connection" is not
+> clear, since sending close_notify *is* closing the write side of the
+> connection.  Better:
+>=20
+>   Each party MUST send a "close_notify" alert before closing the
+>   write side of the underlying transport connection, unless it has
+>   already sent some other error alert.
+>=20
+> (Unless I'm mistaken regarding what is intended.)
+>=20
+> I take it that there is no "close read side" operation.  (If that
+> existed, TLS could generate the "broken pipe" error -- the sender
+> wants to transmit more data but the receiver is unwilling to receive
+> it.)
+>=20
+>   If the application protocol using TLS provides that any data may be
+>   carried over the underlying transport after the TLS connection is
+>   closed, the TLS implementation MUST receive a "close_notify" alert
+>   before indicating end-of-data to the application-layer.  No part of
+>   this standard should be taken to dictate the manner in which a usage
+>   profile for TLS manages its data transport, including when
+>   connections are opened or closed.
+>=20
+> This isn't clear too me.  The second sentence seems to mean:
+>=20
+>   A usage profile for TLS specified how it manages its data
+>   transport, including when connections are opened or closed.  No
+>   part of this standard should be taken to dictate the manner in
+>   which a usage profile for TLS manages its data transport.
+>=20
+> But I can't figure out what the first sentence means.  It seems to
+> mean "If ... a TLS implementation MUST receive a "close_notify" alert
+> before indicating end-of-data to its application-layer.", but that's
+> obvious behavior, what else would cause it to signal EOD?
+>=20
+>   Note: It is assumed that closing the write side of a connection
+>   reliably delivers pending data before destroying the transport.
+>=20
+> I think you mean
+>=20
+>   Note: It is assumed that closing the write side of a connection
+>   will cause the peer TLS implementation to reliably deliver all
+>   transmitted data before [what?]
+>=20
+> 7.  Cryptographic Computations
+>=20
+>   The TLS handshake establishes one or more input secrets which are
+>   combined to create the actual working keying material, as detailed
+>   below.
+>=20
+> Probably delete "actual".  Most uses of "actual" in current writing
+> (including mine) can be profitably deleted.
+>=20
+> 7.1.  Key Schedule
+>=20
+> Given the terminology in RFC 5869, struct HkdfLabel probably should be
+> called HkdfInfo, as it is the "info" argument to HKDF-Expand.
+>=20
+>   Messages are the concatenation of the indicated handshake messages,
+>=20
+> s/Messages are/Messages is/!
+>=20
+>   Given a set of n InputSecrets, the final "master secret" is computed
+>   by iteratively invoking HKDF-Extract with InputSecret_1, [...]
+>=20
+> This is hard to follow.  If I understand correctly, this is a general
+> description of the mechanism that is diagrammed below.  But, e.g.,
+> "secret" is used for at least two categories of quantities.  It would
+> be clearer to phrase this:
+>=20
+>   Generally, we use a construction that takes as input a sequence of
+>   n InputSecrets and from them computes a sequence of derived
+>   secrets.  The initial derived secret is simply a string of
+>   Hash.length bytes set to zeros.  Each successive derived secret is
+>   computed by invoking HKDF-Extract with an InputSecret and the
+>   preceding derived secret as inputs.
+>=20
+>   Concretely, for the present version of TLS 1.3, the construction
+>   proceeds as diagrammed below, with the InputSecrets on the left
+>   side and the derived secrets passing as shown by the downward
+>   arrows.  The InputSecrets are added in the following order, where
+>   if a given InputSecret is not available, then the 0-value is used
+>   in its place:
+>=20
+> --
+>=20
+>   -  HKDF-Extract is drawn as taking the Salt argument from the top =
+and
+>      the IKM argument from the left.
+>=20
+> Append "with its output to the bottom and the name of the output at
+> the right".
+>=20
+> 7.2.  Updating Traffic Keys and IVs
+>=20
+> I think you want to remove "and IVs" here.  IVs aren't mentioned in
+> this section.  Of course, changing the traffic key changes the IV, but
+> it also changes the write key, and the write key isn't mentioned in
+> the section title.
+>=20
+> 7.3.  Traffic Key Calculation
+>=20
+> I think you want to title the section "Write Key and IV Calculation".
+>=20
+> And you want to (again) de-genericize the text:
+>=20
+>   The traffic keying material (*_write_key and *_write_iv) is
+>   generated from the following input values:
+>=20
+>   -  A secret value, the applicable *_traffic_secret
+>=20
+>   -  A purpose value indicating the specific value being generated
+>=20
+>   -  The length of the key
+>=20
+> 7.4.1.  Finite Field Diffie-Hellman
+>=20
+>   For finite field groups, a conventional Diffie-Hellman computation =
+is
+>   performed.
+>=20
+> I think you need a reference for this!
+>=20
+> 7.5.  Exporters
+>=20
+>   A separate
+>   interface for the early exporter is RECOMMENDED, especially on a
+>   server where a single interface can make the early exporter
+>   inaccessible.
+>=20
+> What does "where a single interface can make the early exporter
+> inaccessible" mean?  If you don't have a separate interface for the
+> early exporter, how does "a single interface" make it inaccessible?
+>=20
+> 8.1.  Single-Use Tickets
+>=20
+>   If the tickets are not self-contained but rather are database keys,
+>   and the corresponding PSKs are deleted upon use, then connections
+>   established using one PSK enjoy forward secrecy.
+>=20
+> What does "one PSK" mean here?  Do you mean "established using such a
+> PSK" (equivalently "established using such a ticket")?
+>=20
+> Also, the question again arises as to what a "ticket" *is*.
+>=20
+>   Because this mechanism requires sharing the session database between
+>   server nodes in environments with multiple distributed servers, it
+>=20
+> Probably more conventional to say "requires a shared database between
+> all server instances".
+>=20
+> 8.2.  Client Hello Recording
+>=20
+> The first paragraph is hard to follow.  I think it could be clarified
+> along these lines:
+>=20
+>   An alternative form of anti-replay is to record a unique value
+>   derived from the ClientHello (generally either the random value or
+>   the PSK binder) and reject duplicates.  Recording all ClientHellos
+>   causes state to grow without bound, but a server can instead retain
+>   ClientHellos only within a given time window and use the
+>   "obfuscated_ticket_age" to determine whether the ClientHello was
+>   generated by the client recently.  Thus, the server can ensure that
+>   it only allows 0-RTT data in connections established by
+>   non-duplicate ClientHellos which were generated by the client
+>   within the recording window.
+>=20
+> --
+>=20
+>   The server MUST derive the storage key only from validated sections
+>   of the ClientHello.  If the ClientHello contains multiple PSK
+>   identities, then an attacker can create multiple ClientHellos with
+>   different binder values for the less-preferred identity on the
+>   assumption that the server will not verify it, as recommended by
+>   Section 4.2.11.  I.e., if the client sends PSKs A and B but the
+>   server prefers A, then the attacker can change the binder for B
+>   without affecting the binder for A.
+>=20
+> At this point, a conditional needs to be inserted; otherwise the
+> argument you're making is only implicit.
+>=20
+>   If the server uses the binder for B as part of the storage key,
+>   these variations on the ClientHello will not be detected by the
+>   server as duplicates of each other, and the server will accept all
+>   of them.
+>=20
+> Then continue with:
+>=20
+>   This may cause side effects such as replay cache
+>   pollution, although any 0-RTT data will not be decryptable because =
+it
+>   will use different keys.  If the validated binder or the
+>   ClientHello.random are used as the storage key, then this attack is
+>   not possible.
+>=20
+> --
+>=20
+>   When implementations are freshly started, they SHOULD reject 0-RTT =
+as
+>   long as any portion of their recording window overlaps the startup
+>   time.  Otherwise, they run the risk of accepting replays which were
+>   originally sent during that period.
+>=20
+> I think this needs a couple of changes of phrasing:
+>=20
+>   When an implementation is restarted with a cleared recording
+>   memory, it SHOULD reject 0-RTT as long as the startup time is
+>   within the recording window.  Otherwise, it runs the risk of
+>   accepting replays of ClientHellos which were sent during the
+>   previous execution.
+>=20
+> 8.3.  Freshness Checks
+>=20
+>   Variations in client and server clock rates are likely to be =
+minimal,
+>   though potentially with gross time corrections. =20
+>=20
+> What does "gross time corrections" mean?  I think you mean "with
+> moments of large change in the clock time", but that isn't a feature
+> of the clock *rate*.  I think this is more accurate:
+>=20
+>   Differences between client and server clock times are likely to be
+>   minimal, though there will sometimes be gross differences due to
+>   uninitialized clocks and misconfigured time zones.
+>=20
+> --
+>=20
+>   After early data is accepted, records may continue to be streamed
+>   to the server over a longer time period.
+>=20
+> More clear as
+>=20
+>   After the server accepts early data is accepted, the client may
+>   continue to send early data to the server over a longer time period
+>   than the freshness window for ClientHellos.
+>=20
+> 9.1.  Mandatory-to-Implement Cipher Suites
+>=20
+>   A TLS-compliant application MUST support digital signatures with
+>   rsa_pkcs1_sha256 (for certificates), rsa_pss_rsae_sha256 (for
+>   CertificateVerify and certificates), and ecdsa_secp256r1_sha256.
+>=20
+> It seems that ecdsa_secp256r1_sha256 is missing a statement of what
+> uses it must be supported for.
+>=20
+> 9.2.  Mandatory-to-Implement Extensions
+>=20
+>   -  If containing a "supported_groups" extension, it MUST also =
+contain
+>      a "key_share" extension, and vice versa.  An empty
+>      KeyShare.client_shares vector is permitted.
+>=20
+> I think this is a bit better expressed as:
+>=20
+>   -  If containing a "supported_groups" extension, it MUST also =
+contain
+>      a "key_share" extension (which may contain an empty
+>      KeyShare.client_shares vector), and vice versa.
+>=20
+> --
+>=20
+>   Additionally, all implementations MUST support use of the
+>   "server_name" extension with applications capable of using it.
+>=20
+> I'm not clear what the test is for "applications capable of using
+> SNI".  I think you want to turn the conditional around:
+>=20
+>   An application profile MAY require that the endpoint's TLS
+>   implementation supports use of the "server_name" extension.
+>=20
+> 9.3.  Protocol Invariants
+>=20
+>   -  A server receiving a ClientHello MUST correctly ignore all
+>      unrecognized cipher suites, extensions, and other parameters.
+>      Otherwise, it may fail to interoperate with newer clients.  In =
+TLS
+>      1.3, a client receiving a CertificateRequest or NewSessionTicket
+>      MUST also ignore all unrecognized extensions.
+>=20
+> This needs to be split, because the two parts are about different =
+roles:
+>=20
+>   -  A server receiving a ClientHello MUST correctly ignore all
+>      unrecognized cipher suites, extensions, and other parameters.
+>      Otherwise, it may fail to interoperate with newer clients.
+>=20
+>   -  In TLS 1.3, a client receiving a CertificateRequest or
+>      NewSessionTicket MUST also ignore all unrecognized extensions.
+>=20
+> 11.  IANA Considerations
+>=20
+>   -  TLS Alert Registry: Future values are allocated via Standards
+>      Action [RFC8126].  IANA [SHALL update/has updated] this registry
+>      to include values for "missing_extension" and
+>      "certificate_required".
+>=20
+> It would be nice to add a finer-grained "minor alert code" registry.
+>=20
+> Appendix A.  State Machine
+>=20
+> It would be helpful if the state diagrams were extended to describe
+> the activity on the "control channel" (handshake and alert content
+> types) after CONNECTED, that is, what happens while the connection is
+> established and how connections are shut down.
+>=20
+> Appendix B.  Protocol Data Structures and Constant Values
+>=20
+> There is no listing of the value structure corresponding to each
+> extension type.  Extensions collectively are only defined as:
+>=20
+>   struct {
+>       ExtensionType extension_type;
+>       opaque extension_data<0..2^16-1>;
+>   } Extension;
+>=20
+> This is a problem because the name of the value struct is not
+> systematically derived from the name of the extension_type value!
+> E.g., "signature_algorithms" and "signature_algorithms_cert" use
+> SignatureSchemeList as a value, and you can only reliably discover
+> that by searching through the whole of the text.
+>=20
+> B.4.  Cipher Suites
+>=20
+>   A symmetric cipher suite defines the pair of the AEAD algorithm and
+>   hash algorithm to be used with HKDF.
+>=20
+> Better phrased:
+>=20
+>   A symmetric cipher suite is the pair of an AEAD algorithm and a
+>   hash algorithm to be used with HKDF.
+>=20
+> C.3.  Implementation Pitfalls
+>=20
+>   -  As a server, do you send a HelloRetryRequest to clients which
+>      support a compatible (EC)DHE group but do not predict it in the
+>      "key_share" extension?
+>=20
+> This needs an additional condition:
+>=20
+>   -  As a server, if you select an (EC)DHE group which the client
+>      supports but for which the client did not provide a
+>      KeyShareEntry, do you send a HelloRetryRequest?
+>=20
+> Appendix D.  Backward Compatibility
+>=20
+>   Prior versions of TLS used the record layer version number for
+>   various purposes.  (TLSPlaintext.legacy_record_version and
+>   TLSCiphertext.legacy_record_version) As of TLS 1.3, this field is
+>   [...]
+>=20
+> I think this was intended to be formatted thusly:
+>=20
+>   Prior versions of TLS used the record layer version number
+>   (TLSPlaintext.legacy_record_version and
+>   TLSCiphertext.legacy_record_version) for various purposes.  As of
+>   TLS 1.3, this field is [...]
+>=20
+> D.5.  Backwards Compatibility Security Restrictions
+>=20
+>   The security of SSL 3.0 [SSL3] is considered insufficient for the
+>   reasons enumerated in [RFC7568], and MUST NOT be negotiated for any
+>   reason.
+>=20
+> s/and MUST NOT/and it MUST NOT/, with "it" referring to "SSL 3.0", as
+> otherwise the verb "MUST NOT" is parallel to the verb "is" and the
+> subject of "MUST NOT" is "the security of SSL 3.0".
+>=20
+> E.1.  Handshake
+>=20
+>   -  A set of "session keys" (the various secrets derived from the
+>      master secret) from which can be derived a set of working keys.
+>=20
+> Is this consistent with the usual meaning of "session key"?  My
+> understanding (which may be wrong) is that a "session key" is the key
+> for a "session", i.e., an entire connection.  Perhaps there is already
+> a defined term in the text that covers the use you intend.
+>=20
+>   Note that these
+>   properties are not necessarily independent, but reflect the protocol
+>   consumers' needs.
+>=20
+> The significance of "but" is not clear here, as it seems to be placing
+> in opposition "reflect the ... needs" and "independent".  I think this
+> is probably closer to what you meant:
+>=20
+>   Note that these properties are not necessarily independent, but
+>   together they cover the protocol consumers' needs.
+>=20
+> --
+>=20
+>   Uniqueness of the session keys:  Any two distinct handshakes should
+>      produce distinct, unrelated session keys.  Individual session =
+keys
+>      produced by a handshake should also be distinct and unrelated.
+>=20
+> It's not clear how two session keys produced by a single handshake can
+> be "unrelated".  I suspect there's a known technical term for this,
+> like "cryptographically independent" (to parallel "cryptographically
+> random").
+>=20
+> A similar term is needed in section E.1.4.
+>=20
+>   If fresh (EC)DHE keys are used for each
+>   connection, then the output keys are forward secret.
+>=20
+> When it is used as an adjective, you hyphenate "forward-secret".
+>=20
+> E.1.3.  0-RTT
+>=20
+>   See Section 4.2.10 for one mechanism to limit the exposure to =
+replay.
+>=20
+> This discussion is now in section 8.
+>=20
+> [END]
+>=20
+>=20
+> _______________________________________________
+> Gen-art mailing list
+> Gen-art@ietf.org
+> https://www.ietf.org/mailman/listinfo/gen-art
+

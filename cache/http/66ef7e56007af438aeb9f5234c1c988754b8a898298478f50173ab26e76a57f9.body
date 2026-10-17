@@ -1,0 +1,86 @@
+Return-Path: <peter@lekensteyn.nl>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 80376126557
+ for <tls@ietfa.amsl.com>; Tue, 21 Nov 2017 19:59:20 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -4.3
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.3 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ DKIM_VALID_AU=-0.1, RCVD_IN_DNSWL_MED=-2.3, SPF_PASS=-0.001,
+ URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=lekensteyn.nl
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id SvbGctmZZhOf for <tls@ietfa.amsl.com>;
+ Tue, 21 Nov 2017 19:59:19 -0800 (PST)
+Received: from mail.lekensteyn.nl (mail.lekensteyn.nl
+ [IPv6:2a02:2308::360:1:25])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 089481205F0
+ for <tls@ietf.org>; Tue, 21 Nov 2017 19:59:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=lekensteyn.nl; s=s2048-2015-q1; 
+ h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date;
+ bh=6KpwESxYTNG9P98euo4CDHHdI28S91Vkn7UmIOYKPys=; 
+ b=GQVB63Ru2JBax8KI2dmRI5L+vK4I24MQgD5xulZVN3LhKpJtAIWa6opdzVgKK5lPeK/7UstcudeGkua3rxZfQzTi1AgwJJumyNrWAfreRaf4rD2hxkjt2qhEqPgaYj/b759AKvjmywsMsq3TwglxXiMOjifq/xdQL5smO+LDjJzZsceh1ZXe7Wl2OEtL2iaRk4rYwEcsGC156gIg8G4U8LQ60lLN/MNP0Q5lMGiTRJFwNrD1cb21nzOvBWBIahfFcGa70prNUuJGprDGzQzXhab7PXYIeeCjR/JvemT18DiQSB75mo9mRfhXmJ4HaZAF4LGPrP8WM3XthSVPWEw2LQ==;
+Received: by lekensteyn.nl with esmtpsa
+ (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.84_2)
+ (envelope-from <peter@lekensteyn.nl>)
+ id 1eHMBx-0004ze-BJ; Wed, 22 Nov 2017 04:59:17 +0100
+Date: Wed, 22 Nov 2017 03:59:15 +0000
+From: Peter Wu <peter@lekensteyn.nl>
+To: "Le Van Gong, Hubert" <hubert@levangong.org>
+Cc: tls@ietf.org
+Message-ID: <20171122035915.GD18321@al>
+References: <94ced158-63b1-e7a3-024c-44d1149e7202@levangong.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <94ced158-63b1-e7a3-024c-44d1149e7202@levangong.org>
+User-Agent: Mutt/1.9.1 (2017-09-22)
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/NUAVVltJS-V0R8Cw8oaJYJk6DKY>
+Subject: Re: [TLS] Transcript-Hash during Handshake
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Wed, 22 Nov 2017 03:59:20 -0000
+
+Hi Hubert,
+
+On Tue, Nov 21, 2017 at 07:38:16PM -0800, Le Van Gong, Hubert wrote:
+> Greetings,
+> 
+> Probably a trivial question but is the transcript hash (during handhsake)
+> calculated over decrypted versions of messages like EncryptedExtensions or
+> certificate or is it done over the raw/encrypted messages?
+> I could not find an exact confirmation in the spec.
+
+It covers the decrypted handshake messages, see
+https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.4.1
+
+    This value is computed by hashing the concatenation
+    of each included handshake message, including the handshake message
+    header carrying the handshake message type and length fields, but not
+    including record layer headers
+
+(The only way to know the message type is to have it in cleartext.)
+-- 
+Kind regards,
+Peter Wu
+https://lekensteyn.nl
+

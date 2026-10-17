@@ -1,0 +1,221 @@
+From nobody Wed Sep 16 09:48:02 2020
+Return-Path: <davidben@google.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 12AC13A1030
+ for <tls@ietfa.amsl.com>; Wed, 16 Sep 2020 09:48:01 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -10.944
+X-Spam-Level: 
+X-Spam-Status: No, score=-10.944 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIMWL_WL_HIGH=-1.695, DKIM_SIGNED=0.1,
+ DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1,
+ HEADER_FROM_DIFFERENT_DOMAINS=0.249, HTML_MESSAGE=0.001,
+ SPF_HELO_NONE=0.001, SPF_PASS=-0.001, URIBL_BLOCKED=0.001,
+ USER_IN_DEF_SPF_WL=-7.5] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=chromium.org
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id spTyBfaKTZZu for <tls@ietfa.amsl.com>;
+ Wed, 16 Sep 2020 09:47:59 -0700 (PDT)
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com
+ [IPv6:2607:f8b0:4864:20::42b])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 5D5E73A101C
+ for <tls@ietf.org>; Wed, 16 Sep 2020 09:47:59 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id z19so4304950pfn.8
+ for <tls@ietf.org>; Wed, 16 Sep 2020 09:47:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=p3PmIEPgqlz7mQ0IkDSh8bikZGxEcfPgEN9PkSszRI4=;
+ b=GeSSDYfflZrEmFiT7Uv67ZUQ9fHdP4ygSfHfBpDzfvfRc9tH8RCSh5qvvR/OheRQSB
+ HoaoTUdft/0wAneg7m5c1Vzm+Yi7GTPj7u5ix1En7nEsWp6SD/uFrUdt2EQ58xDz9Gi3
+ S0cOsT0I4CuLgjRGynsQADzkbun9aBH+NsaWM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=p3PmIEPgqlz7mQ0IkDSh8bikZGxEcfPgEN9PkSszRI4=;
+ b=chNAYFjILmyyei28BPEzUFQkYWxOT+CFUsIq7Y0tYBhaQXBHUvKEUEDOSymeIgh/q3
+ tl7/nmLGNtmx+u0bPbo72dsRViwPgjiohEjuYfxDHecbUkBTWkSBffIIbedIQ1DGNelT
+ KSr8im1OwEBFcl7PYFoSaYbYGqXMTU1GSrdDiS5JZQntVspsW3Z/k81kGZIi30x0iCMS
+ X+KVR/IyC6sROeliXr3lTWQXUmZJAgocEnfK45dKggS9Ta2unkErSzgsxRA+9klnCgiK
+ UlEc45XyXks0YEFVoJks2Mhrp049YymnpsvPdKIcl1D25TgUwSqTXbJ0/anEpWYVwJq7
+ rcoQ==
+X-Gm-Message-State: AOAM532vmDBlUq4tg3AxVCBQ6d/WqsOZb13XS47Iwv/EpJ/8eBtJlN4E
+ 0oueNoL/UcunFkO21r/8LO/xqh0fzHsL2EjsFVVBD3+5AhcF
+X-Google-Smtp-Source: ABdhPJzdFGQJd567TZSVnqkXQM0G6ab/pc45fqqcphzZOT2U6bny7ixMRGg3cn3cIL+BVph/wvg9q7Deuol7K5o0XhI=
+X-Received: by 2002:a65:5cc2:: with SMTP id b2mr19195936pgt.124.1600274878641; 
+ Wed, 16 Sep 2020 09:47:58 -0700 (PDT)
+MIME-Version: 1.0
+References: <CABiKAoSGpodvQAegOhDxKxvDWoUsZBZL2JFWbtyseH+19cj6VQ@mail.gmail.com>
+In-Reply-To: <CABiKAoSGpodvQAegOhDxKxvDWoUsZBZL2JFWbtyseH+19cj6VQ@mail.gmail.com>
+From: David Benjamin <davidben@chromium.org>
+Date: Wed, 16 Sep 2020 12:47:42 -0400
+Message-ID: <CAF8qwaD4Y7KyEU=m3KuBkSZ27rxaJ02f_wXJQ5oCRU0VUfrKKQ@mail.gmail.com>
+To: Nimrod Aviram <nimrod.aviram@gmail.com>
+Cc: "<tls@ietf.org>" <tls@ietf.org>
+Content-Type: multipart/alternative; boundary="000000000000af969705af71079a"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/SUgO7NrAvmYzLytzKhuCB1iTygg>
+Subject: Re: [TLS] Hybrid key exchange in TLS 1.3 and variable-length secrets
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Wed, 16 Sep 2020 16:48:01 -0000
+
+--000000000000af969705af71079a
+Content-Type: text/plain; charset="UTF-8"
+
+"Variable-length" and "secret" don't really go together in the same
+sentence, as your work demonstrates. I would actually go further and strike
+that text altogether. I don't think it needs to be an open question. That
+lets us stick with a simple construction.
+
+While the public values aren't secret so there's less strong of a
+guarantee, I'd go even further to drop the length prefixes inside
+the HybridKeyExchange structure. That saves four bytes on the wire. If
+someone does want to allocate a codepoint that needs the length prefixes,
+they can always define it for that code point. (That's another nice thing
+about using separate code points for separate hybrids rather than generic
+crypto combinators. We don't have to design for every improbable
+possibility.)
+
+I will note, we did have variable-width public values in DHE, but that
+caused interop issues and we fixed it in
+https://github.com/tlswg/tls13-spec/pull/458.
+
+David
+
+On Wed, Sep 16, 2020 at 12:27 PM Nimrod Aviram <nimrod.aviram@gmail.com>
+wrote:
+
+> Dear all,
+>
+> We are writing to ask about the possible security impact of
+> variable-length secrets on the "Hybrid key exchange in TLS 1.3" RFC
+> [1].
+>
+> As you probably know, when using key material of variable length
+> and processing this material using hash functions, a timing side
+> channel may arise. In broad terms, when the secret is longer, the hash
+> function may need to process more blocks internally. In some unfortunate
+> circumstances, this has led to timing attacks, e.g. Lucky Thirteen [2]
+> and the newly-disclosed Raccoon Attack [3]. To be clear, we are not
+> aware of any attack on the proposed standard. Rather, we view this as
+> an opportunity to defend-in-depth against such attacks, while work on
+> the standard is in progress.
+>
+> Our proposal is to add language to the RFC explaining that variable-length
+> secrets may enable such attacks, and should therefore be avoided when
+> possible.  Currently, the language seems to allow for variable-length
+> secrets, should the need arise:
+> "Variable-length shared secrets ... if it is envisioned that this
+> specification
+> be used with algorithms which do not have fixed-length shared secrets ..."
+>
+> We also note that a related RFC exists, "Hybrid Post-Quantum Key
+> Encapsulation Methods (PQ KEM) for Transport Layer Security 1.2"
+> [4]. However, that RFC apparently only uses BIKE, Kyber or SIKE as the
+> PQ KEM. To our knowledge, all three KEMs have fixed-length secrets. It
+> may be prudent to add cautionary language to that document as well,
+> in case other KEMs are used in the future.
+>
+> Kind regards,
+> The Raccoon Team
+>
+> [1]
+> https://www.ietf.org/id/draft-ietf-tls-hybrid-design-00.html#name-open-questions
+> [2] https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=6547131
+> [3] https://raccoon-attack.com/
+> [4]
+> https://tools.ietf.org/id/draft-campagna-tls-bike-sike-hybrid-05.html#name-key-exchange-algorithms
+>
+>
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+>
+
+--000000000000af969705af71079a
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr">&quot;Variable-length&quot; and &quot;sec=
+ret&quot; don&#39;t really go together in the same sentence,=C2=A0as your w=
+ork demonstrates. I would actually go further and strike that text altogeth=
+er. I don&#39;t think it needs to be an open question. That lets us stick w=
+ith a simple construction.<div><br></div><div>While the public values aren&=
+#39;t secret so=C2=A0there&#39;s less strong of a guarantee, I&#39;d go eve=
+n further to drop the length prefixes inside the=C2=A0HybridKeyExchange str=
+ucture. That saves four bytes on the wire. If someone does want to allocate=
+ a codepoint that needs the length prefixes, they can always define it for =
+that code point. (That&#39;s another nice thing about using separate code p=
+oints for separate hybrids rather than generic crypto combinators. We don&#=
+39;t have to design for every improbable possibility.)</div><div><br></div>=
+<div>I will note, we did have variable-width public values in DHE, but that=
+ caused interop issues and we fixed it in=C2=A0<a href=3D"https://github.co=
+m/tlswg/tls13-spec/pull/458">https://github.com/tlswg/tls13-spec/pull/458</=
+a>.<br></div><div><br></div><div>David</div></div><br><div class=3D"gmail_q=
+uote"><div dir=3D"ltr" class=3D"gmail_attr">On Wed, Sep 16, 2020 at 12:27 P=
+M Nimrod Aviram &lt;<a href=3D"mailto:nimrod.aviram@gmail.com">nimrod.avira=
+m@gmail.com</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=
+=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding=
+-left:1ex"><div dir=3D"ltr"><div style=3D"font-size:small">Dear all,<br><br=
+>We are writing to ask about the possible security impact of<br>variable-le=
+ngth secrets on the &quot;Hybrid key exchange in TLS 1.3&quot; RFC<br>[1].<=
+br><br>As you probably know, when using key material of variable length<br>=
+and processing this material using hash functions, a timing side<br>channel=
+ may arise. In broad terms, when the secret is longer, the hash<br>function=
+ may need to process more blocks internally. In some unfortunate<br>circums=
+tances, this has led to timing attacks, e.g. Lucky Thirteen [2]<br>and the =
+newly-disclosed Raccoon Attack [3]. To be clear, we are not<br>aware of any=
+ attack on the proposed standard. Rather, we view this as<br>an opportunity=
+ to defend-in-depth against such attacks, while work on<br>the standard is =
+in progress.<br><br>Our proposal is to add language to the RFC explaining t=
+hat variable-length<br>secrets may enable such attacks, and should therefor=
+e be avoided when<br>possible.=C2=A0 Currently, the language seems to allow=
+ for variable-length<br>secrets, should the need arise:</div><div style=3D"=
+font-size:small">&quot;Variable-length shared secrets ... if it is envision=
+ed that this specification</div><div style=3D"font-size:small">be used with=
+ algorithms which do not have fixed-length shared secrets ...&quot;<br><br>=
+We also note that a related RFC exists, &quot;Hybrid Post-Quantum Key<br>En=
+capsulation Methods (PQ KEM) for Transport Layer Security 1.2&quot;<br>[4].=
+ However, that RFC apparently only uses BIKE, Kyber or SIKE as the<br>PQ KE=
+M. To our knowledge, all three KEMs have fixed-length secrets. It<br>may be=
+ prudent to add cautionary language to that document as well,<br>in case ot=
+her KEMs are used in the future.<br><br>Kind regards,</div><div style=3D"fo=
+nt-size:small">The Raccoon Team</div><div style=3D"font-size:small"><br></d=
+iv><div style=3D"font-size:small">[1] <a href=3D"https://www.ietf.org/id/dr=
+aft-ietf-tls-hybrid-design-00.html#name-open-questions" target=3D"_blank">h=
+ttps://www.ietf.org/id/draft-ietf-tls-hybrid-design-00.html#name-open-quest=
+ions</a><br>[2] <a href=3D"https://ieeexplore.ieee.org/stamp/stamp.jsp?arnu=
+mber=3D6547131" target=3D"_blank">https://ieeexplore.ieee.org/stamp/stamp.j=
+sp?arnumber=3D6547131</a><br>[3] <a href=3D"https://raccoon-attack.com/" ta=
+rget=3D"_blank">https://raccoon-attack.com/</a><br>[4] <a href=3D"https://t=
+ools.ietf.org/id/draft-campagna-tls-bike-sike-hybrid-05.html#name-key-excha=
+nge-algorithms" target=3D"_blank">https://tools.ietf.org/id/draft-campagna-=
+tls-bike-sike-hybrid-05.html#name-key-exchange-algorithms</a><br><br><br></=
+div></div>
+_______________________________________________<br>
+TLS mailing list<br>
+<a href=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.org</a><br>
+<a href=3D"https://www.ietf.org/mailman/listinfo/tls" rel=3D"noreferrer" ta=
+rget=3D"_blank">https://www.ietf.org/mailman/listinfo/tls</a><br>
+</blockquote></div></div>
+
+--000000000000af969705af71079a--
+

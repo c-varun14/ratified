@@ -1,0 +1,90 @@
+Return-Path: <ietf-dane@dukhovni.org>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 78FC0130F20
+ for <tls@ietfa.amsl.com>; Mon, 18 Jun 2018 21:04:27 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -4.2
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.2 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, RCVD_IN_DNSWL_MED=-2.3, SPF_PASS=-0.001,
+ URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id g-SEmf8t2YII for <tls@ietfa.amsl.com>;
+ Mon, 18 Jun 2018 21:04:25 -0700 (PDT)
+Received: from mournblade.imrryr.org (mournblade.imrryr.org [108.5.242.66])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 73281130EB9
+ for <tls@ietf.org>; Mon, 18 Jun 2018 21:04:25 -0700 (PDT)
+Received: from [192.168.1.161] (straasha.imrryr.org [100.2.39.101])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mournblade.imrryr.org (Postfix) with ESMTPSA id 54F677A330D;
+ Tue, 19 Jun 2018 04:04:24 +0000 (UTC)
+ (envelope-from ietf-dane@dukhovni.org)
+Content-Type: text/plain;
+	charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 11.4 \(3445.8.2\))
+From: Viktor Dukhovni <ietf-dane@dukhovni.org>
+In-Reply-To: <f85f7c58-5423-4e68-bea0-da717b0f7664@iongroup.com>
+Date: Tue, 19 Jun 2018 00:04:23 -0400
+Cc: "tls@ietf.org" <tls@ietf.org>
+Reply-To: TLS WG <tls@ietf.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <8125DD3B-34F2-49B3-AFEB-B526F44E4147@dukhovni.org>
+References: <BN7PR14MB23560D791932A8CB164C592D917F0@BN7PR14MB2356.namprd14.prod.outlook.com>
+ <897AC345-0832-4252-9D96-5A030CBEAD25@dukhovni.org>
+ <cc5fe1d8-b065-4f30-8b76-57714aea1949@iongroup.com>
+ <CAHOTMV+P_VWz=5uLmG=SFd5PYNgxpT=DYg3+vQffs_cqMwRXSQ@mail.gmail.com>
+ <f85f7c58-5423-4e68-bea0-da717b0f7664@iongroup.com>
+To: Ben Personick <ben.personick@iongroup.com>
+X-Mailer: Apple Mail (2.3445.8.2)
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/eRg2Ay9VNlk7Jwp4udkP73zA2Yw>
+Subject: Re: [TLS] Mail regarding draft-ietf-tls-tls13
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.26
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Tue, 19 Jun 2018 04:04:28 -0000
+
+
+
+> On Jun 18, 2018, at 3:12 PM, Ben Personick =
+<ben.personick@iongroup.com> wrote:
+>=20
+> So essentially TLS 1.3 drops support for DH/DHE ciphers on RSA keys, =
+but willl otherwise work as expected?
+
+No, it drops support for *non* (EC)DHE RSA ciphers,
+keeping *only* the (EC)DHE RSA ciphers, for specific
+FFDHE groups (as before) specific ECDHE curves.
+
+Note that (IIRC) the TLS 1.3 implementation in OpenSSL 1.1.1
+will not include support the TLS 1.3 finite-field DHE groups,
+and so TLS 1.3 interoperability with OpenSSL *requires* ECDHE
+support.  If your implementation offers TLS 1.3, but offers
+no ECDHE signature algorithms, the handshake will (IIRC) likely
+fail.
+
+So what's becoming effectively mandatory with TLS 1.3 is
+ECDHE key agreement, not ECDSA certificates, though TLS 1.3
+clients really should also support connections to servers that
+have ECDSA P-256, P-384, P-521, Ed25519 and Ed448 certificates.
+But servers can stick with RSA certificates so long as they
+are willing to do ECDHE key agreement.
+
+--=20
+	Viktor.
+

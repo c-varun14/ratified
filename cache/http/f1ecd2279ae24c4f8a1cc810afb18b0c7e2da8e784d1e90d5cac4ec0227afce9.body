@@ -1,0 +1,620 @@
+Return-Path: <john.mattsson@ericsson.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+	by ietfa.amsl.com (Postfix) with ESMTP id AB041C1516F3
+	for <tls@ietfa.amsl.com>; Sat,  7 Dec 2024 00:13:43 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.253
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.253 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIMWL_WL_HIGH=-0.148, DKIM_SIGNED=0.1,
+	DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1,
+	HTML_MESSAGE=0.001, RCVD_IN_DNSWL_NONE=-0.0001,
+	RCVD_IN_MSPIKE_H2=-0.001, RCVD_IN_VALIDITY_RPBL_BLOCKED=0.001,
+	RCVD_IN_VALIDITY_SAFE_BLOCKED=0.001,
+	RCVD_IN_ZEN_BLOCKED_OPENDNS=0.001, SPF_PASS=-0.001,
+	T_SCC_BODY_TEXT_LINE=-0.01, URIBL_BLOCKED=0.001,
+	URIBL_DBL_BLOCKED_OPENDNS=0.001, URIBL_ZEN_BLOCKED_OPENDNS=0.001]
+	autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+	header.d=ericsson.com
+Received: from mail.ietf.org ([50.223.129.194])
+	by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id zq7qRYG6cjY9 for <tls@ietfa.amsl.com>;
+	Sat,  7 Dec 2024 00:13:39 -0800 (PST)
+Received: from EUR02-VI1-obe.outbound.protection.outlook.com
+ (mail-vi1eur02on2070.outbound.protection.outlook.com [40.107.241.70])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-384) server-signature ECDSA (P-256) server-digest
+ SHA256)
+	(No client certificate requested)
+	by ietfa.amsl.com (Postfix) with ESMTPS id B7162C14F6F0
+	for <tls@ietf.org>; Sat,  7 Dec 2024 00:13:38 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=sIFDPXAGnG1gjKy1yO++kDTMvpWN3XNW5BNsxvX6Cuhz8dSG/WLeZxnkl/lUWJ3J6gUAgMy5QuCvg+LkplIX2rwxdRTKTtO1YNWsj40P2X+4Gbf0CMVwVsmhK0QgrdKho3DlgLcK2f2r5hTQMNMG+2Lo+FrCS6Gzsk+pSOGYeg8WisZ+Bky6hB0QwJoBX+1R933lAynPDbCx67cZRvMbN0nlkRwPtwg8Jq+avthHsdSknBr69S0WcNf/nOBWx25dstKaWNF03bNORgSzgcOdaZG++AC4t4T+VD9QIbhEz20In0N5woSahHJY3gVoaLPaTQSvTWbMV57uEPlbdCVPWg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=oudTeT2Ndo8leg+1vicrO8GeDjyqrxY1RPibPadnoI8=;
+ b=PTNueePASJdA9lUsIqMQ6f9u1arZEJ7Uly2bFQ8Bdz/lC02P0VFFMmgPReGuCQyNfO2DbVvuOnHcm9v8Du+wokgPkAkkRnooZGT2sYU8bHmT0MUUWRK6eYt36V36YVTU5wMGE01s37+Tq4dOD8UbPC6Z9xXg4wIFQUPTTTwdtoyzPjhfXkoZ7TzwI2Z+/saBtQ4bSSbCK/dB2rJuDD6g9LYHzsIzWhL0IWlze4F2gSjjVWftzjMDZ/wI8POKS5OmAuLphRbzUFowkABaf1VJneDW+X1VthoU1ymhVFz7qMH6Ba0izD2vy3t2TUdSdAtWt6iXu4svV24zwin/wgqTLg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=ericsson.com; dmarc=pass action=none header.from=ericsson.com;
+ dkim=pass header.d=ericsson.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ericsson.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oudTeT2Ndo8leg+1vicrO8GeDjyqrxY1RPibPadnoI8=;
+ b=aboY6CEyHwhVWrx5tsTBnYU2ZaqemS1YF/9mf8x+eLGwRK1iN1Rp94TWmVs5oCTilOCJbP0Bm885TGlKCWfISpIYsgD8Y4fvx1dqaAf5Mb7vHY4Y9IDqM7guaasQoEKDlEFQmgF0ujJXA56YXwuwU+D+SgYCFYQ2/wBEIdETcTr5KBFMFOGMekv0YMULMzgnbDQpxzHOIMNXKNyG4UYpUvMkOYZY5CY3MEx45He6NmsXlRhfUTH8cI49Pbs/9AqVgq8v/+OpIxveehf+sAqBT3d6a1xnBUMJmIMOVBrvTOlsZfb8/NSSKDlvpTI+ftqbck1tvZZ4hn6tbhkHEJ7DkQ==
+Received: from GVXPR07MB9678.eurprd07.prod.outlook.com (2603:10a6:150:114::10)
+ by AS8PR07MB9353.eurprd07.prod.outlook.com (2603:10a6:20b:61b::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8230.11; Sat, 7 Dec
+ 2024 08:13:35 +0000
+Received: from GVXPR07MB9678.eurprd07.prod.outlook.com
+ ([fe80::bcf3:3f45:888e:a4b8]) by GVXPR07MB9678.eurprd07.prod.outlook.com
+ ([fe80::bcf3:3f45:888e:a4b8%5]) with mapi id 15.20.8207.017; Sat, 7 Dec 2024
+ 08:13:34 +0000
+From: John Mattsson <john.mattsson@ericsson.com>
+To: Muhammad Usama Sardar <muhammad_usama.sardar@tu-dresden.de>, Valery
+ Smyslov <smyslov.ietf@gmail.com>, 'Sean Turner' <sean@sn3rd.com>, 'TLS List'
+	<tls@ietf.org>
+Thread-Topic: [TLS] Re: Working Group Last Call for TLS 1.2 is in Feature
+ Freeze
+Thread-Index: AQHbRhtNaHy7mhDzWUC/6i0hINzHALLZfSMAgADyqTk=
+Date: Sat, 7 Dec 2024 08:13:34 +0000
+Message-ID: 
+ <GVXPR07MB9678AE6A1DD7953668BE73DF89322@GVXPR07MB9678.eurprd07.prod.outlook.com>
+References: <F98C87B7-B31D-4702-B694-0CB1A8FB38C5@sn3rd.com>
+ <07fa01db461a$b2f05330$18d0f990$@gmail.com>
+ <cc74d2fa-c452-4267-900f-41dee05dd9c6@tu-dresden.de>
+In-Reply-To: <cc74d2fa-c452-4267-900f-41dee05dd9c6@tu-dresden.de>
+Accept-Language: en-US
+Content-Language: en-GB
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-reactions: allow
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=ericsson.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: GVXPR07MB9678:EE_|AS8PR07MB9353:EE_
+x-ms-office365-filtering-correlation-id: 94fd0d46-a6e2-41b6-c189-08dd16970bb1
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: 
+ BCL:0;ARA:13230040|376014|366016|1800799024|38070700018|8096899003;
+x-microsoft-antispam-message-info: 
+ =?Windows-1252?Q?lRx5YCzDg/OXuf+9U6BlRNQRn4SwQKWbAIsDVRSEzfReZINkUx63BSJ9?=
+ =?Windows-1252?Q?x7Reh7XsQtxneMSGUzzALp3P31qb/4qN21AVSjZbE9lbnVSmH1hQw3B0?=
+ =?Windows-1252?Q?YmTHKR4hjXO2dePR3bb5jmhoWErBDa5v3DX8kSdrjZjQro2IwBWuefcH?=
+ =?Windows-1252?Q?mr02jDucxNn102DLFS4R/CSIXjYQVCF7Jp/lMhfWUoXEHU4aSw7xmAMt?=
+ =?Windows-1252?Q?xsSnVYNebtqZk1J8n0RqiWoTdR4jvx5bxoPKpznEaBilz3X3634An7Bg?=
+ =?Windows-1252?Q?/bxE0vIPLPtW1PV/j08h6t8NXIpH3ytj3zP9k89v+jxmKERRNytiOG+h?=
+ =?Windows-1252?Q?e1C985HfFMlxoO0K0gyURKUU7reJVMqBBDIfBzRZgNwC6q1rQOeccGDJ?=
+ =?Windows-1252?Q?lwzEaX+GH7hh21bbD6rg7fSqGdjbWfAf+sLjNbrGkIGYFtyZt2eEwjxZ?=
+ =?Windows-1252?Q?HcsGjYWZeZUz52enFcoXrQLD/W/9wvQpjOlnfZhR4rtr+hFGEKWPuFix?=
+ =?Windows-1252?Q?ey9f2d5UzhUrFxUc3Awz5H5PVDFEz6fVxdxyp2t0NGRsTbIz6nhhLJjN?=
+ =?Windows-1252?Q?OXU8D7LqpixfezTp0nhfLS0KyG/LFplOTsxKufrF7DeJBE4rq5z3WNcI?=
+ =?Windows-1252?Q?L5H7Veo4tq7zuxOZb8tgZXFAViXUdL9cposi0Bdy2ujkqzAXKS5T3+Us?=
+ =?Windows-1252?Q?gi14fMHNgadjNYXvanOHJs3RVI29EGn9z/Q8iws+A808fmGn3WzamdmU?=
+ =?Windows-1252?Q?cxEqSKdS9fg0R5OeW0VWA7zfXxJjStIobx3zzHPyynjzMSsWv6kUNQwR?=
+ =?Windows-1252?Q?2P3E8qW74GoVyDwnVRUVWZXo8foR0zCaMalqS9vB4fJ+g3V3MzX2pzxs?=
+ =?Windows-1252?Q?18METWdcPj9/SNeI7r3kXrXC409ODNyIHUH9BvScfBQYzFYgzXh1BGRk?=
+ =?Windows-1252?Q?fPB2gyFnZopg1YzF1lC7I3HaGSsPxfK1M+p6If7ONW/c7D7aVHgJF+fU?=
+ =?Windows-1252?Q?u+qapI5Gky1tO1tGV+IQ7949X7HmHS4zagAge2KitbMK5z5q9wXg7PPd?=
+ =?Windows-1252?Q?uOfjsYG5ZTEYm0ygix36yrkA4kQHpGX+vWGENhffSeNRnTqWBOqFThIF?=
+ =?Windows-1252?Q?pPqvPuEbfhz4wdvgxIX02cdBjyzF1lia3Q6470nOEp3HGdYDYbncNxwD?=
+ =?Windows-1252?Q?12kkDP3D7iv7OONlDn/uNgU/vF6S8Mh+LTIxc4SfkiP32gVHXquMjQbV?=
+ =?Windows-1252?Q?IY1B/3bF1ELpbvmrJ1XGjGUBwPS8CWQ2sirWZqQtlz47a8m5Qh10BKyG?=
+ =?Windows-1252?Q?JfZ4Xx7V0k78KHPj6YOCqNQbwTjL8RcV1pQo64KnZyKoTqUjajihXbLF?=
+ =?Windows-1252?Q?9D7ZTG5+RH29Xl2QqM9jKM9tZr7nV+OZ/bGOcZKG33KPlZ/XFK/96w9C?=
+ =?Windows-1252?Q?1mAJvgKk7e0BlJRmhsYVmauZK4jxyJQHwE5pEcmrnqI=3D?=
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:GVXPR07MB9678.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(1800799024)(38070700018)(8096899003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?Windows-1252?Q?ZT5krhwupfz/TtQaZ9AcjRiD6kD9dw/fgnNGLrI/yW53DTfclgfEvNR6?=
+ =?Windows-1252?Q?ubjA/y72kgI9X8dfODEuF1qja9EhcCeLSfOSzI5qfF87MIcO+GsMgDRz?=
+ =?Windows-1252?Q?oOe3cJenT3gnCbYu3VVzwiYXIngX8r48znqB5H2dNbwAUKywpPBGpLdX?=
+ =?Windows-1252?Q?2w5rk9mcSLQYMI6SrpfydCLQHP0A11GsdUJlZD0Vm++3peUC0IDtJIBs?=
+ =?Windows-1252?Q?OrHJPkyWn7gyz4Q48wJDHhUHFQhd7wl4rix/z460SqDcthSKLmaibAS7?=
+ =?Windows-1252?Q?0aZD6V4z5cotM3HfNJV/IFrMCwFXrUT5PUC3XVfebAfYNhXAu2OL1sip?=
+ =?Windows-1252?Q?ggPEPd6riJQguOpXYsEe1+kZ8skqe++/6HPNNDqm2XtKfIUx2dHlCAMi?=
+ =?Windows-1252?Q?fc0YQ/HT7R9VMAfv9u/C4DBh8XR0pyDcm6D02N1ZKmOP4eegAVNKLhDD?=
+ =?Windows-1252?Q?cPY8Wq2cORrWtjN7d6JvEY+5LBSMJ5qlBXvy79YmIwsQ1gjCCyMJKKYf?=
+ =?Windows-1252?Q?sywnqI4YSAvx5BAi3JqHDhxOuTNmwVS8qC4Gv9xWNHvn6nhz1Cu6na7O?=
+ =?Windows-1252?Q?Q3C3s2bZ3dgbw6dTitTZZ2DC5CJGYbnlUny78bXxLfcFjYcp5L9vkOys?=
+ =?Windows-1252?Q?iL+z9hSObnjWzTzgHBTb59qHve8ttNo32h1M/RhDApN5c1sUaUd0Uh5r?=
+ =?Windows-1252?Q?uP+bVBQ50hio9i2Od30iHRLHGWnDUpHg0OPddfnxcEX9UfAoyJjfzknl?=
+ =?Windows-1252?Q?IVBdFNsqVhyAD1EPUh1HAhHgzkvHahiBjWx33sNVIe3RKYMk6R9MI1ic?=
+ =?Windows-1252?Q?MvagXbtnu2arYShpvuaFnd4Qt48vzyS3PG07u7pp1vLtN+xubDYH9cCR?=
+ =?Windows-1252?Q?pjKnHpeUSD/JH5pOFmTNsvVmPc5SBa6pIMQF8J0SQ06rPwhc1stitI+m?=
+ =?Windows-1252?Q?kS3H80LHwK+22FGpEZW6XjJmmlpTTFgfYSmqNbIdbWuEWjZ6au5TwBX2?=
+ =?Windows-1252?Q?4aLy06FGoZRF8BvvClWWcKTXz0GobN6lwXpfj1G6llJrdeQa8EtMuTVT?=
+ =?Windows-1252?Q?FDS36Hj4KZu8AZCEfdiI00mu+16MplZxwwAnx5G7x/+1oxxMGhu2WJkP?=
+ =?Windows-1252?Q?B1cLSz5xc0iZfi6WRMa7bLwYmPJpu6mUS3pnky13EwzQp8SKgjm2n85/?=
+ =?Windows-1252?Q?G7eh5+VKUA/n275GXsymUCztd1lYivU4x/4p2vzXuoZPQkUwVY7fh6Hp?=
+ =?Windows-1252?Q?RYrytCv+TePaF5JFuuMjiirxGvuDK9KH2bI+tx9+rlwEKb8sQdJ+A/Cm?=
+ =?Windows-1252?Q?q16Tnq6HwueZjYvSQHeWmF/kULZkpt7eqMQFei+82VqAjzLg9uZA1FHm?=
+ =?Windows-1252?Q?ib3fQbwEQFSvka4L9xC6DHzfAkdaooiLbMifuSXHQ38E60tn4IKlJYE3?=
+ =?Windows-1252?Q?nvnAwjSK9K75Zyb0BpqpCsRzLM8LYvTMOlmCG763EqRZrWjMlHRld56O?=
+ =?Windows-1252?Q?VJ09iZXF+oD8mloZ8JNQEZBdx+P9DVG6tPt6twbVo+F6yqlxHxGqoq4a?=
+ =?Windows-1252?Q?/ocL82/YVxTJymy2U8e6Zy2QwOn3mEw4Fe+Vupi24nG5tukEEgMNu8AY?=
+ =?Windows-1252?Q?pcYRspU1bWL2ybkBFkeSUyj3EX7eR/F1Sxqs622nB5yxNxLDDBhDa0x1?=
+ =?Windows-1252?Q?jKkOUdvQIUrmvQ4C8kS+LMfiR6Svlrz1cf+QYkOh/0CYqCnladEXu8OZ?=
+ =?Windows-1252?Q?Aq7ChbfM+1IWokz3zzw=3D?=
+Content-Type: multipart/alternative;
+	boundary="_000_GVXPR07MB9678AE6A1DD7953668BE73DF89322GVXPR07MB9678eurp_"
+MIME-Version: 1.0
+X-OriginatorOrg: ericsson.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: GVXPR07MB9678.eurprd07.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ 94fd0d46-a6e2-41b6-c189-08dd16970bb1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Dec 2024 08:13:34.7955
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 92e84ceb-fbfd-47ab-be52-080c6b87953f
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 
+ Y2Ixzfwp0WyJX3M4QDSRv549kmeRtXc7xPdRte/nsHSs5fxEi3HU2xCGJtRJfhXPgyj9quqNEA640ze8tJUYTAQb+vDOWB9jytmM1ty9L58=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR07MB9353
+Message-ID-Hash: VNRMDEMXT4IVNRWBK43NPDNYYBPOCRVO
+X-Message-ID-Hash: VNRMDEMXT4IVNRWBK43NPDNYYBPOCRVO
+X-MailFrom: john.mattsson@ericsson.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Re=3A_Working_Group_Last_Call_for_TLS_1=2E2_is_in_Featur?=
+ =?utf-8?q?e_Freeze?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/d3Tc51zaEuMKBemJnLDuZZ4gJ3Y>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+--_000_GVXPR07MB9678AE6A1DD7953668BE73DF89322GVXPR07MB9678eurp_
+Content-Type: text/plain; charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
+
+Muhammad Usama Sardar wrote:
+>Do we have an I-D which defines how long do we consider as long-term conne=
+ctions? or I-D which gives recommendations or best practices for how long d=
+o we consider TLS 1.3 to provide excellent security?
+
+- One clear timepoint is when the server certicate expires. TLS 1.3 removed=
+ the ability to do server reauthentication.
+- RFC 4253 recommends rekeying with PFS after each gigabyte of transmitted =
+data or after each hour of connection time.
+- French ANSSI recommends periodic rekeying with PFS, e.g. every hour and e=
+very 100 GB of data, in order to limit the impact of a key compromise.
+https://cyber.gouv.fr/sites/default/files/2015/09/NT_IPsec_EN.pdf
+- The chief cryptographer of the Swedish NCSA states that asymmetrically di=
+stributed keys can be refreshed at very frequent intervals and that options=
+ include continuously re-negotiating the encryption keys, and chaining the =
+negotiations, so that the adversary has to record and store an uninterrupte=
+d sequence of negotiations, and then break them in sequence.
+http://kth.diva-portal.org/smash/get/diva2:1902626/FULLTEXT01.pdf
+
+So 1 hour, 1-100 GB, or server cert expiry date, whichever comes sooner? Yo=
+u could also arguee that with blazingly fast algorithms like X25519 and ML-=
+KEM and much faster hardware, best practice have changed since 2006 and exc=
+ellent security is now asymmetric rekeying at very frequent intervals with =
+chaining, this is e.g., what Signal does.
+
+>If the intention of draft was #2 above, cross-reading with this sentence, =
+are we implying that PQC is not an urgent security issue?
+
+That is a very good point. I suggest changing this to
+OLD: =93This document specifies that outside of urgent security fixes, no n=
+ew features will be approved for TLS 1.2=94
+NEW: =93This document specifies that, no new features will be approved for =
+TLS 1.2=94
+(TLS WG can always make a future RFC overriding this anyway=85)
+
+>It looks like a more detailed version of tls12-frozen draft. Is there a go=
+od reason not to merge the two documents?
+
+I had the same thought. I think they would be better as a single document. =
+But I don=92t care very much.
+
+>What does the capitalization of WILL NOT mean?
+
+Yes, and it is not in RFC 6919 either=85 ;)
+
+Cheers,
+John
+
+From: Muhammad Usama Sardar <muhammad_usama.sardar@tu-dresden.de>
+Date: Friday, 6 December 2024 at 18:33
+To: Valery Smyslov <smyslov.ietf@gmail.com>, 'Sean Turner' <sean@sn3rd.com>=
+, 'TLS List' <tls@ietf.org>
+Subject: [TLS] Re: Working Group Last Call for TLS 1.2 is in Feature Freeze
+
+A few quick questions. Sorry if I am missing something obvious or some back=
+ground.
+On 04.12.24 08:04, Valery Smyslov wrote:
+
+note, that UTA WG has issued a WGLC for draft-ietf-uta-require-tls13-02 (Ne=
+w Protocols Must Require TLS 1.3) [1].
+
+
+
+ [1] https://datatracker.ietf.org/doc/draft-ietf-uta-require-tls13/
+Thanks for pointer to this. It looks like a more detailed version of tls12-=
+frozen draft. Is there a good reason not to merge the two documents? Is it =
+due to different WGs? or different intended status? or something else?
+
+
+On 04.12.24 10:36, John Mattsson wrote:
+as-is, TLS 1.3 does not provide excellent security for long-term connection=
+s.
+
+Do we have an I-D which defines how long do we consider as long-term connec=
+tions? or I-D which gives recommendations or best practices for how long do=
+ we consider TLS 1.3 to provide excellent security?
+
+---
+
+Considering the following two statements in I-D, I have two questions:
+
+>   For TLS it is important to note that the focus of these efforts is
+
+>   TLS 1.3 or later.  Put bluntly, post-quantum cryptography for TLS 1.2
+
+>   WILL NOT be supported.
+
+To me the two sentences are contradicting. Which one of the following is in=
+tended?
+
+  1.  (My understanding from 1st sentence) Some PQC support for TLS 1.2 wil=
+l still continue but it will not be the focus.
+  2.  (My understanding from 2nd sentence) We will exclusively work on PQC =
+for TLS 1.3 or later.
+
+What does the capitalization of WILL NOT mean? I did not find any such capi=
+talization in RFC 2119 and RFC 8174. Please add the relevant RFC in section=
+ 2 or define it.
+
+>   This
+
+>   document specifies that outside of urgent security fixes, no new
+
+>   features will be approved for TLS 1.2.
+If the intention of draft was #2 above, cross-reading with this sentence, a=
+re we implying that PQC is not an urgent security issue?
+
+--_000_GVXPR07MB9678AE6A1DD7953668BE73DF89322GVXPR07MB9678eurp_
+Content-Type: text/html; charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" xmlns:w=3D"urn:sc=
+hemas-microsoft-com:office:word" xmlns:m=3D"http://schemas.microsoft.com/of=
+fice/2004/12/omml" xmlns=3D"http://www.w3.org/TR/REC-html40">
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3DWindows-1=
+252">
+<meta name=3D"Generator" content=3D"Microsoft Word 15 (filtered medium)">
+<style><!--
+/* Font Definitions */
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Aptos;
+	panose-1:2 11 0 4 2 2 2 2 2 4;}
+@font-face
+	{font-family:Consolas;
+	panose-1:2 11 6 9 2 2 4 3 2 4;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	font-size:12.0pt;
+	font-family:"Aptos",sans-serif;}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:blue;
+	text-decoration:underline;}
+pre
+	{mso-style-priority:99;
+	mso-style-link:"HTML Preformatted Char";
+	margin:0cm;
+	font-size:10.0pt;
+	font-family:"Courier New";}
+span.HTMLPreformattedChar
+	{mso-style-name:"HTML Preformatted Char";
+	mso-style-priority:99;
+	mso-style-link:"HTML Preformatted";
+	font-family:Consolas;}
+span.EmailStyle21
+	{mso-style-type:personal-reply;
+	font-family:"Aptos",sans-serif;
+	color:windowtext;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	font-size:10.0pt;
+	mso-ligatures:none;}
+@page WordSection1
+	{size:612.0pt 792.0pt;
+	margin:72.0pt 72.0pt 72.0pt 72.0pt;}
+div.WordSection1
+	{page:WordSection1;}
+/* List Definitions */
+@list l0
+	{mso-list-id:1076787382;
+	mso-list-template-ids:1567157892;}
+@list l0:level1
+	{mso-level-tab-stop:36.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;}
+@list l0:level2
+	{mso-level-tab-stop:72.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;}
+@list l0:level3
+	{mso-level-tab-stop:108.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;}
+@list l0:level4
+	{mso-level-tab-stop:144.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;}
+@list l0:level5
+	{mso-level-tab-stop:180.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;}
+@list l0:level6
+	{mso-level-tab-stop:216.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;}
+@list l0:level7
+	{mso-level-tab-stop:252.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;}
+@list l0:level8
+	{mso-level-tab-stop:288.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;}
+@list l0:level9
+	{mso-level-tab-stop:324.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;}
+ol
+	{margin-bottom:0cm;}
+ul
+	{margin-bottom:0cm;}
+--></style>
+</head>
+<body lang=3D"en-SE" link=3D"blue" vlink=3D"purple" style=3D"word-wrap:brea=
+k-word">
+<div class=3D"WordSection1">
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;mso-fareast-language=
+:EN-US">Muhammad Usama Sardar wrote:<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;mso-fareast-language=
+:EN-US">&gt;Do we have an I-D which defines how long do we consider as long=
+-term connections? or I-D which gives recommendations or best practices for=
+ how long do we consider TLS 1.3 to provide
+ excellent security?<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;mso-fareast-language=
+:EN-US"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;color:#0070C0;mso-fa=
+reast-language:EN-US">- One clear timepoint is when the server certicate ex=
+pire</span><span lang=3D"EN-US" style=3D"font-size:11.0pt;color:#0070C0;mso=
+-fareast-language:EN-US">s</span><span style=3D"font-size:11.0pt;color:#007=
+0C0;mso-fareast-language:EN-US">.
+ TLS 1.3 removed the ability to do server reauthentication. <o:p></o:p></sp=
+an></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;color:#0070C0;mso-fa=
+reast-language:EN-US">- RFC 4253 recommends rekeying with PFS after each gi=
+gabyte of transmitted data or after each hour of connection time.<o:p></o:p=
+></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;color:#0070C0;mso-fa=
+reast-language:EN-US">- French ANSSI recommends periodic rekeying with PFS,=
+ e.g. every hour and every 100 GB of data, in order to limit the impact of =
+a key compromise.<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;color:#0070C0;mso-fa=
+reast-language:EN-US"><a href=3D"https://cyber.gouv.fr/sites/default/files/=
+2015/09/NT_IPsec_EN.pdf">https://cyber.gouv.fr/sites/default/files/2015/09/=
+NT_IPsec_EN.pdf</a><o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;color:#0070C0;mso-fa=
+reast-language:EN-US">- The chief cryptographer of the Swedish NCSA states =
+that asymmetrically distributed key</span><span lang=3D"EN-US" style=3D"fon=
+t-size:11.0pt;color:#0070C0;mso-fareast-language:EN-US">s</span><span style=
+=3D"font-size:11.0pt;color:#0070C0;mso-fareast-language:EN-US">
+ can be refreshed at very frequent intervals and that options include conti=
+nuously re-negotiating the encryption keys, and chaining the negotiations, =
+so that the adversary has to record and store an uninterrupted sequence of =
+negotiations, and then break them
+ in sequence.<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;color:#0070C0;mso-fa=
+reast-language:EN-US"><a href=3D"http://kth.diva-portal.org/smash/get/diva2=
+:1902626/FULLTEXT01.pdf">http://kth.diva-portal.org/smash/get/diva2:1902626=
+/FULLTEXT01.pdf</a><o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"SV" style=3D"font-size:11.0pt;color:#0=
+070C0;mso-fareast-language:EN-US"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;color:#0070C0;mso-fa=
+reast-language:EN-US">So 1 hour</span><span lang=3D"EN-US" style=3D"font-si=
+ze:11.0pt;color:#0070C0;mso-fareast-language:EN-US">,
+</span><span style=3D"font-size:11.0pt;color:#0070C0;mso-fareast-language:E=
+N-US">1-100 GB</span><span lang=3D"EN-US" style=3D"font-size:11.0pt;color:#=
+0070C0;mso-fareast-language:EN-US">, or</span><span lang=3D"EN-US" style=3D=
+"font-size:11.0pt;color:#0070C0;mso-fareast-language:EN-US">
+</span><span lang=3D"EN-US" style=3D"font-size:11.0pt;color:#0070C0;mso-far=
+east-language:EN-US">server cert expiry date,
+</span><span style=3D"font-size:11.0pt;color:#0070C0;mso-fareast-language:E=
+N-US">whichever comes sooner? You could also arguee that with blazingly fas=
+t algorithms like X25519 and ML-KEM and much faster hardware, best practice=
+ have changed since 2006 and excellent
+ security is </span><span lang=3D"EN-US" style=3D"font-size:11.0pt;color:#0=
+070C0;mso-fareast-language:EN-US">now a</span><span style=3D"font-size:11.0=
+pt;color:#0070C0;mso-fareast-language:EN-US">symmetric</span><span style=3D=
+"font-size:11.0pt;color:#0070C0;mso-fareast-language:EN-US">
+<span lang=3D"EN-US">rekeying at </span></span><span style=3D"font-size:11.=
+0pt;color:#0070C0;mso-fareast-language:EN-US">very frequent intervals with =
+chaining</span><span lang=3D"EN-US" style=3D"font-size:11.0pt;color:#0070C0=
+;mso-fareast-language:EN-US">, this is e.g.,
+ what Signal does.<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;mso-fareast-language=
+:EN-US"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;mso-fareast-language=
+:EN-US">&gt;If the intention of draft was #2 above, cross-reading with this=
+ sentence, are we implying that PQC is not an urgent security issue?
+<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;mso-fareast-language=
+:EN-US"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;color:#0070C0;mso-fa=
+reast-language:EN-US">That is a very good point. I suggest changing this to=
+<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;color:#0070C0;mso-fa=
+reast-language:EN-US">OLD: =93This document specifies that outside of urgen=
+t security fixes, no new features will be approved for TLS 1.2=94<o:p></o:p=
+></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;color:#0070C0;mso-fa=
+reast-language:EN-US">NEW: =93This document specifies that, no new features=
+ will be approved for TLS 1.2=94<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;color:#0070C0;mso-fa=
+reast-language:EN-US">(TLS WG can always make a future RFC overriding this =
+anyway=85)<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;mso-fareast-language=
+:EN-US"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;mso-fareast-language=
+:EN-US">&gt;It looks like a more detailed version of tls12-frozen draft. Is=
+ there a good reason not to merge the two documents?<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;mso-fareast-language=
+:EN-US"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;color:#0070C0;mso-fa=
+reast-language:EN-US">I had the same thought. I think they would be better =
+as a single document. But I don=92t care very much.<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;mso-fareast-language=
+:EN-US"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;mso-fareast-language=
+:EN-US">&gt;What does the capitalization of WILL NOT mean?
+<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;mso-fareast-language=
+:EN-US"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;color:#0070C0;mso-fa=
+reast-language:EN-US">Yes, and it is not in RFC 6919 either=85</span><span =
+style=3D"font-size:11.0pt;color:#0070C0;mso-fareast-language:EN-US">
+<span lang=3D"EN-US">;)<o:p></o:p></span></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;color:#0070C0;mso-fa=
+reast-language:EN-US"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"SV" style=3D"font-size:11.0pt;color:#0=
+070C0;mso-fareast-language:EN-US">Cheers,<br>
+John<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;mso-fareast-language=
+:EN-US"><o:p>&nbsp;</o:p></span></p>
+<div id=3D"mail-editor-reference-message-container">
+<div>
+<div>
+<div style=3D"border:none;border-top:solid #B5C4DF 1.0pt;padding:3.0pt 0cm =
+0cm 0cm">
+<p class=3D"MsoNormal" style=3D"margin-bottom:12.0pt"><b><span style=3D"col=
+or:black">From:
+</span></b><span style=3D"color:black">Muhammad Usama Sardar &lt;muhammad_u=
+sama.sardar@tu-dresden.de&gt;<br>
+<b>Date: </b>Friday, 6 December 2024 at 18:33<br>
+<b>To: </b>Valery Smyslov &lt;smyslov.ietf@gmail.com&gt;, 'Sean Turner' &lt=
+;sean@sn3rd.com&gt;, 'TLS List' &lt;tls@ietf.org&gt;<br>
+<b>Subject: </b>[TLS] Re: Working Group Last Call for TLS 1.2 is in Feature=
+ Freeze<o:p></o:p></span></p>
+</div>
+<p>A few quick questions. Sorry if I am missing something obvious or some b=
+ackground.<o:p></o:p></p>
+<p class=3D"MsoNormal">On 04.12.24 08:04, Valery Smyslov wrote: <o:p></o:p>=
+</p>
+<blockquote style=3D"margin-top:5.0pt;margin-bottom:5.0pt">
+<pre>note, that UTA WG has issued a WGLC for draft-ietf-uta-require-tls13-0=
+2 (New Protocols Must Require TLS 1.3) [1].<o:p></o:p></pre>
+<pre><o:p>&nbsp;</o:p></pre>
+<pre> [1] <a href=3D"https://datatracker.ietf.org/doc/draft-ietf-uta-requir=
+e-tls13/">https://datatracker.ietf.org/doc/draft-ietf-uta-require-tls13/</a=
+><o:p></o:p></pre>
+</blockquote>
+<p class=3D"MsoNormal">Thanks for pointer to this. It looks like a more det=
+ailed version of tls12-frozen draft. Is there a good reason not to merge th=
+e two documents? Is it due to different WGs? or different intended status? =
+or something else?
+<o:p></o:p></p>
+<div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">On 04.12.24 10:36, John Mattsson wrote:<o:p></o:p></=
+p>
+</div>
+<blockquote style=3D"margin-top:5.0pt;margin-bottom:5.0pt">
+<p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-bottom-a=
+lt:auto"><span style=3D"font-size:11.0pt">as-is, TLS 1.3 does not provide e=
+xcellent security for long-term connections.</span><o:p></o:p></p>
+</blockquote>
+<p>Do we have an I-D which defines <i>how long</i> do we consider as long-t=
+erm connections? or I-D which gives recommendations or best practices for
+<i>how long </i>do we consider TLS 1.3 to provide excellent security?<o:p><=
+/o:p></p>
+<p>---<o:p></o:p></p>
+<p>Considering the following two statements in I-D, I have two questions: <=
+o:p></o:p></p>
+<pre style=3D"background:white;box-sizing:border-box;white-space:pre-wrap;f=
+ont-variant-ligatures:normal;font-variant-caps:normal;orphans:2;text-align:=
+start;widows:2;text-decoration-style:initial;text-decoration-color:initial;=
+overflow:auto;word-spacing:0px"><span style=3D"font-size:10.5pt;color:#2125=
+29">&gt;&nbsp;&nbsp; For TLS it is important to note that the focus of thes=
+e efforts is<o:p></o:p></span></pre>
+<pre style=3D"background:white"><span style=3D"font-size:10.5pt;color:#2125=
+29">&gt;&nbsp;&nbsp; TLS 1.3 or later.&nbsp; Put bluntly, post-quantum cryp=
+tography for TLS 1.2<o:p></o:p></span></pre>
+<pre style=3D"background:white"><span style=3D"font-size:10.5pt;color:#2125=
+29">&gt;&nbsp;&nbsp; WILL NOT be supported.<o:p></o:p></span></pre>
+<p>To me the two sentences are contradicting. Which one of the following is=
+ intended?
+<o:p></o:p></p>
+<ol start=3D"1" type=3D"1">
+<li class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-bottom-=
+alt:auto;mso-list:l0 level1 lfo1">
+(My understanding from 1st sentence) Some PQC support for TLS 1.2 will stil=
+l continue but it will not be the focus.&nbsp;
+<o:p></o:p></li><li class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;ms=
+o-margin-bottom-alt:auto;mso-list:l0 level1 lfo1">
+(My understanding from 2nd sentence) We will exclusively work on PQC for TL=
+S 1.3 or later.
+<o:p></o:p></li></ol>
+<p>What does the capitalization of WILL NOT mean? I did not find any such c=
+apitalization in RFC 2119 and RFC 8174. Please add the relevant RFC in sect=
+ion 2 or define it.
+<o:p></o:p></p>
+<pre style=3D"background:white;box-sizing:border-box;white-space:pre-wrap;f=
+ont-variant-ligatures:normal;font-variant-caps:normal;orphans:2;text-align:=
+start;widows:2;text-decoration-style:initial;text-decoration-color:initial;=
+overflow:auto;word-spacing:0px"><span style=3D"font-size:10.5pt;color:#2125=
+29">&gt;&nbsp;&nbsp; This<o:p></o:p></span></pre>
+<pre style=3D"background:white"><span style=3D"font-size:10.5pt;color:#2125=
+29">&gt;&nbsp;&nbsp; document specifies that outside of urgent security fix=
+es, no new<o:p></o:p></span></pre>
+<pre style=3D"background:white"><span style=3D"font-size:10.5pt;color:#2125=
+29">&gt;&nbsp;&nbsp; features will be approved for TLS 1.2.<o:p></o:p></spa=
+n></pre>
+<p class=3D"MsoNormal">If the intention of draft was #2 above, cross-readin=
+g with this sentence, are we implying that PQC is not an urgent security is=
+sue?
+<o:p></o:p></p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
+
+--_000_GVXPR07MB9678AE6A1DD7953668BE73DF89322GVXPR07MB9678eurp_--
+

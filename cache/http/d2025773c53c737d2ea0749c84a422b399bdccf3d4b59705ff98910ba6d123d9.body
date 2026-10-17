@@ -1,0 +1,411 @@
+Return-Path: <mglt.ietf@gmail.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 49163126C0F;
+ Wed, 24 May 2017 15:49:07 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.698
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.698 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ FREEMAIL_FORGED_FROMDOMAIN=0.199, FREEMAIL_FROM=0.001,
+ HEADER_FROM_DIFFERENT_DOMAINS=0.001, HTML_MESSAGE=0.001,
+ SPF_PASS=-0.001, URIBL_BLOCKED=0.001] autolearn=no autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=gmail.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id fPnxfAajvUqx; Wed, 24 May 2017 15:49:05 -0700 (PDT)
+Received: from mail-lf0-x229.google.com (mail-lf0-x229.google.com
+ [IPv6:2a00:1450:4010:c07::229])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 86B0E127077;
+ Wed, 24 May 2017 15:49:04 -0700 (PDT)
+Received: by mail-lf0-x229.google.com with SMTP id m18so75205859lfj.0;
+ Wed, 24 May 2017 15:49:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025; 
+ h=mime-version:sender:in-reply-to:references:from:date:message-id
+ :subject:to:cc;
+ bh=CJm+XsCdi0G6OjNaWzXItfy8Mur7Nh8IW9/XMo0fBao=;
+ b=gngTnTFdh4ivYFG1HVCyOlvY2KDJZsc0VJZsBg/SrFjQO8UFMBYkQeXPZBVoN5K+/2
+ qbojsPPu/Any+8AJPaNrwcPjqXIfueRsfKFFXGIKFVOsLbbvPU6kDMvdNZEeMTuP2fTS
+ TGXLD/HjLwvCrCUVtKh4A1DW0ya1x8OzO8mgLr6IcDJ+lPQeaSLF/GvlgcrFbUa2/PS2
+ yu0CqnqdKAkZdvpdb2kEl9ElOL9JD0ROF8YNGdY2YHEqHPPoTOB2ejC82OMJ27mCHzNO
+ XV+hwazErVfHtt+4MEwVAsUbG/qT2Ae5S7ze03VOMEL95kq/6Jo5fHOC56wAeIUzhhLJ
+ Ch9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:sender:in-reply-to:references:from
+ :date:message-id:subject:to:cc;
+ bh=CJm+XsCdi0G6OjNaWzXItfy8Mur7Nh8IW9/XMo0fBao=;
+ b=EShcUnubp+yJmy5qmNyGv7H61u4HWrP4T1OwS9lklQIaHe14MAZOulcZZe7M6UdYpl
+ nXPydu9cxVOq4Ysfafs/DHp1yGqcURmxdHpmUuBdZjPuQJsHkgJ9wGmBh07ksAvcZQqi
+ IOd7x/KG12KoEitTpWWcVhPJawLjAhBEwMlDmp8pS6oTmPXpHNxY7wNl7tDg1MgIXsnC
+ f80JxsgsD9Y1qT4JvWMmk8tephyE4qjrd5i6NXXBCjAoib7Jq0WAHs4dkB+wy6jv0drQ
+ oXeyFN8E29VofAsgUHEC00klr3yMAJ8KqpQAE6Nn+kyyeHIK6BU+EMq5YWOEYbXLA3J8
+ Kwnw==
+X-Gm-Message-State: AODbwcCXRReTOAMQsPL6q0iQ+5KmrayCDbUrlJcL6WvZczjeoacUMu/G
+ /tvscXIixYckD+URWwIyfPimSE+DOg==
+X-Received: by 10.46.88.17 with SMTP id m17mr9819328ljb.26.1495666142791; Wed,
+ 24 May 2017 15:49:02 -0700 (PDT)
+MIME-Version: 1.0
+Sender: mglt.ietf@gmail.com
+Received: by 10.46.0.14 with HTTP; Wed, 24 May 2017 15:49:02 -0700 (PDT)
+In-Reply-To: <CAFgnS4WhkXWpTs4h4TUzw9vbpif428-njgXMmEzer1oE5Q-YUw@mail.gmail.com>
+References: <149523380739.28567.9584998643479497589@ietfa.amsl.com>
+ <34EDA6D1-71BA-4E4C-BB9F-5E8FD05786D9@cooperw.in>
+ <CAOgPGoAJnvX3-ZWL73Og0qPnKwozf5yB772ZBs3oyxAG_Z6HiQ@mail.gmail.com>
+ <CAFgnS4WhkXWpTs4h4TUzw9vbpif428-njgXMmEzer1oE5Q-YUw@mail.gmail.com>
+From: Daniel Migault <daniel.migault@ericsson.com>
+Date: Wed, 24 May 2017 17:49:02 -0500
+X-Google-Sender-Auth: vt0RFHDF2_mJVRPkAP20GmnSFbw
+Message-ID: <CADZyTknoiTg4g3Brw6Dg7EBTwznZoKKuBTqs3=P1-YonypOVyg@mail.gmail.com>
+To: Dan Romascanu <dromasca@gmail.com>
+Cc: Joseph Salowey <joe@salowey.net>, Alissa Cooper <alissa@cooperw.in>, 
+ "gen-art >> General area reviewing team" <gen-art@ietf.org>,
+ draft-ietf-tls-ecdhe-psk-aead.all@ietf.org, "tls@ietf.org" <tls@ietf.org>
+Content-Type: multipart/alternative; boundary="f403043882e024d05c05504ce936"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/ojFiT-NwvGBXIXT33n-WHmmofKE>
+Subject: Re: [TLS] [Gen-art] Genart telechat review of
+ draft-ietf-tls-ecdhe-psk-aead-04
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Wed, 24 May 2017 22:49:07 -0000
+
+--f403043882e024d05c05504ce936
+Content-Type: text/plain; charset="UTF-8"
+
+Hi Dan,
+
+The major concern we have is that as a response to your comment I detailed
+how the defined cipher suites are agreed with TLS1.3. The text we agreed on
+has been updated, but I guess it still provides enough details.
+
+In addition, you are right, we have also clarified the text and make sure
+there is not misunderstanding that the code points assigned are only valid
+for TLS1.2. This includes specification of the version in the title, as
+well as removal of most reference to TLS1.3 in the introduction. The only
+remaining reference to TLS1.3 in the introduction is used to motivate the
+use of AEAD algorithms.
+
+The current text for the introduction is as quoted below.
+
+Again thank you all for your reviews,
+
+Yours,
+Daniel
+
+
+
+2.  Introduction
+
+   This document defines new cipher suites that provide Pre-Shared Key
+   (PSK) authentication, Perfect Forward Secrecy (PFS), and
+   Authenticated Encryption with Associated Data (AEAD).  The cipher
+   suites are defined for version 1.2 of the Transport Layer Security
+   (TLS) [RFC5246] protocol and version 1.2 of the Datagram Transport
+   Layer Security (DTLS) protocol [RFC6347].
+
+   Pre-Shared Key (PSK) Authentication is widely used in many scenarios.
+   One deployment is 3GPP networks where pre-shared keys are used to
+   authenticate both subscriber and network.  Another deployment is
+   Internet of Things where PSK authentication is often preferred for
+   performance and energy efficiency reasons.  In both scenarios the
+   endpoints are owned/controlled by a party that provisions the pre-
+   shared keys and makes sure that they provide a high level of entropy.
+
+   Perfect Forward Secrecy (PFS) is a strongly recommended feature in
+   security protocol design and can be accomplished by using an
+   ephemeral Diffie-Hellman key exchange method.  Ephemeral Elliptic
+   Curve Diffie-Hellman (ECDHE) provides PFS with excellent performance
+   and small key sizes.  ECDHE is mandatory to implement in both HTTP/2
+   [RFC7540] and CoAP [RFC7252].
+
+  AEAD algorithms that combine encryption and integrity protection are
+   strongly recommended for (D)TLS [RFC7525] and non-AEAD algorithms are
+   forbidden to use in TLS 1.3 [I-D.ietf-tls-tls13].  The AEAD
+   algorithms considered in this document are AES-GCM and AES-CCM.  The
+   use of AES-GCM in TLS is defined in [RFC5288] and the use of AES-CCM
+   is defined in [RFC6655].
+
+   [RFC4279] defines Pre-Shared Key (PSK) cipher suites for TLS but does
+   not consider Elliptic Curve Cryptography.  [RFC4492] introduces
+   Elliptic Curve Cryptography for TLS but does not consider PSK
+   authentication.  [RFC5487] describes the use of AES-GCM in
+   combination with PSK authentication, but does not consider ECDHE.
+   [RFC5489] describes the use of PSK in combination with ECDHE but does
+   not consider AES-GCM or AES-CCM.
+
+
+On Wed, May 24, 2017 at 5:05 PM, Dan Romascanu <dromasca@gmail.com> wrote:
+
+> Hi Joe,
+>
+> Looks OK, but don't you need to also drop 'as well as version 1.3 of TLS'
+> from the first paragraph in the Introduction?
+>
+> Regards,
+>
+> Dan
+>
+> On Thu, May 25, 2017 at 12:29 AM, Joseph Salowey <joe@salowey.net> wrote:
+>
+>> Hi Dan and Alissa,
+>>
+>> There has been some churn in the text of the document due to my oversight
+>> when sending the document to the IESG.   The proposed new text provided
+>> below show should also resolve your comment.  Please let me know if you see
+>> any issues with this approach.
+>>
+>> Thanks,
+>>
+>> Joe
+>>
+>> Replacing section 4:
+>>
+>>
+>>    The cipher suites defined in this document MUST NOT be negotiated for
+>>    any version of (D)TLS other than TLS 1.2.  Servers MUST NOT select
+>>    one of these cipher suites when selecting TLS version other than TLS
+>>    1.2.  A client MUST treat the selection of these cipher suites in
+>>    combination with a different version of TLS as an error and generate
+>>    a fatal 'illegal_parameter' TLS alert.
+>>
+>>    Cipher suites TLS_AES_128_GCM_SHA256, TLS_AES_256_GCM_SHA384,
+>>    TLS_AES_128_CCM_8_SHA256 and TLS_AES_128_CCM_SHA256 are used to
+>>    support equivalent functionality in TLS 1.3 [I-D.ietf-tls-tls13].
+>>
+>>
+>>
+>>
+>> On Wed, May 24, 2017 at 8:15 AM, Alissa Cooper <alissa@cooperw.in> wrote:
+>>
+>>> Dan, thank you for your reviews of this document and thanks to the
+>>> authors for providing clarifications. I have balloted No Objection.
+>>>
+>>> Alissa
+>>>
+>>> > On May 19, 2017, at 6:43 PM, Dan Romascanu <dromasca@gmail.com> wrote:
+>>> >
+>>> > Reviewer: Dan Romascanu
+>>> > Review result: Ready
+>>> >
+>>> > I am the assigned Gen-ART reviewer for this draft. The General Area
+>>> > Review Team (Gen-ART) reviews all IETF documents being processed
+>>> > by the IESG for the IETF Chair. Please wait for direction from your
+>>> > document shepherd or AD before posting a new version of the draft.
+>>> >
+>>> > For more information, please see the FAQ at
+>>> >
+>>> > <https://trac.ietf.org/trac/gen/wiki/GenArtfaq>.
+>>> >
+>>> > Document: draft-ietf-tls-ecdhe-psk-aead-??
+>>> > Reviewer: Dan Romascanu
+>>> > Review Date: 2017-05-19
+>>> > IETF LC End Date: 2017-05-18
+>>> > IESG Telechat date: 2017-05-25
+>>> >
+>>> > Summary:
+>>> >
+>>> > This is a straight-forward and clear document that defines several new
+>>> > cipher suites for the Transport Layer Security (TLS) protocol version
+>>> > 1.2 and higher, based on the Ephemeral Elliptic Curve Diffie-Hellman
+>>> > with Pre-Shared Key (ECDHE_PSK) key exchange together with the
+>>> > Authenticated Encryption with Associated Data (AEAD) algorithms
+>>> > AES-GCM and AES-CCM. The document is well written and I appreciate the
+>>> > effort to clarify in the Introduction the context, what was missing,
+>>> > and why the document is necessary. One issue raised in my initial
+>>> > review for draft-03 was addressed, discussed and draft-04 includes
+>>> > useful clarification text.
+>>> >
+>>> > The document is Ready
+>>> >
+>>> > Major issues:
+>>> >
+>>> > Minor issues:
+>>> >
+>>> > Nits/editorial comments:
+>>> >
+>>> >
+>>> > _______________________________________________
+>>> > Gen-art mailing list
+>>> > Gen-art@ietf.org
+>>> > https://www.ietf.org/mailman/listinfo/gen-art
+>>>
+>>>
+>>
+>
+
+--f403043882e024d05c05504ce936
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div>Hi Dan, <br><br></div><div>The major concern we have =
+is that as a response to your comment I detailed how the defined cipher sui=
+tes are agreed with TLS1.3. The text we agreed on has been updated, but I g=
+uess it still provides enough details. <br><br></div><div>In addition, you =
+are right, we have also clarified the text and make sure there is not misun=
+derstanding that the code points assigned are only valid for TLS1.2. This i=
+ncludes specification of the version in the title, as well as removal of mo=
+st reference to TLS1.3 in the introduction. The only remaining reference to=
+ TLS1.3 in the introduction is used to motivate the use of AEAD algorithms.=
+ <br><br><div>The current text for the introduction is as quoted below.<br>=
+</div><br></div><div>Again thank you all for your reviews, <br><br></div><d=
+iv>Yours, <br></div><div>Daniel<br><br></div><br><div><div><div><br>2.=C2=
+=A0 Introduction<br><br>=C2=A0=C2=A0 This document defines new cipher suite=
+s that provide Pre-Shared Key<br>=C2=A0=C2=A0 (PSK) authentication, Perfect=
+ Forward Secrecy (PFS), and<br>=C2=A0=C2=A0 Authenticated Encryption with A=
+ssociated Data (AEAD).=C2=A0 The cipher<br>=C2=A0=C2=A0 suites are defined =
+for version 1.2 of the Transport Layer Security<br>=C2=A0=C2=A0 (TLS) [RFC5=
+246] protocol and version 1.2 of the Datagram Transport<br>=C2=A0=C2=A0 Lay=
+er Security (DTLS) protocol [RFC6347].<br><br>=C2=A0=C2=A0 Pre-Shared Key (=
+PSK) Authentication is widely used in many scenarios.<br>=C2=A0=C2=A0 One d=
+eployment is 3GPP networks where pre-shared keys are used to<br>=C2=A0=C2=
+=A0 authenticate both subscriber and network.=C2=A0 Another deployment is<b=
+r>=C2=A0=C2=A0 Internet of Things where PSK authentication is often preferr=
+ed for<br>=C2=A0=C2=A0 performance and energy efficiency reasons.=C2=A0 In =
+both scenarios the<br>=C2=A0=C2=A0 endpoints are owned/controlled by a part=
+y that provisions the pre-<br>=C2=A0=C2=A0 shared keys and makes sure that =
+they provide a high level of entropy.<br><br>=C2=A0=C2=A0 Perfect Forward S=
+ecrecy (PFS) is a strongly recommended feature in<br>=C2=A0=C2=A0 security =
+protocol design and can be accomplished by using an<br>=C2=A0=C2=A0 ephemer=
+al Diffie-Hellman key exchange method.=C2=A0 Ephemeral Elliptic<br>=C2=A0=
+=C2=A0 Curve Diffie-Hellman (ECDHE) provides PFS with excellent performance=
+<br>=C2=A0=C2=A0 and small key sizes.=C2=A0 ECDHE is mandatory to implement=
+ in both HTTP/2<br>=C2=A0=C2=A0 [RFC7540] and CoAP [RFC7252].<br><br>=C2=A0=
+ AEAD algorithms that combine encryption and integrity protection are<br>=
+=C2=A0=C2=A0 strongly recommended for (D)TLS [RFC7525] and non-AEAD algorit=
+hms are<br>=C2=A0=C2=A0 forbidden to use in TLS 1.3 [I-D.ietf-tls-tls13].=
+=C2=A0 The AEAD<br>=C2=A0=C2=A0 algorithms considered in this document are =
+AES-GCM and AES-CCM.=C2=A0 The<br>=C2=A0=C2=A0 use of AES-GCM in TLS is def=
+ined in [RFC5288] and the use of AES-CCM<br>=C2=A0=C2=A0 is defined in [RFC=
+6655].<br><br>=C2=A0=C2=A0 [RFC4279] defines Pre-Shared Key (PSK) cipher su=
+ites for TLS but does<br>=C2=A0=C2=A0 not consider Elliptic Curve Cryptogra=
+phy.=C2=A0 [RFC4492] introduces<br>=C2=A0=C2=A0 Elliptic Curve Cryptography=
+ for TLS but does not consider PSK<br>=C2=A0=C2=A0 authentication.=C2=A0 [R=
+FC5487] describes the use of AES-GCM in<br>=C2=A0=C2=A0 combination with PS=
+K authentication, but does not consider ECDHE.<br>=C2=A0=C2=A0 [RFC5489] de=
+scribes the use of PSK in combination with ECDHE but does<br>=C2=A0=C2=A0 n=
+ot consider AES-GCM or AES-CCM.<br><br></div></div></div></div><div class=
+=3D"gmail_extra"><br><div class=3D"gmail_quote">On Wed, May 24, 2017 at 5:0=
+5 PM, Dan Romascanu <span dir=3D"ltr">&lt;<a href=3D"mailto:dromasca@gmail.=
+com" target=3D"_blank">dromasca@gmail.com</a>&gt;</span> wrote:<br><blockqu=
+ote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc s=
+olid;padding-left:1ex"><div dir=3D"ltr">Hi Joe,<br><br>Looks OK, but don&#3=
+9;t you need to also drop &#39;as well as version 1.3 of TLS&#39;=C2=A0 fro=
+m the first paragraph in the Introduction? <br><br>Regards,<br><br>Dan<br><=
+/div><div class=3D"HOEnZb"><div class=3D"h5"><div class=3D"gmail_extra"><br=
+><div class=3D"gmail_quote">On Thu, May 25, 2017 at 12:29 AM, Joseph Salowe=
+y <span dir=3D"ltr">&lt;<a href=3D"mailto:joe@salowey.net" target=3D"_blank=
+">joe@salowey.net</a>&gt;</span> wrote:<br><blockquote class=3D"gmail_quote=
+" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex"><=
+div dir=3D"ltr">Hi Dan and Alissa,<div><br></div><div>There has been some c=
+hurn in the text of the document due to my oversight when sending the docum=
+ent to the IESG. =C2=A0 The proposed new text provided below show should al=
+so resolve your comment.=C2=A0 Please let me know if you see any issues wit=
+h this approach. =C2=A0</div><div><br></div><div>Thanks,</div><div><br></di=
+v><div>Joe</div><div><br></div><div><div style=3D"font-size:12.8px">Replaci=
+ng section 4:</div><div style=3D"font-size:12.8px"><pre class=3D"m_10392306=
+30936680272m_4236951703566273053gmail-m_-7284541284508334339gmail-aLF-aPX-K=
+0-aPE m_1039230630936680272m_4236951703566273053gmail-m_-728454128450833433=
+9gmail-aLF-aPX-aLK-ayr-auR" style=3D"white-space:pre-wrap"> =20
+   The cipher suites defined in this document MUST NOT be negotiated for
+   any version of (D)TLS other than TLS 1.2.  Servers MUST NOT select
+   one of these cipher suites when selecting TLS version other than TLS
+   1.2.  A client MUST treat the selection of these cipher suites in
+   combination with a different version of TLS as an error and generate
+   a fatal &#39;illegal_parameter&#39; TLS alert.
+
+   Cipher suites TLS_AES_128_GCM_SHA256, TLS_AES_256_GCM_SHA384,
+   TLS_AES_128_CCM_8_SHA256 and TLS_AES_128_CCM_SHA256 are used to
+   support equivalent functionality in TLS 1.3 [I-D.ietf-tls-tls13].</pre><=
+/div></div><div><br></div><div><br></div></div><div class=3D"m_103923063093=
+6680272HOEnZb"><div class=3D"m_1039230630936680272h5"><div class=3D"gmail_e=
+xtra"><br><div class=3D"gmail_quote">On Wed, May 24, 2017 at 8:15 AM, Aliss=
+a Cooper <span dir=3D"ltr">&lt;<a href=3D"mailto:alissa@cooperw.in" target=
+=3D"_blank">alissa@cooperw.in</a>&gt;</span> wrote:<br><blockquote class=3D=
+"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding=
+-left:1ex">Dan, thank you for your reviews of this document and thanks to t=
+he authors for providing clarifications. I have balloted No Objection.<br>
+<br>
+Alissa<br>
+<div><div class=3D"m_1039230630936680272m_4236951703566273053h5"><br>
+&gt; On May 19, 2017, at 6:43 PM, Dan Romascanu &lt;<a href=3D"mailto:droma=
+sca@gmail.com" target=3D"_blank">dromasca@gmail.com</a>&gt; wrote:<br>
+&gt;<br>
+&gt; Reviewer: Dan Romascanu<br>
+&gt; Review result: Ready<br>
+&gt;<br>
+&gt; I am the assigned Gen-ART reviewer for this draft. The General Area<br=
+>
+&gt; Review Team (Gen-ART) reviews all IETF documents being processed<br>
+&gt; by the IESG for the IETF Chair. Please wait for direction from your<br=
+>
+&gt; document shepherd or AD before posting a new version of the draft.<br>
+&gt;<br>
+&gt; For more information, please see the FAQ at<br>
+&gt;<br>
+&gt; &lt;<a href=3D"https://trac.ietf.org/trac/gen/wiki/GenArtfaq" rel=3D"n=
+oreferrer" target=3D"_blank">https://trac.ietf.org/trac/ge<wbr>n/wiki/GenAr=
+tfaq</a>&gt;.<br>
+&gt;<br>
+&gt; Document: draft-ietf-tls-ecdhe-psk-aead-<wbr>??<br>
+&gt; Reviewer: Dan Romascanu<br>
+&gt; Review Date: 2017-05-19<br>
+&gt; IETF LC End Date: 2017-05-18<br>
+&gt; IESG Telechat date: 2017-05-25<br>
+&gt;<br>
+&gt; Summary:<br>
+&gt;<br>
+&gt; This is a straight-forward and clear document that defines several new=
+<br>
+&gt; cipher suites for the Transport Layer Security (TLS) protocol version<=
+br>
+&gt; 1.2 and higher, based on the Ephemeral Elliptic Curve Diffie-Hellman<b=
+r>
+&gt; with Pre-Shared Key (ECDHE_PSK) key exchange together with the<br>
+&gt; Authenticated Encryption with Associated Data (AEAD) algorithms<br>
+&gt; AES-GCM and AES-CCM. The document is well written and I appreciate the=
+<br>
+&gt; effort to clarify in the Introduction the context, what was missing,<b=
+r>
+&gt; and why the document is necessary. One issue raised in my initial<br>
+&gt; review for draft-03 was addressed, discussed and draft-04 includes<br>
+&gt; useful clarification text.<br>
+&gt;<br>
+&gt; The document is Ready<br>
+&gt;<br>
+&gt; Major issues:<br>
+&gt;<br>
+&gt; Minor issues:<br>
+&gt;<br>
+&gt; Nits/editorial comments:<br>
+&gt;<br>
+&gt;<br>
+</div></div>&gt; ______________________________<wbr>_________________<br>
+&gt; Gen-art mailing list<br>
+&gt; <a href=3D"mailto:Gen-art@ietf.org" target=3D"_blank">Gen-art@ietf.org=
+</a><br>
+&gt; <a href=3D"https://www.ietf.org/mailman/listinfo/gen-art" rel=3D"noref=
+errer" target=3D"_blank">https://www.ietf.org/mailman/l<wbr>istinfo/gen-art=
+</a><br>
+<br>
+</blockquote></div><br></div>
+</div></div></blockquote></div><br></div>
+</div></div></blockquote></div><br></div>
+
+--f403043882e024d05c05504ce936--
+

@@ -1,0 +1,794 @@
+Return-Path: <do_not_reply@mnot.net>
+X-Original-To: tls@mail2.ietf.org
+Delivered-To: tls@mail2.ietf.org
+Received: from localhost (localhost [127.0.0.1])
+	by mail2.ietf.org (Postfix) with ESMTP id 874282F51FF6
+	for <tls@mail2.ietf.org>; Sun,  1 Jun 2025 00:41:11 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at ietf.org
+X-Spam-Flag: NO
+X-Spam-Score: -2.398
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.398 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIM_INVALID=0.1, DKIM_SIGNED=0.1,
+	HTML_MESSAGE=0.001, RCVD_IN_DNSWL_LOW=-0.7,
+	RCVD_IN_VALIDITY_RPBL_BLOCKED=0.001,
+	RCVD_IN_VALIDITY_SAFE_BLOCKED=0.001, SPF_PASS=-0.001]
+	autolearn=ham autolearn_force=no
+Authentication-Results: mail2.ietf.org (amavisd-new); dkim=fail (2048-bit key)
+	reason="fail (message has been altered)" header.d=mnot.net
+	header.b="pdTNc4Gs"; dkim=fail (2048-bit key)
+	reason="fail (message has been altered)" header.d=messagingengine.com
+	header.b="CdUZxgd4"
+Received: from mail2.ietf.org ([166.84.6.31])
+	by localhost (mail2.ietf.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 6NstXlmKJgId for <tls@mail2.ietf.org>;
+	Sun,  1 Jun 2025 00:41:10 -0700 (PDT)
+Received: from fout-a4-smtp.messagingengine.com
+ (fout-a4-smtp.messagingengine.com [103.168.172.147])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-256))
+	(No client certificate requested)
+	by mail2.ietf.org (Postfix) with ESMTPS id 5A7A02F51FDE
+	for <tls@ietf.org>; Sun,  1 Jun 2025 00:41:10 -0700 (PDT)
+Received: from phl-compute-06.internal (phl-compute-06.phl.internal
+ [10.202.2.46])
+	by mailfout.phl.internal (Postfix) with ESMTP id 433371380314
+	for <tls@ietf.org>; Sun,  1 Jun 2025 03:41:10 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-06.internal (MEProxy); Sun, 01 Jun 2025 03:41:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mnot.net; h=cc
+	:content-type:content-type:date:from:from:in-reply-to
+	:mime-version:reply-to:subject:subject:to:to; s=fm2; t=
+	1748763670; x=1748850070; bh=pZKshuCZQ7TB1ZCXyVWeUoU+1rqwYhdfsvx
+	vAA/Lf/M=; b=pdTNc4GsZE6fJcZmnpzzC99Yq3Z6p/oxCHjX343LOu6j6q156HN
+	8tveGRyL/IlOglzGn+9IF6ig36HodWy+Mt7N5gDDHXiHIuEGmrlkhuxqxWTuoXz6
+	Lx76JM6p/EwVcaSxoBEDknFjqlaUDKZ4eBGwVQT7q6OB+UFwW+eiQFnDURpiGPFP
+	81HnZa54NqvI88iOnmPzSQlSXsCA7K1iunmOQQXpbianIcANz+9L8ismmhCe1OXE
+	LWY1fmHBzGpdHAFOMgJUFNJqn6FpQ4RyL2p8WF7WWjc4IFwj7h1eaqLNB9RRxGPe
+	WzLIy0x/+UdmrFOxsPL7YLLUCA+uu8/LKBw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-type:content-type:date
+	:feedback-id:feedback-id:from:from:in-reply-to:mime-version
+	:reply-to:subject:subject:to:to:x-me-proxy:x-me-sender
+	:x-me-sender:x-sasl-enc; s=fm1; t=1748763670; x=1748850070; bh=p
+	ZKshuCZQ7TB1ZCXyVWeUoU+1rqwYhdfsvxvAA/Lf/M=; b=CdUZxgd4MCuExYP8A
+	ZbjCjb1judIvGY8QQ1hCVWlDFVHiTbbNpuVZzPybmlMY8Qfmaqr3CfM52QcTzDAr
+	J3kj/3Yju30Xmo+n++Zg66ttE/fE6BG6xsuqWOOZilVQJWdnz/fa8g9gIFsT2BDY
+	a95ChYIX+aVMgvmne5Yqrs+YBCbRMwzGyO9/5G2QJ26CBMFPmyt0ONHs+uqzGqOs
+	4FEvgCJigca9t43TMuWJtU7U1wKU7PrAPymD1PwrmDVJZoOvBL4bJlP0yymI2Rz1
+	54ATDKFb+4bobFRRUyr2vrnx4pMfFQq2s0s1M3Lu7kjdAjgCz63WvpI/lGbOSu/5
+	rxpZA==
+X-ME-Sender: <xms:FgQ8aEKy6b4YPEYE9RbicUUa_abCBaPQn7lNhN_tN7fPKdyKuXsJ2A>
+    <xme:FgQ8aEJOdhhsfdDiCPlGTZvluX1y6PHoJPE9J9TD0loVFKGcw3_AFNw_36YdyXqLQ
+    uaVyh_z-3eeqsT-yg>
+X-ME-Received: 
+ <xmr:FgQ8aEv25gxRg12WQSsfrgfnC4Gt83IV_HWScNW-8HKPOsPVjE2MxV0BStsmBjfFwIvTWVjYjQppZXwnjbLAopEYtYE02QRvh2IFDWokxOI3rHrO-uvGKmozINRz14wmAx6w4uZu>
+X-ME-Proxy-Cause: 
+ gggruggvucftvghtrhhoucdtuddrgeeffedrtddtgdefgedvtdculddtuddrgeefvddrtd
+    dtmdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggft
+    fghnshhusghstghrihgsvgdpuffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftd
+    dtnecupfhoucgurghtvgcufhhivghlugculdegledmnecujfgurheptggghffvufesrgdt
+    tdertddtjeenucfhrhhomheptfgvphhoshhithhorhihucettghtihhvihhthicuufhumh
+    hmrghrhicuuehothcuoeguohgpnhhothgprhgvphhlhiesmhhnohhtrdhnvghtqeenucgg
+    tffrrghtthgvrhhnpeekfedvudetjedvfeekheeiveeugfefhfetteevgeffkefffeetff
+    dvleehudeiteenucffohhmrghinhepghhithhhuhgsrdgtohhmnecuvehluhhsthgvrhfu
+    ihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepughopghnohhtpghrvghplhihse
+    hmnhhothdrnhgvthdpnhgspghrtghpthhtohepuddpmhhouggvpehsmhhtphhouhhtpdhr
+    tghpthhtohepthhlshesihgvthhfrdhorhhg
+X-ME-Proxy: <xmx:FgQ8aBaspVu_YnhZM2O2q6S39giPs2WYyq40Dq7JjW13veU1HErQSg>
+    <xmx:FgQ8aLbNsdK2pS6O5h5HwkQLdBBGX-zmS8xhKj-H8sCGotCC0Lutkw>
+    <xmx:FgQ8aNC2NG3LDejFvyTVPnEqdaVPzHnvRMbwS4hknZQh62ljkB921A>
+    <xmx:FgQ8aBZIDjZNU4szfzG3Xq0lAAMZkI0APbuvOrgkSEsN9tN3j6tkCg>
+    <xmx:FgQ8aJMHPAaKa72Apvn7OSEe7jJXDiwosQTNnZkT_8qQE-Pe8xiE8QiY>
+Feedback-ID: i1c3946f2:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA for
+ <tls@ietf.org>;
+ Sun, 1 Jun 2025 03:41:09 -0400 (EDT)
+Content-Type: multipart/alternative;
+ boundary="===============6220389967765712381=="
+MIME-Version: 1.0
+From: Repository Activity Summary Bot <do_not_reply@mnot.net>
+To: tls@ietf.org
+Message-Id: <20250601074110.5A7A02F51FDE@mail2.ietf.org>
+Date: Sun,  1 Jun 2025 00:41:10 -0700 (PDT)
+Message-ID-Hash: 2G5PJMQSVCCB3IQWDYGN56RLYSQJHPEP
+X-Message-ID-Hash: 2G5PJMQSVCCB3IQWDYGN56RLYSQJHPEP
+X-MailFrom: do_not_reply@mnot.net
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Weekly_github_digest_=28TLS_Working_Group_Drafts=29?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/fHgOag31DU4dfYEGZz-_vyFrBGo>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+--===============6220389967765712381==
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+
+
+
+
+Issues
+------
+* tlswg/draft-deprecate-obsolete-kex (+0/-2/=F0=9F=92=AC0)
+  2 issues closed:
+  - Move reference updates https://github.com/tlswg/draft-deprecate-obsolet=
+e-kex/issues/22=20
+  - Move reference updates https://github.com/tlswg/draft-deprecate-obsolet=
+e-kex/issues/22=20
+
+* tlswg/dtls-rrc (+2/-1/=F0=9F=92=AC0)
+  2 issues created:
+  - RRC Message Type Sub-registry should be Expert Review (by thomas-fossat=
+i)
+    https://github.com/tlswg/dtls-rrc/issues/78=20
+  - Mark Section 11 to be removed by the RFC Editor :P (by paulwouters)
+    https://github.com/tlswg/dtls-rrc/issues/76=20
+
+  1 issues closed:
+  - Mark Section 11 to be removed by the RFC Editor :P https://github.com/t=
+lswg/dtls-rrc/issues/76=20
+
+* tlswg/rfc8447bis (+2/-5/=F0=9F=92=AC0)
+  2 issues created:
+  - Address Med's Comments (by seanturner)
+    https://github.com/tlswg/rfc8447bis/issues/85=20
+  - Address Deb's Comments (by seanturner)
+    https://github.com/tlswg/rfc8447bis/issues/81=20
+
+  5 issues closed:
+  - Address Med's Comments https://github.com/tlswg/rfc8447bis/issues/85=20
+  - Address Deb's Comments https://github.com/tlswg/rfc8447bis/issues/81=20
+  - mention `iana-prot-param@iana.org` https://github.com/tlswg/rfc8447bis/=
+issues/78=20
+  - Comment on Comments https://github.com/tlswg/rfc8447bis/issues/77=20
+  - Move -obsolete-key reference column update https://github.com/tlswg/rfc=
+8447bis/issues/79=20
+
+* tlswg/tls13-spec (+1/-0/=F0=9F=92=AC0)
+  1 issues created:
+  - Address Muhammad Usama Sardar's comments on the key schedule (by ekr)
+    https://github.com/tlswg/tls13-spec/issues/1386=20
+
+* tlswg/tls-key-update (+1/-0/=F0=9F=92=AC2)
+  1 issues created:
+  - Term "Forward Secrecy" is confusing (by hannestschofenig)
+    https://github.com/tlswg/tls-key-update/issues/26=20
+
+  2 issues received 2 new comments:
+  - #26 Term "Forward Secrecy" is confusing (1 by stfries)
+    https://github.com/tlswg/tls-key-update/issues/26=20
+  - #22 Extended Key Update replaces regular Key Update (1 by stfries)
+    https://github.com/tlswg/tls-key-update/issues/22=20
+
+
+
+Pull requests
+-------------
+* tlswg/draft-deprecate-obsolete-kex (+2/-1/=F0=9F=92=AC1)
+  2 pull requests submitted:
+  - Valery's Issues (by seanturner)
+    https://github.com/tlswg/draft-deprecate-obsolete-kex/pull/25=20
+  - Valery's Nits (by seanturner)
+    https://github.com/tlswg/draft-deprecate-obsolete-kex/pull/24=20
+
+  1 pull requests received 1 new comments:
+  - #25 Valery's Issues (1 by seanturner)
+    https://github.com/tlswg/draft-deprecate-obsolete-kex/pull/25=20
+
+  1 pull requests merged:
+  - Update Reference column
+    https://github.com/tlswg/draft-deprecate-obsolete-kex/pull/23=20
+
+* tlswg/draft-ietf-tls-esni (+1/-0/=F0=9F=92=AC0)
+  1 pull requests submitted:
+  - Remove spurious application profile text (by ekr)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/655=20
+
+* tlswg/dtls-rrc (+1/-1/=F0=9F=92=AC1)
+  1 pull requests submitted:
+  - add note to remove useless sections (by thomas-fossati)
+    https://github.com/tlswg/dtls-rrc/pull/77=20
+
+  1 pull requests received 1 new comments:
+  - #77 add note to remove useless sections (1 by thomas-fossati)
+    https://github.com/tlswg/dtls-rrc/pull/77=20
+
+  1 pull requests merged:
+  - add note to remove useless sections
+    https://github.com/tlswg/dtls-rrc/pull/77=20
+
+* tlswg/rfc8447bis (+4/-5/=F0=9F=92=AC0)
+  4 pull requests submitted:
+  - Address Med's Comments (by seanturner)
+    https://github.com/tlswg/rfc8447bis/pull/86=20
+  - Fix Heading Title (by seanturner)
+    https://github.com/tlswg/rfc8447bis/pull/84=20
+  - New Registration Request Section (by seanturner)
+    https://github.com/tlswg/rfc8447bis/pull/83=20
+  - Comment not Comments (by seanturner)
+    https://github.com/tlswg/rfc8447bis/pull/82=20
+
+  5 pull requests merged:
+  - Address Med's Comments
+    https://github.com/tlswg/rfc8447bis/pull/86=20
+  - Fix Heading Title
+    https://github.com/tlswg/rfc8447bis/pull/84=20
+  - New Registration Request Section
+    https://github.com/tlswg/rfc8447bis/pull/83=20
+  - Comment not Comments
+    https://github.com/tlswg/rfc8447bis/pull/82=20
+  - Move Reference Column Updates
+    https://github.com/tlswg/rfc8447bis/pull/80=20
+
+* tlswg/rfc8773bis (+4/-5/=F0=9F=92=AC7)
+  4 pull requests submitted:
+  - Fix ws Issue (by seanturner)
+    https://github.com/tlswg/rfc8773bis/pull/6=20
+  - Fix reference to grover's algorithm (by loganaden)
+    https://github.com/tlswg/rfc8773bis/pull/5=20
+  - Clarify external PSK is optional in 8446 vs. required in this extension=
+ (by muhammad-usama-sardar)
+    https://github.com/tlswg/rfc8773bis/pull/4=20
+  - Use -latest (by seanturner)
+    https://github.com/tlswg/rfc8773bis/pull/3=20
+
+  2 pull requests received 7 new comments:
+  - #5 Fix reference to grover's algorithm (1 by russhousley)
+    https://github.com/tlswg/rfc8773bis/pull/5=20
+  - #2 change IKM and not salt input of HKDF-Extract (6 by dconnolly, ekr, =
+muhammad-usama-sardar)
+    https://github.com/tlswg/rfc8773bis/pull/2=20
+
+  5 pull requests merged:
+  - Clarify external PSK is optional in 8446 vs. required in this extension
+    https://github.com/tlswg/rfc8773bis/pull/4=20
+  - Fix reference to grover's algorithm
+    https://github.com/tlswg/rfc8773bis/pull/5=20
+  - Fix ws Issue
+    https://github.com/tlswg/rfc8773bis/pull/6=20
+  - Use -latest
+    https://github.com/tlswg/rfc8773bis/pull/3=20
+  - change IKM and not salt input of HKDF-Extract
+    https://github.com/tlswg/rfc8773bis/pull/2=20
+
+* tlswg/sslkeylogfile (+1/-2/=F0=9F=92=AC0)
+  1 pull requests submitted:
+  - Add "TLS" to registry name (by martinthomson)
+    https://github.com/tlswg/sslkeylogfile/pull/30=20
+
+  2 pull requests merged:
+  - A vague forward reference
+    https://github.com/tlswg/sslkeylogfile/pull/29=20
+  - Add "TLS" to registry name
+    https://github.com/tlswg/sslkeylogfile/pull/30=20
+
+* tlswg/tls13-spec (+10/-5/=F0=9F=92=AC2)
+  10 pull requests submitted:
+  - Clean up IANA text (by ekr)
+    https://github.com/tlswg/tls13-spec/pull/1391=20
+  - Sardar comments (by ekr)
+    https://github.com/tlswg/tls13-spec/pull/1390=20
+  - Sudar comments (by ekr)
+    https://github.com/tlswg/tls13-spec/pull/1389=20
+  - First stage instead of full key schedule (by muhammad-usama-sardar)
+    https://github.com/tlswg/tls13-spec/pull/1388=20
+  - Fix reference (by ekr)
+    https://github.com/tlswg/tls13-spec/pull/1387=20
+  - Mike Bishop text comments (1) (by ekr)
+    https://github.com/tlswg/tls13-spec/pull/1385=20
+  - Remove a bunch of unnecessary uses of "in order", both to avoid (by ekr)
+    https://github.com/tlswg/tls13-spec/pull/1384=20
+  - "May or may not" per Erik Kline's comments. (by ekr)
+    https://github.com/tlswg/tls13-spec/pull/1383=20
+  - rpk misbinding and clarification (by ms-s)
+    https://github.com/tlswg/tls13-spec/pull/1382=20
+  - external psk selfie attack (by ms-s)
+    https://github.com/tlswg/tls13-spec/pull/1381=20
+
+  1 pull requests received 2 new comments:
+  - #1388 First stage instead of full key schedule (2 by ekr, muhammad-usam=
+a-sardar)
+    https://github.com/tlswg/tls13-spec/pull/1388=20
+
+  5 pull requests merged:
+  - Clean up IANA text
+    https://github.com/tlswg/tls13-spec/pull/1391=20
+  - Remove a bunch of unnecessary uses of "in order", both to avoid
+    https://github.com/tlswg/tls13-spec/pull/1384=20
+  - Fix reference
+    https://github.com/tlswg/tls13-spec/pull/1387=20
+  - Mike Bishop text comments (1)
+    https://github.com/tlswg/tls13-spec/pull/1385=20
+  - "May or may not" per Erik Kline's comments.
+    https://github.com/tlswg/tls13-spec/pull/1383=20
+
+
+Repositories tracked by this digest:
+-----------------------------------
+* https://github.com/tlswg/certificate-compression
+* https://github.com/tlswg/dnssec-chain-extension
+* https://github.com/tlswg/draft-deprecate-obsolete-kex
+* https://github.com/tlswg/draft-ietf-tls-cert-abridge
+* https://github.com/tlswg/draft-ietf-tls-ctls
+* https://github.com/tlswg/draft-ietf-tls-ecdhe-psk-aead
+* https://github.com/tlswg/draft-ietf-tls-ech-keylogfile
+* https://github.com/tlswg/draft-ietf-tls-esni
+* https://github.com/tlswg/draft-ietf-tls-external-psk-importer
+* https://github.com/tlswg/draft-ietf-tls-grease
+* https://github.com/tlswg/draft-ietf-tls-iana-registry-updates
+* https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate
+* https://github.com/tlswg/draft-ietf-tls-semistatic-dh
+* https://github.com/tlswg/draft-ietf-tls-svcb-ech
+* https://github.com/tlswg/draft-ietf-tls-ticketrequest
+* https://github.com/tlswg/draft-ietf-tls-tls13-vectors
+* https://github.com/tlswg/dtls-conn-id
+* https://github.com/tlswg/dtls-rrc
+* https://github.com/tlswg/dtls13-spec
+* https://github.com/tlswg/oldversions-deprecate
+* https://github.com/tlswg/rfc4492bis
+* https://github.com/tlswg/rfc8447bis
+* https://github.com/tlswg/rfc8773bis
+* https://github.com/tlswg/sniencryption
+* https://github.com/tlswg/sslkeylogfile
+* https://github.com/tlswg/sslv3-diediedie
+* https://github.com/tlswg/super-jumbo-record-limit
+* https://github.com/tlswg/tls13-spec
+* https://github.com/tlswg/tls-exported-authenticator
+* https://github.com/tlswg/tls-flags
+* https://github.com/tlswg/tls-key-share-prediction
+* https://github.com/tlswg/tls-key-update
+* https://github.com/tlswg/tls-record-limit
+* https://github.com/tlswg/tls-subcerts
+* https://github.com/tlswg/tls12-frozen
+* https://github.com/tlswg/tls13-pkcs1
+* https://github.com/tlswg/tls13-rfc
+
+
+--=20
+To have a summary like this sent to your list, see: https://github.com/ietf=
+-github-services/activity-summary
+
+--===============6220389967765712381==
+Content-Type: text/html; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+
+<!doctype html>
+<html lang=3D"en">
+<head>
+<meta charset=3D"utf-8">
+<title>Weekly github digest (TLS Working Group Drafts)</title>
+<style>
+body { font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;=
+ font-size: 14px; }
+h2 { margin-top: 3em; color: #A52A2A; font-style: italic; font-weight: norm=
+al; }
+h3 { margin-bottom:0; margin-top: 2em; font-size: 1.2em; }
+h1+h2 { margin-top: 1em; }
+a { color: #bb6219; text-decoration: none; }
+li { margin-bottom: .35em; }
+.repos { margin-bottom: 0; margin-top:0; line-height: 1.2; }
+.new { color: red; }
+.label { display: inline;
+	padding: .2em .6em .3em;
+	font-size: 75%;
+	font-weight: 700;
+	line-height: 1;
+	color: #fff;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: baseline;
+	border-radius: .25em;
+}
+details {
+	margin-top: 8em;
+	}
+summary {
+	margin-bottom: 1em;
+	cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+<h1>Sunday June 01, 2025</h1>
+
+
+<h2>Issues</h2>
+
+<h3>tlswg/draft-deprecate-obsolete-kex (+0/-2/=F0=9F=92=AC0)</h3>
+
+
+  <p>2 issues closed:</p>
+  <ul>
+  <li>#22 <a href=3D"https://github.com/tlswg/draft-deprecate-obsolete-kex/=
+issues/22">Move reference updates</a> </li>
+ =20
+  <li>#22 <a href=3D"https://github.com/tlswg/draft-deprecate-obsolete-kex/=
+issues/22">Move reference updates</a> </li>
+  </ul>
+
+<h3>tlswg/dtls-rrc (+2/-1/=F0=9F=92=AC0)</h3>
+  <p class=3D"new">2 issues created:</p>
+  <ul>
+  <li>#78 <a href=3D"https://github.com/tlswg/dtls-rrc/issues/78">RRC Messa=
+ge Type Sub-registry should be Expert Review</a> (by thomas-fossati) </li>
+ =20
+  <li>#76 <a href=3D"https://github.com/tlswg/dtls-rrc/issues/76">Mark Sect=
+ion 11 to be removed by the RFC Editor :P</a> (by paulwouters) </li>
+  </ul>
+
+
+  <p>1 issues closed:</p>
+  <ul>
+  <li>#76 <a href=3D"https://github.com/tlswg/dtls-rrc/issues/76">Mark Sect=
+ion 11 to be removed by the RFC Editor :P</a> </li>
+  </ul>
+
+<h3>tlswg/rfc8447bis (+2/-5/=F0=9F=92=AC0)</h3>
+  <p class=3D"new">2 issues created:</p>
+  <ul>
+  <li>#85 <a href=3D"https://github.com/tlswg/rfc8447bis/issues/85">Address=
+ Med&#x27;s Comments</a> (by seanturner) </li>
+ =20
+  <li>#81 <a href=3D"https://github.com/tlswg/rfc8447bis/issues/81">Address=
+ Deb&#x27;s Comments</a> (by seanturner) </li>
+  </ul>
+
+
+  <p>5 issues closed:</p>
+  <ul>
+  <li>#85 <a href=3D"https://github.com/tlswg/rfc8447bis/issues/85">Address=
+ Med&#x27;s Comments</a> </li>
+ =20
+  <li>#81 <a href=3D"https://github.com/tlswg/rfc8447bis/issues/81">Address=
+ Deb&#x27;s Comments</a> </li>
+ =20
+  <li>#78 <a href=3D"https://github.com/tlswg/rfc8447bis/issues/78">mention=
+ `iana-prot-param@iana.org`</a> </li>
+ =20
+  <li>#77 <a href=3D"https://github.com/tlswg/rfc8447bis/issues/77">Comment=
+ on Comments</a> </li>
+ =20
+  <li>#79 <a href=3D"https://github.com/tlswg/rfc8447bis/issues/79">Move -o=
+bsolete-key reference column update</a> </li>
+  </ul>
+
+<h3>tlswg/tls13-spec (+1/-0/=F0=9F=92=AC0)</h3>
+  <p class=3D"new">1 issues created:</p>
+  <ul>
+  <li>#1386 <a href=3D"https://github.com/tlswg/tls13-spec/issues/1386">Add=
+ress Muhammad Usama Sardar&#x27;s comments on the key schedule</a> (by ekr)=
+ </li>
+  </ul>
+
+
+
+<h3>tlswg/tls-key-update (+1/-0/=F0=9F=92=AC2)</h3>
+  <p class=3D"new">1 issues created:</p>
+  <ul>
+  <li>#26 <a href=3D"https://github.com/tlswg/tls-key-update/issues/26">Ter=
+m &quot;Forward Secrecy&quot; is confusing</a> (by hannestschofenig) </li>
+  </ul>
+
+  <p>2 issues received 2 new comments:</p>
+  <ul>
+  <li>#26 <a href=3D"https://github.com/tlswg/tls-key-update/issues/26">Ter=
+m &quot;Forward Secrecy&quot; is confusing</a> (1 by stfries) </li>
+ =20
+  <li>#22 <a href=3D"https://github.com/tlswg/tls-key-update/issues/22">Ext=
+ended Key Update replaces regular Key Update</a> (1 by stfries) </li>
+  </ul>
+
+
+
+
+<h2>Pull requests</h2>
+<h3>tlswg/draft-deprecate-obsolete-kex (+2/-1/=F0=9F=92=AC1)</h3>
+  <p class=3D"new">2 pull requests submitted:</p>
+  <ul>
+  <li>#25 <a href=3D"https://github.com/tlswg/draft-deprecate-obsolete-kex/=
+pull/25">Valery&#x27;s Issues</a> (by seanturner) </li>
+ =20
+  <li>#24 <a href=3D"https://github.com/tlswg/draft-deprecate-obsolete-kex/=
+pull/24">Valery&#x27;s Nits</a> (by seanturner) </li>
+  </ul>
+
+  <p>1 pull requests received 1 new comments:</p>
+  <ul>
+  <li>#25 <a href=3D"https://github.com/tlswg/draft-deprecate-obsolete-kex/=
+pull/25">Valery&#x27;s Issues</a> (1 by seanturner) </li>
+  </ul>
+
+  <p>1 pull requests merged:</p>
+  <ul>
+  <li>#23 <a href=3D"https://github.com/tlswg/draft-deprecate-obsolete-kex/=
+pull/23">Update Reference column</a> </li>
+  </ul>
+
+<h3>tlswg/draft-ietf-tls-esni (+1/-0/=F0=9F=92=AC0)</h3>
+  <p class=3D"new">1 pull requests submitted:</p>
+  <ul>
+  <li>#655 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/655=
+">Remove spurious application profile text</a> (by ekr) </li>
+  </ul>
+
+
+
+<h3>tlswg/dtls-rrc (+1/-1/=F0=9F=92=AC1)</h3>
+  <p class=3D"new">1 pull requests submitted:</p>
+  <ul>
+  <li>#77 <a href=3D"https://github.com/tlswg/dtls-rrc/pull/77">add note to=
+ remove useless sections</a> (by thomas-fossati) </li>
+  </ul>
+
+  <p>1 pull requests received 1 new comments:</p>
+  <ul>
+  <li>#77 <a href=3D"https://github.com/tlswg/dtls-rrc/pull/77">add note to=
+ remove useless sections</a> (1 by thomas-fossati) </li>
+  </ul>
+
+  <p>1 pull requests merged:</p>
+  <ul>
+  <li>#77 <a href=3D"https://github.com/tlswg/dtls-rrc/pull/77">add note to=
+ remove useless sections</a> </li>
+  </ul>
+
+<h3>tlswg/rfc8447bis (+4/-5/=F0=9F=92=AC0)</h3>
+  <p class=3D"new">4 pull requests submitted:</p>
+  <ul>
+  <li>#86 <a href=3D"https://github.com/tlswg/rfc8447bis/pull/86">Address M=
+ed&#x27;s Comments</a> (by seanturner) </li>
+ =20
+  <li>#84 <a href=3D"https://github.com/tlswg/rfc8447bis/pull/84">Fix Headi=
+ng Title</a> (by seanturner) </li>
+ =20
+  <li>#83 <a href=3D"https://github.com/tlswg/rfc8447bis/pull/83">New Regis=
+tration Request Section</a> (by seanturner) </li>
+ =20
+  <li>#82 <a href=3D"https://github.com/tlswg/rfc8447bis/pull/82">Comment n=
+ot Comments</a> (by seanturner) </li>
+  </ul>
+
+
+  <p>5 pull requests merged:</p>
+  <ul>
+  <li>#86 <a href=3D"https://github.com/tlswg/rfc8447bis/pull/86">Address M=
+ed&#x27;s Comments</a> </li>
+ =20
+  <li>#84 <a href=3D"https://github.com/tlswg/rfc8447bis/pull/84">Fix Headi=
+ng Title</a> </li>
+ =20
+  <li>#83 <a href=3D"https://github.com/tlswg/rfc8447bis/pull/83">New Regis=
+tration Request Section</a> </li>
+ =20
+  <li>#82 <a href=3D"https://github.com/tlswg/rfc8447bis/pull/82">Comment n=
+ot Comments</a> </li>
+ =20
+  <li>#80 <a href=3D"https://github.com/tlswg/rfc8447bis/pull/80">Move Refe=
+rence Column Updates</a> </li>
+  </ul>
+
+<h3>tlswg/rfc8773bis (+4/-5/=F0=9F=92=AC7)</h3>
+  <p class=3D"new">4 pull requests submitted:</p>
+  <ul>
+  <li>#6 <a href=3D"https://github.com/tlswg/rfc8773bis/pull/6">Fix ws Issu=
+e</a> (by seanturner) </li>
+ =20
+  <li>#5 <a href=3D"https://github.com/tlswg/rfc8773bis/pull/5">Fix referen=
+ce to grover&#x27;s algorithm</a> (by loganaden) </li>
+ =20
+  <li>#4 <a href=3D"https://github.com/tlswg/rfc8773bis/pull/4">Clarify ext=
+ernal PSK is optional in 8446 vs. required in this extension</a> (by muhamm=
+ad-usama-sardar) </li>
+ =20
+  <li>#3 <a href=3D"https://github.com/tlswg/rfc8773bis/pull/3">Use -latest=
+</a> (by seanturner) </li>
+  </ul>
+
+  <p>2 pull requests received 7 new comments:</p>
+  <ul>
+  <li>#5 <a href=3D"https://github.com/tlswg/rfc8773bis/pull/5">Fix referen=
+ce to grover&#x27;s algorithm</a> (1 by russhousley) </li>
+ =20
+  <li>#2 <a href=3D"https://github.com/tlswg/rfc8773bis/pull/2">change IKM =
+and not salt input of HKDF-Extract</a> (6 by dconnolly, ekr, muhammad-usama=
+-sardar) </li>
+  </ul>
+
+  <p>5 pull requests merged:</p>
+  <ul>
+  <li>#4 <a href=3D"https://github.com/tlswg/rfc8773bis/pull/4">Clarify ext=
+ernal PSK is optional in 8446 vs. required in this extension</a> </li>
+ =20
+  <li>#5 <a href=3D"https://github.com/tlswg/rfc8773bis/pull/5">Fix referen=
+ce to grover&#x27;s algorithm</a> </li>
+ =20
+  <li>#6 <a href=3D"https://github.com/tlswg/rfc8773bis/pull/6">Fix ws Issu=
+e</a> </li>
+ =20
+  <li>#3 <a href=3D"https://github.com/tlswg/rfc8773bis/pull/3">Use -latest=
+</a> </li>
+ =20
+  <li>#2 <a href=3D"https://github.com/tlswg/rfc8773bis/pull/2">change IKM =
+and not salt input of HKDF-Extract</a> </li>
+  </ul>
+
+<h3>tlswg/sslkeylogfile (+1/-2/=F0=9F=92=AC0)</h3>
+  <p class=3D"new">1 pull requests submitted:</p>
+  <ul>
+  <li>#30 <a href=3D"https://github.com/tlswg/sslkeylogfile/pull/30">Add &q=
+uot;TLS&quot; to registry name</a> (by martinthomson) </li>
+  </ul>
+
+
+  <p>2 pull requests merged:</p>
+  <ul>
+  <li>#29 <a href=3D"https://github.com/tlswg/sslkeylogfile/pull/29">A vagu=
+e forward reference</a> </li>
+ =20
+  <li>#30 <a href=3D"https://github.com/tlswg/sslkeylogfile/pull/30">Add &q=
+uot;TLS&quot; to registry name</a> </li>
+  </ul>
+
+<h3>tlswg/tls13-spec (+10/-5/=F0=9F=92=AC2)</h3>
+  <p class=3D"new">10 pull requests submitted:</p>
+  <ul>
+  <li>#1391 <a href=3D"https://github.com/tlswg/tls13-spec/pull/1391">Clean=
+ up IANA text</a> (by ekr) </li>
+ =20
+  <li>#1390 <a href=3D"https://github.com/tlswg/tls13-spec/pull/1390">Sarda=
+r comments</a> (by ekr) </li>
+ =20
+  <li>#1389 <a href=3D"https://github.com/tlswg/tls13-spec/pull/1389">Sudar=
+ comments</a> (by ekr) </li>
+ =20
+  <li>#1388 <a href=3D"https://github.com/tlswg/tls13-spec/pull/1388">First=
+ stage instead of full key schedule</a> (by muhammad-usama-sardar) </li>
+ =20
+  <li>#1387 <a href=3D"https://github.com/tlswg/tls13-spec/pull/1387">Fix r=
+eference</a> (by ekr) </li>
+ =20
+  <li>#1385 <a href=3D"https://github.com/tlswg/tls13-spec/pull/1385">Mike =
+Bishop text comments (1)</a> (by ekr) </li>
+ =20
+  <li>#1384 <a href=3D"https://github.com/tlswg/tls13-spec/pull/1384">Remov=
+e a bunch of unnecessary uses of &quot;in order&quot;, both to avoid</a> (b=
+y ekr) </li>
+ =20
+  <li>#1383 <a href=3D"https://github.com/tlswg/tls13-spec/pull/1383">&quot=
+;May or may not&quot; per Erik Kline&#x27;s comments.</a> (by ekr) </li>
+ =20
+  <li>#1382 <a href=3D"https://github.com/tlswg/tls13-spec/pull/1382">rpk m=
+isbinding and clarification</a> (by ms-s) </li>
+ =20
+  <li>#1381 <a href=3D"https://github.com/tlswg/tls13-spec/pull/1381">exter=
+nal psk selfie attack</a> (by ms-s) </li>
+  </ul>
+
+  <p>1 pull requests received 2 new comments:</p>
+  <ul>
+  <li>#1388 <a href=3D"https://github.com/tlswg/tls13-spec/pull/1388">First=
+ stage instead of full key schedule</a> (2 by ekr, muhammad-usama-sardar) <=
+/li>
+  </ul>
+
+  <p>5 pull requests merged:</p>
+  <ul>
+  <li>#1391 <a href=3D"https://github.com/tlswg/tls13-spec/pull/1391">Clean=
+ up IANA text</a> </li>
+ =20
+  <li>#1384 <a href=3D"https://github.com/tlswg/tls13-spec/pull/1384">Remov=
+e a bunch of unnecessary uses of &quot;in order&quot;, both to avoid</a> </=
+li>
+ =20
+  <li>#1387 <a href=3D"https://github.com/tlswg/tls13-spec/pull/1387">Fix r=
+eference</a> </li>
+ =20
+  <li>#1385 <a href=3D"https://github.com/tlswg/tls13-spec/pull/1385">Mike =
+Bishop text comments (1)</a> </li>
+ =20
+  <li>#1383 <a href=3D"https://github.com/tlswg/tls13-spec/pull/1383">&quot=
+;May or may not&quot; per Erik Kline&#x27;s comments.</a> </li>
+  </ul>
+
+
+  <details>
+    <summary>Repositories tracked by this digest:</summary>
+<ul class=3D"repos">
+  <li><a href=3D"https://github.com/tlswg/certificate-compression">https://=
+github.com/tlswg/certificate-compression</a></li>
+  <li><a href=3D"https://github.com/tlswg/dnssec-chain-extension">https://g=
+ithub.com/tlswg/dnssec-chain-extension</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-deprecate-obsolete-kex">htt=
+ps://github.com/tlswg/draft-deprecate-obsolete-kex</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-cert-abridge">http=
+s://github.com/tlswg/draft-ietf-tls-cert-abridge</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-ctls">https://gith=
+ub.com/tlswg/draft-ietf-tls-ctls</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-ecdhe-psk-aead">ht=
+tps://github.com/tlswg/draft-ietf-tls-ecdhe-psk-aead</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-ech-keylogfile">ht=
+tps://github.com/tlswg/draft-ietf-tls-ech-keylogfile</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-esni">https://gith=
+ub.com/tlswg/draft-ietf-tls-esni</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-external-psk-impor=
+ter">https://github.com/tlswg/draft-ietf-tls-external-psk-importer</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-grease">https://gi=
+thub.com/tlswg/draft-ietf-tls-grease</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-iana-registry-upda=
+tes">https://github.com/tlswg/draft-ietf-tls-iana-registry-updates</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate=
+">https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-semistatic-dh">htt=
+ps://github.com/tlswg/draft-ietf-tls-semistatic-dh</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-svcb-ech">https://=
+github.com/tlswg/draft-ietf-tls-svcb-ech</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-ticketrequest">htt=
+ps://github.com/tlswg/draft-ietf-tls-ticketrequest</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-tls13-vectors">htt=
+ps://github.com/tlswg/draft-ietf-tls-tls13-vectors</a></li>
+  <li><a href=3D"https://github.com/tlswg/dtls-conn-id">https://github.com/=
+tlswg/dtls-conn-id</a></li>
+  <li><a href=3D"https://github.com/tlswg/dtls-rrc">https://github.com/tlsw=
+g/dtls-rrc</a></li>
+  <li><a href=3D"https://github.com/tlswg/dtls13-spec">https://github.com/t=
+lswg/dtls13-spec</a></li>
+  <li><a href=3D"https://github.com/tlswg/oldversions-deprecate">https://gi=
+thub.com/tlswg/oldversions-deprecate</a></li>
+  <li><a href=3D"https://github.com/tlswg/rfc4492bis">https://github.com/tl=
+swg/rfc4492bis</a></li>
+  <li><a href=3D"https://github.com/tlswg/rfc8447bis">https://github.com/tl=
+swg/rfc8447bis</a></li>
+  <li><a href=3D"https://github.com/tlswg/rfc8773bis">https://github.com/tl=
+swg/rfc8773bis</a></li>
+  <li><a href=3D"https://github.com/tlswg/sniencryption">https://github.com=
+/tlswg/sniencryption</a></li>
+  <li><a href=3D"https://github.com/tlswg/sslkeylogfile">https://github.com=
+/tlswg/sslkeylogfile</a></li>
+  <li><a href=3D"https://github.com/tlswg/sslv3-diediedie">https://github.c=
+om/tlswg/sslv3-diediedie</a></li>
+  <li><a href=3D"https://github.com/tlswg/super-jumbo-record-limit">https:/=
+/github.com/tlswg/super-jumbo-record-limit</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls13-spec">https://github.com/tl=
+swg/tls13-spec</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-exported-authenticator">https=
+://github.com/tlswg/tls-exported-authenticator</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-flags">https://github.com/tls=
+wg/tls-flags</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-key-share-prediction">https:/=
+/github.com/tlswg/tls-key-share-prediction</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-key-update">https://github.co=
+m/tlswg/tls-key-update</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-record-limit">https://github.=
+com/tlswg/tls-record-limit</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-subcerts">https://github.com/=
+tlswg/tls-subcerts</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls12-frozen">https://github.com/=
+tlswg/tls12-frozen</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls13-pkcs1">https://github.com/t=
+lswg/tls13-pkcs1</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls13-rfc">https://github.com/tls=
+wg/tls13-rfc</a></li>
+</ul>
+</details>
+<address>To have a summary like this sent to your list, see: https://github=
+.com/ietf-github-services/activity-summary</address>
+</body>
+</html>
+
+--===============6220389967765712381==--
+

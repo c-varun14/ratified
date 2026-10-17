@@ -1,0 +1,258 @@
+From nobody Mon Jul 19 14:43:39 2021
+Return-Path: <davidben@google.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id E28EE3A0B91
+ for <tls@ietfa.amsl.com>; Mon, 19 Jul 2021 14:43:37 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -9.949
+X-Spam-Level: 
+X-Spam-Status: No, score=-9.949 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIMWL_WL_HIGH=-0.452, DKIM_SIGNED=0.1,
+ DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1,
+ HEADER_FROM_DIFFERENT_DOMAINS=0.001, HTML_MESSAGE=0.001,
+ SPF_HELO_NONE=0.001, SPF_PASS=-0.001, URIBL_BLOCKED=0.001,
+ USER_IN_DEF_SPF_WL=-7.5] autolearn=unavailable autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=chromium.org
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id EDbt7ogDqjLq for <tls@ietfa.amsl.com>;
+ Mon, 19 Jul 2021 14:43:31 -0700 (PDT)
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com
+ [IPv6:2607:f8b0:4864:20::436])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 622FF3A0B9D
+ for <tls@ietf.org>; Mon, 19 Jul 2021 14:43:31 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id u126so10121116pfb.8
+ for <tls@ietf.org>; Mon, 19 Jul 2021 14:43:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=RIF6IghgKShjqhiQ6oF+T1Q9C1TFvB75tLivIlAKXKQ=;
+ b=HBaJFbiOE7V6qug7ZcEhqodkdU7gbaEXoeXpAGRUVJHzMF0E97M6N94LCUb+Nzi3zx
+ KinG6Di1+Lzm+FX9+IUbxVCu/rLDefsJY+dYu6NN+rFnEVvxcYOI78Ib0SCfHCkMXSYk
+ 1tP8EkbZYtl/tkBsgjRW9EWC93zUoYJBU/QV0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=RIF6IghgKShjqhiQ6oF+T1Q9C1TFvB75tLivIlAKXKQ=;
+ b=mmG4ucOK0ufgn+VuOsDXkgMJLaLZRmQF/v7z1hv6V0bygdJO/kLjRQTwzCJBgI61rg
+ oQQRjSj8eQPrXRYfTjTnrfSB17hDM/QoE2JzP968o/VZXPD4Vh80YUIDozW05gWSnr6B
+ GCbCaH+gF3droEzXbzYCscc7+XeU5oy49V9Tsi5pGmym3WqohUjx0XY2/RfxBCGiAW/A
+ DhBQyDYPvs9UjJCmv0Co/62v3DyvFziFETUMbf9aJxtW2l9MiyP2oMkQiFEJVfD6EL7a
+ 5UyKND2dX40nBvfhnCch1NR9vcm1gNrdESYygKVg4t+3fBIyUrEPOpVxgscMdHzBFY1m
+ paRQ==
+X-Gm-Message-State: AOAM532VOYi/gdRLfA2biOvGMkZYbWFQNaLB0XsVFUTFsfTsCVp5HeiB
+ 2xX4kSDvHSE+Q+ZPFeOy9Yk4R83SDoC31DWnuuPT
+X-Google-Smtp-Source: ABdhPJwdhsT0mBqZ8VpC2uVdgH+BtDhLRrGUN200G2AjyV/AvTWvjVkt1/EJSHidrR52GJ2/DuydEmPRsF6UJshhdpU=
+X-Received: by 2002:a63:210b:: with SMTP id h11mr7383303pgh.6.1626731009427;
+ Mon, 19 Jul 2021 14:43:29 -0700 (PDT)
+MIME-Version: 1.0
+References: <0ad354da-5300-4b48-8925-f7ab18cdf235@www.fastmail.com>
+ <5D834B58-7A0C-4701-96EB-31663BC0C2DE@akamai.com>
+ <2c7c53a8-cf47-f51d-f97b-f6cd5a712024@cs.tcd.ie>
+ <CAErg=HE92wz3-aLDSfNWk_qJA35+V-euUvtW07HKA=B7CVB3iA@mail.gmail.com>
+ <CAF8qwaDKScDihLVHTahVGqwZjU3U1OXwpsygR=SXMt_3rEOZpA@mail.gmail.com>
+ <80e47f63-725f-ad39-5add-161e6e299fba@cs.tcd.ie>
+ <CAF8qwaDzH30--4UE_hA3RHMfcw9V2Z4Hmx-vuQ6AJy3e6BiO3Q@mail.gmail.com>
+ <9bff5f4d-e2ce-c046-5515-882b45079ef9@cs.tcd.ie>
+ <CAF8qwaDudTerAU7AAh1ezvthDGKRZONzGU4fwf=1A4dikkC+Dw@mail.gmail.com>
+ <0f461bf3-3fad-ff65-9f2a-b2be1832fe45@cs.tcd.ie>
+ <CAF8qwaArW2POUkhLXN9HLmTZ19m_oFeW5d5OqCcjsq+zywRKcQ@mail.gmail.com>
+ <177ef2b8-3ae3-2af8-1a37-5757c1656910@cs.tcd.ie>
+In-Reply-To: <177ef2b8-3ae3-2af8-1a37-5757c1656910@cs.tcd.ie>
+From: David Benjamin <davidben@chromium.org>
+Date: Mon, 19 Jul 2021 17:43:13 -0400
+Message-ID: <CAF8qwaCShBG7DBkhogZzEufmTw-JnSALRvE-UKtCve5DhwzFdw@mail.gmail.com>
+To: Stephen Farrell <stephen.farrell@cs.tcd.ie>
+Cc: Ryan Sleevi <ryan-ietftls@sleevi.com>, 
+ "Salz, Rich" <rsalz=40akamai.com@dmarc.ietf.org>, "TLS@ietf.org" <tls@ietf.org>
+Content-Type: multipart/alternative; boundary="000000000000f7127905c780d314"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/M8z5qIvOPhZNeSsSeQjOe3CcTWA>
+Subject: Re: [TLS] WGLC for draft-ietf-tls-cross-sni-resumption
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Mon, 19 Jul 2021 21:43:38 -0000
+
+--000000000000f7127905c780d314
+Content-Type: text/plain; charset="UTF-8"
+
+On Mon, Jul 19, 2021 at 5:32 PM Stephen Farrell <stephen.farrell@cs.tcd.ie>
+wrote:
+
+>
+> Hiya,
+>
+> On 19/07/2021 22:13, David Benjamin wrote:
+> > I don't think that's an accurate characterization of what's going on. I
+> at
+> > least care about both optimization and privacy.
+>
+> Sure. We just disagree, I've no doubt you care about those.
+>
+> > We should apply
+> > optimizations only where they do not result in a privacy issue, and we
+> > should not apply optimizations that result in a privacy issue. That means
+> > taking the time to understand a system's privacy goals and how mechanisms
+> > interact with them.
+> >
+> > Even ignoring this document, rfc8446*already*  fails this test. By
+> > omission, it implies applications needn't match up their privacy goals
+> with
+> > TLS resumption. This is false and indeed that results in a tracking
+> vector
+> > on the Web, and any other application where multiple contexts talk to the
+> > same domain. That means this 3rd option does not replace the need for
+> text.
+> > We need to either find wording we're happy with, or remove resumption
+> > entirely.
+> >
+> > I've proposed some text for rfc8446bis. I think it captures the right
+> > criteria: you may only resume if you were okay correlating the first and
+> > second connections. If you think something is missing, I think that is
+> > useful feedback. Given how widespread resumption is, it's important that
+> we
+> > fully understand the implications.
+> > https://github.com/tlswg/tls13-spec/pull/1205
+> >
+> >>From there, we can look at this document.
+>
+> Now it's me that's confused. Are you arguing that this draft
+> ought not progress until 8446bis is done?
+>
+
+No. I'm saying there is a need for text around resumption and privacy,
+whether or not we publish this draft. There is a copy of the text to
+address it in both documents. The text applies equally well to both, thus I
+am satisfied with how this draft addresses the concerns.
+
+It sounds like you disagree with this reasoning because you are unhappy
+with that text. Thus: what do you think are the privacy rules for TLS
+resumption? An alternate suggestion of "don't publish the draft" does not
+work, because having resumption in form means we need to consider this.
+
+David
+
+
+> Ta,
+> S.
+>
+> > Observe that the rule applies
+> > equally well here. Moreover, on the Web, even after you apply the rule,
+> > there is still a space where the optimization is useful. This is great.
+> It
+> > means we can both avoid a privacy issue*and*  make things faster. Even
+> > better, the optimizations apply to XSS privsep schemes (subdomains
+> within a
+> > site), so there is an indirect security benefit. Other applications may
+> > look different (no subresource-like construct, different correlation
+> > boundaries), such that the optimization is not useful, but that's still
+> > fine. The overall rule simply turns the flag into a no-op.
+>
+
+--000000000000f7127905c780d314
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr">On Mon, Jul 19, 2021 at 5:32 PM Stephen F=
+arrell &lt;<a href=3D"mailto:stephen.farrell@cs.tcd.ie" target=3D"_blank">s=
+tephen.farrell@cs.tcd.ie</a>&gt; wrote:<br></div><div class=3D"gmail_quote"=
+><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border=
+-left:1px solid rgb(204,204,204);padding-left:1ex"><br>
+Hiya,<br>
+<br>
+On 19/07/2021 22:13, David Benjamin wrote:<br>
+&gt; I don&#39;t think that&#39;s an accurate characterization of what&#39;=
+s going on. I at<br>
+&gt; least care about both optimization and privacy. <br>
+<br>
+Sure. We just disagree, I&#39;ve no doubt you care about those.<br>
+<br>
+&gt; We should apply<br>
+&gt; optimizations only where they do not result in a privacy issue, and we=
+<br>
+&gt; should not apply optimizations that result in a privacy issue. That me=
+ans<br>
+&gt; taking the time to understand a system&#39;s privacy goals and how mec=
+hanisms<br>
+&gt; interact with them.<br>
+&gt; <br>
+&gt; Even ignoring this document, rfc8446*already*=C2=A0 fails this test. B=
+y<br>
+&gt; omission, it implies applications needn&#39;t match up their privacy g=
+oals with<br>
+&gt; TLS resumption. This is false and indeed that results in a tracking ve=
+ctor<br>
+&gt; on the Web, and any other application where multiple contexts talk to =
+the<br>
+&gt; same domain. That means this 3rd option does not replace the need for =
+text.<br>
+&gt; We need to either find wording we&#39;re happy with, or remove resumpt=
+ion<br>
+&gt; entirely.<br>
+&gt; <br>
+&gt; I&#39;ve proposed some text for rfc8446bis. I think it captures the ri=
+ght<br>
+&gt; criteria: you may only resume if you were okay correlating the first a=
+nd<br>
+&gt; second connections. If you think something is missing, I think that is=
+<br>
+&gt; useful feedback. Given how widespread resumption is, it&#39;s importan=
+t that we<br>
+&gt; fully understand the implications.<br>
+&gt; <a href=3D"https://github.com/tlswg/tls13-spec/pull/1205" rel=3D"noref=
+errer" target=3D"_blank">https://github.com/tlswg/tls13-spec/pull/1205</a><=
+br>
+&gt; <br>
+&gt;&gt;From there, we can look at this document.<br>
+<br>
+Now it&#39;s me that&#39;s confused. Are you arguing that this draft<br>
+ought not progress until 8446bis is done?<br></blockquote><div><br></div><d=
+iv>No. I&#39;m saying there is a need for text around resumption and privac=
+y, whether or not we publish this draft. There is a copy of the text to add=
+ress it in both documents. The text applies equally well to both, thus I am=
+ satisfied with how this draft addresses the concerns.</div><div><br></div>=
+<div>It sounds like you disagree with this reasoning because you are unhapp=
+y with that text. Thus: what do you think are the privacy rules for TLS res=
+umption? An alternate suggestion of &quot;don&#39;t publish the draft&quot;=
+ does not work, because having resumption in form means we need to consider=
+ this.</div><div><br></div><div>David</div><div>=C2=A0</div><blockquote cla=
+ss=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid =
+rgb(204,204,204);padding-left:1ex">
+Ta,<br>
+S.<br>
+<br>
+&gt; Observe that the rule applies<br>
+&gt; equally well here. Moreover, on the Web, even after you apply the rule=
+,<br>
+&gt; there is still a space where the optimization is useful. This is great=
+. It<br>
+&gt; means we can both avoid a privacy issue*and*=C2=A0 make things faster.=
+ Even<br>
+&gt; better, the optimizations apply to XSS privsep schemes (subdomains wit=
+hin a<br>
+&gt; site), so there is an indirect security benefit. Other applications ma=
+y<br>
+&gt; look different (no subresource-like construct, different correlation<b=
+r>
+&gt; boundaries), such that the optimization is not useful, but that&#39;s =
+still<br>
+&gt; fine. The overall rule simply turns the flag into a no-op.<br>
+</blockquote></div></div>
+
+--000000000000f7127905c780d314--
+

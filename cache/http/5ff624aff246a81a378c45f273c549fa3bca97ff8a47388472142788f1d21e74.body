@@ -1,0 +1,146 @@
+From davidben@google.com  Mon Nov  6 09:27:20 2023
+Return-Path: <davidben@google.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id F352DC17C8AB
+ for <tls@ietfa.amsl.com>; Mon,  6 Nov 2023 09:27:20 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -14.257
+X-Spam-Level: 
+X-Spam-Status: No, score=-14.257 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIMWL_WL_HIGH=-0.001, DKIM_SIGNED=0.1,
+ DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1,
+ HEADER_FROM_DIFFERENT_DOMAINS=0.249, HTML_MESSAGE=0.001,
+ RCVD_IN_DNSWL_HI=-5, RCVD_IN_ZEN_BLOCKED_OPENDNS=0.001,
+ SPF_HELO_NONE=0.001, SPF_PASS=-0.001, T_SCC_BODY_TEXT_LINE=-0.01,
+ URIBL_BLOCKED=0.001, URIBL_DBL_BLOCKED_OPENDNS=0.001,
+ URIBL_ZEN_BLOCKED_OPENDNS=0.001, USER_IN_DEF_SPF_WL=-7.5]
+ autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=chromium.org
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id ytd-5fsMHn3m for <tls@ietfa.amsl.com>;
+ Mon,  6 Nov 2023 09:27:17 -0800 (PST)
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com
+ [IPv6:2607:f8b0:4864:20::b2e])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 4426CC1B0315
+ for <tls@ietf.org>; Mon,  6 Nov 2023 09:27:11 -0800 (PST)
+Received: by mail-yb1-xb2e.google.com with SMTP id
+ 3f1490d57ef6-d9c66e70ebdso4804677276.2
+ for <tls@ietf.org>; Mon, 06 Nov 2023 09:27:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=chromium.org; s=google; t=1699291630; x=1699896430; darn=ietf.org;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=MV7U80TxP+QPXrINBIAfgZyEpOmkQrE58gHaSoLb+WU=;
+ b=ZonAbbMD8u8pkH14KZ5v2Ff5voDoxfV2ktQO9SLDK3O9d9pblNWbeSDr87doBJjgRl
+ 2Z/U/XBMjZq24SANWZe6flQ6HQLSRSoTq7eOYWbM/ya6WbAMlCRUD/Fep8rCy4H/DNtt
+ /AdPp7agr8fNUJ1ydlNRVqahmuSfaY2urNoSA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1699291630; x=1699896430;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=MV7U80TxP+QPXrINBIAfgZyEpOmkQrE58gHaSoLb+WU=;
+ b=FVziPLpjDzY5DwXP3cJWC9bfhGWH03vUW7OP5SOcXv3BHc81IZW0xib2gAMVkUmXmb
+ V1m3AblwkeqbgL9VSz+VCa7Gs05dyXPUjvEApc8ZInJlTMmh8nT735YEdm3c9+TxEIhW
+ ckSUY81fcWaFdbq8ZiNyp9tGYynARjrNK+S8+u+JQTuygDR3lXcBgrg81A0kSedsgjss
+ eWotTP44cwejpL/Le0G5AAjH/S79H2fdv80HSRWYLUIZMiK43b65/R3GBPURgXyPGbj1
+ Z+hXPpR/IB7po8PxQ+BnR5qVcRYIw0iS0zhnJEI3N6cCuftdxG2pOxAeuCDhJjkjgwKW
+ BUyQ==
+X-Gm-Message-State: AOJu0YzZXfxU25u0MMd0DZUoCovAFlTfIZqV2KZyylxVFvSEfTpYDJYQ
+ zVgujHe+V9SEXTJYaA52M1C0/3HMJPucwtimJ8/Vj51XY715acFDqlQb
+X-Google-Smtp-Source: AGHT+IEqaLbWma8+vRrmMha1dUjXHddQgiyfHuyJbtGnhRq9Ny2CPkRXPFaLiQNubHwR125VoWfUa/GOzHZTAvH9QN8=
+X-Received: by 2002:a25:d784:0:b0:d78:f32:5849 with SMTP id
+ o126-20020a25d784000000b00d780f325849mr28067316ybg.24.1699291629744; Mon, 06
+ Nov 2023 09:27:09 -0800 (PST)
+MIME-Version: 1.0
+References: <CAOgPGoDiSRno_3QPgyEyY4K2TvFg9RxqXhi10RZRT7tL2cRdQw@mail.gmail.com>
+In-Reply-To: <CAOgPGoDiSRno_3QPgyEyY4K2TvFg9RxqXhi10RZRT7tL2cRdQw@mail.gmail.com>
+From: David Benjamin <davidben@chromium.org>
+Date: Mon, 6 Nov 2023 12:26:51 -0500
+Message-ID: <CAF8qwaDPfc3_pQsZUjRGwi4v9e5Bd+wuPyAQcTMquSyPKSaGRQ@mail.gmail.com>
+To: Joseph Salowey <joe@salowey.net>
+Cc: "<tls@ietf.org>" <tls@ietf.org>
+Content-Type: multipart/alternative; boundary="000000000000f6e94e06097f2914"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/2ZopUk9xUbgqIHERF9ATa8ZJeek>
+Subject: Re: [TLS] Adoption call for Legacy RSASSA-PKCS1-v1_5 codepoints for
+ TLS 1.3
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Mon, 06 Nov 2023 17:27:21 -0000
+
+--000000000000f6e94e06097f2914
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+I support adoption and am willing to contribute text, but this is perhaps
+not surprising. :-)
+
+On Mon, Nov 6, 2023 at 12:25=E2=80=AFPM Joseph Salowey <joe@salowey.net> wr=
+ote:
+
+> At the TLS meeting at IETF 118 there was significant support for the
+> draft  Legacy RSASSA-PKCS1-v1_5 codepoints for TLS 1.3
+> <https://datatracker.ietf.org/doc/draft-davidben-tls13-pkcs1/01/> (
+> https://datatracker.ietf.org/doc/draft-davidben-tls13-pkcs1/01/)  This
+> call is to confirm this on the list.  Please indicate if you support the
+> adoption of this draft and are willing to review and contribute text.  If
+> you do not support adoption of this draft please indicate why.  This call
+> will close on November 27, 2023.
+>
+> Thanks,
+>
+> Sean, Chris and Joe
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+>
+
+--000000000000f6e94e06097f2914
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">I support adoption and am willing to contribute text, but =
+this is perhaps not surprising. :-)</div><br><div class=3D"gmail_quote"><di=
+v dir=3D"ltr" class=3D"gmail_attr">On Mon, Nov 6, 2023 at 12:25=E2=80=AFPM =
+Joseph Salowey &lt;<a href=3D"mailto:joe@salowey.net">joe@salowey.net</a>&g=
+t; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0p=
+x 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div d=
+ir=3D"ltr">At the TLS meeting at IETF 118 there was significant support for=
+ the draft=C2=A0=C2=A0<a href=3D"https://datatracker.ietf.org/doc/draft-dav=
+idben-tls13-pkcs1/01/" target=3D"_blank">Legacy RSASSA-PKCS1-v1_5 codepoint=
+s for TLS 1.3</a>=C2=A0(<a href=3D"https://datatracker.ietf.org/doc/draft-d=
+avidben-tls13-pkcs1/01/" target=3D"_blank">https://datatracker.ietf.org/doc=
+/draft-davidben-tls13-pkcs1/01/</a>)=C2=A0 This call is to confirm this on =
+the list.=C2=A0 Please indicate if you support the adoption of this draft a=
+nd are willing to review and contribute text.=C2=A0 If you do not support a=
+doption of this draft please indicate why.=C2=A0 This call will close on No=
+vember 27, 2023.=C2=A0<div><br></div><div>Thanks,</div><div><br></div><div>=
+Sean, Chris and Joe</div></div>
+_______________________________________________<br>
+TLS mailing list<br>
+<a href=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.org</a><br>
+<a href=3D"https://www.ietf.org/mailman/listinfo/tls" rel=3D"noreferrer" ta=
+rget=3D"_blank">https://www.ietf.org/mailman/listinfo/tls</a><br>
+</blockquote></div>
+
+--000000000000f6e94e06097f2914--
+

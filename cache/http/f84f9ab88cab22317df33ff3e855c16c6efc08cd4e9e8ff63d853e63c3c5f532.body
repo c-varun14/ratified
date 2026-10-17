@@ -1,0 +1,1020 @@
+Return-Path: <ekr@rtfm.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id D5FFA129C06
+ for <tls@ietfa.amsl.com>; Wed, 14 Dec 2016 15:18:29 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.899
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.899 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_NONE=-0.0001]
+ autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=rtfm-com.20150623.gappssmtp.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id i2ZKwIAk1EmF for <tls@ietfa.amsl.com>;
+ Wed, 14 Dec 2016 15:18:26 -0800 (PST)
+Received: from mail-yb0-x231.google.com (mail-yb0-x231.google.com
+ [IPv6:2607:f8b0:4002:c09::231])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id B7978129BEF
+ for <tls@ietf.org>; Wed, 14 Dec 2016 15:18:25 -0800 (PST)
+Received: by mail-yb0-x231.google.com with SMTP id d128so24736850ybh.2
+ for <tls@ietf.org>; Wed, 14 Dec 2016 15:18:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=rtfm-com.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+ :cc; bh=mioeIQBsx1YXiDcmC2dLvx1NwFn+r3l3zbmpSFyq5O0=;
+ b=bdsXI03OJzG2I+ZwyOaaMXP8CxNFiLVvkbx6Et5uXgi67TLfOeCmhSJVWM1SfNfYat
+ Rf5IOd/yUbYgqm+5UEIOzBJmdObfdeiaCBXsUx2Cd4xNm5e7Pi633ZUtmLCdMLqjFnJ0
+ 63V+inE2Wv3+m9xzV9mFOFqbVyLH79rWO0yR6x/rQ73158mweZ7mCb2/giI/Im75dddy
+ xT5epDCeB6xzY4zM5nUzRG1kKoL8p2ZCXj6SdvKYqFMll+81TgcOifW4latYFZbhIxqJ
+ VQAnMMKSdgz226ZGLRMLY5Q/l0kOj/1jwQ1zvxCM7AtEOdU8dU4YmR7SaPtBIXCdpOUV
+ Gd5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+ :message-id:subject:to:cc;
+ bh=mioeIQBsx1YXiDcmC2dLvx1NwFn+r3l3zbmpSFyq5O0=;
+ b=m5uaioiJxqexZHjTyS44E7Bt40afx9lsYAcPRPFelY2e4MX9GHsJKHh3ck19tJHmkF
+ 7G6K6KaWyhmUwNI9L6DnEj4orXoTYVRJ943TDRfTgJgyrTvAEKdMwKmy4wsEkAn84T8J
+ tRUV77NU9lg12jmDJSG/hJxUzutQtE81775+Pxe5v5gKb58dh61kFQhOqblvp85pVUtR
+ b9um+j5bTYXKci2WuGPEIR48yKj8sXHhi5LemdvOxKvHyzunLuRVPccKRb0ByPtlC+4u
+ DH9DP0NWZdXhR9KIYRDLCR6hFIxPzDAOJrrACKbsQRp80x8medLgf4LT/44B+8Tb1Wqx
+ dHOg==
+X-Gm-Message-State: AKaTC018Wl3hDd6qCQfeqLnfdnrv5yPX74Zkk7XuSbUxq9RHuetuK5UbYS4la8E33cLeGQ9v31cITzp/f7xe/Q==
+X-Received: by 10.37.78.138 with SMTP id c132mr54577540ybb.180.1481757504816; 
+ Wed, 14 Dec 2016 15:18:24 -0800 (PST)
+MIME-Version: 1.0
+Received: by 10.129.164.210 with HTTP; Wed, 14 Dec 2016 15:17:44 -0800 (PST)
+In-Reply-To: <CAK3aN2qLsFiLwd-AFHQDu+6VJGQapJWz0zbbTrJsspr9h8jFxw@mail.gmail.com>
+References: <CAK3aN2qLsFiLwd-AFHQDu+6VJGQapJWz0zbbTrJsspr9h8jFxw@mail.gmail.com>
+From: Eric Rescorla <ekr@rtfm.com>
+Date: Wed, 14 Dec 2016 16:17:44 -0700
+Message-ID: <CABcZeBMxv2EStGqat=YMCnnqwjEDKoiNg01TjZdUyOy34ju1-A@mail.gmail.com>
+To: David Wong <davidwong.crypto@gmail.com>
+Content-Type: multipart/alternative; boundary=001a113e7afcb815420543a68d26
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/dBZkrWZgBE-lWnwsqu2NIp98igs>
+Cc: "<tls@ietf.org>" <tls@ietf.org>
+Subject: Re: [TLS] Some feedback on draft 18
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.17
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Wed, 14 Dec 2016 23:18:30 -0000
+
+--001a113e7afcb815420543a68d26
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+Hi David,
+
+Thanks for taking the time to read this. Some responses below.
+
+
+> 1-Byte Length of Vectors: One edge-case that is implied and not
+> discussed in the Presentation Language section is: "do I need to write
+> the length of a vector<0...255>?". It seems logical that it will
+> always be 1 byte and that it might be an implicit length. It would be
+> nice to have this edge case mentioned or say something along the lines
+> "there are no exceptions when encoding the length of variable-length
+> vectors".
+
+I'm not sure I understand your point here about why this is an edge
+case. In order for the encoding to be unambiguous, every variable
+length vectory must always be prefixed by the length, even if in
+a particular message it is zero length. This section seems pretty
+clear to me. Note that unconditional statement about encoding
+followed by the last sentence about empty vectors.
+
+   Variable-length vectors are defined by specifying a subrange of legal
+   lengths, inclusively, using the notation <floor..ceiling>.  When
+   these are encoded, the actual length precedes the vector's contents
+   in the byte stream.  The length will be in the form of a number
+   consuming as many bytes as required to hold the vector's specified
+   maximum (ceiling) length.  A variable-length vector with an actual
+   length field of zero is referred to as an empty vector.
+
+Happy to look at making this clearer, but I'd rather not just
+add a clarifying sentence.
+
+
+> Lack of repetition: The intro diagram tells you what messages are
+> encrypted with what key. But after that, no reminders are present. For
+> example, look at the Finished message. How do you know that this has
+> to be encrypted with the handshake key? It is not written in the
+> Finished message section, it is not written in the authentication
+> messages parent section and it is not written in the handshake
+> protocol parent-parent section either. Only in the overview section.
+
+I'll see what I can do about this. With that said, I'm trying to remove
+unnecessary duplication, so it's a compromise.
+
+
+> How to define application data in an application data message: It is
+> not clear how "real" application data should appear in an application
+> data message. Encrypted handshakes and alerts are clearly defined, but
+> it takes some time to understand that "real" application data is
+> written -- without structure or metadata -- into the content field of
+> a TLSInnerPlaintext message. The current definition is "content: The
+> cleartext of TLSPlaintext.fragment". I think a better one would be
+> "content: the byte encoding of a handshake or alert message, or the
+> raw bytes of the application's data to send".
+
+Yeah, this seems like a good change. Feel free to send a PR or I can just
+do it.
+
+
+> Unencrypted Application Data: Does it say somewhere in the
+> specification that real application data should never appear in a
+> TLSPlaintext message? At the moment the application_data content type
+> is present in the declaration of a TLSPlaintext structure, see the
+> record layer section
+
+I'm not sure I understand what you're saying here.
+
+
+> What alert to use: Sometimes it is not mentioned what level of alert
+> should be used. For example: "Because TLS 1.3 forbids renegotiation,
+> if a server receives a ClientHello at any other time, it MUST
+> terminate the connection". I'm guessing it should be a fatal alert,
+> but this is open to interpretation.
+
+Hmm... I think this is pretty clear in 6.2.
+
+   Whenever an implementation encounters a fatal error condition, it
+   SHOULD send an appropriate fatal alert and MUST close the connection
+   without sending or receiving any additional data.  In the rest of
+   this specification, the phrase "{terminate the connection, abort the
+   handshake}" is used without a specific alert means that the
+   implementation SHOULD send the alert indicated by the descriptions
+
+
+> Why force the signature algorithm extension: If the client does not
+> send a signature algorithm extension, why would the server abort the
+> handshake? It would make more sense to continue with the server's
+> prefered certificate. Especially since currently, most webservers only
+> possess one kind of certificate anyway.
+
+The signature algorithms extension also indicates what to sign with,
+and that's not completely determined by the certificate (e.g., with
+RSA).
+
+
+> Resumption_secret: The Key Schedule section mentions a
+> resumption_secret but nowhere in the spec does this keyword
+> re-appear. It should be mentioned somewhere that this is the secret to
+> be used as PSK in a future resumption handshake.
+
+Good catch. This is actually called the resumption master
+secret. I'll clean this up.
+
+
+> Auth_modes: there is a single mention of "auth_modes" in the
+> Pre-Shared Key Extension section. No definition of this variable is to
+> be found.
+
+Yeah, this is a holdover from when this field exists. I fixed that.
+
+
+
+> Computing Finished keys: The section on how to compute Finished keys
+> should be in the cryptographic computation section in my opinion. It
+> should probably be added to the key schedule diagram as well.
+
+This made the key schedule too hard to read (I note you complain
+about that below) so I'm reluctant to add it. I'd be interested
+in other people's opinions about whether these computations would
+be better in this section.
+
+
+> Computation of the Binders: From the relevant section: "Each entry in
+> the binders list is computed as an HMAC over the portion of the
+> ClientHello up to and including the PreSharedKeyExtension.identities
+> field. That is, it includes all of the ClientHello but not the binder
+> list itself. The length fields for the message (including the overall
+> length, the length of the extensions block, and the length of the
+> =E2=80=9Cpre_shared_key=E2=80=9D extension) are all set as if the binder =
+were
+> present". There are several things that are unclear to me and I think
+> they should be mentioned here: the fake binder should be of size
+> hash.size, it should also say that the HMAC is computed over the
+> handshake message containing the client hello, not only the client
+> hello structure.
+
+I'll see what I can do here.
+
+
+> What binder key to use: It is not clear which binder are to be used
+> when doing a session resumption. The previous handshake one or the new
+> handshake one? The confusion comes from the fact that the old
+> handshake's resumption_secret/PSK is to be used in the new handshake,
+> it could be thought that the old handshake's binder key should be the
+> one used in the new handshake as well. I think it would help if this
+> resumption_secret is called something like
+> next_handshake.resumption_secret. Or make it clearer from which key
+> schedule the binder key comes from.
+
+I'm not quite following. It's not possible to compute the RMS
+at this point in the handshake. The only PSK you could possibly
+have is the one from the previous handshake.
+
+
+> PSK and Cipher Suite: I think the following fact should be emphasized
+> in more places: the client needs to advertise the single cipher suite
+> they previously used when doing session resumption. It could be added
+> to the cipher_suite definition of the client hello section as well as
+> in the overview of session resumption.
+
+Thanks. I can add something.
+
+
+> Implicit Lengths in The Presentation Language: nested structures +
+> implicit lengths =3D trouble. It's easy to forget parsing/writing all
+> the different "sizes" when they are not clearly stated in the
+> spec. Why not just having a length field in front of these
+> variable-length vectors? It would add a bit of overhead but would make
+> things clearer in my opinion.
+
+Can you point to the specific structures you are concerned with
+here? I think in almost every case we do have length fields. Actually,
+a common complaint is we have too many redundant length fields.
+
+
+> No Help For The Implementer: If you look at the Noise Protocol
+> Framework, you can clearly see that the specifications were written
+> with implementers in mind: several states, and objects are
+> defined. For example, one way of implementing TLS is to have some sort
+> of complex state that will remember what state you are in the
+> handshake, what is the cryptographic context, etc... here the
+> implementer has to decide everything for himself.
+
+Most IETF specs leave the choice of how to do things up
+to the implementor. As someone who has implemented a lot of
+specs, I actually find it pretty frustrating when the author
+gets all prescriptive about implementation. If there are
+points that are unclear, I think it's fine to make them clear,
+but I'd rather stick to the PDUs.
+
+
+> Whitelist Of State Transitions: There is nothing about whitelisting
+> state transitions. In my opinion there should be a list of allowed
+> state transitions that the implementer could use. I made one here, I
+> suspect it is still missing some states.
+
+I'm going to add a state diagram in -19. This link seems like
+useful input. Thanks.
+
+
+
+> How to parse extensions: I think that IANA's consideration section's
+> table would be useful to have in the earlier Extension section
+> (probably only the extensions included in the RFC should be
+> listed). Another useful pragraph: how to parse these extensions,
+> making sure that different messages come with their own whitelist of
+> extensions.
+
+Good point. I'll make this change.
+
+
+> Language <-> Bytes Translation: There are no real introduction/no
+> clear section about this. I understand that everything is in the
+> Presentation Language section but for someone who discovers the
+> specification it takes some time to find out that this section is
+> about both the presentation language and its byte encoding. A better
+> introduction in this section as well as an emphasis on the byte
+> representation in each of the subsections of this section would in my
+> opinion benefit the whole document.
+
+I'm not quite sure I understand what you're looking for here. Can
+you send a PR?
+
+> Asymmetrical MUSTs: some "MUST" keywords are not symmetrical. What is
+> the point of them? For example, the spec says that as a client, you
+> MUST use a unique 0x0303 value in the legacy_version field of the
+> client hello. But if you do not, there are no problems from the server
+> side in the specification and the client hello will still be well
+> received. (Is this maybe for forward compatibility?)
+
+Amongst other things. MUST do X but must allow X and Y is pretty
+common in IETF spec.
+
+> And finally, here are some minor nitpicks:
+>
+> PSK extension: debatable, but I would rather have the PSK section at
+> the very end of the Extensions section as it MUST be the final
+> extension of a client hello.
+
+Yeah, I can do that.
+
+
+> No Indication Of Encryption: This is debatable, but I find it
+> inelegant that there are no indication in a record that it is
+> encrypted. The implementation is supposed to keep track of it.
+
+Actually, at present everything with first byte =3D=3D application_data
+is encrypted and everything else is not.
+
+
+> What PSK mode does a server support: I think the server should
+> indicate what mode (psk_dh_ke or psk_ke) it supports in a
+> server_hello.psk_mode extension or in the new_session_ticket
+> message. Like that the client would know if it has to send a key_share
+> or not in the resumption. Right now, the only indication of a
+> psk_dh_ke is that the server will send a key_share even when presented
+> with a PSK. this is debatable.
+
+This was a pretty explicit decision to avoid redundancy, so I think
+we have WG consensus here.
+
+
+> The Key Derivation: The key derivation section is the least clear
+> section in this specification. The diagrams kind of help, but are
+> limited by the RFC format... I have nothing else to say here, the
+> whole section is confusing to say the least. No solution offered :o)
+
+Yeah, not too sure what to do.
+
+Thanks,
+-Ekr
+
+
+On Wed, Dec 14, 2016 at 3:38 PM, David Wong <davidwong.crypto@gmail.com>
+wrote:
+
+> Hello! I read the current specification and I have some feedback on it. I
+> hope this can be useful. Sorry for the length or if I point to obvious
+> things. Here is a link as well for readability:
+> https://gist.github.com/mimoo/b6c64a133cd85da53f2f744dcdb39839
+>
+>    1.
+>
+>    *1-Byte Length of Vectors*: One edge-case that is implied and not
+>    discussed in the Presentation Language section
+>    <https://tlswg.github.io/tls13-spec/#presentation-language> is: "do I
+>    need to write the length of a vector<0...255>?". It seems logical that=
+ it
+>    will always be 1 byte and that it might be an implicit length. It woul=
+d be
+>    nice to have this edge case mentioned or say something along the lines
+>    "there are no exceptions when encoding the length of variable-length
+>    vectors".
+>    2.
+>
+>    *Lack of repetition*: The intro diagram
+>    <https://tlswg.github.io/tls13-spec/#rfc.section.2> tells you what
+>    messages are encrypted with what key. But after that, no reminders are
+>    present. For example, look at the Finished message. How do you know th=
+at
+>    this has to be encrypted with the handshake key? It is not written in =
+the Finished
+>    message <https://tlswg.github.io/tls13-spec/#rfc.section.4.4.3>
+>    section, it is not written in the authentication messages
+>    <https://tlswg.github.io/tls13-spec/#rfc.section.4.4> parent section
+>    and it is not written in the handshake protocol
+>    <https://tlswg.github.io/tls13-spec/#rfc.section.4> parent-parent
+>    section either. Only in the overview section.
+>    3.
+>
+>    *How to define application data in an application data message*: It is
+>    not clear how "real" application data should appear in an application =
+data
+>    message. Encrypted handshakes and alerts are clearly defined, but it t=
+akes
+>    some time to understand that "real" application data is written -- wit=
+hout
+>    structure or metadata -- into the content field of a TLSInnerPlaintext
+>    message. The current definition is "content: The cleartext of
+>    TLSPlaintext.fragment". I think a better one would be "content: the by=
+te
+>    encoding of a handshake or alert message, or the raw bytes of the
+>    application's data to send".
+>    4.
+>
+>    *Unencrypted Application Data*: Does it say somewhere in the
+>    specification that real application data should never appear in a
+>    TLSPlaintext message? At the moment the application_data content type
+>    is present in the declaration of a TLSPlaintext structure, see the
+>    record layer section <https://tlswg.github.io/tls13-spec/#record-layer=
+>
+>    5.
+>
+>    *What alert to use*: Sometimes it is not mentioned what level of alert
+>    should be used. For example: "Because TLS 1.3 forbids renegotiation, i=
+f a
+>    server receives a ClientHello at any other time, it MUST terminate the
+>    connection". I'm guessing it should be a fatal alert, but this is open=
+ to
+>    interpretation.
+>    6.
+>
+>    *Why force the signature algorithm extension*: If the client does not
+>    send a signature algorithm extension, why would the server abort the
+>    handshake? It would make more sense to continue with the server's pref=
+ered
+>    certificate. Especially since currently, most webservers only possess =
+one
+>    kind of certificate anyway.
+>    7.
+>
+>    *Resumption_secret*: The Key Schedule
+>    <https://tlswg.github.io/tls13-spec/#rfc.section.7.1> section mentions
+>    a resumption_secret but nowhere in the spec does this keyword
+>    re-appear. It should be mentioned somewhere that this is the secret to=
+ be
+>    used as PSK in a future resumption handshake.
+>    8.
+>
+>    *Auth_modes*: there is a single mention of "auth_modes" in the Pre-Sha=
+red
+>    Key Extension
+>    <https://tlswg.github.io/tls13-spec/#pre-shared-key-extension>
+>    section. No definition of this variable is to be found.
+>    9.
+>
+>    *Computing Finished keys*: The section on how to compute Finished keys
+>    <https://tlswg.github.io/tls13-spec/#rfc.section.4.4.3> should be in
+>    the cryptographic computation
+>    <https://tlswg.github.io/tls13-spec/#cryptographic-computations>
+>    section in my opinion. It should probably be added to the key schedule
+>    diagram as well.
+>    10.
+>
+>    *Computation of the Binders*: From the relevant section
+>    <https://tlswg.github.io/tls13-spec/#psk-binder>: "*Each entry in the
+>    binders list is computed as an HMAC over the portion of the ClientHell=
+o up
+>    to and including the PreSharedKeyExtension.identities field. That is, =
+it
+>    includes all of the ClientHello but not the binder list itself. The le=
+ngth
+>    fields for the message (including the overall length, the length of th=
+e
+>    extensions block, and the length of the =E2=80=9Cpre_shared_key=E2=80=
+=9D extension) are all
+>    set as if the binder were present*". There are several things that are
+>    unclear to me and I think they should be mentioned here: the fake bind=
+er
+>    should be of size hash.size, it should also say that the HMAC is
+>    computed over the handshake message containing the client hello, not o=
+nly
+>    the client hello structure.
+>    11.
+>
+>    *What binder key to use*: It is not clear which binder are to be used
+>    when doing a session resumption. The previous handshake one or the new
+>    handshake one? The confusion comes from the fact that the old handshak=
+e's
+>    resumption_secret/PSK is to be used in the new handshake, it could be
+>    thought that the old handshake's binder key should be the one used in
+>    the new handshake as well. I think it would help if this
+>    resumption_secret is called something like next_handshake.resumption_
+>    secret. Or make it clearer from which key schedule the binder key
+>    comes from.
+>    12.
+>
+>    *PSK and Cipher Suite*: I think the following fact should be
+>    emphasized in more places: the client needs to advertise the single ci=
+pher
+>    suite they previously used when doing session resumption. It could be =
+added
+>    to the cipher_suite definition of the client hello section
+>    <https://tlswg.github.io/tls13-spec/#client-hello> as well as in the o=
+verview
+>    of session resumption
+>    <https://tlswg.github.io/tls13-spec/#resumption-and-psk>.
+>    13.
+>
+>    *Implicit Lengths in The Presentation Language*: nested structures +
+>    implicit lengths =3D trouble. It's easy to forget parsing/writing all
+>    the different "sizes" when they are not clearly stated in the spec. Wh=
+y not
+>    just having a length field in front of these variable-length vectors? =
+It
+>    would add a bit of overhead but would make things clearer in my opinio=
+n.
+>    14.
+>
+>    *No Help For The Implementer*: If you look at the Noise Protocol
+>    Framework <http://www.noiseprotocol.org/noise.html>, you can clearly
+>    see that the specifications were written with implementers in mind: se=
+veral
+>    states, and objects are defined. For example, one way of implementing =
+TLS
+>    is to have some sort of complex state that will remember what state yo=
+u are
+>    in the handshake, what is the cryptographic context, etc... here the
+>    implementer has to decide everything for himself.
+>    15.
+>
+>    *Whitelist Of State Transitions*: There is nothing about whitelisting
+>    state transitions. In my opinion there should be a list of allowed sta=
+te
+>    transitions that the implementer could use. I made one here, I suspect
+>    it is still missing some states
+>    <https://gist.github.com/mimoo/779dcf8c44d80a2a34a1a2f2ed620711>.
+>    16.
+>
+>    *How to parse extensions*: I think that IANA's consideration
+>    <https://tlswg.github.io/tls13-spec/#iana-considerations> section's
+>    table would be useful to have in the earlier Extension section
+>    <https://tlswg.github.io/tls13-spec/#extensions> (probably only the
+>    extensions included in the RFC should be listed). Another useful pragr=
+aph:
+>    how to parse these extensions, making sure that different messages com=
+e
+>    with their own whitelist of extensions.
+>    17.
+>
+>    *Language <-> Bytes Translation*: There are no real introduction/no
+>    clear section about this. I understand that everything is in the Prese=
+ntation
+>    Language <https://tlswg.github.io/tls13-spec/#presentation-language>
+>    section but for someone who discovers the specification it takes some =
+time
+>    to find out that this section is about both the presentation language =
+and
+>    its byte encoding. A better introduction in this section as well as an
+>    emphasis on the byte representation in each of the subsections of this
+>    section would in my opinion benefit the whole document.
+>    18.
+>
+>    *Asymmetrical MUSTs*: some "MUST" keywords are not symmetrical. What
+>    is the point of them? For example, the spec says that as a client, you=
+ MUST
+>    use a unique 0x0303 value in the legacy_version field of the client
+>    hello <https://tlswg.github.io/tls13-spec/#client-hello>. But if you
+>    do not, there are no problems from the server side in the specificatio=
+n and
+>    the client hello will still be well received. (Is this maybe for forwa=
+rd
+>    compatibility?)
+>
+> And finally, here are some minor nitpicks:
+>
+>    1.
+>
+>    *PSK extension*: *debatable*, but I would rather have the PSK section
+>    <https://tlswg.github.io/tls13-spec/#pre-shared-key-extension> at the
+>    very end of the Extensions section
+>    <https://tlswg.github.io/tls13-spec/#extensions> as it MUST be the
+>    final extension of a client hello.
+>    2.
+>
+>    *No Indication Of Encryption*: This is *debatable*, but I find it
+>    inelegant that there are no indication in a record that it is encrypte=
+d.
+>    The implementation is supposed to keep track of it.
+>    3.
+>
+>    *What PSK mode does a server support*: I think the server should
+>    indicate what mode (psk_dh_ke or psk_ke) it supports in a
+>    server_hello.psk_mode extension or in the new_session_ticket message.
+>    Like that the client would know if it has to send a key_share or not
+>    in the resumption. Right now, the only indication of a psk_dh_ke is
+>    that the server will send a key_share even when presented with a PSK. =
+*this
+>    is debatable*.
+>    4.
+>
+>    *The Key Derivation*: The key derivation section is the least clear
+>    section in this specification. The diagrams kind of help, but are limi=
+ted
+>    by the RFC format... I have nothing else to say here, the whole sectio=
+n is
+>    confusing to say the least. No solution offered :o)
+>
+>
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+>
+>
+
+--001a113e7afcb815420543a68d26
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div><div>Hi David,</div><div><br></div><div>Thanks for ta=
+king the time to read this. Some responses below.</div><div><br></div><div>=
+<br></div><div>&gt; 1-Byte Length of Vectors: One edge-case that is implied=
+ and not</div><div>&gt; discussed in the Presentation Language section is: =
+&quot;do I need to write</div><div>&gt; the length of a vector&lt;0...255&g=
+t;?&quot;. It seems logical that it will</div><div>&gt; always be 1 byte an=
+d that it might be an implicit length. It would be</div><div>&gt; nice to h=
+ave this edge case mentioned or say something along the lines</div><div>&gt=
+; &quot;there are no exceptions when encoding the length of variable-length=
+</div><div>&gt; vectors&quot;.</div><div><br></div><div>I&#39;m not sure I =
+understand your point here about why this is an edge</div><div>case. In ord=
+er for the encoding to be unambiguous, every variable</div><div>length vect=
+ory must always be prefixed by the length, even if in</div><div>a particula=
+r message it is zero length. This section seems pretty</div><div>clear to m=
+e. Note that unconditional statement about encoding</div><div>followed by t=
+he last sentence about empty vectors.</div><div><br></div><div>=C2=A0 =C2=
+=A0Variable-length vectors are defined by specifying a subrange of legal</d=
+iv><div>=C2=A0 =C2=A0lengths, inclusively, using the notation &lt;floor..ce=
+iling&gt;.=C2=A0 When</div><div>=C2=A0 =C2=A0these are encoded, the actual =
+length precedes the vector&#39;s contents</div><div>=C2=A0 =C2=A0in the byt=
+e stream.=C2=A0 The length will be in the form of a number</div><div>=C2=A0=
+ =C2=A0consuming as many bytes as required to hold the vector&#39;s specifi=
+ed</div><div>=C2=A0 =C2=A0maximum (ceiling) length.=C2=A0 A variable-length=
+ vector with an actual</div><div>=C2=A0 =C2=A0length field of zero is refer=
+red to as an empty vector.</div><div><br></div><div>Happy to look at making=
+ this clearer, but I&#39;d rather not just</div><div>add a clarifying sente=
+nce.</div><div><br></div><div><br></div><div>&gt; Lack of repetition: The i=
+ntro diagram tells you what messages are</div><div>&gt; encrypted with what=
+ key. But after that, no reminders are present. For</div><div>&gt; example,=
+ look at the Finished message. How do you know that this has</div><div>&gt;=
+ to be encrypted with the handshake key? It is not written in the</div><div=
+>&gt; Finished message section, it is not written in the authentication</di=
+v><div>&gt; messages parent section and it is not written in the handshake<=
+/div><div>&gt; protocol parent-parent section either. Only in the overview =
+section.</div><div><br></div><div>I&#39;ll see what I can do about this. Wi=
+th that said, I&#39;m trying to remove</div><div>unnecessary duplication, s=
+o it&#39;s a compromise.</div><div><br></div><div><br></div><div>&gt; How t=
+o define application data in an application data message: It is</div><div>&=
+gt; not clear how &quot;real&quot; application data should appear in an app=
+lication</div><div>&gt; data message. Encrypted handshakes and alerts are c=
+learly defined, but</div><div>&gt; it takes some time to understand that &q=
+uot;real&quot; application data is</div><div>&gt; written -- without struct=
+ure or metadata -- into the content field of</div><div>&gt; a TLSInnerPlain=
+text message. The current definition is &quot;content: The</div><div>&gt; c=
+leartext of TLSPlaintext.fragment&quot;. I think a better one would be</div=
+><div>&gt; &quot;content: the byte encoding of a handshake or alert message=
+, or the</div><div>&gt; raw bytes of the application&#39;s data to send&quo=
+t;.</div><div><br></div><div>Yeah, this seems like a good change. Feel free=
+ to send a PR or I can just</div><div>do it.</div><div><br></div><div><br><=
+/div><div>&gt; Unencrypted Application Data: Does it say somewhere in the</=
+div><div>&gt; specification that real application data should never appear =
+in a</div><div>&gt; TLSPlaintext message? At the moment the application_dat=
+a content type</div><div>&gt; is present in the declaration of a TLSPlainte=
+xt structure, see the</div><div>&gt; record layer section</div><div><br></d=
+iv><div>I&#39;m not sure I understand what you&#39;re saying here.</div><di=
+v><br></div><div><br></div><div>&gt; What alert to use: Sometimes it is not=
+ mentioned what level of alert</div><div>&gt; should be used. For example: =
+&quot;Because TLS 1.3 forbids renegotiation,</div><div>&gt; if a server rec=
+eives a ClientHello at any other time, it MUST</div><div>&gt; terminate the=
+ connection&quot;. I&#39;m guessing it should be a fatal alert,</div><div>&=
+gt; but this is open to interpretation.</div><div><br></div><div>Hmm... I t=
+hink this is pretty clear in 6.2.</div><div><br></div><div>=C2=A0 =C2=A0Whe=
+never an implementation encounters a fatal error condition, it</div><div>=
+=C2=A0 =C2=A0SHOULD send an appropriate fatal alert and MUST close the conn=
+ection</div><div>=C2=A0 =C2=A0without sending or receiving any additional d=
+ata.=C2=A0 In the rest of</div><div>=C2=A0 =C2=A0this specification, the ph=
+rase &quot;{terminate the connection, abort the</div><div>=C2=A0 =C2=A0hand=
+shake}&quot; is used without a specific alert means that the</div><div>=C2=
+=A0 =C2=A0implementation SHOULD send the alert indicated by the description=
+s</div><div><br></div><div><br></div><div>&gt; Why force the signature algo=
+rithm extension: If the client does not</div><div>&gt; send a signature alg=
+orithm extension, why would the server abort the</div><div>&gt; handshake? =
+It would make more sense to continue with the server&#39;s</div><div>&gt; p=
+refered certificate. Especially since currently, most webservers only</div>=
+<div>&gt; possess one kind of certificate anyway.</div><div><br></div><div>=
+The signature algorithms extension also indicates what to sign with,</div><=
+div>and that&#39;s not completely determined by the certificate (e.g., with=
+</div><div>RSA).</div><div><br></div><div><br></div><div>&gt; Resumption_se=
+cret: The Key Schedule section mentions a</div><div>&gt; resumption_secret =
+but nowhere in the spec does this keyword</div><div>&gt; re-appear. It shou=
+ld be mentioned somewhere that this is the secret to</div><div>&gt; be used=
+ as PSK in a future resumption handshake.</div><div><br></div><div>Good cat=
+ch. This is actually called the resumption master</div><div>secret. I&#39;l=
+l clean this up.</div><div><br></div><div><br></div><div>&gt; Auth_modes: t=
+here is a single mention of &quot;auth_modes&quot; in the</div><div>&gt; Pr=
+e-Shared Key Extension section. No definition of this variable is to</div><=
+div>&gt; be found.</div><div><br></div><div>Yeah, this is a holdover from w=
+hen this field exists. I fixed that.</div><div><br></div><div><br></div><di=
+v><br></div><div>&gt; Computing Finished keys: The section on how to comput=
+e Finished keys</div><div>&gt; should be in the cryptographic computation s=
+ection in my opinion. It</div><div>&gt; should probably be added to the key=
+ schedule diagram as well.</div><div><br></div><div>This made the key sched=
+ule too hard to read (I note you complain</div><div>about that below) so I&=
+#39;m reluctant to add it. I&#39;d be interested</div><div>in other people&=
+#39;s opinions about whether these computations would</div><div>be better i=
+n this section.</div><div><br></div><div><br></div><div>&gt; Computation of=
+ the Binders: From the relevant section: &quot;Each entry in</div><div>&gt;=
+ the binders list is computed as an HMAC over the portion of the</div><div>=
+&gt; ClientHello up to and including the PreSharedKeyExtension.identities</=
+div><div>&gt; field. That is, it includes all of the ClientHello but not th=
+e binder</div><div>&gt; list itself. The length fields for the message (inc=
+luding the overall</div><div>&gt; length, the length of the extensions bloc=
+k, and the length of the</div><div>&gt; =E2=80=9Cpre_shared_key=E2=80=9D ex=
+tension) are all set as if the binder were</div><div>&gt; present&quot;. Th=
+ere are several things that are unclear to me and I think</div><div>&gt; th=
+ey should be mentioned here: the fake binder should be of size</div><div>&g=
+t; hash.size, it should also say that the HMAC is computed over the</div><d=
+iv>&gt; handshake message containing the client hello, not only the client<=
+/div><div>&gt; hello structure.</div><div><br></div><div>I&#39;ll see what =
+I can do here.</div><div><br></div><div><br></div><div>&gt; What binder key=
+ to use: It is not clear which binder are to be used</div><div>&gt; when do=
+ing a session resumption. The previous handshake one or the new</div><div>&=
+gt; handshake one? The confusion comes from the fact that the old</div><div=
+>&gt; handshake&#39;s resumption_secret/PSK is to be used in the new handsh=
+ake,</div><div>&gt; it could be thought that the old handshake&#39;s binder=
+ key should be the</div><div>&gt; one used in the new handshake as well. I =
+think it would help if this</div><div>&gt; resumption_secret is called some=
+thing like</div><div>&gt; next_handshake.resumption_secret. Or make it clea=
+rer from which key</div><div>&gt; schedule the binder key comes from.</div>=
+<div><br></div><div>I&#39;m not quite following. It&#39;s not possible to c=
+ompute the RMS</div><div>at this point in the handshake. The only PSK you c=
+ould possibly</div><div>have is the one from the previous handshake.</div><=
+div><br></div><div><br></div><div>&gt; PSK and Cipher Suite: I think the fo=
+llowing fact should be emphasized</div><div>&gt; in more places: the client=
+ needs to advertise the single cipher suite</div><div>&gt; they previously =
+used when doing session resumption. It could be added</div><div>&gt; to the=
+ cipher_suite definition of the client hello section as well as</div><div>&=
+gt; in the overview of session resumption.</div><div><br></div><div>Thanks.=
+ I can add something.</div><div><br></div><div><br></div><div>&gt; Implicit=
+ Lengths in The Presentation Language: nested structures +</div><div>&gt; i=
+mplicit lengths =3D trouble. It&#39;s easy to forget parsing/writing all</d=
+iv><div>&gt; the different &quot;sizes&quot; when they are not clearly stat=
+ed in the</div><div>&gt; spec. Why not just having a length field in front =
+of these</div><div>&gt; variable-length vectors? It would add a bit of over=
+head but would make</div><div>&gt; things clearer in my opinion.</div><div>=
+<br></div><div>Can you point to the specific structures you are concerned w=
+ith</div><div>here? I think in almost every case we do have length fields. =
+Actually,</div><div>a common complaint is we have too many redundant length=
+ fields.</div><div><br></div><div><br></div><div>&gt; No Help For The Imple=
+menter: If you look at the Noise Protocol</div><div>&gt; Framework, you can=
+ clearly see that the specifications were written</div><div>&gt; with imple=
+menters in mind: several states, and objects are</div><div>&gt; defined. Fo=
+r example, one way of implementing TLS is to have some sort</div><div>&gt; =
+of complex state that will remember what state you are in the</div><div>&gt=
+; handshake, what is the cryptographic context, etc... here the</div><div>&=
+gt; implementer has to decide everything for himself.</div><div><br></div><=
+div>Most IETF specs leave the choice of how to do things up</div><div>to th=
+e implementor. As someone who has implemented a lot of</div><div>specs, I a=
+ctually find it pretty frustrating when the author</div><div>gets all presc=
+riptive about implementation. If there are</div><div>points that are unclea=
+r, I think it&#39;s fine to make them clear,</div><div>but I&#39;d rather s=
+tick to the PDUs.</div><div><br></div><div><br></div><div>&gt; Whitelist Of=
+ State Transitions: There is nothing about whitelisting</div><div>&gt; stat=
+e transitions. In my opinion there should be a list of allowed</div><div>&g=
+t; state transitions that the implementer could use. I made one here, I</di=
+v><div>&gt; suspect it is still missing some states.</div><div><br></div><d=
+iv>I&#39;m going to add a state diagram in -19. This link seems like</div><=
+div>useful input. Thanks.</div><div><br></div><div><br></div><div><br></div=
+><div>&gt; How to parse extensions: I think that IANA&#39;s consideration s=
+ection&#39;s</div><div>&gt; table would be useful to have in the earlier Ex=
+tension section</div><div>&gt; (probably only the extensions included in th=
+e RFC should be</div><div>&gt; listed). Another useful pragraph: how to par=
+se these extensions,</div><div>&gt; making sure that different messages com=
+e with their own whitelist of</div><div>&gt; extensions.</div><div><br></di=
+v><div>Good point. I&#39;ll make this change.</div><div><br></div><div><br>=
+</div><div>&gt; Language &lt;-&gt; Bytes Translation: There are no real int=
+roduction/no</div><div>&gt; clear section about this. I understand that eve=
+rything is in the</div><div>&gt; Presentation Language section but for some=
+one who discovers the</div><div>&gt; specification it takes some time to fi=
+nd out that this section is</div><div>&gt; about both the presentation lang=
+uage and its byte encoding. A better</div><div>&gt; introduction in this se=
+ction as well as an emphasis on the byte</div><div>&gt; representation in e=
+ach of the subsections of this section would in my</div><div>&gt; opinion b=
+enefit the whole document.</div><div><br></div><div>I&#39;m not quite sure =
+I understand what you&#39;re looking for here. Can</div><div>you send a PR?=
+</div><div><br></div><div>&gt; Asymmetrical MUSTs: some &quot;MUST&quot; ke=
+ywords are not symmetrical. What is</div><div>&gt; the point of them? For e=
+xample, the spec says that as a client, you</div><div>&gt; MUST use a uniqu=
+e 0x0303 value in the legacy_version field of the</div><div>&gt; client hel=
+lo. But if you do not, there are no problems from the server</div><div>&gt;=
+ side in the specification and the client hello will still be well</div><di=
+v>&gt; received. (Is this maybe for forward compatibility?)</div><div><br><=
+/div><div>Amongst other things. MUST do X but must allow X and Y is pretty<=
+/div><div>common in IETF spec.</div><div><br></div><div>&gt; And finally, h=
+ere are some minor nitpicks:</div><div>&gt;=C2=A0</div><div>&gt; PSK extens=
+ion: debatable, but I would rather have the PSK section at</div><div>&gt; t=
+he very end of the Extensions section as it MUST be the final</div><div>&gt=
+; extension of a client hello.</div><div><br></div><div>Yeah, I can do that=
+.</div><div><br></div><div><br></div><div>&gt; No Indication Of Encryption:=
+ This is debatable, but I find it</div><div>&gt; inelegant that there are n=
+o indication in a record that it is</div><div>&gt; encrypted. The implement=
+ation is supposed to keep track of it.</div><div><br></div><div>Actually, a=
+t present everything with first byte =3D=3D application_data</div><div>is e=
+ncrypted and everything else is not.</div><div><br></div><div><br></div><di=
+v>&gt; What PSK mode does a server support: I think the server should</div>=
+<div>&gt; indicate what mode (psk_dh_ke or psk_ke) it supports in a</div><d=
+iv>&gt; server_hello.psk_mode extension or in the new_session_ticket</div><=
+div>&gt; message. Like that the client would know if it has to send a key_s=
+hare</div><div>&gt; or not in the resumption. Right now, the only indicatio=
+n of a</div><div>&gt; psk_dh_ke is that the server will send a key_share ev=
+en when presented</div><div>&gt; with a PSK. this is debatable.</div><div><=
+br></div><div>This was a pretty explicit decision to avoid redundancy, so I=
+ think</div><div>we have WG consensus here.</div><div><br></div><div><br></=
+div><div>&gt; The Key Derivation: The key derivation section is the least c=
+lear</div><div>&gt; section in this specification. The diagrams kind of hel=
+p, but are</div><div>&gt; limited by the RFC format... I have nothing else =
+to say here, the</div><div>&gt; whole section is confusing to say the least=
+. No solution offered :o)</div><div><br></div><div>Yeah, not too sure what =
+to do.</div><div><br></div><div>Thanks,</div><div>-Ekr</div><div><br></div>=
+</div><div class=3D"gmail_extra"><br><div class=3D"gmail_quote">On Wed, Dec=
+ 14, 2016 at 3:38 PM, David Wong <span dir=3D"ltr">&lt;<a href=3D"mailto:da=
+vidwong.crypto@gmail.com" target=3D"_blank">davidwong.crypto@gmail.com</a>&=
+gt;</span> wrote:<br><blockquote class=3D"gmail_quote" style=3D"margin:0px =
+0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div=
+ dir=3D"ltr"><div id=3D"gmail-m_6082903737410361506gmail-readme" class=3D"g=
+mail-m_6082903737410361506gmail-readme gmail-m_6082903737410361506gmail-blo=
+b gmail-m_6082903737410361506gmail-instapaper_body">
+    <article class=3D"gmail-m_6082903737410361506gmail-markdown-body gmail-=
+m_6082903737410361506entry-content"><p>Hello!
+ I read the current specification and I have some feedback on it. I hope
+ this can be useful. Sorry for the length or if I point to obvious=20
+things. Here is a link as well for readability: <a href=3D"https://gist.git=
+hub.com/mimoo/b6c64a133cd85da53f2f744dcdb39839" target=3D"_blank">https://g=
+ist.github.com/mimoo/<wbr>b6c64a133cd85da53f2f744dcdb398<wbr>39</a><br></p>
+
+<ol><li><p><strong>1-Byte Length of Vectors</strong>: One edge-case that is=
+ implied and not discussed in the <a href=3D"https://tlswg.github.io/tls13-=
+spec/#presentation-language" target=3D"_blank">Presentation Language sectio=
+n</a>
+ is: &quot;do I need to write the length of a vector&lt;0...255&gt;?&quot;.=
+ It=20
+seems logical that it will always be 1 byte and that it might be an=20
+implicit length. It would be nice to have this edge case mentioned or=20
+say something along the lines &quot;there are no exceptions when encoding t=
+he
+ length of variable-length vectors&quot;.</p></li><li><p><strong>Lack of re=
+petition</strong>: <a href=3D"https://tlswg.github.io/tls13-spec/#rfc.secti=
+on.2" target=3D"_blank">The intro diagram</a>
+ tells you what messages are encrypted with what key. But after that, no
+ reminders are present. For example, look at the Finished message. How=20
+do you know that this has to be encrypted with the handshake key? It is=20
+not written in the <a href=3D"https://tlswg.github.io/tls13-spec/#rfc.secti=
+on.4.4.3" target=3D"_blank">Finished message</a> section, it is not written=
+ in the <a href=3D"https://tlswg.github.io/tls13-spec/#rfc.section.4.4" tar=
+get=3D"_blank">authentication messages</a> parent section and it is not wri=
+tten in the <a href=3D"https://tlswg.github.io/tls13-spec/#rfc.section.4" t=
+arget=3D"_blank">handshake protocol</a> parent-parent section either. Only =
+in the overview section.</p></li><li><p><strong>How to define application d=
+ata in an application data message</strong>:
+ It is not clear how &quot;real&quot; application data should appear in an=
+=20
+application data message. Encrypted handshakes and alerts are clearly=20
+defined, but it takes some time to understand that &quot;real&quot; applica=
+tion=20
+data is written -- without structure or metadata -- into the <code>content<=
+/code> field of a <code>TLSInnerPlaintext</code>
+ message. The current definition is &quot;content: The cleartext of=20
+TLSPlaintext.fragment&quot;. I think a better one would be &quot;content: t=
+he byte
+ encoding of a handshake or alert message, or the raw bytes of the=20
+application&#39;s data to send&quot;.</p></li><li><p><strong>Unencrypted Ap=
+plication Data</strong>: Does it say somewhere in the specification that re=
+al application data should never appear in a <code>TLSPlaintext</code> mess=
+age? At the moment the <code>application_data</code> content type is presen=
+t in the declaration of a <code>TLSPlaintext</code> structure, see <a href=
+=3D"https://tlswg.github.io/tls13-spec/#record-layer" target=3D"_blank">the=
+ record layer section</a></p></li><li><p><strong>What alert to use</strong>=
+: Sometimes it is not mentioned
+ what level of alert should be used. For example: &quot;Because TLS 1.3=20
+forbids renegotiation, if a server receives a ClientHello at any other=20
+time, it MUST terminate the connection&quot;. I&#39;m guessing it should be=
+ a=20
+fatal alert, but this is open to interpretation.</p></li><li><p><strong>Why=
+ force the signature algorithm extension</strong>: If=20
+the client does not send a signature algorithm extension, why would the=20
+server abort the handshake? It would make more sense to continue with=20
+the server&#39;s prefered certificate. Especially since currently, most=20
+webservers only possess one kind of certificate anyway.</p></li><li><p><str=
+ong>Resumption_secret</strong>: The <a href=3D"https://tlswg.github.io/tls1=
+3-spec/#rfc.section.7.1" target=3D"_blank">Key Schedule</a> section mention=
+s a <code>resumption_secret</code>
+ but nowhere in the spec does this keyword re-appear. It should be=20
+mentioned somewhere that this is the secret to be used as PSK in a=20
+future resumption handshake.</p></li><li><p><strong>Auth_modes</strong>: th=
+ere is a single mention of &quot;auth_modes&quot; in the <a href=3D"https:/=
+/tlswg.github.io/tls13-spec/#pre-shared-key-extension" target=3D"_blank">Pr=
+e-Shared Key Extension</a> section. No definition of this variable is to be=
+ found.</p></li><li><p><strong>Computing Finished keys</strong>: <a href=3D=
+"https://tlswg.github.io/tls13-spec/#rfc.section.4.4.3" target=3D"_blank">T=
+he section on how to compute Finished keys</a> should be in the <a href=3D"=
+https://tlswg.github.io/tls13-spec/#cryptographic-computations" target=3D"_=
+blank">cryptographic computation</a> section in my opinion. It should proba=
+bly be added to the key schedule diagram as well.</p></li><li><p><strong>Co=
+mputation of the Binders</strong>: From the <a href=3D"https://tlswg.github=
+.io/tls13-spec/#psk-binder" target=3D"_blank">relevant section</a>: &quot;<=
+em>Each
+ entry in the binders list is computed as an HMAC over the portion of=20
+the ClientHello up to and including the PreSharedKeyExtension.<wbr>identiti=
+es
+ field. That is, it includes all of the ClientHello but not the binder=20
+list itself. The length fields for the message (including the overall=20
+length, the length of the extensions block, and the length of the=20
+=E2=80=9Cpre_shared_key=E2=80=9D extension) are all set as if the binder we=
+re present</em>&quot;. There are several things that are unclear to me and =
+I think they should be mentioned here: the fake binder should be of size <c=
+ode>hash.size</code>,
+ it should also say that the HMAC is computed over the handshake message
+ containing the client hello, not only the client hello structure.</p></li>=
+<li><p><strong>What binder key to use</strong>: It is not clear which=20
+binder are to be used when doing a session resumption. The previous=20
+handshake one or the new handshake one? The confusion comes from the=20
+fact that the old handshake&#39;s <code>resumption_secret/PSK</code> is to =
+be used in the new handshake, it could be thought that the old handshake&#3=
+9;s <code>binder key</code> should be the one used in the new handshake as =
+well. I think it would help if this <code>resumption_secret</code> is calle=
+d something like <code>next_handshake.resumption_<wbr>secret</code>. Or mak=
+e it clearer from which key schedule the <code>binder key</code> comes from=
+.</p></li><li><p><strong>PSK and Cipher Suite</strong>: I think the followi=
+ng fact
+ should be emphasized in more places: the client needs to advertise the=20
+single cipher suite they previously used when doing session resumption.=20
+It could be added to the <code>cipher_suite</code> definition of the <a hre=
+f=3D"https://tlswg.github.io/tls13-spec/#client-hello" target=3D"_blank">cl=
+ient hello section</a> as well as in the <a href=3D"https://tlswg.github.io=
+/tls13-spec/#resumption-and-psk" target=3D"_blank">overview of session resu=
+mption</a>.</p></li><li><p><strong>Implicit Lengths in The Presentation Lan=
+guage</strong>: <code>nested structures + implicit lengths =3D trouble</cod=
+e>.
+ It&#39;s easy to forget parsing/writing all the different &quot;sizes&quot=
+; when they
+ are not clearly stated in the spec. Why not just having a length field=20
+in front of these variable-length vectors? It would add a bit of=20
+overhead but would make things clearer in my opinion.</p></li><li><p><stron=
+g>No Help For The Implementer</strong>: If you look at <a href=3D"http://ww=
+w.noiseprotocol.org/noise.html" target=3D"_blank">the Noise Protocol Framew=
+ork</a>,
+ you can clearly see that the specifications were written with=20
+implementers in mind: several states, and objects are defined. For=20
+example, one way of implementing TLS is to have some sort of complex=20
+state that will remember what state you are in the handshake, what is=20
+the cryptographic context, etc... here the implementer has to decide=20
+everything for himself.</p></li><li><p><strong>Whitelist Of State Transitio=
+ns</strong>: There is nothing
+ about whitelisting state transitions. In my opinion there should be a=20
+list of allowed state transitions that the implementer could use. <a href=
+=3D"https://gist.github.com/mimoo/779dcf8c44d80a2a34a1a2f2ed620711" target=
+=3D"_blank">I made one here, I suspect it is still missing some states</a>.=
+</p></li><li><p><strong>How to parse extensions</strong>: I think that <a h=
+ref=3D"https://tlswg.github.io/tls13-spec/#iana-considerations" target=3D"_=
+blank">IANA&#39;s consideration</a> section&#39;s table would be useful to =
+have in the earlier <a href=3D"https://tlswg.github.io/tls13-spec/#extensio=
+ns" target=3D"_blank">Extension section</a>
+ (probably only the extensions included in the RFC should be listed).=20
+Another useful pragraph: how to parse these extensions, making sure that
+ different messages come with their own whitelist of extensions.</p></li><l=
+i><p><strong>Language &lt;-&gt; Bytes Translation</strong>: There are no re=
+al introduction/no clear section about this. I understand that everything i=
+s in the <a href=3D"https://tlswg.github.io/tls13-spec/#presentation-langua=
+ge" target=3D"_blank">Presentation Language</a>
+ section but for someone who discovers the specification it takes some=20
+time to find out that this section is about both the presentation=20
+language and its byte encoding. A better introduction in this section as
+ well as an emphasis on the byte representation in each of the=20
+subsections of this section would in my opinion benefit the whole=20
+document.</p></li><li><p><strong>Asymmetrical MUSTs</strong>: some &quot;MU=
+ST&quot; keywords are not
+ symmetrical. What is the point of them? For example, the spec says that
+ as a client, you MUST use a unique <code>0x0303</code> value in the <code>=
+legacy_version</code> field of the <a href=3D"https://tlswg.github.io/tls13=
+-spec/#client-hello" target=3D"_blank">client hello</a>.
+ But if you do not, there are no problems from the server side in the=20
+specification and the client hello will still be well received. (Is this
+ maybe for forward compatibility?)</p></li></ol>
+
+<p>And finally, here are some minor nitpicks:</p>
+
+<ol><li><p><strong>PSK extension</strong>: <strong>debatable</strong>, but =
+I would rather have the <a href=3D"https://tlswg.github.io/tls13-spec/#pre-=
+shared-key-extension" target=3D"_blank">PSK section</a> at the very end of =
+the <a href=3D"https://tlswg.github.io/tls13-spec/#extensions" target=3D"_b=
+lank">Extensions section</a> as it MUST be the final extension of a client =
+hello. </p></li><li><p><strong>No Indication Of Encryption</strong>: This i=
+s <strong>debatable</strong>,
+ but I find it inelegant that there are no indication in a record that=20
+it is encrypted. The implementation is supposed to keep track of it.</p></l=
+i><li><p><strong>What PSK mode does a server support</strong>: I think the =
+server should indicate what mode (<code>psk_dh_ke</code> or <code>psk_ke</c=
+ode>) it supports in a <code>server_hello.psk_mode</code> extension or in t=
+he <code>new_session_ticket</code> message. Like that the client would know=
+ if it has to send a <code>key_share</code> or not in the resumption. Right=
+ now, the only indication of a <code>psk_dh_ke</code> is that the server wi=
+ll send a <code>key_share</code> even when presented with a PSK. <strong>th=
+is is debatable</strong>.</p></li><li><p><strong>The Key Derivation</strong=
+>: The key derivation section=20
+is the least clear section in this specification. The diagrams kind of=20
+help, but are limited by the RFC format... I have nothing else to say=20
+here, the whole section is confusing to say the least. No solution=20
+offered :o)</p></li></ol>
+</article>
+  </div></div>
+<br>______________________________<wbr>_________________<br>
+TLS mailing list<br>
+<a href=3D"mailto:TLS@ietf.org">TLS@ietf.org</a><br>
+<a href=3D"https://www.ietf.org/mailman/listinfo/tls" rel=3D"noreferrer" ta=
+rget=3D"_blank">https://www.ietf.org/mailman/<wbr>listinfo/tls</a><br>
+<br></blockquote></div><br></div></div>
+
+--001a113e7afcb815420543a68d26--
+

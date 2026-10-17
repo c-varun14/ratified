@@ -1,0 +1,191 @@
+Return-Path: <ekr@rtfm.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id D8A11126C26
+ for <tls@ietfa.amsl.com>; Sat, 31 Mar 2018 06:43:06 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.898
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.898 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_NONE=-0.0001, URIBL_BLOCKED=0.001]
+ autolearn=unavailable autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=rtfm-com.20150623.gappssmtp.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id Q2ZtCASGvt6x for <tls@ietfa.amsl.com>;
+ Sat, 31 Mar 2018 06:43:05 -0700 (PDT)
+Received: from mail-ot0-x235.google.com (mail-ot0-x235.google.com
+ [IPv6:2607:f8b0:4003:c0f::235])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 5A3B212D7ED
+ for <tls@ietf.org>; Sat, 31 Mar 2018 06:43:02 -0700 (PDT)
+Received: by mail-ot0-x235.google.com with SMTP id m22-v6so11819940otf.10
+ for <tls@ietf.org>; Sat, 31 Mar 2018 06:43:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=rtfm-com.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:from:date:message-id:subject:to:cc;
+ bh=16Vrt5szUv7O3TMWd8b4agVJqxq26PtClBMWFBR5NDM=;
+ b=BBPd6E+gC02Z8L54Y7fzALyBUjJrhhfCh9UtNcLcX4yCmdg6uo826IPQoJdzV/YNpl
+ 6mn5lWEcf63ey8hxgaaWXIYrLmL08NexqomjItK/Xm4lUvtGA6hXfM96VjGKHUFKL1kz
+ LSDy93xIfnI2uyFDVbA16rRfen1AsfVewRAnZAj6aW83GG+Kza6Hm3GoWEMbTN8HKZlF
+ KrEyoA3mnC9wY01jOp58Mebp3+OXFUVD7vc9K2SUeTFzJXZ79kFP8JrNfiKNxnIbx9I7
+ /KbdqccwJ43p47eNkGk5Nj3tTKwfJm+u154LmDslp71KQNgGMYcx0Vk1lHWD9C3eCVYp
+ jNDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+ bh=16Vrt5szUv7O3TMWd8b4agVJqxq26PtClBMWFBR5NDM=;
+ b=IQ1gio/bNTWIl6uhXja+iHzg2NZlI8qQ3Y5Jxd/6V4TAeF3er6H8iTCiypAp/fX7n8
+ aRigjiI8rvfYP8FkbGY5qn5FcsjUJiUB7QsNgdYp9VxUo3MkqXNJwGyROMRXbZ/igxgF
+ yBeKVVeK0tky+RDb619A0MfuDqoqce/vhHXw6mSqvGMa9UWR8Dr0Rk3vrbYvtrpLmZgz
+ S/tBtnC3MR2QVuB/RZfxdUlv4iChv3Ul7QYMMH640bjX3VWJZKIQ9AWlNCx0+kcCx3Cw
+ rU3m8k8tU9cr8KrEar2yguc1uPe4qKDZUIPJvk5D2YFtNBwLyznxZtbyE3+3WXX9n5xS
+ j3Gg==
+X-Gm-Message-State: ALQs6tDe/b7Mv7Jm12TRm6lvu29sl2EuQ4nggUNoYzfVLQ7QUtqbHqX4
+ wM7T2EqdTNchVpR496HPgNe77CVxITzCobzb/MsWbA==
+X-Google-Smtp-Source: AIpwx49IfvoJGnFDfqLqR1JDnZcLxTHMchVyp4qIb5LJBVCn70UOKrg/Mn6pzFn4lTL+M4alywdRRYhKYVnTY6VRJLk=
+X-Received: by 2002:a9d:7348:: with SMTP id
+ l8-v6mr1702005otk.217.1522503781512; 
+ Sat, 31 Mar 2018 06:43:01 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 10.138.18.130 with HTTP; Sat, 31 Mar 2018 06:42:20 -0700 (PDT)
+From: Eric Rescorla <ekr@rtfm.com>
+Date: Sat, 31 Mar 2018 06:42:20 -0700
+Message-ID: <CABcZeBNB50jY1odzgVZVKqn8F7TCj1b+A_95yG6f=Nde0KVv+g@mail.gmail.com>
+To: Peter Gutmann <pgut001@cs.auckland.ac.nz>
+Cc: Kathleen Moriarty <kathleen.moriarty.ietf@gmail.com>,
+ Bill Frantz <frantz@pwpconsult.com>, 
+ Steve Fenter <steven.fenter58@gmail.com>, "Dale R. Worley" <worley@ariadne.com>,
+ General Area Review Team <gen-art@ietf.org>,
+ IETF discussion list <ietf@ietf.org>, 
+ "draft-ietf-tls-tls13.all@ietf.org" <draft-ietf-tls-tls13.all@ietf.org>,
+ "<tls@ietf.org>" <tls@ietf.org>
+Content-Type: multipart/alternative; boundary="0000000000001117950568b589b9"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/09liq-uCe2TsfELMEzrHegayICY>
+Subject: [TLS] Expanded alert codes. [Was Re: Genart last call review of
+ draft-ietf-tls-tls13-24]
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Sat, 31 Mar 2018 13:43:07 -0000
+
+--0000000000001117950568b589b9
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Thinking through this some more, I'm skeptical that this is going to be
+that useful as a debugging-only feature.
+
+In my experience, there are four major scenarios for diagnosing this kind
+of failure. Under the assumption that you control one end, the other end
+can be:
+
+1. A live endpoint.
+2. A testing endpoint someone has put up.
+3. An endpoint that someone is actively working on with you.
+4. An endpoint you control (e.g., you're running it on your own machine).
+
+If this is a debug-only feature, then it won't be available in case #1, and
+it's not that helpful in case 4, because you can read the logs, errors,
+etc. yourself. For the same reason, it's not really that helpful in case
+#3, because you can just ask the person you're working with to read the
+logs, so this leaves case #2, which I agree can be annoying. However, what
+we've started doing with QUIC is just to have the endpoints dump their logs
+so that they're available on a co-located Web site. That gives you a lot
+more information than you'd probably want to fit in an alert message (e.g.,
+you can print out the keying material, etc.)
+
+I guess there might be some intermediate category 1.5 that's kind of in
+production so you don't want to print out complete logs, but you'd like
+more detail than you would probably want to expose in general, but my
+experience is that that's not super-common.
+
+-Ekr
+
+
+
+On Fri, Mar 30, 2018 at 7:16 PM, Peter Gutmann <pgut001@cs.auckland.ac.nz>
+wrote:
+
+> Kathleen Moriarty <kathleen.moriarty.ietf@gmail.com> writes:
+>
+> >I agree with Eric=E2=80=99s assessment, this could be in a new draft as =
+an
+> extension.
+>
+> Anyone want to work on this?  I can contribute a bit by recycling the EtM
+> text, which sets out how to communicate a boolean flag (for "I speak
+> extended
+> alerts") as an extension, apart from that you just need to define the ale=
+rt
+> format, which I assume just means adding a free-form text field to the
+> existing alerts.
+>
+> Peter.
+>
+
+--0000000000001117950568b589b9
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">Thinking through this some more, I&#39;m skeptical that th=
+is is going to be that useful as a debugging-only feature.<div><br></div><d=
+iv>In my experience, there are four major scenarios for diagnosing this kin=
+d of failure. Under the assumption that you control one end, the other end =
+can be:</div><div><br></div><div>1. A live endpoint.</div><div>2. A testing=
+ endpoint someone has put up.</div><div>3. An endpoint that someone is acti=
+vely working on with you.</div><div>4. An endpoint you control (e.g., you&#=
+39;re running it on your own machine).</div><div><br></div><div>If this is =
+a debug-only feature, then it won&#39;t be available in case #1, and it&#39=
+;s not that helpful in case 4, because you can read the logs, errors, etc. =
+yourself. For the same reason, it&#39;s not really that helpful in case #3,=
+ because you can just ask the person you&#39;re working with to read the lo=
+gs, so this leaves case #2, which I agree can be annoying. However, what we=
+&#39;ve started doing with QUIC is just to have the endpoints dump their lo=
+gs so that they&#39;re available on a co-located Web site. That gives you a=
+ lot more information than you&#39;d probably want to fit in an alert messa=
+ge (e.g., you can print out the keying material, etc.)</div><div><br></div>=
+<div>I guess there might be some intermediate category 1.5 that&#39;s kind =
+of in production so you don&#39;t want to print out complete logs, but you&=
+#39;d like more detail than you would probably want to expose in general, b=
+ut my experience is that that&#39;s not super-common.</div><div><br></div><=
+div>-Ekr</div><div><br></div><div><br><div class=3D"gmail_extra"><br><div c=
+lass=3D"gmail_quote">On Fri, Mar 30, 2018 at 7:16 PM, Peter Gutmann <span d=
+ir=3D"ltr">&lt;<a href=3D"mailto:pgut001@cs.auckland.ac.nz" target=3D"_blan=
+k">pgut001@cs.auckland.ac.nz</a>&gt;</span> wrote:<br><blockquote class=3D"=
+gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-=
+left:1ex"><span>Kathleen Moriarty &lt;<a href=3D"mailto:kathleen.moriarty.i=
+etf@gmail.com" target=3D"_blank">kathleen.moriarty.ietf@gmail.<wbr>com</a>&=
+gt; writes:<br>
+<br>
+&gt;I agree with Eric=E2=80=99s assessment, this could be in a new draft as=
+ an extension.<br>
+<br>
+</span>Anyone want to work on this?=C2=A0 I can contribute a bit by recycli=
+ng the EtM<br>
+text, which sets out how to communicate a boolean flag (for &quot;I speak e=
+xtended<br>
+alerts&quot;) as an extension, apart from that you just need to define the =
+alert<br>
+format, which I assume just means adding a free-form text field to the<br>
+existing alerts.<br>
+<span class=3D"m_-8063348040209096173HOEnZb"><font color=3D"#888888"><br>
+Peter.<br>
+</font></span></blockquote></div><br></div></div></div>
+
+--0000000000001117950568b589b9--
+

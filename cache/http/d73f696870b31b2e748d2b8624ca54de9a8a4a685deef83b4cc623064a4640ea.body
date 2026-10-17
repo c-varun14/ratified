@@ -1,0 +1,193 @@
+From nobody Mon Jan  4 21:27:02 2021
+Return-Path: <kaduk@mit.edu>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 6072A3A0FCB;
+ Mon,  4 Jan 2021 21:26:56 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.919
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.919 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, RCVD_IN_MSPIKE_H4=-0.01,
+ RCVD_IN_MSPIKE_WL=-0.01, SPF_HELO_NONE=0.001, SPF_PASS=-0.001,
+ URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id v5v8fYc3ym0a; Mon,  4 Jan 2021 21:26:54 -0800 (PST)
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 820EE3A0FCA;
+ Mon,  4 Jan 2021 21:26:53 -0800 (PST)
+Received: from kduck.mit.edu ([24.16.140.251]) (authenticated bits=56)
+ (User authenticated as kaduk@ATHENA.MIT.EDU)
+ by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1055QecO026016
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 5 Jan 2021 00:26:45 -0500
+Date: Mon, 4 Jan 2021 21:26:40 -0800
+From: Benjamin Kaduk <kaduk@mit.edu>
+To: Martin Thomson <mt@lowentropy.net>
+Cc: Alan DeKok <aland@deployingradius.com>,
+ Mohit Sethi M <mohit.m.sethi@ericsson.com>,
+ "tls@ietf.org" <tls@ietf.org>, "emu@ietf.org" <emu@ietf.org>
+Message-ID: <20210105052640.GO93151@kduck.mit.edu>
+References: <160815821055.25925.15897627611548078426@ietfa.amsl.com>
+ <20201216223842.GR64351@kduck.mit.edu>
+ <0f2b05db-5c98-43d4-aae3-cf620814bacc@www.fastmail.com>
+ <7745bb87-a946-c739-007d-9d3be1212e19@ericsson.com>
+ <bddc3a92-acd1-46cc-84ad-aea013c544cf@www.fastmail.com>
+ <5E1CF713-D917-4E9A-869F-21A4174D0562@deployingradius.com>
+ <5ec5d8a2-a8ee-40b5-9b43-3d1bde2b0032@www.fastmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5ec5d8a2-a8ee-40b5-9b43-3d1bde2b0032@www.fastmail.com>
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/OcE9KIZzHZlLApfYE4drY9HU6Tg>
+Subject: Re: [TLS] [Emu] Fwd: Benjamin Kaduk's Discuss on
+ draft-ietf-emu-eap-tls13-13: (with DISCUSS and COMMENT)
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Tue, 05 Jan 2021 05:26:56 -0000
+
+Hi Martin,
+
+Thanks for chiming in here; your insight has been quite helpful already.
+(I am going to reply to the thread in reverse order so as to not duplicate
+what you've already said.)
+
+On Tue, Jan 05, 2021 at 02:50:15PM +1100, Martin Thomson wrote:
+> Hi Alan,
+> 
+> On Tue, Jan 5, 2021, at 14:05, Alan DeKok wrote:
+> > On Jan 4, 2021, at 6:26 PM, Martin Thomson <mt@lowentropy.net> wrote:
+> > > Your point about reliability is confusing.  I've read Section 4.2 of RFC 3748 and while it says "A peer MUST allow for this circumstance as described in this note.", I see no explanation of how to concretely make that allowance.  Are you saying that EAP methods don't really use EAP-Success and condition their behaviour on other signals?
+> > 
+> >   EAP-Success by itself is *not* a reliable indication of Success.  See 
+> > RFC 3748 Section 4.2:
+> > 
+> >    Success and Failure packets MUST NOT be sent by an EAP authenticator
+> >    if the specification of the given method does not explicitly permit
+> >    the method to finish at that point.
+> 
+> This is fine.  What you might be concerned about is the nature of the signals that the EAP authenticator is receiving from TLS.  What you had in the case of TLS 1.2 was the stack providing bytes to send (which were to go in EAP-Request) and then, after everything is done, a positive signal saying that the handshake was complete and satisfactory.  That latter signal is the important one.
+
+Yes.  Part of what had me so unhappy about this document is that the
+Commitment Message is discussed only as a "promise to not send more
+handshake messages", not "an indication that the handshake is complete and
+the TLS layer is happy".  (Furthermore, what Alan writes below about
+"cannot distinguish a "finished authentication" EAP-Success from a
+"spoofed" EAP-Success" really needs to make its way into the document.)
+
+> TLS 1.3 muddies things by allowing bytes to be sent *after* the complete+satisfactory signal from TLS.  That's what you are grappling with here.  What I'm suggesting is that you don't rely on looking at what bytes hit the wire, but wait until two conditions are complete:
+> 
+> 1. The TLS stack says that it is content: the handshake is complete and it is OK with whatever the other side has provided.
+> 2. The TLS stack has no more bytes to send.
+> 
+> The latter is likely where the confusion comes from, but if the stack doesn't produce bytes when you give it bytes, then you don't need to keep waiting.  For what you depend on, that's enough.
+
+I agree that this is probably good enough.  There may be some complications
+depending on how badly the availability of session resumption is desired (I
+know OpenSSL provides an API to let the application requst a new session
+ticket regardless of whether any were sent with the initial handshake -- I
+wrote it -- though I need to tweak it so that it will not always wait for
+application data to send before sending the ticket), but I believe this
+provides the key functionality.
+
+> The mistake with sending application data is that there is no obligation on the part of the TLS stack to order its sending of NewSessionTicket relative to the application data.  Nor is is possible for you to correctly distinguish TLS data that contains your Confirmation Message from a record that just contains a little bit of a session ticket.  But you don't need to worry about that.
+> 
+> An example might help illustrate:
+> 
+> 1. ... many steps occur
+> 2. Client sends EAP-Response ending in a TLS Finished.
+> 3. Server reads that message, processes it and determines that the handshake is complete and acceptable (e.g., checks the client certificate against its policy).
+> 4. As the server is happy, it writes the Confirmation Message to TLS.
+> 5. Server asks TLS stack for outstanding data to write; TLS stack provides a bunch of application_data records.
+
+(In particular, this is the TLSCiphext content type that is
+"application_data", and the inner content type could be handshake or
+application data.  The application doesn't have visibility into it.)
+
+> 6. Server writes TLS records into an EAP-Request and sends it.
+> 7. Client receives this and sends an empty EAP-Response.
+> 8. Server sends EAP-Success.
+> 
+> This is, I assume what you intend here, with a little more detail around steps 3-5.  But what happens if the TLS stack prioritizes application data above its own maintenance such that at step 5 the Confirmation Message is written to the wire before the TLS NewSessionTicket?  Is that a problem?  What validation is the client expected to perform at step 7?
+
+I would like to see a more precise description of what properties are
+actually needed by peer and responder here, yes.  I agree that TLS 1.3 has
+changed things compared to 1.2, but the text currently in the draft doesn't
+do very well to motivate why this information is important, and (at least
+to me) doesn't give a strong enough justification to merit the awkwardness
+of the proposed design.
+
+> >   With TLS 1.3, we don't know if the authentication has completed until 
+> > the TLS layer sees either (a) CloseNotify, or (b) application data.  So 
+> > the EAP-TLS implementations cannot distinguish a "finished 
+> > authentication" EAP-Success from a "spoofed" EAP-Success.  Because the 
+> > EAP-TLS implementation has no idea of TLS is done, and therefore no way 
+> > to tell that the EAP-Success is permitted at this point in the 
+> > negotiation.
+> 
+> As I indicated in my response to Mohit, if the intent is to provide the client with a signal, then using TLS application data to do that is imperfect, but probably OK.  What would have been ideal is some EAP-layer message that is authenticated somehow.
+> 
+> >   Therefore, we need an explicit signal to the EAP-TLS layer that the 
+> > EAP-TLS method has finished.  Discussion on the list went back and 
+> > forth between CloseNotify and sending one octet of application data.  
+> > Implementations have done both.  The conclusion was that the one octet 
+> > of application data was slightly easier to implement.
+> > 
+> >   Plus, sending CloseNotify precluded the TLS layer from sending a TLS 
+> > Fatal Alert:  https://www.mail-archive.com/emu@ietf.org/msg03092.html, 
+> > which says in part:
+> 
+> I agree that sending a close_notify alert isn't ideal - during this process.  I also agree that making sure that genuine handshake failures are reported reliably using EAP-Request, that's just plain good sense.
+> 
+> I don't understand why you would want to send a fatal alert after successfully completing and accepting the handshake, but if that is something you care about, then that clearly rules out its use for signaling success.  I didn't suggest that.
+
+This somewhat gets into another point that I was hoping would be discussed
+more.  (The proposal for "close_notify" came up as the in-TLS way to
+signify "no more records coming", which includes "no more handshake records
+coming".)  The perceived issue with "close_notify" as the commitment
+message, clearly discussed in the linked message, is that "close_notify" is
+unsuitable as a commitment message when being sent in the same flight as
+server Finished.  What is very unclear to me is how often that state could
+actually be achievable.  For one, if we do move (per the previous
+discussion) to the state where the "TLS is done" signal is something like
+"TLS says it's done and has no more bytes to send", this situation *by
+definition* cannot occur, since TLS will not report the handshake as
+complete until client Finished is processed.  Even if we ignore that,
+though, we have to consider the interaction between resumption and client
+authentication.
+
+My understanding is that EAP is primarily used as a mutual authentication
+protocol, i.e., the client has a certificate it's going to use to
+authenticate, and the EAP Peer's identity is the identity from that
+certificate.  The desire to send the commitment message in the same flight
+as the server Finished stems from the desire to avoid another round-trip.
+But using TLS resumption will *also* save round trips, and in these
+pessimal cases where the certificate chains are huge, resumption will save
+a lot more than one round-trip.  But, if you send the commitment message
+with the server Finished, you can't send a NewSessionTicket that includes
+the client certification information at all.  So by gaining the 1 RTT from
+moving up the commitment message, you sacrifice a lot more RTTs by losing
+resumption.  Given my priors about how this is going to be used, that seems
+like a lousy tradeoff.  I'm happy to hear that I'm making invalid
+assumptions here, but it seems like you would only be able to take
+advantage of that 1 RTT gain from the commitment message for the case of
+unauthenticated clients, in expected deployments, and unauthenticated
+clients seem to be rare.
+
+-Ben
+

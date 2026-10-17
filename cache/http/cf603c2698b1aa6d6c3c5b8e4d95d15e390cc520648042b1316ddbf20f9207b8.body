@@ -1,0 +1,566 @@
+From nobody Sat Dec 12 23:38:50 2020
+Return-Path: <do_not_reply@mnot.net>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 936503A163C
+ for <tls@ietfa.amsl.com>; Sat, 12 Dec 2020 23:38:47 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -0.897
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.897 tagged_above=-999 required=5
+ tests=[DKIM_SIGNED=0.1, DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1,
+ DKIM_VALID_EF=-0.1, HTML_MESSAGE=0.001, RCVD_IN_DNSWL_LOW=-0.7,
+ RCVD_IN_MSPIKE_H3=0.001, RCVD_IN_MSPIKE_WL=0.001, SPF_PASS=-0.001,
+ URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=mnot.net header.b=UIAv0kxb;
+ dkim=pass (2048-bit key)
+ header.d=messagingengine.com header.b=a29Z4W+w
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id TGwxGcFsNmCG for <tls@ietfa.amsl.com>;
+ Sat, 12 Dec 2020 23:38:44 -0800 (PST)
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
+ [66.111.4.28])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 982303A15F1
+ for <tls@ietf.org>; Sat, 12 Dec 2020 23:38:36 -0800 (PST)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+ by mailout.nyi.internal (Postfix) with ESMTP id B2AFA5C00A7
+ for <tls@ietf.org>; Sun, 13 Dec 2020 02:38:35 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute1.internal (MEProxy); Sun, 13 Dec 2020 02:38:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mnot.net; h=
+ content-type:mime-version:from:to:subject:message-id:date; s=
+ fm1; bh=kPdqrbIuTEIAy19BzphswJ1KoBXt11yEq8OTFYVWHYg=; b=UIAv0kxb
+ UqbqsVf/y2eRGDv9MLARc75bRsMCADknkwLe9L5djdQuHcc1SnxDp3zt1VBcePSL
+ lOp9ZZgopH6OZ8VgF4WUgSgYxgseVzxw2dd89WavYu1DmIflXc6phUgQK6J0vDjb
+ YQeGoS1BvqLaZiVaQyhbmMnO/74oC8YQ0p6DuUFrWM/KPhDiGaPWk0n8txuLRwy6
+ DtyjaDTeyMCGz2jRjIEeJPJAydNEUtqh3k1+n6VTZeJvc9MXW83dCpvUQcqfbmmH
+ Gfavb59NxrmAtfLZDn0U0zSTMT9dgns1cgf2W9VrDNZhG7j8qj0+L0+yQ8B7ARQn
+ acwoNezD5/FyBg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=content-type:date:from:message-id
+ :mime-version:subject:to:x-me-proxy:x-me-proxy:x-me-sender
+ :x-me-sender:x-sasl-enc; s=fm1; bh=kPdqrbIuTEIAy19BzphswJ1KoBXt1
+ 1yEq8OTFYVWHYg=; b=a29Z4W+wUvUp2I/N7STftEL+MbdpAqerz9LVx9W+RiunO
+ n5rPm8GSe+zAtSbzvYOwEvz0ULqgNT4Zj1gRA057mL6IQ+CrOgCor/rnnllMZrXt
+ b9z1ZD3GeG+ovkA/6k9t9lchsJ6idGfYUfZ30cY3NpGOlMmYyEzHkK/P4miiyZ4z
+ iYOPHy8Ohcg7paWqntLgfR/azAtBTc2UUBVy0N8Lg6Zb2UHbSVrS6W1SqZ0E345z
+ bmm+G26i4h9j8bO9ocMOdBh7cn9selznfn8mbn9SFqEO6wog+xbAnQKXSDn6aQjb
+ Nf0i/5Hp6hsS1+DGxJu73hdSEPs5/56NvZsabfpeg==
+X-ME-Sender: <xms:-8TVX0lywQT6myN6FTF8tQ5WPY6RQEfoujTP8WSWHx3NBMAwty1-ow>
+ <xme:-8TVXz1bTcTM4lHVEC6zSkM0b_0JMPYRFSBFZhtPq8akqy9jpF28MJ_6EjLb3DXDB
+ 9F0xyWXxfZhvRSouw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudekhedgudduudcutefuodetggdotefrod
+ ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+ necuuegrihhlohhuthemuceftddtnecunecujfgurheptggghffvufesrgdttdertddtje
+ enucfhrhhomheptfgvphhoshhithhorhihucettghtihhvihhthicuufhumhhmrghrhicu
+ uehothcuoeguohgpnhhothgprhgvphhlhiesmhhnohhtrdhnvghtqeenucggtffrrghtth
+ gvrhhnpeekfedvudetjedvfeekheeiveeugfefhfetteevgeffkefffeetffdvleehudei
+ teenucffohhmrghinhepghhithhhuhgsrdgtohhmnecukfhppedufedrjeejrdekuddrud
+ eileenucevlhhushhtvghrufhiiigvpedvnecurfgrrhgrmhepmhgrihhlfhhrohhmpegu
+ ohgpnhhothgprhgvphhlhiesmhhnohhtrdhnvght
+X-ME-Proxy: <xmx:-8TVXyr_hA5TA3kimnTVOyzejkJHR2Wo0BFeCX1kmHBiaRP1OFsciw>
+ <xmx:-8TVXwnNe5cPqiwuQ9TLCtZSD_gDW7rob-EornRywaKpV0jxoxey6g>
+ <xmx:-8TVXy0nfMgQiIyyLMq2JeYQtV7eAONvuVbNZVEggAsqnK-DPkMvfQ>
+ <xmx:-8TVX38Q8r-FQCwvX2aPPJ8dBcnVV194TBQ0nZUUz3ci2Uu0NU3g8g>
+Received: from fv-az184-911.internal.cloudapp.net (unknown [13.77.81.169])
+ by mail.messagingengine.com (Postfix) with ESMTPA id 778FB240057
+ for <tls@ietf.org>; Sun, 13 Dec 2020 02:38:35 -0500 (EST)
+Content-Type: multipart/alternative;
+ boundary="===============6948918040883546692=="
+MIME-Version: 1.0
+From: Repository Activity Summary Bot <do_not_reply@mnot.net>
+To: tls@ietf.org
+Message-Id: <20201213073835.778FB240057@mailuser.nyi.internal>
+Date: Sun, 13 Dec 2020 02:38:35 -0500 (EST)
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/XpUK02owKEtnZTqLAlAIWJCoUdE>
+Subject: [TLS] Weekly github digest (TLS Working Group Drafts)
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Sun, 13 Dec 2020 07:38:48 -0000
+
+--===============6948918040883546692==
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+
+
+
+
+Issues
+------
+* tlswg/draft-ietf-tls-esni (+0/-0/=F0=9F=92=AC12)
+  3 issues received 12 new comments:
+  - #369 Potential SNI leak via cross-ECH resumption (3 by cbartle891, chri=
+s-wood, kjacobs-moz)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/369=20
+  - #359 Transcript hash construction (1 by kylon94)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/359 [ready-for-text=
+]=20
+  - #354 "Don't stick out" considerations for ECH (8 by bemasc, cbartle891,=
+ chris-wood, cjpatton, ekr, huitema)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/354=20
+
+* tlswg/tls13-spec (+1/-0/=F0=9F=92=AC0)
+  1 issues created:
+  - More clarity on what should be in the cookies. (by ekr)
+    https://github.com/tlswg/tls13-spec/issues/1206=20
+
+* tlswg/dtls13-spec (+7/-2/=F0=9F=92=AC8)
+  7 issues created:
+  - Ben Kaduk's review requested a number of example fixes. (by ekr)
+    https://github.com/tlswg/dtls13-spec/issues/187=20
+  - When can you send NCID and RCID (by ekr)
+    https://github.com/tlswg/dtls13-spec/issues/186=20
+  - Add an example for KeyUpdate (by ekr)
+    https://github.com/tlswg/dtls13-spec/issues/176=20
+  - PDU appendix generator is not working properly. (by ekr)
+    https://github.com/tlswg/dtls13-spec/issues/175=20
+  - Say something about how large cert messages may cause congestion (by ek=
+r)
+    https://github.com/tlswg/dtls13-spec/issues/174=20
+  - DTLS version number (by ekr)
+    https://github.com/tlswg/dtls13-spec/issues/170=20
+  - Encryption limits are too long for SN encryption (by ekr)
+    https://github.com/tlswg/dtls13-spec/issues/167=20
+
+  4 issues received 8 new comments:
+  - #187 Ben Kaduk's review requested a number of example fixes. (2 by ekr)
+    https://github.com/tlswg/dtls13-spec/issues/187=20
+  - #186 When can you send NCID and RCID (1 by kaduk)
+    https://github.com/tlswg/dtls13-spec/issues/186=20
+  - #170 DTLS version number (2 by davidben, ekr)
+    https://github.com/tlswg/dtls13-spec/issues/170=20
+  - #167 Encryption limits are too long for SN encryption (3 by ekr, kaduk,=
+ martinthomson)
+    https://github.com/tlswg/dtls13-spec/issues/167=20
+
+  2 issues closed:
+  - PDU appendix generator is not working properly. https://github.com/tlsw=
+g/dtls13-spec/issues/175=20
+  - Encryption limits are too long for SN encryption https://github.com/tls=
+wg/dtls13-spec/issues/167=20
+
+
+
+Pull requests
+-------------
+* tlswg/draft-ietf-tls-esni (+1/-0/=F0=9F=92=AC1)
+  1 pull requests submitted:
+  - Clarify privacy goal scope (by kjacobs-moz)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/371=20
+
+  1 pull requests received 1 new comments:
+  - #371 Clarify privacy goal scope (1 by kjacobs-moz)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/371=20
+
+* tlswg/dtls13-spec (+18/-9/=F0=9F=92=AC2)
+  18 pull requests submitted:
+  - Rationale for spare cids (by ekr)
+    https://github.com/tlswg/dtls13-spec/pull/185=20
+  - Some proposed editorial improvements from Ben Kaduk (by ekr)
+    https://github.com/tlswg/dtls13-spec/pull/184=20
+  - Remove stale text about out-of-epoch records (by ekr)
+    https://github.com/tlswg/dtls13-spec/pull/183=20
+  - Not totally indefinitely (by ekr)
+    https://github.com/tlswg/dtls13-spec/pull/182=20
+  - Some textual clarifications around when ACKs are sent (by ekr)
+    https://github.com/tlswg/dtls13-spec/pull/181=20
+  - Alerts are unreliable (by ekr)
+    https://github.com/tlswg/dtls13-spec/pull/180=20
+  - Rcid excessive (by ekr)
+    https://github.com/tlswg/dtls13-spec/pull/179=20
+  - Clarify when you can reset the timer (by ekr)
+    https://github.com/tlswg/dtls13-spec/pull/178=20
+  - Records with bogus epochs should be discarded, not generate alerts (by =
+ekr)
+    https://github.com/tlswg/dtls13-spec/pull/177=20
+  - Fix some issues around the Finished message (by ekr)
+    https://github.com/tlswg/dtls13-spec/pull/173=20
+  - The advise to aggressively age out was too aggressive (by ekr)
+    https://github.com/tlswg/dtls13-spec/pull/172=20
+  - Don't require always buffering and require that retransmission be ide=
+=E2=80=A6 (by ekr)
+    https://github.com/tlswg/dtls13-spec/pull/171=20
+  - Stop citing RFC2522 (by ekr)
+    https://github.com/tlswg/dtls13-spec/pull/169=20
+  - PMTU estimates (by ekr)
+    https://github.com/tlswg/dtls13-spec/pull/168=20
+  - Require that cipher suites define a record number encryption algorithm =
+(by ekr)
+    https://github.com/tlswg/dtls13-spec/pull/166=20
+  - Fixed portions of the record layer (by ekr)
+    https://github.com/tlswg/dtls13-spec/pull/165=20
+  - Clean up use of connection and association (by ekr)
+    https://github.com/tlswg/dtls13-spec/pull/164=20
+  - Reference tls-old-versions-deprecate (by ekr)
+    https://github.com/tlswg/dtls13-spec/pull/163=20
+
+  2 pull requests received 2 new comments:
+  - #179 Rcid excessive (1 by ekr)
+    https://github.com/tlswg/dtls13-spec/pull/179=20
+  - #161 Ciphersuites seems to miss a "_8" (1 by ekr)
+    https://github.com/tlswg/dtls13-spec/pull/161=20
+
+  9 pull requests merged:
+  - Remove stale text about out-of-epoch records
+    https://github.com/tlswg/dtls13-spec/pull/183=20
+  - Not totally indefinitely
+    https://github.com/tlswg/dtls13-spec/pull/182=20
+  - Some textual clarifications around when ACKs are sent
+    https://github.com/tlswg/dtls13-spec/pull/181=20
+  - Clarify when you can reset the timer
+    https://github.com/tlswg/dtls13-spec/pull/178=20
+  - Fix some issues around the Finished message
+    https://github.com/tlswg/dtls13-spec/pull/173=20
+  - Fixed portions of the record layer
+    https://github.com/tlswg/dtls13-spec/pull/165=20
+  - Clean up use of connection and association
+    https://github.com/tlswg/dtls13-spec/pull/164=20
+  - Reference tls-old-versions-deprecate
+    https://github.com/tlswg/dtls13-spec/pull/163=20
+  - editorial/nits from AD review
+    https://github.com/tlswg/dtls13-spec/pull/160=20
+
+* tlswg/dtls-conn-id (+1/-0/=F0=9F=92=AC0)
+  1 pull requests submitted:
+  - It is no longer true that an empty CID and no CID are the same (by ekr)
+    https://github.com/tlswg/dtls-conn-id/pull/78=20
+
+* tlswg/tls-subcerts (+0/-0/=F0=9F=92=AC3)
+  1 pull requests received 3 new comments:
+  - #77 Add in test vectors (3 by chris-wood, claucece, wbl)
+    https://github.com/tlswg/tls-subcerts/pull/77=20
+
+
+Repositories tracked by this digest:
+-----------------------------------
+* https://github.com/tlswg/draft-ietf-tls-semistatic-dh
+* https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate
+* https://github.com/tlswg/draft-ietf-tls-esni
+* https://github.com/tlswg/certificate-compression
+* https://github.com/tlswg/draft-ietf-tls-external-psk-importer
+* https://github.com/tlswg/draft-ietf-tls-ticketrequest
+* https://github.com/tlswg/tls13-spec
+* https://github.com/tlswg/tls-flags
+* https://github.com/tlswg/dtls13-spec
+* https://github.com/tlswg/dtls-conn-id
+* https://github.com/tlswg/tls-subcerts
+* https://github.com/tlswg/oldversions-deprecate
+* https://github.com/tlswg/sniencryption
+* https://github.com/tlswg/tls-exported-authenticator
+* https://github.com/tlswg/draft-ietf-tls-ctls
+* https://github.com/tlswg/external-psk-design-team
+
+--===============6948918040883546692==
+Content-Type: text/html; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+
+<!doctype html>
+<html lang=3D"en">
+<head>
+<meta charset=3D"utf-8">
+<title>Weekly github digest (TLS Working Group Drafts)</title>
+<style>
+body { font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;=
+ font-size: 14px; }
+h2 { margin-top: 3em; color: #A52A2A; font-style: italic; font-weight: norm=
+al; }
+h3 { margin-bottom:0; margin-top: 2em; font-size: 1.2em; }
+h1+h2 { margin-top: 1em; }
+a { color: #bb6219; text-decoration: none; }
+li { margin-bottom: .35em; }
+.repos { margin-bottom: 0; margin-top:0; line-height: 1.2; }
+.new { color: red; }
+.label { display: inline;
+	padding: .2em .6em .3em;
+	font-size: 75%;
+	font-weight: 700;
+	line-height: 1;
+	color: #fff;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: baseline;
+	border-radius: .25em;
+}
+</style>
+</head>
+
+<body>
+<h1>Sunday December 13, 2020</h1>
+
+
+<h2>Issues</h2>
+
+<h3>tlswg/draft-ietf-tls-esni (+0/-0/=F0=9F=92=AC12)</h3>
+
+  <p>3 issues received 12 new comments:</p>
+  <ul>
+  <li>#369 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/3=
+69">Potential SNI leak via cross-ECH resumption</a> (3 by cbartle891, chris=
+-wood, kjacobs-moz) </li>
+ =20
+  <li>#359 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/3=
+59">Transcript hash construction</a> (1 by kylon94) <span class=3D"label" s=
+tyle=3D"background-color: #f9d0c4; color: #000000">ready-for-text</span> </=
+li>
+ =20
+  <li>#354 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/3=
+54">&quot;Don&#x27;t stick out&quot; considerations for ECH</a> (8 by bemas=
+c, cbartle891, chris-wood, cjpatton, ekr, huitema) </li>
+  </ul>
+
+
+<h3>tlswg/tls13-spec (+1/-0/=F0=9F=92=AC0)</h3>
+  <p class=3D"new">1 issues created:</p>
+  <ul>
+  <li>#1206 <a href=3D"https://github.com/tlswg/tls13-spec/issues/1206">Mor=
+e clarity on what should be in the cookies.</a> (by ekr) </li>
+  </ul>
+
+
+
+<h3>tlswg/dtls13-spec (+7/-2/=F0=9F=92=AC8)</h3>
+  <p class=3D"new">7 issues created:</p>
+  <ul>
+  <li>#187 <a href=3D"https://github.com/tlswg/dtls13-spec/issues/187">Ben =
+Kaduk&#x27;s review requested a number of example fixes.</a> (by ekr) </li>
+ =20
+  <li>#186 <a href=3D"https://github.com/tlswg/dtls13-spec/issues/186">When=
+ can you send NCID and RCID</a> (by ekr) </li>
+ =20
+  <li>#176 <a href=3D"https://github.com/tlswg/dtls13-spec/issues/176">Add =
+an example for KeyUpdate</a> (by ekr) </li>
+ =20
+  <li>#175 <a href=3D"https://github.com/tlswg/dtls13-spec/issues/175">PDU =
+appendix generator is not working properly.</a> (by ekr) </li>
+ =20
+  <li>#174 <a href=3D"https://github.com/tlswg/dtls13-spec/issues/174">Say =
+something about how large cert messages may cause congestion</a> (by ekr) <=
+/li>
+ =20
+  <li>#170 <a href=3D"https://github.com/tlswg/dtls13-spec/issues/170">DTLS=
+ version number</a> (by ekr) </li>
+ =20
+  <li>#167 <a href=3D"https://github.com/tlswg/dtls13-spec/issues/167">Encr=
+yption limits are too long for SN encryption</a> (by ekr) </li>
+  </ul>
+
+  <p>4 issues received 8 new comments:</p>
+  <ul>
+  <li>#187 <a href=3D"https://github.com/tlswg/dtls13-spec/issues/187">Ben =
+Kaduk&#x27;s review requested a number of example fixes.</a> (2 by ekr) </l=
+i>
+ =20
+  <li>#186 <a href=3D"https://github.com/tlswg/dtls13-spec/issues/186">When=
+ can you send NCID and RCID</a> (1 by kaduk) </li>
+ =20
+  <li>#170 <a href=3D"https://github.com/tlswg/dtls13-spec/issues/170">DTLS=
+ version number</a> (2 by davidben, ekr) </li>
+ =20
+  <li>#167 <a href=3D"https://github.com/tlswg/dtls13-spec/issues/167">Encr=
+yption limits are too long for SN encryption</a> (3 by ekr, kaduk, martinth=
+omson) </li>
+  </ul>
+
+  <p>2 issues closed:</p>
+  <ul>
+  <li>#175 <a href=3D"https://github.com/tlswg/dtls13-spec/issues/175">PDU =
+appendix generator is not working properly.</a> </li>
+ =20
+  <li>#167 <a href=3D"https://github.com/tlswg/dtls13-spec/issues/167">Encr=
+yption limits are too long for SN encryption</a> </li>
+  </ul>
+
+
+
+<h2>Pull requests</h2>
+<h3>tlswg/draft-ietf-tls-esni (+1/-0/=F0=9F=92=AC1)</h3>
+  <p class=3D"new">1 pull requests submitted:</p>
+  <ul>
+  <li>#371 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/371=
+">Clarify privacy goal scope</a> (by kjacobs-moz) </li>
+  </ul>
+
+  <p>1 pull requests received 1 new comments:</p>
+  <ul>
+  <li>#371 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/371=
+">Clarify privacy goal scope</a> (1 by kjacobs-moz) </li>
+  </ul>
+
+
+<h3>tlswg/dtls13-spec (+18/-9/=F0=9F=92=AC2)</h3>
+  <p class=3D"new">18 pull requests submitted:</p>
+  <ul>
+  <li>#185 <a href=3D"https://github.com/tlswg/dtls13-spec/pull/185">Ration=
+ale for spare cids</a> (by ekr) </li>
+ =20
+  <li>#184 <a href=3D"https://github.com/tlswg/dtls13-spec/pull/184">Some p=
+roposed editorial improvements from Ben Kaduk</a> (by ekr) </li>
+ =20
+  <li>#183 <a href=3D"https://github.com/tlswg/dtls13-spec/pull/183">Remove=
+ stale text about out-of-epoch records</a> (by ekr) </li>
+ =20
+  <li>#182 <a href=3D"https://github.com/tlswg/dtls13-spec/pull/182">Not to=
+tally indefinitely</a> (by ekr) </li>
+ =20
+  <li>#181 <a href=3D"https://github.com/tlswg/dtls13-spec/pull/181">Some t=
+extual clarifications around when ACKs are sent</a> (by ekr) </li>
+ =20
+  <li>#180 <a href=3D"https://github.com/tlswg/dtls13-spec/pull/180">Alerts=
+ are unreliable</a> (by ekr) </li>
+ =20
+  <li>#179 <a href=3D"https://github.com/tlswg/dtls13-spec/pull/179">Rcid e=
+xcessive</a> (by ekr) </li>
+ =20
+  <li>#178 <a href=3D"https://github.com/tlswg/dtls13-spec/pull/178">Clarif=
+y when you can reset the timer</a> (by ekr) </li>
+ =20
+  <li>#177 <a href=3D"https://github.com/tlswg/dtls13-spec/pull/177">Record=
+s with bogus epochs should be discarded, not generate alerts</a> (by ekr) <=
+/li>
+ =20
+  <li>#173 <a href=3D"https://github.com/tlswg/dtls13-spec/pull/173">Fix so=
+me issues around the Finished message</a> (by ekr) </li>
+ =20
+  <li>#172 <a href=3D"https://github.com/tlswg/dtls13-spec/pull/172">The ad=
+vise to aggressively age out was too aggressive</a> (by ekr) </li>
+ =20
+  <li>#171 <a href=3D"https://github.com/tlswg/dtls13-spec/pull/171">Don&#x=
+27;t require always buffering and require that retransmission be ide=E2=80=
+=A6</a> (by ekr) </li>
+ =20
+  <li>#169 <a href=3D"https://github.com/tlswg/dtls13-spec/pull/169">Stop c=
+iting RFC2522</a> (by ekr) </li>
+ =20
+  <li>#168 <a href=3D"https://github.com/tlswg/dtls13-spec/pull/168">PMTU e=
+stimates</a> (by ekr) </li>
+ =20
+  <li>#166 <a href=3D"https://github.com/tlswg/dtls13-spec/pull/166">Requir=
+e that cipher suites define a record number encryption algorithm</a> (by ek=
+r) </li>
+ =20
+  <li>#165 <a href=3D"https://github.com/tlswg/dtls13-spec/pull/165">Fixed =
+portions of the record layer</a> (by ekr) </li>
+ =20
+  <li>#164 <a href=3D"https://github.com/tlswg/dtls13-spec/pull/164">Clean =
+up use of connection and association</a> (by ekr) </li>
+ =20
+  <li>#163 <a href=3D"https://github.com/tlswg/dtls13-spec/pull/163">Refere=
+nce tls-old-versions-deprecate</a> (by ekr) </li>
+  </ul>
+
+  <p>2 pull requests received 2 new comments:</p>
+  <ul>
+  <li>#179 <a href=3D"https://github.com/tlswg/dtls13-spec/pull/179">Rcid e=
+xcessive</a> (1 by ekr) </li>
+ =20
+  <li>#161 <a href=3D"https://github.com/tlswg/dtls13-spec/pull/161">Cipher=
+suites seems to miss a &quot;_8&quot;</a> (1 by ekr) </li>
+  </ul>
+
+  <p>9 pull requests merged:</p>
+  <ul>
+  <li>#183 <a href=3D"https://github.com/tlswg/dtls13-spec/pull/183">Remove=
+ stale text about out-of-epoch records</a> </li>
+ =20
+  <li>#182 <a href=3D"https://github.com/tlswg/dtls13-spec/pull/182">Not to=
+tally indefinitely</a> </li>
+ =20
+  <li>#181 <a href=3D"https://github.com/tlswg/dtls13-spec/pull/181">Some t=
+extual clarifications around when ACKs are sent</a> </li>
+ =20
+  <li>#178 <a href=3D"https://github.com/tlswg/dtls13-spec/pull/178">Clarif=
+y when you can reset the timer</a> </li>
+ =20
+  <li>#173 <a href=3D"https://github.com/tlswg/dtls13-spec/pull/173">Fix so=
+me issues around the Finished message</a> </li>
+ =20
+  <li>#165 <a href=3D"https://github.com/tlswg/dtls13-spec/pull/165">Fixed =
+portions of the record layer</a> </li>
+ =20
+  <li>#164 <a href=3D"https://github.com/tlswg/dtls13-spec/pull/164">Clean =
+up use of connection and association</a> </li>
+ =20
+  <li>#163 <a href=3D"https://github.com/tlswg/dtls13-spec/pull/163">Refere=
+nce tls-old-versions-deprecate</a> </li>
+ =20
+  <li>#160 <a href=3D"https://github.com/tlswg/dtls13-spec/pull/160">editor=
+ial/nits from AD review</a> </li>
+  </ul>
+
+<h3>tlswg/dtls-conn-id (+1/-0/=F0=9F=92=AC0)</h3>
+  <p class=3D"new">1 pull requests submitted:</p>
+  <ul>
+  <li>#78 <a href=3D"https://github.com/tlswg/dtls-conn-id/pull/78">It is n=
+o longer true that an empty CID and no CID are the same</a> (by ekr) </li>
+  </ul>
+
+
+
+<h3>tlswg/tls-subcerts (+0/-0/=F0=9F=92=AC3)</h3>
+
+  <p>1 pull requests received 3 new comments:</p>
+  <ul>
+  <li>#77 <a href=3D"https://github.com/tlswg/tls-subcerts/pull/77">Add in =
+test vectors</a> (3 by chris-wood, claucece, wbl) </li>
+  </ul>
+
+
+
+<h2>Repositories tracked by this digest:</h2>
+<ul class=3D"repos">
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-semistatic-dh">htt=
+ps://github.com/tlswg/draft-ietf-tls-semistatic-dh</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate=
+">https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-esni">https://gith=
+ub.com/tlswg/draft-ietf-tls-esni</a></li>
+  <li><a href=3D"https://github.com/tlswg/certificate-compression">https://=
+github.com/tlswg/certificate-compression</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-external-psk-impor=
+ter">https://github.com/tlswg/draft-ietf-tls-external-psk-importer</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-ticketrequest">htt=
+ps://github.com/tlswg/draft-ietf-tls-ticketrequest</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls13-spec">https://github.com/tl=
+swg/tls13-spec</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-flags">https://github.com/tls=
+wg/tls-flags</a></li>
+  <li><a href=3D"https://github.com/tlswg/dtls13-spec">https://github.com/t=
+lswg/dtls13-spec</a></li>
+  <li><a href=3D"https://github.com/tlswg/dtls-conn-id">https://github.com/=
+tlswg/dtls-conn-id</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-subcerts">https://github.com/=
+tlswg/tls-subcerts</a></li>
+  <li><a href=3D"https://github.com/tlswg/oldversions-deprecate">https://gi=
+thub.com/tlswg/oldversions-deprecate</a></li>
+  <li><a href=3D"https://github.com/tlswg/sniencryption">https://github.com=
+/tlswg/sniencryption</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-exported-authenticator">https=
+://github.com/tlswg/tls-exported-authenticator</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-ctls">https://gith=
+ub.com/tlswg/draft-ietf-tls-ctls</a></li>
+  <li><a href=3D"https://github.com/tlswg/external-psk-design-team">https:/=
+/github.com/tlswg/external-psk-design-team</a></li>
+  </ul>
+</body>
+</html>
+
+--===============6948918040883546692==--
+

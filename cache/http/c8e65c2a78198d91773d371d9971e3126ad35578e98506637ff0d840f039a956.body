@@ -1,0 +1,477 @@
+Return-Path: <john.mattsson@ericsson.com>
+X-Original-To: tls@mail2.ietf.org
+Delivered-To: tls@mail2.ietf.org
+Received: from localhost (localhost [127.0.0.1])
+	by mail2.ietf.org (Postfix) with ESMTP id AE54E7C09F5F
+	for <tls@mail2.ietf.org>; Sat, 25 Oct 2025 05:15:28 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at ietf.org
+X-Spam-Flag: NO
+X-Spam-Score: -2.096
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.096 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIMWL_WL_HIGH=-0.001, DKIM_SIGNED=0.1,
+	DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1,
+	HTML_MESSAGE=0.001, RCVD_IN_MSPIKE_H2=0.001,
+	RCVD_IN_VALIDITY_RPBL_BLOCKED=0.001,
+	RCVD_IN_VALIDITY_SAFE_BLOCKED=0.001, SPF_NONE=0.001]
+	autolearn=ham autolearn_force=no
+Authentication-Results: mail2.ietf.org (amavisd-new); dkim=pass (2048-bit key)
+	header.d=ericsson.com
+Received: from mail2.ietf.org ([166.84.6.31])
+	by localhost (mail2.ietf.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id etlLj5f_w89X for <tls@mail2.ietf.org>;
+	Sat, 25 Oct 2025 05:15:27 -0700 (PDT)
+Received: from MRWPR03CU001.outbound.protection.outlook.com
+ (mail-francesouthazon11011011.outbound.protection.outlook.com
+ [40.107.130.11])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-384) server-signature ECDSA (P-256) server-digest
+ SHA256)
+	(No client certificate requested)
+	by mail2.ietf.org (Postfix) with ESMTPS id C08037C09F58
+	for <tls@ietf.org>; Sat, 25 Oct 2025 05:15:27 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=QcfWSeCoa1bBP05KT/Q7Z2GOPOoLxjTkhoxguIk3xwglo8Agpt4UZP+2uGGPojuAQ2E+nm82JE3rrKXHY/X6Zv8+pYr7V/9cx/z2fgmmHxI0kC6TRG58mWiVQYZNo0kJgsepyROf3yFGRqY7JMYTb81VtquZpebDNlqJWSG5HZJQ2+LN9yuGNnWsISfov/bR5eWZJx9Vqyrq9ml9SbW0LEGOF25VhgfiwkgCz4/8/dBDr6ND46peVV09Wlj8ykBccK24P5RZ0s0gc7AysClS7i2EvAmjSnfepR3/acnfGBCmbWuKN+rzYnRgnVVkw2L6y3671u6+XVQPTT76iPxqqA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=mdtOJ2d2ZYqQSp6pp0ON+Z33+VpZIKWQD2QzL84rIZg=;
+ b=u+XWY2gu0adHzu84lL0moBAA2o7Hdk+dp8VA+Xu6lCefGNDWwDFREKtMcsVM6lnlZYJ/wQXhSdU0hdxAcw+BeZZ4h56zqRsE2vB1n6+hTwfkOzVEDkoTA1TDUOjSl0a1APKiTtI6uKJMpbZzzMTjcetRmWwhSMbmdJSh3swKz1imxwF8CvMow+x0sXzOgwFAKkt1/MWp5t3NK86nxdDOVg2PSP/GeXPZG+fohKJbno+G8AuFyhbdH2c2xI3/a9f1NFhOQ5POlHuXCENsI88EqOvyEJ34NFqfW4IBqjGbliQxnFb0TEl1M8UsTuHI8LSL9nl05pVth/uxiYfXZhbijg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=ericsson.com; dmarc=pass action=none header.from=ericsson.com;
+ dkim=pass header.d=ericsson.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ericsson.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mdtOJ2d2ZYqQSp6pp0ON+Z33+VpZIKWQD2QzL84rIZg=;
+ b=ugvG/D8nYGJBN96sU+Q/up92/+mh7ENDvp9WuDXJGybtK1YInVZMS6WGy4RxxWqh6x4fh1wudd2kybgmuR2SaQQOJVboOIb88UZCPT+M1MQCwFddN8imqLwDR6Z/FoKSvsqUob0uNC9w82C31PLcaHLfn6tCabi+AbxeA5tkhOb8htCH2SsbsH1xYcPOhpH2NiK4Fg3OqpgWv4CZJ62lUZZ4DqAW6mApDt4t9YFkwYGjSBUnN2u9T5C/g9NDYK+cytUv6wHxglQ8fj9svrE2OIHtGXz84TCoD8h1uOSr1vNex2h8o6+/1CTFpfD72bb9305Q2belDg3QHbeO/xDO7Q==
+Received: from GVXPR07MB9678.eurprd07.prod.outlook.com (2603:10a6:150:114::10)
+ by DB9PR07MB10809.eurprd07.prod.outlook.com (2603:10a6:10:5e1::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9253.15; Sat, 25 Oct
+ 2025 12:15:17 +0000
+Received: from GVXPR07MB9678.eurprd07.prod.outlook.com
+ ([fe80::bcf3:3f45:888e:a4b8]) by GVXPR07MB9678.eurprd07.prod.outlook.com
+ ([fe80::bcf3:3f45:888e:a4b8%3]) with mapi id 15.20.9253.013; Sat, 25 Oct 2025
+ 12:15:17 +0000
+From: John Mattsson <john.mattsson@ericsson.com>
+To: Ilari Liusvaara <ilariliusvaara@welho.com>, "tls@ietf.org" <tls@ietf.org>
+Thread-Topic: [TLS] Re: KeyShareEntry MUST be generated independently - was
+ Re: Mohamed Boucadair's No Objection on draft-ietf-tls-hybrid-design-15:
+ (with COMMENT) (fwd)
+Thread-Index: 
+ AQHcK+pmAIKrSng74EOlLY2QTjfxLbSf36UAgAADFICAAjx6AIAAHQtCgABXnICAAE3ygIAACAKAgAAay4CAABFUAIAuqQ8AgAAHJQCAAGmKAIAADOoAgACygACAAABnYQ==
+Date: Sat, 25 Oct 2025 12:15:17 +0000
+Message-ID: 
+ <GVXPR07MB9678659D0A95BE264C8BDFAE89FEA@GVXPR07MB9678.eurprd07.prod.outlook.com>
+References: 
+ <GVXPR07MB96787F7DE114F3B422B32543891CA@GVXPR07MB9678.eurprd07.prod.outlook.com>
+ <CABcZeBNoOyzt=n1cpE=v6u4J2DXO5fQgVDP8Fs4PY4LY6MM_wQ@mail.gmail.com>
+ <ecb276ef-fb40-4e2d-bc39-a41fce8e4c42@betaapp.fastmail.com>
+ <CABcZeBM6yn856kjqQU8du8RPTefRPRqLEVM_vpYYDa2mhss7_g@mail.gmail.com>
+ <34c264d8-9fe7-4a3f-9f4a-240a147340ad@betaapp.fastmail.com>
+ <CABcZeBO3jqr8GupFyBmO0x8mpzN0BZYsWrSQKWa4dFKDAN6h6g@mail.gmail.com>
+ <C5796E94-4E93-44FE-A68F-D207B78E73E3@sn3rd.com>
+ <e5355ebe-7d5a-c7d1-109f-b6ef4a448527@nohats.ca>
+ <aPwVbHN_rwT0tlBC@chardros.imrryr.org>
+ <82949ed2-e008-40ae-bf2b-b847af91843a@cs.tcd.ie>
+ <aPy1_lkFD0ogedrQ@LK-Perkele-VII2.locald>
+In-Reply-To: <aPy1_lkFD0ogedrQ@LK-Perkele-VII2.locald>
+Accept-Language: en-US
+Content-Language: en-GB
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-reactions: allow
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=ericsson.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: GVXPR07MB9678:EE_|DB9PR07MB10809:EE_
+x-ms-office365-filtering-correlation-id: afe5394d-10a2-4ce3-a9b9-08de13c028ea
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: 
+ BCL:0;ARA:13230040|376014|366016|1800799024|4022899009|8096899003|7053199007|38070700021;
+x-microsoft-antispam-message-info: 
+ =?Windows-1252?Q?htAkFxJilCk1CsAXaWafVh3zsehBqrvb23s/0rHFFTlo4+LPzSCMGy7K?=
+ =?Windows-1252?Q?LjDnelCAesbGzdYIWIHfv5tw5ayIu4UowUwqEZXZEYTJOw8nDIrVaUHZ?=
+ =?Windows-1252?Q?urVYaJzHvIkM9in3HENodLeezVxhM72KZUFxCjk8pV1PwejDh6Gmx9UE?=
+ =?Windows-1252?Q?ileDmgZ75NUm2lFSDeoFPnICu6mpxZwFYSjKxDM/28+/Sc1ptNHycfxE?=
+ =?Windows-1252?Q?8qwAHzntKc2M4+3hM2vXkjXC7AOCrKzJ/ZL8TVxAQMwvGhvylfjYEMj+?=
+ =?Windows-1252?Q?TXCjSd+j67bw7yTi0We0UR9o3Je7JuzwqC09bBb7STGsE2GYJf8Flf7d?=
+ =?Windows-1252?Q?k7OTDnHPI932QAQhl6P4ye5jYcO9E5z49dMOIt547gAbvc+djY0A4C4l?=
+ =?Windows-1252?Q?Ap2LbUzvNHVH9eRIEkWxaw4DJ+jxi18bRT6RyiRw1XlTV4shISk87V7l?=
+ =?Windows-1252?Q?IiMiOfJ+J44sYD69DrctwWuqTvemoQwpPuLkgrb0NQsTGGHnoiednKgy?=
+ =?Windows-1252?Q?wDTPPRDnQ0TGrAUlQB+YC5s7KkfLfNiMazPWQtNTgpvLlTyVgYI6tVKP?=
+ =?Windows-1252?Q?tHPualELeTl+OfrMNGZAM7JElocX9/8n2VrcF6jCd4A/hGHSQt3r0cOP?=
+ =?Windows-1252?Q?/XWvZkOX0An+Fyuf6EGaiEnVucQ7CND6xCKLMMIra9PUDQD+JB5Wlz92?=
+ =?Windows-1252?Q?LocFFQHkTWDC2GjY93q6e95HfVZPwhTWUNU3W39+8vsstdb2AK/4e64y?=
+ =?Windows-1252?Q?wzY4SlC4TupHdR8OpkhM2ivVnsaQO6wXlFIvFeltgepH1Q1Wq7iHtimT?=
+ =?Windows-1252?Q?iMh6jppaZM0Njuw7BqHqsu6MnbHpr5MNmrPKD4+w+p+1xYA6kJqaVTDw?=
+ =?Windows-1252?Q?t7gR/vxX5Dkhxe+k2u3eY7fBPLkHMBdBcfUkTBv2vLH1btAEivjNh9mo?=
+ =?Windows-1252?Q?404etTLZAr0Q5MORfhuAckUN7+uLZQqJ3F3S+0Ehc27ywGVfaIxfB2YL?=
+ =?Windows-1252?Q?zqQV31HL+noKnn72PmaWI9CTdfnBy4hytXlNVL3hMpdjgQm8PfEaPoqp?=
+ =?Windows-1252?Q?QQ4Km9CUglWcbirP6RHyLdB8DWY0z227LA6wlz/7u4o+upVXdwQ25VbJ?=
+ =?Windows-1252?Q?XPYUvALBxfb9oU3bnqk6Zt/b6zybqSdcM93xPZ37oyRWQi5zn5qDOc0t?=
+ =?Windows-1252?Q?4qGUhQAMDA6fG+H0vvyLZxrsXWeCp52nJr7NKcy6EipPVr+mLy9vx92/?=
+ =?Windows-1252?Q?REsEdNoVfmPCGQKODbsnFitmUpv1ZpYo5uBy4LdDJpbQL2mqRLHqyoFJ?=
+ =?Windows-1252?Q?ajl5sPw2IQmBThPVI319nYnVzH/3eEJlsAnvEYFPYI7EO9HvOKghji6k?=
+ =?Windows-1252?Q?OEqGK8EFC5kA4ErqvomjTZu3Q4RpW5vEthi9ASuf9IyTrA9zbA+BiQxz?=
+ =?Windows-1252?Q?Smhy7hJn6JM/cJTkGJJGfKSmzGyMUeop8TWuzTe8t+nRw37zYkiov5A+?=
+ =?Windows-1252?Q?hnfSPfNkFzNJEz/BqpAd7SnUTNgXsFqgtE/c3psTBs+zocgLvvjhIE4g?=
+ =?Windows-1252?Q?YsXdgPbyCOaO8z5NvOOnkeUlpzBK6bJcNaMc/w/8rE4gWxne+3mZufxE?=
+ =?Windows-1252?Q?vTUWLY+UcTODAlHFmcdu/yjH?=
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:GVXPR07MB9678.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(1800799024)(4022899009)(8096899003)(7053199007)(38070700021);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?Windows-1252?Q?o4qHK7DqGZIozYFVhI4RIvXYnFsD2xuT1tJ6nGHaHrkG30/be08zV/vG?=
+ =?Windows-1252?Q?GOuFiT9+tEicv7rT9mPjmM5ExnUXx8Q+B20l07M8iZvo0dMLodecfCa1?=
+ =?Windows-1252?Q?JEfaPDfgQ8osl2FYRRwgRjB0XCY2dMe2GWODo68xdY2VMsJSPTCtUkU6?=
+ =?Windows-1252?Q?zLK1w7a8ERtfNemAQwlGj2aHg+SvCVKAM1oV0hXrTt4fQqCf26cytMPc?=
+ =?Windows-1252?Q?ScLvGAzXC61/tPI7WZ6glVC5DruLnosxhg/vn0fHDv6wx6BniS4tY5BA?=
+ =?Windows-1252?Q?0UxZu/gLsZH2aku8qzpOwlTluPC8M2sANBadnVixmRChfkSRmRxx2H6D?=
+ =?Windows-1252?Q?WIxyrcY0nFbjlDiC1JHhyrT9Sr0Vqa9ku7P605RWeVvTiRrWNR0hc3F0?=
+ =?Windows-1252?Q?3V2MnGWO2Eap7jTG30oP8kZqCoS88s8lddJoFg4H04ks/njdA0M7dGkY?=
+ =?Windows-1252?Q?5lGYboNHszzHIMsX+b8A9HoVfU8kkMe4Nywv8bqqGxj+4U9uoiEyqgfG?=
+ =?Windows-1252?Q?++DtYG2zrVStgeOn1gfcM4wnFkwjUXm9k7Xk4/bT4ss9WqohVJaWzQMm?=
+ =?Windows-1252?Q?s9ACeBKoGJ+2ZudZ0RqTtOIa8iQIGKNQ38drL+kU1VwnohcCfqoVI+Zc?=
+ =?Windows-1252?Q?rXMIMmlp5DDq+0C6T6c4AeW+G2FbyKNOaMrE2qEnl72hGYKqidSoQOEu?=
+ =?Windows-1252?Q?+/5bKWZOwlRVwocEnIVR4K4msXughnWVZPvwUp2HxmRGZoW+T+UvUGo5?=
+ =?Windows-1252?Q?mMge/tXr0q9KIOTH+eYoD6E17PSKUcfEdyY5C5FsHWH7IW660va6gxPJ?=
+ =?Windows-1252?Q?Y3tMo83oAAnyJ4kQzfXl9m/B3UrZ+EwcVNe+O4qqgBBiE/q9jAxA9h7c?=
+ =?Windows-1252?Q?/Xv8dZe/4WB+h7NsodjaZODk9k4HTQHaSmfIc0PMXgdd7FIl/Xz0tscB?=
+ =?Windows-1252?Q?secloX+yL/SWV/4Zvd9ieKtsCSlqNvipSFxakLa9owZjQK7/TiTSWQdv?=
+ =?Windows-1252?Q?2JkQSBwrzBNzXd9628AJVpmY+nlK9SrZlt/+z/f9gb8aeJJ7RDhIOKBq?=
+ =?Windows-1252?Q?TRgs0uCUAmhxNFLYxMfOutVx57+x0ahkQQkeQel/gCG8kziRSFucc46X?=
+ =?Windows-1252?Q?2sbfLIvQ1Qsc9AVloYsyy7C+mgf5u4OTI8qQQYajMjCfcZHZJXJUKmff?=
+ =?Windows-1252?Q?Cnsu872flBq2Vsvz5NQdv4BMFEtVUmx98/BKGocXG7FvQOW4Q3pqQn++?=
+ =?Windows-1252?Q?J1QxREXUMZ9wJXtg46nQE7PPyEcz4JX4Pn5FqiKz3spe3ryfnlPnxjJL?=
+ =?Windows-1252?Q?It6icrYvh67ydwGyHmM7kNrXfCFDMjagF4VRDZj4P+rkjlK+jnHkY4+Z?=
+ =?Windows-1252?Q?/uM3ObUoqU6lELaC5wDT6E88MZ7H0ao8RanDE2QNzm813XuRy5Ix6gFW?=
+ =?Windows-1252?Q?Y5zd+dsVjJ1jvULop9jnV1i3ib5nUNkA2JmJPsjpUtroUlVcvHVPsyXh?=
+ =?Windows-1252?Q?a0dzl2+szums90r1SuNAZO+gex4q6K+5+izxXkBcefmEUvlPvT/KOOOV?=
+ =?Windows-1252?Q?e8J09csJYJpET50OVq2b19BwfqOlinrLZBvzlIadCrgepOF5kuFqTELm?=
+ =?Windows-1252?Q?S2WFJ+wCvogWn+WdG7QWwmFZnkWzZ7UOwphfn3W/Fg2tdJvH/VoSqKKL?=
+ =?Windows-1252?Q?nPGD2o1qO2aCJ/zZ98mM3pT0G+gBqk7Kt9TrHrJY+sGyxhPcPN949Me0?=
+ =?Windows-1252?Q?1lX78MktadXrw6qml+k=3D?=
+Content-Type: multipart/alternative;
+	boundary="_000_GVXPR07MB9678659D0A95BE264C8BDFAE89FEAGVXPR07MB9678eurp_"
+MIME-Version: 1.0
+X-OriginatorOrg: ericsson.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: GVXPR07MB9678.eurprd07.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ afe5394d-10a2-4ce3-a9b9-08de13c028ea
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Oct 2025 12:15:17.3929
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 92e84ceb-fbfd-47ab-be52-080c6b87953f
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 
+ 2T6xMQVLWisO41vF53mp6+UyqV0mdGNpcYQ6x8DwnomsVYyoYK2Z5xwZ1TNbL18vw0LRAhIGFWIPLSOj6JSQzcY7cy0w0rrTAXXOSNMNvbk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR07MB10809
+Message-ID-Hash: 2UKRYIXTK4A267IAEOBCGO5CM5VNZBRK
+X-Message-ID-Hash: 2UKRYIXTK4A267IAEOBCGO5CM5VNZBRK
+X-MailFrom: john.mattsson@ericsson.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Re=3A_KeyShareEntry_MUST_be_generated_independently_-_wa?=
+ =?utf-8?q?s_Re=3A_Mohamed_Boucadair=27s_No_Objection_on_draft-ietf-tls-hybr?=
+ =?utf-8?q?id-design-15=3A_=28with_COMMENT=29_=28fwd=29?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/0w5HZneoVrR6IZjwdjwNty9gvZU>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+--_000_GVXPR07MB9678659D0A95BE264C8BDFAE89FEAGVXPR07MB9678eurp_
+Content-Type: text/plain; charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
+
+> (but AFAIK not banned by TLS). Futhermore, some other security standards =
+like FIPS do ban share reuse across connections.
+Yes, FIPS 203 (ML-KEM) forbids the reuse of an ephemeral public key for key=
+-establishment in two connections. Consequently, this will also be prohibit=
+ed in any IETF standard employing ephemeral ML-KEM keys.
+
+Hopefully, the IETF will reject any proposal to violate NIST requirements m=
+erely to accommodate organizations seeking intercept/visibility through dis=
+couraged means. There are better ways to achieve visibility without comprom=
+ising the privacy and security of the Internet as a whole. NIST SP 1800-37 =
+=93Addressing Visibility Challenges with TLS 1.3 within the Enterprise High=
+-Level Document=94 states:
+
+=93Reuse of a key share allows passive observers to correlate different con=
+nections. This specification discourages client and server reuse of a key s=
+hare for multiple internet connections. Reusing key shares outside protecte=
+d facilities can also expand the impact of security breaches.=94
+
+And the above statement from NIST is too soft. If you believe in zero trust=
+ rather than perimeter security, reusing key shares can expand the impact o=
+f security breaches even within protected facilities. Moreover, reusing key=
+ shares also weakens forward secrecy and post-compromise security.
+
+Cheers,
+John
+
+From: Ilari Liusvaara <ilariliusvaara@welho.com>
+Date: Saturday, 25 October 2025 at 13:36
+To: tls@ietf.org <tls@ietf.org>
+Subject: [TLS] Re: KeyShareEntry MUST be generated independently - was Re: =
+Mohamed Boucadair's No Objection on draft-ietf-tls-hybrid-design-15: (with =
+COMMENT) (fwd)
+On Sat, Oct 25, 2025 at 01:56:34AM +0100, Stephen Farrell wrote:
+>
+> Hiya,
+>
+> On 25/10/2025 01:10, Viktor Dukhovni wrote:
+>
+> > The text could say:
+> >
+> >          [TLS13] requires that ``The key_exchange values for each
+> >          KeyShareEntry MUST be generated independently.'' In the contex=
+t
+> >          of hybrid algorithms, this independent generation requirement
+> >          also applies across its component algorithms.  However, when a
+> >          component algorithm of a hybrid keyshare is used in more than
+> >          one keyshare within the same ClientHello, either as part of
+> >          another hybrid, or standalone, that same keyshare component MA=
+Y
+> >          be used more than once, since ultimately only one of the
+> >          keyshares is used in key derivation: the multiple copies in th=
+e
+> >          same ClientHello do not lead to reuse of an ephemeral private
+> >          key, nor are the secrets for separate algorithms thereby deriv=
+ed
+> >          in a manner than might compromise the security of the stronger
+> >          when the weaker is vulnerable to an attack.
+>
+> I'm fine with however this gets resolved, but have a question: would
+> the above still always be true with ECH? Given the ECH compression
+> mechanism and the ECH fallback authentication of the `public_name` a
+> client might use the same private value twice, or am I mistaken?
+
+- ECH compression can not lead to reuse, because only one of the client
+  hellos is used. In fact, generating indepndent key shares for both
+  can be a security problem.
+
+  That is, if there is some component that lacks anonymity (which is
+  normally not a problem) and server chooses that, then passive observer
+  might be able to tell if ECH was used or not.
+
+- ECH fallback authentication is separate connection, so it can only
+  lead to reuse if client reuses shares between connections, which is
+  not recommended (but AFAIK not banned by TLS). Futhermore, some
+  other security standards like FIPS do ban share reuse across
+  connections.
+
+
+
+
+-Ilari
+
+_______________________________________________
+TLS mailing list -- tls@ietf.org
+To unsubscribe send an email to tls-leave@ietf.org
+
+--_000_GVXPR07MB9678659D0A95BE264C8BDFAE89FEAGVXPR07MB9678eurp_
+Content-Type: text/html; charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" xmlns:w=3D"urn:sc=
+hemas-microsoft-com:office:word" xmlns:m=3D"http://schemas.microsoft.com/of=
+fice/2004/12/omml" xmlns=3D"http://www.w3.org/TR/REC-html40">
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3DWindows-1=
+252">
+<meta name=3D"Generator" content=3D"Microsoft Word 15 (filtered medium)">
+<style><!--
+/* Font Definitions */
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Aptos;
+	panose-1:2 11 0 4 2 2 2 2 2 4;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	font-size:12.0pt;
+	font-family:"Aptos",sans-serif;}
+span.EmailStyle19
+	{mso-style-type:personal-reply;
+	font-family:"Aptos",sans-serif;
+	color:windowtext;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	font-size:10.0pt;
+	mso-ligatures:none;}
+@page WordSection1
+	{size:612.0pt 792.0pt;
+	margin:72.0pt 72.0pt 72.0pt 72.0pt;}
+div.WordSection1
+	{page:WordSection1;}
+--></style>
+</head>
+<body lang=3D"en-SE" link=3D"#467886" vlink=3D"#96607D" style=3D"word-wrap:=
+break-word">
+<div class=3D"WordSection1">
+<p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"font-size:11.0pt;color=
+:#212121">&gt;</span><span lang=3D"EN-US" style=3D"font-size:11.0pt;color:#=
+212121">
+</span><span lang=3D"EN-US" style=3D"font-size:11.0pt;color:#212121">(</spa=
+n><span style=3D"font-size:11.0pt;color:#212121">but AFAIK not banned by TL=
+S). Futhermore, some</span><span style=3D"font-size:11.0pt;color:#212121">
+</span><span style=3D"font-size:11.0pt;color:#212121">other security standa=
+rds like FIPS do ban share reuse across</span><span style=3D"font-size:11.0=
+pt;color:#212121">
+</span><span style=3D"font-size:11.0pt;color:#212121">connections.</span><s=
+pan lang=3D"EN-US" style=3D"font-size:11.0pt;color:#212121"><br>
+</span><span style=3D"font-size:11.0pt">Yes, FIPS 203 (ML-KEM) forbids the =
+reuse of an ephemeral public key for key-establishment in two connections. =
+Consequently, this will also be prohibited in any IETF standard employing e=
+phemeral ML-KEM keys.</span><span lang=3D"EN-US" style=3D"font-size:11.0pt"=
+><br>
+<br>
+</span><span style=3D"font-size:11.0pt">Hopefully, the IETF will reject any=
+ proposal
+</span><span lang=3D"EN-US" style=3D"font-size:11.0pt">to</span><span style=
+=3D"font-size:11.0pt"> violate NIST requirements merely to accommodate orga=
+nizations seeking intercept</span><span lang=3D"EN-US" style=3D"font-size:1=
+1.0pt">/</span><span style=3D"font-size:11.0pt">visibility
+ through discouraged means. There are better ways to achieve visibility wit=
+hout compromising the privacy and security of the Internet as a whole.</spa=
+n><span style=3D"font-size:11.0pt">
+<span lang=3D"EN-US">NIST SP 1800-37 =93Addressing Visibility Challenges wi=
+th TLS 1.3 within the Enterprise High-Level Document=94 states:<br>
+<br>
+<span style=3D"color:#212121">=93Reuse of a key share allows passive observ=
+ers to correlate different connections. This specification discourages clie=
+nt and server reuse of a key share for multiple internet connections. Reusi=
+ng key shares outside protected facilities
+ can also expand the impact of security breaches.=94<br>
+<br>
+</span>And t</span></span><span style=3D"font-size:11.0pt">he above stateme=
+nt from NIST is</span><span style=3D"font-size:11.0pt">
+</span><span style=3D"font-size:11.0pt">too soft. If you believe in zero tr=
+ust rather than perimeter security, reusing key shares can
+</span><span lang=3D"EN-US" style=3D"font-size:11.0pt;color:#212121">expand=
+</span><span style=3D"font-size:11.0pt"> the impact of security breaches ev=
+en within protected facilities. Moreover, reusing key shares
+</span><span lang=3D"EN-US" style=3D"font-size:11.0pt">also weakens</span><=
+span style=3D"font-size:11.0pt"> forward secrecy
+</span><span lang=3D"EN-US" style=3D"font-size:11.0pt">and</span><span styl=
+e=3D"font-size:11.0pt"> post-compromise security</span><span lang=3D"EN-US"=
+ style=3D"font-size:11.0pt">.<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"font-size:11.0pt;color=
+:#212121"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"font-size:11.0pt;color=
+:#212121">Cheers,<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"font-size:11.0pt;color=
+:#212121">John<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;mso-fareast-language=
+:EN-US"><o:p>&nbsp;</o:p></span></p>
+<div id=3D"mail-editor-reference-message-container">
+<div>
+<div>
+<div style=3D"border:none;border-top:solid #B5C4DF 1.0pt;padding:3.0pt 0cm =
+0cm 0cm">
+<p class=3D"MsoNormal" style=3D"margin-bottom:12.0pt"><b><span style=3D"col=
+or:black">From:
+</span></b><span style=3D"color:black">Ilari Liusvaara &lt;ilariliusvaara@w=
+elho.com&gt;<br>
+<b>Date: </b>Saturday, 25 October 2025 at 13:36<br>
+<b>To: </b>tls@ietf.org &lt;tls@ietf.org&gt;<br>
+<b>Subject: </b>[TLS] Re: KeyShareEntry MUST be generated independently - w=
+as Re: Mohamed Boucadair's No Objection on draft-ietf-tls-hybrid-design-15:=
+ (with COMMENT) (fwd)<o:p></o:p></span></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt">On Sat, Oct 25, 202=
+5 at 01:56:34AM +0100, Stephen Farrell wrote:<br>
+&gt; <br>
+&gt; Hiya,<br>
+&gt; <br>
+&gt; On 25/10/2025 01:10, Viktor Dukhovni wrote:<br>
+&gt; <br>
+&gt; &gt; The text could say:<br>
+&gt; &gt; <br>
+&gt; &gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [TLS13] req=
+uires that ``The key_exchange values for each<br>
+&gt; &gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; KeyShareEnt=
+ry MUST be generated independently.'' In the context<br>
+&gt; &gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; of hybrid a=
+lgorithms, this independent generation requirement<br>
+&gt; &gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; also applie=
+s across its component algorithms.&nbsp; However, when a<br>
+&gt; &gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; component a=
+lgorithm of a hybrid keyshare is used in more than<br>
+&gt; &gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; one keyshar=
+e within the same ClientHello, either as part of<br>
+&gt; &gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; another hyb=
+rid, or standalone, that same keyshare component MAY<br>
+&gt; &gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; be used mor=
+e than once, since ultimately only one of the<br>
+&gt; &gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keyshares i=
+s used in key derivation: the multiple copies in the<br>
+&gt; &gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; same Client=
+Hello do not lead to reuse of an ephemeral private<br>
+&gt; &gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; key, nor ar=
+e the secrets for separate algorithms thereby derived<br>
+&gt; &gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; in a manner=
+ than might compromise the security of the stronger<br>
+&gt; &gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; when the we=
+aker is vulnerable to an attack.<br>
+&gt; <br>
+&gt; I'm fine with however this gets resolved, but have a question: would<b=
+r>
+&gt; the above still always be true with ECH? Given the ECH compression<br>
+&gt; mechanism and the ECH fallback authentication of the `public_name` a<b=
+r>
+&gt; client might use the same private value twice, or am I mistaken?<br>
+<br>
+- ECH compression can not lead to reuse, because only one of the client<br>
+&nbsp; hellos is used. In fact, generating indepndent key shares for both<b=
+r>
+&nbsp; can be a security problem.<br>
+<br>
+&nbsp; That is, if there is some component that lacks anonymity (which is<b=
+r>
+&nbsp; normally not a problem) and server chooses that, then passive observ=
+er<br>
+&nbsp; might be able to tell if ECH was used or not.<br>
+<br>
+- ECH fallback authentication is separate connection, so it can only<br>
+&nbsp; lead to reuse if client reuses shares between connections, which is<=
+br>
+&nbsp; not recommended (but AFAIK not banned by TLS). Futhermore, some<br>
+&nbsp; other security standards like FIPS do ban share reuse across<br>
+&nbsp; connections.<br>
+<br>
+<br>
+<br>
+<br>
+-Ilari<br>
+<br>
+_______________________________________________<br>
+TLS mailing list -- tls@ietf.org<br>
+To unsubscribe send an email to tls-leave@ietf.org<o:p></o:p></span></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
+
+--_000_GVXPR07MB9678659D0A95BE264C8BDFAE89FEAGVXPR07MB9678eurp_--
+

@@ -1,0 +1,333 @@
+Return-Path: <ekr@rtfm.com>
+X-Original-To: tls@mail2.ietf.org
+Delivered-To: tls@mail2.ietf.org
+Received: from localhost (localhost [127.0.0.1])
+	by mail2.ietf.org (Postfix) with ESMTP id D61FDE285F82
+	for <tls@mail2.ietf.org>; Fri, 24 Apr 2026 10:12:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1777050748; bh=KJJWaTiO4z1iselxm5GRKGk59B/bTwLAGtQowja8Qrc=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc;
+	b=OaH2U5FEp7j3bTJ3hQAdFnYT1v2HxPmNsLFap7KM7k4II8c7ucfi31uQ9LbJxGgaF
+	 8cqAzArXHVAlJQkgDwex4MtW3eZEDp0tcq765jMw8TzoIkj+d7mnFKrOFvksERU37Y
+	 6WC6Dh0v1PGqUlCq/sBmJ7dUnUDWcKY85e83vqB0=
+X-Virus-Scanned: amavisd-new at ietf.org
+X-Spam-Flag: NO
+X-Spam-Score: -1.897
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.897 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+	HTML_MESSAGE=0.001, RCVD_IN_DNSWL_NONE=-0.0001, SPF_HELO_NONE=0.001,
+	SPF_NONE=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: mail2.ietf.org (amavisd-new); dkim=pass (2048-bit key)
+	header.d=rtfm-com.20251104.gappssmtp.com
+Received: from mail2.ietf.org ([166.84.6.31])
+	by localhost (mail2.ietf.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id W4jfIKUW7t5A for <tls@mail2.ietf.org>;
+	Fri, 24 Apr 2026 10:12:26 -0700 (PDT)
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com
+ [IPv6:2607:f8b0:4864:20::1133])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail2.ietf.org (Postfix) with ESMTPS id EA982E285E63
+	for <tls@ietf.org>; Fri, 24 Apr 2026 10:11:47 -0700 (PDT)
+Received: by mail-yw1-x1133.google.com with SMTP id
+ 00721157ae682-79a74765703so78496387b3.3
+        for <tls@ietf.org>; Fri, 24 Apr 2026 10:11:47 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1777050701; cv=none;
+        d=google.com; s=arc-20240605;
+        b=eALaxMvIAQXGm1MFdC4AMsKYto4ngYZ3d2rsVeeitKZCustDndZrf90l5w2bPMwQEP
+         h3nhvzLW+PHZWI3xs0Y6g57JhnKyVOE6qW8NIS52n/2xPhNx5nK4D0xluVue9cwbrJey
+         mRzoKNqI2HPikoB57h09AuGSXtnCNblmUwe6vpJhDNkso1JGs4Ww9W1a7CpctUAqUi7l
+         cpZS4PnSS0Dep8CQwfRild5TXQNg43DrkeZWOZCbUn9zwED6RYSNrXSZS7o5MuQdtDlC
+         9tnr+3r46CHLVGSDyIQU72BSLdtewmEqRQ37uLBf/GMQTznUwzEt/S9E1DOgLVUvER8l
+         55Qg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20240605;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=k2V2fwJzrD68dbg2G6fQ6eKRxHPx206PPuKQh6hu+8k=;
+        fh=a/eKpSW5K45d4RFpazcNerv3qIwzpPkyOMaic9cqz08=;
+        b=jd1BP0FiBDqbgfcFiyHN8mZFDmZqSzSjUbUAyrpnH+O38o4qyj03MjClPqVgUM55co
+         bRMGI92wsHpxS9bGIUSJ9+0ceGi/AL2+aJKix0R+IberqAaIDjEUbK5PXetY64J+q5SI
+         Ite7OSA3yGX2HBqAhjrBspxR0zj3xJ/zrhokNEPcmCd7dWrcG9XyPVE8s3fwY7/w2wiF
+         RtNt+salPtxVh6He1fL5RuuV7kEL1eT0eisUinoN89g49Vc3uDD39x2QykTsJ7ZHHu7t
+         bNrc/NtPBNhaPte39Vx0wUjrIxmSyAmFOQVAOl/g0qHWdPBV8eUoDJafua2hRKU2Euq6
+         TnAg==;
+        darn=ietf.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rtfm-com.20251104.gappssmtp.com; s=20251104; t=1777050701;
+ x=1777655501; darn=ietf.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=k2V2fwJzrD68dbg2G6fQ6eKRxHPx206PPuKQh6hu+8k=;
+        b=VlEjrD+zd/1vctcYUE691pb8TY2e/KmLxttJewQJcG59jUAHYJ44SdehPLhG8ddpx9
+         QUKIWhMwNG+Xl97mRB12JbF3/Kw8jcpWJqe7OYivHotWOthBsvPUp4pY8bFQ4OO1HyXa
+         oeDrBsZPSZ9xZkRgCdkqkSc61tM7tRtyFMfoon5aEfVYUeg12yFdWeZNbLVTzQxy4nnt
+         VN0Zv6aR1z1d3kytNzZi6pH2mStJt5rUdwe7vNtjpet/uQIsbudTekpFdjYI3wNFnVQD
+         oC6ss2FwkYDdcxU93WDcqreRUrIsFwxAymFgTFPKOcisNZnCgREYbAnUziTVbwt7Ay4o
+         N1TA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1777050701; x=1777655501;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=k2V2fwJzrD68dbg2G6fQ6eKRxHPx206PPuKQh6hu+8k=;
+        b=aIv/4gt19vSGNjiml2Y7sfBbOmBWntvK5rC35aJl7ERzdtqLLxyp63kTBF54fT5Vgn
+         tBkZMTi2zRAqNvhBPabynYfLYbBQud77s0pPBConriPCayCbC8aqDWhPcUs1i7smjC8L
+         B7NljqZySdTeW09ymkLiHJfcghx6K/diUeHSwpf5xMV3DDlEqDcVYgyElTdJxFbBDQwf
+         MKw9ZZm1oW2hI2qQJWP32oSjATJMTl4nAWNk8GiHH4pZAcWM/4Emnr3EEDMHl+EPkkkZ
+         R8Tizbjc6NEAZas8MWAGAFRMJ3v6/WXOrDE41vAFYqKIFgoOQCcWhny3zGhnvVAz+Hke
+         2iIQ==
+X-Forwarded-Encrypted: i=1;
+ AFNElJ/kC6mArcTs2Pa7SmYqopP7vIwDc+NNnU9HYA+Wej3kq4pA6s/J+amiTxcM9CRjOBMN/qo=@ietf.org
+X-Gm-Message-State: AOJu0Yw/NeEXDndsyYj5dtr/0edqI1/5h7PZOi6NUvTAMjU5xoeKW+cK
+	7dBhD7Iw6yqVIInxbVT2u6GjGQ296/37OYUsDO4AdQ9m2/joE9AZXxstmDqCDnUUp3L14CoO6i7
+	FUPOwKg8FkgwfygvcHcDzRjYH95ISajc+ZIfKkSW5YA==
+X-Gm-Gg: AeBDiet3EoQctYfIEhtk+anhqxtjqrQ8fRI80hv30X1F85onhg483b5oDEsuzU0Ja5k
+	086i2yXQErs+A4VfKvx96Y+bDyuGdO82G2ok3X8qXH8Fa6shGsO2qoG1ljDhQimptqkQ8JD3Tq8
+	JeA5Zs7duwQOCGyKGvYfsHGHL59ezA1jRrjEThTS5YyLegQTtRfpzNgTn6A+x7r1HR3NTq0Rdhn
+	I9IMrAnZyi1Sqc8nUOprrmo3Ka3Ly5So3AUXYn4GQUJjy1QdT7L5tgEPvcW0afElS5ewTV1UbYX
+	OShjAQil2iwtDszLgGKeLmpfc8HylDsF0dfar1aabSCu5Z+2BUkj0UyF4DleYr+JXS1yXsT/idl
+	aXy2AfjV4RGEkNM4vNnejy4pgf9GbMtFX
+X-Received: by 2002:a05:690c:ed6:b0:7ba:ff4b:555b with SMTP id
+ 00721157ae682-7baff4b58ebmr186756087b3.31.1777050701324; Fri, 24 Apr 2026
+ 10:11:41 -0700 (PDT)
+MIME-Version: 1.0
+References: <20260424110659.DEA4FC0004D7@rfcpa.rfc-editor.org>
+ <98D4162A-719A-4BB2-9088-45D7D8BD4867@vigilsec.com>
+ <CABcZeBMMrc8MJAJX85G1PGzbKi29YYDuOsYGJkbQ=wbK8Jsp-A@mail.gmail.com>
+ <66BCCB03-3061-4011-8194-3F35B5C9F02E@vigilsec.com>
+In-Reply-To: <66BCCB03-3061-4011-8194-3F35B5C9F02E@vigilsec.com>
+From: Eric Rescorla <ekr@rtfm.com>
+Date: Fri, 24 Apr 2026 10:11:04 -0700
+X-Gm-Features: AQROBzAdcjN0AWYfrbTsNUtYPIBML6atyB_8u5zB9LxfpvxxolNGFOMEN5BrOHo
+Message-ID: 
+ <CABcZeBM2a6q8nBPbZJ=OVnpugzrnt=SCm7ZZiJndLHqyBAC0sg@mail.gmail.com>
+To: Russ Housley <housley@vigilsec.com>
+Content-Type: multipart/alternative; boundary="000000000000ccef65065037db4b"
+Message-ID-Hash: Q66AYRAPZ6Z47V453IZZM6ANF2YDEFGQ
+X-Message-ID-Hash: Q66AYRAPZ6Z47V453IZZM6ANF2YDEFGQ
+X-MailFrom: ekr@rtfm.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+CC: stndrds-inacio@andrew.cmu.edu, sean+ietf@sn3rd.com,
+ IETF TLS <tls@ietf.org>
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Re=3A_=5BTechnical_Errata_Reported=5D_RFC8773_=288888=29?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/bRRztk6Tj97zl8sNz6fDRexuaQg>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+--000000000000ccef65065037db4b
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Thanks for the clarification. I had misunderstood your email.
+
+Sorry for the confusion.
+-Ekr
+
+
+On Fri, Apr 24, 2026 at 10:09=E2=80=AFAM Russ Housley <housley@vigilsec.com=
+> wrote:
+
+> Eric:
+>
+> It is corrected many months ago in rfc8773bis.
+>
+> Russ
+>
+> On Apr 24, 2026, at 12:09=E2=80=AFPM, Eric Rescorla <ekr@rtfm.com> wrote:
+>
+> I think that's the wrong answer. If we know there is a technical error, w=
+e
+> should correct it in AUTH 48.
+>
+> -Ekr
+>
+>
+> On Fri, Apr 24, 2026 at 7:23=E2=80=AFAM Russ Housley <housley@vigilsec.co=
+m> wrote:
+>
+>> Dear Security ADs:
+>>
+>> This should be HFDU, since 8773bis is already in the RFC Editor's queue.
+>>
+>> Russ
+>>
+>>
+>> > On Apr 24, 2026, at 7:06=E2=80=AFAM, RFC Errata System <
+>> rfc-editor@rfc-editor.org> wrote:
+>> >
+>> > The following errata report has been submitted for RFC8773,
+>> > "TLS 1.3 Extension for Certificate-Based Authentication with an
+>> External Pre-Shared Key".
+>> >
+>> > --------------------------------------
+>> > You may review the report below and at:
+>> > https://www.rfc-editor.org/errata/eid8888
+>> >
+>> > --------------------------------------
+>> > Type: Technical
+>> > Reported by: Muhammad Usama Sardar <muhammad_usama.sardar@tu-dresden.d=
+e
+>> >
+>> >
+>> > Section: 7
+>> >
+>> > Original Text
+>> > -------------
+>> > Early Secret =3D HKDF-Extract(External PSK, 0)
+>> >
+>> > Corrected Text
+>> > --------------
+>> > Early Secret =3D HKDF-Extract(0, External PSK)
+>> >
+>> > Notes
+>> > -----
+>> > As discussed in
+>> https://mailarchive.ietf.org/arch/msg/tls/6Wk82oBGd61rTK23DgfYb7BmRKM/
+>> and https://github.com/tlswg/rfc8773bis/pull/2
+>> >
+>> > Instructions:
+>> > -------------
+>> > This erratum is currently posted as "Reported". (If it is spam, it
+>> > will be removed shortly by the RFC Production Center.) Please
+>> > use "Reply All" to discuss whether it should be verified or
+>> > rejected. When a decision is reached, the verifying party
+>> > will log in to change the status and edit the report, if necessary.
+>> >
+>> > --------------------------------------
+>> > RFC8773 (draft-ietf-tls-tls13-cert-with-extern-psk-07)
+>> > --------------------------------------
+>> > Title               : TLS 1.3 Extension for Certificate-Based
+>> Authentication with an External Pre-Shared Key
+>> > Publication Date    : March 2020
+>> > Author(s)           : R. Housley
+>> > Category            : EXPERIMENTAL
+>> > Source              : Transport Layer Security
+>> > Stream              : IETF
+>> > Verifying Party     : IESG
+>>
+>> _______________________________________________
+>> TLS mailing list -- tls@ietf.org
+>> To unsubscribe send an email to tls-leave@ietf.org
+>>
+>
+>
+
+--000000000000ccef65065037db4b
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div>Thanks for the clarification. I had misunderstood you=
+r email.</div><div><br></div><div>Sorry for the confusion.</div><div>-Ekr</=
+div><div><br></div></div><br><div class=3D"gmail_quote gmail_quote_containe=
+r"><div dir=3D"ltr" class=3D"gmail_attr">On Fri, Apr 24, 2026 at 10:09=E2=
+=80=AFAM Russ Housley &lt;<a href=3D"mailto:housley@vigilsec.com">housley@v=
+igilsec.com</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=
+=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding=
+-left:1ex"><div>Eric:<div><br></div><div>It is corrected many months ago in=
+ rfc8773bis.</div><div><br></div><div>Russ<br id=3D"m_8731133273513372173li=
+neBreakAtBeginningOfMessage"><div><br><blockquote type=3D"cite"><div>On Apr=
+ 24, 2026, at 12:09=E2=80=AFPM, Eric Rescorla &lt;<a href=3D"mailto:ekr@rtf=
+m.com" target=3D"_blank">ekr@rtfm.com</a>&gt; wrote:</div><br><div><div dir=
+=3D"ltr"><div>I think that&#39;s the wrong answer. If we know there is a te=
+chnical error, we should correct it in AUTH 48.</div><div><br></div><div>-E=
+kr</div><div><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"ltr=
+" class=3D"gmail_attr">On Fri, Apr 24, 2026 at 7:23=E2=80=AFAM Russ Housley=
+ &lt;<a href=3D"mailto:housley@vigilsec.com" target=3D"_blank">housley@vigi=
+lsec.com</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D=
+"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-le=
+ft:1ex">Dear Security ADs:<br>
+<br>
+This should be HFDU, since 8773bis is already in the RFC Editor&#39;s queue=
+.<br>
+<br>
+Russ<br>
+<br>
+<br>
+&gt; On Apr 24, 2026, at 7:06=E2=80=AFAM, RFC Errata System &lt;<a href=3D"=
+mailto:rfc-editor@rfc-editor.org" target=3D"_blank">rfc-editor@rfc-editor.o=
+rg</a>&gt; wrote:<br>
+&gt; <br>
+&gt; The following errata report has been submitted for RFC8773,<br>
+&gt; &quot;TLS 1.3 Extension for Certificate-Based Authentication with an E=
+xternal Pre-Shared Key&quot;.<br>
+&gt; <br>
+&gt; --------------------------------------<br>
+&gt; You may review the report below and at:<br>
+&gt; <a href=3D"https://www.rfc-editor.org/errata/eid8888" rel=3D"noreferre=
+r" target=3D"_blank">https://www.rfc-editor.org/errata/eid8888</a><br>
+&gt; <br>
+&gt; --------------------------------------<br>
+&gt; Type: Technical<br>
+&gt; Reported by: Muhammad Usama Sardar &lt;<a href=3D"mailto:muhammad_usam=
+a.sardar@tu-dresden.de" target=3D"_blank">muhammad_usama.sardar@tu-dresden.=
+de</a>&gt;<br>
+&gt; <br>
+&gt; Section: 7<br>
+&gt; <br>
+&gt; Original Text<br>
+&gt; -------------<br>
+&gt; Early Secret =3D HKDF-Extract(External PSK, 0)<br>
+&gt; <br>
+&gt; Corrected Text<br>
+&gt; --------------<br>
+&gt; Early Secret =3D HKDF-Extract(0, External PSK)<br>
+&gt; <br>
+&gt; Notes<br>
+&gt; -----<br>
+&gt; As discussed in <a href=3D"https://mailarchive.ietf.org/arch/msg/tls/6=
+Wk82oBGd61rTK23DgfYb7BmRKM/" rel=3D"noreferrer" target=3D"_blank">https://m=
+ailarchive.ietf.org/arch/msg/tls/6Wk82oBGd61rTK23DgfYb7BmRKM/</a> and <a hr=
+ef=3D"https://github.com/tlswg/rfc8773bis/pull/2" rel=3D"noreferrer" target=
+=3D"_blank">https://github.com/tlswg/rfc8773bis/pull/2</a><br>
+&gt; <br>
+&gt; Instructions:<br>
+&gt; -------------<br>
+&gt; This erratum is currently posted as &quot;Reported&quot;. (If it is sp=
+am, it <br>
+&gt; will be removed shortly by the RFC Production Center.) Please<br>
+&gt; use &quot;Reply All&quot; to discuss whether it should be verified or<=
+br>
+&gt; rejected. When a decision is reached, the verifying party=C2=A0 <br>
+&gt; will log in to change the status and edit the report, if necessary.<br=
+>
+&gt; <br>
+&gt; --------------------------------------<br>
+&gt; RFC8773 (draft-ietf-tls-tls13-cert-with-extern-psk-07)<br>
+&gt; --------------------------------------<br>
+&gt; Title=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0: TLS 1.3 =
+Extension for Certificate-Based Authentication with an External Pre-Shared =
+Key<br>
+&gt; Publication Date=C2=A0 =C2=A0 : March 2020<br>
+&gt; Author(s)=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0: R. Housley<br>
+&gt; Category=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 : EXPERIMENTAL<br>
+&gt; Source=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 : Transport Lay=
+er Security<br>
+&gt; Stream=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 : IETF<br>
+&gt; Verifying Party=C2=A0 =C2=A0 =C2=A0: IESG<br>
+<br>
+_______________________________________________<br>
+TLS mailing list -- <a href=3D"mailto:tls@ietf.org" target=3D"_blank">tls@i=
+etf.org</a><br>
+To unsubscribe send an email to <a href=3D"mailto:tls-leave@ietf.org" targe=
+t=3D"_blank">tls-leave@ietf.org</a><br>
+</blockquote></div>
+</div></blockquote></div><br></div></div></blockquote></div>
+
+--000000000000ccef65065037db4b--
+

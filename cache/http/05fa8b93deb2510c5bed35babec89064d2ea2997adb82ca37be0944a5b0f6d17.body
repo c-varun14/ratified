@@ -1,0 +1,698 @@
+Return-Path: <mohamed.boucadair@orange.com>
+X-Original-To: tls@mail2.ietf.org
+Delivered-To: tls@mail2.ietf.org
+Received: from localhost (localhost [127.0.0.1])
+	by mail2.ietf.org (Postfix) with ESMTP id 1F9D35F2C9A3;
+	Mon,  8 Sep 2025 03:02:48 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at ietf.org
+X-Spam-Flag: NO
+X-Spam-Score: -2.793
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.793 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+	DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, HTML_MESSAGE=0.001,
+	RCVD_IN_DNSWL_LOW=-0.7, RCVD_IN_MSPIKE_H4=0.001,
+	RCVD_IN_MSPIKE_WL=0.001, RCVD_IN_VALIDITY_RPBL_BLOCKED=0.001,
+	RCVD_IN_VALIDITY_SAFE_BLOCKED=0.001, SPF_NONE=0.001,
+	UNPARSEABLE_RELAY=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: mail2.ietf.org (amavisd-new); dkim=pass (2048-bit key)
+	header.d=orange.com
+Received: from mail2.ietf.org ([166.84.6.31])
+	by localhost (mail2.ietf.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id gw6dQReTuDs7; Mon,  8 Sep 2025 03:02:47 -0700 (PDT)
+Received: from smtp-out.orange.com (smtp-out.orange.com [80.12.126.237])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail2.ietf.org (Postfix) with ESMTPS id 4FAA15F2C994;
+	Mon,  8 Sep 2025 03:02:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=orange.com; i=@orange.com; q=dns/txt; s=orange002;
+  t=1757325765; x=1788861765;
+  h=to:cc:subject:date:message-id:references:in-reply-to:
+   mime-version:from;
+  bh=YgRqd9zw7ikI6QqhLSCb+tIZ7Fb0TV78A2kj+u+4cq0=;
+  b=jcq7MChAfD5h0dIVdi9mXCv1kirv7RebnRG0y7wWgxalFsdRXWfnQzyU
+   n10z+CTLMVvJubpBGUy5MqWHrREhja8sYcAge41aYXMO++bSH+bwDWUPX
+   UTDi4r4491B05PSzOWIBOGvMYzXKkPQ/aG+1H6KJLw43v1mlnAlAChKTo
+   U4Z7G5MnArpJGuvN8R1vdewhJb0bOhOpDjP4rvtpZieyQJg9ykq8qZsV+
+   EZHuPZwbokf/QvcO2Mgg4lTL9LbJ8kleWmy17jkj8hUYd4MlRrdDowM45
+   8w3MlBGuy+tWGCL5sT6AmdzUHfePmujH7NRmYpjEIGB27w64Egpji2tCI
+   g==;
+X-CSE-ConnectionGUID: jfk8FhO1RDiVdE6YzYm5wg==
+X-CSE-MsgGUID: ji8oXnyMQT+gvCdq0soRDg==
+Received: from unknown (HELO opfedv1rlp0h.nor.fr.ftgroup) ([x.x.x.x]) by
+ smtp-out.orange.com with ESMTP/TLS/TLS_AES_256_GCM_SHA384;
+ 08 Sep 2025 12:02:44 +0200
+Received: from unknown (HELO opzinddimail4.si.francetelecom.fr) ([x.x.x.x]) by
+ opfedv1rlp0h.nor.fr.ftgroup with ESMTP/TLS/TLS_AES_256_GCM_SHA384;
+ 08 Sep 2025 12:02:44 +0200
+Received: from opzinddimail4.si.francetelecom.fr (unknown [127.0.0.1])
+	by DDEI (Postfix) with SMTP id D7FA5BC175A0;
+	Mon,  8 Sep 2025 12:02:43 +0200 (CEST)
+Received: from opzinddimail4.si.francetelecom.fr (unknown [127.0.0.1])
+	by DDEI (Postfix) with ESMTP id 7AD84BC18E4B;
+	Mon,  8 Sep 2025 11:40:11 +0200 (CEST)
+Received: from smtp-out365.orange.com (unknown [x.x.x.x])	by
+ opzinddimail4.si.francetelecom.fr (Postfix) with ESMTPS;
+ Mon,  8 Sep 2025 11:40:11 +0200 (CEST)
+Received: from mail-francecentralazlp17010000.outbound.protection.outlook.com
+ (HELO PA5P264CU001.outbound.protection.outlook.com) ([40.93.76.0])
+  by smtp-out365.orange.com with ESMTP/TLS/TLS_AES_256_GCM_SHA384;
+ 08 Sep 2025 11:40:11 +0200
+Received: from PR0P264MB2885.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:1d0::19)
+ by PAZP264MB2495.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:1f1::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9115.14; Mon, 8 Sep
+ 2025 09:40:09 +0000
+Received: from PR0P264MB2885.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::d43d:e9a7:d7d8:9d33]) by PR0P264MB2885.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::d43d:e9a7:d7d8:9d33%4]) with mapi id 15.20.9115.010; Mon, 8 Sep 2025
+ 09:40:09 +0000
+From: mohamed.boucadair@orange.com
+X-CSE-ConnectionGUID: 1RrJ2jb7TcKoS/Pmu083OQ==
+X-CSE-MsgGUID: +zdePd52SfqgkgqJcnKqBg==
+X-TM-AS-ERS: 10.218.35.125-127.9.0.1
+X-TM-AS-SMTP: 1.0 c210cC1vdXQzNjUub3JhbmdlLmNvbQ== bW9oYW1lZC5ib3VjYWRhaXJAb
+	3JhbmdlLmNvbQ==
+X-DDEI-TLS-USAGE: Used
+X-CSE-ConnectionGUID: wyNdy60MQAq1ylW3PEjeuQ==
+X-CSE-MsgGUID: bj8rB25rRTiSlxrjEbkR5Q==
+Authentication-Results: smtp-in365b.orange.com;
+ dkim=none (message not signed) header.i=none
+IronPort-Data: A9a23:4bhimaDxk76HGBVW/zDkw5YqxClBgxIJ4kV8jS/XYbTApD1xgmYPz
+ WBLC27QPa7cZTTzeo13aoTk9RgBvZGExtc2TANkpHpgcSlH+JHPbTi7wuYcHM8wwunrFh8PA
+ xA2M4GYRCwMZiaC4E/raP649CMUOZigHtLUEPTDNj16WThqQSIgjQMLs+Mii+aEu/Dha++2k
+ Y20+p231GONgWYubzpFs/Lb8XuDgdyp0N8mlg1nDRx0lA+G/5UlJMp3Db28KXL+Xr5VEoaSL
+ 87fzKu093/u5BwkDNWoiN7TKiXmlZaLYGBiIlIPM0STqkAqSh4ai87XB9JFAatjsAhlqvgqo
+ Dl7WT5cfi9yVkHEsLx1vxC1iEiSN4UekFPMCSDXXcB+UyQqflO0q8iCAn3aMqUH68B7ED8W0
+ MUxMWkcai/Yv8+0za+CH7wEasQLdKEHPasnkyxYl2+FJst+GcmFRLjW79hF2jt2ntpJAfvVe
+ 8seb3xocQjEZBpMfFwQDfrSns/03j+uKHsH9hTNzUY0yzC7IAhZ1b/tOd/YdpqAQthel0qRp
+ 3ju+H7wBB4XcteYzFJp91r92LOUwn6hAOr+EpWy9K5wqgfO3FYvCSYSRUG5jPO6sBOHDoc3x
+ 0s8oXF08fdaGFaQZtXmQxCyoXqNlgMDUsZdCek970eGw8L84guCCUAFQyJPLts8u6ceSSYj2
+ EPMnt71C3lztKbQSWOX7LaY6D+/IikaK0cDaDMKCwwf7LHLvIUoyxnPR9d5C4a0g8H7Xzbqz
+ FiisCwlr7QekcBN0L+0lXjMii2EppXAVg8z6Q/WQnnj6A5lDKapepa17FPB8O1cMYKES3GOu
+ XEFn46V6+VmJZOKmQSWSeEKA7y4ofCILFXhbUVHGpAg83Gj4Xeldo1b7TdiPk5tO9QAYWa2O
+ BaL4VsJophOIHGtcKl7JZqrDNgnxrThEtKjUe3Iat1JYd56cwrvEDxSiVC4wHHLnFlyyYQGE
+ I7CYMKTVk43C6l69W/jLwsC6oMDyic7zGLVYJn0yRW7zLaTDEJ5r59VbTNiichps8u5TBXpz
+ jpJCyed4ztlONASjwHS+I8XaF4QJH4wCJv7rdBNf+qKMA5+QT55UqeJmetnfJF5laNIkOuO5
+ mu6RkJT1Fv4gzvANBmObXdgLrjoWP6TTE7X3wRzYT5EOFB5Oe5DCZvzkbNsI9HLE8Q4nJZJo
+ wEtIZnoPxi2Ym2vF84hRZf8tpd+Ux+gmBiDOSGoCBBmIMM/HVKYqo+7Llu/nMXrMsZRnZtgy
+ 1FH/lOLKafvuyw8V5qHAB5S5w/v4iVHxbsoN6c2CoAIJxuwq9gCx9PNYg8feJpWdUqrKsqy0
+ gedGxADoufR64Qy6sGhuEx3h9bBLgeKJWIDRzOzxe/vaUHyoDD/qaceC7zgVW6GCwvJFFCKP
+ rw9IwfUa6dfxA4iXksVO+oD8J/SEPO19uIFnl49QC+bB7lpY5s5SkS7MQB0nvUl7tdkVcGeA
+ ypjJvEy1W21Bf7Y
+IronPort-HdrOrdr: A9a23:gsFpYKGfk/KVddZUpLqFY5HXdLJyesId70hD6qkvc3Fom52j/f
+ xGws5x6fatskdoZJkh8erhBEDyewKmyXcV2/hYAV7MZniDhILFFu9fBM7ZskTd8k7Fh6VgPM
+ VbAs9D4bTLZDAX4voSojPIderIq+P3k5xA8N2uqkuFOjsaCZ2IgT0ZNi+rVmlNACVWD5swE5
+ SRouBdoSC7RHgRZsOnQlEYQunqvbTw5d/bSC9DIyRixBiFjDuu5rK/OQOfxA0iXzRGxqpn2X
+ TZkjb++r6ov5iAu1PhPi7onttrcenau5p+7f+3+4gow/LX+0WVjbFaKvO/VfYO0aOSARgR4Z
+ zxSlwbTr5OAjvqDxyISF3WqkPdOX8VmgDfIVP0uwqeneXpAD09EMZPnoRfb1/Q7Fchpsh11O
+ ZR03uerIc/N2K2oM3R3am8a/hRrDvBnVMy1eoIy3BPW4oXb7Fc6YQZ4UNOCZ8FWCb38pouHu
+ ViBNzVoK8+SyLSU1nJ+m10hNC8VHU6GRmLBkAEp8yOyjBT2HR01VERysATlmoJsJg9V55H7e
+ LZNbkArsA5cuYGKaZmQOsRS8q+DWLABRrKLWKJOFziULoKPnrcwqSHkondJNvaC6Dg4KFC6K
+ gpCmkoy1LaU3ieePGz4A==
+X-Talos-CUID: =?us-ascii?q?9a23=3AMuBP0Wi4HNpuxHiVgltnTjQ6dDJubWz7wGaOe2q?=
+ =?us-ascii?q?BIH8wWbmqEme9+q55qp87?=
+X-Talos-MUID: =?us-ascii?q?9a23=3A+yfZdg12r41JykqffSLcDy6orDUj6ab+EmpXzI8?=
+ =?us-ascii?q?8h8i/MTxqORqXjw7qe9py?=
+X-IronPort-AV: E=Sophos;i="6.18,248,1751234400";
+   d="scan'208,217";a="96437520"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=MxQxeH1gmlUV4U1keXLap3ZPujO3sbfLwyvPTwtkyVxvja3L9KdAHgrOHqM1O7uvv4VQIhDl0Yx46G0coycHWx0uvED6smwssx0AnfZcVPKR9uPQT1SM2RsdXiZgjs16O0cEja1Uj6n4kVTQXWN1P4bQtQIuCdIHtd5kbtk5IEPn88nXLtXyfu17tAHemhiuzul12R7DG/p+AtLNkGF548y3ZTamxqYQcYeuO9MgcXT8iIFn1Taxwl0+QipCSeD6L/gdiH5bUSdydBwk6JkxcTPf++s7gIIowmleJdGt8UvRJ3AZ+BAfhCjAeaHZ5UaBRNMx82Vueww0pn98FbAc6Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Ryt0SW+RNFRyStEglgkL8In0RkHOcjUJgKvXoeZh+rA=;
+ b=wb0+qL8bM8ZKf8QwxLlmEQIcrtApT+atA3h1DsskmGg/YqUAFCv+ZNtIWrxlaid/PXj2e2Yj55H+S5xQpejBhF+TFTOC9mUBw3GDCUAhdnm0n0JzTgIDl7npXBSskvlsZZMiLPD/wfM8brSaeM/X9ctQyzP83PcMktxAjrk/+nfJfqs16Yrr23DJmYf7PNO7k3LFgN13SVpMoATUDdAbSGnxSwMwhDeDEvcXMwG0WDqysvwpv/bBup3/hm0NqXIclbQyLgduRP+f5Mm6PNvk0v4Xrjfk6ne5pfqqWBdPTVboaOh51GfTVLX+y2WMtGbTxnAoJfRLqVUsBOOaVmLsAw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=orange.com; dmarc=pass action=none header.from=orange.com;
+ dkim=pass header.d=orange.com; arc=none
+To: Douglas Stebila <dstebila@uwaterloo.ca>
+Thread-Topic: Mohamed Boucadair's No Objection on
+ draft-ietf-tls-hybrid-design-15: (with COMMENT)
+Thread-Index: AQHcHWZNJF5yQHXQ9kK5khr72q/ER7SH6fGAgAEfWvA=
+Date: Mon, 8 Sep 2025 09:40:09 +0000
+Message-ID: 
+ <PR0P264MB2885BF33CC40B4FFDD9E97EE880CA@PR0P264MB2885.FRAP264.PROD.OUTLOOK.COM>
+References: 
+ <175696780827.893.331348687621215960@dt-datatracker-675b4b44d6-7qfz4>
+ <1FE671BE-28B7-4CA5-919C-24F2ECD68874@uwaterloo.ca>
+In-Reply-To: <1FE671BE-28B7-4CA5-919C-24F2ECD68874@uwaterloo.ca>
+Accept-Language: fr-FR, en-US
+Content-Language: fr-FR
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: 
+ MSIP_Label_07222825-62ea-40f3-96b5-5375c07996e2_ActionId=70107ec0-0068-4187-bda0-f3d8396cb38f;MSIP_Label_07222825-62ea-40f3-96b5-5375c07996e2_ContentBits=0;MSIP_Label_07222825-62ea-40f3-96b5-5375c07996e2_Enabled=true;MSIP_Label_07222825-62ea-40f3-96b5-5375c07996e2_Method=Privileged;MSIP_Label_07222825-62ea-40f3-96b5-5375c07996e2_Name=unrestricted_parent.2;MSIP_Label_07222825-62ea-40f3-96b5-5375c07996e2_SetDate=2025-09-08T09:40:01Z;MSIP_Label_07222825-62ea-40f3-96b5-5375c07996e2_SiteId=90c7a20a-f34b-40bf-bc48-b9253b6f5d20;MSIP_Label_07222825-62ea-40f3-96b5-5375c07996e2_Tag=10,
+ 0, 1,
+ 1;MSIP_Label_f47c794b-e3ab-43f0-9e0f-29fc3e503192_ContentBits=0;MSIP_Label_f47c794b-e3ab-43f0-9e0f-29fc3e503192_Enabled=true;MSIP_Label_f47c794b-e3ab-43f0-9e0f-29fc3e503192_Method=Standard;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PR0P264MB2885:EE_|PAZP264MB2495:EE_
+x-ms-office365-filtering-correlation-id: c490d4d9-dcfe-4bc1-93ba-08ddeebbb3b1
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: 
+ BCL:0;ARA:13230040|366016|376014|1800799024|7053199007|13003099007|8096899003|38070700018;
+x-microsoft-antispam-message-info: 
+ =?iso-8859-1?Q?aZEprw7s+bvPf+pve1FrMeaxuIeYcFL82XnyW19tQrWzy4T+d1U88NWQeG?=
+ =?iso-8859-1?Q?h99SRyYm4kneJhOUV57il+St3IZfWTzubvyYOtAK/Alw5VjOfBmecRaM7p?=
+ =?iso-8859-1?Q?yYSeRZTfLmNeYF1mpqFQtoFfhZbrTpXqXPCiqJxVRNsE/ZRRwx99uiMvGW?=
+ =?iso-8859-1?Q?YJpfxFZpXbJIiMbNEsNCTkGsNxBVI6N8sRLQpfFuR76MzSvyTP3dIOp9by?=
+ =?iso-8859-1?Q?YC9lc+7Fk7YfQgf31R66mDoQ5c5wxNU4/mRWFpCa/RL0QRZ8oB96klBTo4?=
+ =?iso-8859-1?Q?wRYPHa/2yjITQ3+fOzRbYkjsiKWuTrPMnvPZyaNjGoh557N+hy3tClfVxZ?=
+ =?iso-8859-1?Q?BlaxAqx3N99xrc/XRqxvcbi6v4YWcEO4k11JS9zj72beG+apDsxecSb5uw?=
+ =?iso-8859-1?Q?ArIkGVxTYN6xHMHb+aYz1wzzFjeCOp99kT9K0jm3VTOn48jBNPhNghN8DM?=
+ =?iso-8859-1?Q?qEJB+WbKCZ+vhkl7UH+a8ghE4rgk24uAPV8kkIeJXqF2kKumy8J9WkQc0V?=
+ =?iso-8859-1?Q?sjcNIt2UpOi/lI+L4Fx3Zd3/FGe4xvuJMBKd4bnlHOWYke7pRbNKja+ql8?=
+ =?iso-8859-1?Q?ThlV5P60/7Htc4+bSVlj2y+N8ZysLPXx+mYOvlGekuYjJcswyJWGUqpKjS?=
+ =?iso-8859-1?Q?iTyEjsQ/SQ3pdieEqhaepIfTNVkSiHRFtFvj63wsLyPGrBtGrJbDSJbB+d?=
+ =?iso-8859-1?Q?h5nUryNH2y0gZbE3NQ7v+0LQA2wwXFjIetPdkqizy3uQjhILpofbCGJDgB?=
+ =?iso-8859-1?Q?Dji7AfoL6q4o0NFXcGyVez0nmsUNNRG3jIMYqhwXNHkiX1AUe08ELhWSTz?=
+ =?iso-8859-1?Q?t8tGRQqVi0AvS62PRSAKJSL9JLr2a2OaRLTrARd6XRPbl8zf/aaV6ZfQAu?=
+ =?iso-8859-1?Q?gSLFo9GByTDMAJ3km3AjB5TYh5BmmaFu0WBsoy0VHu4Y3b/imv/g7UcgO0?=
+ =?iso-8859-1?Q?/uShq5Y+l+N/znv1l6hkrqWVTyzJVLWoHkC80pjRaGcqy3ckjV1gQA6wqP?=
+ =?iso-8859-1?Q?RI6S04YTqcLTRzmePQ1OxGGFLty2PVi6EfVg1jAkWo5rDdkWzsSNasmZBu?=
+ =?iso-8859-1?Q?al6VQaMdersaj5+e5yfiVqXwzqWMZT4AsAetNR4UKMgzoGkCPG9zfDB57X?=
+ =?iso-8859-1?Q?rE2rFeTAfsSwX1PABgoUMgwbQSvj0DkUtnFP1f9XYqErmwKaz8r6BEzvxk?=
+ =?iso-8859-1?Q?K/tP66txghwtz7vAW24xbRqEv/4vy4aJ2Ps8H97aS3SidCvxK6x8f4WXkI?=
+ =?iso-8859-1?Q?oiH0Cm/Z+3+VkGhJLHVIoxbE8HHhFHskJ+SqpkV4SXgREDEGKUxbIqqgzs?=
+ =?iso-8859-1?Q?jpkkhIMC30RSPVyIPNQtAW2ZaYCYwp/sFW7+P9jS3Nq4VYYJDThfO36Apv?=
+ =?iso-8859-1?Q?x14VqbEp+P6QfpM5WcpehL75u5pXlcGqa/iQ4tymJjTaJ77Uswyr1+Bh/O?=
+ =?iso-8859-1?Q?oJym+BiqYY5GPAaqgGh3k+VHKzEloMdJWyfaOPb0Vii1MDdAX4Ab8txwVP?=
+ =?iso-8859-1?Q?/O4e/rI4I+tiQeDxHlWNtTAxiqzjCb5nw11mfqkA+iXK0ddM0ILCL377PY?=
+ =?iso-8859-1?Q?Fs9X2g4=3D?=
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PR0P264MB2885.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024)(7053199007)(13003099007)(8096899003)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?iso-8859-1?Q?xFYZn1tbP6Ls0EOS1Bqqvwspdn3wRkPOq5JJfTQEycqY2wcdK+702pDhpr?=
+ =?iso-8859-1?Q?GXv+ecFoset7kCcbOmWZpayIJmalw0d7wuqktApeXEP8PNLDa2iHARepIJ?=
+ =?iso-8859-1?Q?YfAtVUl5M/KiLtlG7LXUM9q5Y/wS4tNxukxIau0O283BHsUXTt5YeZfz2d?=
+ =?iso-8859-1?Q?W/qCUyHLfBsLaVywNDUykEHgVDL6d1RypS7F+6W+mTmig1oOidKzYOdwfm?=
+ =?iso-8859-1?Q?+IC5gLS52HGeVaIhPmG8LTLkED13vc9Rgmw8NoIzo9QbHtSmbxl3V1hA5H?=
+ =?iso-8859-1?Q?hCKaFWDgqODT5P/jqP6SuZMO3YyyQNZQ4NcRs8El6486/7jIAgEuaLb90s?=
+ =?iso-8859-1?Q?Fj42DpeTnPXYCqqbC4De1sJt7XtoDfmKpevVeATi1bNH8vJrx8nd+95qqw?=
+ =?iso-8859-1?Q?SkK1/WII5bTiokxv8Ozpa6dsGKi7LPpWX9XCpmYZg4v01XnBAbxbn1rrR2?=
+ =?iso-8859-1?Q?4Ukq500HhO4foSOVis6DUKjnHUR4I032OLejBRmQ9j03ZDioy34i8KudBf?=
+ =?iso-8859-1?Q?ZQhvhmiFK7MxKHsJEBbT7P3YRKI7uz+Pcxc5hMqVNv3sHrGA1FtRxnDBP0?=
+ =?iso-8859-1?Q?HAAfBTasdoDKYPxU8bm3CiLRc1FmaYn5f+4gSr03kMmDmCunMIzX9QkBmS?=
+ =?iso-8859-1?Q?apzFaLmjaoIqx5XvDEHth6/gBm6f7qHiZuHsP77TMdFMqdvIwjqki0k25V?=
+ =?iso-8859-1?Q?vpvuPLfXFzkNk/HZVaemFbFyWlF/KT7fqgMGlYikK6xPVV9kxbJn+kJmRJ?=
+ =?iso-8859-1?Q?giU3uT2le3hCdETJOD4DP+iDQY4xUC7kU4Q5RXB22CMFFRIJ1hTLRJYwu5?=
+ =?iso-8859-1?Q?4JugTSfvZQhcIb6pNks3pHTXa+Jl+p2pvEhDbp13vKoYgIK8S4wvIky00J?=
+ =?iso-8859-1?Q?Ki3eZONyTOi+xZsg+QL3c+Q+aV115nkYRuzcqUkMGOdt37J3sVewrPJOdn?=
+ =?iso-8859-1?Q?dAOedSn6BpFK0VWCKrFpn2gj2cbAEguc79t9CDSk61wbcTtMaZYNLHgCyc?=
+ =?iso-8859-1?Q?+OV5bw82qpfkJvg5oaCySXkhQl60Oqgp0S7Y0MhEgoOelkFAObXsU0Byg3?=
+ =?iso-8859-1?Q?VrYmOVwQduhotxXFH17GqF0Xp9qXTMxvUm9ViOXEbO2tzaNhLD3Yz61YqW?=
+ =?iso-8859-1?Q?EA5IqECsELAa8lyyBYlU1UlnO003oSG2EGvZKw+6SU8vyJ8YJ4cd1utex1?=
+ =?iso-8859-1?Q?dH64JUDAElWMHH59TVlZlwBweRAwFo6juyvVkX58A8baKSJqFfDWMGnDIj?=
+ =?iso-8859-1?Q?p7FHQWQEWmh+ATUwfdRyZeojEsmbMexoFDMDoXthA6kWUrEiufzzXWWyJi?=
+ =?iso-8859-1?Q?xHPou12j1fcr1GKaFbNw2xbf2r8/sFwHkm9VgS9fLzYQQjJzMjzCioYUaM?=
+ =?iso-8859-1?Q?u49XyLg7OWCY4hUN2ItqMku6+L0ONQrB6ULM5D4j5ijQ+I6WWsnMCt/EgI?=
+ =?iso-8859-1?Q?r/zCv3bVEPCPzerfO8+12N1d9iqUTmGFh74c5ug2FUMqLvisSa66Ja2Azn?=
+ =?iso-8859-1?Q?dwPdMg2fZvc/VIdbzq5sKPK/exOEhzrhyyoHk994OviCBUSOXztlGRfKFs?=
+ =?iso-8859-1?Q?JB4I4WCT6+hQnQ6h9ZYO0UdeVUeprCc/Wmn3DtQSvj9BuwPPatwO+myPkS?=
+ =?iso-8859-1?Q?z5juS8IP0bJkHKm2QpLeQtmscRw8qHUA7s?=
+Content-Type: multipart/alternative;
+	boundary="_000_PR0P264MB2885BF33CC40B4FFDD9E97EE880CAPR0P264MB2885FRAP_"
+MIME-Version: 1.0
+X-OriginatorOrg: orange.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PR0P264MB2885.FRAP264.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ c490d4d9-dcfe-4bc1-93ba-08ddeebbb3b1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Sep 2025 09:40:09.7438
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 90c7a20a-f34b-40bf-bc48-b9253b6f5d20
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 
+ Vd8sqMlZHH/KgXnJdFXFIkuSBp2pEiQboHzgh+P2/YsNSEMGNjis3gGKIG7pDjCJPaFmbGjuICfyHaciI5Fg29qWG4LcC2jhIfRTkUbqpxA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAZP264MB2495
+X-TM-AS-ERS: 10.218.35.125-127.9.0.1
+X-TM-AS-SMTP: 1.0 c210cC1vdXQzNjUub3JhbmdlLmNvbQ== bW9oYW1lZC5ib3VjYWRhaXJAb
+	3JhbmdlLmNvbQ==
+X-TMASE-Version: DDEI-5.1-9.1.1004-29432.006
+X-TMASE-Result: 10--37.850400-10.000000
+X-TMASE-MatchedRID: F3+qgMqW0mi7REX8b2FriCbixKZRJvnJvHKClHGjjr1vQ1w4VLB58jAD
+	TOtbgClvXo658nvzKWJzrzFFqJqNhMYUKJMxFuVgNQ8PpJIv6t4BGmsibWGTbTPsdZKCLP2mEd+
+	K6O5Nt50plD/bYdJZ1ZHge3VxoWvPOQ1ksQL1VcoCkI6Mamr9f9+pUF0HsjxRoWI+j+UNYksfIG
+	CZubTsxMrc0d7HpPdOuAsML43hVSm6fOg22cgZMNpdaFdAACcESCtgxgcsrMoz0SQBTPKW4euLH
+	9BII+4q3PG1dXejr93u0B/FdumjzkQZaec0mlGLkbFU4uGlkda42307dEwoC26Pap1MPdtHHOUh
+	ijZNQhtp11FAUOFLEOmp9HBDaWug/OmXVd1Z72Wma9AZcw5DAOG6e0pKqzZpJi9o/Zx5a4wSLXK
+	EgCHHCcvDQqEdbf1NdH2PU6szI3ONKX6Ls5D/U5lbG0HPEaFBC8FMH3T6F76u2GmdldmiUC196s
+	n93sBv7bVkOfRnoucmFQwgehhdHRTvOIrXCUuBZW/urdIQGaDGsO9QyW2iBEyQ5fRSh265WAuSz
+	3ewb22f7y5OBAioaDba6gSbbjl+iONMOkcrBiaHO/kG/PtN6RuurbgYp+HQCCo+lsDuynVWIjPH
+	gtaVHPdIm8S+G8+gLsvndq11AZKbVVXilP6Qq/CDFvXZFmYyYeSLiGsUzvlU4sxFq6igEVCd7VO
+	gbE3otAOCwsfpNBSoQ18zb6PjgeG8ILCMur8DDlWhxTgIXOoCOoDG5aR1MaNPTD9MknDoLbzXwm
+	i9rgJtWwQUmp9/yU2IDQKVFAvqplCaRSPAyU1j1vXr7GCgWkbgTmf4sxQ0mkCGwliFomtJKYD1W
+	hGOCaPFjJEFr+olEWAo7tMiEV9O+3uGNcav94GPZcQEXn13/W9MYGK5mu3H85pIf0QqWxJou5pZ
+	hWLIkU6UkIr/V+1nME/Jsn/m+g==
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+X-TMASE-INERTIA: 0-0;;;;
+X-TMASE-XGENCLOUD: 1f3259c1-60d2-414f-86a6-4e2300bb4594-0-0-200-0
+Message-ID-Hash: J2LQFEOAUMDDCDVOW25QHLLZK4VCW364
+X-Message-ID-Hash: J2LQFEOAUMDDCDVOW25QHLLZK4VCW364
+X-MailFrom: mohamed.boucadair@orange.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+CC: The IESG <iesg@ietf.org>,
+ "draft-ietf-tls-hybrid-design@ietf.org" <draft-ietf-tls-hybrid-design@ietf.org>,
+ "tls-chairs@ietf.org" <tls-chairs@ietf.org>, "tls@ietf.org" <tls@ietf.org>
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Re=3A_Mohamed_Boucadair=27s_No_Objection_on_draft-ietf-t?=
+ =?utf-8?q?ls-hybrid-design-15=3A_=28with_COMMENT=29?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/lhyvC4gXCSCxvvSs4xkwdV_cdnA>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+--_000_PR0P264MB2885BF33CC40B4FFDD9E97EE880CAPR0P264MB2885FRAP_
+Content-Type: text/plain; charset="iso-8859-1"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+
+Hi Douglas,
+
+Thanks for the follow-up.
+
+Please see inline.
+
+Cheers,
+Med
+
+De : Douglas Stebila <dstebila@uwaterloo.ca>
+Envoy=E9 : dimanche 7 septembre 2025 18:14
+=C0 : BOUCADAIR Mohamed INNOV/NET <mohamed.boucadair@orange.com>
+Cc : The IESG <iesg@ietf.org>; draft-ietf-tls-hybrid-design@ietf.org; tls-c=
+hairs@ietf.org; tls@ietf.org; caw@heapingbits.net; durumcrustulum@gmail.com=
+; joe@salowey.net
+Objet : Re: Mohamed Boucadair's No Objection on draft-ietf-tls-hybrid-desig=
+n-15: (with COMMENT)
+
+
+
+Thank you for the feedback.  I've addressed the minor/nits in https://githu=
+b.com/dstebila/draft-ietf-tls-hybrid-design/commit/fde2d4ea3c5e59ee9c27de7e=
+7408db1dbe1bccf3.
+[Med] Thanks.
+
+Regarding the comments, see inline below:
+
+
+# Why is this Informational?
+
+The justification in the writeup seems clear to me. I do think that it woul=
+d be
+useful to mirror in the abstract or the Introduction the main message grabb=
+ed
+from the writeup:
+
+"It does not modify TLS directly, but rather using existing mechanisms and =
+code
+point registries. It does not define any specific hybrid key exchanges."
+
+This statement may be revisited based on the outcome of the next item.
+
+# Relaxing a MUST in the base TLS spec?
+
+CURRENT:
+  [TLS13] requires that ``The key_exchange values for each
+  KeyShareEntry MUST be generated independently.'' In the context of
+  this document, since the same algorithm may appear in multiple named
+  groups, this document relaxes the above requirement to allow the same
+  key_exchange value for the same algorithm to be reused in multiple
+  KeyShareEntry records sent in within the same ClientHello.
+
+Isn't this modifying aspects of the base TLS? How to reconcile this with the
+claim in the previous point?
+
+You are correct that this relaxes as MUST in the base TLS spec, and as such=
+ a statement saying "It does not modify TLS directly" would not be fully ac=
+curate.  If you have some other wording you would suggest to add to the int=
+roduction, please feel free to suggest it.
+[Med] Thanks for confirming. Maybe consider something such as : =AB Except =
+relaxing a MUST on key_exchange values, this document does not require any =
+modification to the base TLS specification." or similar.
+
+Given that implication on base TLS spec, I'm afraid that the intended publi=
+cation status should be reconsidered.
+
+# IANA considerations
+
+Unless I missed something the document provides guidance for future
+assignments. Shouldn't a note be added to the TLS registry to track this
+guidance and/or add this document as a reference to the registry?
+
+I do now know what text IANA would want to see here; my understanding from =
+IANA's review is that they have not requested any further changes.
+[Med] Beyond what need to be recorded in an IANA registry, the main point i=
+s that this section sets guidance for future assignments and we need to mak=
+e sure that guidance is followed.
+
+As I'm there,
+
+CURRENT:
+For these entries in
+  the TLS Supported Groups registry, the "Recommended" column SHOULD be
+  "N" and the "DTLS-OK" column SHOULD be "Y".
+
+I guess this should be the value used in the initial registration. The
+recommended value may in theory evolve in the future (far future, maybe). If
+so, can we make that explicit in the document?
+
+For what reasons do you expect this recommendation may evolve?  I am not su=
+re what text to write other than "The recommended value may change in the f=
+uture", which I think is too vague.
+[Med] I was actually suggesting this change:
+
+OLD: the "Recommended" column SHOULD be ...
+NEW: the "Recommended" column SHOULD in the initial registration be ...
+
+Douglas
+
+___________________________________________________________________________=
+_________________________________
+Ce message et ses pieces jointes peuvent contenir des informations confiden=
+tielles ou privilegiees et ne doivent donc
+pas etre diffuses, exploites ou copies sans autorisation. Si vous avez recu=
+ ce message par erreur, veuillez le signaler
+a l'expediteur et le detruire ainsi que les pieces jointes. Les messages el=
+ectroniques etant susceptibles d'alteration,
+Orange decline toute responsabilite si ce message a ete altere, deforme ou =
+falsifie. Merci.
+
+This message and its attachments may contain confidential or privileged inf=
+ormation that may be protected by law;
+they should not be distributed, used or copied without authorisation.
+If you have received this email in error, please notify the sender and dele=
+te this message and its attachments.
+As emails may be altered, Orange is not liable for messages that have been =
+modified, changed or falsified.
+Thank you.
+
+--_000_PR0P264MB2885BF33CC40B4FFDD9E97EE880CAPR0P264MB2885FRAP_
+Content-Type: text/html; charset="iso-8859-1"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-micr=
+osoft-com:office:office" xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" xmlns=3D"http:=
+//www.w3.org/TR/REC-html40">
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859-=
+1">
+<meta name=3D"Generator" content=3D"Microsoft Word 15 (filtered medium)">
+<style><!--
+/* Font Definitions */
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+@font-face
+	{font-family:Aptos;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	font-size:12.0pt;
+	font-family:"Aptos",sans-serif;}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:blue;
+	text-decoration:underline;}
+span.EmailStyle19
+	{mso-style-type:personal-reply;
+	font-family:"Courier New";
+	color:windowtext;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	font-size:10.0pt;
+	mso-ligatures:none;}
+@page WordSection1
+	{size:612.0pt 792.0pt;
+	margin:70.85pt 70.85pt 70.85pt 70.85pt;}
+div.WordSection1
+	{page:WordSection1;}
+--></style><!--[if gte mso 9]><xml>
+<o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
+</xml><![endif]--><!--[if gte mso 9]><xml>
+<o:shapelayout v:ext=3D"edit">
+<o:idmap v:ext=3D"edit" data=3D"1" />
+</o:shapelayout></xml><![endif]-->
+</head>
+<body lang=3D"FR" link=3D"blue" vlink=3D"purple" style=3D"word-wrap:break-w=
+ord">
+<div class=3D"WordSection1">
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;font-family:&quot;Co=
+urier New&quot;;mso-fareast-language:EN-US">Hi Douglas,
+<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;font-family:&quot;Co=
+urier New&quot;;mso-fareast-language:EN-US"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"font-size:11.0pt;font-=
+family:&quot;Courier New&quot;;mso-fareast-language:EN-US">Thanks for the f=
+ollow-up.
+<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"font-size:11.0pt;font-=
+family:&quot;Courier New&quot;;mso-fareast-language:EN-US"><o:p>&nbsp;</o:p=
+></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"font-size:11.0pt;font-=
+family:&quot;Courier New&quot;;mso-fareast-language:EN-US">Please see inlin=
+e.
+<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"font-size:11.0pt;font-=
+family:&quot;Courier New&quot;;mso-fareast-language:EN-US"><o:p>&nbsp;</o:p=
+></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"font-size:11.0pt;font-=
+family:&quot;Courier New&quot;;mso-fareast-language:EN-US">Cheers,<o:p></o:=
+p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"font-size:11.0pt;font-=
+family:&quot;Courier New&quot;;mso-fareast-language:EN-US">Med<o:p></o:p></=
+span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"font-size:11.0pt;font-=
+family:&quot;Courier New&quot;;mso-fareast-language:EN-US"><o:p>&nbsp;</o:p=
+></span></p>
+<div style=3D"border:none;border-left:solid blue 1.5pt;padding:0cm 0cm 0cm =
+4.0pt">
+<div>
+<div style=3D"border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0cm =
+0cm 0cm">
+<p class=3D"MsoNormal"><b><span style=3D"font-size:11.0pt;font-family:&quot=
+;Calibri&quot;,sans-serif">De&nbsp;:</span></b><span style=3D"font-size:11.=
+0pt;font-family:&quot;Calibri&quot;,sans-serif"> Douglas Stebila &lt;dstebi=
+la@uwaterloo.ca&gt;
+<br>
+<b>Envoy=E9&nbsp;:</b> dimanche 7 septembre 2025 18:14<br>
+<b>=C0&nbsp;:</b> BOUCADAIR Mohamed INNOV/NET &lt;mohamed.boucadair@orange.=
+com&gt;<br>
+<b>Cc&nbsp;:</b> The IESG &lt;iesg@ietf.org&gt;; draft-ietf-tls-hybrid-desi=
+gn@ietf.org; tls-chairs@ietf.org; tls@ietf.org; caw@heapingbits.net; durumc=
+rustulum@gmail.com; joe@salowey.net<br>
+<b>Objet&nbsp;:</b> Re: Mohamed Boucadair's No Objection on draft-ietf-tls-=
+hybrid-design-15: (with COMMENT)<o:p></o:p></span></p>
+</div>
+</div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US"><br>
+<br>
+Thank you for the feedback. &nbsp;</span>I've addressed the minor/nits in&n=
+bsp;<a href=3D"https://github.com/dstebila/draft-ietf-tls-hybrid-design/com=
+mit/fde2d4ea3c5e59ee9c27de7e7408db1dbe1bccf3">https://github.com/dstebila/d=
+raft-ietf-tls-hybrid-design/commit/fde2d4ea3c5e59ee9c27de7e7408db1dbe1bccf3=
+</a>.
+<o:p></o:p></p>
+<p class=3D"MsoNormal"><b><i><span style=3D"font-size:11.0pt;font-family:&q=
+uot;Courier New&quot;">[Med] Thanks.</span></i></b><span style=3D"font-size=
+:11.0pt;font-family:&quot;Courier New&quot;"><o:p></o:p></span></p>
+<div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">Regarding the comments, see inline below:<o:p></o:p>=
+</p>
+<div>
+<p class=3D"MsoNormal"><br>
+<br>
+<o:p></o:p></p>
+<blockquote style=3D"margin-top:5.0pt;margin-bottom:5.0pt">
+<div>
+<p class=3D"MsoNormal"># Why is this Informational?<o:p></o:p></p>
+</div>
+<div>
+<div>
+<p class=3D"MsoNormal"><br>
+The justification in the writeup seems clear to me. I do think that it woul=
+d be<br>
+useful to mirror in the abstract or the Introduction the main message grabb=
+ed<br>
+from the writeup:<br>
+<br>
+&#8220;It does not modify TLS directly, but rather using existing mechanism=
+s and code<br>
+point registries. It does not define any specific hybrid key exchanges.&#82=
+21;<br>
+<br>
+This statement may be revisited based on the outcome of the next item.<br>
+<br>
+# Relaxing a MUST in the base TLS spec?<br>
+<br>
+CURRENT:<br>
+&nbsp;&nbsp;[TLS13] requires that ``The key_exchange values for each<br>
+&nbsp;&nbsp;KeyShareEntry MUST be generated independently.'' In the context=
+ of<br>
+&nbsp;&nbsp;this document, since the same algorithm may appear in multiple =
+named<br>
+&nbsp;&nbsp;groups, this document relaxes the above requirement to allow th=
+e same<br>
+&nbsp;&nbsp;key_exchange value for the same algorithm to be reused in multi=
+ple<br>
+&nbsp;&nbsp;KeyShareEntry records sent in within the same ClientHello.<br>
+<br>
+Isn&#8217;t this modifying aspects of the base TLS? How to reconcile this w=
+ith the<br>
+claim in the previous point?<o:p></o:p></p>
+</div>
+</div>
+</blockquote>
+<div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">You are correct that this relaxes as MUST in the bas=
+e TLS spec, and as such a statement saying &quot;It does not modify TLS dir=
+ectly&quot; would not be fully accurate. &nbsp;If you have some other wordi=
+ng you would suggest to add to the introduction,
+ please feel free to suggest it.<o:p></o:p></p>
+<p class=3D"MsoNormal"><b><i><span lang=3D"EN-US" style=3D"font-size:11.0pt=
+;font-family:&quot;Courier New&quot;">[Med] Thanks for confirming. Maybe co=
+nsider something such as : =AB&nbsp;Except relaxing a MUST on key_exchange =
+values, this document does not require any modification
+ to the base TLS specification.&#8220; or similar.<o:p></o:p></span></i></b=
+></p>
+<p class=3D"MsoNormal"><b><i><span lang=3D"EN-US" style=3D"font-size:11.0pt=
+;font-family:&quot;Courier New&quot;"><o:p>&nbsp;</o:p></span></i></b></p>
+<p class=3D"MsoNormal"><b><i><span lang=3D"EN-US" style=3D"font-size:11.0pt=
+;font-family:&quot;Courier New&quot;">Given that implication on base TLS sp=
+ec, I&#8217;m afraid that the intended publication status should be reconsi=
+dered.
+</span></i></b><span lang=3D"EN-US" style=3D"font-size:11.0pt;font-family:&=
+quot;Courier New&quot;"><o:p></o:p></span></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><span lang=3D"EN-US"><o:p>&nbsp;</o:p></span></p>
+</div>
+<blockquote style=3D"margin-top:5.0pt;margin-bottom:5.0pt">
+<div>
+<div>
+<p class=3D"MsoNormal"># IANA considerations<br>
+<br>
+Unless I missed something the document provides guidance for future<br>
+assignments. Shouldn&#8217;t a note be added to the TLS registry to track t=
+his<br>
+guidance and/or add this document as a reference to the registry?<o:p></o:p=
+></p>
+</div>
+</div>
+</blockquote>
+<div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">I do now know what text IANA would want to see here;=
+ my understanding from IANA's review is that they have not requested any fu=
+rther changes.<o:p></o:p></p>
+</div>
+<p class=3D"MsoNormal"><b><i><span lang=3D"EN-US" style=3D"font-size:11.0pt=
+;font-family:&quot;Courier New&quot;">[Med] Beyond what need to be recorded=
+ in an IANA registry, the main point is that this section sets guidance for=
+ future assignments and we need to make sure that
+ guidance is followed.</span></i></b><span lang=3D"EN-US"><br>
+<br>
+<o:p></o:p></span></p>
+<blockquote style=3D"margin-top:5.0pt;margin-bottom:5.0pt">
+<div>
+<div>
+<p class=3D"MsoNormal">As I&#8217;m there,<br>
+<br>
+CURRENT:<br>
+For these entries in<br>
+&nbsp;&nbsp;the TLS Supported Groups registry, the &quot;Recommended&quot; =
+column SHOULD be<br>
+&nbsp;&nbsp;&quot;N&quot; and the &quot;DTLS-OK&quot; column SHOULD be &quo=
+t;Y&quot;.<br>
+<br>
+I guess this should be the value used in the initial registration. The<br>
+recommended value may in theory evolve in the future (far future, maybe). I=
+f<br>
+so, can we make that explicit in the document?<o:p></o:p></p>
+</div>
+</div>
+</blockquote>
+</div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">For what reasons do you expect this recommendation m=
+ay evolve? &nbsp;I am not sure what text to write other than &quot;The reco=
+mmended value may change in the future&quot;, which I think is too vague.<o=
+:p></o:p></p>
+<p class=3D"MsoNormal"><b><i><span lang=3D"EN-US" style=3D"font-size:11.0pt=
+;font-family:&quot;Courier New&quot;">[Med] I was actually suggesting this =
+change:<o:p></o:p></span></i></b></p>
+<p class=3D"MsoNormal"><b><i><span lang=3D"EN-US" style=3D"font-size:11.0pt=
+;font-family:&quot;Courier New&quot;"><o:p>&nbsp;</o:p></span></i></b></p>
+<p class=3D"MsoNormal"><b><i><span lang=3D"EN-US" style=3D"font-size:11.0pt=
+;font-family:&quot;Courier New&quot;">OLD: the &quot;Recommended&quot; colu=
+mn SHOULD be &#8230;<o:p></o:p></span></i></b></p>
+<p class=3D"MsoNormal"><b><i><span lang=3D"EN-US" style=3D"font-size:11.0pt=
+;font-family:&quot;Courier New&quot;">NEW: the &quot;Recommended&quot; colu=
+mn SHOULD in the initial registration be &#8230;<o:p></o:p></span></i></b><=
+/p>
+</div>
+<div>
+<p class=3D"MsoNormal"><span lang=3D"EN-US"><o:p>&nbsp;</o:p></span></p>
+</div>
+<div>
+<p class=3D"MsoNormal">Douglas<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+</div>
+</div>
+</div>
+<pre>_________________<wbr>______________________________<wbr>_____________=
+_________________<wbr>______________________________<wbr>_
+Ce message et ses pieces jointes peuvent contenir des informations confiden=
+tielles ou privilegiees et ne doivent donc
+pas etre diffuses, exploites ou copies sans autorisation. Si vous avez recu=
+ ce message par erreur, veuillez le signaler
+a l'expediteur et le detruire ainsi que les pieces jointes. Les messages el=
+ectroniques etant susceptibles d'alteration,
+Orange decline toute responsabilite si ce message a ete altere, deforme ou =
+falsifie. Merci.
+
+This message and its attachments may contain confidential or privileged inf=
+ormation that may be protected by law;
+they should not be distributed, used or copied without authorisation.
+If you have received this email in error, please notify the sender and dele=
+te this message and its attachments.
+As emails may be altered, Orange is not liable for messages that have been =
+modified, changed or falsified.
+Thank you.</pre></body>
+</html>
+
+--_000_PR0P264MB2885BF33CC40B4FFDD9E97EE880CAPR0P264MB2885FRAP_--
+
+

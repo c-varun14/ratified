@@ -1,0 +1,780 @@
+Return-Path: <ekr@rtfm.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 73FA9128C0A
+ for <tls@ietfa.amsl.com>; Fri,  9 Mar 2018 14:16:13 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.897
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.897 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ HTML_MESSAGE=0.001, NORMAL_HTTP_TO_IP=0.001,
+ RCVD_IN_DNSWL_NONE=-0.0001, URIBL_BLOCKED=0.001]
+ autolearn=unavailable autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=rtfm-com.20150623.gappssmtp.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id yqUWsIZcOPUA for <tls@ietfa.amsl.com>;
+ Fri,  9 Mar 2018 14:16:10 -0800 (PST)
+Received: from mail-qt0-x22f.google.com (mail-qt0-x22f.google.com
+ [IPv6:2607:f8b0:400d:c0d::22f])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 267DA12783A
+ for <tls@ietf.org>; Fri,  9 Mar 2018 14:16:07 -0800 (PST)
+Received: by mail-qt0-x22f.google.com with SMTP id d26so12740305qtk.10
+ for <tls@ietf.org>; Fri, 09 Mar 2018 14:16:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=rtfm-com.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+ :cc; bh=TIxnvrZ96xHzNbLDhg3QZqjmAao3rl1vXbd49DYLN+Q=;
+ b=vKj/Etq0WvRIP9CtmdzxTDcMZ8rlQaw9LI//RFzrpFaWtV9V8MH/7Xnf7xvDJoDLto
+ M9GK1RBaM+cpr41fFjdgRmuS96fUIHwvhqKECEO1293ZHduVdae/UYDrojIulfpK5VG7
+ BTOANLJg7HwUyrGvj4K13xBymkgR+Pfc0s8OfU2HPPOgu98FHy+Hg03an9nPIF6ZGQhO
+ dc6qPLPWbrL6MkLWZ9giGmn68zBEg3QOg/kFCGr8PNYpI3cdRZe0cadrtWlP28mKwkzL
+ FJrelBshcHA5yvwzZ7EgQsO3llhNpF+gmWMVgxRugFHPPi03wne57Z3HvcVWlFi0d+w0
+ aNHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+ :message-id:subject:to:cc;
+ bh=TIxnvrZ96xHzNbLDhg3QZqjmAao3rl1vXbd49DYLN+Q=;
+ b=p1mQUZ2WOYyaW8/4/UZjWBh6x5KNvJ+ohlSXnINQoEujv8qIk0l3k61oSl38mAZopx
+ gARyYns8O1XeXJ61PWZR7hidqpwXc/Crxa58ZFoqvQ5z2lhOuw2WOqPTGr4wjELROIWl
+ NzDxhMqv5NxfXCA9yysHhSlT82pSJNweja/7Y+DZxe84yCdbC6DznXZAFobtpkboetOU
+ J3P3dcF6gGM9In9XnIE8gjdJt5XuJo3fEqOfrrxRBDXWDgPk5Gck5AkxMKxyeGRjOtGG
+ LkSXDPjluutJiOCtRvPKhU2PzNL1qYN1lptXDpDaR/2ihH14DS6pipOQSZ6UlAr4GIDQ
+ 72zg==
+X-Gm-Message-State: AElRT7FrfehKEzPGuV+OIALOR6VUFOIlLEZO9naEqURFZ7rgAdCD6JFh
+ 6ppN+J1xU/wPTuM14V2/izw87vTXu9feSVHyt6IQcA==
+X-Google-Smtp-Source: AG47ELu1lUhA2nW8Yo4vNmk48evpM1pQPjHUv772Xq3Tgvry2MgdGUbvuV/kdamGvSmGeD92pfwyw4GdI1yQM5dV7RI=
+X-Received: by 10.200.6.131 with SMTP id f3mr62930qth.208.1520633766141; Fri,
+ 09 Mar 2018 14:16:06 -0800 (PST)
+MIME-Version: 1.0
+Received: by 10.200.37.176 with HTTP; Fri, 9 Mar 2018 14:15:25 -0800 (PST)
+In-Reply-To: <CABcZeBMkwncALJqEgCBMxx3UuYCq7kqvDxS9yoFDvdMxsUW-xQ@mail.gmail.com>
+References: <152035726289.28354.15009436908256456026.idtracker@ietfa.amsl.com>
+ <43224E51-EBF9-4471-B133-B118DA1CE05A@sn3rd.com>
+ <362DB102-B772-4797-80A6-E043F8A3BFEF@nostrum.com>
+ <26718E8E-5F81-43CC-A127-E362BD5C4706@sn3rd.com>
+ <CABcZeBMkwncALJqEgCBMxx3UuYCq7kqvDxS9yoFDvdMxsUW-xQ@mail.gmail.com>
+From: Eric Rescorla <ekr@rtfm.com>
+Date: Fri, 9 Mar 2018 14:15:25 -0800
+Message-ID: <CABcZeBPRrbJKX7kLWD14BY+3HA8Gu=gDFGsmMn7OzaOexi01Jg@mail.gmail.com>
+To: Sean Turner <sean@sn3rd.com>
+Cc: Ben Campbell <ben@nostrum.com>, The IESG <iesg@ietf.org>,
+ draft-ietf-tls-tls13@ietf.org, 
+ tls-chairs <tls-chairs@ietf.org>, "<tls@ietf.org>" <tls@ietf.org>
+Content-Type: multipart/alternative; boundary="f403043a754876f64f05670223b1"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/yu7DTtHWzbU6XQ3K3f8nuSBwxjI>
+Subject: Re: [TLS] Ben Campbell's Yes on draft-ietf-tls-tls13-26: (with
+ COMMENT)
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Fri, 09 Mar 2018 22:16:13 -0000
+
+--f403043a754876f64f05670223b1
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Following up.
+
+> =C2=A74.1.2, first paragraph: " When a client first connects to a server,=
+ it
+is REQUIRED to send the
+>    ClientHello as its first message. "
+>
+> Is that intended to prohibit the use of STARTTLS or similar application
+layer patterns?
+> (To be clear, this is not an objection, just a clarification request.)
+
+This was clarified.
+
+
+> =C2=A74.1.2, legacy_compression_methods: "Note that TLS 1.3 servers might
+receive TLS 1.2 or prior
+>       ClientHellos which contain other compression methods and MUST
+>       follow the procedures for the appropriate prior version of TLS."
+>
+> Is that intended to require TLS 1.3 servers to always be willing and able
+to negotiate 1.2? =C2=A74.2.1
+
+We clarified this text.
+
+
+> has a similar assertion:
+>
+> "If this extension is not present, servers which are compliant with
+>    this specification MUST negotiate TLS 1.2 or prior as specified in
+>    [RFC5246], even if ClientHello.legacy_version is 0x0304 or later."
+
+I added a clarification here.
+
+
+> But =C2=A74.2.3 says:
+>
+>  "Note that TLS 1.2 defines this extension differently.  TLS 1.3
+>    implementations willing to negotiate TLS 1.2 MUST behave in
+>    accordance with the requirements of [RFC5246] when negotiating that
+>    version."
+>
+> ... which seems inconsistent (noting that this paragraph talks about
+"implementations"
+> rather than "servers", so perhaps there's a subtle difference?
+
+The extension was relevant for clients and servers in TLS 1.2.
+
+
+> =C2=A74.2.1.1: The section is marked for removal. Do you expect that RFC
+implementations
+> will ever need to interop with draft implementations? If so, the
+information in this section
+> may continue to be useful for some time.
+
+RFC implementations don't interop with draft implementations in any
+meaningful way. I.e., they just negotiate TLS 1.2.
+
+>
+> =C2=A7D.5: This section has a lot of normative requirements that seem
+important. I wonder why it has been
+> relegated to an appendix.o
+
+Because they are levies in the non-TLS 1.3 portions of the imp.
+
+
+
+> *** Editorial Comments and nits:
+>
+> =C2=A72: "If (EC)DHE key establishment
+>    is in use, then the ServerHello contains a "key_share" extension with
+>    the server=E2=80=99s ephemeral Diffie-Hellman share which MUST be in t=
+he same
+>    group as one of the client=E2=80=99s shares. "
+>
+> missing comma prior to "which".
+
+I made a slightly different change.
+
+
+> =C2=A74.1.1: "Note that if the PSK can be used without (EC)DHE then non-
+>    overlap in the "supported_groups" parameters need not be fatal, as it
+>    is in the non-PSK case discussed in the previous paragraph."
+>
+> I read "need not be fatal" to mean that it may still be fatal at times.
+Is that the intent?
+
+Yes. Suppose you could only use the PSK with ECDHE. That's what the "if the
+PSK can be used..."
+is about.
+
+
+> =C2=A711: The IANA considerations have a number of constructions similar =
+to
+"SHALL update/has updated".
+> Is that text expected to collapse to "has updated" at some point?
+
+Yes. RFC-Ed typically does this.
+
+-Ekr
+
+
+On Wed, Mar 7, 2018 at 5:47 PM, Eric Rescorla <ekr@rtfm.com> wrote:
+
+>
+>
+> On Wed, Mar 7, 2018 at 4:39 PM, Sean Turner <sean@sn3rd.com> wrote:
+>
+>>
+>>
+>> > On Mar 7, 2018, at 16:35, Ben Campbell <ben@nostrum.com> wrote:
+>> >
+>> >
+>> >
+>> >> On Mar 7, 2018, at 2:49 PM, Sean Turner <sean@sn3rd.com> wrote:
+>> >>
+>> >>
+>> >>
+>> >>> On Mar 6, 2018, at 12:27, Ben Campbell <ben@nostrum.com> wrote:
+>> >>>
+>> >>> Ben Campbell has entered the following ballot position for
+>> >>> draft-ietf-tls-tls13-26: Yes
+>> >>>
+>> >>> When responding, please keep the subject line intact and reply to al=
+l
+>> >>> email addresses included in the To and CC lines. (Feel free to cut
+>> this
+>> >>> introductory paragraph, however.)
+>> >>>
+>> >>>
+>> >>> Please refer to https://www.ietf.org/iesg/stat
+>> ement/discuss-criteria.html
+>> >>> for more information about IESG DISCUSS and COMMENT positions.
+>> >>>
+>> >>>
+>> >>> The document, along with other ballot positions, can be found here:
+>> >>> https://datatracker.ietf.org/doc/draft-ietf-tls-tls13/
+>> >>>
+>> >>>
+>> >>>
+>> >>> ------------------------------------------------------------
+>> ----------
+>> >>> COMMENT:
+>> >>> ------------------------------------------------------------
+>> ----------
+>> >>>
+>> >>> There has clearly been a lot of work put into this. It's a
+>> surprisingly
+>> >>> understandable document, given its length and the complexity of the
+>> subject. I
+>> >>> am balloting yes, but I have a few minor comments and nits. None of
+>> these are
+>> >>> showstoppers, so please do with them as you will.
+>> >>>
+>> >>> *** Substantive Comments:
+>> >>>
+>> >>> =C2=A74.1.2, first paragraph: " When a client first connects to a se=
+rver,
+>> it is
+>> >>> REQUIRED to send the
+>> >>> ClientHello as its first message. "
+>> >>>
+>> >>> Is that intended to prohibit the use of STARTTLS or similar
+>> application layer
+>> >>> patterns? (To be clear, this is not an objection, just a
+>> clarification request.)
+>> >>
+>> >> No - this is just how it works TLS - clients send the ClientHello
+>> message first ;)
+>> >
+>> > I assume your response to mean that the point is merely that
+>> ClientHello is the first message of the TLS handshake. As worded, I thin=
+k
+>> some readers might interpret this to mean that the client can send no ot=
+her
+>> data at any layer prior to ClientHello.
+>>
+>> Well this is about TLS :) But, maybe r/its first message/its first TLS
+>> handshake message ?
+>>
+>> >>> =C2=A74.1.2, legacy_compression_methods: "Note that TLS 1.3 servers =
+might
+>> receive
+>> >>> TLS 1.2 or prior
+>> >>>    ClientHellos which contain other compression methods and MUST
+>> >>>    follow the procedures for the appropriate prior version of TLS."
+>> >>>
+>> >>> Is that intended to require TLS 1.3 servers to always be willing and
+>> able to
+>> >>> negotiate 1.2? =C2=A74.2.1 has a similar assertion:
+>> >>>
+>> >>> "If this extension is not present, servers which are compliant with
+>> >>> this specification MUST negotiate TLS 1.2 or prior as specified in
+>> >>> [RFC5246], even if ClientHello.legacy_version is 0x0304 or later."
+>> >>>
+>> >>> But =C2=A74.2.3 says:
+>> >>>
+>> >>> "Note that TLS 1.2 defines this extension differently.  TLS 1.3
+>> >>> implementations willing to negotiate TLS 1.2 MUST behave in
+>> >>> accordance with the requirements of [RFC5246] when negotiating that
+>> >>> version."
+>> >>>
+>> >>> ... which seems inconsistent (noting that this paragraph talks about
+>> >>> "implementations" rather than "servers", so perhaps there's a subtle
+>> difference?
+>> >>
+>> >> In short kinda, sorta yes: =C2=A7s4.2.1 includes the following:
+>> >>
+>> >>  Implementations of TLS 1.3 which choose to support prior versions of
+>> >>  TLS SHOULD support TLS 1.2.
+>> >
+>> > That still says =E2=80=9Cwhich choose to support=E2=80=9D
+>>
+>> Right so there might be some implementations that choose to not support
+>> prior versions.
+>>
+>
+> Indeed, I am aware of at least one.
+>
+> -Ekr
+>
+>
+>>
+>> >> Not sure it=E2=80=99s inconsistent given that the 2nd quote is about =
+the
+>> server needs to do with the information it=E2=80=99s getting from the cl=
+ient.
+>> >
+>> > I=E2=80=99m still confused. Is the server allowed to refuse to negotia=
+te 1.2?
+>> Or is the exception in =C2=A74.2.1 supposed to apply to all of the relat=
+ed MUSTs?
+>>
+>> Yes - TLS servers are allowed to refuse to negotiate earlier version;
+>> that=E2=80=99s deciding to not follow the SHOULD in  =C2=A7s4.2.1.  If t=
+hey negotiate an
+>> earlier version then do that version that=E2=80=99s what=E2=80=99s in =
+=C2=A7s4.1.2 and in =C2=A74.2.3.
+>>
+>> >>> =C2=A74.2.1.1: The section is marked for removal. Do you expect that=
+ RFC
+>> >>> implementations will ever need to interop with draft implementations=
+?
+>> If so,
+>> >>> the information in this section may continue to be useful for some
+>> time.
+>> >>
+>> >> I think it=E2=80=99ll be useful for about as long as it takes for the=
+m to rev
+>> their code bases, which I am sure hoping is faster than the 6 or so week=
+s
+>> it=E2=80=99ll take for this draft to get to through the RFC editor=E2=80=
+=99s queue.
+>> >
+>> > Okay.
+>> >
+>> >>
+>> >>> =C2=A7D.5: This section has a lot of normative requirements that see=
+m
+>> important. I
+>> >>> wonder why it has been relegated to an appendix.
+>> >>
+>> >> =C2=A7D.5 is about backward compatibility and though we negotiations =
+with
+>> 1.2 is a SHOULD we say nada about earlier versions.  And, we don=E2=80=
+=99t want to
+>> say anything about earlier versions.   And, some of this is technically
+>> repeated from other RFCs, eg. 5768 and 6176 saying don=E2=80=99t do SSL2=
+/3. So, it
+>> ended up in an appendix.
+>> >
+>> > Okay.
+>> >
+>> >>
+>> >>> *** Editorial Comments and nits:
+>> >>>
+>> >>> =C2=A72: "If (EC)DHE key establishment
+>> >>> is in use, then the ServerHello contains a "key_share" extension wit=
+h
+>> >>> the server=E2=80=99s ephemeral Diffie-Hellman share which MUST be in=
+ the same
+>> >>> group as one of the client=E2=80=99s shares. "
+>> >>>
+>> >>> missing comma prior to "which=E2=80=9D.
+>> >>
+>> >> (grammar police are banging on my door as we speak)
+>> >
+>> > Well, my comment was labeled as editorial or nit :-)
+>> >
+>> >> So is the which clause restrictive or non restrictive?  I=E2=80=99m g=
+oing with
+>> this this clause being restrictive (hence no comma).
+>> >
+>> > I=E2=80=99ll let the grammar police at your door debate the merits of =
+=E2=80=9Cwhich=E2=80=9D
+>> vs =E2=80=9Cthat=E2=80=9D for restrictive clauses :-)
+>>
+>> See the response to Adam=E2=80=99s comment :). But, yeah the RFC editor =
+will
+>> definitely school me when the time comes.
+>>
+>> >>> =C2=A74.1.1: "Note that if the PSK can be used without (EC)DHE then =
+non-
+>> >>> overlap in the "supported_groups" parameters need not be fatal, as i=
+t
+>> >>> is in the non-PSK case discussed in the previous paragraph."
+>> >>>
+>> >>> I read "need not be fatal" to mean that it may still be fatal at
+>> times. Is that
+>> >>> the intent?
+>> >>
+>> >> Yes that is the intent.
+>> >
+>> > Okay. Would it be reasonable to offer guidance about when might want t=
+o
+>> treat this as fatal even though it would have been possible to use the P=
+SK
+>> without (EC)DHE?
+>>
+>> So the fatal error is when the client and server are trying to negotiate
+>> (EC)DHE parameters and there=E2=80=99s no overlap in the supported_group=
+s.  This
+>> would occur in the =E2=80=9Cnormal=E2=80=9D case when the client is anon=
+ymous (i.e., client
+>> only sends ClientHello+key_share and no psk_key_exchange_modes/pre_share=
+d_key)
+>> or when the client is using PSK+(EC)DHE for client authentication.  But,
+>> that is described in the previous paragraph.  Maybe another way to say i=
+t
+>> is: normally you=E2=80=99d throw an error if supported_groups didn=E2=80=
+=99t overlap, but
+>> here since you=E2=80=99re not using them because you=E2=80=99re doing PS=
+K-only you don=E2=80=99t.
+>>
+>> >>> =C2=A711: The IANA considerations have a number of constructions sim=
+ilar
+>> to "SHALL
+>> >>> update/has updated". Is that text expected to collapse to "has
+>> updated" at some
+>> >>> point?
+>> >>
+>> >> Yes - once we=E2=80=99ve gotten the a-okay from IANA, well as the RFC=
+ editor
+>> to make it just say =E2=80=9Chas updated=E2=80=9D etc.
+>> >
+>> > Okay.
+>> >
+>> >>
+>> >>> =C2=A7E.2.1: [BDFKPPRSZZ16]  : Best citation anchor evar
+>> >>
+>> >> :)
+>> >
+>> > I am trying to decide if that should sound like a =E2=80=9CBill the Ca=
+t=E2=80=9D
+>> utterance or a sound effect for cartoon violence involving high voltage =
+:-)
+>> >
+>> >>
+>> >
+>>
+>>
+>
+
+--f403043a754876f64f05670223b1
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">Following up.<div><br></div><div><div>&gt; =C2=A74.1.2, fi=
+rst paragraph: &quot; When a client first connects to a server, it is REQUI=
+RED to send the</div><div>&gt;=C2=A0 =C2=A0 ClientHello as its first messag=
+e. &quot;</div><div>&gt;=C2=A0</div><div>&gt; Is that intended to prohibit =
+the use of STARTTLS or similar application layer patterns?</div><div>&gt; (=
+To be clear, this is not an objection, just a clarification request.)</div>=
+<div><br></div><div>This was clarified.</div><div><br></div><div><br></div>=
+<div>&gt; =C2=A74.1.2, legacy_compression_methods: &quot;Note that TLS 1.3 =
+servers might receive TLS 1.2 or prior</div><div>&gt;=C2=A0 =C2=A0 =C2=A0 =
+=C2=A0ClientHellos which contain other compression methods and MUST</div><d=
+iv>&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0follow the procedures for the appropriate=
+ prior version of TLS.&quot;</div><div>&gt;=C2=A0</div><div>&gt; Is that in=
+tended to require TLS 1.3 servers to always be willing and able to negotiat=
+e 1.2? =C2=A74.2.1</div><div><br></div><div>We clarified this text.</div><d=
+iv><br></div><div><br></div><div>&gt; has a similar assertion:</div><div>&g=
+t;=C2=A0</div><div>&gt; &quot;If this extension is not present, servers whi=
+ch are compliant with</div><div>&gt;=C2=A0 =C2=A0 this specification MUST n=
+egotiate TLS 1.2 or prior as specified in</div><div>&gt;=C2=A0 =C2=A0 [RFC5=
+246], even if ClientHello.legacy_version is 0x0304 or later.&quot;</div><di=
+v><br></div><div>I added a clarification here.</div><div><br></div><div><br=
+></div><div>&gt; But =C2=A74.2.3 says:</div><div>&gt;=C2=A0</div><div>&gt;=
+=C2=A0 &quot;Note that TLS 1.2 defines this extension differently.=C2=A0 TL=
+S 1.3</div><div>&gt;=C2=A0 =C2=A0 implementations willing to negotiate TLS =
+1.2 MUST behave in</div><div>&gt;=C2=A0 =C2=A0 accordance with the requirem=
+ents of [RFC5246] when negotiating that</div><div>&gt;=C2=A0 =C2=A0 version=
+.&quot;</div><div>&gt;=C2=A0</div><div>&gt; ... which seems inconsistent (n=
+oting that this paragraph talks about &quot;implementations&quot;</div><div=
+>&gt; rather than &quot;servers&quot;, so perhaps there&#39;s a subtle diff=
+erence?=C2=A0</div><div><br></div><div>The extension was relevant for clien=
+ts and servers in TLS 1.2.</div><div><br></div><div><br></div><div>&gt; =C2=
+=A7<a href=3D"http://4.2.1.1">4.2.1.1</a>: The section is marked for remova=
+l. Do you expect that RFC implementations=C2=A0</div><div>&gt; will ever ne=
+ed to interop with draft implementations? If so, the information in this se=
+ction</div><div>&gt; may continue to be useful for some time.</div><div><br=
+></div><div>RFC implementations don&#39;t interop with draft implementation=
+s in any</div><div>meaningful way. I.e., they just negotiate TLS 1.2.</div>=
+<div><br></div><div>&gt;=C2=A0</div><div>&gt; =C2=A7D.5: This section has a=
+ lot of normative requirements that seem important. I wonder why it has bee=
+n</div><div>&gt; relegated to an appendix.o</div><div><br></div><div>Becaus=
+e they are levies in the non-TLS 1.3 portions of the imp.</div><div><br></d=
+iv><div><br></div><div><br></div><div>&gt; *** Editorial Comments and nits:=
+</div><div>&gt;=C2=A0</div><div>&gt; =C2=A72: &quot;If (EC)DHE key establis=
+hment</div><div>&gt;=C2=A0 =C2=A0 is in use, then the ServerHello contains =
+a &quot;key_share&quot; extension with</div><div>&gt;=C2=A0 =C2=A0 the serv=
+er=E2=80=99s ephemeral Diffie-Hellman share which MUST be in the same</div>=
+<div>&gt;=C2=A0 =C2=A0 group as one of the client=E2=80=99s shares. &quot;<=
+/div><div>&gt;=C2=A0</div><div>&gt; missing comma prior to &quot;which&quot=
+;.</div><div><br></div><div>I made a slightly different change.</div><div><=
+br></div><div><br></div><div>&gt; =C2=A74.1.1: &quot;Note that if the PSK c=
+an be used without (EC)DHE then non-</div><div>&gt;=C2=A0 =C2=A0 overlap in=
+ the &quot;supported_groups&quot; parameters need not be fatal, as it</div>=
+<div>&gt;=C2=A0 =C2=A0 is in the non-PSK case discussed in the previous par=
+agraph.&quot;</div><div>&gt;=C2=A0</div><div>&gt; I read &quot;need not be =
+fatal&quot; to mean that it may still be fatal at times. Is that the intent=
+?</div><div><br></div><div>Yes. Suppose you could only use the PSK with ECD=
+HE. That&#39;s what the &quot;if the PSK can be used...&quot;</div><div>is =
+about.</div><div><br></div><div><br></div><div>&gt; =C2=A711: The IANA cons=
+iderations have a number of constructions similar to &quot;SHALL update/has=
+ updated&quot;.</div><div>&gt; Is that text expected to collapse to &quot;h=
+as updated&quot; at some point?</div><div><br></div><div>Yes. RFC-Ed typica=
+lly does this.</div><div><br></div><div>-Ekr</div></div><div><br></div></di=
+v><div class=3D"gmail_extra"><br><div class=3D"gmail_quote">On Wed, Mar 7, =
+2018 at 5:47 PM, Eric Rescorla <span dir=3D"ltr">&lt;<a href=3D"mailto:ekr@=
+rtfm.com" target=3D"_blank">ekr@rtfm.com</a>&gt;</span> wrote:<br><blockquo=
+te class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc so=
+lid;padding-left:1ex"><div dir=3D"ltr"><br><div class=3D"gmail_extra"><br><=
+div class=3D"gmail_quote"><div><div class=3D"h5">On Wed, Mar 7, 2018 at 4:3=
+9 PM, Sean Turner <span dir=3D"ltr">&lt;<a href=3D"mailto:sean@sn3rd.com" t=
+arget=3D"_blank">sean@sn3rd.com</a>&gt;</span> wrote:<br><blockquote class=
+=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padd=
+ing-left:1ex"><div class=3D"m_-4352361717329053694HOEnZb"><div class=3D"m_-=
+4352361717329053694h5"><br>
+<br>
+&gt; On Mar 7, 2018, at 16:35, Ben Campbell &lt;<a href=3D"mailto:ben@nostr=
+um.com" target=3D"_blank">ben@nostrum.com</a>&gt; wrote:<br>
+&gt;<br>
+&gt;<br>
+&gt;<br>
+&gt;&gt; On Mar 7, 2018, at 2:49 PM, Sean Turner &lt;<a href=3D"mailto:sean=
+@sn3rd.com" target=3D"_blank">sean@sn3rd.com</a>&gt; wrote:<br>
+&gt;&gt;<br>
+&gt;&gt;<br>
+&gt;&gt;<br>
+&gt;&gt;&gt; On Mar 6, 2018, at 12:27, Ben Campbell &lt;<a href=3D"mailto:b=
+en@nostrum.com" target=3D"_blank">ben@nostrum.com</a>&gt; wrote:<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt; Ben Campbell has entered the following ballot position for<br>
+&gt;&gt;&gt; draft-ietf-tls-tls13-26: Yes<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt; When responding, please keep the subject line intact and reply=
+ to all<br>
+&gt;&gt;&gt; email addresses included in the To and CC lines. (Feel free to=
+ cut this<br>
+&gt;&gt;&gt; introductory paragraph, however.)<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt; Please refer to <a href=3D"https://www.ietf.org/iesg/statement=
+/discuss-criteria.html" rel=3D"noreferrer" target=3D"_blank">https://www.ie=
+tf.org/iesg/stat<wbr>ement/discuss-criteria.html</a><br>
+&gt;&gt;&gt; for more information about IESG DISCUSS and COMMENT positions.=
+<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt; The document, along with other ballot positions, can be found =
+here:<br>
+&gt;&gt;&gt; <a href=3D"https://datatracker.ietf.org/doc/draft-ietf-tls-tls=
+13/" rel=3D"noreferrer" target=3D"_blank">https://datatracker.ietf.org/d<wb=
+r>oc/draft-ietf-tls-tls13/</a><br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt; ------------------------------<wbr>---------------------------=
+---<wbr>----------<br>
+&gt;&gt;&gt; COMMENT:<br>
+&gt;&gt;&gt; ------------------------------<wbr>---------------------------=
+---<wbr>----------<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt; There has clearly been a lot of work put into this. It&#39;s a=
+ surprisingly<br>
+&gt;&gt;&gt; understandable document, given its length and the complexity o=
+f the subject. I<br>
+&gt;&gt;&gt; am balloting yes, but I have a few minor comments and nits. No=
+ne of these are<br>
+&gt;&gt;&gt; showstoppers, so please do with them as you will.<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt; *** Substantive Comments:<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt; =C2=A74.1.2, first paragraph: &quot; When a client first conne=
+cts to a server, it is<br>
+&gt;&gt;&gt; REQUIRED to send the<br>
+&gt;&gt;&gt; ClientHello as its first message. &quot;<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt; Is that intended to prohibit the use of STARTTLS or similar ap=
+plication layer<br>
+&gt;&gt;&gt; patterns? (To be clear, this is not an objection, just a clari=
+fication request.)<br>
+&gt;&gt;<br>
+&gt;&gt; No - this is just how it works TLS - clients send the ClientHello =
+message first ;)<br>
+&gt;<br>
+&gt; I assume your response to mean that the point is merely that ClientHel=
+lo is the first message of the TLS handshake. As worded, I think some reade=
+rs might interpret this to mean that the client can send no other data at a=
+ny layer prior to ClientHello.<br>
+<br>
+</div></div>Well this is about TLS :) But, maybe r/its first message/its fi=
+rst TLS handshake message ?<br>
+<span><br>
+&gt;&gt;&gt; =C2=A74.1.2, legacy_compression_methods: &quot;Note that TLS 1=
+.3 servers might receive<br>
+&gt;&gt;&gt; TLS 1.2 or prior<br>
+&gt;&gt;&gt;=C2=A0 =C2=A0 ClientHellos which contain other compression meth=
+ods and MUST<br>
+&gt;&gt;&gt;=C2=A0 =C2=A0 follow the procedures for the appropriate prior v=
+ersion of TLS.&quot;<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt; Is that intended to require TLS 1.3 servers to always be willi=
+ng and able to<br>
+&gt;&gt;&gt; negotiate 1.2? =C2=A74.2.1 has a similar assertion:<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt; &quot;If this extension is not present, servers which are comp=
+liant with<br>
+&gt;&gt;&gt; this specification MUST negotiate TLS 1.2 or prior as specifie=
+d in<br>
+&gt;&gt;&gt; [RFC5246], even if ClientHello.legacy_version is 0x0304 or lat=
+er.&quot;<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt; But =C2=A74.2.3 says:<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt; &quot;Note that TLS 1.2 defines this extension differently.=C2=
+=A0 TLS 1.3<br>
+&gt;&gt;&gt; implementations willing to negotiate TLS 1.2 MUST behave in<br=
+>
+&gt;&gt;&gt; accordance with the requirements of [RFC5246] when negotiating=
+ that<br>
+&gt;&gt;&gt; version.&quot;<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt; ... which seems inconsistent (noting that this paragraph talks=
+ about<br>
+&gt;&gt;&gt; &quot;implementations&quot; rather than &quot;servers&quot;, s=
+o perhaps there&#39;s a subtle difference?<br>
+&gt;&gt;<br>
+&gt;&gt; In short kinda, sorta yes: =C2=A7s4.2.1 includes the following:<br=
+>
+&gt;&gt;<br>
+&gt;&gt;=C2=A0 Implementations of TLS 1.3 which choose to support prior ver=
+sions of<br>
+&gt;&gt;=C2=A0 TLS SHOULD support TLS 1.2.<br>
+&gt;<br>
+&gt; That still says =E2=80=9Cwhich choose to support=E2=80=9D<br>
+<br>
+</span>Right so there might be some implementations that choose to not supp=
+ort prior versions.<br></blockquote><div><br></div></div></div><div>Indeed,=
+ I am aware of at least one.</div><div><br></div><div>-Ekr</div><div><div c=
+lass=3D"h5"><div>=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"mar=
+gin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex">
+<span><br>
+&gt;&gt; Not sure it=E2=80=99s inconsistent given that the 2nd quote is abo=
+ut the server needs to do with the information it=E2=80=99s getting from th=
+e client.<br>
+&gt;<br>
+&gt; I=E2=80=99m still confused. Is the server allowed to refuse to negotia=
+te 1.2? Or is the exception in =C2=A74.2.1 supposed to apply to all of the =
+related MUSTs?<br>
+<br>
+</span>Yes - TLS servers are allowed to refuse to negotiate earlier version=
+; that=E2=80=99s deciding to not follow the SHOULD in=C2=A0 =C2=A7s4.2.1.=
+=C2=A0 If they negotiate an earlier version then do that version that=E2=80=
+=99s what=E2=80=99s in =C2=A7s4.1.2 and in =C2=A74.2.3.<br>
+<span><br>
+&gt;&gt;&gt; =C2=A7<a href=3D"http://4.2.1.1" rel=3D"noreferrer" target=3D"=
+_blank">4.2.1.1</a>: The section is marked for removal. Do you expect that =
+RFC<br>
+&gt;&gt;&gt; implementations will ever need to interop with draft implement=
+ations? If so,<br>
+&gt;&gt;&gt; the information in this section may continue to be useful for =
+some time.<br>
+&gt;&gt;<br>
+&gt;&gt; I think it=E2=80=99ll be useful for about as long as it takes for =
+them to rev their code bases, which I am sure hoping is faster than the 6 o=
+r so weeks it=E2=80=99ll take for this draft to get to through the RFC edit=
+or=E2=80=99s queue.<br>
+&gt;<br>
+&gt; Okay.<br>
+&gt;<br>
+&gt;&gt;<br>
+&gt;&gt;&gt; =C2=A7D.5: This section has a lot of normative requirements th=
+at seem important. I<br>
+&gt;&gt;&gt; wonder why it has been relegated to an appendix.<br>
+&gt;&gt;<br>
+&gt;&gt; =C2=A7D.5 is about backward compatibility and though we negotiatio=
+ns with 1.2 is a SHOULD we say nada about earlier versions.=C2=A0 And, we d=
+on=E2=80=99t want to say anything about earlier versions.=C2=A0 =C2=A0And, =
+some of this is technically repeated from other RFCs, eg. 5768 and 6176 say=
+ing don=E2=80=99t do SSL2/3. So, it ended up in an appendix.<br>
+&gt;<br>
+&gt; Okay.<br>
+&gt;<br>
+&gt;&gt;<br>
+&gt;&gt;&gt; *** Editorial Comments and nits:<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt; =C2=A72: &quot;If (EC)DHE key establishment<br>
+&gt;&gt;&gt; is in use, then the ServerHello contains a &quot;key_share&quo=
+t; extension with<br>
+&gt;&gt;&gt; the server=E2=80=99s ephemeral Diffie-Hellman share which MUST=
+ be in the same<br>
+&gt;&gt;&gt; group as one of the client=E2=80=99s shares. &quot;<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt; missing comma prior to &quot;which=E2=80=9D.<br>
+&gt;&gt;<br>
+&gt;&gt; (grammar police are banging on my door as we speak)<br>
+&gt;<br>
+&gt; Well, my comment was labeled as editorial or nit :-)<br>
+&gt;<br>
+&gt;&gt; So is the which clause restrictive or non restrictive?=C2=A0 I=E2=
+=80=99m going with this this clause being restrictive (hence no comma).<br>
+&gt;<br>
+&gt; I=E2=80=99ll let the grammar police at your door debate the merits of =
+=E2=80=9Cwhich=E2=80=9D vs =E2=80=9Cthat=E2=80=9D for restrictive clauses :=
+-)<br>
+<br>
+</span>See the response to Adam=E2=80=99s comment :). But, yeah the RFC edi=
+tor will definitely school me when the time comes.<br>
+<span><br>
+&gt;&gt;&gt; =C2=A74.1.1: &quot;Note that if the PSK can be used without (E=
+C)DHE then non-<br>
+&gt;&gt;&gt; overlap in the &quot;supported_groups&quot; parameters need no=
+t be fatal, as it<br>
+&gt;&gt;&gt; is in the non-PSK case discussed in the previous paragraph.&qu=
+ot;<br>
+&gt;&gt;&gt;<br>
+&gt;&gt;&gt; I read &quot;need not be fatal&quot; to mean that it may still=
+ be fatal at times. Is that<br>
+&gt;&gt;&gt; the intent?<br>
+&gt;&gt;<br>
+&gt;&gt; Yes that is the intent.<br>
+&gt;<br>
+&gt; Okay. Would it be reasonable to offer guidance about when might want t=
+o treat this as fatal even though it would have been possible to use the PS=
+K without (EC)DHE?<br>
+<br>
+</span>So the fatal error is when the client and server are trying to negot=
+iate (EC)DHE parameters and there=E2=80=99s no overlap in the supported_gro=
+ups.=C2=A0 This would occur in the =E2=80=9Cnormal=E2=80=9D case when the c=
+lient is anonymous (i.e., client only sends ClientHello+key_share and no ps=
+k_key_exchange_modes/pre_sha<wbr>red_key) or when the client is using PSK+(=
+EC)DHE for client authentication.=C2=A0 But, that is described in the previ=
+ous paragraph.=C2=A0 Maybe another way to say it is: normally you=E2=80=99d=
+ throw an error if supported_groups didn=E2=80=99t overlap, but here since =
+you=E2=80=99re not using them because you=E2=80=99re doing PSK-only you don=
+=E2=80=99t.<br>
+<div class=3D"m_-4352361717329053694HOEnZb"><div class=3D"m_-43523617173290=
+53694h5"><br>
+&gt;&gt;&gt; =C2=A711: The IANA considerations have a number of constructio=
+ns similar to &quot;SHALL<br>
+&gt;&gt;&gt; update/has updated&quot;. Is that text expected to collapse to=
+ &quot;has updated&quot; at some<br>
+&gt;&gt;&gt; point?<br>
+&gt;&gt;<br>
+&gt;&gt; Yes - once we=E2=80=99ve gotten the a-okay from IANA, well as the =
+RFC editor to make it just say =E2=80=9Chas updated=E2=80=9D etc.<br>
+&gt;<br>
+&gt; Okay.<br>
+&gt;<br>
+&gt;&gt;<br>
+&gt;&gt;&gt; =C2=A7E.2.1: [BDFKPPRSZZ16]=C2=A0 : Best citation anchor evar<=
+br>
+&gt;&gt;<br>
+&gt;&gt; :)<br>
+&gt;<br>
+&gt; I am trying to decide if that should sound like a =E2=80=9CBill the Ca=
+t=E2=80=9D utterance or a sound effect for cartoon violence involving high =
+voltage :-)<br>
+&gt;<br>
+&gt;&gt;<br>
+&gt;<br>
+<br>
+</div></div></blockquote></div></div></div><br></div></div>
+</blockquote></div><br></div>
+
+--f403043a754876f64f05670223b1--
+

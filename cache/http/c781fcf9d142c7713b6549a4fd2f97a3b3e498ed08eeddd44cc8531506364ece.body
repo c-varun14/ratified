@@ -1,0 +1,147 @@
+Return-Path: <aamelnikov@fastmail.fm>
+X-Original-To: tls@ietf.org
+Delivered-To: tls@ietfa.amsl.com
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+ by ietfa.amsl.com (Postfix) with ESMTP id EC07A120713;
+ Wed,  7 Mar 2018 05:29:55 -0800 (PST)
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+From: Alexey Melnikov <aamelnikov@fastmail.fm>
+To: "The IESG" <iesg@ietf.org>
+Cc: draft-ietf-tls-tls13@ietf.org, Sean Turner <sean@sn3rd.com>,
+ tls-chairs@ietf.org, sean@sn3rd.com, tls@ietf.org
+X-Test-IDTracker: no
+X-IETF-IDTracker: 6.74.0
+Auto-Submitted: auto-generated
+Precedence: bulk
+Message-ID: <152042939596.17646.2835997719834399943.idtracker@ietfa.amsl.com>
+Date: Wed, 07 Mar 2018 05:29:55 -0800
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/UiMi-J3l7iXo2epmnWmCPIfYusQ>
+Subject: [TLS] Alexey Melnikov's Discuss on draft-ietf-tls-tls13-26: (with
+ DISCUSS and COMMENT)
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Wed, 07 Mar 2018 13:29:56 -0000
+
+Alexey Melnikov has entered the following ballot position for
+draft-ietf-tls-tls13-26: Discuss
+
+When responding, please keep the subject line intact and reply to all
+email addresses included in the To and CC lines. (Feel free to cut this
+introductory paragraph, however.)
+
+
+Please refer to https://www.ietf.org/iesg/statement/discuss-criteria.html
+for more information about IESG DISCUSS and COMMENT positions.
+
+
+The document, along with other ballot positions, can be found here:
+https://datatracker.ietf.org/doc/draft-ietf-tls-tls13/
+
+
+
+----------------------------------------------------------------------
+DISCUSS:
+----------------------------------------------------------------------
+
+Thank you for a well written document. I will be switching to Yes once the
+following is addressed/discussed:
+
+Relationship to TLS 1.2 needs to be clarified. The document is adding
+requirements on TLS 1.2 clients. Implementors of TLS 1.2 are not going to (or
+very unlikely to) read this document. This looks fishy to me. Two examples on
+page 37:
+
+  TLS 1.2 clients SHOULD also check that the last eight bytes  are not equal to
+  the second value if the ServerHello indicates TLS  1.1 or below
+
+and
+
+ A legacy TLS client performing renegotiation with TLS 1.2 or prior  and which
+ receives a TLS 1.3 ServerHello during renegotiation MUST  abort the handshake
+ with a "protocol_version" alert.  Note that  renegotiation is not possible
+ when TLS 1.3 has been negotiated.
+
+There are similar statements on page 45:
+
+  TLS 1.2 implementations SHOULD also process this extension.
+
+and on page 48:
+
+  However, the old semantics did not constrain the signing
+  curve.  If TLS 1.2 is negotiated, implementations MUST be prepared
+  to accept a signature that uses any curve that they advertised in
+  the "supported_groups" extension.
+
+I think you need to clarify whether these normative requirements apply to pure
+TLS 1.2 clients or TLS clients that implement both 1.2 and 1.3 and choose to
+use 1.2 for some reason. Or maybe you need to say in the Abstract/Introduction
+that although this document obsoletes TLS 1.2 it also specifies new
+requirements on TLS 1.2 implementations. (So it is sort of both "Obsoletes" and
+"Updates" TLS 1.2 RFC.)
+
+
+----------------------------------------------------------------------
+COMMENT:
+----------------------------------------------------------------------
+
+1) On page 47:
+ The length of the salt MUST be equal to the length of the digest      algorithm
+
+Length of algorithm?
+
+2) DER need a Normative Reference on first use. There are some references on
+2nd/3rd use.
+
+3) On page 57:
+
+   The
+   server then ignores early data by attempting to decrypt received
+   records in the handshake traffic keys until it is able to receive
+   the client's second flight and complete an ordinary 1-RTT
+   handshake, skipping records that fail to decrypt, up to the
+   configured max_early_data_size.
+
+I read this several times and still don't understand what this is saying. It is
+saying "ignores ... until it is able to receive". I think you either don't mean
+"ignore" (as in discard the rest) or I misunderstood. I clarifying example or a
+reference to another section (e.g. with the diagram) would be very helpful here.
+
+4) On page 82:
+
+   When record protection has not yet been engaged, TLSPlaintext  structures
+   are written directly onto the wire.  Once record  protection has started,
+   TLSPlaintext records are protected and sent   as described in the following
+   section
+
+Just to double check: are you saying that before the handshake TLS application
+layer effectively results in plain text messages (with some extra octets to
+signal record type)?
+
+5) I am pretty sure that [RFC5116] is a Normative reference. It is required to
+be understood to implemented TLS 1.3. Also, you have additional requirements on
+AEADs, which again implies understanding of what they are:
+
+On page 84:
+
+   An AEAD algorithm used in TLS 1.3 MUST NOT produce an expansion  greater
+   than 255 octets
+
+and
+
+   An AEAD algorithm where N_MAX is less than 8  bytes MUST NOT be used with TLS
+
+6) The diagram in section 7.1 was a bit cryptic. Maybe explain that when you
+use '0' you mean as many bytes of 0s as needed for various functions.
+
+

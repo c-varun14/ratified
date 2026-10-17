@@ -1,0 +1,415 @@
+Return-Path: <ekr@rtfm.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id BF3621274D2
+ for <tls@ietfa.amsl.com>; Wed,  7 Mar 2018 10:06:00 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.598
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.598 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_LOW=-0.7, URIBL_BLOCKED=0.001]
+ autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=rtfm-com.20150623.gappssmtp.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id fesuxA21Mvvk for <tls@ietfa.amsl.com>;
+ Wed,  7 Mar 2018 10:05:58 -0800 (PST)
+Received: from mail-qk0-x229.google.com (mail-qk0-x229.google.com
+ [IPv6:2607:f8b0:400d:c09::229])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id E3D9B12420B
+ for <tls@ietf.org>; Wed,  7 Mar 2018 10:05:57 -0800 (PST)
+Received: by mail-qk0-x229.google.com with SMTP id s188so3742927qkb.2
+ for <tls@ietf.org>; Wed, 07 Mar 2018 10:05:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=rtfm-com.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+ :cc; bh=uiyUfH8qCJVwRTmBZ2IHVhG8MxhnL6UuQYdBtXkrEko=;
+ b=Dpm6YGM3bT8rfwdJ0ECq/ypEUxFTshItFCXEHAmRab27IFfvzixwILslPEDsc+HamJ
+ sHO0MgcSZlb1qdd/ZEb+TEFpc1XSjz4GF7qtjei3awTAr0UEa2v1RicudmecHffg7lD/
+ aw+h6dKWwVoNazfkXm2QFp6eLoGZNe1qm71b6owzgCT0pZw51udROfH06BUZzZaZ6KjB
+ WAbc6YMCa9AJSrEgyamc9j4Yn43iNhYnsuwnhbGTgC629v6CeQRVGPzxy8JsQRnVx2Im
+ NxDILF9H5qOxqrbdpfuR5t0X1gpR/HtaoPBk7Iv5JqKh9tZnLbZUuiZABbdZeR1Po1IG
+ AQ3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+ :message-id:subject:to:cc;
+ bh=uiyUfH8qCJVwRTmBZ2IHVhG8MxhnL6UuQYdBtXkrEko=;
+ b=stGtcrC2j8ClkMRox5zLpVX3weFicu4bJMqy15f+69bBGU17riAWoPmdOy/LSUiBhB
+ /2kOt/GXLpHk9nplkAk7ykwHblI/H4lnjuQFqCoOQZfwZFJMRrs6JzW69O7NILqHc0rQ
+ XYsSBb8qwmAXZ8rUx1OqaB9Okiq+ck78liLNAa8JJBQh4UYOx5BX7L0BeRVv8RkVoZuG
+ V0PNOAef6qVRYKYHqJayXKnKnPsUovGQHPDafthi9DkDV/pEit1EY+tUVz2uhURcdK8B
+ Q95w5uutv7E3endCvuhNZc6VgB8aadUD9XyWv7fWpPsW8gxLUeZjE13YD3ixGpkX9L8a
+ BF3g==
+X-Gm-Message-State: AElRT7F522sMFPIJNpbw9zKZhG2aPCTMjl0hu0PNTAZhWWPBzLh/Ns2G
+ Xol/FqH2UJPG+d1C5DEvaGlyPi253oA70HCrgftYyw==
+X-Google-Smtp-Source: AG47ELun5j6hCSoLYRjTdMZorfMN704PUj86ukKpLV/kmGA6dpBLbXhaiRDiWvc385xPx20BJhYy4nNVySI8MP0cOq4=
+X-Received: by 10.55.118.6 with SMTP id r6mr35870850qkc.211.1520445956900;
+ Wed, 07 Mar 2018 10:05:56 -0800 (PST)
+MIME-Version: 1.0
+Received: by 10.200.37.176 with HTTP; Wed, 7 Mar 2018 10:05:16 -0800 (PST)
+In-Reply-To: <152044072045.17779.18123788753031746068.idtracker@ietfa.amsl.com>
+References: <152044072045.17779.18123788753031746068.idtracker@ietfa.amsl.com>
+From: Eric Rescorla <ekr@rtfm.com>
+Date: Wed, 7 Mar 2018 10:05:16 -0800
+Message-ID: <CABcZeBML9yhXvzA53QxVNk0-3pis=8pF9LYzYXqTmUvCaVRisQ@mail.gmail.com>
+To: =?UTF-8?Q?Mirja_K=C3=BChlewind?= <ietf@kuehlewind.net>
+Cc: The IESG <iesg@ietf.org>, draft-ietf-tls-tls13@ietf.org, 
+ Sean Turner <sean@sn3rd.com>, tls-chairs <tls-chairs@ietf.org>,
+ "<tls@ietf.org>" <tls@ietf.org>
+Content-Type: multipart/alternative; boundary="94eb2c0627382961990566d66943"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/5PEnw3iSv3HtK-U0YZWcp0uB4Pc>
+Subject: Re: [TLS] 
+ =?utf-8?q?Mirja_K=C3=BChlewind=27s_No_Objection_on_draft-i?=
+ =?utf-8?q?etf-tls-tls13-26=3A_=28with_COMMENT=29?=
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Wed, 07 Mar 2018 18:06:01 -0000
+
+--94eb2c0627382961990566d66943
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+> 1) I'm a bit uncertain if obsoleting is the right approach as many
+> other protocols usually do not obsolete older versions. However, I
+> understand that this has been the approach TLS has previously taken
+> and is supported by the way the document is written.
+
+Well:
+https://www.ietf.org/iesg/statement/designating-rfcs-as-historic.html
+says:
+A document is obsolete when there is a newer version that replaces it.
+
+I believe that that's the relationship between TLS 1.3 and TLS 1.2.
+
+
+> Still, I find it
+> especially confusing that also two TLS1.2 extensions are deprecated
+> which are not needed with TLS1.3 anymore but still probably valid to
+> be used with TLS1.2, right?
+
+Which extensions are you referring to.
+
+
+> I would recommend for this version to at
+> least already note in the abstract or very early in the intro that it
+> changes the versioning mechanism itself, and thereby basically
+> declares the TLS handshake as an invariant for all future versions and
+> extensibility is only provided using extensions anymore.
+
+It's true that we are deprecating the version mechanism, but that
+does not mean that it is the only extension mechanism.
+
+
+
+> 2) Can you provide further explanation (potentially in the draft) why
+> the Pre-Shared Key Exchange Modes are provided in an extra/separate
+> extension?
+
+I'm sorry, I'm not following this. As opposed to what?
+
+
+> 3) I know previous versions of TLS didn't say that much either, but I
+> find it a bit wired that there are NO requirements for the underlaying
+> transport in this document. Previous version this at least said in the
+> intro that a reliable transport (like TCP) is assumed, but even this
+> minimal information seems to have gotten lost in this
+> document. However, I would usually also expect to seen some minimal
+> text about connection handling, e.g. is it okay to transparently try
+> to reestablish the connection by the underlying transport protocol if
+> it broke for some reason? Or it is okay to use the same TCP connection
+> to first send other data and then start the TLS handshake?
+
+This is pretty explicitly outside the scope of TLS. It's just the job
+of the underlying transport to simulate a reliable stream. I can add
+some text that that's expected.
+
+
+> 4) Regarding the registration policies: I assume the intend of
+> changing them is to make it easier to specify and use new
+> extensions/mechanism. However, I am wondering why the policies have
+> been changed to "Specification Required" and not "IETF consensus" or
+> RFC Required"?
+
+The changes aren't in this document, but the WG feeling was that
+both of those were creating bad incentives for people to publish
+RFCs just to get a code point. The "Recommended" flag was intended
+to address that need instead.
+
+
+> 5) I find it a bit strange that basically the whole working group is
+> listed as contributors. My understanding was that Contributors are
+> people that have contributed a "significant" amount of text, while
+> everybody else who e.g. brought ideas in during mailing list
+> discussion would be acknowledged only.
+
+I don't think we have any IETF-wide standard here, but traditionally
+we have adopted a pretty generous attitude towards acknowledgements
+of this type. Given that electrons are basically free, I don't see a real
+problem here.
+
+-Ekr
+
+
+On Wed, Mar 7, 2018 at 8:38 AM, Mirja K=C3=BChlewind <ietf@kuehlewind.net> =
+wrote:
+
+> Mirja K=C3=BChlewind has entered the following ballot position for
+> draft-ietf-tls-tls13-26: No Objection
+>
+> When responding, please keep the subject line intact and reply to all
+> email addresses included in the To and CC lines. (Feel free to cut this
+> introductory paragraph, however.)
+>
+>
+> Please refer to https://www.ietf.org/iesg/statement/discuss-criteria.html
+> for more information about IESG DISCUSS and COMMENT positions.
+>
+>
+> The document, along with other ballot positions, can be found here:
+> https://datatracker.ietf.org/doc/draft-ietf-tls-tls13/
+>
+>
+>
+> ----------------------------------------------------------------------
+> COMMENT:
+> ----------------------------------------------------------------------
+>
+> 1) I'm a bit uncertain if obsoleting is the right approach as many other
+> protocols usually do not obsolete older versions. However, I understand
+> that
+> this has been the approach TLS has previously taken and is supported by
+> the way
+> the document is written. Still, I find it especially confusing that also
+> two
+> TLS1.2 extensions are deprecated which are not needed with TLS1.3 anymore
+> but
+> still probably valid to be used with TLS1.2, right? I would recommend for
+> this
+> version to at least already note in the abstract or very early in the int=
+ro
+> that it changes the versioning mechanism itself, and thereby basically
+> declares
+> the TLS handshake as an invariant for all future versions and
+> extensibility is
+> only provided using extensions anymore.
+>
+> 2) Can you provide further explanation (potentially in the draft) why the
+> Pre-Shared Key Exchange Modes are provided in an extra/separate extension=
+?
+>
+> 3) I know previous versions of TLS didn't say that much either, but I fin=
+d
+> it a
+> bit wired that there are NO requirements for the underlaying transport in
+> this
+> document. Previous version this at least said in the intro that a reliabl=
+e
+> transport (like TCP) is assumed, but even this minimal information seems =
+to
+> have gotten lost in this document. However, I would usually also expect t=
+o
+> seen
+> some minimal text about connection handling, e.g. is it okay to
+> transparently
+> try to reestablish the connection by the underlying transport protocol if
+> it
+> broke for some reason? Or it is okay to use the same TCP connection to
+> first
+> send other data and then start the TLS handshake?
+>
+> 4) Regarding the registration policies: I assume the intend of changing
+> them is
+> to make it easier to specify and use new extensions/mechanism. However, I
+> am
+> wondering why the policies have been changed to "Specification Required"
+> and
+> not "IETF consensus" or RFC Required"?
+>
+> 5) I find it a bit strange that basically the whole working group is
+> listed as
+> contributors. My understanding was that Contributors are people that have
+> contributed a "significant" amount of text, while everybody else who e.g.
+> brought ideas in during mailing list discussion would be acknowledged onl=
+y.
+>
+>
+>
+
+--94eb2c0627382961990566d66943
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div>&gt; 1) I&#39;m a bit uncertain if obsoleting is the =
+right approach as many</div><div>&gt; other protocols usually do not obsole=
+te older versions. However, I</div><div>&gt; understand that this has been =
+the approach TLS has previously taken</div><div>&gt; and is supported by th=
+e way the document is written.</div><div><br></div><div>Well:</div><div><a =
+href=3D"https://www.ietf.org/iesg/statement/designating-rfcs-as-historic.ht=
+ml">https://www.ietf.org/iesg/statement/designating-rfcs-as-historic.html</=
+a></div><div>says:</div><div>A document is obsolete when there is a newer v=
+ersion that replaces it.</div><div><br></div><div>I believe that that&#39;s=
+ the relationship between TLS 1.3 and TLS 1.2.</div><div><br></div><div><br=
+></div><div>&gt; Still, I find it</div><div>&gt; especially confusing that =
+also two TLS1.2 extensions are deprecated</div><div>&gt; which are not need=
+ed with TLS1.3 anymore but still probably valid to</div><div>&gt; be used w=
+ith TLS1.2, right?</div><div><br></div><div>Which extensions are you referr=
+ing to.</div><div><br></div><div><br></div><div>&gt; I would recommend for =
+this version to at</div><div>&gt; least already note in the abstract or ver=
+y early in the intro that it</div><div>&gt; changes the versioning mechanis=
+m itself, and thereby basically</div><div>&gt; declares the TLS handshake a=
+s an invariant for all future versions and</div><div>&gt; extensibility is =
+only provided using extensions anymore.</div><div><br></div><div>It&#39;s t=
+rue that we are deprecating the version mechanism, but that</div><div>does =
+not mean that it is the only extension mechanism.</div><div><br></div><div>=
+<br></div><div><br></div><div>&gt; 2) Can you provide further explanation (=
+potentially in the draft) why</div><div>&gt; the Pre-Shared Key Exchange Mo=
+des are provided in an extra/separate</div><div>&gt; extension?</div><div><=
+br></div><div>I&#39;m sorry, I&#39;m not following this. As opposed to what=
+?</div><div><br></div><div><br></div><div>&gt; 3) I know previous versions =
+of TLS didn&#39;t say that much either, but I</div><div>&gt; find it a bit =
+wired that there are NO requirements for the underlaying</div><div>&gt; tra=
+nsport in this document. Previous version this at least said in the</div><d=
+iv>&gt; intro that a reliable transport (like TCP) is assumed, but even thi=
+s</div><div>&gt; minimal information seems to have gotten lost in this</div=
+><div>&gt; document. However, I would usually also expect to seen some mini=
+mal</div><div>&gt; text about connection handling, e.g. is it okay to trans=
+parently try</div><div>&gt; to reestablish the connection by the underlying=
+ transport protocol if</div><div>&gt; it broke for some reason? Or it is ok=
+ay to use the same TCP connection</div><div>&gt; to first send other data a=
+nd then start the TLS handshake?</div><div><br></div><div>This is pretty ex=
+plicitly outside the scope of TLS. It&#39;s just the job</div><div>of the u=
+nderlying transport to simulate a reliable stream. I can add</div><div>some=
+ text that that&#39;s expected.</div><div><br></div><div><br></div><div>&gt=
+; 4) Regarding the registration policies: I assume the intend of</div><div>=
+&gt; changing them is to make it easier to specify and use new</div><div>&g=
+t; extensions/mechanism. However, I am wondering why the policies have</div=
+><div>&gt; been changed to &quot;Specification Required&quot; and not &quot=
+;IETF consensus&quot; or</div><div>&gt; RFC Required&quot;?</div><div><br><=
+/div><div>The changes aren&#39;t in this document, but the WG feeling was t=
+hat</div><div>both of those were creating bad incentives for people to publ=
+ish</div><div>RFCs just to get a code point. The &quot;Recommended&quot; fl=
+ag was intended</div><div>to address that need instead.</div><div><br></div=
+><div><br></div><div>&gt; 5) I find it a bit strange that basically the who=
+le working group is</div><div>&gt; listed as contributors. My understanding=
+ was that Contributors are</div><div>&gt; people that have contributed a &q=
+uot;significant&quot; amount of text, while</div><div>&gt; everybody else w=
+ho e.g. brought ideas in during mailing list</div><div>&gt; discussion woul=
+d be acknowledged only.</div><div><br></div><div>I don&#39;t think we have =
+any IETF-wide standard here, but traditionally</div><div>we have adopted a =
+pretty generous attitude towards acknowledgements</div><div>of this type. G=
+iven that electrons are basically free, I don&#39;t see a real</div><div>pr=
+oblem here.</div><div><br></div><div>-Ekr</div><div><br></div></div><div cl=
+ass=3D"gmail_extra"><br><div class=3D"gmail_quote">On Wed, Mar 7, 2018 at 8=
+:38 AM, Mirja K=C3=BChlewind <span dir=3D"ltr">&lt;<a href=3D"mailto:ietf@k=
+uehlewind.net" target=3D"_blank">ietf@kuehlewind.net</a>&gt;</span> wrote:<=
+br><blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left=
+:1px #ccc solid;padding-left:1ex">Mirja K=C3=BChlewind has entered the foll=
+owing ballot position for<br>
+draft-ietf-tls-tls13-26: No Objection<br>
+<br>
+When responding, please keep the subject line intact and reply to all<br>
+email addresses included in the To and CC lines. (Feel free to cut this<br>
+introductory paragraph, however.)<br>
+<br>
+<br>
+Please refer to <a href=3D"https://www.ietf.org/iesg/statement/discuss-crit=
+eria.html" rel=3D"noreferrer" target=3D"_blank">https://www.ietf.org/iesg/<=
+wbr>statement/discuss-criteria.<wbr>html</a><br>
+for more information about IESG DISCUSS and COMMENT positions.<br>
+<br>
+<br>
+The document, along with other ballot positions, can be found here:<br>
+<a href=3D"https://datatracker.ietf.org/doc/draft-ietf-tls-tls13/" rel=3D"n=
+oreferrer" target=3D"_blank">https://datatracker.ietf.org/<wbr>doc/draft-ie=
+tf-tls-tls13/</a><br>
+<br>
+<br>
+<br>
+------------------------------<wbr>------------------------------<wbr>-----=
+-----<br>
+COMMENT:<br>
+------------------------------<wbr>------------------------------<wbr>-----=
+-----<br>
+<br>
+1) I&#39;m a bit uncertain if obsoleting is the right approach as many othe=
+r<br>
+protocols usually do not obsolete older versions. However, I understand tha=
+t<br>
+this has been the approach TLS has previously taken and is supported by the=
+ way<br>
+the document is written. Still, I find it especially confusing that also tw=
+o<br>
+TLS1.2 extensions are deprecated which are not needed with TLS1.3 anymore b=
+ut<br>
+still probably valid to be used with TLS1.2, right? I would recommend for t=
+his<br>
+version to at least already note in the abstract or very early in the intro=
+<br>
+that it changes the versioning mechanism itself, and thereby basically decl=
+ares<br>
+the TLS handshake as an invariant for all future versions and extensibility=
+ is<br>
+only provided using extensions anymore.<br>
+<br>
+2) Can you provide further explanation (potentially in the draft) why the<b=
+r>
+Pre-Shared Key Exchange Modes are provided in an extra/separate extension?<=
+br>
+<br>
+3) I know previous versions of TLS didn&#39;t say that much either, but I f=
+ind it a<br>
+bit wired that there are NO requirements for the underlaying transport in t=
+his<br>
+document. Previous version this at least said in the intro that a reliable<=
+br>
+transport (like TCP) is assumed, but even this minimal information seems to=
+<br>
+have gotten lost in this document. However, I would usually also expect to =
+seen<br>
+some minimal text about connection handling, e.g. is it okay to transparent=
+ly<br>
+try to reestablish the connection by the underlying transport protocol if i=
+t<br>
+broke for some reason? Or it is okay to use the same TCP connection to firs=
+t<br>
+send other data and then start the TLS handshake?<br>
+<br>
+4) Regarding the registration policies: I assume the intend of changing the=
+m is<br>
+to make it easier to specify and use new extensions/mechanism. However, I a=
+m<br>
+wondering why the policies have been changed to &quot;Specification Require=
+d&quot; and<br>
+not &quot;IETF consensus&quot; or RFC Required&quot;?<br>
+<br>
+5) I find it a bit strange that basically the whole working group is listed=
+ as<br>
+contributors. My understanding was that Contributors are people that have<b=
+r>
+contributed a &quot;significant&quot; amount of text, while everybody else =
+who e.g.<br>
+brought ideas in during mailing list discussion would be acknowledged only.=
+<br>
+<br>
+<br>
+</blockquote></div><br></div>
+
+--94eb2c0627382961990566d66943--
+

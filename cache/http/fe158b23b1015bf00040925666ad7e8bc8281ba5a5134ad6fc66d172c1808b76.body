@@ -1,0 +1,134 @@
+Return-Path: <paul@nohats.ca>
+X-Original-To: tls@mail2.ietf.org
+Delivered-To: tls@mail2.ietf.org
+Received: from localhost (localhost [127.0.0.1])
+	by mail2.ietf.org (Postfix) with ESMTP id 38B937BC6FAE
+	for <tls@mail2.ietf.org>; Fri, 24 Oct 2025 10:52:47 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at ietf.org
+X-Spam-Flag: NO
+X-Spam-Score: -4.398
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.398 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+	DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, RCVD_IN_DNSWL_MED=-2.3,
+	RCVD_IN_VALIDITY_RPBL_BLOCKED=0.001,
+	RCVD_IN_VALIDITY_SAFE_BLOCKED=0.001, SPF_HELO_NONE=0.001,
+	SPF_PASS=-0.001] autolearn=ham autolearn_force=no
+Authentication-Results: mail2.ietf.org (amavisd-new); dkim=pass (1024-bit key)
+	header.d=nohats.ca
+Received: from mail2.ietf.org ([166.84.6.31])
+	by localhost (mail2.ietf.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id yVUYyK1eT8hP for <tls@mail2.ietf.org>;
+	Fri, 24 Oct 2025 10:52:46 -0700 (PDT)
+Received: from mx.nohats.ca (mx.nohats.ca [193.110.157.85])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mail2.ietf.org (Postfix) with ESMTPS id 109337BC6FA5
+	for <tls@ietf.org>; Fri, 24 Oct 2025 10:52:46 -0700 (PDT)
+Received: from localhost (localhost [IPv6:::1])
+	by mx.nohats.ca (Postfix) with ESMTP id 4ctVqB2w7yz9M7;
+	Fri, 24 Oct 2025 19:52:38 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nohats.ca;
+	s=default; t=1761328358;
+	bh=lS2AHO93x2eRZOhIv29QGeWioQKmE75pk4L9kJdTbzM=;
+	h=Date:From:To:cc:Subject:In-Reply-To:References;
+	b=qbfuecdRUtXBE3Y/944ol7uM2xEnJMRRwlxJz+mY/QtjSUJc/lX9xIPhKVQ50RElf
+	 cwaOWcrMpnMexHmaC2YBj509Yv0ox4ouF8hTBAr6+G3v6NWLD1R+s6yepXfex5O5Tw
+	 tNlra8tP4nu5GGXCrMQL3Thlp0ZrT15IuCcgkS/E=
+X-Virus-Scanned: amavisd-new at mx.nohats.ca
+Received: from mx.nohats.ca ([IPv6:::1])
+	by localhost (mx.nohats.ca [IPv6:::1]) (amavisd-new, port 10024)
+	with ESMTP id cBt1uQpzM-Z6; Fri, 24 Oct 2025 19:52:37 +0200 (CEST)
+Received: from bofh.nohats.ca (bofh.nohats.ca [193.110.157.194])
+	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx.nohats.ca (Postfix) with ESMTPS;
+	Fri, 24 Oct 2025 19:52:37 +0200 (CEST)
+Received: by bofh.nohats.ca (Postfix, from userid 1000)
+	id 170D2177B677; Fri, 24 Oct 2025 13:52:36 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+	by bofh.nohats.ca (Postfix) with ESMTP id 12A58177B676;
+	Fri, 24 Oct 2025 13:52:36 -0400 (EDT)
+Date: Fri, 24 Oct 2025 13:52:36 -0400 (EDT)
+From: Paul Wouters <paul@nohats.ca>
+To: Sean Turner <sean@sn3rd.com>, Eric Rescorla <ekr@rtfm.com>
+In-Reply-To: <C5796E94-4E93-44FE-A68F-D207B78E73E3@sn3rd.com>
+Message-ID: <e5355ebe-7d5a-c7d1-109f-b6ef4a448527@nohats.ca>
+References: <47725276-0b96-2731-4861-af69472bf9f9@nohats.ca>
+ <CABcZeBMvXoHvuZJfR0a0gHqS9bXqRwVPT5VUN4xpAMXEjVGZSQ@mail.gmail.com>
+ <907fef63-8ec2-4956-8c4d-787e9ff085c9@betaapp.fastmail.com>
+ <CABcZeBN2gpTNVQZm+G6YT98VStkPyPcnHvdQc=Unzg6cGcFPYw@mail.gmail.com>
+ <CAMjbhoXBtBhvswgbxWNLG0V-8iSf4qPtbE2YOGfhAaE+NV_Lqw@mail.gmail.com>
+ <GVXPR07MB96787F7DE114F3B422B32543891CA@GVXPR07MB9678.eurprd07.prod.outlook.com>
+ <CABcZeBNoOyzt=n1cpE=v6u4J2DXO5fQgVDP8Fs4PY4LY6MM_wQ@mail.gmail.com>
+ <ecb276ef-fb40-4e2d-bc39-a41fce8e4c42@betaapp.fastmail.com>
+ <CABcZeBM6yn856kjqQU8du8RPTefRPRqLEVM_vpYYDa2mhss7_g@mail.gmail.com>
+ <34c264d8-9fe7-4a3f-9f4a-240a147340ad@betaapp.fastmail.com>
+ <CABcZeBO3jqr8GupFyBmO0x8mpzN0BZYsWrSQKWa4dFKDAN6h6g@mail.gmail.com>
+ <C5796E94-4E93-44FE-A68F-D207B78E73E3@sn3rd.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8BIT
+Message-ID-Hash: XIFMV6PCGF7OBC5RSSAABMS36QMA7AGP
+X-Message-ID-Hash: XIFMV6PCGF7OBC5RSSAABMS36QMA7AGP
+X-MailFrom: paul@nohats.ca
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+CC: TLS List <tls@ietf.org>
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Re=3A_KeyShareEntry_MUST_be_generated_independently_-_wa?=
+ =?utf-8?q?s_Re=3A_Mohamed_Boucadair=27s_No_Objection_on_draft-ietf-tls-hybr?=
+ =?utf-8?q?id-design-15=3A_=28with_COMMENT=29_=28fwd=29?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/OvkA2vXfuOTxqA0YlGj-PPPcs7c>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+On Fri, 24 Oct 2025, Sean Turner wrote:
+
+> Subject: [TLS] Re: KeyShareEntry MUST be generated independently - was Re:
+>     Mohamed Boucadair's No Objection on draft-ietf-tls-hybrid-design-15: (with
+>      COMMENT) (fwd)
+> 
+> Hi! It appears that the emerging consensus here is to make no changes as a result of this comment.  Mostly this is because it appears that the MUST will be ignored.
+>  If you disagree with this, please indicate why by 30 October 2025.
+
+I think reading it context does help to frame the issue properly for
+evaluation:
+
+https://datatracker.ietf.org/doc/html/draft-ietf-tls-hybrid-design-15#section-3.2
+
+
+A note I have though is as the start of that paragraph states:
+
+ 	[TLS13] requires that ``The key_exchange values for each KeyShareEntry
+ 	MUST be generated independently.'' In the context of this document,
+ 	since the same algorithm may appear in multiple named groups, this
+ 	document relaxes the above requirement to allow the same key_exchange
+ 	value for the same algorithm to be reused in multiple KeyShareEntry
+ 	records sent in within the same ClientHello.
+
+The question is if this "relaxing of a [TLS13] requirement" means this
+draft Updates: [TLS13]. I think it can be argued that it only updates
+the requirement for hybrids, and so one does not need to know this
+"relaxing requirement" in other cases, so an Updates: clause is not
+needed. But if new drafts specifying hybrids come out, it might not
+be obvious to people this is the case unless those drafts mention this
+ssue specifically via a normative reference to this draft. So that is
+an argument to argue in favour of an Updates: clause.
+
+The document currently does not have an Updates: clause for this.
+
+If people have opinions on this part, I am interested in hearing those.
+
+Paul
+

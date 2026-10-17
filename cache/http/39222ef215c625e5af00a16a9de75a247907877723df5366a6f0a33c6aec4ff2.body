@@ -1,0 +1,343 @@
+Return-Path: <ekr@rtfm.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id CB87F1293EE
+ for <tls@ietfa.amsl.com>; Thu, 20 Oct 2016 12:52:18 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.899
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.899 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_NONE=-0.0001]
+ autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=rtfm-com.20150623.gappssmtp.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id Sppt_tskcEer for <tls@ietfa.amsl.com>;
+ Thu, 20 Oct 2016 12:52:16 -0700 (PDT)
+Received: from mail-yb0-x22a.google.com (mail-yb0-x22a.google.com
+ [IPv6:2607:f8b0:4002:c09::22a])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 9B899129423
+ for <tls@ietf.org>; Thu, 20 Oct 2016 12:52:16 -0700 (PDT)
+Received: by mail-yb0-x22a.google.com with SMTP id g68so32881480ybi.0
+ for <tls@ietf.org>; Thu, 20 Oct 2016 12:52:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=rtfm-com.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+ :cc; bh=SXCtKa1V6bEVvnauoJ1EzY3reP6BPQtR0TRJq+AgO8U=;
+ b=2Rk7q//Iux/EYZ4djYFPyZ1Y9JzvTEiTFcQN3sXVoQxvN30bNjfCqEsqK7NpvFZlgF
+ FEOHlbWHeLVXeaoYfUojpfG0JNaDr830MVh7irRGDLHhGHme1Wza862oLz3DDoLUnAOB
+ OLBwr8Bsoix+Ypk5KGx9rFKCWz9FDEenCMs7jhU2EEpr+57BVuZvV5dT2VQ1+K1npRhP
+ 3WTn9FtRqiJg7Q+9Y68tjrmuvTShp2gYqRDlw3RQwtrZCH/WI/hRPTWYiTzLV87mHQnL
+ L8WmSMSut+FNBbVPZ22akaQzsuAE+y6MZhJsBytAhks9ii8U22TuI9B2MUPxYFshDxf3
+ me/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20130820;
+ h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+ :message-id:subject:to:cc;
+ bh=SXCtKa1V6bEVvnauoJ1EzY3reP6BPQtR0TRJq+AgO8U=;
+ b=Pbj/TG9nR9H1QClAEYESsHIZMsh7mR1md8vm+5pKqgq73OUmBsizjq+3rq9PC+OZoM
+ rJIiu52xotF0K25oxLXHd+nJ1dicIKg2R+CewZl5n5H7ZBCjBNizq/6WwzzINXQJ6TCn
+ 1tPOWjRMIZVG9eUqF0HtNqf2TYMkfKi7WcGGXUB+lznUr9QlrfaoGWvLBkSz1FEFn5Wg
+ 2gTg5+s4T1IQhN1pC5IobOZL8Hst8M0k/jT8sMqccIRDNZ3TIl2WkE6/ogLGLrJZBW8x
+ F98eYyECOZYWuiqGkn6bRwbzrJJ56Ek2BYlcPVa//AMmqcIqZz6McBopjNzW46NTFF0A
+ o/hg==
+X-Gm-Message-State: AA6/9Rm6ktog6nR0iuQeC6Ax/w9T4cE9+Wsc0UJPAl4t7GLKYjCACtUEjmp4DrqDoaJDus3ku9MSfwLz6b4IbQ==
+X-Received: by 10.37.246.15 with SMTP id t15mr3510061ybd.107.1476993135832;
+ Thu, 20 Oct 2016 12:52:15 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 10.129.82.210 with HTTP; Thu, 20 Oct 2016 12:51:35 -0700 (PDT)
+In-Reply-To: <CANatvzybB2LGPP+H_n+5kx++RDN70Xe29_jXT73foT_V_OCd4A@mail.gmail.com>
+References: <CABcZeBP6pzqtcT3rmmpjr_4R+fb6ZyiAduxQiJ87B9hnRzVBXA@mail.gmail.com>
+ <CANatvzybB2LGPP+H_n+5kx++RDN70Xe29_jXT73foT_V_OCd4A@mail.gmail.com>
+From: Eric Rescorla <ekr@rtfm.com>
+Date: Thu, 20 Oct 2016 12:51:35 -0700
+Message-ID: <CABcZeBOCjYDDqR5_vFxXrHpD8siA9g_LvJFJFk1C8n0CBe8i9Q@mail.gmail.com>
+To: Kazuho Oku <kazuhooku@gmail.com>
+Content-Type: multipart/alternative; boundary=f403045da0a632a21b053f5143bc
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/j-gaShgGazLKmgYeXTjOxVea2A0>
+Cc: "tls@ietf.org" <tls@ietf.org>
+Subject: Re: [TLS] draft-ietf-tls-tls-13-17 posted
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.17
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Thu, 20 Oct 2016 19:52:19 -0000
+
+--f403045da0a632a21b053f5143bc
+Content-Type: text/plain; charset=UTF-8
+
+You're right. I just missed it. Added to the editor's copy.
+
+Thanks,
+-Ekr
+
+
+On Thu, Oct 20, 2016 at 12:43 PM, Kazuho Oku <kazuhooku@gmail.com> wrote:
+
+> Hello,
+>
+> It's great to see draft-17 being published. Thank you all for the effort.
+>
+> Maybe the addition of extensions field to the Certificate message got
+> lost in the changelog?
+> https://github.com/tlswg/tls13-spec/pull/654
+>
+> My understanding has been that it was a post-16 change and it changes
+> the wire protocol.
+>
+>
+> 2016-10-21 1:32 GMT+09:00 Eric Rescorla <ekr@rtfm.com>:
+> > Folks,
+> >
+> > I have just uploaded draft-ietf-tls-tls13-17.
+> >
+> > The major change in this draft is the removal of the 0-RTT Finished
+> > and resumption_context constructs and their replacement with the
+> > psk_binder. This has a number of side effects:
+> >
+> > - Binds in the original transcript into the resumed handshake
+> >   whenever resumption-PSK is used.
+> >
+> > - Provides proof of possession of the RMS by the client (subject
+> >   to replay issues). I've moved the obfuscated_ticket_age field
+> >   out of the early_data_indication so that it now provides the
+> >   same limited anti-replay for non-0-RTT PSK.
+> >
+> > - Removes the need for any early handshake encryption. This change,
+> >   along with the dual key ladders we introduced in -16, also allowed
+> >   us to simplify the traffic key expansion so we don't need explicit
+> >   labels for each key (they are already used in Derive-Secret).
+> >
+> >
+> > Other changes included:
+> > - Tweaking the PSK key exchange modes a bit (and removing the
+> >   inoperative ability to specify PSK auth modes, while leaving
+> >   a hook to do it later).
+> >
+> > - Cleaned up the cipher suite requirements for resumption and 0-RTT.
+> >   You can resume/do PSK as long as the PSK KDF matches, but to do 0-RTT
+> >   you need the whole cipher suite must match.
+> >
+> >
+> > This revision resolves all the outstanding technical PRs [0] and all but
+> > one of the non-parked technical issues (#144, whether we should remove
+> the
+> > redundant TLSCipherText.opaque_type and TLSCipherText.record_version
+> > fields). We are pursuing measurements to resolve whether this will
+> > be a compat problem but we don't have them yet.
+> >
+> > As usual, comments welcome. We are already working on implementing
+> > -17 in NSS/Firefox and should have it before Seoul.
+> >
+> > -Ekr
+> >
+> > Full Changelog
+> > - Remove the 0-RTT Finished, resumption_context, and replace with a
+> >   psk_binder field in the PSK itself (*)
+> >
+> > - Restructure PSK key exchange negotiation modes (*)
+> >
+> > - Add max_early_data_size field to TicketEarlyDataInfo (*)
+> >
+> > - Add a 0-RTT exporter and change the transcript for the regular exporter
+> > (*)
+> >
+> > - Merge TicketExtensions and Extensions registry. Changes
+> >   ticket_early_data_info code point (*)
+> >
+> > - Replace Client.key_shares in response to HRR (*)
+> >
+> > - Remove redundant labels for traffic key derivation (*)
+> >
+> > - Harmonize requirements about cipher suite matching: for resumption you
+> >   need to match KDF but for 0-RTT you need whole cipher suite. This
+> >   allows PSKs to actually negotiate cipher suites. (*)
+> >
+> > - Explicitly allow non-offered extensions in NewSessionTicket
+> >
+> > - Explicitly allow predicting ClientFinished for NST
+> >
+> > - Clarify conditions for allowing 0-RTT with PSK
+> >
+> >
+> > [0] The two remaining outstanding PRs are:
+> > #680: Forbid post-handshake authentication except when permitted by
+> >       application profile. This is almost entirely a requirements-level
+> >       change, though it would allow clients to send "unexpected_message"
+> >       when receiving an unexpected CertificateRequest.
+> >
+> > #612: TLS 1.3 -> TLS 2.0
+> >       This has no change on the wire format.
+> >
+> >
+> > _______________________________________________
+> > TLS mailing list
+> > TLS@ietf.org
+> > https://www.ietf.org/mailman/listinfo/tls
+> >
+>
+>
+>
+> --
+> Kazuho Oku
+>
+
+--f403045da0a632a21b053f5143bc
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">You&#39;re right. I just missed it. Added to the editor&#3=
+9;s copy.<div><br></div><div>Thanks,</div><div>-Ekr</div><div><br></div></d=
+iv><div class=3D"gmail_extra"><br><div class=3D"gmail_quote">On Thu, Oct 20=
+, 2016 at 12:43 PM, Kazuho Oku <span dir=3D"ltr">&lt;<a href=3D"mailto:kazu=
+hooku@gmail.com" target=3D"_blank">kazuhooku@gmail.com</a>&gt;</span> wrote=
+:<br><blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-le=
+ft:1px #ccc solid;padding-left:1ex">Hello,<br>
+<br>
+It&#39;s great to see draft-17 being published. Thank you all for the effor=
+t.<br>
+<br>
+Maybe the addition of extensions field to the Certificate message got<br>
+lost in the changelog?<br>
+<a href=3D"https://github.com/tlswg/tls13-spec/pull/654" rel=3D"noreferrer"=
+ target=3D"_blank">https://github.com/tlswg/<wbr>tls13-spec/pull/654</a><br=
+>
+<br>
+My understanding has been that it was a post-16 change and it changes<br>
+the wire protocol.<br>
+<div><div class=3D"h5"><br>
+<br>
+2016-10-21 1:32 GMT+09:00 Eric Rescorla &lt;<a href=3D"mailto:ekr@rtfm.com"=
+>ekr@rtfm.com</a>&gt;:<br>
+&gt; Folks,<br>
+&gt;<br>
+&gt; I have just uploaded draft-ietf-tls-tls13-17.<br>
+&gt;<br>
+&gt; The major change in this draft is the removal of the 0-RTT Finished<br=
+>
+&gt; and resumption_context constructs and their replacement with the<br>
+&gt; psk_binder. This has a number of side effects:<br>
+&gt;<br>
+&gt; - Binds in the original transcript into the resumed handshake<br>
+&gt;=C2=A0 =C2=A0whenever resumption-PSK is used.<br>
+&gt;<br>
+&gt; - Provides proof of possession of the RMS by the client (subject<br>
+&gt;=C2=A0 =C2=A0to replay issues). I&#39;ve moved the obfuscated_ticket_ag=
+e field<br>
+&gt;=C2=A0 =C2=A0out of the early_data_indication so that it now provides t=
+he<br>
+&gt;=C2=A0 =C2=A0same limited anti-replay for non-0-RTT PSK.<br>
+&gt;<br>
+&gt; - Removes the need for any early handshake encryption. This change,<br=
+>
+&gt;=C2=A0 =C2=A0along with the dual key ladders we introduced in -16, also=
+ allowed<br>
+&gt;=C2=A0 =C2=A0us to simplify the traffic key expansion so we don&#39;t n=
+eed explicit<br>
+&gt;=C2=A0 =C2=A0labels for each key (they are already used in Derive-Secre=
+t).<br>
+&gt;<br>
+&gt;<br>
+&gt; Other changes included:<br>
+&gt; - Tweaking the PSK key exchange modes a bit (and removing the<br>
+&gt;=C2=A0 =C2=A0inoperative ability to specify PSK auth modes, while leavi=
+ng<br>
+&gt;=C2=A0 =C2=A0a hook to do it later).<br>
+&gt;<br>
+&gt; - Cleaned up the cipher suite requirements for resumption and 0-RTT.<b=
+r>
+&gt;=C2=A0 =C2=A0You can resume/do PSK as long as the PSK KDF matches, but =
+to do 0-RTT<br>
+&gt;=C2=A0 =C2=A0you need the whole cipher suite must match.<br>
+&gt;<br>
+&gt;<br>
+&gt; This revision resolves all the outstanding technical PRs [0] and all b=
+ut<br>
+&gt; one of the non-parked technical issues (#144, whether we should remove=
+ the<br>
+&gt; redundant TLSCipherText.opaque_type and TLSCipherText.record_version<b=
+r>
+&gt; fields). We are pursuing measurements to resolve whether this will<br>
+&gt; be a compat problem but we don&#39;t have them yet.<br>
+&gt;<br>
+&gt; As usual, comments welcome. We are already working on implementing<br>
+&gt; -17 in NSS/Firefox and should have it before Seoul.<br>
+&gt;<br>
+&gt; -Ekr<br>
+&gt;<br>
+&gt; Full Changelog<br>
+&gt; - Remove the 0-RTT Finished, resumption_context, and replace with a<br=
+>
+&gt;=C2=A0 =C2=A0psk_binder field in the PSK itself (*)<br>
+&gt;<br>
+&gt; - Restructure PSK key exchange negotiation modes (*)<br>
+&gt;<br>
+&gt; - Add max_early_data_size field to TicketEarlyDataInfo (*)<br>
+&gt;<br>
+&gt; - Add a 0-RTT exporter and change the transcript for the regular expor=
+ter<br>
+&gt; (*)<br>
+&gt;<br>
+&gt; - Merge TicketExtensions and Extensions registry. Changes<br>
+&gt;=C2=A0 =C2=A0ticket_early_data_info code point (*)<br>
+&gt;<br>
+&gt; - Replace Client.key_shares in response to HRR (*)<br>
+&gt;<br>
+&gt; - Remove redundant labels for traffic key derivation (*)<br>
+&gt;<br>
+&gt; - Harmonize requirements about cipher suite matching: for resumption y=
+ou<br>
+&gt;=C2=A0 =C2=A0need to match KDF but for 0-RTT you need whole cipher suit=
+e. This<br>
+&gt;=C2=A0 =C2=A0allows PSKs to actually negotiate cipher suites. (*)<br>
+&gt;<br>
+&gt; - Explicitly allow non-offered extensions in NewSessionTicket<br>
+&gt;<br>
+&gt; - Explicitly allow predicting ClientFinished for NST<br>
+&gt;<br>
+&gt; - Clarify conditions for allowing 0-RTT with PSK<br>
+&gt;<br>
+&gt;<br>
+&gt; [0] The two remaining outstanding PRs are:<br>
+&gt; #680: Forbid post-handshake authentication except when permitted by<br=
+>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0application profile. This is almost entirely=
+ a requirements-level<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0change, though it would allow clients to sen=
+d &quot;unexpected_message&quot;<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0when receiving an unexpected CertificateRequ=
+est.<br>
+&gt;<br>
+&gt; #612: TLS 1.3 -&gt; TLS 2.0<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0This has no change on the wire format.<br>
+&gt;<br>
+&gt;<br>
+</div></div>&gt; ______________________________<wbr>_________________<br>
+&gt; TLS mailing list<br>
+&gt; <a href=3D"mailto:TLS@ietf.org">TLS@ietf.org</a><br>
+&gt; <a href=3D"https://www.ietf.org/mailman/listinfo/tls" rel=3D"noreferre=
+r" target=3D"_blank">https://www.ietf.org/mailman/<wbr>listinfo/tls</a><br>
+&gt;<br>
+<span class=3D"HOEnZb"><font color=3D"#888888"><br>
+<br>
+<br>
+--<br>
+Kazuho Oku<br>
+</font></span></blockquote></div><br></div>
+
+--f403045da0a632a21b053f5143bc--
+

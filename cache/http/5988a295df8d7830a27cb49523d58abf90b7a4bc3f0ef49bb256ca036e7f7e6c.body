@@ -1,0 +1,328 @@
+From nobody Sun Sep 26 00:39:35 2021
+Return-Path: <do_not_reply@mnot.net>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id E5C3F3A1530
+ for <tls@ietfa.amsl.com>; Sun, 26 Sep 2021 00:38:42 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.1
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.1 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, HTML_MESSAGE=0.001,
+ RCVD_IN_MSPIKE_H2=-0.001, SPF_PASS=-0.001, URIBL_BLOCKED=0.001]
+ autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=mnot.net header.b=euYRqVfX;
+ dkim=pass (2048-bit key)
+ header.d=messagingengine.com header.b=VZ2/NGwi
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id OnKZq4Kox451 for <tls@ietfa.amsl.com>;
+ Sun, 26 Sep 2021 00:38:37 -0700 (PDT)
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
+ [66.111.4.27])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 052823A1527
+ for <tls@ietf.org>; Sun, 26 Sep 2021 00:38:36 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+ by mailout.nyi.internal (Postfix) with ESMTP id 009445C00F0
+ for <tls@ietf.org>; Sun, 26 Sep 2021 03:38:36 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute5.internal (MEProxy); Sun, 26 Sep 2021 03:38:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mnot.net; h=
+ content-type:mime-version:from:to:subject; s=fm3; bh=19i7eGbq0p2
+ rlm3aJIB4rFCUZdXIeYFwAZ9hI++oQqY=; b=euYRqVfXWmTJPof6EB+t2EG6A47
+ 2mFGMr0G80ZaIcFwj59zmuj+fbbhs5H54C0ic6lMk1w2vCXB0TqynC1ChK9OBr7h
+ 3yaQnwEETQug253y/Itbpp6911dQ3ZziZ539RvRrQsjDARpraUhtOhj1bGvqANSD
+ qax6qkdrwsBloF+Q/PVbAaYiQbwgVhBWtVqbASsR9mfCe+LaGV6uDIdDc6Zzmxpw
+ EM7KvaIsPoV30AtQHzBKg0WMh2Cc9kwgfrBU/1C74FL4hHjF7o7sy+Tj1f5aAS9l
+ q9HXNAdVVa/aiU45rqu5N5jfZMVNRksxNddfYGoOwkMDoLo4KDbEBr6M/+A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=content-type:from:mime-version:subject:to
+ :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+ fm3; bh=19i7eGbq0p2rlm3aJIB4rFCUZdXIeYFwAZ9hI++oQqY=; b=VZ2/NGwi
+ F/rLBLfhBBEzvAGUm8nV/gu12qv/SV7Eoih784u9hHDOX0CCF+Ea2YL8s5v/xyT+
+ W7PdSL9YMjCr9uDQywq2F0juWt3NGSyXkDtF/Dn1wRMdP9xERbHWNeC8I9boQJN0
+ W/k6BnwVv1SApjrguNRk1zYAmSeDJPjL38ittAsZmCmJJ82B4ysmBJtE3cIWkCjx
+ Qbxdi1t60Ga+rlM4DBLkSvsTel1QYVCX7wDTqBO0XCQ7NisYQr7IC0ZnZMCcoiv1
+ IshEzAbgfEUakraupjKwNRmk0HZtav0jowlHUfmDugWI+Ar/2ncCjaGyGNNY/DW3
+ YtOdWL7uBD0Anw==
+X-ME-Sender: <xms:eyNQYfZfFfa6NcDLKRcxAi0-QeHRq6H1Z7KFuDyLs2fFCSf5aSAlcA>
+ <xme:eyNQYeb7Dg6f5D1uaPJMjlcT6qGpZoQJh2qTr07YtboAVhDw7PlTpCLM96GbXwdsN
+ 9NBZ18werSdRQpblg>
+X-ME-Received: <xmr:eyNQYR89Ghaou5_Js6qHdIf5IJfaPxobSV9PvMXRqRDAfUxQP8iAQqGdQSX6dHdrBcUCrhzhJgSL3qNixZ7g4qKhRk3fnBEKG6UCvLQnYIG67Qlz0VzRey_3aimXVkdsW0S7ng>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudejhedgudeiucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucfpohcuuggrthgvuchfihgvlhguucdlgeelmdenuc
+ fjughrpegtggfhvffusegrtddtredttdejnecuhfhrohhmpeftvghpohhsihhtohhrhicu
+ tegtthhivhhithihucfuuhhmmhgrrhihuceuohhtuceoughopghnohhtpghrvghplhihse
+ hmnhhothdrnhgvtheqnecuggftrfgrthhtvghrnhepkeefvdduteejvdefkeehieevuefg
+ fefhteetveegffekffefteffvdelheduieetnecuffhomhgrihhnpehgihhthhhusgdrtg
+ homhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegu
+ ohgpnhhothgprhgvphhlhiesmhhnohhtrdhnvght
+X-ME-Proxy: <xmx:eyNQYVpMjXv7j3pknvf_eqcGdEu7PinF7CYvhvKc1fD4TZXyPr0E1g>
+ <xmx:eyNQYaoi_jjlW6lgcA86V7s5jtTETNgE7259sIM3vH37Xk_V2DQyzQ>
+ <xmx:eyNQYbQa-Hh-XlG2DUPvklpTkUobv88cGQhTSk_PC3QLCpd39OJxog>
+ <xmx:eyNQYR0bp4VFwjsno1VnxwL7On4s8ySnRCZOODY67fn6aiSB252nLQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA for <tls@ietf.org>; 
+ Sun, 26 Sep 2021 03:38:35 -0400 (EDT)
+Content-Type: multipart/alternative;
+ boundary="===============5085096367644587141=="
+MIME-Version: 1.0
+From: Repository Activity Summary Bot <do_not_reply@mnot.net>
+To: tls@ietf.org
+Message-Id: <20210926073837.052823A1527@ietfa.amsl.com>
+Date: Sun, 26 Sep 2021 00:38:36 -0700 (PDT)
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/5z8lQNCCL28vTISY6mmxl7_o2Ac>
+Subject: [TLS] Weekly github digest (TLS Working Group Drafts)
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Sun, 26 Sep 2021 07:38:46 -0000
+
+--===============5085096367644587141==
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+
+
+
+
+Issues
+------
+* tlswg/draft-ietf-tls-esni (+0/-0/=F0=9F=92=AC1)
+  1 issues received 1 new comments:
+  - #516 split-mode may be more a three-way thing than a two-way thing (1 b=
+y sayrer)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/516=20
+
+* tlswg/dtls13-spec (+0/-0/=F0=9F=92=AC1)
+  1 issues received 1 new comments:
+  - #254 Mention RFC 7457 in Security section (1 by elvey)
+    https://github.com/tlswg/dtls13-spec/issues/254=20
+
+
+
+Pull requests
+-------------
+* tlswg/draft-ietf-tls-md5-sha1-deprecate (+5/-5/=F0=9F=92=AC3)
+  5 pull requests submitted:
+  - Fix punctuation (by ghedo)
+    https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate/pull/27=20
+  - Remove unused reference (by ghedo)
+    https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate/pull/26=20
+  - address Kaduk comment (by seanturner)
+    https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate/pull/25=20
+  - fixing typo (by seanturner)
+    https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate/pull/24=20
+  - being consistent about which error to send (by seanturner)
+    https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate/pull/23=20
+
+  3 pull requests received 3 new comments:
+  - #26 Remove unused reference (1 by ghedo)
+    https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate/pull/26=20
+  - #24 fixing typo (1 by seanturner)
+    https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate/pull/24=20
+  - #23 being consistent about which error to send (1 by richsalz)
+    https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate/pull/23=20
+
+  5 pull requests merged:
+  - Remove unused reference
+    https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate/pull/26=20
+  - Fix punctuation
+    https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate/pull/27=20
+  - being consistent about which error to send
+    https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate/pull/23=20
+  - address Kaduk comment
+    https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate/pull/25=20
+  - fixing typo
+    https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate/pull/24=20
+
+
+Repositories tracked by this digest:
+-----------------------------------
+* https://github.com/tlswg/draft-ietf-tls-semistatic-dh
+* https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate
+* https://github.com/tlswg/draft-ietf-tls-esni
+* https://github.com/tlswg/certificate-compression
+* https://github.com/tlswg/draft-ietf-tls-external-psk-importer
+* https://github.com/tlswg/draft-ietf-tls-ticketrequest
+* https://github.com/tlswg/tls13-spec
+* https://github.com/tlswg/tls-flags
+* https://github.com/tlswg/dtls13-spec
+* https://github.com/tlswg/dtls-conn-id
+* https://github.com/tlswg/tls-subcerts
+* https://github.com/tlswg/oldversions-deprecate
+* https://github.com/tlswg/sniencryption
+* https://github.com/tlswg/tls-exported-authenticator
+* https://github.com/tlswg/draft-ietf-tls-ctls
+* https://github.com/tlswg/external-psk-design-team
+
+--===============5085096367644587141==
+Content-Type: text/html; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+
+<!doctype html>
+<html lang=3D"en">
+<head>
+<meta charset=3D"utf-8">
+<title>Weekly github digest (TLS Working Group Drafts)</title>
+<style>
+body { font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;=
+ font-size: 14px; }
+h2 { margin-top: 3em; color: #A52A2A; font-style: italic; font-weight: norm=
+al; }
+h3 { margin-bottom:0; margin-top: 2em; font-size: 1.2em; }
+h1+h2 { margin-top: 1em; }
+a { color: #bb6219; text-decoration: none; }
+li { margin-bottom: .35em; }
+.repos { margin-bottom: 0; margin-top:0; line-height: 1.2; }
+.new { color: red; }
+.label { display: inline;
+	padding: .2em .6em .3em;
+	font-size: 75%;
+	font-weight: 700;
+	line-height: 1;
+	color: #fff;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: baseline;
+	border-radius: .25em;
+}
+</style>
+</head>
+
+<body>
+<h1>Sunday September 26, 2021</h1>
+
+
+<h2>Issues</h2>
+
+<h3>tlswg/draft-ietf-tls-esni (+0/-0/=F0=9F=92=AC1)</h3>
+
+  <p>1 issues received 1 new comments:</p>
+  <ul>
+  <li>#516 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/5=
+16">split-mode may be more a three-way thing than a two-way thing</a> (1 by=
+ sayrer) </li>
+  </ul>
+
+
+<h3>tlswg/dtls13-spec (+0/-0/=F0=9F=92=AC1)</h3>
+
+  <p>1 issues received 1 new comments:</p>
+  <ul>
+  <li>#254 <a href=3D"https://github.com/tlswg/dtls13-spec/issues/254">Ment=
+ion RFC 7457 in Security section</a> (1 by elvey) </li>
+  </ul>
+
+
+
+
+<h2>Pull requests</h2>
+<h3>tlswg/draft-ietf-tls-md5-sha1-deprecate (+5/-5/=F0=9F=92=AC3)</h3>
+  <p class=3D"new">5 pull requests submitted:</p>
+  <ul>
+  <li>#27 <a href=3D"https://github.com/tlswg/draft-ietf-tls-md5-sha1-depre=
+cate/pull/27">Fix punctuation</a> (by ghedo) </li>
+ =20
+  <li>#26 <a href=3D"https://github.com/tlswg/draft-ietf-tls-md5-sha1-depre=
+cate/pull/26">Remove unused reference</a> (by ghedo) </li>
+ =20
+  <li>#25 <a href=3D"https://github.com/tlswg/draft-ietf-tls-md5-sha1-depre=
+cate/pull/25">address Kaduk comment</a> (by seanturner) </li>
+ =20
+  <li>#24 <a href=3D"https://github.com/tlswg/draft-ietf-tls-md5-sha1-depre=
+cate/pull/24">fixing typo</a> (by seanturner) </li>
+ =20
+  <li>#23 <a href=3D"https://github.com/tlswg/draft-ietf-tls-md5-sha1-depre=
+cate/pull/23">being consistent about which error to send</a> (by seanturner=
+) </li>
+  </ul>
+
+  <p>3 pull requests received 3 new comments:</p>
+  <ul>
+  <li>#26 <a href=3D"https://github.com/tlswg/draft-ietf-tls-md5-sha1-depre=
+cate/pull/26">Remove unused reference</a> (1 by ghedo) </li>
+ =20
+  <li>#24 <a href=3D"https://github.com/tlswg/draft-ietf-tls-md5-sha1-depre=
+cate/pull/24">fixing typo</a> (1 by seanturner) </li>
+ =20
+  <li>#23 <a href=3D"https://github.com/tlswg/draft-ietf-tls-md5-sha1-depre=
+cate/pull/23">being consistent about which error to send</a> (1 by richsalz=
+) </li>
+  </ul>
+
+  <p>5 pull requests merged:</p>
+  <ul>
+  <li>#26 <a href=3D"https://github.com/tlswg/draft-ietf-tls-md5-sha1-depre=
+cate/pull/26">Remove unused reference</a> </li>
+ =20
+  <li>#27 <a href=3D"https://github.com/tlswg/draft-ietf-tls-md5-sha1-depre=
+cate/pull/27">Fix punctuation</a> </li>
+ =20
+  <li>#23 <a href=3D"https://github.com/tlswg/draft-ietf-tls-md5-sha1-depre=
+cate/pull/23">being consistent about which error to send</a> </li>
+ =20
+  <li>#25 <a href=3D"https://github.com/tlswg/draft-ietf-tls-md5-sha1-depre=
+cate/pull/25">address Kaduk comment</a> </li>
+ =20
+  <li>#24 <a href=3D"https://github.com/tlswg/draft-ietf-tls-md5-sha1-depre=
+cate/pull/24">fixing typo</a> </li>
+  </ul>
+
+
+<h2>Repositories tracked by this digest:</h2>
+<ul class=3D"repos">
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-semistatic-dh">htt=
+ps://github.com/tlswg/draft-ietf-tls-semistatic-dh</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate=
+">https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-esni">https://gith=
+ub.com/tlswg/draft-ietf-tls-esni</a></li>
+  <li><a href=3D"https://github.com/tlswg/certificate-compression">https://=
+github.com/tlswg/certificate-compression</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-external-psk-impor=
+ter">https://github.com/tlswg/draft-ietf-tls-external-psk-importer</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-ticketrequest">htt=
+ps://github.com/tlswg/draft-ietf-tls-ticketrequest</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls13-spec">https://github.com/tl=
+swg/tls13-spec</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-flags">https://github.com/tls=
+wg/tls-flags</a></li>
+  <li><a href=3D"https://github.com/tlswg/dtls13-spec">https://github.com/t=
+lswg/dtls13-spec</a></li>
+  <li><a href=3D"https://github.com/tlswg/dtls-conn-id">https://github.com/=
+tlswg/dtls-conn-id</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-subcerts">https://github.com/=
+tlswg/tls-subcerts</a></li>
+  <li><a href=3D"https://github.com/tlswg/oldversions-deprecate">https://gi=
+thub.com/tlswg/oldversions-deprecate</a></li>
+  <li><a href=3D"https://github.com/tlswg/sniencryption">https://github.com=
+/tlswg/sniencryption</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-exported-authenticator">https=
+://github.com/tlswg/tls-exported-authenticator</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-ctls">https://gith=
+ub.com/tlswg/draft-ietf-tls-ctls</a></li>
+  <li><a href=3D"https://github.com/tlswg/external-psk-design-team">https:/=
+/github.com/tlswg/external-psk-design-team</a></li>
+  </ul>
+</body>
+</html>
+
+--===============5085096367644587141==--
+

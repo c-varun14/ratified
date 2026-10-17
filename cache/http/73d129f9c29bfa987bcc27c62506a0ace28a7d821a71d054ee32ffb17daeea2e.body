@@ -1,0 +1,589 @@
+Return-Path: <mackermann@bcbsm.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id EA702129B72
+ for <tls@ietfa.amsl.com>; Sat,  8 Jul 2017 09:01:14 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -4.091
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.091 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, HTML_MESSAGE=0.001,
+ RCVD_IN_DNSWL_MED=-2.3, SPF_HELO_PASS=-0.001, SPF_PASS=-0.001,
+ T_DKIM_INVALID=0.01] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=fail (1024-bit key)
+ reason="fail (body has been altered)"
+ header.d=bcbsm.onmicrosoft.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id H0cdp00LhPBs for <tls@ietfa.amsl.com>;
+ Sat,  8 Jul 2017 09:01:12 -0700 (PDT)
+Received: from mx.z120.zixworks.com (bcbsm.zixworks.com [199.30.235.120])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 52925129B4F
+ for <tls@ietf.org>; Sat,  8 Jul 2017 09:01:12 -0700 (PDT)
+Received: from 127.0.0.1 (ZixVPM [127.0.0.1])
+ by Outbound.z120.zixworks.com (Proprietary) with SMTP id B50F31C18D9
+ for <tls@ietf.org>; Sat,  8 Jul 2017 11:01:11 -0500 (CDT)
+Received: from imsva2.bcbsm.com (unknown [12.107.172.81])
+ by mx.z120.zixworks.com (Proprietary) with SMTP id D39B41C1832;
+ Sat,  8 Jul 2017 11:01:10 -0500 (CDT)
+Received: from imsva2.bcbsm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 9299CFE055;
+ Sat,  8 Jul 2017 12:01:10 -0400 (EDT)
+Received: from imsva2.bcbsm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 43AAAFE048;
+ Sat,  8 Jul 2017 12:01:10 -0400 (EDT)
+Received: from NAM03-BY2-obe.outbound.protection.outlook.com (unknown
+ [216.32.180.49]) by imsva2.bcbsm.com (Postfix) with ESMTPS;
+ Sat,  8 Jul 2017 12:01:10 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bcbsm.onmicrosoft.com; 
+ s=selector1-bcbsm-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=C2qkOdJKrFwmmlDpD+uPp3cXaiApOIAoGmsI5K+AW3E=;
+ b=zGtPK1CLGguT4H/2VYTqCxk+ECwdZZPVT0Uzm+fN70LxVqixp+sH1mFcOlHxR/TnLElGOgo/OlbwbWhbLlWPuTAYwUaYMSOjmxxfkdb5g8dSAB0v1GZ3ckT0fOwybmKo2KSU+2AKDGbj0WfvZR94K46FQQxZwxx6axAG+9Egnug=
+Received: from CY4PR14MB1368.namprd14.prod.outlook.com (10.172.158.148) by
+ CY4PR14MB1368.namprd14.prod.outlook.com (10.172.158.148) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1240.13; Sat, 8 Jul 2017 16:01:07 +0000
+Received: from CY4PR14MB1368.namprd14.prod.outlook.com ([10.172.158.148]) by
+ CY4PR14MB1368.namprd14.prod.outlook.com ([10.172.158.148]) with mapi id
+ 15.01.1240.013; Sat, 8 Jul 2017 16:01:07 +0000
+From: "Ackermann, Michael" <MAckermann@bcbsm.com>
+To: Timothy Jackson <tjackson@mobileiron.com>, Watson Ladd
+ <watsonbladd@gmail.com>, Christian Huitema <huitema@huitema.net>
+CC: "tls@ietf.org" <tls@ietf.org>
+Thread-Topic: [TLS] draft-green-tls-static-dh-in-tls13-01
+Thread-Index: AQHS9u8RCuLDt7dBiEuHKxJZjnlNtqJIVJcAgAA7lACAAB2RAIAABXEAgAABDQCAABZYAIAABAWAgAAPEACAAAECAIAABj8AgAACzgCAAAGCAIAANuiAgAAIJQCAAASV8IAAFxiAgADCxsA=
+Date: Sat, 8 Jul 2017 16:00:43 +0000
+Deferred-Delivery: Sat, 8 Jul 2017 16:00:00 +0000
+Message-ID: <CY4PR14MB1368A816B5511F11837C9815D7AB0@CY4PR14MB1368.namprd14.prod.outlook.com>
+References: <CAPCANN-xgf3auqy+pFfL6VO5GpEsCCHYkROAwiB1u=8a4yj+Fg@mail.gmail.com>
+ <CAL02cgRJeauV9NQ2OrGK1ocQtg-M2tbWm2+5HUc4-Wc8KC3vxQ@mail.gmail.com>
+ <71E07F32-230F-447C-B85B-9B3B4146D386@vigilsec.com>
+ <39bad3e9-2e17-30f6-48a7-a035d449dce7@cs.tcd.ie>
+ <CAJU8_nXBFkpncFDy4QFnd6hFpC7oOZn-F1-EuBC2vk3Y6QKq3A@mail.gmail.com>
+ <f0554055-cdd3-a78c-8ab1-e84f9b624fda@cs.tcd.ie>
+ <A0BEC2E3-8CF5-433D-BA77-E8474A2C922A@vigilsec.com>
+ <658a6b50-54a7-600a-2f6a-480daf2321dc@cs.tcd.ie>
+ <F830F0DA-F3F1-4A61-8B42-100D31E6F831@vigilsec.com>
+ <1ebb85c3-842e-36f6-ccd5-da7074342118@cs.tcd.ie>
+ <E639C60A-D90C-46C2-9A18-5D02D6EBD9E4@vigilsec.com>
+ <d16833ed-3b6b-3685-e109-1673f69c67a5@cs.tcd.ie>
+ <5CF364CB-96E1-4103-9C83-81187897F5F3@vigilsec.com>
+ <4f733022-dabb-53a2-2eb7-425134c137f8@huitema.net>
+ <CACsn0ck8P0Dn3L_tmVmmAez=xo0hmFxQEqkfqw+O7ZzcHpwtTw@mail.gmail.com>,
+ <CY4PR14MB13689ABCC728747E9B999AEFD7AB0@CY4PR14MB1368.namprd14.prod.outlook.com>
+ <kokbii6v34dsk060vpa2if7u.1499483924916@emailplus.mobileiron.com>
+In-Reply-To: <kokbii6v34dsk060vpa2if7u.1499483924916@emailplus.mobileiron.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: mobileiron.com; dkim=none (message not signed)
+ header.d=none;mobileiron.com; dmarc=none action=none header.from=bcbsm.com;
+x-originating-ip: [165.225.0.71]
+x-ms-publictraffictype: Email
+x-microsoft-exchange-diagnostics: 1; CY4PR14MB1368;
+ 20:pXVncGmXEBB/P8SaP5Fam7RwL4/NMjDFnZK4HK0IPQ0+GcOE9v+wYMu8tsgMtipCJen4WddfCM4/DRvzS1AX7zXBZypBTHTKfsbHyeUQQz1hJEQITeDNrKKsQQVGVbLfxFm7hmiw/WituZ7A1sksuGPPntbRHbSbuPSftzPJ8vo=
+x-ms-office365-filtering-correlation-id: 946dc1cf-f9e7-49ef-29a4-08d4c61a8b7a
+x-microsoft-antispam: UriScan:; BCL:0; PCL:0;
+ RULEID:(300000500095)(300135000095)(300000501095)(300135300095)(22001)(300000502095)(300135100095)(2017030254075)(300000503095)(300135400095)(2017052603031)(201703131423075)(201703031133081)(201702281549075)(300000504095)(300135200095)(300000505095)(300135600095)(300000506095)(300135500095);
+ SRVR:CY4PR14MB1368; 
+x-ms-traffictypediagnostic: CY4PR14MB1368:
+x-microsoft-antispam-prvs: <CY4PR14MB136854F5371C65AD7FE6DF03D7AB0@CY4PR14MB1368.namprd14.prod.outlook.com>
+x-exchange-antispam-report-test: UriScan:(151999592597050)(158342451672863)(278428928389397)(26388249023172)(236129657087228)(192374486261705)(90097320859284)(48057245064654)(148574349560750)(142563422833929);
+x-exchange-antispam-report-cfa-test: BCL:0; PCL:0;
+ RULEID:(100000700101)(100105000095)(100000701101)(100105300095)(100000702101)(100105100095)(6040450)(601004)(2401047)(5005006)(2017060910075)(8121501046)(100000703101)(100105400095)(93006095)(93001095)(3002001)(10201501046)(6041248)(20161123555025)(20161123562025)(20161123558100)(20161123560025)(20161123564025)(201703131423075)(201702281528075)(201703061421075)(201703061406153)(6072148)(100000704101)(100105200095)(100000705101)(100105500095);
+ SRVR:CY4PR14MB1368; BCL:0; PCL:0;
+ RULEID:(100000800101)(100110000095)(100000801101)(100110300095)(100000802101)(100110100095)(100000803101)(100110400095)(100000804101)(100110200095)(100000805101)(100110500095);
+ SRVR:CY4PR14MB1368; 
+x-forefront-prvs: 0362BF9FDB
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10019020)(39410400002)(39400400002)(39840400002)(39450400003)(377454003)(85714005)(13464003)(24454002)(606006)(19609705001)(6506006)(2950100002)(966005)(33656002)(8936002)(25786009)(77096006)(7736002)(81166006)(2900100001)(6116002)(3280700002)(3846002)(102836003)(74316002)(790700001)(3660700001)(86362001)(478600001)(189998001)(72206003)(8676002)(6666003)(14454004)(54896002)(9686003)(76176999)(54356999)(236005)(53936002)(50986999)(6246003)(230783001)(4326008)(39060400002)(38730400002)(5660300001)(55016002)(6436002)(99286003)(53546010)(229853002)(2906002)(93886004)(6306002)(7696004)(80792005)(561944003)(66066001);
+ DIR:OUT; SFP:1102; SCL:1; SRVR:CY4PR14MB1368;
+ H:CY4PR14MB1368.namprd14.prod.outlook.com; FPR:; SPF:None; MLV:ovrnspm;
+ PTR:InfoNoRecords; LANG:en; 
+spamdiagnosticoutput: 1:99
+spamdiagnosticmetadata: NSPM
+Content-Type: multipart/alternative;
+ boundary="_000_CY4PR14MB1368A816B5511F11837C9815D7AB0CY4PR14MB1368namp_"
+MIME-Version: 1.0
+X-OriginatorOrg: bcbsm.com
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jul 2017 16:01:07.5695 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 6f56d3fa-5682-4261-b169-bc0d615da17c
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR14MB1368
+X-TM-AS-GCONF: 00
+X-VPM-HOST: vmvpm01.z120.zixworks.com
+X-VPM-GROUP-ID: 4be79311-648e-47f1-8d8f-b82f2df3aff4
+X-VPM-MSG-ID: 756c5272-d880-499f-9753-ab428149b559
+X-VPM-ENC-REGIME: Plaintext
+X-VPM-IS-HYBRID: 0
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/6y8Ti6mj2D9F6bmC14SBWLz6xxg>
+Subject: Re: [TLS] draft-green-tls-static-dh-in-tls13-01
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Sat, 08 Jul 2017 16:01:15 -0000
+
+--_000_CY4PR14MB1368A816B5511F11837C9815D7AB0CY4PR14MB1368namp_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+Regards to using proxies,  I believe this is covered in the draft.
+But at a high level, most enterprises have tried this approach.   It can =
+work in some  situations,  but in most cases there are utilization, =
+performance and management issues that prevent this solution from being =
+effective or affordable.   Not to mention the introduction of manifold new =
+potential points of failure.
+
+From: Timothy Jackson =5Bmailto:tjackson=40mobileiron.com=5D
+Sent: Friday, July 7, 2017 11:19 PM
+To: Ackermann, Michael <MAckermann=40bcbsm.com>; Watson Ladd =
+<watsonbladd=40gmail.com>; Christian Huitema <huitema=40huitema.net>
+Cc: tls=40ietf.org
+Subject: Re: =5BTLS=5D draft-green-tls-static-dh-in-tls13-01
+
+As an earlier poster asked, what advantage does this approach have over =
+TLS-inspecting proxies? Every IPS/IDS/next gen firewall with which I am =
+familiar is able to terminate at TLS connection, inspect/copy/filter, and =
+then encrypt on a new TLS sessions.
+
+For high performance customers, the SSL accelerators can be sandwiched =
+around the filter so all the crypto is done in hardware.
+
+The ways to prevent TLS inspection are cert pinning and client cert auth. =
+If this is only within one's data center, then those features can be =
+disabled if necessary, no?
+
+What use case am I missing that can't be achieved better by other means =
+than static keys?
+
+Thanks,
+
+Tim
+
+Sent from Email+ secured by MobileIron
+________________________________
+
+From: =22Ackermann, Michael=22 =
+<MAckermann=40bcbsm.com<mailto:MAckermann=40bcbsm.com>>
+Date: Friday, July 7, 2017 at 7:06:55 PM
+To: =22Watson Ladd=22 =
+<watsonbladd=40gmail.com<mailto:watsonbladd=40gmail.com>>, =22Christian =
+Huitema=22 <huitema=40huitema.net<mailto:huitema=40huitema.net>>
+Cc: =22tls=40ietf.org<mailto:tls=40ietf.org>=22 =
+<tls=40ietf.org<mailto:tls=40ietf.org>>
+Subject: Re: =5BTLS=5D draft-green-tls-static-dh-in-tls13-01
+Converting all session traffic to clear text is not a viable alternative =
+for ANY enterprises or industries that I am aware of.  In particular those =
+in financial sectors.
+Security policies, legislation and in many cases just good practice would =
+not allow for this.
+We are compelled by these factors to encrypt all data in motion.    But we =
+still need to manage our applications, networks, servers and clients.    =
+Hence the need to decrypt traffic as outlined in this draft.
+
+-----Original Message-----
+From: TLS =5Bmailto:tls-bounces=40ietf.org=5D On Behalf Of Watson Ladd
+Sent: Friday, July 7, 2017 9:40 PM
+To: Christian Huitema <huitema=40huitema.net<mailto:huitema=40huitema.net>>
+Cc: tls=40ietf.org<mailto:tls=40ietf.org>
+Subject: Re: =5BTLS=5D draft-green-tls-static-dh-in-tls13-01
+
+On Fri, Jul 7, 2017 at 6:10 PM, Christian Huitema =
+<huitema=40huitema.net<mailto:huitema=40huitema.net>> wrote:
+>
+>
+> On 7/7/2017 2:54 PM, Russ Housley wrote:
+>> Stephen:
+>> ...
+>>> And also: I'm sorry to have to say it, but I consider that attempted
+>>> weasel wording around the clear intent of 2804. The clear and real
+>>> effect if your wiretapping proposal were standardised by the IETF
+>>> would be that we'd be standardising ways in which TLS servers can be
+>>> compelled into breaking TLS - it'd be a standard wiretapping API
+>>> that'd be insisted upon in many places and would mean significantly
+>>> degrading TLS (only *the* most important security protocol we
+>>> maintain) and the community's perception of the IETF. It's all a
+>>> shockingly bad idea.
+>> I clearly disagree.  Otherwise, I would not have put any work into the =
+draft.
+> Russ,
+>
+> What are the specific mechanisms that would allow this technique to be
+> used where you intend it, i.e. within a data center, and not where
+> Stephen fears it would be, i.e., on the broad Internet? For example,
+> what mechanism could a client use to guarantee that this sort of
+> =22static DH=22 intercept could NOT be used against them?
+
+The server can send the plaintext to whomever it likes.
+
+This is the solution enterprises can use today. Nothing can stop that from =
+happening. So I don't see why static DH is a) so essentially necessary and =
+b) so controversial.
+
+>From a technical point I prefer using DH shares derived from
+ServerRandom as this avoids certain bugs I've been known to exploit from =
+time to time.
+
+>
+> --
+> Christian Huitema
+>
+>
+> _______________________________________________
+> TLS mailing list
+> TLS=40ietf.org<mailto:TLS=40ietf.org>
+> https://www.ietf.org/mailman/listinfo/tls
+
+
+
+--
+=22Man is born free, but everywhere he is in chains=22.
+--Rousseau.
+
+_______________________________________________
+TLS mailing list
+TLS=40ietf.org<mailto:TLS=40ietf.org>
+https://www.ietf.org/mailman/listinfo/tls
+
+
+The information contained in this communication is highly confidential and =
+is intended solely for the use of the individual(s) to whom this =
+communication is directed. If you are not the intended recipient, you are =
+hereby notified that any viewing, copying, disclosure or distribution of =
+this information is prohibited. Please notify the sender, by electronic =
+mail or telephone, of any unintended receipt and delete the original =
+message without making any copies.
+
+ Blue Cross Blue Shield of Michigan and Blue Care Network of Michigan are =
+nonprofit corporations and independent licensees of the Blue Cross and =
+Blue Shield Association.
+
+_______________________________________________
+TLS mailing list
+TLS=40ietf.org<mailto:TLS=40ietf.org>
+https://www.ietf.org/mailman/listinfo/tls
+
+
+The information contained in this communication is highly confidential and =
+is intended solely for the use of the individual(s) to whom this =
+communication is directed. If you are not the intended recipient, you are =
+hereby notified that any viewing, copying, disclosure or distribution of =
+this information is prohibited. Please notify the sender, by electronic =
+mail or telephone, of any unintended receipt and delete the original =
+message without making any copies.
+=20
+ Blue Cross Blue Shield of Michigan and Blue Care Network of Michigan are =
+nonprofit corporations and independent licensees of the Blue Cross and =
+Blue Shield Association.
+
+--_000_CY4PR14MB1368A816B5511F11837C9815D7AB0CY4PR14MB1368namp_
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D=22urn:schemas-microsoft-com:vml=22 =
+xmlns:o=3D=22urn:schemas-microsoft-com:office:office=22 =
+xmlns:w=3D=22urn:schemas-microsoft-com:office:word=22 =
+xmlns:m=3D=22http://schemas.microsoft.com/office/2004/12/omml=22 =
+xmlns=3D=22http://www.w3.org/TR/REC-html40=22>
+<head>
+<meta http-equiv=3D=22Content-Type=22 content=3D=22text/html; =
+charset=3Dus-ascii=22>
+<meta name=3D=22Generator=22 content=3D=22Microsoft Word 15 (filtered =
+medium)=22>
+<=21--=5Bif =21mso=5D><style>v=5C:* =7Bbehavior:url(=23default=23VML);=7D
+o=5C:* =7Bbehavior:url(=23default=23VML);=7D
+w=5C:* =7Bbehavior:url(=23default=23VML);=7D
+=2Eshape =7Bbehavior:url(=23default=23VML);=7D
+</style><=21=5Bendif=5D--><style><=21--
+/* Font Definitions */
+=40font-face
+=09=7Bfont-family:=22Cambria Math=22;
+=09panose-1:2 4 5 3 5 4 6 3 2 4;=7D
+=40font-face
+=09=7Bfont-family:Calibri;
+=09panose-1:2 15 5 2 2 2 4 3 2 4;=7D
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+=09=7Bmargin:0in;
+=09margin-bottom:.0001pt;
+=09font-size:12.0pt;
+=09font-family:=22Times New Roman=22,serif;=7D
+a:link, span.MsoHyperlink
+=09=7Bmso-style-priority:99;
+=09color:blue;
+=09text-decoration:underline;=7D
+a:visited, span.MsoHyperlinkFollowed
+=09=7Bmso-style-priority:99;
+=09color:purple;
+=09text-decoration:underline;=7D
+p.msonormal0, li.msonormal0, div.msonormal0
+=09=7Bmso-style-name:msonormal;
+=09mso-margin-top-alt:auto;
+=09margin-right:0in;
+=09mso-margin-bottom-alt:auto;
+=09margin-left:0in;
+=09font-size:12.0pt;
+=09font-family:=22Times New Roman=22,serif;=7D
+p.emailquote, li.emailquote, div.emailquote
+=09=7Bmso-style-name:emailquote;
+=09mso-margin-top-alt:auto;
+=09margin-right:0in;
+=09mso-margin-bottom-alt:auto;
+=09margin-left:1.0pt;
+=09border:none;
+=09padding:0in;
+=09font-size:12.0pt;
+=09font-family:=22Times New Roman=22,serif;=7D
+span.EmailStyle20
+=09=7Bmso-style-type:personal-reply;
+=09font-family:=22Calibri=22,sans-serif;
+=09color:windowtext;=7D
+=2EMsoChpDefault
+=09=7Bmso-style-type:export-only;
+=09font-size:10.0pt;=7D
+=40page WordSection1
+=09=7Bsize:8.5in 11.0in;
+=09margin:1.0in 1.0in 1.0in 1.0in;=7D
+div.WordSection1
+=09=7Bpage:WordSection1;=7D
+--></style><=21--=5Bif gte mso 9=5D><xml>
+<o:shapedefaults v:ext=3D=22edit=22 spidmax=3D=221026=22 />
+</xml><=21=5Bendif=5D--><=21--=5Bif gte mso 9=5D><xml>
+<o:shapelayout v:ext=3D=22edit=22>
+<o:idmap v:ext=3D=22edit=22 data=3D=221=22 />
+</o:shapelayout></xml><=21=5Bendif=5D-->
+</head>
+<body lang=3D=22EN-US=22 link=3D=22blue=22 vlink=3D=22purple=22>
+<div class=3D=22WordSection1=22>
+<p class=3D=22MsoNormal=22><span =
+style=3D=22font-size:11.0pt;font-family:&quot;Calibri&quot;,sans-serif=22>R=
+egards to using proxies,&nbsp; I believe this is covered in the draft.&nbsp;
+<o:p></o:p></span></p>
+<p class=3D=22MsoNormal=22><span =
+style=3D=22font-size:11.0pt;font-family:&quot;Calibri&quot;,sans-serif=22>B=
+ut at a high level, most enterprises have tried this approach.&nbsp;&nbsp; =
+It can work in some &nbsp;situations,&nbsp; but in most cases there are =
+utilization, performance and management issues
+ that prevent this solution from being effective or affordable.&nbsp; =
+&nbsp;Not to mention the introduction of manifold new potential points of =
+failure.&nbsp;
+<o:p></o:p></span></p>
+<p class=3D=22MsoNormal=22><a name=3D=22_MailEndCompose=22><span =
+style=3D=22font-size:11.0pt;font-family:&quot;Calibri&quot;,sans-serif=22><=
+o:p>&nbsp;</o:p></span></a></p>
+<span style=3D=22mso-bookmark:_MailEndCompose=22></span>
+<div>
+<div style=3D=22border:none;border-top:solid =23E1E1E1 1.0pt;padding:3.0pt =
+0in 0in 0in=22>
+<p class=3D=22MsoNormal=22><b><span =
+style=3D=22font-size:11.0pt;font-family:&quot;Calibri&quot;,sans-serif=22>F=
+rom:</span></b><span =
+style=3D=22font-size:11.0pt;font-family:&quot;Calibri&quot;,sans-serif=22> =
+Timothy Jackson =5Bmailto:tjackson=40mobileiron.com=5D
+<br>
+<b>Sent:</b> Friday, July 7, 2017 11:19 PM<br>
+<b>To:</b> Ackermann, Michael &lt;MAckermann=40bcbsm.com&gt;; Watson Ladd =
+&lt;watsonbladd=40gmail.com&gt;; Christian Huitema =
+&lt;huitema=40huitema.net&gt;<br>
+<b>Cc:</b> tls=40ietf.org<br>
+<b>Subject:</b> Re: =5BTLS=5D =
+draft-green-tls-static-dh-in-tls13-01<o:p></o:p></span></p>
+</div>
+</div>
+<p class=3D=22MsoNormal=22><o:p>&nbsp;</o:p></p>
+<div>
+<p class=3D=22MsoNormal=22 style=3D=22margin-bottom:12.0pt=22>As an =
+earlier poster asked, what advantage does this approach have over =
+TLS-inspecting proxies? Every IPS/IDS/next gen firewall with which I am =
+familiar is able to terminate at TLS connection, inspect/copy/filter,
+ and then encrypt on a new TLS sessions. <br>
+<br>
+For high performance customers, the SSL accelerators can be sandwiched =
+around the filter so all the crypto is done in hardware.<br>
+<br>
+The ways to prevent TLS inspection are cert pinning and client cert auth. =
+If this is only within one's data center, then those features can be =
+disabled if necessary, no?<br>
+<br>
+What use case am I missing that can't be achieved better by other means =
+than static keys?<br>
+<br>
+Thanks,<br>
+<br>
+Tim<br>
+<br>
+Sent from Email&=2343; secured by MobileIron<o:p></o:p></p>
+<div class=3D=22MsoNormal=22 align=3D=22center=22 =
+style=3D=22text-align:center=22>
+<hr size=3D=222=22 width=3D=22100%=22 align=3D=22center=22>
+</div>
+<p class=3D=22MsoNormal=22 style=3D=22margin-bottom:12.0pt=22><br>
+<b>From: </b>&quot;Ackermann, Michael&quot; &lt;<a =
+href=3D=22mailto:MAckermann=40bcbsm.com=22>MAckermann=40bcbsm.com</a>&gt;<b=
+r>
+<b>Date:</b> Friday, July 7, 2017 at 7:06:55 PM<br>
+<b>To: </b>&quot;Watson Ladd&quot; &lt;<a =
+href=3D=22mailto:watsonbladd=40gmail.com=22>watsonbladd=40gmail.com</a>&gt;=
+, &quot;Christian Huitema&quot; &lt;<a =
+href=3D=22mailto:huitema=40huitema.net=22>huitema=40huitema.net</a>&gt;<br>
+<b>Cc: </b>&quot;<a =
+href=3D=22mailto:tls=40ietf.org=22>tls=40ietf.org</a>&quot; &lt;<a =
+href=3D=22mailto:tls=40ietf.org=22>tls=40ietf.org</a>&gt;<br>
+<b>Subject:</b> Re: =5BTLS=5D =
+draft-green-tls-static-dh-in-tls13-01<o:p></o:p></p>
+</div>
+<div>
+<p class=3D=22MsoNormal=22><span style=3D=22font-size:10.0pt=22>Converting =
+all session traffic to clear text is not a viable alternative for ANY =
+enterprises or industries that I am aware of.&nbsp; In particular those in =
+financial sectors.&nbsp;
+<br>
+Security policies, legislation and in many cases just good practice would =
+not allow for this.
+<br>
+We are compelled by these factors to encrypt all data in =
+motion.&nbsp;&nbsp;&nbsp; But we still need to manage our applications, =
+networks, servers and clients.&nbsp;&nbsp;&nbsp; Hence the need to decrypt =
+traffic as outlined in this draft.&nbsp;&nbsp;
+<br>
+<br>
+-----Original Message-----<br>
+From: TLS =5B<a =
+href=3D=22mailto:tls-bounces=40ietf.org=22>mailto:tls-bounces=40ietf.org</a=
+>=5D On Behalf Of Watson Ladd<br>
+Sent: Friday, July 7, 2017 9:40 PM<br>
+To: Christian Huitema &lt;<a =
+href=3D=22mailto:huitema=40huitema.net=22>huitema=40huitema.net</a>&gt;<br>
+Cc: <a href=3D=22mailto:tls=40ietf.org=22>tls=40ietf.org</a><br>
+Subject: Re: =5BTLS=5D draft-green-tls-static-dh-in-tls13-01<br>
+<br>
+On Fri, Jul 7, 2017 at 6:10 PM, Christian Huitema &lt;<a =
+href=3D=22mailto:huitema=40huitema.net=22>huitema=40huitema.net</a>&gt; =
+wrote:<br>
+&gt;<br>
+&gt;<br>
+&gt; On 7/7/2017 2:54 PM, Russ Housley wrote:<br>
+&gt;&gt; Stephen:<br>
+&gt;&gt; ...<br>
+&gt;&gt;&gt; And also: I'm sorry to have to say it, but I consider that =
+attempted <br>
+&gt;&gt;&gt; weasel wording around the clear intent of 2804. The clear and =
+real <br>
+&gt;&gt;&gt; effect if your wiretapping proposal were standardised by the =
+IETF <br>
+&gt;&gt;&gt; would be that we'd be standardising ways in which TLS servers =
+can be <br>
+&gt;&gt;&gt; compelled into breaking TLS - it'd be a standard wiretapping =
+API <br>
+&gt;&gt;&gt; that'd be insisted upon in many places and would mean =
+significantly <br>
+&gt;&gt;&gt; degrading TLS (only *the* most important security protocol we =
+<br>
+&gt;&gt;&gt; maintain) and the community's perception of the IETF. It's =
+all a <br>
+&gt;&gt;&gt; shockingly bad idea.<br>
+&gt;&gt; I clearly disagree.&nbsp; Otherwise, I would not have put any =
+work into the draft.<br>
+&gt; Russ,<br>
+&gt;<br>
+&gt; What are the specific mechanisms that would allow this technique to =
+be <br>
+&gt; used where you intend it, i.e. within a data center, and not where <br>
+&gt; Stephen fears it would be, i.e., on the broad Internet? For example, =
+<br>
+&gt; what mechanism could a client use to guarantee that this sort of <br>
+&gt; &quot;static DH&quot; intercept could NOT be used against them?<br>
+<br>
+The server can send the plaintext to whomever it likes.<br>
+<br>
+This is the solution enterprises can use today. Nothing can stop that from =
+happening. So I don't see why static DH is a) so essentially necessary and =
+b) so controversial.<br>
+<br>
+&gt;From a technical point I prefer using DH shares derived from<br>
+ServerRandom as this avoids certain bugs I've been known to exploit from =
+time to time.<br>
+<br>
+&gt;<br>
+&gt; --<br>
+&gt; Christian Huitema<br>
+&gt;<br>
+&gt;<br>
+&gt; _______________________________________________<br>
+&gt; TLS mailing list<br>
+&gt; <a href=3D=22mailto:TLS=40ietf.org=22>TLS=40ietf.org</a><br>
+&gt; <a =
+href=3D=22https://www.ietf.org/mailman/listinfo/tls=22>https://www.ietf.org=
+/mailman/listinfo/tls</a><br>
+<br>
+<br>
+<br>
+--<br>
+&quot;Man is born free, but everywhere he is in chains&quot;.<br>
+--Rousseau.<br>
+<br>
+_______________________________________________<br>
+TLS mailing list<br>
+<a href=3D=22mailto:TLS=40ietf.org=22>TLS=40ietf.org</a><br>
+<a =
+href=3D=22https://www.ietf.org/mailman/listinfo/tls=22>https://www.ietf.org=
+/mailman/listinfo/tls</a><br>
+<br>
+<br>
+The information contained in this communication is highly confidential and =
+is intended solely for the use of the individual(s) to whom this =
+communication is directed. If you are not the intended recipient, you are =
+hereby notified that any viewing, copying,
+ disclosure or distribution of this information is prohibited. Please =
+notify the sender, by electronic mail or telephone, of any unintended =
+receipt and delete the original message without making any copies.<br>
+&nbsp;<br>
+&nbsp;Blue Cross Blue Shield of Michigan and Blue Care Network of Michigan =
+are nonprofit corporations and independent licensees of the Blue Cross and =
+Blue Shield Association.<br>
+<br>
+_______________________________________________<br>
+TLS mailing list<br>
+<a href=3D=22mailto:TLS=40ietf.org=22>TLS=40ietf.org</a><br>
+<a =
+href=3D=22https://www.ietf.org/mailman/listinfo/tls=22>https://www.ietf.org=
+/mailman/listinfo/tls</a><o:p></o:p></span></p>
+</div>
+</div>
+</body>
+</html>
+
+
+<BR>
+<html>
+ <p>The information contained in this communication is highly confidential =
+and is intended solely for the use of the individual(s) to whom this =
+communication is directed. If you are not the intended recipient, you are =
+hereby notified that any viewing, copying, disclosure or distribution of =
+this information is prohibited. Please notify the sender, by electronic =
+mail or telephone, of any unintended receipt and delete the original =
+message without making any copies.</p>
+ <p>Blue Cross Blue Shield of Michigan and Blue Care Network of Michigan =
+are nonprofit corporations and independent licensees of the Blue Cross and =
+Blue Shield Association.</p>
+  </html>
+
+
+--_000_CY4PR14MB1368A816B5511F11837C9815D7AB0CY4PR14MB1368namp_--
+
+

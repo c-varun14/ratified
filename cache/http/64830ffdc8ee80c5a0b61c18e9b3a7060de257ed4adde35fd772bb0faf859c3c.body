@@ -1,0 +1,152 @@
+Return-Path: <svaldez@google.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 9B95612014A
+ for <tls@ietfa.amsl.com>; Tue,  2 Apr 2019 09:29:53 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -17.5
+X-Spam-Level: 
+X-Spam-Status: No, score=-17.5 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIMWL_WL_MED=-0.001, DKIM_SIGNED=0.1,
+ DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1, ENV_AND_HDR_SPF_MATCH=-0.5,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_NONE=-0.0001, SPF_PASS=-0.001,
+ URIBL_BLOCKED=0.001, USER_IN_DEF_DKIM_WL=-7.5,
+ USER_IN_DEF_SPF_WL=-7.5] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=google.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id qQgeVKCTbH4E for <tls@ietfa.amsl.com>;
+ Tue,  2 Apr 2019 09:29:51 -0700 (PDT)
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com
+ [IPv6:2607:f8b0:4864:20::331])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id B32B3120052
+ for <tls@ietf.org>; Tue,  2 Apr 2019 09:29:51 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id f10so5000082otb.6
+ for <tls@ietf.org>; Tue, 02 Apr 2019 09:29:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=B+0/N4V3ur+nXXS70s4CJSyHTyFPBN6poemOs7FQ1Ao=;
+ b=JXqSZiRBn/lcj0TcGj2UxmDhimMapo7teO10hmyf9tt8zOLt6Yngup9VIK/hCVVv5k
+ qcx/oXDOWQhsuZNpPKkcX8zyjVWfXpX18rUb3a9kbj2emm1NJBNLVja83XbxrSEIZj94
+ r1wz6IuOqDOI4y23ThJS6/Vo0uGN2wJYpn32EXubMgeEMByM6FifQZWs4iL9ZmVBsEZU
+ CmRwt2PrSJGJ7tisdRvZK7OVMryWZV8NekASShrH6o2fJ1xMVOBBV0HZbqoAAhFGWssS
+ xJArCgaMoxf1bkb/zJASlOni0cxDJjRRG11qB801tKd/HiKZkENwQjYCahcGV5RBYNIU
+ MxOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=B+0/N4V3ur+nXXS70s4CJSyHTyFPBN6poemOs7FQ1Ao=;
+ b=JInNS+HkoRRBuoUxWjSjiaTt/hx+6QCr1eELxEXOZA2a14PYbbY81KcoWCaf8DZhlL
+ YkBovRtd8zWUXXJYQXtZjm87tMdQnGHN0HY2mcJeUuXZ+Jg3EQ1emVmYUKMj5bA1SCNY
+ yIi919sQqlwSJf2qTpPPvnIiAIi9rbw1IdToPA2/jr33498RmtlQrNHRkjWF/KZ+fB20
+ 2nrnNQ9kVkEUH2hNwI2ecRU2RlXec9tje5GcZihV6Fft8A8aJXAcfJOwaU8ycOwoPtZd
+ WBA+EC1jNeOY5kx6XdcBKV0CMWfLi9Ii2Ytu5cQBcQFMZpKBjieCv2X2284nYl3cHhZW
+ RWzA==
+X-Gm-Message-State: APjAAAVv5ZIH9R6ZWS2pqWyBML0SzbhPObA1eIyWgMepCBEIs0Uj9npp
+ 09Xd1Ej1E+7r8NKXidJNzNfaEnR1h6Yj4Av+IGo9qQ==
+X-Google-Smtp-Source: APXvYqzQH9GF9TGnhsK3VqayTeDKOWEk+S+5mVspH5gXq56sPG/O6LRld7l8quIjx1rsVSgfe44UmX4hDRCMXVl2ddQ=
+X-Received: by 2002:a9d:4044:: with SMTP id o4mr19201097oti.10.1554222590856; 
+ Tue, 02 Apr 2019 09:29:50 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAG5P2e9=YSSvbsghxsU1kvi2L36uU-5GKzDeXCf0HJAzrjw3_w@mail.gmail.com>
+In-Reply-To: <CAG5P2e9=YSSvbsghxsU1kvi2L36uU-5GKzDeXCf0HJAzrjw3_w@mail.gmail.com>
+From: Steven Valdez <svaldez@google.com>
+Date: Tue, 2 Apr 2019 12:29:39 -0400
+Message-ID: <CANduzxDzd3v5fOszxOP4BvOD+7QZ5Y3vvHYN8Q+Q3ZUGSzZ09g@mail.gmail.com>
+To: M K Saravanan <mksarav@gmail.com>
+Cc: "<tls@ietf.org>" <tls@ietf.org>
+Content-Type: multipart/alternative; boundary="0000000000006e561305858ea55e"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/pxdBzGcaPcsdxz97bD0J-8zudRw>
+Subject: Re: [TLS] TLSv1.3 - purpose of _0 in {client,
+ server}_application_traffic_secret_0
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Tue, 02 Apr 2019 16:29:53 -0000
+
+--0000000000006e561305858ea55e
+Content-Type: text/plain; charset="UTF-8"
+
+They indicate that those are the initial client/server application traffic
+secrets, which are then updated via KeyUpdates (section 7.2,
+https://tools.ietf.org/html/draft-ietf-tls-tls13#section-7.2).
+
+On Tue, Apr 2, 2019 at 12:20 PM M K Saravanan <mksarav@gmail.com> wrote:
+
+> Hi,
+>
+> In TLSv1.3, what is the purpose of _0 suffix in the following:
+>
+> client_application_traffic_secret_0
+> server_application_traffic_secret_0
+>
+> with regards,
+> Saravanan
+>
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+>
+
+
+-- 
+
+Steven Valdez |  Chrome Networking |  svaldez@google.com |  210-692-4742
+
+--0000000000006e561305858ea55e
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">They indicate that those are the initial client/server app=
+lication traffic secrets, which are then updated via KeyUpdates (section 7.=
+2,=C2=A0<a href=3D"https://tools.ietf.org/html/draft-ietf-tls-tls13#section=
+-7.2">https://tools.ietf.org/html/draft-ietf-tls-tls13#section-7.2</a>).</d=
+iv><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On =
+Tue, Apr 2, 2019 at 12:20 PM M K Saravanan &lt;<a href=3D"mailto:mksarav@gm=
+ail.com">mksarav@gmail.com</a>&gt; wrote:<br></div><blockquote class=3D"gma=
+il_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,2=
+04,204);padding-left:1ex">Hi,<br>
+<br>
+In TLSv1.3, what is the purpose of _0 suffix in the following:<br>
+<br>
+client_application_traffic_secret_0<br>
+server_application_traffic_secret_0<br>
+<br>
+with regards,<br>
+Saravanan<br>
+<br>
+_______________________________________________<br>
+TLS mailing list<br>
+<a href=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.org</a><br>
+<a href=3D"https://www.ietf.org/mailman/listinfo/tls" rel=3D"noreferrer" ta=
+rget=3D"_blank">https://www.ietf.org/mailman/listinfo/tls</a><br>
+</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
+ class=3D"gmail_signature"><div dir=3D"ltr"><div><div dir=3D"ltr"><br><tabl=
+e cellspacing=3D"0" cellpadding=3D"0" style=3D"font-family:&quot;Times New =
+Roman&quot;"><tbody><tr style=3D"color:rgb(85,85,85);font-family:sans-serif=
+;font-size:small"><td nowrap style=3D"border-top:2px solid rgb(213,15,37)">=
+Steven Valdez=C2=A0|</td><td nowrap style=3D"border-top:2px solid rgb(51,10=
+5,232)">=C2=A0Chrome Networking |</td><td nowrap style=3D"border-top:2px so=
+lid rgb(0,153,57)">=C2=A0<a href=3D"mailto:svaldez@google.com" target=3D"_b=
+lank">svaldez@google.com</a>=C2=A0|</td><td nowrap style=3D"border-top:2px =
+solid rgb(238,178,17)">=C2=A0210-692-4742</td></tr></tbody></table></div></=
+div></div></div>
+
+--0000000000006e561305858ea55e--
+

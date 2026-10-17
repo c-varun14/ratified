@@ -1,0 +1,118 @@
+Return-Path: <dkg@fifthhorseman.net>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (ietfa.amsl.com [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 2EBA51A0115
+ for <tls@ietfa.amsl.com>; Wed, 18 Jun 2014 12:03:01 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -0.5
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.5 tagged_above=-999 required=5
+ tests=[BAYES_05=-0.5] autolearn=ham
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id o9czQRDoiUBI for <tls@ietfa.amsl.com>;
+ Wed, 18 Jun 2014 12:02:57 -0700 (PDT)
+Received: from che.mayfirst.org (che.mayfirst.org [209.234.253.108])
+ by ietfa.amsl.com (Postfix) with ESMTP id 217AF1A00E1
+ for <tls@ietf.org>; Wed, 18 Jun 2014 12:02:56 -0700 (PDT)
+Received: from fifthhorseman.net (unknown [38.109.115.130])
+ by che.mayfirst.org (Postfix) with ESMTPSA id 641F6F984
+ for <tls@ietf.org>; Wed, 18 Jun 2014 15:02:53 -0400 (EDT)
+Received: by fifthhorseman.net (Postfix, from userid 1000)
+ id 747FE203E5; Wed, 18 Jun 2014 15:02:54 -0400 (EDT)
+From: Daniel Kahn Gillmor <dkg@fifthhorseman.net>
+To: tls@ietf.org
+Date: Wed, 18 Jun 2014 15:02:54 -0400
+Message-Id: <1403118174-13024-1-git-send-email-dkg@fifthhorseman.net>
+X-Mailer: git-send-email 2.0.0
+In-Reply-To: <CABcZeBOXo=3sMEyjMUT+MSgoquXgWdYiqyRL7rnRQwoHEER9qQ@mail.gmail.com>
+References: <CABcZeBOXo=3sMEyjMUT+MSgoquXgWdYiqyRL7rnRQwoHEER9qQ@mail.gmail.com>
+Archived-At: http://mailarchive.ietf.org/arch/msg/tls/e5K3gtAJkyhtppbPtyE83Wl0n-s
+Subject: [TLS] [PATCH] Clean up removal of all non-AEAD modes
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.15
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <http://www.ietf.org/mail-archive/web/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Wed, 18 Jun 2014 19:03:01 -0000
+
+The draft was in a sort of halfway state between whether TLSCiphertext
+has a fragment that is a selection or just embedding the AEAD elements
+directly.  This should normalize it to the embedded view without the
+extra GenericAEADCipher struct definition.
+
+(i don't think this changes the logic of the draft at all)
+---
+ draft-ietf-tls-tls13.md | 25 +++++--------------------
+ 1 file changed, 5 insertions(+), 20 deletions(-)
+
+This is https://github.com/tlswg/tls13-spec/pull/45
+
+diff --git a/draft-ietf-tls-tls13.md b/draft-ietf-tls-tls13.md
+index 2c21189..2a7f244 100644
+--- a/draft-ietf-tls-tls13.md
++++ b/draft-ietf-tls-tls13.md
+@@ -985,7 +985,7 @@ of {{RFC5116}}. The key is either the client_write_key or the server_write_key.
+            opaque nonce_explicit[SecurityParameters.record_iv_length];
+            aead-ciphered struct {
+               opaque content[TLSPlaintext.length];
+-          };
++           } fragment;
+        } TLSCiphertext;
+ 
+ type
+@@ -1000,19 +1000,10 @@ length
+ 
+ fragment
+ : The AEAD encrypted form of TLSPlaintext.fragment.
+-{:br }
+-
+-       struct {
+-          opaque nonce_explicit[SecurityParameters.record_iv_length];
+-          aead-ciphered struct {
+-              opaque content[TLSPlaintext.length];
+-          };
+-       } GenericAEADCipher;
+-
+ 
+ Each AEAD cipher suite MUST specify how the nonce supplied to the AEAD
+ operation is constructed, and what is the length of the
+-GenericAEADCipher.nonce_explicit part. In many cases, it is appropriate to use
++TLSCiphertext.nonce_explicit part. In many cases, it is appropriate to use
+ the partially implicit nonce technique described in Section 3.2.1 of
+ {{RFC5116}}; with record_iv_length being the length of the explicit part. In
+ this case, the implicit part SHOULD be derived from key_block as
+@@ -2731,18 +2722,12 @@ This section describes protocol types and constants.
+         ContentType type;
+         ProtocolVersion version;
+         uint16 length;
+-        select (SecurityParameters.cipher_type) {
+-            case aead:   GenericAEADCipher;
++        opaque nonce_explicit[SecurityParameters.record_iv_length];
++        aead-ciphered struct {
++            opaque content[TLSPlaintext.length];
+         } fragment;
+     } TLSCiphertext;
+ 
+-    struct {
+-       opaque nonce_explicit[SecurityParameters.record_iv_length];
+-       aead-ciphered struct {
+-           opaque content[TLSPlaintext.length];
+-       };
+-    } GenericAEADCipher;
+-
+ ##  Change Cipher Specs Message
+ 
+     struct {
+-- 
+2.0.0
+

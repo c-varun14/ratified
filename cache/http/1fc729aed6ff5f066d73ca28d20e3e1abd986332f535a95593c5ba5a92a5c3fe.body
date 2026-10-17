@@ -1,0 +1,607 @@
+Return-Path: <caw@heapingbits.net>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 16A111204D4
+ for <tls@ietfa.amsl.com>; Thu,  4 Apr 2019 06:00:56 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.689
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.689 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ DKIM_VALID_AU=-0.1, HTML_MESSAGE=0.001, RCVD_IN_DNSWL_LOW=-0.7,
+ SPF_PASS=-0.001, T_FROM_FMBLA_NEWDOM=0.01, URIBL_BLOCKED=0.001]
+ autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=heapingbits.net header.b=wuHtQ5K2;
+ dkim=pass (2048-bit key)
+ header.d=messagingengine.com header.b=z2wnagmL
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id Wzj7IGp_KiEV for <tls@ietfa.amsl.com>;
+ Thu,  4 Apr 2019 06:00:52 -0700 (PDT)
+Received: from new1-smtp.messagingengine.com (new1-smtp.messagingengine.com
+ [66.111.4.221])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 291071204ED
+ for <TLS@ietf.org>; Thu,  4 Apr 2019 06:00:51 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+ by mailnew.nyi.internal (Postfix) with ESMTP id 934F0FF57;
+ Thu,  4 Apr 2019 09:00:48 -0400 (EDT)
+Received: from imap4 ([10.202.2.54])
+ by compute6.internal (MEProxy); Thu, 04 Apr 2019 09:00:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=heapingbits.net;
+ h=mime-version:message-id:in-reply-to:references:date:from:to
+ :cc:subject:content-type; s=fm1; bh=+ARHYNV4VO1daGliqqNfw5OnQSg8
+ bt9/eD/gBG46EF4=; b=wuHtQ5K2E6vSVl1kscKsIgQ6hi0A+MxgKU/o+23BFmNR
+ 3HDO5jebmWSMdG6M0T0xh3eeVjztFA38Ipr6spNmpPhuwWRGdHO7Wxuw5yf4dc+e
+ 4BTz6P78187in/zapsLCsIMqR96nGzeHQHiWKz6loUkQyUIsrrnzFyfcxS8CXGTq
+ 2/DOWyctGVW6dMYfQlKy+zGmbFJvwboqMGg131/qbJE9+mV77W7kMfP1zSWEM12V
+ nda6mZKSaV4tgswow5rC62XYM7UwXTsFj28gR3OHm+iStDUwTOcWaOIlrk1x+iuv
+ q6BJ7WAh3zzkTafU6/QvlahHoeTRUHWs88wmpCDR2g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-type:date:from:in-reply-to
+ :message-id:mime-version:references:subject:to:x-me-proxy
+ :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=+ARHYN
+ V4VO1daGliqqNfw5OnQSg8bt9/eD/gBG46EF4=; b=z2wnagmLvjhryuejyc2+0s
+ izZ5i4rsQ31tkypjvPRz2to70J3TPg+DaXtikfZXq0Om2RxXf0QYqvzIxXQrCesZ
+ pq/Wgmo9zLhXe5plCwz70PwQ013y+tm6uxRIy3ZtGF9JxgTtvmHbPAUYf+7EEOwV
+ a6qjf9UhbATSnUBQ0uXWsYKGfypZymj+5DBW2ixB1LpwrWGf+df91uIcmBPmtWMp
+ MVDJXTcbRmpA8jmzVW/yyNEX1bJ4KVHnfwCgTaHiim1h/YkuwFhaBZRQdbbNCbF6
+ 7ycW/Thga8734SmGHypuM9d0mu4zd2+VUO3dCKTINn7xFUWdL/9EOAL4I5eHTO4A
+ ==
+X-ME-Sender: <xms:_v-lXEt4q-e5DPxDoIBKRStS-idQROTUPPwGERKuzWuBaUxcAxTxHQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduuddrtdehgdehkeculddtuddrgedutddrtddtmd
+ cutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdp
+ uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
+ hnthhsucdlqddutddtmdenucfjughrpefofgggkfgjfhffhffvufgtsegrtderreerreej
+ necuhfhrohhmpedfvehhrhhishhtohhphhgvrhcuhghoohgufdcuoegtrgifsehhvggrph
+ hinhhgsghithhsrdhnvghtqeenucfrrghrrghmpehmrghilhhfrhhomheptggrfieshhgv
+ rghpihhnghgsihhtshdrnhgvthenucevlhhushhtvghrufhiiigvpedt
+X-ME-Proxy: <xmx:_v-lXCIBMdBBuOHCIcLEb4hxc92QjWrpxwAS74v1u1YI3NIFFNmviA>
+ <xmx:_v-lXETZCpYcLNA0y5Y4p-VvrBNIqB76QHeloL7_UrrOQEVcJMH8gA>
+ <xmx:_v-lXHsj1PZl1IrEhAR9_eHpFgCrzEv9hhGnSS-Bv_ix4Ud9lFKkeg>
+ <xmx:__-lXD6IWxY08BPNG3X4nSWFYvwuC_Pzfcx9kHtb2vGI3wbiv7FHg7s0QEc>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+ id 2A3062602F; Thu,  4 Apr 2019 09:00:46 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.1.6-329-gf4aae99-fmstable-20190329v1
+Mime-Version: 1.0
+X-Me-Personality: 94902928
+Message-Id: <e5518e68-d264-44b0-99e1-7d38a86e0560@www.fastmail.com>
+In-Reply-To: <E98C5FE0-324D-4A92-AC3B-2219A0E26BC3@ericsson.com>
+References: <89127FF7-CE3F-4DF1-98A5-B1006C5FF56B@ericsson.com>
+ <CC00A43F-4E77-4E13-8DB2-9BF221784673@heapingbits.net>
+ <E98C5FE0-324D-4A92-AC3B-2219A0E26BC3@ericsson.com>
+Date: Thu, 04 Apr 2019 09:00:45 -0400
+From: "Christopher Wood" <caw@heapingbits.net>
+To: "John Mattsson" <john.mattsson@ericsson.com>
+Cc: "TLS@ietf.org" <TLS@ietf.org>
+Content-Type: multipart/alternative; boundary=843e2817e4cb4bdd8c3654245d697589
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/kK9CqYvH9nEe425xIXfcawaj_K8>
+Subject: Re: [TLS] Comments on draft-wood-tls-external-psk-importer-01
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Thu, 04 Apr 2019 13:00:56 -0000
+
+--843e2817e4cb4bdd8c3654245d697589
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+
+
+On Wed, Apr 3, 2019, at 11:22 PM, John Mattsson wrote:
+> Hi Christopher,
+>=20
+> Thanks for the clarifications.
+>=20
+> >You=E2=80=99re correct that this requires both endpoints to adopt the=
+ change=20
+> >simultaneously. However, that does not contradict the quoted text, wh=
+ich=20
+> >states that the protocol is not changed.
+>=20
+> I think "this requires both endpoints to adopt the change simultaneous=
+ly" is a problem as it makes it impossible to introduce this mechanism i=
+n many existing deployments. I would expect a solution that can be intro=
+duced gradually (some nodes at a time) in existing deployments supportin=
+g RFC 8446 and/or RFC 5246.
+
+I think perhaps my response was unclear. In your scenario, adding key im=
+port support is essentially the same as adding a new PSK to a node. Some=
+ nodes may offer (or accept) the PSK, while others do not. Successful us=
+e of an imported PSK will only occur if both endpoints have imported the=
+ same PSK. Gradual deployment is possible.
+
+>=20
+> But, if you want to change the behaviour of the using the same externa=
+l PSK in both TLS 1.2 and TLS 1.3 as allowed by RFC 8446, a solution not=
+ requiring "simultaneous change" is probably not possible.
+>=20
+> The requirement that "this requires both endpoints to adopt the change=
+ simultaneously" should probably be highlighted in the document.
+>=20
+> The current mechanism does not seem to be deployable for e.g. 3GPP unt=
+il TLS 1.4 is introduced, and then only for TLS 1.4 and later... on the =
+other hand, being limited to SHA-256 for PSK may be ok for 3GPP. (and 3G=
+PP could just derive a Separate SHA-384 PSK if needed).
+>=20
+> Some more comment:
+>=20
+> - Which label should be used by various versions of DTLS?
+
+Likely the same labels as the TLS counterparts, since the label more or =
+less specifies the *handshake* variant.
+
+>=20
+> - "If a client or server wish to deprecate a hash function and no long=
+er
+> use it for TLS 1.3, they may remove this hash function from the set
+> of hashes used during while importing keys. This does not affect the
+> KDF operation used to derive concrete PSKs."
+>=20
+> If someone deprecates the use of a hash function inside TLS 1.3 (used =
+by Transcript-Hash and HKDF), does it then makes sense to keep deriving =
+keys outside of TLS with that same deprecated hash function?
+
+No. If this deprecation occurs, then they would follow the advisory text=
+ and not use the old hash when importing keys.
+
+>=20
+> - "To mitigate these problems, external PSKs can be bound to a specifi=
+c hash function when used in TLS 1.3"
+>=20
+> I would change to "are bound to a specific". If the application does n=
+ot specify anything, the keys are bound to SHA-256.
+
+Works for me. I=E2=80=99ll file an issue to track the change.
+
+Thanks,
+Chris=20
+
+>=20
+> Cheers,
+> John
+>=20
+>  -----Original Message-----
+> From: Christopher Wood <caw@heapingbits.net>
+> Date: Wednesday, 3 April 2019 at 16:25
+> To: John Mattsson <john.mattsson@ericsson.com>
+> Cc: "TLS@ietf.org" <TLS@ietf.org>
+> Subject: Re: [TLS] Comments on draft-wood-tls-external-psk-importer-01=
+
+>=20
+>  Thanks for the feedback, John. I filed issues on the GitHub draft=20
+>  located at [1]. Please see inline below for comments.
+>=20
+>  On 1 Apr 2019, at 12:00, John Mattsson wrote:
+>=20
+>  > Hi,
+>  >
+>  > Thanks for trying to solve this problem! Not having a way to use th=
+e=20
+>  > same external PSK for different cipher suites is definitely a thing=
+=20
+>  > missing from TLS 1.3.
+>  >
+>  > As I stated during the wg session, 3GPP have a few use cases that u=
+se=20
+>  > PSK-ECDHE between phone and core network. Contrary to what IETF peo=
+ple=20
+>  > sometimes believe, most 3GPP use of TLS (between phone and core=20
+>  > network, between core nodes, and between different operators) use=20=
+
+>  > mutual authentication with certificates.
+>  >
+>  > According to the current 3GPP specification, the phone and the core=
+=20
+>  > network would share an external PSK and an external identity. The h=
+ash=20
+>  > function is undefined, i.e. SHA-256 is used for TLS 1.3. The phone =
+and=20
+>  > the network would then negotiate TLS 1.2 with any cipher suite or T=
+LS=20
+>  > 1.3 with SHA-256.
+>  >
+>  > Some comments
+>  >
+>  > - The draft should make clear if the External PSK and external=20
+>  > identity can be used together with the imported identities. I assum=
+e=20
+>  > the idea is that they can=E2=80=99t but I can=E2=80=99t see any tex=
+t specifying=20
+>  > this.
+>=20
+>  Indeed, that was the intent.
+>=20
+>  >
+>  > - =E2=80=9DImported keys do not require negotiation for use, as a c=
+lient and
+>  > server will not agree upon identities if not imported correctly.
+>  > Thus, importers induce no protocol changes with the exception of
+>  > expanding the set of PSK identities sent on the wire.=E2=80=9D
+>  >
+>  > While I see how the defined mechanism can be deployed in a new=20
+>  > deployment, I do not see how to introduce it in an existing=20
+>  > deployment. Assuming that the external PSK cannot be used together=20=
+
+>  > with the imported identities, the TLS client and server must introd=
+uce=20
+>  > the mechanism at the same time, that is often not possible to contr=
+ol.
+>=20
+>  You=E2=80=99re correct that this requires both endpoints to adopt the=
+ change=20
+>  simultaneously. However, that does not contradict the quoted text, wh=
+ich=20
+>  states that the protocol is not changed.
+>=20
+>  >
+>  > - =E2=80=9Cstruct {
+>  > opaque external_identity<1...2^16-1>;
+>  > opaque label<0..2^8-1>;
+>  > HashAlgorithm hash;
+>  > } ImportedIdentity;
+>  > =E2=80=9D
+>  >
+>  > This scales poorly, A client has to send n*m identities where n is =
+the=20
+>  > number of supported versions and m is the number of supported hash=20=
+
+>  > algorithms...
+>=20
+>  Yes, this is a tradeoff we made by opting to not modify the key=20
+>  schedule.
+>=20
+>  >
+>  > - Would it not be possible to just use the version number as label?=
+=20
+>  > I.e. 0x0304 instead of =E2=80=9Ctls13=E2=80=9D. In that way you do =
+at least not=20
+>  > have to define a new labels.
+>=20
+>  We probably could, though since the labels are subject to change (see=
+=20
+>  the TODO about possibly including the HashAlgorithm in the label), we=
+=20
+>  kept it as is.
+>=20
+>  >
+>  > - =E2=80=9CTLS 1.3 [RFC8446] supports pre-shared key (PSK) resumpti=
+on,=20
+>  > wherein
+>  > PSKs can be established via session tickets from prior connections =
+or
+>  > externally via some out-of-band mechanism.=E2=80=9D
+>  >
+>  > This seems to indicate that all use of PSK is resumption which is n=
+ot=20
+>  > correct. I suggest changing to =E2=80=9CTLS 1.3 [RFC8446] supports=20=
+
+>  > pre-shared key (PSK) authentication=E2=80=9D
+>=20
+>  Good suggestion! We=E2=80=99ll fix it.
+>=20
+>  >
+>  > - =E2=80=9Cimporting external PSK (Pre-Shared Key) into TLS.=E2=80=9D=
+
+>  >
+>  > Not sure if =E2=80=9Cinto=E2=80=9D is the right word, I think =E2=80=
+=9Cfor=E2=80=9D as in th e=20
+>  > title is better. The mechanism seems very much external to TLS itse=
+lf.=20
+>  > I see it as a mechanism to derive several external PSKs from a sing=
+le=20
+>  > external PSK.
+>=20
+>  Ditto.
+>=20
+>  >
+>  > - =E2=80=9CSimilarly, TLS 1.2 and all prior TLS versions should use=
+ "tls12"=20
+>  > =E2=80=9C
+>  >
+>  > The versions prior to TLS 1.2 will soon be deprecated. And why spen=
+d=20
+>  > time updating the TLS 1.2 code base instead of moving to TLS 1.3?
+>=20
+>  We=E2=80=99re just covering our bases here. I tend to agree that the =
+focus=20
+>  should be on updating to TLS 1.3 instead of =E2=80=9Cpatching=E2=80=9D=
+ TLS 1.2=20
+>  stacks.
+>=20
+>  >
+>  >
+>  > Suggestion:
+>  >
+>  > Instead of deriving a large set of new external PSKs, wouldn=E2=80=99=
+t it be=20
+>  > possible to just use different hash functions in different parts of=
+=20
+>  > the key hierarchy? I.e. if SHA-256 is associated with the external =
+PSK=20
+>  > and SHA-384 is the hash algorithms in the chosen cipher suite:
+>  >
+>  > PSK -> HKDF-Extract(SHA-256) =3D Early Secret
+>  > |
+>  > +-----> Derive-Secret(., "ext binder" | "res binder", "")
+>  > | =3D binder_key
+>  > |
+>  > +-----> Derive-Secret(., "c e traffic", ClientHello)
+>  > | =3D client_early_traffic_secret
+>  > |
+>  > +-----> Derive-Secret(., "e exp master", ClientHello)
+>  > | =3D early_exporter_master_secret
+>  > v
+>  > Derive-Secret(., "derived", "")
+>  > |
+>  > v
+>  > (EC)DHE -> HKDF-Extract(SHA-384) =3D Handshake Secret
+>  >
+>  > Support of this could be signalled with the tls_flags extension. If=
+=20
+>  > the server does not support the extension it must according to RFC=20=
+
+>  > 8446 chose a cipher suite with SHA-256.
+>=20
+>  Modifying the key schedule was discussed in the context of [2]. At th=
+e=20
+>  time, it seemed the desire to not touch the key schedule outweighed t=
+he=20
+>  desire to not inflate the ClientHello.
+>=20
+>  Best,
+>  Chris
+>=20
+>  [1] https://github.com/chris-wood/draft-wood-tls-external-psk-importe=
+r
+>  [2] https://tools.ietf.org/html/draft-davidben-tls-universal-psk-00
+>=20
+>=20
+>=20
+
+--843e2817e4cb4bdd8c3654245d697589
+Content-Type: text/html;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE html><html><head><title></title><style type=3D"text/css">p.Mso=
+Normal,p.MsoNoSpacing{margin:0}</style></head><body><div><br></div><div>=
+<br></div><div>On Wed, Apr 3, 2019, at 11:22 PM, John Mattsson wrote:<br=
+></div><blockquote type=3D"cite" id=3D"fastmail-quoted"><div>Hi Christop=
+her,<br></div><div><br></div><div>Thanks for the clarifications.<br></di=
+v><div><br></div><div>&gt;You=E2=80=99re correct that this requires both=
+ endpoints to adopt the change&nbsp;<br></div><div>&gt;simultaneously. H=
+owever, that does not contradict the quoted text, which&nbsp;<br></div><=
+div>&gt;states that the protocol is not changed.<br></div><div><br></div=
+><div>I think "this requires both endpoints to adopt the change simultan=
+eously" is a problem as it makes it impossible to introduce this mechani=
+sm in many existing deployments. I would expect a solution that can be i=
+ntroduced gradually (some nodes at a time) in existing deployments suppo=
+rting RFC 8446 and/or RFC 5246.<br></div></blockquote><div><br></div><di=
+v>I think perhaps my response was unclear. In your scenario, adding key =
+import support is essentially the same as adding a new PSK to a node. So=
+me nodes may offer (or accept) the PSK, while others do not. Successful =
+use of an imported PSK will only occur if both endpoints have imported t=
+he same PSK. Gradual deployment is possible.<br></div><div><br></div><bl=
+ockquote type=3D"cite" id=3D"fastmail-quoted"><div><br></div><div>But, i=
+f you want to change the behaviour of the using the same external PSK in=
+ both TLS 1.2 and TLS 1.3 as allowed by RFC 8446, a solution not requiri=
+ng "simultaneous change" is probably not possible.<br></div><div><br></d=
+iv><div>The requirement that "this requires both endpoints to adopt the =
+change simultaneously" should probably be highlighted in the document.<b=
+r></div><div><br></div><div>The current mechanism does not seem to be de=
+ployable for e.g. 3GPP until TLS 1.4 is introduced, and then only for TL=
+S 1.4 and later...&nbsp; on the other hand, being limited to SHA-256 for=
+ PSK may be ok for 3GPP. (and 3GPP could just derive a Separate SHA-384 =
+PSK if needed).<br></div><div><br></div><div>Some more comment:<br></div=
+><div><br></div><div>- Which label should be used by various versions of=
+ DTLS?<br></div></blockquote><div><br></div><div>Likely the same labels =
+as the TLS counterparts, since the label more or less specifies the *han=
+dshake* variant.</div><div><br></div><blockquote type=3D"cite" id=3D"fas=
+tmail-quoted"><div><br></div><div>- "If a client or server wish to depre=
+cate a hash function and no longer<br></div><div>use it for TLS 1.3, the=
+y may remove this hash function from the set<br></div><div>of hashes use=
+d during while importing keys.&nbsp; This does not affect the<br></div><=
+div>KDF operation used to derive concrete PSKs."<br></div><div><br></div=
+><div>If someone deprecates the use of a hash function inside TLS 1.3 (u=
+sed by Transcript-Hash and HKDF), does it then makes sense to keep deriv=
+ing keys outside of TLS with that same deprecated hash function?<br></di=
+v></blockquote><div><br></div><div>No. If this deprecation occurs, then =
+they would follow the advisory text and not use the old hash when import=
+ing keys.</div><div><br></div><blockquote type=3D"cite" id=3D"fastmail-q=
+uoted"><div><br></div><div>- "To mitigate these problems, external PSKs =
+can be bound to a specific hash function when used in TLS 1.3"<br></div>=
+<div><br></div><div>I would change to "are bound to a specific". If the =
+application does not specify anything, the keys are bound to SHA-256.<br=
+></div></blockquote><div><br></div><div>Works for me. I=E2=80=99ll file =
+an issue to track the change.<br></div><div><br></div><div>Thanks,<br></=
+div><div>Chris&nbsp;</div><div><br></div><blockquote type=3D"cite" id=3D=
+"fastmail-quoted"><div><br></div><div>Cheers,<br></div><div>John<br></di=
+v><div><br></div><div>=EF=BB=BF-----Original Message-----<br></div><div>=
+From: Christopher Wood &lt;caw@heapingbits.net&gt;<br></div><div>Date: W=
+ednesday, 3 April 2019 at 16:25<br></div><div>To: John Mattsson &lt;john=
+.mattsson@ericsson.com&gt;<br></div><div>Cc: "TLS@ietf.org" &lt;TLS@ietf=
+.org&gt;<br></div><div>Subject: Re: [TLS] Comments on draft-wood-tls-ext=
+ernal-psk-importer-01<br></div><div><br></div><div>&nbsp;&nbsp;&nbsp; Th=
+anks for the feedback, John. I filed issues on the GitHub draft&nbsp;<br=
+></div><div>&nbsp;&nbsp;&nbsp; located at [1]. Please see inline below f=
+or comments.<br></div><div>&nbsp;&nbsp;&nbsp;&nbsp;<br></div><div>&nbsp;=
+&nbsp;&nbsp; On 1 Apr 2019, at 12:00, John Mattsson wrote:<br></div><div=
+>&nbsp;&nbsp;&nbsp;&nbsp;<br></div><div>&nbsp;&nbsp;&nbsp; &gt;&nbsp; Hi=
+,<br></div><div>&nbsp;&nbsp;&nbsp; &gt;<br></div><div>&nbsp;&nbsp;&nbsp;=
+ &gt; Thanks for trying to solve this problem! Not having a way to use t=
+he&nbsp;<br></div><div>&nbsp;&nbsp;&nbsp; &gt; same external PSK for dif=
+ferent cipher suites is definitely a thing&nbsp;<br></div><div>&nbsp;&nb=
+sp;&nbsp; &gt; missing from TLS 1.3.<br></div><div>&nbsp;&nbsp;&nbsp; &g=
+t;<br></div><div>&nbsp;&nbsp;&nbsp; &gt; As I stated during the wg sessi=
+on, 3GPP have a few use cases that use&nbsp;<br></div><div>&nbsp;&nbsp;&=
+nbsp; &gt; PSK-ECDHE between phone and core network. Contrary to what IE=
+TF people&nbsp;<br></div><div>&nbsp;&nbsp;&nbsp; &gt; sometimes believe,=
+ most 3GPP use of TLS (between phone and core&nbsp;<br></div><div>&nbsp;=
+&nbsp;&nbsp; &gt; network, between core nodes, and between different ope=
+rators) use&nbsp;<br></div><div>&nbsp;&nbsp;&nbsp; &gt; mutual authentic=
+ation with certificates.<br></div><div>&nbsp;&nbsp;&nbsp; &gt;<br></div>=
+<div>&nbsp;&nbsp;&nbsp; &gt; According to the current 3GPP specification=
+, the phone and the core&nbsp;<br></div><div>&nbsp;&nbsp;&nbsp; &gt; net=
+work would share an external PSK and an external identity. The hash&nbsp=
+;<br></div><div>&nbsp;&nbsp;&nbsp; &gt; function is undefined, i.e. SHA-=
+256 is used for TLS 1.3. The phone and&nbsp;<br></div><div>&nbsp;&nbsp;&=
+nbsp; &gt; the network would then negotiate TLS 1.2 with any cipher suit=
+e or TLS&nbsp;<br></div><div>&nbsp;&nbsp;&nbsp; &gt; 1.3 with SHA-256.<b=
+r></div><div>&nbsp;&nbsp;&nbsp; &gt;<br></div><div>&nbsp;&nbsp;&nbsp; &g=
+t; Some comments<br></div><div>&nbsp;&nbsp;&nbsp; &gt;<br></div><div>&nb=
+sp;&nbsp;&nbsp; &gt; - The draft should make clear if the External PSK a=
+nd external&nbsp;<br></div><div>&nbsp;&nbsp;&nbsp; &gt; identity can be =
+used together with the imported identities. I assume&nbsp;<br></div><div=
+>&nbsp;&nbsp;&nbsp; &gt; the idea is that they can=E2=80=99t but I can=E2=
+=80=99t see any text specifying&nbsp;<br></div><div>&nbsp;&nbsp;&nbsp; &=
+gt; this.<br></div><div>&nbsp;&nbsp;&nbsp;&nbsp;<br></div><div>&nbsp;&nb=
+sp;&nbsp; Indeed, that was the intent.<br></div><div>&nbsp;&nbsp;&nbsp;&=
+nbsp;<br></div><div>&nbsp;&nbsp;&nbsp; &gt;<br></div><div>&nbsp;&nbsp;&n=
+bsp; &gt; - =E2=80=9DImported keys do not require negotiation for use, a=
+s a client and<br></div><div>&nbsp;&nbsp;&nbsp; &gt; server will not agr=
+ee upon identities if not imported correctly.<br></div><div>&nbsp;&nbsp;=
+&nbsp; &gt; Thus, importers induce no protocol changes with the exceptio=
+n of<br></div><div>&nbsp;&nbsp;&nbsp; &gt; expanding the set of PSK iden=
+tities sent on the wire.=E2=80=9D<br></div><div>&nbsp;&nbsp;&nbsp; &gt;<=
+br></div><div>&nbsp;&nbsp;&nbsp; &gt; While I see how the defined mechan=
+ism can be deployed in a new&nbsp;<br></div><div>&nbsp;&nbsp;&nbsp; &gt;=
+ deployment, I do not see how to introduce it in an existing&nbsp;<br></=
+div><div>&nbsp;&nbsp;&nbsp; &gt; deployment. Assuming that the external =
+PSK cannot be used together&nbsp;<br></div><div>&nbsp;&nbsp;&nbsp; &gt; =
+with the imported identities, the TLS client and server must introduce&n=
+bsp;<br></div><div>&nbsp;&nbsp;&nbsp; &gt; the mechanism at the same tim=
+e, that is often not possible to control.<br></div><div>&nbsp;&nbsp;&nbs=
+p;&nbsp;<br></div><div>&nbsp;&nbsp;&nbsp; You=E2=80=99re correct that th=
+is requires both endpoints to adopt the change&nbsp;<br></div><div>&nbsp=
+;&nbsp;&nbsp; simultaneously. However, that does not contradict the quot=
+ed text, which&nbsp;<br></div><div>&nbsp;&nbsp;&nbsp; states that the pr=
+otocol is not changed.<br></div><div>&nbsp;&nbsp;&nbsp;&nbsp;<br></div><=
+div>&nbsp;&nbsp;&nbsp; &gt;<br></div><div>&nbsp;&nbsp;&nbsp; &gt; - =E2=80=
+=9Cstruct {<br></div><div>&nbsp;&nbsp;&nbsp; &gt;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;&nbsp;&nbsp; opaque external_identity&lt;1...2^16-1&gt;;<br></div=
+><div>&nbsp;&nbsp;&nbsp; &gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+opaque label&lt;0..2^8-1&gt;;<br></div><div>&nbsp;&nbsp;&nbsp; &gt;&nbsp=
+;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HashAlgorithm hash;<br></div><div>=
+&nbsp;&nbsp;&nbsp; &gt;&nbsp;&nbsp;&nbsp; } ImportedIdentity;<br></div><=
+div>&nbsp;&nbsp;&nbsp; &gt;&nbsp;&nbsp; =E2=80=9D<br></div><div>&nbsp;&n=
+bsp;&nbsp; &gt;<br></div><div>&nbsp;&nbsp;&nbsp; &gt; This scales poorly=
+, A client has to send n*m identities where n is the&nbsp;<br></div><div=
+>&nbsp;&nbsp;&nbsp; &gt; number of supported versions and m is the numbe=
+r of supported hash&nbsp;<br></div><div>&nbsp;&nbsp;&nbsp; &gt; algorith=
+ms...<br></div><div>&nbsp;&nbsp;&nbsp;&nbsp;<br></div><div>&nbsp;&nbsp;&=
+nbsp; Yes, this is a tradeoff we made by opting to not modify the key&nb=
+sp;<br></div><div>&nbsp;&nbsp;&nbsp; schedule.<br></div><div>&nbsp;&nbsp=
+;&nbsp;&nbsp;<br></div><div>&nbsp;&nbsp;&nbsp; &gt;<br></div><div>&nbsp;=
+&nbsp;&nbsp; &gt; - Would it not be possible to just use the version num=
+ber as label?&nbsp;<br></div><div>&nbsp;&nbsp;&nbsp; &gt; I.e. 0x0304 in=
+stead of =E2=80=9Ctls13=E2=80=9D. In that way you do at least not&nbsp;<=
+br></div><div>&nbsp;&nbsp;&nbsp; &gt; have to define a new labels.<br></=
+div><div>&nbsp;&nbsp;&nbsp;&nbsp;<br></div><div>&nbsp;&nbsp;&nbsp; We pr=
+obably could, though since the labels are subject to change (see&nbsp;<b=
+r></div><div>&nbsp;&nbsp;&nbsp; the TODO about possibly including the Ha=
+shAlgorithm in the label), we&nbsp;<br></div><div>&nbsp;&nbsp;&nbsp; kep=
+t it as is.<br></div><div>&nbsp;&nbsp;&nbsp;&nbsp;<br></div><div>&nbsp;&=
+nbsp;&nbsp; &gt;<br></div><div>&nbsp;&nbsp;&nbsp; &gt; - =E2=80=9CTLS 1.=
+3 [RFC8446] supports pre-shared key (PSK) resumption,&nbsp;<br></div><di=
+v>&nbsp;&nbsp;&nbsp; &gt; wherein<br></div><div>&nbsp;&nbsp;&nbsp; &gt; =
+PSKs can be established via session tickets from prior connections or<br=
+></div><div>&nbsp;&nbsp;&nbsp; &gt; externally via some out-of-band mech=
+anism.=E2=80=9D<br></div><div>&nbsp;&nbsp;&nbsp; &gt;<br></div><div>&nbs=
+p;&nbsp;&nbsp; &gt; This seems to indicate that all use of PSK is resump=
+tion which is not&nbsp;<br></div><div>&nbsp;&nbsp;&nbsp; &gt; correct. I=
+ suggest changing to =E2=80=9CTLS 1.3 [RFC8446] supports&nbsp;<br></div>=
+<div>&nbsp;&nbsp;&nbsp; &gt; pre-shared key (PSK) authentication=E2=80=9D=
+<br></div><div>&nbsp;&nbsp;&nbsp;&nbsp;<br></div><div>&nbsp;&nbsp;&nbsp;=
+ Good suggestion! We=E2=80=99ll fix it.<br></div><div>&nbsp;&nbsp;&nbsp;=
+&nbsp;<br></div><div>&nbsp;&nbsp;&nbsp; &gt;<br></div><div>&nbsp;&nbsp;&=
+nbsp; &gt; - =E2=80=9Cimporting external PSK (Pre-Shared Key) into TLS.=E2=
+=80=9D<br></div><div>&nbsp;&nbsp;&nbsp; &gt;<br></div><div>&nbsp;&nbsp;&=
+nbsp; &gt; Not sure if =E2=80=9Cinto=E2=80=9D is the right word, I think=
+ =E2=80=9Cfor=E2=80=9D as in th e&nbsp;<br></div><div>&nbsp;&nbsp;&nbsp;=
+ &gt; title is better. The mechanism seems very much external to TLS its=
+elf.&nbsp;<br></div><div>&nbsp;&nbsp;&nbsp; &gt; I see it as a mechanism=
+ to derive several external PSKs from a single&nbsp;<br></div><div>&nbsp=
+;&nbsp;&nbsp; &gt; external PSK.<br></div><div>&nbsp;&nbsp;&nbsp;&nbsp;<=
+br></div><div>&nbsp;&nbsp;&nbsp; Ditto.<br></div><div>&nbsp;&nbsp;&nbsp;=
+&nbsp;<br></div><div>&nbsp;&nbsp;&nbsp; &gt;<br></div><div>&nbsp;&nbsp;&=
+nbsp; &gt; - =E2=80=9CSimilarly, TLS 1.2 and all prior TLS versions shou=
+ld use "tls12"&nbsp;<br></div><div>&nbsp;&nbsp;&nbsp; &gt; =E2=80=9C<br>=
+</div><div>&nbsp;&nbsp;&nbsp; &gt;<br></div><div>&nbsp;&nbsp;&nbsp; &gt;=
+ The versions prior to TLS 1.2 will soon be deprecated. And why spend&nb=
+sp;<br></div><div>&nbsp;&nbsp;&nbsp; &gt; time updating the TLS 1.2 code=
+ base instead of moving to TLS 1.3?<br></div><div>&nbsp;&nbsp;&nbsp;&nbs=
+p;<br></div><div>&nbsp;&nbsp;&nbsp; We=E2=80=99re just covering our base=
+s here. I tend to agree that the focus&nbsp;<br></div><div>&nbsp;&nbsp;&=
+nbsp; should be on updating to TLS 1.3 instead of =E2=80=9Cpatching=E2=80=
+=9D TLS 1.2&nbsp;<br></div><div>&nbsp;&nbsp;&nbsp; stacks.<br></div><div=
+>&nbsp;&nbsp;&nbsp;&nbsp;<br></div><div>&nbsp;&nbsp;&nbsp; &gt;<br></div=
+><div>&nbsp;&nbsp;&nbsp; &gt;<br></div><div>&nbsp;&nbsp;&nbsp; &gt; Sugg=
+estion:<br></div><div>&nbsp;&nbsp;&nbsp; &gt;<br></div><div>&nbsp;&nbsp;=
+&nbsp; &gt; Instead of deriving a large set of new external PSKs, wouldn=
+=E2=80=99t it be&nbsp;<br></div><div>&nbsp;&nbsp;&nbsp; &gt; possible to=
+ just use different hash functions in different parts of&nbsp;<br></div>=
+<div>&nbsp;&nbsp;&nbsp; &gt; the key hierarchy? I.e. if SHA-256 is assoc=
+iated with the external PSK&nbsp;<br></div><div>&nbsp;&nbsp;&nbsp; &gt; =
+and SHA-384 is the hash algorithms in the chosen cipher suite:<br></div>=
+<div>&nbsp;&nbsp;&nbsp; &gt;<br></div><div>&nbsp;&nbsp;&nbsp; &gt; PSK -=
+&gt;&nbsp; HKDF-Extract(SHA-256) =3D Early Secret<br></div><div>&nbsp;&n=
+bsp;&nbsp; &gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp; |<br></div><div>&nbsp;&nbsp;&nbsp; &gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; +-----&gt; Derive-Secret(., "ext binder"=
+ | "res binder", "")<br></div><div>&nbsp;&nbsp;&nbsp; &gt;&nbsp;&nbsp;&n=
+bsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp; =3D binder_key<br></div><div>&nbsp;&nbsp;&nbsp;=
+ &gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |<br><=
+/div><div>&nbsp;&nbsp;&nbsp; &gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp; +-----&gt; Derive-Secret(., "c e traffic", ClientH=
+ello)<br></div><div>&nbsp;&nbsp;&nbsp; &gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp; =3D client_early_traffic_secret<br></div><div>&nbsp;&nbsp;&nbs=
+p; &gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |<br=
+></div><div>&nbsp;&nbsp;&nbsp; &gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;&nbsp; +-----&gt; Derive-Secret(., "e exp master", Clie=
+ntHello)<br></div><div>&nbsp;&nbsp;&nbsp; &gt;&nbsp;&nbsp;&nbsp;&nbsp;&n=
+bsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp; =3D early_exporter_master_secret<br></div><div>&nbsp;&nbsp;=
+&nbsp; &gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+v<br></div><div>&nbsp;&nbsp;&nbsp; &gt;&nbsp;&nbsp;&nbsp;&nbsp; Derive-S=
+ecret(., "derived", "")<br></div><div>&nbsp;&nbsp;&nbsp; &gt;&nbsp;&nbsp=
+;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |<br></div><div>&nbsp;=
+&nbsp;&nbsp; &gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp; v<br></div><div>&nbsp;&nbsp;&nbsp; &gt; (EC)DHE -&gt; HKDF-Extract=
+(SHA-384) =3D Handshake Secret<br></div><div>&nbsp;&nbsp;&nbsp; &gt;<br>=
+</div><div>&nbsp;&nbsp;&nbsp; &gt; Support of this could be signalled wi=
+th the tls_flags extension. If&nbsp;<br></div><div>&nbsp;&nbsp;&nbsp; &g=
+t; the server does not support the extension it must according to RFC&nb=
+sp;<br></div><div>&nbsp;&nbsp;&nbsp; &gt; 8446 chose a cipher suite with=
+ SHA-256.<br></div><div>&nbsp;&nbsp;&nbsp;&nbsp;<br></div><div>&nbsp;&nb=
+sp;&nbsp; Modifying the key schedule was discussed in the context of [2]=
+. At the&nbsp;<br></div><div>&nbsp;&nbsp;&nbsp; time, it seemed the desi=
+re to not touch the key schedule outweighed the&nbsp;<br></div><div>&nbs=
+p;&nbsp;&nbsp; desire to not inflate the ClientHello.<br></div><div>&nbs=
+p;&nbsp;&nbsp;&nbsp;<br></div><div>&nbsp;&nbsp;&nbsp; Best,<br></div><di=
+v>&nbsp;&nbsp;&nbsp; Chris<br></div><div>&nbsp;&nbsp;&nbsp;&nbsp;<br></d=
+iv><div>&nbsp;&nbsp;&nbsp; [1] https://github.com/chris-wood/draft-wood-=
+tls-external-psk-importer<br></div><div>&nbsp;&nbsp;&nbsp; [2] https://t=
+ools.ietf.org/html/draft-davidben-tls-universal-psk-00<br></div><div>&nb=
+sp;&nbsp;&nbsp;&nbsp;<br></div><div><br></div><div><br></div></blockquot=
+e><div><br></div></body></html>
+--843e2817e4cb4bdd8c3654245d697589--
+

@@ -1,0 +1,227 @@
+Return-Path: <mrex@sap.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id E3F221296E4
+ for <tls@ietfa.amsl.com>; Wed,  9 Nov 2016 11:42:15 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -6.922
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.922 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, RCVD_IN_DNSWL_HI=-5, RCVD_IN_MSPIKE_H3=-0.01,
+ RCVD_IN_MSPIKE_WL=-0.01, SPF_HELO_PASS=-0.001, SPF_PASS=-0.001]
+ autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id baU1Un7HP3j6 for <tls@ietfa.amsl.com>;
+ Wed,  9 Nov 2016 11:42:14 -0800 (PST)
+Received: from smtpde02.smtp.sap-ag.de (smtpde02.smtp.sap-ag.de
+ [155.56.68.140])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 4D2521296BA
+ for <tls@ietf.org>; Wed,  9 Nov 2016 11:42:13 -0800 (PST)
+Received: from mail07.wdf.sap.corp (mail04.sap.corp [194.39.131.56])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by smtpde02.smtp.sap-ag.de (Postfix) with ESMTPS id 3tDc5H1ChTz25Wb;
+ Wed,  9 Nov 2016 20:42:11 +0100 (CET)
+X-purgate-ID: 152705::1478720531-00002B31-EEA28E40/0/0
+X-purgate-size: 7008
+X-purgate: clean
+X-purgate: This mail is considered clean (visit http://www.eleven.de for
+ further information)
+X-purgate-Ad: Categorized by eleven eXpurgate (R) http://www.eleven.de
+X-purgate-type: clean
+X-SAP-SPAM-Status: clean
+Received: from ld9781.wdf.sap.corp (ld9781.wdf.sap.corp [10.21.82.193])
+ by mail07.wdf.sap.corp (Postfix) with ESMTP id 3tDc5G4SjCzGnv0;
+ Wed,  9 Nov 2016 20:42:10 +0100 (CET)
+Received: by ld9781.wdf.sap.corp (Postfix, from userid 10159)
+ id 8ED431A579; Wed,  9 Nov 2016 20:42:10 +0100 (CET)
+In-Reply-To: <CABcZeBPygA5XOAwnGpV+GL5rJhz81MizWvhgPO1gKsQPkzx=JA@mail.gmail.com>
+To: Eric Rescorla <ekr@rtfm.com>
+Date: Wed, 9 Nov 2016 20:42:10 +0100 (CET)
+X-Mailer: ELM [version 2.4ME+ PL125 (25)]
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="US-ASCII"
+Message-Id: <20161109194210.8ED431A579@ld9781.wdf.sap.corp>
+From: mrex@sap.com (Martin Rex)
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/N7BpzQ57MYNK82lHmfzW4RIowzo>
+Cc: "tls@ietf.org" <tls@ietf.org>
+Subject: Re: [TLS] Working Group Last Call for draft-ietf-tls-tls13-18
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.17
+Precedence: list
+Reply-To: mrex@sap.com
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Wed, 09 Nov 2016 19:42:16 -0000
+
+Eric Rescorla wrote:
+> 
+> I'm not quite following who's who in this scenario, so some potentially
+> stupid
+> questions below.
+> 
+> As I understand it, you have the following situation:
+> 
+> - A Web application server
+> - Some middleware, which comes in two pieces
+>   - A crypto-unaware network component
+>   - The TLS stack (you control this piece as well, right?)
+> - The client
+
+This is about any conceivable scenario involving at least one of our
+components, just client, just server, or at both peers.
+
+The "middleware" is part of our clients and servers. The middleware
+performs all the network I/O and necessary calls into the TLS stack,
+offers an appdata streaming convenience option for reading,
+variable blocking I/O (non-blocking (0ms) up to infinite timeout).
+
+TLS records of type Handshake, Alert and CCS are always processed
+in batch, as many as the network buffers have already received.
+TLS records of type AppData are processed based on read strategy
+desired by the application caller.  The desired reading strategy
+(trickling, efficient, streaming) is a parameter of the middleware
+read API call, so the app could change it for every call.
+
+ - Trickling means the traditional TLS record reading, i.e. two network
+   read calls for every TLS record.
+
+ - Improved means on average one network read call per TLS record.
+
+ - Streaming means reading and decoding as many TLS appdata record
+   as there are present in the network read buffers and can be
+   received non-blocking.  Only TLS AppData records will be passed
+   to the TLS Stack for decoding, Alerts and Handshake records
+   will be left in the middlewares network read buffers until all
+   appdata as been properly received by the application caller.
+   Only upon the next read call from the application, the alert
+   or handshake records will be passed to the TLS stack.
+
+Example: GET https://www.google.de/ HTTP/1.0
+(where my call to www.google.com is redirected to...)
+
+currently returns a HTTP-response with a 657 byte Header and 44879 byte Body
+The response would easily fit into 3 TLS appdata records
+(4 Records if the Header is sent in its own TLS record), however
+in reality, the Google servers perform pathological fragmentation
+of the AppData and use a whooping 36 TLS records for the response
+(curiously no TLS AppData record split between header and body).
+
+
+Processing overhead for _receiving_ such a badly fragmented response:
+
+Trickling:
+  34 Read calls into the middleware
+  73 recv() calls to read the TLS AppData records from the socket
+  34 calls into the TLS stack
+
+Improved:
+  34 Read calls into the middleware
+  42 recv() calls to read the TLS AppData records from the socket
+  34 calls into the TLS stack
+
+Streaming:
+   5 Read calls into the middleware
+  14 recv() calls to read the TLS AppData records from the socket
+  34 calls into the TLS stack
+   
+
+
+
+>
+> When do you deliver the close_notify and how do you know how?
+
+When the application calls for read, and has already seen all
+prior AppData, then the close_notify will be processed and the
+result (connection closure, no more data) reported to the calling app.
+
+There is no magic involved here.
+
+Apps *know* when to perform reads, and when not to perform reads.
+The middleware doesn't because it is protocol ignorant (it is used
+by SMTP, ldaps, HTTPS, HTTP/2.0, websockets, etc).
+
+Think of a simple HTTP-based server app receiving a HTTP/1.0 request
+from a TLS-stack on top of a blocking network socket.  If the App would
+keep calling SSL_read() (for an OpenSSL-style API), it would get stuck
+(blocked on read), and at some point the client would give up and
+close the connection (with close_notify or TCP RST), and the server
+waking from either the processing of the close_notify or the TCP RST
+would be unable to deliver a response (which the client would not read
+anyway).
+
+Whether or not the calling App wants to shutdown a communication
+at different times in both directions depends on the existing semantics
+of that application (which has just added TLS protection around its
+communication).  Reading and processing a close_notify in the TLS stack
+(e.g. OpenSSL) will tear down *BOTH* directions immediately, and preclude
+any further of sending of responses by the application, so the middleware
+really will want to hold of processing of close_notify alerts unless
+_explicitly_ asked to read further AppData by the application.
+
+With TLS up to TLSv1.2 streaming is no problem, the middleware can
+easily recognize non-AppData records and avoid passing them to
+the TLS stack for processing unless the application explicitly asks
+the middleware to do so.  When TLSv1.3 hides the ContentType,
+the fact that a close_notify was received & processed can only be
+determined after the fact, when the shattered pieces are on the floor.
+Communication in the other direction will be impossible, and it will
+not be possible to prevent this from happening.
+
+While it is conceivable to jump hoops and implement new APIs and
+callback for the TLS stack to allow the middleware instrumenting
+and holding off the processing of TLS close_notify, this is not
+going to allow a drop-in replacement of an existing TLSv1.2 with
+a ContentType-hiding TLSv1.3 implementation underneath an existing
+application.
+
+For SSLv3->TLSv1.2, there was *NO* such backwards-incompatibilty.
+We were able just fine to drop-in a TLSv1.2 implementation underneath
+apps that were originally built on top of an SSLv3-only stack.
+
+
+
+> 
+> Can you explain further why this is a problem: are you expecting that
+> if you send application data to the client after sending the close_notify
+> itself, the client will consume it?
+> 
+> Can you help me understand?
+
+TCP is a full-duplex communication channel and allows shutdown for each
+of the two communication directions performed independently.  There are
+existing communication protocols (other than HTTP) that _use_ independent
+shutdown, and may want to continue using it even after starting to
+protect their original cleatext communication with TLS.
+
+
+If you're vaguely familiar with OpenSSL:
+when SSL_read() has received and processed a TLS record with a close_notify
+alert, do you know what happens to further calls of SSL_write() of the same
+handle, which technically is _the_other_ communication direction.
+
+If you don't know: SSL_write() will fail, because OpenSSL will push out
+a close_notify alert from within SSL_read(), and make the connection
+unusable.  Being able to distinguish AppData records from non-AppData
+records, an application caller of SSL_read() (such as my middleware)
+can prevent loosing the backchannel with no prior warning -- if it
+wants to.  For streaming operation, my middleware DESPERATELY wants to
+prevent the communication channel becoming unusable in both directions
+_before_ the application has received/seen all the app data from the channel.
+
+
+-Martin
+

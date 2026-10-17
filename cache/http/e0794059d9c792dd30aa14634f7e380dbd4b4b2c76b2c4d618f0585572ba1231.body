@@ -1,0 +1,132 @@
+Return-Path: <hkario@redhat.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 681EA12711D;
+ Wed, 14 Mar 2018 04:46:32 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.301
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.301 tagged_above=-999 required=5
+ tests=[RCVD_IN_DNSWL_MED=-2.3, SPF_PASS=-0.001,
+ T_RP_MATCHES_RCVD=-0.01, T_SPF_HELO_PERMERROR=0.01]
+ autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id rt1l3ctHf9fb; Wed, 14 Mar 2018 04:46:31 -0700 (PDT)
+Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 15CFF126B6E;
+ Wed, 14 Mar 2018 04:46:31 -0700 (PDT)
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.4])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mx1.redhat.com (Postfix) with ESMTPS id 3316E7C6CC;
+ Wed, 14 Mar 2018 11:46:30 +0000 (UTC)
+Received: from pintsize.usersys.redhat.com (ovpn-200-29.brq.redhat.com
+ [10.40.200.29])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id B4BEB2026DFD;
+ Wed, 14 Mar 2018 11:46:26 +0000 (UTC)
+From: Hubert Kario <hkario@redhat.com>
+To: Benjamin Kaduk <kaduk@mit.edu>
+Cc: Ilari Liusvaara <ilariliusvaara@welho.com>, TLS WG <tls@ietf.org>,
+ iesg@ietf.org
+Date: Wed, 14 Mar 2018 12:46:25 +0100
+Message-ID: <2062943.8cTCpni5Dm@pintsize.usersys.redhat.com>
+In-Reply-To: <20180314020207.GY55987@kduck.kaduk.org>
+References: <6112806.hxzZ6NivhB@pintsize.usersys.redhat.com>
+ <3060420.fu6fxUo7fv@pintsize.usersys.redhat.com>
+ <20180314020207.GY55987@kduck.kaduk.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="nextPart4681530.HGdcA6ilQs";
+ micalg="pgp-sha512"; protocol="application/pgp-signature"
+X-Scanned-By: MIMEDefang 2.78 on 10.11.54.4
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16
+ (mx1.redhat.com [10.11.55.2]); Wed, 14 Mar 2018 11:46:30 +0000 (UTC)
+X-Greylist: inspected by milter-greylist-4.5.16 (mx1.redhat.com [10.11.55.2]); 
+ Wed, 14 Mar 2018 11:46:30 +0000 (UTC) for IP:'10.11.54.4'
+ DOMAIN:'int-mx04.intmail.prod.int.rdu2.redhat.com'
+ HELO:'smtp.corp.redhat.com' FROM:'hkario@redhat.com' RCPT:''
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/K2G8MUj03MrAlJnmraeLR5rzv4E>
+Subject: Re: [TLS] draft-ietf-tls-tls13-26 is vulnerable to externally set
+ PSK identity enumeration
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Wed, 14 Mar 2018 11:46:32 -0000
+
+--nextPart4681530.HGdcA6ilQs
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
+
+On Wednesday, 14 March 2018 03:02:10 CET Benjamin Kaduk wrote:
+> It seems like we get ourselves in trouble by allowing multiple
+> external PSKs to be present.  If we allowed at most one external
+> PSK in a given ClientHello, then aborting the handshake on binder
+> failure would be the correct choice, as discovering a valid identity
+> would require discovering a valid key/password as well.
+
+but identity/binder may be invalid only because the server was restarted an=
+d=20
+generated a new in-memory key; we don't want to abort connection in such=20
+situation, continuing to a regular handshake is necessary then for good use=
+r=20
+experience (and likely, even security, given the history of TLS version=20
+fallbacks)
+=20
+> Disallowing multiple external PSKs would make migration scenarios a
+> little more annoying, but perhaps not fatally so.
+
+not only migration, but session resumption and regular PSK at the same time=
+=20
+too - for session resumption you may not do DH, while for initial handshake=
+=20
+with PSK you may want to to gain PFS...
+
+so as tempting as the removal of multiple PSKs from ClientHello is, I'm afr=
+aid=20
+the fallout is far too large to do it
+=2D-=20
+Regards,
+Hubert Kario
+Senior Quality Engineer, QE BaseOS Security team
+Web: www.cz.redhat.com
+Red Hat Czech s.r.o., Purky=C5=88ova 115, 612 00  Brno, Czech Republic
+--nextPart4681530.HGdcA6ilQs
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEYeeuxEU+3unL/K+dkqjRuAHS9fUFAlqpC5EACgkQkqjRuAHS
+9fVqnQ/9FncjeberkXrWhMTspBQDYo7oaJoXLJlgyydb1Lyq6iNIDHZDyau9ZsW7
+BTW2eSgujrcXpRzUyr+lm43RRNccnM8vYjH8q+OfZB1Cfi5SWDniNpXveLqWmX7J
+NNfniycqg0eF01LML3VsB+hGeu1+20GpdjnaTLqo5Vi985OmA0BsjMvKFi4Jd19g
+MtQYlBhCoMegKikZPSWtfcuWAGZ2qiKRYDtYFiSJE+ldyf4t38AKUM4rGpyuVcJa
+/sWiYGYkHM0wyZGH9XeefspFwBOy17W12wAgR0o+ijdnPfDICEes6SpcksWD8DJO
+GzmrU82PTiDq2bO8DSB3cPHNufykaW622Yk5wZgmlT+MkyvUbUL+2WxyiYTI2vdZ
+PMGcc5DiO6DePa9I3t7guKGgIf532gUWXB0Q67XTtKLxXpzWnCRpkO5JQdScm8mc
+CIPo4HBmKgjN0QQ78xvgELCqPnoHe/um9W0vbnbaQBuTT2aGDJE7e0ovq/qV/tp5
+jmyAgOvZu32e3bCkdA7gxNBMV3XQMCiwfQHiXFRQwnw7AkeCiLx8WH6Ce6WSLYHN
+QBbOo81ly7ccBu84vE2ehWuoOVpEApllMml/je0CGuwqilGVIYLD/9E8a3/alOWk
+9zXHOdsfUqNUjX6ym/OIN6MAGaqKfna4k6UXQvLbwjgv4G54otk=
+=UVAq
+-----END PGP SIGNATURE-----
+
+--nextPart4681530.HGdcA6ilQs--
+
+
+

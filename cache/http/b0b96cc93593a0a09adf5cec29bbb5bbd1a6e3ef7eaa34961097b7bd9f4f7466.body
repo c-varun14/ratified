@@ -1,0 +1,849 @@
+Return-Path: <ekr@rtfm.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 4AACF12945C
+ for <tls@ietfa.amsl.com>; Thu,  4 May 2017 14:38:09 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: 0.09
+X-Spam-Level: 
+X-Spam-Status: No, score=0.09 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ HTML_MESSAGE=0.001, HTTPS_HTTP_MISMATCH=1.989,
+ RCVD_IN_DNSWL_NONE=-0.0001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=rtfm-com.20150623.gappssmtp.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id w09FisWzODXv for <tls@ietfa.amsl.com>;
+ Thu,  4 May 2017 14:38:05 -0700 (PDT)
+Received: from mail-yb0-x22d.google.com (mail-yb0-x22d.google.com
+ [IPv6:2607:f8b0:4002:c09::22d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 05AD5129535
+ for <tls@ietf.org>; Thu,  4 May 2017 14:38:02 -0700 (PDT)
+Received: by mail-yb0-x22d.google.com with SMTP id 8so6882934ybw.1
+ for <tls@ietf.org>; Thu, 04 May 2017 14:38:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=rtfm-com.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+ :cc; bh=+Q4ZSrJauuFd9kzBMnNSqC8jGbh+rclSoBPQ7jP3x+Q=;
+ b=l2jci7hb865ihEFr1BPWyjqQmSgih3PCm7JGo87c7yWlLUknIFubYD8SoXvJ9sSbWx
+ WgoqDHCBPSjm2Rbu8gx3pMTYT/icG1aurD1JOvujuoALpq8rjUZJPwytWOZvxzGuIWIj
+ o8zgiKhUtWSWXI7O3kEbDtdoQVnHr5xgCCvRyKXrwUrUjItP7mF/l4MNnOa6lEYFvsbA
+ dyI3B71TzDp1gdF8272Lm09ReXb+XbmO4VABhVZSrfXAwbiOqZKYhyAFeRO/AiXtiMxc
+ Q7222Tk8H5b36erytor4HIyfguhcJW5iyiQI+onX/CRyG0bOibyBeELFw7Xn33PJ1Wmw
+ 1izA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+ :message-id:subject:to:cc;
+ bh=+Q4ZSrJauuFd9kzBMnNSqC8jGbh+rclSoBPQ7jP3x+Q=;
+ b=odeSwu/SEfBe53A4FMQ+iuI/mYkbK9Asis2OcyA6J2ZbgST3pO1kN5DUtR0Ow9FXQy
+ rHkqEsrNDRqOe8DypR8t2raCHA+nC4Q/zlgOdFxhLxQDpy6YfAsy2XbLPu2d4dlc0Ac6
+ 8JBaWJh2AvY3pxjd348qJzibX6rPUu1PQ+PNDcONqiMbPvapJfpAy2n9QfN03FDv4LDy
+ mLl+7EkBqwAb/8Ad2gkU8Fhy++ani+103FWwW7L/pAo8w7A5TNsZEl2+G9y7LatfbDsZ
+ h6ZqF45rZdlNYpdffNcno5qyHk1rrrSOFQl0a5VMVobTIhk4wMerbbOc6OAIRxsxb2xw
+ 5gnA==
+X-Gm-Message-State: AN3rC/6ObHeoSfsQKo84JG6kjv8X7d6iexEV3A8Qn6bklaGsnqYXnhNN
+ 90+z1JADUEiNXBhgEHV+QUgsIeYg2g==
+X-Received: by 10.37.174.24 with SMTP id a24mr36578484ybj.50.1493933881200;
+ Thu, 04 May 2017 14:38:01 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 10.129.131.150 with HTTP; Thu, 4 May 2017 14:37:20 -0700 (PDT)
+In-Reply-To: <MWHPR15MB11825419AF296AE7EC26F3BDAFEA0@MWHPR15MB1182.namprd15.prod.outlook.com>
+References: <CAAF6GDcKZj9F-eKAeVj0Uw4aX_EgQ4DuJczL4=fsaFyG9Yjcgw@mail.gmail.com>
+ <CABcZeBNcnW9zEPZ4mEje1_ejR3npNFz65rw-6qUPn7cQt1Nz9w@mail.gmail.com>
+ <MWHPR15MB11825419AF296AE7EC26F3BDAFEA0@MWHPR15MB1182.namprd15.prod.outlook.com>
+From: Eric Rescorla <ekr@rtfm.com>
+Date: Thu, 4 May 2017 14:37:20 -0700
+Message-ID: <CABcZeBNyQB3FOik3ZBZvgX7FnEjUydHdJwfa5OkACYDO_FQHaA@mail.gmail.com>
+To: Kyle Nekritz <knekritz@fb.com>
+Cc: =?UTF-8?Q?Colm_MacC=C3=A1rthaigh?= <colm@allcosts.net>, 
+ "tls@ietf.org" <tls@ietf.org>
+Content-Type: multipart/alternative; boundary=f403045da3584e9e8f054eb996ad
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/ePtERgfTwYEo5vRQbUd0_fsd5to>
+Subject: Re: [TLS] Security review of TLS1.3 0-RTT
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Thu, 04 May 2017 21:38:09 -0000
+
+--f403045da3584e9e8f054eb996ad
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, May 4, 2017 at 2:27 PM, Kyle Nekritz <knekritz@fb.com> wrote:
+
+> > 1. A SHOULD-level requirement for server-side 0-RTT defense, explaining
+> both session-cache and strike register styles and the merits of each.
+>
+>
+>
+> First, a point of clarification, I think two issues have been conflated i=
+n
+> this long thread:
+>
+> 1) Servers rejecting replayed 0-RTT data (using a single use session
+> cache/strike register/replay cache/some other method)
+>
+>
+>
+> There are definitely cases (i.e. application profiles) where this should
+> be done. I think a general case HTTPS server is one. But I don=E2=80=99t =
+think this
+> is strictly necessary across the board (for every application using 0-RTT
+> at all). DNS was brought up earlier in this thread as an example of a
+> protocol that is likely quite workable without extra measures to prevent
+> replay.
+>
+>
+>
+> We already state =E2=80=9CProtocols MUST NOT use 0-RTT data without a pro=
+file that
+> defines its use.=E2=80=9D. We could also describe methods that may be use=
+d to
+> provide further replay protection. But I don=E2=80=99t think it=E2=80=99s=
+ appropriate to
+> make a blanket requirement that *all* application protocols should requir=
+e
+> it.
+>
+>
+>
+> I also consider it quite misleading to say TLS 1.3 is insecure without
+> such a recommendation. Uses of TLS can be insecure, that does not mean th=
+e
+> protocol itself is. It=E2=80=99s insecure to use TLS without properly
+> authenticating the server. Some users of TLS do not do this correctly. I=
+=E2=80=99d
+> actually argue that it is easier to mess this up than it is to mess up a
+> 0-RTT deployment (and it can result in worse consequences). That doesn=E2=
+=80=99t
+> mean we should require a particular method of authentication, for all use=
+s
+> of TLS.
+>
+
+I think this is basically right. In the PR I just posted, I spent most of
+my time describing the
+mechanisms and used a SHOULD-level requirement to do one of the mechanisms.
+I think there's a bunch of room to wordsmith the requirement. Perhaps we
+say:
+
+- You can't do 0-RTT without an application profile
+- Absent the application profile saying otherwise you SHOULD/MUST do one of
+these mitigations?
+
+
+2) Preventing clients from sending 0-RTT data multiple times (on separate
+> connections) using the same PSK (for forward secrecy reasons)
+>
+>
+>
+> I think this should be allowed. Otherwise, clients will not be able to
+> retry 0-RTT requests that fail due to an unknown network error prior to
+> receiving a NST (if they are out of cached PSKs). I=E2=80=99d expect the =
+need for
+> these retries to be larger with 0-RTT data, particularly when 0-RTT data =
+is
+> sent without even a transport roundtrip (in the case of TFO or QUIC).
+> Servers are definitely not required to accept multiple 0-RTT connections
+> using the same PSK, but I don=E2=80=99t think clients should be banned fr=
+om
+> attempting.
+>
+
+I agree, and the PR I provided doesn't attempt to do so.
+
+
+> 4. I would add to this that we recommend that proxy/CDN implementations
+> signal which data is 0-RTT and which is 1-RTT to the back-end (this was i=
+n
+> Colm's original message).
+>
+>
+>
+> I=E2=80=99m not sure that the TLS 1.3 spec is the right place to make
+> recommendations for this. I can see several reasonable approaches here, f=
+or
+> example:
+>
+> - Adding some kind of application level annotation (for example an HTTP
+> header)
+>
+> - Robustly preventing replay on the 0-RTT hop
+>
+> - Sending proxied early data with a different TLS ContentType, etc.
+>
+> I don=E2=80=99t see a need to specifically endorse any particular method =
+here.
+>
+
+I think Colm has also agreed we shouldn't do this and it's not in my PR.
+
+
+>
+>
+>
+> There was also a point brought up about the use of ticket_age without
+> 0-RTT. I=E2=80=99m not aware of any use for ticket_age other than 0-RTT r=
+eplay
+> protection. I believe that ticket_age is sent with all PSKs mostly out of
+> convenience/consistency. I don=E2=80=99t really have an objection to the =
+current
+> method, but I also wouldn=E2=80=99t be opposed to moving the ticket age t=
+o the
+> early data extension, so that it is only sent along with 0-RTT data.
+>
+
+I would be OK with this as well. It does seem slightly more elegant.
+
+
+
+
+> It also seems a little under-specified what implementations unable to
+> compute a reasonable ticket age should send (for example in the case of a
+> device without a real time clock,
+>
+
+Right. I have been basically assuming that you can't really do TLS without
+a real-time clock, but maybe that's wrong?
+
+
+
+> or with an external PSK).
+>
+
+This actually is well-specified (though maybe wrong)
+"For identities established externally an obfuscated_ticket_age of 0 SHOULD
+be used, and servers MUST ignore the value."
+https://tlswg.github.io/tls13-spec/#pre-shared-key-extension
+
+-Ekr
+
+
+> *From:* TLS [mailto:tls-bounces@ietf.org] *On Behalf Of *Eric Rescorla
+> *Sent:* Wednesday, May 3, 2017 11:13 PM
+> *To:* Colm MacC=C3=A1rthaigh <colm@allcosts.net>
+> *Cc:* tls@ietf.org
+> *Subject:* Re: [TLS] Security review of TLS1.3 0-RTT
+>
+>
+>
+> [Deliberately responding to the OP rather than to anyone in particular]
+>
+>
+>
+> Hi folks,
+>
+>
+>
+> I'm seeing a lot of back and forth about general philosophy and the
+>
+> wisdom of 0-RTT but I think it would be useful if we focused on what
+>
+> changes, if any, we need to make to the draft.
+>
+>
+>
+> I made some proposals yesterday
+>
+> (https://www.ietf.org/mail-archive/web/tls/current/msg23088.html
+> <https://urldefense.proofpoint.com/v2/url?u=3Dhttps-3A__www.ietf.org_mail=
+-2Darchive_web_tls_current_msg23088.html&d=3DDwMFaQ&c=3D5VD0RTtNlTh3ycd41b3=
+MUw&r=3Dl2j4BjkO0Lc3u4CH2z7jPw&m=3D_2BECf9OfW1r1aRWrL_pSbQeKMshyOm2NIVWF4GG=
+BI0&s=3DXgHbUwT6upAsOin4T6P8ePs8i0ZFsnD-_BNvueeq83E&e=3D>
+> ).
+>
+>
+>
+> Specifically:
+>
+> 1. A SHOULD-level requirement for server-side 0-RTT defense, explaining
+>
+> both session-cache and strike register styles and the merits of each.
+>
+>
+>
+> 2. Document 0-RTT greasing in draft-ietf-tls-grease
+>
+>
+>
+> 3. Adopt PR#448 (or some variant) so that session-id style implementation=
+s
+>
+> provide PFS.
+>
+>
+>
+> 4. I would add to this that we recommend that proxy/CDN implementations
+>
+> signal which data is 0-RTT and which is 1-RTT to the back-end (this was i=
+n
+>
+> Colm's original message).
+>
+>
+>
+> Based on Colm's response, I think these largely hits the points he made
+>
+> in his original message.
+>
+>
+>
+> There's already a PR for #3 and I'll have PRs for #1 and #4 tomorrow.
+>
+> What would be most helpful to me as Editor would be if people could revie=
+w
+>
+> these PRs and/or suggest other specific changes that we should make
+>
+> to the document.
+>
+>
+>
+> Thanks,
+>
+> -Ekr
+>
+>
+>
+>
+>
+>
+>
+>
+>
+> On Tue, May 2, 2017 at 7:44 AM, Colm MacC=C3=A1rthaigh <colm@allcosts.net=
+>
+> wrote:
+>
+> On Sunday at the TLS:DIV workshop I presented a summary of findings of a
+> security review we did on TLS1.3 0-RTT, as part of implementing 1.3 in s2=
+n.
+> Thanks to feedback in the room I've now tightened up the findings from th=
+e
+> review and posted them as an issue on the draft GitHub repo:
+>
+>
+>
+> https://github.com/tlswg/tls13-spec/issues/1001
+>
+>
+>
+> I'll summarize the summary: Naturally the focus was on forward secrecy an=
+d
+> replay. On forward secrecy the main finding was that it's not necessary t=
+o
+> trade off Forward Secrecy and 0-RTT. A single-use session cache can provi=
+de
+> it, and with the modification that ekr has created in
+> https://github.com/tlswg/tls13-spec/pull/998 , such a cache works for
+> both pre-auth and post-auth tickets, and it allows clients to build up
+> pools of meaningfully distinct tickets.
+>
+>
+>
+> There's also an observation there that it should really be that clients
+> "MUST" use tickets only once. Any re-use likely discloses the obfuscated
+> ticket age, which is intended to be secret. Right now it's a "SHOULD".
+>
+>
+>
+> On replay, the main finding is that what's in the draft is not workably
+> secure, and the review includes 5 different attacks against 0-RTT data to
+> illustrate that. Attacks 1 and 2 show that the kind of replay permitted b=
+y
+> the draft is very different from the kind of replay permitted by dkg's
+> existing downgrade-and-retry attack. I also go over why it very very
+> difficult to many applications to achieve that idempotency, and why one
+> idempotency pattern actually relies on non-replayable messages.
+>
+>
+>
+> Attack 3 shows that idempotency is not sufficient, applications must also
+> be free of measurable side-effects, which is not practical.  Attack 4 sho=
+ws
+> that 0-RTT breaks a common security mechanism: spoofing-resistant
+> throttles. Attack 5 shows that 0-RTT replay-ability enables an additional
+> form of traffic analysis.
+>
+>
+>
+> The recommendation in the review is that implementations "MUST" prevent
+> replays of 0-RTT section, with some additional discussion about why the
+> existing advice is unlikely to be followed, and why consistent
+> interoperability matters here.
+>
+>
+>
+> Unfortunately, I wasn't aware until Friday that this review would be
+> coming so late in the TLD1.3 draft process, and my apologies for that. I =
+am
+> now planning to attend the future WG in-person meetings and look forward =
+to
+> seeing many of you there.
+>
+>
+>
+> --
+>
+> Colm
+>
+>
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+> <https://urldefense.proofpoint.com/v2/url?u=3Dhttps-3A__www.ietf.org_mail=
+man_listinfo_tls&d=3DDwMFaQ&c=3D5VD0RTtNlTh3ycd41b3MUw&r=3Dl2j4BjkO0Lc3u4CH=
+2z7jPw&m=3D_2BECf9OfW1r1aRWrL_pSbQeKMshyOm2NIVWF4GGBI0&s=3D6GIocGzW6wPK4EAl=
+qDLIirNvsuQj7gWhYG_OzROR2qY&e=3D>
+>
+>
+>
+
+--f403045da3584e9e8f054eb996ad
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><br><div class=3D"gmail_extra"><br><div class=3D"gmail_quo=
+te">On Thu, May 4, 2017 at 2:27 PM, Kyle Nekritz <span dir=3D"ltr">&lt;<a h=
+ref=3D"mailto:knekritz@fb.com" target=3D"_blank">knekritz@fb.com</a>&gt;</s=
+pan> wrote:<br><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0p=
+x 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">
+
+
+
+
+
+<div lang=3D"EN-US">
+<div class=3D"gmail-m_6768796029072055788WordSection1"><span class=3D"gmail=
+-">
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:calibri,sa=
+ns-serif">&gt; 1. A SHOULD-level requirement for server-side 0-RTT defense,=
+ explaining both session-cache and strike register styles and the merits of=
+ each.<u></u><u></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:calibri,sa=
+ns-serif"><u></u>=C2=A0<u></u></span></p>
+</span><p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:cal=
+ibri,sans-serif">First, a point of clarification, I think two issues have b=
+een conflated in this long thread:<u></u><u></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:calibri,sa=
+ns-serif">1) Servers rejecting replayed 0-RTT data (using a single use sess=
+ion cache/strike register/replay cache/some other method)<u></u><u></u></sp=
+an></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:calibri,sa=
+ns-serif"><u></u>=C2=A0<u></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:calibri,sa=
+ns-serif">There are definitely cases (i.e. application profiles) where this=
+ should be done. I think a general case HTTPS server is one. But I don=E2=
+=80=99t think this is strictly necessary across
+ the board (for every application using 0-RTT at all). DNS was brought up e=
+arlier in this thread as an example of a protocol that is likely quite work=
+able without extra measures to prevent replay.
+<u></u><u></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:calibri,sa=
+ns-serif"><u></u>=C2=A0<u></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:calibri,sa=
+ns-serif">We already state =E2=80=9CProtocols MUST NOT use 0-RTT data witho=
+ut a profile that defines its use.=E2=80=9D. We could also describe methods=
+ that may be used to provide further replay protection.
+ But I don=E2=80=99t think it=E2=80=99s appropriate to make a blanket requi=
+rement that *all* application protocols should require it.<u></u><u></u></s=
+pan></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:calibri,sa=
+ns-serif"><u></u>=C2=A0<u></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:calibri,sa=
+ns-serif">I also consider it quite misleading to say TLS 1.3 is insecure wi=
+thout such a recommendation. Uses of TLS can be insecure, that does not mea=
+n the protocol itself is. It=E2=80=99s insecure
+ to use TLS without properly authenticating the server. Some users of TLS d=
+o not do this correctly. I=E2=80=99d actually argue that it is easier to me=
+ss this up than it is to mess up a 0-RTT deployment (and it can result in w=
+orse consequences). That doesn=E2=80=99t mean we
+ should require a particular method of authentication, for all uses of TLS.=
+</span></p></div></div></blockquote><div><br></div><div>I think this is bas=
+ically right. In the PR I just posted, I spent most of my time describing t=
+he</div><div>mechanisms and used a SHOULD-level requirement to do one of th=
+e mechanisms.</div><div>I think there&#39;s a bunch of room to wordsmith th=
+e requirement. Perhaps we say:</div><div><br></div><div>- You can&#39;t do =
+0-RTT without an application profile</div><div>- Absent the application pro=
+file saying otherwise you SHOULD/MUST do one of these mitigations?</div><di=
+v><br></div><div><br></div><blockquote class=3D"gmail_quote" style=3D"margi=
+n:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex=
+"><div lang=3D"EN-US"><div class=3D"gmail-m_6768796029072055788WordSection1=
+">
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:calibri,sa=
+ns-serif">2) Preventing clients from sending 0-RTT data multiple times (on =
+separate connections) using the same PSK (for forward secrecy reasons)<u></=
+u><u></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:calibri,sa=
+ns-serif"><u></u>=C2=A0<u></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:calibri,sa=
+ns-serif">I think this should be allowed. Otherwise, clients will not be ab=
+le to retry 0-RTT requests that fail due to an unknown network error prior =
+to receiving a NST (if they are
+ out of cached PSKs). I=E2=80=99d expect the need for these retries to be l=
+arger with 0-RTT data, particularly when 0-RTT data is sent without even a =
+transport roundtrip (in the case of TFO or QUIC). Servers are definitely no=
+t required to accept multiple 0-RTT connections
+ using the same PSK, but I don=E2=80=99t think clients should be banned fro=
+m attempting.</span></p></div></div></blockquote><div>=C2=A0</div><div>I ag=
+ree, and the PR I provided doesn&#39;t attempt to do so.</div><div><br></di=
+v><div><br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px =
+0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div lan=
+g=3D"EN-US"><div class=3D"gmail-m_6768796029072055788WordSection1"><span cl=
+ass=3D"gmail-">
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:calibri,sa=
+ns-serif">&gt; 4. I would add to this that we recommend that proxy/CDN impl=
+ementations signal which data is 0-RTT and which is 1-RTT to the back-end (=
+this was in Colm&#39;s original message).<u></u><u></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:calibri,sa=
+ns-serif"><u></u>=C2=A0<u></u></span></p>
+</span><p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:cal=
+ibri,sans-serif">I=E2=80=99m not sure that the TLS 1.3 spec is the right pl=
+ace to make recommendations for this. I can see several reasonable approach=
+es here, for example:<u></u><u></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:calibri,sa=
+ns-serif">- Adding some kind of application level annotation (for example a=
+n HTTP header)<u></u><u></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:calibri,sa=
+ns-serif">- Robustly preventing replay on the 0-RTT hop<u></u><u></u></span=
+></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:calibri,sa=
+ns-serif">- Sending proxied early data with a different TLS ContentType, et=
+c.<u></u><u></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:calibri,sa=
+ns-serif">I don=E2=80=99t see a need to specifically endorse any particular=
+ method here.</span></p></div></div></blockquote><div><br></div><div>I thin=
+k Colm has also agreed we shouldn&#39;t do this and it&#39;s not in my PR.<=
+/div><div><br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0=
+px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div =
+lang=3D"EN-US"><div class=3D"gmail-m_6768796029072055788WordSection1"><p cl=
+ass=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:calibri,sans-se=
+rif"><u></u><u></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:calibri,sa=
+ns-serif"><u></u>=C2=A0<u></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:calibri,sa=
+ns-serif"><u></u>=C2=A0<u></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:calibri,sa=
+ns-serif">There was also a point brought up about the use of ticket_age wit=
+hout 0-RTT. I=E2=80=99m not aware of any use for ticket_age other than 0-RT=
+T replay protection. I believe that ticket_age
+ is sent with all PSKs mostly out of convenience/consistency. I don=E2=80=
+=99t really have an objection to the current method, but I also wouldn=E2=
+=80=99t be opposed to moving the ticket age to the early data extension, so=
+ that it is only sent along with 0-RTT data.</span></p></div></div></blockq=
+uote><div><br></div><div>I would be OK with this as well. It does seem slig=
+htly more elegant.</div><div><br></div><div><br></div><div>=C2=A0<br></div>=
+<blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-=
+left:1px solid rgb(204,204,204);padding-left:1ex"><div lang=3D"EN-US"><div =
+class=3D"gmail-m_6768796029072055788WordSection1"><p class=3D"MsoNormal"><s=
+pan style=3D"font-size:11pt;font-family:calibri,sans-serif">
+<u></u><u></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:calibri,sa=
+ns-serif">It also seems a little under-specified what implementations unabl=
+e to compute a reasonable ticket age should send (for example in the case o=
+f a device without a real time clock,</span></p></div></div></blockquote><d=
+iv><br></div><div>Right. I have been basically assuming that you can&#39;t =
+really do TLS without a real-time clock, but maybe that&#39;s wrong?</div><=
+div><br></div><div>=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"m=
+argin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left=
+:1ex"><div lang=3D"EN-US"><div class=3D"gmail-m_6768796029072055788WordSect=
+ion1"><p class=3D"MsoNormal"><span style=3D"font-size:11pt;font-family:cali=
+bri,sans-serif">
+ or with an external PSK).</span></p></div></div></blockquote><div><br></di=
+v><div>This actually is well-specified (though maybe wrong)</div><div>&quot=
+;For identities established externally an obfuscated_ticket_age of 0 SHOULD=
+ be used, and servers MUST ignore the value.&quot;</div><div><a href=3D"htt=
+ps://tlswg.github.io/tls13-spec/#pre-shared-key-extension">https://tlswg.gi=
+thub.io/tls13-spec/#pre-shared-key-extension</a><br></div><div><br></div><d=
+iv>-Ekr</div><div>=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"ma=
+rgin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:=
+1ex"><div lang=3D"EN-US"><div class=3D"gmail-m_6768796029072055788WordSecti=
+on1"><p class=3D"MsoNormal"></p>
+<span></span>
+<p class=3D"MsoNormal"><b><span style=3D"font-size:11pt;font-family:calibri=
+,sans-serif">From:</span></b><span style=3D"font-size:11pt;font-family:cali=
+bri,sans-serif"> TLS [mailto:<a href=3D"mailto:tls-bounces@ietf.org" target=
+=3D"_blank">tls-bounces@ietf.org</a>]
+<b>On Behalf Of </b>Eric Rescorla<br>
+<b>Sent:</b> Wednesday, May 3, 2017 11:13 PM<br>
+<b>To:</b> Colm MacC=C3=A1rthaigh &lt;<a href=3D"mailto:colm@allcosts.net" =
+target=3D"_blank">colm@allcosts.net</a>&gt;<br>
+<b>Cc:</b> <a href=3D"mailto:tls@ietf.org" target=3D"_blank">tls@ietf.org</=
+a><br>
+<b>Subject:</b> Re: [TLS] Security review of TLS1.3 0-RTT<u></u><u></u></sp=
+an></p>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+<div>
+<p class=3D"MsoNormal">[Deliberately responding to the OP rather than to an=
+yone in particular]<u></u><u></u></p>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">Hi folks,<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">I&#39;m seeing a lot of back and forth about general=
+ philosophy and the<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">wisdom of 0-RTT but I think it would be useful if we=
+ focused on what<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">changes, if any, we need to make to the draft.=C2=A0=
+<u></u><u></u></p>
+</div><span class=3D"gmail-">
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">I made some proposals yesterday=C2=A0<u></u><u></u><=
+/p>
+</div>
+<div>
+<p class=3D"MsoNormal">(<a href=3D"https://urldefense.proofpoint.com/v2/url=
+?u=3Dhttps-3A__www.ietf.org_mail-2Darchive_web_tls_current_msg23088.html&am=
+p;d=3DDwMFaQ&amp;c=3D5VD0RTtNlTh3ycd41b3MUw&amp;r=3Dl2j4BjkO0Lc3u4CH2z7jPw&=
+amp;m=3D_2BECf9OfW1r1aRWrL_pSbQeKMshyOm2NIVWF4GGBI0&amp;s=3DXgHbUwT6upAsOin=
+4T6P8ePs8i0ZFsnD-_BNvueeq83E&amp;e=3D" target=3D"_blank">https://www.ietf.o=
+rg/mail-<wbr>archive/web/tls/current/<wbr>msg23088.html</a>).<u></u><u></u>=
+</p>
+</div>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">Specifically:<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">1. A SHOULD-level requirement for server-side 0-RTT =
+defense, explaining<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">both session-cache and strike register styles and th=
+e merits of each.<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">2. Document 0-RTT greasing in draft-ietf-tls-grease<=
+u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">3. Adopt PR#448 (or some variant) so that session-id=
+ style implementations<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">provide PFS.<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">4. I would add to this that we recommend that proxy/=
+CDN implementations<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">signal which data is 0-RTT and which is 1-RTT to the=
+ back-end (this was in<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">Colm&#39;s original message).<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+</span><div>
+<p class=3D"MsoNormal">Based on Colm&#39;s response, I think these largely =
+hits the points he made<u></u><u></u></p>
+</div><span class=3D"gmail-">
+<div>
+<p class=3D"MsoNormal">in his original message.<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">There&#39;s already a PR for #3 and I&#39;ll have PR=
+s for #1 and #4 tomorrow.<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">What would be most helpful to me as Editor would be =
+if people could review<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">these PRs and/or suggest other specific changes that=
+ we should make<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">to the document.<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+</span><div>
+<p class=3D"MsoNormal">Thanks,<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">-Ekr<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+</div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+<div>
+<p class=3D"MsoNormal">On Tue, May 2, 2017 at 7:44 AM, Colm MacC=C3=A1rthai=
+gh &lt;<a href=3D"mailto:colm@allcosts.net" target=3D"_blank">colm@allcosts=
+.net</a>&gt; wrote:<u></u><u></u></p>
+<blockquote style=3D"border-top:none;border-right:none;border-bottom:none;b=
+order-left:1pt solid rgb(204,204,204);padding:0in 0in 0in 6pt;margin:5pt 0i=
+n 5pt 4.8pt">
+<div>
+<p class=3D"MsoNormal">On Sunday at the TLS:DIV workshop I presented a summ=
+ary of findings of a security review we did on TLS1.3 0-RTT, as part of imp=
+lementing 1.3 in s2n. Thanks to feedback in the room I&#39;ve now tightened=
+ up the findings from the review and posted
+ them as an issue on the draft GitHub repo:<u></u><u></u></p>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><a href=3D"https://github.com/tlswg/tls13-spec/issue=
+s/1001" target=3D"_blank">https://github.com/tlswg/<wbr>tls13-spec/issues/1=
+001</a><u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">I&#39;ll summarize the summary: Naturally the focus =
+was on forward secrecy and replay. On forward secrecy the main finding was =
+that it&#39;s not necessary to trade off Forward Secrecy and 0-RTT. A singl=
+e-use session cache can provide it, and with
+ the modification that ekr has created in=C2=A0<a href=3D"https://github.co=
+m/tlswg/tls13-spec/pull/998" target=3D"_blank">https://github.com/tlswg/<wb=
+r>tls13-spec/pull/998</a> , such a cache works for both pre-auth and post-a=
+uth tickets, and it allows clients to build up
+ pools of meaningfully distinct tickets.<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">There&#39;s also an observation there that it should=
+ really be that clients &quot;MUST&quot; use tickets only once. Any re-use =
+likely discloses the obfuscated ticket age, which is intended to be secret.=
+ Right now it&#39;s a &quot;SHOULD&quot;.=C2=A0<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">On replay, the main finding is that what&#39;s in th=
+e draft is not workably secure, and the review includes 5 different attacks=
+ against 0-RTT data to illustrate that. Attacks 1 and 2 show that the kind =
+of replay permitted by the draft is very
+ different from the kind of replay permitted by dkg&#39;s existing downgrad=
+e-and-retry attack. I also go over why it very very difficult to many appli=
+cations to achieve that idempotency, and why one idempotency pattern actual=
+ly relies on non-replayable messages.=C2=A0<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">Attack 3 shows that idempotency is not sufficient, a=
+pplications must also be free of measurable side-effects, which is not prac=
+tical.=C2=A0 Attack 4 shows that 0-RTT breaks a common security mechanism: =
+spoofing-resistant throttles. Attack 5
+ shows that 0-RTT replay-ability enables an additional form of traffic anal=
+ysis.=C2=A0<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">The recommendation in the review is that implementat=
+ions &quot;MUST&quot; prevent replays of 0-RTT section, with some additiona=
+l discussion about why the existing advice is unlikely to be followed, and =
+why consistent interoperability matters here.=C2=A0<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">Unfortunately, I wasn&#39;t aware until Friday that =
+this review would be coming so late in the TLD1.3 draft process, and my apo=
+logies for that. I am now planning to attend the future WG in-person meetin=
+gs and look forward to seeing many of
+ you there.=C2=A0<u></u><u></u></p>
+</div>
+<div>
+<div>
+<div>
+<p class=3D"MsoNormal"><span style=3D"color:rgb(136,136,136)"><u></u>=C2=A0=
+<span class=3D"gmail-HOEnZb"><font color=3D"#888888"><u></u></font></span><=
+/span></p><span class=3D"gmail-HOEnZb"><font color=3D"#888888">
+</font></span></div><span class=3D"gmail-HOEnZb"><font color=3D"#888888">
+<p class=3D"MsoNormal"><span style=3D"color:rgb(136,136,136)">-- <u></u><u>=
+</u></span></p>
+<div>
+<p class=3D"MsoNormal"><span style=3D"color:rgb(136,136,136)">Colm<u></u><u=
+></u></span></p>
+</div>
+</font></span></div>
+</div>
+</div><span class=3D"gmail-">
+<p class=3D"MsoNormal" style=3D"margin-bottom:12pt"><br>
+______________________________<wbr>_________________<br>
+TLS mailing list<br>
+<a href=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.org</a><br>
+<a href=3D"https://urldefense.proofpoint.com/v2/url?u=3Dhttps-3A__www.ietf.=
+org_mailman_listinfo_tls&amp;d=3DDwMFaQ&amp;c=3D5VD0RTtNlTh3ycd41b3MUw&amp;=
+r=3Dl2j4BjkO0Lc3u4CH2z7jPw&amp;m=3D_2BECf9OfW1r1aRWrL_pSbQeKMshyOm2NIVWF4GG=
+BI0&amp;s=3D6GIocGzW6wPK4EAlqDLIirNvsuQj7gWhYG_OzROR2qY&amp;e=3D" target=3D=
+"_blank">https://www.ietf.org/mailman/<wbr>listinfo/tls</a><u></u><u></u></=
+p>
+</span></blockquote>
+</div>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+</div>
+</div>
+
+</blockquote></div><br></div></div>
+
+--f403045da3584e9e8f054eb996ad--
+

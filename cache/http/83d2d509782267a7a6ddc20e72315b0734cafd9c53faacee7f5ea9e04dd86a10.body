@@ -1,0 +1,362 @@
+Return-Path: <davidben@google.com>
+X-Original-To: tls@mail2.ietf.org
+Delivered-To: tls@mail2.ietf.org
+Received: from localhost (localhost [127.0.0.1])
+	by mail2.ietf.org (Postfix) with ESMTP id 7729E5FEF7B5
+	for <tls@mail2.ietf.org>; Tue,  9 Sep 2025 12:11:44 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at ietf.org
+X-Spam-Flag: NO
+X-Spam-Score: -9.483
+X-Spam-Level: 
+X-Spam-Status: No, score=-9.483 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIMWL_WL_HIGH=-0.001, DKIM_SIGNED=0.1,
+	DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1,
+	HEADER_FROM_DIFFERENT_DOMAINS=0.017, HTML_MESSAGE=0.001,
+	RCVD_IN_DNSWL_NONE=-0.0001, SPF_HELO_NONE=0.001, SPF_PASS=-0.001,
+	USER_IN_DEF_SPF_WL=-7.5] autolearn=ham autolearn_force=no
+Authentication-Results: mail2.ietf.org (amavisd-new); dkim=pass (1024-bit key)
+	header.d=chromium.org
+Received: from mail2.ietf.org ([166.84.6.31])
+	by localhost (mail2.ietf.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 1jEdOczIekKY for <tls@mail2.ietf.org>;
+	Tue,  9 Sep 2025 12:11:43 -0700 (PDT)
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com
+ [IPv6:2a00:1450:4864:20::529])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail2.ietf.org (Postfix) with ESMTPS id 7647D5FEF7AE
+	for <tls@ietf.org>; Tue,  9 Sep 2025 12:11:43 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id
+ 4fb4d7f45d1cf-6237202020bso5971674a12.3
+        for <tls@ietf.org>; Tue, 09 Sep 2025 12:11:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1757445102; x=1758049902; darn=ietf.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=q25+C0lnYUBrUME0/StFasHRa9+qbh5ctG4pwFqVIcU=;
+        b=aR7CurbgxxNc0ZUTQLOfbvJFM5wb9SbB6DxoIES2o/8LkUxKl5WSyOXRZCQXJky+Q1
+         D1cW6+FVMhxCEcd0Tv4aWYrQyXnl1u8dQGUnhkhAuGjSJbLvx5R6cD8lmnzLcYMKQIl4
+         QsK6sTU3a9v8XVQ7DU7ieyp5WksUU6mbO24LU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1757445102; x=1758049902;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=q25+C0lnYUBrUME0/StFasHRa9+qbh5ctG4pwFqVIcU=;
+        b=rvzEI34LgvjCo4YtM0d408hQWvlEtVg1/rLLI4uFK+5tlrbFrZlFYuu5Dv7kWxfXIy
+         W+BR5aTLXqQ0la0eEgsLI2ididQ8gRTD5znxE6QT5QCGkg4omkduaLuD6+b6YNg+8v4z
+         QFZjhlXki0sibRnkXOvpyZMjowaqzREB6Qqzm1OiEBS70aCJXIs+v/iqWo6ub4OhUI+6
+         uYYRjMG9DhvqSYrUuMxv1qwEvOCP2wYnb6Tvtq3wfdbXR6FErIfx2JBhsRaXte8tRSUl
+         H40e2d4VT7EGrII+S0TBSdARlrSM4ZcPNAy4mAbYtFsUjl1tA5m9IfL9nAoeId0zlRyZ
+         5UrQ==
+X-Gm-Message-State: AOJu0YymCjAlck1Zt9b6XBs8Y8YdUahTUWqqblKhn+KROQG3RXS7ngXc
+	vInvDFMn6Y/Ec8EvegovnhU1koemcxYdp4eriyYCjwtUNf+bvLmYnCdkWsAThdux9uvkeUPhX98
+	Ejm1laowqAcf1+raGpg87/xyNmzfvtsFtpsSbnT8hyTUcw55q9HTyi+eGbQ==
+X-Gm-Gg: ASbGnctcuNul6Ric1FxD+Wj1SGOQ6yXBK7LxaxMH2M4FrmxuFknfOicl11RGqATiKgB
+	oUnE7s35DN8oTQyfdcfvODfs/f7W7AwkfEpwmggRWTeLYLTSMPpVRxUlg2JPsJ1w2pVS+6NRc29
+	CznLQDaernAL39QcKZ5CtMc1xPd/I2IOhoYdip8UXzGj0LUB80RHP6iuldpwM5yLW6GVmwTcsWb
+	KJ1rFhA8g6z
+X-Google-Smtp-Source: 
+ AGHT+IERO30+nAamsDJsyBhu3jbD3jvp5CmWdKB5sSdiK87usCfTKV5QIt8bc9eoYTSXChFbs8z7dxp/XUAiDw4u8ps=
+X-Received: by 2002:a17:907:9810:b0:b04:a1ec:d073 with SMTP id
+ a640c23a62f3a-b04b1437db2mr1225307766b.18.1757445101162; Tue, 09 Sep 2025
+ 12:11:41 -0700 (PDT)
+MIME-Version: 1.0
+References: <A729C01D-2CFA-48DD-B709-70D3DBB41250@sn3rd.com>
+ <75198ba5-6753-44ab-a2ba-617895155dae@betaapp.fastmail.com>
+In-Reply-To: <75198ba5-6753-44ab-a2ba-617895155dae@betaapp.fastmail.com>
+From: David Benjamin <davidben@chromium.org>
+Date: Tue, 9 Sep 2025 15:11:24 -0400
+X-Gm-Features: AS18NWAOt6vwyYvnK3Z-pcExeFgN07Oyb6GKyc4kDUbJlcW5txY3lyl8QOSWljk
+Message-ID: 
+ <CAF8qwaB6cXV_gCMqMmZ=Kq9JRYKogJ3-xBdfhQ7NdRUijT53EA@mail.gmail.com>
+To: Martin Thomson <mt@lowentropy.net>
+Content-Type: multipart/alternative; boundary="000000000000f8a7cc063e63126a"
+Message-ID-Hash: J5OCSO73JCCT7TPCQ5I2MHKYJSRG4R3E
+X-Message-ID-Hash: J5OCSO73JCCT7TPCQ5I2MHKYJSRG4R3E
+X-MailFrom: davidben@google.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+CC: tls@ietf.org
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Re=3A_Working_Group_Last_Call_for_Legacy_RSASSA-PKCS1-v1?=
+ =?utf-8?q?=5F5_codepoints_for_TLS_1=2E3?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/E35lgQOhy9RgiEPnEc6c38ODUVE>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+--000000000000f8a7cc063e63126a
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Jul 30, 2025 at 3:17=E2=80=AFAM Martin Thomson <mt@lowentropy.net> =
+wrote:
+
+> On Thu, Jul 24, 2025, at 17:00, Sean Turner wrote:
+> > This is the working group last call for Legacy RSASSA-PKCS1-v1_5
+> > codepoints for TLS 1.3. Please review draft-ietf-tls-tls13-pkcs1 [1]
+> > and reply to this thread indicating if you think it is ready for
+> > publication or not.  If you do not think it is ready please indicate
+> > why.  This call will end on at 2359 UTC on 07 August 2024.
+>
+> A few minor things:
+>
+> >  Clients SHOULD NOT negotiate them with keys that support RSASSA-PSS.
+>
+> This is a "SHOULD NOT" without explanation, but I wonder if this could be
+> a "MUST NOT" instead.  Validation of these will be possible because PSS i=
+s
+> mandatory to support.
+>
+
+The reason for a SHOULD NOT is that, at the layer of the TLS stack,
+detecting whether you have PSS support may not be possible. At the level of
+APIs exposed by OSes, etc., not everything has a robust way to detect
+support for an algorithm, and trialing a signature might trigger UI.
+
+On the flip side, this situation only matters for you if your client was
+willing to use that key with PKCS1 at TLS 1.2. If that were vulnerable to
+forgeries, you could be impersonated at TLS 1.2 anyway.
+
+I think a MUST-level requirement is thus inappropriate. It's nice, in
+theory, to encourage folks to move up to PSS where they can, but I think
+that points to a SHOULD.
+
+I added a brief explanation in
+https://github.com/tlswg/tls13-pkcs1/commit/b2cafbed01f20d432363838dafc4100=
+e9aeaa560
+
+
+> > TLS implementations SHOULD disable these code points by default.
+>
+> Another "SHOULD"; maybe the context is enough to cover the explanation,
+> but it might be worth adding some: "These algorithms are not safe to use =
+in
+> the general case; see {{security}}."
+>
+
+Added a pointer to Security Considerations in
+https://github.com/tlswg/tls13-pkcs1/commit/cd690cedae1d611c7a344c3eb4bb9ae=
+7feaa846b
+
+I did not add the text about "not safe for use in the general case", as
+that is a bit too hyperbolic. If we really believed that, we would be in a
+bit more of a hurry to get rid of PKCS1 in the PKI, and TLS 1.2, but we're
+(correctly) not.
+
+We switched TLS 1.3 to PSS because this was believed to be an easy thing we
+could do "for free" with existing keys. We have since learned this was very
+much not free. PSS came too late and we should have skipped it IMO. Should
+PKCS1 actually fall now, PSS is basically strictly worse than ECDSA both in
+performance and compatibility. On top of that, it was catastrophically
+mis-standardized with too many parameters at every layer. If we had a time
+machine and made PSS *the* RSA signature scheme, with *one* set of
+universally-agreed parameters, it'd be another story. But here we are and
+TLS 1.3 is what it is. We picked the worst of both worlds, and have to make
+the best of it.
+
+
+> > external fallbacks break TLS's security analysis and may introduce
+> vulnerabilities [POODLE].
+>
+> TLS 1.3 -> TLS 1.2 external fallbacks are (doubly) protected.  Maybe not
+> as well as you might like, but I'm not sure that you need to elaborate th=
+is
+> particular point.
+>
+
+This is not true I'm afraid.
+
+I assume by double you mean Finished and server random? All downgrade
+protection mechanisms in TLS happen within the context of the particular
+client configuration that the TLS protocol sees. If you externally disable
+TLS 1.3, all those mechanisms will be evaluated against a client that does
+not support TLS 1.3.
+
+The sole[*] existing downgrade protection for an *external* fallback is
+FALLBACK_SCSV, but that does not apply here. That signal means "dear
+server, you seem to be TLS N+1 intolerant, fail the connection if you
+disagree". But the trigger here is not that the server is TLS N+1
+intolerant. It's that the particular combination of client configuration
+and server configuration does not work at TLS 1.3. We would need a *new* SC=
+SV
+to protect that, because existing servers will (correctly) reject
+FALLBACK_SCSV if they understand TLS N+1.
+
+Now, what *could* protect this is if the trigger for *this* hypothetical
+fallback were protected. That is, we ensure an attacker could not trigger
+the fallback where it would not naturally have been triggered. Doing that
+is very precarious because of particulars of TLS 1.2. If the client did not
+trigger the fallback on any client certificate negotiation error, but
+specifically in response to a TLS 1.3 CertificateRequest, it *might* work?
+But it's very subtle to get it right. For example:
+- The client MUST have verified the server certificate already, otherwise
+the CertificateRequest is not authenticated and an attacker could spoof it.
+- The client MUST NOT trigger this in response to, say, a TLS 1.2 PSS-only
+CertificateRequest. TLS 1.2 CertificateRequests are never authenticated and
+an attacker can always[**] spoof it.
+
+Given how subtle this all is, I think a reminder in the text that it
+"break[s] TLS's security analysis and may introduce vulnerabilities" is
+quite well-founded. :-)
+
+David
+
+[*] I suppose in theory you could make a TLS API that configures two
+maximum versions, and then you evaluate the TLS 1.3 server random signal
+against the hidden one, a la FALLBACK_SCSV. I'm not aware of anyone who did
+this. Regardless, it would hit the same problems as trying to reuse the
+existing SCSV. You can't reuse the signaling for one fallback condition
+to protect a different fallback condition.
+
+[**] An aside, this actually has some very subtle consequences, because TLS
+1.2 also sends client certificates in the clear. If your server moves to
+TLS 1.3, the attacker can still forward a TLS 1.2 response and forge a
+ServerHello..CertificateRequest..ServerHelloDone. It won't be able to
+complete the handshake and send server Finished, but the client will have
+sent a cleartext client certificate already. This works as long as the
+client still supports TLS 1.2. The server random would, in theory, prevent
+that, but the attacker can then forge RSA key exchange +
+CertificateRequest and bypass it. This works as long as the client still
+supports RSA key exchange (even if the server doesn't!). *If* the server
+doesn't, it in theory can protect that by removing keyEncipherment from its
+keyUsage extension... as long as the client correctly checks the chosen TLS
+1.2 cipher suite against keyUsage, and many don't. I know because we do,
+and ran into a host of compatibility issues from other clients not
+checking. :-) It's all a huge mess.
+
+--000000000000f8a7cc063e63126a
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr">On Wed, Jul 30, 2025 at 3:17=E2=80=AFAM M=
+artin Thomson &lt;<a href=3D"mailto:mt@lowentropy.net">mt@lowentropy.net</a=
+>&gt; wrote:</div><div class=3D"gmail_quote gmail_quote_container"><blockqu=
+ote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px=
+ solid rgb(204,204,204);padding-left:1ex">On Thu, Jul 24, 2025, at 17:00, S=
+ean Turner wrote:<br>
+&gt; This is the working group last call for Legacy RSASSA-PKCS1-v1_5 <br>
+&gt; codepoints for TLS 1.3. Please review draft-ietf-tls-tls13-pkcs1 [1] <=
+br>
+&gt; and reply to this thread indicating if you think it is ready for <br>
+&gt; publication or not.=C2=A0 If you do not think it is ready please indic=
+ate <br>
+&gt; why.=C2=A0 This call will end on at 2359 UTC on 07 August 2024.<br>
+<br>
+A few minor things:<br>
+<br>
+&gt;=C2=A0 Clients SHOULD NOT negotiate them with keys that support RSASSA-=
+PSS.<br>
+<br>
+This is a &quot;SHOULD NOT&quot; without explanation, but I wonder if this =
+could be a &quot;MUST NOT&quot; instead.=C2=A0 Validation of these will be =
+possible because PSS is mandatory to support.<br></blockquote><div><br></di=
+v><div>The reason for a SHOULD NOT is that, at the layer of the TLS stack, =
+detecting whether you have PSS support may not be possible. At the level of=
+ APIs exposed by OSes, etc., not everything has a robust way to detect supp=
+ort for an algorithm, and trialing a signature might trigger UI.</div><div>=
+<br></div><div>On the flip side, this situation only matters for you if you=
+r client was willing to use that key with PKCS1 at TLS 1.2. If that were vu=
+lnerable to forgeries, you could be impersonated at TLS 1.2 anyway.</div><d=
+iv><br></div><div>I think a MUST-level requirement is thus inappropriate. I=
+t&#39;s nice, in theory, to encourage folks to move up to PSS where they ca=
+n, but I think that points to a SHOULD.</div><div><br></div><div>I added a =
+brief explanation in=C2=A0<a href=3D"https://github.com/tlswg/tls13-pkcs1/c=
+ommit/b2cafbed01f20d432363838dafc4100e9aeaa560">https://github.com/tlswg/tl=
+s13-pkcs1/commit/b2cafbed01f20d432363838dafc4100e9aeaa560</a></div><div>=C2=
+=A0</div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8e=
+x;border-left:1px solid rgb(204,204,204);padding-left:1ex">
+&gt; TLS implementations SHOULD disable these code points by default.<br>
+<br>
+Another &quot;SHOULD&quot;; maybe the context is enough to cover the explan=
+ation, but it might be worth adding some: &quot;These algorithms are not sa=
+fe to use in the general case; see {{security}}.&quot;<br></blockquote><div=
+><br></div><div>Added a pointer to Security Considerations in <a href=3D"ht=
+tps://github.com/tlswg/tls13-pkcs1/commit/cd690cedae1d611c7a344c3eb4bb9ae7f=
+eaa846b">https://github.com/tlswg/tls13-pkcs1/commit/cd690cedae1d611c7a344c=
+3eb4bb9ae7feaa846b</a></div><div><br></div><div>I did not add the text abou=
+t &quot;not safe for use in the general case&quot;, as that is a bit too hy=
+perbolic. If we really believed that, we would be in a bit more of a hurry =
+to get rid of PKCS1 in the PKI, and TLS 1.2, but we&#39;re (correctly) not.=
+</div><div><br></div><div>We switched TLS 1.3 to PSS because this was belie=
+ved to be an easy thing we could do &quot;for free&quot; with existing keys=
+. We have since learned this was very much not free. PSS came too late and =
+we should have skipped it IMO. Should PKCS1 actually fall now, PSS is basic=
+ally strictly worse than ECDSA both in performance and compatibility. On to=
+p of that, it was catastrophically mis-standardized with too many parameter=
+s at every layer. If we had a time machine and made PSS=C2=A0<i>the</i>=C2=
+=A0RSA signature scheme, with <i>one</i>=C2=A0set of universally-agreed par=
+ameters, it&#39;d be another story. But here we are and TLS 1.3 is what it =
+is. We picked the worst of both worlds, and have to make the best of it.</d=
+iv><div>=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0=
+px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">
+&gt; external fallbacks break TLS&#39;s security analysis and may introduce=
+ vulnerabilities [POODLE]. <br>
+<br>
+TLS 1.3 -&gt; TLS 1.2 external fallbacks are (doubly) protected.=C2=A0 Mayb=
+e not as well as you might like, but I&#39;m not sure that you need to elab=
+orate this particular point.<br></blockquote><div><br></div><div>This is no=
+t true I&#39;m afraid.</div><div><br></div><div>I assume by double you mean=
+ Finished and server random? All downgrade protection mechanisms in TLS hap=
+pen within the context of the particular client configuration that the TLS =
+protocol sees. If you externally disable TLS 1.3, all those mechanisms will=
+ be evaluated against a client that does not support TLS 1.3.</div><div><br=
+></div><div>The sole[*] existing downgrade protection for an <i>external</i=
+> fallback is FALLBACK_SCSV, but that does not apply here. That signal mean=
+s &quot;dear server, you seem to be TLS N+1 intolerant, fail the connection=
+ if you disagree&quot;. But the trigger here is not that the server is TLS =
+N+1 intolerant. It&#39;s that the particular combination of client configur=
+ation and server configuration does not work at TLS 1.3. We would need a <i=
+>new</i>=C2=A0SCSV to protect that, because existing servers will (correctl=
+y) reject FALLBACK_SCSV if they understand TLS N+1.</div><div><br></div><di=
+v>Now, what <i>could</i>=C2=A0protect this is if the trigger for <i>this</i=
+> hypothetical fallback were protected. That is, we ensure an attacker coul=
+d not trigger the fallback where it would not naturally have been triggered=
+. Doing that is very precarious because of particulars of TLS 1.2. If the c=
+lient did not trigger the fallback on any client certificate negotiation er=
+ror, but specifically in response to a TLS 1.3 CertificateRequest, it <i>mi=
+ght</i>=C2=A0work? But it&#39;s very subtle to=C2=A0get it right. For examp=
+le:</div><div>- The client MUST have verified the server certificate alread=
+y, otherwise the CertificateRequest is not authenticated and an attacker co=
+uld spoof it.</div><div>- The client MUST NOT trigger this in response to, =
+say, a TLS 1.2 PSS-only CertificateRequest. TLS 1.2 CertificateRequests are=
+ never authenticated and an attacker can always[**] spoof it.</div><div><br=
+></div><div>Given how subtle this all is, I think a reminder in the text th=
+at it &quot;break[s] TLS&#39;s security analysis and may introduce vulnerab=
+ilities&quot; is quite well-founded. :-)</div><div><br></div><div>David</di=
+v><div><br class=3D"gmail-Apple-interchange-newline">[*] I suppose in theor=
+y you could make a TLS API that configures two maximum versions, and then y=
+ou=C2=A0evaluate=C2=A0the TLS 1.3 server random signal against the hidden o=
+ne, a la FALLBACK_SCSV. I&#39;m not aware of anyone who did this. Regardles=
+s, it would hit the same problems as trying to reuse the existing SCSV. You=
+ can&#39;t reuse the=C2=A0signaling for one fallback condition to=C2=A0prot=
+ect a different fallback condition.</div><div><br></div><div>[**] An aside,=
+ this actually has some very subtle consequences, because TLS 1.2 also send=
+s client certificates in the clear. If your server moves to TLS 1.3, the at=
+tacker can still forward a TLS 1.2 response and forge a ServerHello..Certif=
+icateRequest..ServerHelloDone. It won&#39;t be able to complete the handsha=
+ke and send server Finished, but the client will have sent a cleartext clie=
+nt certificate already. This works as long as the client still supports TLS=
+ 1.2. The server random would, in theory, prevent that, but the attacker ca=
+n then forge RSA key exchange=C2=A0+ CertificateRequest=C2=A0and bypass it.=
+ This works as long as the client still supports RSA key exchange (even if =
+the server doesn&#39;t!). <i>If</i>=C2=A0the server doesn&#39;t, it in theo=
+ry can protect that by removing keyEncipherment from its keyUsage extension=
+... as long as the client correctly checks the chosen TLS 1.2 cipher suite =
+against keyUsage, and many don&#39;t. I know because we do, and ran into a =
+host of compatibility issues from other clients not checking. :-) It&#39;s =
+all a huge mess.</div></div></div>
+
+--000000000000f8a7cc063e63126a--
+

@@ -1,0 +1,213 @@
+Return-Path: <davidben@google.com>
+X-Original-To: tls@mail2.ietf.org
+Delivered-To: tls@mail2.ietf.org
+Received: from localhost (localhost [127.0.0.1])
+	by mail2.ietf.org (Postfix) with ESMTP id BFDC9697F9C3
+	for <tls@mail2.ietf.org>; Fri, 26 Sep 2025 10:50:37 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at ietf.org
+X-Spam-Flag: NO
+X-Spam-Score: -9.483
+X-Spam-Level: 
+X-Spam-Status: No, score=-9.483 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIMWL_WL_HIGH=-0.001, DKIM_SIGNED=0.1,
+	DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1,
+	HEADER_FROM_DIFFERENT_DOMAINS=0.017, HTML_MESSAGE=0.001,
+	RCVD_IN_DNSWL_NONE=-0.0001, SPF_HELO_NONE=0.001, SPF_PASS=-0.001,
+	USER_IN_DEF_SPF_WL=-7.5] autolearn=ham autolearn_force=no
+Authentication-Results: mail2.ietf.org (amavisd-new); dkim=pass (1024-bit key)
+	header.d=chromium.org
+Received: from mail2.ietf.org ([166.84.6.31])
+	by localhost (mail2.ietf.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id VRWewnaGZfGw for <tls@mail2.ietf.org>;
+	Fri, 26 Sep 2025 10:50:37 -0700 (PDT)
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com
+ [IPv6:2a00:1450:4864:20::52d])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail2.ietf.org (Postfix) with ESMTPS id DADEB697E98C
+	for <tls@ietf.org>; Fri, 26 Sep 2025 10:49:30 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id
+ 4fb4d7f45d1cf-62fca01f0d9so4598029a12.3
+        for <tls@ietf.org>; Fri, 26 Sep 2025 10:49:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1758908970; x=1759513770; darn=ietf.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=sybJZQLYbipkIJnkB4Ikkr37RbPAy3tlEcMhd0oCACg=;
+        b=XaUZgKIzpKCp39LG5iHZFzUIfxjbcI8Q4i5nNOhjCZtuu2E6XshG2PhOoDIo1TzsjP
+         cLZBWDjHZEhxAbcNEbpbNEOBF+u/zJQmMD0wBOF2Zm1QruHhBkmaBVGxVHi5V6JBIYXv
+         JFG/XGU1WtBP49LHwLIg+PTm/+10WcZvVlNB0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758908970; x=1759513770;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sybJZQLYbipkIJnkB4Ikkr37RbPAy3tlEcMhd0oCACg=;
+        b=VYIsXKIYOh+vxcwu99bVHj5igbMAfE2KYEORSl3YgY3Z35gI5JhODZcZ1ZObRA0d1v
+         HJ+1o2D1jjr1a1xEoDvPHD2iUPDUnumu2rgFTame9QWRFM7TYTFIzXiSZuSvi8mxeRB1
+         QpLU4rnu60ED6E50sdgnoS742tA0wbC/E5jFEJkPg5G3TdrlZgqde7uQ031kdlnR6fgS
+         SFrXneIYpBnXSb55XkL6GQQJ1NQNtqxLhUtrI2tooxkHFu9x5ZMcJeKGzCf8gZYUq990
+         6Qa6lSpG2CH+q+nGb3VHGRh91hUX/zWbrF91/Gr/FEfP1Dkt/63Io59EI+1udhrGRKQy
+         TYOA==
+X-Gm-Message-State: AOJu0Yzef//zcPiwuDwK4rJVxOR94BCg+iMN/6PuT8H/ggH/agir4H1U
+	LLYRGP9qYRa8nDfGOCC1IC4wrxsC9ejn5g71ok3JzVO3aVG1AHzJjnii7Oi5qcK1LYEdg1JRrnx
+	XovEKcRTFQrNZ6C6Cqmsk2fZJSz0bWqVILM+WsFPvIU+LNglfsCw2+Xdn7Q==
+X-Gm-Gg: ASbGncsyt6XyAriELyVP+LVfePbg5DrBfN0h5/42JJ7tjHvO2mvElkCK6Ftn+DwM73T
+	1FVOc6lDSGi/t/dHWVP9tcAQFxfMYAWVAi+B8vfGUleZkGdf4A1T8cuLK8MBVziYhdVme8PaTYo
+	dvV/4Fttnvk2rePxlqTuTtf6Vy4Mh5YzuVn+21W8Yg3qQIQQ5k4U4lEB3MErE2tYnraOXcxc3An
+	RjDbDSyLL1AiaoRQMjenE7tBQ8StymCwEFMujGc40lSGRjgplyK2qf8Ip/rk5nbSGdKo8k=
+X-Google-Smtp-Source: 
+ AGHT+IEzBweoHpulFnKdbmT2VH733aBk2z/4xl7uDfaCbJkwKi+e159LTB4HThLvP/XBuhefmwh+8fDgK5Uav4bizGI=
+X-Received: by 2002:a17:907:7251:b0:b2b:758f:5273 with SMTP id
+ a640c23a62f3a-b34b7ccb31bmr800281966b.24.1758908969439; Fri, 26 Sep 2025
+ 10:49:29 -0700 (PDT)
+MIME-Version: 1.0
+References: 
+ <CAGL5yWYrNiOf3ZDXGzhuf9YzOO1jTspMVfiw6h7Db_DmkOzMGw@mail.gmail.com>
+ <CAF8qwaBoV0ayqJRfw58SZUngROeV+miDw+wO-AsSzuoLYrRumQ@mail.gmail.com>
+ <f9193b8e-ca1f-21d9-ee50-d0a4be9e7e55@nohats.ca>
+In-Reply-To: <f9193b8e-ca1f-21d9-ee50-d0a4be9e7e55@nohats.ca>
+From: David Benjamin <davidben@chromium.org>
+Date: Fri, 26 Sep 2025 13:49:11 -0400
+X-Gm-Features: AS18NWCqLLTayv0jq8lYHmVNGntt_mj9ryw_2EYz2VUdMXrJDaeOG9pZI6ue2Ys
+Message-ID: 
+ <CAF8qwaDWmVJA3ZWGCmZtt4tDxAPWhuta_EpoGDjCAiNGPFy6KA@mail.gmail.com>
+To: Paul Wouters <paul@nohats.ca>
+Content-Type: multipart/alternative; boundary="00000000000051c731063fb7e871"
+Message-ID-Hash: HBMM3YWELJ7QCTWY7GXCDOI6UHLKHGZZ
+X-Message-ID-Hash: HBMM3YWELJ7QCTWY7GXCDOI6UHLKHGZZ
+X-MailFrom: davidben@google.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+CC: "<tls@ietf.org>" <tls@ietf.org>
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Re=3A_AD_review_draft-ietf-tls-tls13-pkcs1-04?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/wTr-9n-WBetDUbx9G9XP_gPs-vU>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+--00000000000051c731063fb7e871
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Sep 26, 2025 at 9:00=E2=80=AFAM Paul Wouters <paul@nohats.ca> wrote=
+:
+
+> On Thu, 25 Sep 2025, David Benjamin wrote:
+>
+> > Ah thanks! I agree. Took a stab at merging them on GitHub:
+> > https://tlswg.org/tls13-pkcs1/draft-ietf-tls-tls13-pkcs1.html
+> >
+> https://author-tools.ietf.org/api/iddiff?doc_1=3Ddraft-ietf-tls-tls13-pkc=
+s1&url_2=3Dhttps://tlswg.github.io/tls13-pkcs1/draft-ietf-tls-tls13-pkcs1.t=
+xt
+> > Look reasonable? I can cut another draft with the changes.
+>
+> Thanks for the quick response. Yes that looks good, please submit a new
+> draft with this and I'll move the document forward.
+>
+
+Done.
+https://www.ietf.org/archive/id/draft-ietf-tls-tls13-pkcs1-05.html
+
+
+> Paul
+>
+> > On Thu, Sep 25, 2025 at 3:14=E2=80=AFPM Paul Wouters <paul.wouters=3D
+> 40aiven.io@dmarc.ietf.org> wrote:
+> >       Hi,
+> >
+> > In general the document looks fine but I do find the Introduction and
+> Security Considerations to have a lot of overlap in what they talk about.
+> >
+> > I think that could be consolidated by moving and merging all but the
+> last paragraph of the Security Considerations to Section 1, and leave the
+> Security
+> > Considerations to talk about security considerations _when implementing
+> this draft_ (I personally prefer the more detailed text in the Security
+> Considerations
+> > over the Section 1 text describing the same issues but I'm fine with
+> whatever works)
+> >
+> > Paul
+> > _______________________________________________
+> > TLS mailing list -- tls@ietf.org
+> > To unsubscribe send an email to tls-leave@ietf.org
+> >
+> >
+> >
+>
+
+--00000000000051c731063fb7e871
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr">On Fri, Sep 26, 2025 at 9:00=E2=80=AFAM P=
+aul Wouters &lt;<a href=3D"mailto:paul@nohats.ca">paul@nohats.ca</a>&gt; wr=
+ote:</div><div class=3D"gmail_quote gmail_quote_container"><blockquote clas=
+s=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid r=
+gb(204,204,204);padding-left:1ex">On Thu, 25 Sep 2025, David Benjamin wrote=
+:<br>
+<br>
+&gt; Ah thanks! I agree. Took a stab at merging them on GitHub:<br>
+&gt; <a href=3D"https://tlswg.org/tls13-pkcs1/draft-ietf-tls-tls13-pkcs1.ht=
+ml" rel=3D"noreferrer" target=3D"_blank">https://tlswg.org/tls13-pkcs1/draf=
+t-ietf-tls-tls13-pkcs1.html</a><br>
+&gt; <a href=3D"https://author-tools.ietf.org/api/iddiff?doc_1=3Ddraft-ietf=
+-tls-tls13-pkcs1&amp;url_2=3Dhttps://tlswg.github.io/tls13-pkcs1/draft-ietf=
+-tls-tls13-pkcs1.txt" rel=3D"noreferrer" target=3D"_blank">https://author-t=
+ools.ietf.org/api/iddiff?doc_1=3Ddraft-ietf-tls-tls13-pkcs1&amp;url_2=3Dhtt=
+ps://tlswg.github.io/tls13-pkcs1/draft-ietf-tls-tls13-pkcs1.txt</a><br>
+&gt; Look reasonable? I can cut another draft with the changes.<br>
+<br>
+Thanks for the quick response. Yes that looks good, please submit a new<br>
+draft with this and I&#39;ll move the document forward.<br></blockquote><di=
+v><br></div><div>Done.</div><div><a href=3D"https://www.ietf.org/archive/id=
+/draft-ietf-tls-tls13-pkcs1-05.html">https://www.ietf.org/archive/id/draft-=
+ietf-tls-tls13-pkcs1-05.html</a></div><div>=C2=A0</div><blockquote class=3D=
+"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(2=
+04,204,204);padding-left:1ex">
+Paul<br>
+<br>
+&gt; On Thu, Sep 25, 2025 at 3:14=E2=80=AFPM Paul Wouters &lt;paul.wouters=
+=3D<a href=3D"mailto:40aiven.io@dmarc.ietf.org" target=3D"_blank">40aiven.i=
+o@dmarc.ietf.org</a>&gt; wrote:<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0Hi,<br>
+&gt; <br>
+&gt; In general the document looks fine but I do find the Introduction and =
+Security Considerations to have a lot of overlap in what they talk about.<b=
+r>
+&gt; <br>
+&gt; I think that could be consolidated by moving and merging all but the l=
+ast paragraph of the Security Considerations to Section 1, and leave the Se=
+curity<br>
+&gt; Considerations to talk about security considerations _when implementin=
+g this draft_ (I personally prefer the more detailed text in the Security C=
+onsiderations<br>
+&gt; over the Section 1 text describing the same issues but I&#39;m fine wi=
+th whatever works)<br>
+&gt; <br>
+&gt; Paul<br>
+&gt; _______________________________________________<br>
+&gt; TLS mailing list -- <a href=3D"mailto:tls@ietf.org" target=3D"_blank">=
+tls@ietf.org</a><br>
+&gt; To unsubscribe send an email to <a href=3D"mailto:tls-leave@ietf.org" =
+target=3D"_blank">tls-leave@ietf.org</a><br>
+&gt; <br>
+&gt; <br>
+&gt;<br>
+</blockquote></div></div>
+
+--00000000000051c731063fb7e871--
+

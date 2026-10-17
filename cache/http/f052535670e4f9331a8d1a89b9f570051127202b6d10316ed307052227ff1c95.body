@@ -1,0 +1,344 @@
+Return-Path: <Andrei.Popov@microsoft.com>
+X-Original-To: tls@mail2.ietf.org
+Delivered-To: tls@mail2.ietf.org
+Received: from localhost (localhost [127.0.0.1])
+	by mail2.ietf.org (Postfix) with ESMTP id ADB274C4CE8A
+	for <tls@mail2.ietf.org>; Mon, 28 Jul 2025 10:38:06 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at ietf.org
+X-Spam-Flag: NO
+X-Spam-Score: -2.096
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.096 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIMWL_WL_HIGH=-0.001, DKIM_SIGNED=0.1,
+	DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1,
+	HTML_MESSAGE=0.001, RCVD_IN_DNSWL_NONE=-0.0001,
+	RCVD_IN_MSPIKE_H2=0.001, RCVD_IN_VALIDITY_RPBL_BLOCKED=0.001,
+	RCVD_IN_VALIDITY_SAFE_BLOCKED=0.001, SPF_NONE=0.001]
+	autolearn=ham autolearn_force=no
+Authentication-Results: mail2.ietf.org (amavisd-new); dkim=pass (1024-bit key)
+	header.d=microsoft.com
+Received: from mail2.ietf.org ([166.84.6.31])
+	by localhost (mail2.ietf.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id Fuh7Yh71ZbXn for <tls@mail2.ietf.org>;
+	Mon, 28 Jul 2025 10:38:06 -0700 (PDT)
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com
+ (mail-dm3nam02on2131.outbound.protection.outlook.com [40.107.95.131])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mail2.ietf.org (Postfix) with ESMTPS id 5D3344C4CB70
+	for <tls@ietf.org>; Mon, 28 Jul 2025 10:36:57 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=oHniNfSkOQqoDyq+YI5S5lLlGEEuGY45j03JHjMycLWmNOl+HedSYHDb7/0vXxTfP4dikHv2gmML0aDP/6bXTqCmpzf9MU2JXeWlpYxUm0vxhFZw1aZ5LzON95HLYvYe6btNPMBHwoKCWBzMnwI8JEGa/UQJoMrWmNErdY6YueTJHccgLauY+hEO0hcZIF3MfR8O36pDVrCcYBem0Bw7pQ8aYS4flrsYxnImIJLA8ShbkwzMMPPpve4fbSxZw9Dpaznn3hp8v9DqTCe/FsEfmVpozAz1WfGW26DG7nGTgGvwN7DKoUmPLRneiB3uuKokjKVOlrZMOOg0k7Uph51ihQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=UL9DM7caywnoRUBSUJPmOFPB5XmiqkTeivQqXzaVa7Q=;
+ b=CwIta6ljKMQiTUaJJJMPPeDdVNXdovfU+frRSzT1Sit0G0IU7GcXIcMFXAATQQUX2kHh5TcxwELq2DkzrIusFqBTO1hhU3qp3bkIsy8Z99RTmvj+Sd3gPqyPmpHbgai4Vr5azBf8A/AXLTgqy7bAkOm9jfckozVlGHDiz+pgnrfr06qkJKf2+cNISXi2fyZEW1QNIPjgytfpwYOLPTjLCc71urszA+nBhnDB6G6vOssNkHXdKpw1YRvVaLhsQyelUNoAxfGXG4QCRAk6/jFRDG5ZtYDuq/wBZgqcORvFNp7rKFkICzWlohIpO9iTg+/pJXJeuhW+fwbsHoGSoX8FEw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UL9DM7caywnoRUBSUJPmOFPB5XmiqkTeivQqXzaVa7Q=;
+ b=CRJFsNKtoINK9ZzHlVTFKxDr1OyQ7/MNuRMMaV46kEgDT2lit8piMslWUkS73i8l0j4jMRidnlft2WD0Xn/kbLA4/6YbI9Ubu9LMBr0Y97jsPnP4FLFoNv5cJb8cL2Yy8ylECMTYpjQe2yC1g7ZpGqK2vTG2gS0ElghgqPnCPgs=
+Received: from CH8PR21MB5581.namprd21.prod.outlook.com (2603:10b6:610:273::14)
+ by CH4PR21MB4170.namprd21.prod.outlook.com (2603:10b6:610:22c::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8989.7; Mon, 28 Jul
+ 2025 17:36:54 +0000
+Received: from CH8PR21MB5581.namprd21.prod.outlook.com
+ ([fe80::8df4:cfb8:4f47:36e0]) by CH8PR21MB5581.namprd21.prod.outlook.com
+ ([fe80::8df4:cfb8:4f47:36e0%3]) with mapi id 15.20.9009.003; Mon, 28 Jul 2025
+ 17:36:54 +0000
+From: Andrei Popov <Andrei.Popov@microsoft.com>
+To: Sean Turner <sean@sn3rd.com>, TLS List <tls@ietf.org>
+Thread-Topic: [EXTERNAL] [TLS] Re: Working Group Last Call for Legacy
+ RSASSA-PKCS1-v1_5 codepoints for TLS 1.3
+Thread-Index: AQHb/9Ab3jkFiqEDPEi4d2RLfsWVOrRHzKNw
+Date: Mon, 28 Jul 2025 17:36:54 +0000
+Message-ID: 
+ <CH8PR21MB55816B1B6676F1ABF4ABC9C38C5AA@CH8PR21MB5581.namprd21.prod.outlook.com>
+References: <A729C01D-2CFA-48DD-B709-70D3DBB41250@sn3rd.com>
+ <F626C530-EA68-4BE5-B17F-28548791578C@sn3rd.com>
+In-Reply-To: <F626C530-EA68-4BE5-B17F-28548791578C@sn3rd.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: 
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=7fb047da-6344-49df-81a9-58132f59fcff;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2025-07-28T17:36:21Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Tag=10,
+ 3, 0, 1;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: CH8PR21MB5581:EE_|CH4PR21MB4170:EE_
+x-ms-office365-filtering-correlation-id: a35cf8e8-5c92-418c-9492-08ddcdfd57e5
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: 
+ BCL:0;ARA:13230040|366016|376014|1800799024|7053199007|13003099007|38070700018|8096899003;
+x-microsoft-antispam-message-info: 
+ =?us-ascii?Q?jAPvgQ9/b/ztxK3pn3e8QCK8F2tCQK6oT8Oms6GgvwoCmJuqDQCWAENGoUhy?=
+ =?us-ascii?Q?SVmX+4NTbKjrdZjHMdXVS8Ofra48BfR77XTDtq5rlcxcinsxUb5TmtCj9nbA?=
+ =?us-ascii?Q?u6jviUqID5M6iMHqK2i/9n8IZj0sRXZRjfjPNhXHU2Pz3hFuLdwQ0d68f+gL?=
+ =?us-ascii?Q?902Mm9lEsTbC0sQOwQfpz9mqF1q92KY8J3lOsygV3eX2atdO+oKF5CTF5Z36?=
+ =?us-ascii?Q?/xxVPkECNP9n6+qhHGppOO0fbmDLRtOxbd4T7wH3ir8SGNN/U0CnqLsuuC4P?=
+ =?us-ascii?Q?zQAvhhyi3W6JBRFlnmJo/qogMRoTnGDAJQKVwoafZUVtav7JzKbolRJ32ka4?=
+ =?us-ascii?Q?cKAkLTQjV5N0CTtmORhnKd55pb3MRvdKAD7Mr/N+ifGgfYjJWhF1hpHgiKyc?=
+ =?us-ascii?Q?/bILzupK1PbWiD6heab2Y6MTQ+elrUdCTYF9nKbBbHP4UbpTuCzwfsTuvRw7?=
+ =?us-ascii?Q?wE3W1rBLdH/TI/Ynej21IRgFJP2IfAfqPOEuwBePOOZzzZ03TtVtcZOHFBnT?=
+ =?us-ascii?Q?sfGp9R/GBnrUwpqgQ92FIeQvcnB3Z0x9cGepE2rEn9FR6ul7ptUUObvVNypP?=
+ =?us-ascii?Q?HK+ZAx00QHOaWWof0Pv58GbfJ067mPbkxe0CE0k7+C44NYGetOfVss/a/jd4?=
+ =?us-ascii?Q?wLDrT8x3sp4WhHV/JsVdlVYAJti0cHgiR1hqUNxchmwhlDPItRQnTpRQDAT1?=
+ =?us-ascii?Q?/5iiIQBhk8FSAJKyXzd8HC8LWpQvXHwe/CA+zav3Gaall0UaHQnP4YDh+dru?=
+ =?us-ascii?Q?AbzuUDbjS7qMSJZLHHrrwAxSbDnZkcZYc5+8CicKtqrLiiGL0GHvG2m9Ls+i?=
+ =?us-ascii?Q?Wl7X5rmpEX372gEQbcIMwau4r4LAt35tNwjO3VmoqfovPYMzXSYNtzDeq+DP?=
+ =?us-ascii?Q?WWS0LLe5KgJN/JMcWf75MFeu6yFEmr1FeHHqoIyEF1OyhuHUR+BQDSLYV1ST?=
+ =?us-ascii?Q?QjkMIX3ryblhIxWZooz3OnQqTeXzDfj6N+V0nkBEO7FUMYGPu7z1Su41+rlB?=
+ =?us-ascii?Q?W9/DO236s/9Rw8XXC/HsXNyxtdyYFwiDuXxKU6GcnSfrBDgOs81IRTfGKpco?=
+ =?us-ascii?Q?Ogu5uqvu+wi3LL5Cly5FwpzNPFl3PCIXq9NUGGD1s89gwL71V4HbIyvVdFt8?=
+ =?us-ascii?Q?AggIIKWTjIyOAZV12SRHEh6OO1XFtj854qFu2f7dYhXoHIyVYVgge/regMiz?=
+ =?us-ascii?Q?hYnkk59lZ+lp9hDynKGDY44Laqtz6+gx+8tOLSGOsNMQOO2Bhj+3je//Opdb?=
+ =?us-ascii?Q?37kEgQDJ9V5MiJxuCAqkCY+EbUkttd3n2hVu1FYQWZpAeNgHIfgyyUJUoMzF?=
+ =?us-ascii?Q?XaE1Efj7TRMLHCFOq1G94/5ok0hndt378FjR5FiBzsYZjav2p0r3btjMXiMB?=
+ =?us-ascii?Q?Zl9ConvLlWiAUKMMnvHT7n/uNcKkb5pKNPB0jQ8IyRWLCZBlMMGq1x417a6T?=
+ =?us-ascii?Q?JFfShJpwekbEMV8dhy1PwtG172sr+NdgQccZ061zHn/b55t+gQpRRQ=3D=3D?=
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH8PR21MB5581.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024)(7053199007)(13003099007)(38070700018)(8096899003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?us-ascii?Q?WW1yKDf33bzUfiyWAREl8tbasjoSJDZwN9AviwA9vWv2f8NbeyP/oC6jeoRH?=
+ =?us-ascii?Q?Og72XMlKLpr+Y+2ZsPMjsSDb3NRUopXQk5dorWLOVQjNiz/MgfX2zqC9p2p1?=
+ =?us-ascii?Q?kv5+1XwnlkbneHYBzCEAbe6i4JptaPFJDgPu56q+QJ9vWTXbHouJz/EHQPZV?=
+ =?us-ascii?Q?gtFDItIqHSzxYfylYlYfw9fRNssWlAQGbF2BgjQVw2kCCLOpvcqyLMLxaZ92?=
+ =?us-ascii?Q?pEzCoOKK/PSN3H0EicnlOdb0/P7yh8oqiiJqHwDEHU4Cf/uGWp3iQir3btu0?=
+ =?us-ascii?Q?HsrFh5UJf5+/9Br8oKvgbEOc0LsQRTaWg3cmQeNKZGC+5vR9dH400YpI62BH?=
+ =?us-ascii?Q?7wJLCFA4DZdVpBJHeUkAXQPMp1sQJPZBh0L/ZP5sdK1x2rGx1FFbU5m/E7kH?=
+ =?us-ascii?Q?XDwu77mWx1ogJ9kbNEjLGJHc0033jgZVYXykDRB/+eBT3EeTQ5FOiJlbSDJ3?=
+ =?us-ascii?Q?dNpG1HekzGQtcRYXg3JCi7hBwziIcQzjgImCgTjtXgJJvTP4SnM14rraNCJl?=
+ =?us-ascii?Q?tqXa+tqikQ3K+fURBqTcx+baqmLgO9KjU6AngxGukxCWppaMQEd++5WSAdGL?=
+ =?us-ascii?Q?CSgFhWr45sQsu7yWazIW9j4H69g0IfsogWNTifBcProUsCgGW61/GMHAuj70?=
+ =?us-ascii?Q?/8W2NcD60ggzwPlDjyIdgqy5F9gElmBmqwIW9cMGcaFS4pRgcQIt/dAEMAy4?=
+ =?us-ascii?Q?HI/Cwy9SbfmOFIA8fRBTV9Q3OJ8BY/KgeY+tUaMisKwIBZk7+L1ew1obcnL6?=
+ =?us-ascii?Q?vfl8ZkcfpDiRC0zIKbNBfaX2Bb9VkI9S75rxiJrClHFomYGJZpKWgaCOCveK?=
+ =?us-ascii?Q?TEKnInxi8NPF0e/xcSa0MZw8gTfryPx6/2MGd0eMxSYHRHaC1wipgP7obQWr?=
+ =?us-ascii?Q?AJfKO3uE9N/JEgRiGg/+wHv7qHsHdx4UrRheIyOkhhtXWM5t/iZlud+o43Lc?=
+ =?us-ascii?Q?WGc3YsqAoty6qPD7Yj5K1J6dK8ktsZI5wdfb8LGpqMEGrl7d4rjz9wt2HEYv?=
+ =?us-ascii?Q?LL0LPydGcO0O/mIXKspCLUpD28hIfuhtiDcXLWG0OPThn8Nuz/t+nuGLVx3H?=
+ =?us-ascii?Q?szr69u/uSiJSzkkwNc+gnGNvxnUIPxfIv2esgHzyPI1KtjNeFrJwo8Y1uBA3?=
+ =?us-ascii?Q?4H6vACtUaIpz4skOTEoNQsdy16XYTg2bdNuXr2NewV45b2pwjIXSoZKTwtwz?=
+ =?us-ascii?Q?iOq2DPQtpIrjxsXTKFVtwNmcXimagkXLajybh4q0FmnXc+hZduChqijg9EcE?=
+ =?us-ascii?Q?DNjgpasw0wqME+fEx4iOIHJRbJfB/K4NLjo7719bL4Gh4Ixpr0jHCzBbVdYf?=
+ =?us-ascii?Q?Ddog498XVMOMsjim8EG+7Xqv/WcGrqWGitvVZvW5vn8cQgrDKk/Su0tlsvXy?=
+ =?us-ascii?Q?UUdmYmsMu6kgs9+z1tWhmc+BJfZPlPbe8fKLy+DYHVGhbAPxd34QFMVeaR3q?=
+ =?us-ascii?Q?x3dUly59Wb8G6a2gsoqlRlyJK2d3jHO+EMn47F+ZEz0ZhUV9vB2WM3wglJZU?=
+ =?us-ascii?Q?3qCq6XnsIRYxKpcRQa9kSXybbgDuKKk7LY096c5/zb8zZK3Ih2JVXkQzay2P?=
+ =?us-ascii?Q?BigBy+zE/uliLc1JYDjLJ8FHAtIOL/uyurPHzWsH?=
+Content-Type: multipart/alternative;
+	boundary="_000_CH8PR21MB55816B1B6676F1ABF4ABC9C38C5AACH8PR21MB5581namp_"
+MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CH8PR21MB5581.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ a35cf8e8-5c92-418c-9492-08ddcdfd57e5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jul 2025 17:36:54.1125
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 
+ QQbllBOxPDqwQ3V5TE7FXnOhST6eIkKTjY6qAItUVQjthfp+nK6JXOcE9uoVU4Z2Ilk1E5yZqjt/SxlQ8lWgCw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH4PR21MB4170
+Message-ID-Hash: UB6NBPL5ZIKQADFJLWP535H77K2RIA4V
+X-Message-ID-Hash: UB6NBPL5ZIKQADFJLWP535H77K2RIA4V
+X-MailFrom: Andrei.Popov@microsoft.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Re=3A_=5BEXTERNAL=5D_Re=3A_Working_Group_Last_Call_for_L?=
+ =?utf-8?q?egacy_RSASSA-PKCS1-v1=5F5_codepoints_for_TLS_1=2E3?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/DO0RtBnsNfDg2s8hiGgefFX7Vc0>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+--_000_CH8PR21MB55816B1B6676F1ABF4ABC9C38C5AACH8PR21MB5581namp_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+As a co-author, I believe it's ready for publication.
+
+Cheers,
+
+Andrei
+
+From: Sean Turner <sean@sn3rd.com>
+Sent: Monday, July 28, 2025 7:57 AM
+To: TLS List <tls@ietf.org>
+Subject: [EXTERNAL] [TLS] Re: Working Group Last Call for Legacy RSASSA-PKC=
+S1-v1_5 codepoints for TLS 1.3
+
+
+On Jul 24, 2025, at 03:00, Sean Turner <sean@sn3rd.com<mailto:sean@sn3rd.co=
+m>> wrote:
+
+This is the working group last call for Legacy RSASSA-PKCS1-v1_5 codepoints=
+ for TLS 1.3. Please review draft-ietf-tls-tls13-pkcs1 [1] and reply to thi=
+s thread indicating if you think it is ready for publication or not.  If yo=
+u do not think it is ready please indicate why.  This call will end on at 2=
+359 UTC on 07 August 2024.
+
+Cheers,
+spt
+
+[1] https://datatracker.ietf.org/doc/draft-ietf-tls-tls13-pkcs1/
+
+Just a reminder that this is still on-going (and this time with the correct=
+ link).
+
+spt
+
+
+--_000_CH8PR21MB55816B1B6676F1ABF4ABC9C38C5AACH8PR21MB5581namp_
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-micr=
+osoft-com:office:office" xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" xmlns=3D"http:=
+//www.w3.org/TR/REC-html40">
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dus-ascii"=
+>
+<meta name=3D"Generator" content=3D"Microsoft Word 15 (filtered medium)">
+<style><!--
+/* Font Definitions */
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+@font-face
+	{font-family:Aptos;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	font-size:12.0pt;
+	font-family:"Aptos",sans-serif;}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:blue;
+	text-decoration:underline;}
+span.EmailStyle19
+	{mso-style-type:personal-reply;
+	font-family:"Aptos",sans-serif;
+	color:windowtext;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	font-size:10.0pt;
+	mso-ligatures:none;}
+@page WordSection1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.0in 1.0in 1.0in;}
+div.WordSection1
+	{page:WordSection1;}
+--></style><!--[if gte mso 9]><xml>
+<o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
+</xml><![endif]--><!--[if gte mso 9]><xml>
+<o:shapelayout v:ext=3D"edit">
+<o:idmap v:ext=3D"edit" data=3D"1" />
+</o:shapelayout></xml><![endif]-->
+</head>
+<body lang=3D"EN-US" link=3D"blue" vlink=3D"purple" style=3D"word-wrap:brea=
+k-word">
+<div class=3D"WordSection1">
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt">As a co-author, I b=
+elieve it&#8217;s ready for publication.<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt"><o:p>&nbsp;</o:p></=
+span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt">Cheers,<o:p></o:p><=
+/span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt"><o:p>&nbsp;</o:p></=
+span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt">Andrei<o:p></o:p></=
+span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt"><o:p>&nbsp;</o:p></=
+span></p>
+<div>
+<div style=3D"border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0in =
+0in 0in">
+<p class=3D"MsoNormal"><b><span style=3D"font-size:11.0pt;font-family:&quot=
+;Calibri&quot;,sans-serif">From:</span></b><span style=3D"font-size:11.0pt;=
+font-family:&quot;Calibri&quot;,sans-serif"> Sean Turner &lt;sean@sn3rd.com=
+&gt;
+<br>
+<b>Sent:</b> Monday, July 28, 2025 7:57 AM<br>
+<b>To:</b> TLS List &lt;tls@ietf.org&gt;<br>
+<b>Subject:</b> [EXTERNAL] [TLS] Re: Working Group Last Call for Legacy RSA=
+SSA-PKCS1-v1_5 codepoints for TLS 1.3<o:p></o:p></span></p>
+</div>
+</div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<div>
+<blockquote style=3D"margin-top:5.0pt;margin-bottom:5.0pt">
+<div>
+<p class=3D"MsoNormal">On Jul 24, 2025, at 03:00, Sean Turner &lt;<a href=
+=3D"mailto:sean@sn3rd.com">sean@sn3rd.com</a>&gt; wrote:<o:p></o:p></p>
+</div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<div>
+<div>
+<p class=3D"MsoNormal">This is the working group last call for Legacy RSASS=
+A-PKCS1-v1_5 codepoints for TLS 1.3. Please review draft-ietf-tls-tls13-pkc=
+s1 [1] and reply to this thread indicating if you think it is ready for pub=
+lication or not. &nbsp;If you do not think
+ it is ready please indicate why. &nbsp;This call will end on at 2359 UTC o=
+n 07 August 2024.<br>
+<br>
+Cheers,<br>
+spt<o:p></o:p></p>
+</div>
+</div>
+</blockquote>
+</div>
+<div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">[1]&nbsp;<a href=3D"https://datatracker.ietf.org/doc=
+/draft-ietf-tls-tls13-pkcs1/">https://datatracker.ietf.org/doc/draft-ietf-t=
+ls-tls13-pkcs1/</a><o:p></o:p></p>
+</div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<div>
+<p class=3D"MsoNormal">Just a reminder that this is still on-going (and thi=
+s time with the correct link).<o:p></o:p></p>
+<div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">spt<o:p></o:p></p>
+</div>
+</div>
+<div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+</div>
+</div>
+</body>
+</html>
+
+--_000_CH8PR21MB55816B1B6676F1ABF4ABC9C38C5AACH8PR21MB5581namp_--
+

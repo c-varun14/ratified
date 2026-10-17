@@ -1,0 +1,567 @@
+Return-Path: <adam@nostrum.com>
+X-Original-To: tls@ietf.org
+Delivered-To: tls@ietfa.amsl.com
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 4FC71126D3F;
+ Wed,  7 Mar 2018 00:58:20 -0800 (PST)
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+From: Adam Roach <adam@nostrum.com>
+To: "The IESG" <iesg@ietf.org>
+Cc: draft-ietf-tls-tls13@ietf.org, Sean Turner <sean@sn3rd.com>,
+ tls-chairs@ietf.org, sean@sn3rd.com, tls@ietf.org
+X-Test-IDTracker: no
+X-IETF-IDTracker: 6.74.0
+Auto-Submitted: auto-generated
+Precedence: bulk
+Message-ID: <152041310032.17609.1489959489741770597.idtracker@ietfa.amsl.com>
+Date: Wed, 07 Mar 2018 00:58:20 -0800
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/ojSd8LA6s-vS14Yupip3CeG_U5I>
+Subject: [TLS] Adam Roach's Yes on draft-ietf-tls-tls13-26: (with COMMENT)
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Wed, 07 Mar 2018 08:58:20 -0000
+
+Adam Roach has entered the following ballot position for
+draft-ietf-tls-tls13-26: Yes
+
+When responding, please keep the subject line intact and reply to all
+email addresses included in the To and CC lines. (Feel free to cut this
+introductory paragraph, however.)
+
+
+Please refer to https://www.ietf.org/iesg/statement/discuss-criteria.html
+for more information about IESG DISCUSS and COMMENT positions.
+
+
+The document, along with other ballot positions, can be found here:
+https://datatracker.ietf.org/doc/draft-ietf-tls-tls13/
+
+
+
+----------------------------------------------------------------------
+COMMENT:
+----------------------------------------------------------------------
+
+Thanks to the many pages of people who worked on this document. The result is
+surprisingly clear and easy to understand. I'm excited to see TLS 1.3 complete,
+and look forward to its widespread deployment.
+
+I have a handful of substantive comments (which may be as much as result of my
+unfamiliarity with some of the underlying technologies), followed by several
+editorial nits.
+
+===========================================================================
+Substantive Comments
+---------------------------------------------------------------------------
+
+Abstract:
+
+This document obsoletes 5077, 5246, and 6961; and updates 4492, 5705, and 6066.
+Please mention these in the abstract; see
+<https://ietf.org/standards/ids/checklist/> §3.1.D
+
+---------------------------------------------------------------------------
+
+§4.2.1:
+
+>  TLS SHOULD support TLS 1.2.  Servers should be prepared to receive
+>  ClientHellos that include this extension but do not include 0x0304 in
+>  the list of versions.
+
+This "should" reads as if it should be normative. It also seems that making this
+"should" instead of "MUST" could result in the same "can't negotiate to earlier
+versions" implementation situation that is mentioned elsewhere in the document.
+Consider a server that supports TLS 1.2 and TLS 1.3. It receives a ClientHello
+from a client that supports TLS 1.2 and a future TLS 1.4. Let's postulate that
+this client doesn't support 1.3 (say, because of some uncurable flaw that
+exists in 1.3, but not in 1.2 or 1.4). If the server isn't prepared to deal
+with this situation, we end up in the same "can't move versions forward"
+corner that led to freezing the legacy version string at 0x0303.
+
+---------------------------------------------------------------------------
+
+§4.2.3:
+
+>         /* Reserved Code Points */
+>         private_use(0xFE00..0xFFFF),
+>         (0xFFFF)
+>     } SignatureScheme;
+
+When a node supports both TLS 1.2 and TLS 1.3, this private use space only
+allows for the definition of two private-use hashes that can be used in both
+circumstances (as only 0xFE and 0xFF will be recognized by 1.2 as specifying
+hashes). I don't know what the use cases for this private use space is; but
+given the relatively generous allocation in RFC 5246, is two going to be enough?
+
+---------------------------------------------------------------------------
+
+§5.5:
+
+>  There are cryptographic limits on the amount of plaintext which can
+>  be safely encrypted under a given set of keys.  [AEAD-LIMITS]
+>  provides an analysis of these limits under the assumption that the
+>  underlying primitive (AES or ChaCha20) has no weaknesses.
+>  Implementations SHOULD do a key update as described in Section 4.6.3
+>  prior to reaching these limits.
+
+Implementing this "SHOULD" is predicated on understanding the contents of
+[AEAD-LIMITS], which means [AEAD-LIMITS] needs to be a normative reference.
+
+---------------------------------------------------------------------------
+
+§11:
+
+>  -  TLS SignatureScheme Registry: Values with the first byte in the
+>     range 0-253 (decimal) are assigned via Specification Required
+>     [RFC8126].  Values with the first byte 254 or 255 (decimal) are
+>     reserved for Private Use [RFC8126].  Values with the first byte in
+>     the range 0-6 or with the second byte in the range 0-3 that are
+>     not currently allocated are reserved for backwards compatibility.
+
+Unless I misunderstand the compatibility mechanisms here, the reservation of
+first byte=0-6 seems to assume that no further assignments will be made from
+the "TLS HashAlgorithm Registry" (after 4492bis lands). If this is the case, I
+would expect the IANA considerations section to include a request that the IANA
+close the table to further registrations. The same comment applies to TLS
+SignatureAlgorithm Registry.
+
+---------------------------------------------------------------------------
+
+Appendix B:
+
+This is a consolidation of the structures found in the document. Presumably,
+Appendix B is normative and the other versions are illustrative? To help deal
+with the possibility of conflicts between the two versions, it would be nice if
+this were stated explicitly.
+
+===========================================================================
+Editorial Nits
+---------------------------------------------------------------------------
+
+General:
+
+  ** There are 33 instances of too long lines in the document, the longest
+     one being 8 characters in excess of 72.
+
+---------------------------------------------------------------------------
+
+General:
+
+Although both "implementor" and "implementer" are acceptable spellings,
+it is unusual for a document to switch back and forth. I recommend consistency.
+
+---------------------------------------------------------------------------
+
+§1:
+
+>  the protocol attributes used to negotiate Elliptic Curves.  Because
+>  TLS 1.3 changes the way keys are derived it updates [RFC5705] as
+
+"...derived, it..."
+
+>  described in Section 7.5 it also changes how OCSP messages are
+
+"...Section 7.5. It also..."
+
+---------------------------------------------------------------------------
+
+§1.3:
+
+>  -  Elliptic curve algorithms are now in the base spec and includes
+>     new signature algorithms, such as ed25519 and ed448.  TLS 1.3
+
+s/includes/include/
+
+---------------------------------------------------------------------------
+
+§3.4:
+
+>  All values, here and elsewhere in the specification, are stored in
+>  network byte (big-endian) order; the uint32 represented by the hex
+
+s/stored/transmitted/
+
+---------------------------------------------------------------------------
+
+§4.2.3:
+
+>  RSASSA-PSS PSS algorithms  Indicates a signature algorithm using
+>     RSASSA-PSS [RFC8017] with mask generation function 1.  The digest
+>     used in the mask generation function and the digest being signed
+>     are both the corresponding hash algorithm as defined in [SHS].
+>     The length of the salt MUST be equal to the length of the digest
+>     algorithm.  If the public key is carried in an X.509 certificate,
+>     it MUST use the RSASSA-PSS OID [RFC5756].  When used in
+>     certificate signatures, the algorithm parameters MUST be DER
+>     encoded.  If the corresponding public key's parameters present,
+
+"...parameters are present,..."
+
+---------------------------------------------------------------------------
+
+§4.2.6:
+
+>  The "post_handshake_auth" extension is used to indicate that a client
+>  is willing to perform post-handshake authentication Section 4.6.2.
+
+"...authentication (Section 4.6.2)."
+
+---------------------------------------------------------------------------
+
+§4.2.11.1:
+
+>  The client's view of the age of a ticket is the time since the
+>  receipt of the NewSessionTicket message.  Clients MUST NOT attempt to
+>  use tickets which have ages greater than the "ticket_lifetime" value
+>  which was provided with the ticket.  The "obfuscated_ticket_age"
+>  field of each PskIdentity contains an obfuscated version of the
+>  ticket age formed by taking the age in milliseconds and adding the
+>  "ticket_age_add" value that was included with the ticket, see
+>  Section 4.6.1 modulo 2^32.
+
+"...the ticket (see Section 4.1.6), modulo 2^32."
+
+---------------------------------------------------------------------------
+
+§4.4.3:
+
+>  The context string for a server signature is "TLS 1.3, server
+>  CertificateVerify" and for a client signature is "TLS 1.3, client
+>  CertificateVerify".  It is used to provide separation between
+>  signatures made in different contexts, helping against potential
+>  cross-protocol attacks.
+
+Although the example makes it clear, the preceding is the normative description
+of behavior. Since the limitations of the RFC format result in line wrapping in
+the middle of two strings that must be bit exact for the protocol to function,
+it is probably worthwhile setting them off on their own lines so that they don't
+contain extra line feeds and indenting spaces.
+
+---------------------------------------------------------------------------
+
+§7.4.1:
+
+>  For finite field groups, a conventional Diffie-Hellman computation is
+>  performed.  The negotiated key (Z) is converted to a byte string by
+>  encoding in big-endian and padded with zeros up to the size of the
+>  prime.
+
+Presumably "...and left padded...", correct?
+
+---------------------------------------------------------------------------
+
+§12.2:
+
+>  [DOW92]    Diffie, W., van Oorschot, P., and M. Wiener,
+>             ""Authentication and authenticated key exchanges"",
+>             Designs, Codes and Cryptography , 1992.
+
+The ""quoting"" here is odd
+
+>  [HCJ16]    Husak, M., &#268;ermak, M., Jirsik, T., and P.
+>             &#268;eleda, "HTTPS traffic analysis and client
+>             identification using passive SSL/TLS fingerprinting",
+>             EURASIP Journal on Information Security Vol. 2016,
+>             DOI 10.1186/s13635-016-0030-7, February 2016.
+
+s/&268;/"/g
+
+---------------------------------------------------------------------------
+
+§12.3:
+
+This section seems superfluous.
+
+---------------------------------------------------------------------------
+
+§E.1.1:
+
+>  more invocations of HKDF-Expand.  This ordering should always be
+>  followed (including in future revisions of this document), in
+>  particular, one SHOULD NOT use an output of HKDF-Extract as an input
+
+"...of this document); in particular, one..."
+                     ^
+
+---------------------------------------------------------------------------
+
+§E.6:
+
+>  Although TLS 1.3 does not use RSA key transport and so is not
+>  directly susceptible to Bleichenbacher-type attacks
+
+It seems that this should cite "Chosen ciphertext attacks against protocols
+based on the RSA encryption standard PKCS #1".
+
+===========================================================================
+
+General (deferred to the end due to length):
+
+As a rule of thumb, "that" is used to start restrictive clauses ("Two doors
+are in front of you. The door that is on the right leads outside"), while
+"which" is used to start non-restrictive clauses ("The only door in the room,
+which is made of wood, leads outside.") This document uses "which" where "that"
+is called for in numerous locations. Although there are several more than listed
+below, I'm highlighting the locations where a literal reading of "which"
+technically leads to ambiguity. Each instance has a leading line for context
+(except those that occur at the beginning of a paragraph).
+
+§1.1:
+>    server: The endpoint which did not initiate the TLS connection.
+
+§1.3:
+>       favor of a version list in an extension.  This increases
+>       compatibility with servers which incorrectly implemented version
+
+§4:
+>    Protocol messages MUST be sent in the order defined in Section 4.4.1
+>    and shown in the diagrams in Section 2.  A peer which receives a
+
+§4.1.2:
+>       alert.  Note that TLS 1.3 servers might receive TLS 1.2 or prior
+>       ClientHellos which contain other compression methods and MUST
+
+§4.1.3:
+>    cipher_suite  The single cipher suite selected by the server from the
+>       list in ClientHello.cipher_suites.  A client which receives a
+
+>    TLS 1.3 has a downgrade protection mechanism embedded in the server's
+>    random value.  TLS 1.3 servers which negotiate TLS 1.2 or below in
+
+§4.1.4:
+>    compute partial hash transcripts for multiple hashes in the second
+>    ClientHello.  A client which receives a cipher suite that was not
+
+§4.2.1:
+>    The "supported_versions" extension is used by the client to indicate
+>    which versions of TLS it supports and by the server to indicate which
+
+>    Implementations of this specification MUST send this extension
+>    containing all versions of TLS which they are prepared to negotiate
+
+>    If this extension is not present, servers which are compliant with
+
+>    version prior to TLS 1.2 if one side supports a sparse range.
+>    Implementations of TLS 1.3 which choose to support prior versions of
+
+>    A server which negotiates a version of TLS prior to TLS 1.3 MUST set
+
+>    ServerHello.version and MUST NOT send the "supported_versions"
+>    extension.  A server which negotiates TLS 1.3 MUST respond by sending
+
+§4.2.3:
+>    present, then the "signature_algorithms" extension also applies to
+>    signatures appearing in certificates.  Clients which desire the
+
+>    The "signature_algorithms_cert" extension was added to allow
+>    implementations which supported different sets of algorithms for
+
+>    TLS 1.2 implementations SHOULD also process this extension.
+>    Implementations which have the same policy in both cases MAY omit the
+
+>    takes as input an arbitrary-length message, rather than a digest.
+>    Algorithms which traditionally act on a digest should be defined in
+
+>       as defined in [SHS].  These values refer solely to signatures
+>       which appear in certificates (see Section 4.4.2.2) and are not
+
+>    Legacy algorithms  Indicates algorithms which are being deprecated
+
+>       RSASSA-PKCS1-v1_5 or ECDSA.  These values refer solely to
+>       signatures which appear in certificates (see Section 4.4.2.2) and
+
+§4.2.4:
+>    [RFC6066], but is more complicated, is not used in TLS 1.3 (although
+>    it may appear in ClientHello messages from clients which are offering
+
+§4.2.5:
+>    The "oid_filters" extension allows servers to provide a set of OID/
+>    value pairs which it would like the client's certificate to match.
+
+§4.2.6:
+>    Servers MUST NOT send a post-handshake CertificateRequest to clients
+>    which do not offer this extension.  Servers MUST NOT send this
+
+§4.2.7:
+>    When sent by the client, the "supported_groups" extension indicates
+>    the named groups which the client supports for key exchange, ordered
+
+§4.2.8:
+>    MUST verify that (1) the selected_group field corresponds to a group
+>    which was provided in the "supported_groups" extension in the
+
+>    original ClientHello; and (2) the selected_group field does not
+>    correspond to a group which was provided in the "key_share" extension
+
+§4.2.10:
+>    NewSessionTicket message, the associated values are those which were
+>    negotiated in the connection which established the PSK.  The PSK used
+
+>    A server which receives an "early_data" extension MUST behave in one
+
+§4.2.11.1:
+>    receipt of the NewSessionTicket message.  Clients MUST NOT attempt to
+>    use tickets which have ages greater than the "ticket_lifetime" value
+
+>    use tickets which have ages greater than the "ticket_lifetime" value
+>    which was provided with the ticket.  The "obfuscated_ticket_age"
+
+§4.2.11.2:
+>    message (Section 4.4.4) but with the BaseKey being the binder_key
+>    derived via the key schedule from the corresponding PSK which is
+
+
+§4.3.2:
+>    A server which is authenticating with a certificate MAY optionally
+
+>    certificate_request_context  An opaque string which identifies the
+
+>    certificate_request_context  An opaque string which identifies the
+>       certificate request and which will be echoed in the client's
+
+>    In prior versions of TLS, the CertificateRequest message carried a
+>    list of signature algorithms and certificate authorities which the
+
+>    Servers which are authenticating with a PSK MUST NOT send the
+
+§4.4.2:
+>    potentially extraneous certificates and arbitrary orderings from any
+>    TLS version, with the exception of the end-entity certificate which
+
+
+§4.4.2.4:
+>    Any endpoint receiving any certificate which it would need to
+
+>    and it is RECOMMENDED that any endpoint receiving any certificate
+>    which it would need to validate using any signature algorithm using a
+
+
+§4.6.1:
+>    Note that in principle it is possible to continue issuing new tickets
+>    which indefinitely extend the lifetime of the keying material
+
+
+§4.6.2:
+>    CertificateRequest and receiving a response.  In addition, clients
+>    which receive multiple CertificateRequests in close succession MAY
+
+§4.6.3:
+>    record.  This mechanism allows either side to force an update to the
+>    entire connection, but causes an implementation which receives
+
+§5:
+>    condition prior to attempting to deprotect the record.  An
+>    implementation which receives any other change_cipher_spec value or
+
+>    implementation which receives any other change_cipher_spec value or
+>    which receives a protected change_cipher_spec record MUST abort the
+
+§5.5:
+>    There are cryptographic limits on the amount of plaintext which can
+
+§6:
+>    Note: TLS defines two generic alerts (see Section 6) to use upon
+>    failure to parse a message.  Peers which receive a message which
+
+>    length) MUST terminate the connection with a "decode_error" alert.
+>    Peers which receive a message which is syntactically correct but
+
+§6.2:
+>    bad_record_mac  This alert is returned if a record is received which
+
+§7:
+>    The TLS handshake establishes one or more input secrets which are
+
+§8:
+>       attempting to retry requests.  However, 0-RTT adds an additional
+>       dimension for any server system which does not maintain globally
+
+>    operation, clients will not know which, if any, of these mechanisms
+>    servers actually implement and hence MUST only send early data which
+
+§8.2:
+>    long as any portion of their recording window overlaps the startup
+>    time.  Otherwise, they run the risk of accepting replays which were
+
+§8.3:
+>    number of ClientHellos and is a useful optimization for single-use
+>    tickets because it allows efficient rejection of ClientHellos which
+
+§9.2:
+>    Servers receiving a ClientHello which does not conform to these
+
+§9.3:
+>    -  A middlebox which terminates a TLS connection MUST behave as a
+
+>       compliant TLS server (to the original client), including having a
+>       certificate which the client is willing to accept, and as a
+
+>       apply to the two connections separately.  Safely deploying a TLS
+>       terminator requires additional security considerations which are
+
+>    -  An middlebox which forwards ClientHello parameters it does not
+
+§A:
+>    e.g., START) have no formal meaning but are provided for ease of
+>    comprehension.  Actions which are taken only in certain circumstances
+
+
+§C.3:
+>    -  As a server, do you send a HelloRetryRequest to clients which
+
+§D:
+>    the master secret.  Because TLS 1.3 always hashes in the transcript
+>    up to the server CertificateVerify, implementations which support
+
+§E.1:
+>    transitively includes the original handshake transcript, because that
+>    transcript is digested into the values which produce the Resumption
+
+>    If an exporter is used, then it produces values which are unique and
+
+>    similar security properties.  Note that they do not include the
+>    client's certificate; future applications which wish to bind to the
+
+§E.2:
+>    Integrity.  An attacker should not be able to craft a new record
+>       which is different from an existing record which will be accepted
+
+>    Order protection/non-replayability  An attacker should not be able to
+>       cause the receiver to accept a record which it has already
+
+>    sequence number being maintained independently at both sides thus
+>    records which are delivered out of order result in AEAD deprotection
+
+>    TLS does not provide security for data which is communicated on a
+
+>    an attacker who learns a traffic secret can compute all future
+>    traffic secrets on that connection.  Systems which want such
+
+§E.5:
+>    -  Duplication of actions which cause side effects (e.g., purchasing
+
+>    data from being accepted multiple times by any cluster with
+>    consistent state; for servers which limit the use of 0-RTT to one
+
+>    window.  Because clients do not know the exact details of server
+>    behavior, they MUST NOT send messages in early data which are not
+
+>    behavior, they MUST NOT send messages in early data which are not
+>    safe to have replayed and which they would not be willing to retry
+
+§E.5.1:
+>    Replays of the ClientHello produce the same early exporter, thus
+>    requiring additional care by applications which use these exporters.
+
+

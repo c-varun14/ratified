@@ -1,0 +1,394 @@
+From davidben@google.com  Thu Jan 18 13:26:45 2024
+Return-Path: <davidben@google.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 2D51FC14F6E3
+ for <tls@ietfa.amsl.com>; Thu, 18 Jan 2024 13:26:45 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -14.257
+X-Spam-Level: 
+X-Spam-Status: No, score=-14.257 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIMWL_WL_HIGH=-0.001, DKIM_SIGNED=0.1,
+ DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1,
+ HEADER_FROM_DIFFERENT_DOMAINS=0.249, HTML_MESSAGE=0.001,
+ RCVD_IN_DNSWL_HI=-5, RCVD_IN_ZEN_BLOCKED_OPENDNS=0.001,
+ SPF_HELO_NONE=0.001, SPF_PASS=-0.001, T_SCC_BODY_TEXT_LINE=-0.01,
+ URIBL_BLOCKED=0.001, URIBL_DBL_BLOCKED_OPENDNS=0.001,
+ URIBL_ZEN_BLOCKED_OPENDNS=0.001, USER_IN_DEF_SPF_WL=-7.5]
+ autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=chromium.org
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id jhHjbRU1DmaL for <tls@ietfa.amsl.com>;
+ Thu, 18 Jan 2024 13:26:40 -0800 (PST)
+Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com
+ [IPv6:2607:f8b0:4864:20::1129])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id AF144C14EB17
+ for <tls@ietf.org>; Thu, 18 Jan 2024 13:26:40 -0800 (PST)
+Received: by mail-yw1-x1129.google.com with SMTP id
+ 00721157ae682-5f0c0ca5ef1so858307b3.2
+ for <tls@ietf.org>; Thu, 18 Jan 2024 13:26:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=chromium.org; s=google; t=1705613200; x=1706218000; darn=ietf.org;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=4buVA+22fupBh+f0r/GDDk18YQIUg8mMW4hdbajeBO8=;
+ b=drjlTDAdDAQJ+SHp9FmoR6G1CCidVdKbukkfxlWzev4GV0W3+Nj93KO3t+n9ERez9p
+ S2n8y7QvQbjP6lU3lW6f3trHS7wzERZPq0ocl+2Kq7ssG4m2GnayxtMNcigJGJ7sCoHb
+ D+9B5hkAz86TLQ54oT2G/8Fg+PsdgzIvIhhEc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1705613200; x=1706218000;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=4buVA+22fupBh+f0r/GDDk18YQIUg8mMW4hdbajeBO8=;
+ b=hj/68zJ6MoZUs4rdDDCcyD/JIBMv3qlWMRXhvkKfE/b20NAxMQfHgk9HgpTZ6h794y
+ 9gXofx4T24DBpcaDsw16oTAW2ZFBIxA04pBvksCLumHuXdjODDRSMKPFAEdE7Sk/SNBy
+ 7gUbuHTw8mMwFC8b2YHNx14M4kXUnl1RfAJzsVlJAmFltFWBHNEr7Oy5FqGDmXG0K29L
+ ESGPHzJrGR0KtCNkt+VG5tOW94xAy6lzIpxI2BdsUgrpBJagUZPSMaz/LThkPE7hQCwi
+ yNgIaMaU1W/rSFeqsj5BKf423GSc2AW0YCDKwFaiB5OY/3IAR7UiOIMAtN2fTxyrrU4R
+ UP7w==
+X-Gm-Message-State: AOJu0Yys13lhLTOsUepvhOVwkx1JZOomtvPmp7ocDTqa19FREr+3u2QA
+ OqGf8jJTaLOYwhvgowlFQfp/UbTf4D4548vatDfogQBI5xw2heLMpYrWZF+kX8TzbbL48MUHleE
+ 9D/Xusb1YlKfoVRc+qimPywgPn0CAZiDdD5o=
+X-Google-Smtp-Source: AGHT+IFyDXMuRc8k9mc9c9dY7R1CDj12/OpOThtK2YRm2q0yAiG8T51HIt3C4yxF0TiJf9iwgeRYQqWqcpy0EeBqcI8=
+X-Received: by 2002:a05:6902:18d0:b0:dc2:56b5:b46f with SMTP id
+ ck16-20020a05690218d000b00dc256b5b46fmr1524556ybb.11.1705613199504; Thu, 18
+ Jan 2024 13:26:39 -0800 (PST)
+MIME-Version: 1.0
+References: <20240117030719.EDD411BA428A@rfcpa.amsl.com>
+ <20240118204708.GR5993@sea-lpsgbgy9.seattle.corp.akamai.com>
+In-Reply-To: <20240118204708.GR5993@sea-lpsgbgy9.seattle.corp.akamai.com>
+From: David Benjamin <davidben@chromium.org>
+Date: Thu, 18 Jan 2024 16:26:22 -0500
+Message-ID: <CAF8qwaCErgGViHiCaSbEbm577UNcyhGBP-THnyTPNagWz=oZ+A@mail.gmail.com>
+To: Benjamin Kaduk <bkaduk=40akamai.com@dmarc.ietf.org>
+Cc: RFC Errata System <rfc-editor@rfc-editor.org>, paul.wouters@aiven.io,
+ iesg@ietf.org, tls@ietf.org
+Content-Type: multipart/alternative; boundary="000000000000e1d715060f3f0431"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/kA1C6C0Wluwp6ui1VDmrFbaEm1U>
+Subject: Re: [TLS] [Errata Held for Document Update] RFC8446 (5682)
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Thu, 18 Jan 2024 21:26:45 -0000
+
+--000000000000e1d715060f3f0431
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+The extension list cannot actually be empty because we also say:
+
+> The "signature_algorithms" extension
+> MUST be specified, and other extensions may optionally be included
+> if defined for this message.
+
+That said, enforcing this by rejecting the empty list doesn't do much
+because the receiver will need to look for specifically the sigalgs
+extension anyway. So I'm on board with making this say either 0 or 4.
+Honestly, 2 is fine too... if you check for 2 instead of 4, you'll still
+have the exact same behavior. In fact I think the sigalgs rule implies the
+true minimum is 8. But let's not put 8 because it will confuse everyone.
+
+I think sometimes we spend a little more energy than is actually useful in
+figuring out these implied lower bounds. :-) In practice, the only decision
+we actually care about is whether 0 is allowed, and even then it's often
+irrelevant (like here).
+
+On Thu, Jan 18, 2024 at 3:47=E2=80=AFPM Benjamin Kaduk <bkaduk=3D
+40akamai.com@dmarc.ietf.org> wrote:
+
+> I think if the errata report is moved back into the "reported" state by
+> the RFC Editor staff, the AD should be able to edit the report to reflect
+> the intent as opposed to having the diff appear.
+>
+> -Ben
+>
+> On Tue, Jan 16, 2024 at 07:07:19PM -0800, RFC Errata System wrote:
+> > The following errata report has been held for document update
+> > for RFC8446, "The Transport Layer Security (TLS) Protocol Version 1.3".
+> >
+> > --------------------------------------
+> > You may review the report below and at:
+> >
+> https://urldefense.com/v3/__https://www.rfc-editor.org/errata/eid5682__;!=
+!GjvTz_vk!T2x_YvOjybcaxb8hARC3CW6xdOhGeq2BD-cjxoPyutXUwQp_f3O3PfnITevFE1EaD=
+kGlyknuPtDLnj4boiBQ1w$
+> >
+> > --------------------------------------
+> > Status: Held for Document Update
+> > Type: Technical
+> >
+> > Reported by: Richard Barnes <rlb@ipv.sx>
+> > Date Reported: 2019-04-01
+> > Held by: Paul Wouters (IESG)
+> >
+> > Section: 4.3.2, B.3.2
+> >
+> > Original Text
+> > -------------
+> > --- rfc8446.txt       2018-08-10 20:12:08.000000000 -0400
+> > +++ rfc8446.erratum.txt       2019-04-01 15:44:54.000000000 -0400
+> > @@ -3341,7 +3341,7 @@
+> >
+> >        struct {
+> >            opaque certificate_request_context<0..2^8-1>;
+> > -          Extension extensions<2..2^16-1>;
+> > +          Extension extensions<0..2^16-1>;
+> >        } CertificateRequest;
+> >
+> >
+> > @@ -7309,7 +7309,7 @@
+> >
+> >        struct {
+> >            opaque certificate_request_context<0..2^8-1>;
+> > -          Extension extensions<2..2^16-1>;
+> > +          Extension extensions<0..2^16-1>;
+> >        } CertificateRequest;
+> >
+> >
+> >
+> >
+> > Corrected Text
+> > --------------
+> > --- rfc8446.txt       2018-08-10 20:12:08.000000000 -0400
+> > +++ rfc8446.erratum.txt       2019-04-01 15:44:54.000000000 -0400
+> > @@ -3341,7 +3341,7 @@
+> >
+> >        struct {
+> >            opaque certificate_request_context<0..2^8-1>;
+> > -          Extension extensions<2..2^16-1>;
+> > +          Extension extensions<0..2^16-1>;
+> >        } CertificateRequest;
+> >
+> >
+> > @@ -7309,7 +7309,7 @@
+> >
+> >        struct {
+> >            opaque certificate_request_context<0..2^8-1>;
+> > -          Extension extensions<2..2^16-1>;
+> > +          Extension extensions<0..2^16-1>;
+> >        } CertificateRequest;
+> >
+> >
+> >
+> >
+> > Notes
+> > -----
+> > The length of this vector can never 2.  It is either 0, if the vector i=
+s
+> empty, or >=3D4, if the vector has at least one extension.  Nothing elsew=
+here
+> in the spec requires a non-zero number of extensions here, so this syntax
+> should allow a zero-length vector.
+> >
+> > Paul Wouters (AD): Richard meant the diff to be the fix, not the
+> original/corrected text. The diff is not in the RFC itself. There are two
+> places in the mentioned sections that need this one liner fix.
+> >
+> > --------------------------------------
+> > RFC8446 (draft-ietf-tls-tls13-28)
+> > --------------------------------------
+> > Title               : The Transport Layer Security (TLS) Protocol
+> Version 1.3
+> > Publication Date    : August 2018
+> > Author(s)           : E. Rescorla
+> > Category            : PROPOSED STANDARD
+> > Source              : Transport Layer Security
+> > Area                : Security
+> > Stream              : IETF
+> > Verifying Party     : IESG
+> >
+> > _______________________________________________
+> > TLS mailing list
+> > TLS@ietf.org
+> >
+> https://urldefense.com/v3/__https://www.ietf.org/mailman/listinfo/tls__;!=
+!GjvTz_vk!T2x_YvOjybcaxb8hARC3CW6xdOhGeq2BD-cjxoPyutXUwQp_f3O3PfnITevFE1EaD=
+kGlyknuPtDLnj70kj7-uw$
+>
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+>
+
+--000000000000e1d715060f3f0431
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">The extension list cannot actually be empty because we als=
+o say:<div><br></div><div>&gt; The &quot;signature_algorithms&quot; extensi=
+on</div>&gt; MUST be specified, and other extensions may optionally be incl=
+uded<br>&gt; if defined for this message.<div><br></div><div>That said, enf=
+orcing this by rejecting the empty list doesn&#39;t do much because the rec=
+eiver will need to look for specifically the sigalgs extension anyway. So I=
+&#39;m on board with making this say either 0 or 4. Honestly, 2 is fine too=
+... if you check for 2 instead of 4, you&#39;ll still have the exact same b=
+ehavior. In fact I think the sigalgs rule implies the true minimum is 8. Bu=
+t let&#39;s not put 8 because it will confuse everyone.</div><div><br></div=
+><div>I think sometimes we spend a little more energy than is actually usef=
+ul in figuring out these implied lower bounds. :-) In practice, the only de=
+cision we actually care about is whether 0 is allowed, and even then it&#39=
+;s often irrelevant (like here).</div></div><br><div class=3D"gmail_quote">=
+<div dir=3D"ltr" class=3D"gmail_attr">On Thu, Jan 18, 2024 at 3:47=E2=80=AF=
+PM Benjamin Kaduk &lt;bkaduk=3D<a href=3D"mailto:40akamai.com@dmarc.ietf.or=
+g" target=3D"_blank">40akamai.com@dmarc.ietf.org</a>&gt; wrote:<br></div><b=
+lockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-le=
+ft:1px solid rgb(204,204,204);padding-left:1ex">I think if the errata repor=
+t is moved back into the &quot;reported&quot; state by the RFC Editor staff=
+, the AD should be able to edit the report to reflect the intent as opposed=
+ to having the diff appear.<br>
+<br>
+-Ben<br>
+<br>
+On Tue, Jan 16, 2024 at 07:07:19PM -0800, RFC Errata System wrote:<br>
+&gt; The following errata report has been held for document update <br>
+&gt; for RFC8446, &quot;The Transport Layer Security (TLS) Protocol Version=
+ 1.3&quot;. <br>
+&gt; <br>
+&gt; --------------------------------------<br>
+&gt; You may review the report below and at:<br>
+&gt; <a href=3D"https://urldefense.com/v3/__https://www.rfc-editor.org/erra=
+ta/eid5682__;!!GjvTz_vk!T2x_YvOjybcaxb8hARC3CW6xdOhGeq2BD-cjxoPyutXUwQp_f3O=
+3PfnITevFE1EaDkGlyknuPtDLnj4boiBQ1w$" rel=3D"noreferrer" target=3D"_blank">=
+https://urldefense.com/v3/__https://www.rfc-editor.org/errata/eid5682__;!!G=
+jvTz_vk!T2x_YvOjybcaxb8hARC3CW6xdOhGeq2BD-cjxoPyutXUwQp_f3O3PfnITevFE1EaDkG=
+lyknuPtDLnj4boiBQ1w$</a> <br>
+&gt; <br>
+&gt; --------------------------------------<br>
+&gt; Status: Held for Document Update<br>
+&gt; Type: Technical<br>
+&gt; <br>
+&gt; Reported by: Richard Barnes &lt;<a href=3D"mailto:rlb@ipv.sx" target=
+=3D"_blank">rlb@ipv.sx</a>&gt;<br>
+&gt; Date Reported: 2019-04-01<br>
+&gt; Held by: Paul Wouters (IESG)<br>
+&gt; <br>
+&gt; Section: 4.3.2, B.3.2<br>
+&gt; <br>
+&gt; Original Text<br>
+&gt; -------------<br>
+&gt; --- rfc8446.txt=C2=A0 =C2=A0 =C2=A0 =C2=A02018-08-10 20:12:08.00000000=
+0 -0400<br>
+&gt; +++ rfc8446.erratum.txt=C2=A0 =C2=A0 =C2=A0 =C2=A02019-04-01 15:44:54.=
+000000000 -0400<br>
+&gt; @@ -3341,7 +3341,7 @@<br>
+&gt;=C2=A0 <br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 struct {<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 opaque certificate_request_co=
+ntext&lt;0..2^8-1&gt;;<br>
+&gt; -=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Extension extensions&lt;2..2^16-1&=
+gt;;<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Extension extensions&lt;0..2^16-1&=
+gt;;<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 } CertificateRequest;<br>
+&gt;=C2=A0 <br>
+&gt;=C2=A0 <br>
+&gt; @@ -7309,7 +7309,7 @@<br>
+&gt;=C2=A0 <br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 struct {<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 opaque certificate_request_co=
+ntext&lt;0..2^8-1&gt;;<br>
+&gt; -=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Extension extensions&lt;2..2^16-1&=
+gt;;<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Extension extensions&lt;0..2^16-1&=
+gt;;<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 } CertificateRequest;<br>
+&gt;=C2=A0 <br>
+&gt;=C2=A0 <br>
+&gt; <br>
+&gt; <br>
+&gt; Corrected Text<br>
+&gt; --------------<br>
+&gt; --- rfc8446.txt=C2=A0 =C2=A0 =C2=A0 =C2=A02018-08-10 20:12:08.00000000=
+0 -0400<br>
+&gt; +++ rfc8446.erratum.txt=C2=A0 =C2=A0 =C2=A0 =C2=A02019-04-01 15:44:54.=
+000000000 -0400<br>
+&gt; @@ -3341,7 +3341,7 @@<br>
+&gt;=C2=A0 <br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 struct {<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 opaque certificate_request_co=
+ntext&lt;0..2^8-1&gt;;<br>
+&gt; -=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Extension extensions&lt;2..2^16-1&=
+gt;;<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Extension extensions&lt;0..2^16-1&=
+gt;;<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 } CertificateRequest;<br>
+&gt;=C2=A0 <br>
+&gt;=C2=A0 <br>
+&gt; @@ -7309,7 +7309,7 @@<br>
+&gt;=C2=A0 <br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 struct {<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 opaque certificate_request_co=
+ntext&lt;0..2^8-1&gt;;<br>
+&gt; -=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Extension extensions&lt;2..2^16-1&=
+gt;;<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Extension extensions&lt;0..2^16-1&=
+gt;;<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 } CertificateRequest;<br>
+&gt;=C2=A0 <br>
+&gt;=C2=A0 <br>
+&gt; <br>
+&gt; <br>
+&gt; Notes<br>
+&gt; -----<br>
+&gt; The length of this vector can never 2.=C2=A0 It is either 0, if the ve=
+ctor is empty, or &gt;=3D4, if the vector has at least one extension.=C2=A0=
+ Nothing elsewhere in the spec requires a non-zero number of extensions her=
+e, so this syntax should allow a zero-length vector.<br>
+&gt; <br>
+&gt; Paul Wouters (AD): Richard meant the diff to be the fix, not the origi=
+nal/corrected text. The diff is not in the RFC itself. There are two places=
+ in the mentioned sections that need this one liner fix.<br>
+&gt; <br>
+&gt; --------------------------------------<br>
+&gt; RFC8446 (draft-ietf-tls-tls13-28)<br>
+&gt; --------------------------------------<br>
+&gt; Title=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0: The Tran=
+sport Layer Security (TLS) Protocol Version 1.3<br>
+&gt; Publication Date=C2=A0 =C2=A0 : August 2018<br>
+&gt; Author(s)=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0: E. Rescorla<br>
+&gt; Category=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 : PROPOSED STANDARD<=
+br>
+&gt; Source=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 : Transport Lay=
+er Security<br>
+&gt; Area=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 : Security=
+<br>
+&gt; Stream=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 : IETF<br>
+&gt; Verifying Party=C2=A0 =C2=A0 =C2=A0: IESG<br>
+&gt; <br>
+&gt; _______________________________________________<br>
+&gt; TLS mailing list<br>
+&gt; <a href=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.org</a><br>
+&gt; <a href=3D"https://urldefense.com/v3/__https://www.ietf.org/mailman/li=
+stinfo/tls__;!!GjvTz_vk!T2x_YvOjybcaxb8hARC3CW6xdOhGeq2BD-cjxoPyutXUwQp_f3O=
+3PfnITevFE1EaDkGlyknuPtDLnj70kj7-uw$" rel=3D"noreferrer" target=3D"_blank">=
+https://urldefense.com/v3/__https://www.ietf.org/mailman/listinfo/tls__;!!G=
+jvTz_vk!T2x_YvOjybcaxb8hARC3CW6xdOhGeq2BD-cjxoPyutXUwQp_f3O3PfnITevFE1EaDkG=
+lyknuPtDLnj70kj7-uw$</a> <br>
+<br>
+_______________________________________________<br>
+TLS mailing list<br>
+<a href=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.org</a><br>
+<a href=3D"https://www.ietf.org/mailman/listinfo/tls" rel=3D"noreferrer" ta=
+rget=3D"_blank">https://www.ietf.org/mailman/listinfo/tls</a><br>
+</blockquote></div>
+
+--000000000000e1d715060f3f0431--
+

@@ -1,0 +1,143 @@
+Return-Path: <sean@sn3rd.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 55FABC14F6E8
+	for <tls@ietfa.amsl.com>; Tue, 28 May 2024 06:43:48 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -7.097
+X-Spam-Level: 
+X-Spam-Status: No, score=-7.097 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+	DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, RCVD_IN_DNSWL_HI=-5,
+	RCVD_IN_ZEN_BLOCKED_OPENDNS=0.001, SPF_HELO_NONE=0.001,
+	SPF_PASS=-0.001, URIBL_DBL_BLOCKED_OPENDNS=0.001,
+	URIBL_ZEN_BLOCKED_OPENDNS=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+	header.d=sn3rd.com
+Received: from mail.ietf.org ([50.223.129.194])
+	by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 9pWQYIFYpaFD for <tls@ietfa.amsl.com>;
+	Tue, 28 May 2024 06:43:44 -0700 (PDT)
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com
+ [IPv6:2607:f8b0:4864:20::e2f])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by ietfa.amsl.com (Postfix) with ESMTPS id 90F61C14F6E1
+	for <tls@ietf.org>; Tue, 28 May 2024 06:43:34 -0700 (PDT)
+Received: by mail-vs1-xe2f.google.com with SMTP id
+ ada2fe7eead31-48a39e0c441so301654137.2
+        for <tls@ietf.org>; Tue, 28 May 2024 06:43:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sn3rd.com; s=google; t=1716903813; x=1717508613; darn=ietf.org;
+        h=message-id:in-reply-to:to:references:date:subject:mime-version
+         :content-transfer-encoding:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NDmubMvfrB/AX56rr63HMQefY7nMngFqXhtvWpudU+o=;
+        b=Liz3rSHSEri4M/k+6kQRJZiCi+s+Rhga+t4AJn5x+LtrE5zfERpe82BKcrYoO8bYnq
+         c7bo8vgtBolJYbzl6nMbc924a+6nPPson4m7AuI/Q8GETGz/kkhYBh/WRNhMdvEJmfKN
+         pMDiJtL595fMXqKhYs70wX/CPixAHjOvGrIWY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716903813; x=1717508613;
+        h=message-id:in-reply-to:to:references:date:subject:mime-version
+         :content-transfer-encoding:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NDmubMvfrB/AX56rr63HMQefY7nMngFqXhtvWpudU+o=;
+        b=K42ZTDtnzbF9U3jcx3biEq2lr8d/2qnNJBTOaaaclkF0qozT7EOpE7kH72aGQlwYhK
+         PqHargt22v+ZdBmysi+8qnvYeaH408LDdmrccxPuoN4V9PZBVW1BMNRrIoc0xd5dRmsK
+         1y6SR6xjdXAkOtJrXwSqyS2ZDzSkcGObwBwZIpLvil9RUG6RU9umAtfUSPn5WKPdyGim
+         aIn4OKiBPUhpX3WtVjBTM4D9phlXOpj1LHRblsedvqcYDxY9K/I9aps21eoNDBNlbUpt
+         Bp9gkZ0IcYvZaKIv1s+28U2kDWNFRzojyF9O0sX5uZRvXNEvkP11XBVZubveZKmC/i/e
+         BAaQ==
+X-Gm-Message-State: AOJu0YyJJy06AjomrfGqOTJzB4aO5KLQja9DTTXqEd85cpc7OK8UD2LG
+	faAHJE0qjg08cSmI0iWyoBK8AlP2bYnTh8S4RDnrnYGDY81qKam1J0QW19qazBn1hvUozI+O3Sw
+	V
+X-Google-Smtp-Source: 
+ AGHT+IH9oPkfD/eie8owfUeJjyymxus9S+D1Ra7sZwLjaJDiVN7o0JWVnpU71QwDI5dd5un/P+gPbQ==
+X-Received: by 2002:a67:e285:0:b0:48a:2edb:5603 with SMTP id
+ ada2fe7eead31-48a38369f50mr11087148137.0.1716903812739;
+        Tue, 28 May 2024 06:43:32 -0700 (PDT)
+Received: from smtpclient.apple ([2600:4040:252a:8d00:297d:ac01:2dfa:59e0])
+        by smtp.gmail.com with ESMTPSA id
+ af79cd13be357-794c1130acfsm185351185a.129.2024.05.28.06.43.32
+        for <tls@ietf.org>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 28 May 2024 06:43:32 -0700 (PDT)
+From: Sean Turner <sean@sn3rd.com>
+Content-Type: text/plain;
+	charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.15\))
+Date: Tue, 28 May 2024 09:43:31 -0400
+References: <171649709514.1567.508474236572157829@ietfa.amsl.com>
+To: TLS List <tls@ietf.org>
+In-Reply-To: <171649709514.1567.508474236572157829@ietfa.amsl.com>
+Message-Id: <9454564B-20F2-46F0-8168-01177E5D8355@sn3rd.com>
+X-Mailer: Apple Mail (2.3654.120.0.1.15)
+Message-ID-Hash: LQV6P7SSUXTMWWWBR7YKFR64MFO7FMC7
+X-Message-ID-Hash: LQV6P7SSUXTMWWWBR7YKFR64MFO7FMC7
+X-MailFrom: sean@sn3rd.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+X-Mailman-Version: 3.3.9rc4
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5DRe=3A_I-D_Action=3A_draft-ietf-tls-tls13-pkcs1-01=2Etxt?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/RgUxO7WB9_syn16T5GlPFI-HR6U>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+Hi! I asked the authors to spin a new version because the I-D would have =
+expired during the WGLC.  No substantive changes were introduced in this =
+the -01 version.
+
+spt
+
+> On May 23, 2024, at 16:44, internet-drafts@ietf.org wrote:
+>=20
+> Internet-Draft draft-ietf-tls-tls13-pkcs1-01.txt is now available. It =
+is a
+> work item of the Transport Layer Security (TLS) WG of the IETF.
+>=20
+>   Title:   Legacy RSASSA-PKCS1-v1_5 codepoints for TLS 1.3
+>   Authors: David Benjamin
+>            Andrei Popov
+>   Name:    draft-ietf-tls-tls13-pkcs1-01.txt
+>   Pages:   7
+>   Dates:   2024-05-23
+>=20
+> Abstract:
+>=20
+>   This document allocates code points for the use of RSASSA-PKCS1-v1_5
+>   with client certificates in TLS 1.3.  This removes an obstacle for
+>   some deployments to migrate to TLS 1.3.
+>=20
+> The IETF datatracker status page for this Internet-Draft is:
+> https://datatracker.ietf.org/doc/draft-ietf-tls-tls13-pkcs1/
+>=20
+> There is also an HTML version available at:
+> https://www.ietf.org/archive/id/draft-ietf-tls-tls13-pkcs1-01.html
+>=20
+> A diff from the previous version is available at:
+> =
+https://author-tools.ietf.org/iddiff?url2=3Ddraft-ietf-tls-tls13-pkcs1-01
+>=20
+> Internet-Drafts are also available by rsync at:
+> rsync.ietf.org::internet-drafts
+>=20
+>=20
+> _______________________________________________
+> TLS mailing list -- tls@ietf.org
+> To unsubscribe send an email to tls-leave@ietf.org
+

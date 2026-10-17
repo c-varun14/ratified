@@ -1,0 +1,667 @@
+Return-Path: <john.mattsson@ericsson.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+	by ietfa.amsl.com (Postfix) with ESMTP id BFE08C15109C
+	for <tls@ietfa.amsl.com>; Mon,  3 Feb 2025 13:38:41 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -0.254
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.254 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIMWL_WL_HIGH=-0.148, DKIM_SIGNED=0.1,
+	DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1,
+	HTML_MESSAGE=0.001, RCVD_IN_MSPIKE_H2=-0.001,
+	RCVD_IN_VALIDITY_RPBL_BLOCKED=0.001,
+	RCVD_IN_VALIDITY_SAFE_BLOCKED=0.001,
+	RCVD_IN_ZEN_BLOCKED_OPENDNS=0.001, SPF_PASS=-0.001,
+	T_SCC_BODY_TEXT_LINE=-0.01, URIBL_BLOCKED=0.001,
+	URIBL_DBL_BLOCKED_OPENDNS=0.001, URIBL_ZEN_BLOCKED_OPENDNS=0.001,
+	URI_DOTEDU=1.999] autolearn=no autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+	header.d=ericsson.com
+Received: from mail.ietf.org ([50.223.129.194])
+	by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id XaWTTjNB-262 for <tls@ietfa.amsl.com>;
+	Mon,  3 Feb 2025 13:38:37 -0800 (PST)
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com
+ (mail-vi1eur05on2044.outbound.protection.outlook.com [40.107.21.44])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-384) server-signature ECDSA (P-256) server-digest
+ SHA256)
+	(No client certificate requested)
+	by ietfa.amsl.com (Postfix) with ESMTPS id 94C3DC151093
+	for <tls@ietf.org>; Mon,  3 Feb 2025 13:38:37 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=N7gwP5zroAnK+qN1zEKCWnydrDICsjEWHNW3b9htdi3wBpW5h8TpIZW5MfJICD7s3k7FjUKGEZ5JwSKlHdApUjUtEP2h29KwYCtvWAhaG7jwDPX4zJzUi/u9CtFH1BM7glhf4+d8HVBaIGEG/t5a53OzE1nyIZ6OuDPfEIeuipM9Lv8tI2OCXBroJ6mUTgpNcRbsYoiGkRmCHWzPFkGxCEIjXH+N8Wbo113H2+XHMubGXkJ9SprYHaDAtpYM1U9h2orJ1h3T24iuicDbfSJtw7S7ljzD9ZffelJz1evc64NJi+ylgTQtTxEM+bEoYwTC7CUbdH5SD8o8XVAnd/Nd7w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rbMSgo1zOrU5svzsrWg7Z4+zGAxmnEGW/2OwLcsOzqM=;
+ b=XiYTCj68bsjO20DNmwPJiSzKhrjgF0Zm7yCZ0yR2VqTZCYS2qmzLoBJuJG+Pa2V7utQLmtnXbWqDBR8sL0UkjsX1je/4wTR1SYPISkfvtNUm5hCR5HMu5abGGGZpROXNoruWFxmZIBEFvWies3AL2C667zFN0P3lHS7qPe/yXgI/Y//mb73IcBAmXO9EqzvrOubZgnTDtG7ah2dNCoDIMog4ZxdoLHDNYkEXwoUYFAZDwLoRQaEMNFB6jae7r0RjBvUolHhnv3A4oJNC2Wn8AFValc7RS+bvzb/7RZ3F54DKaIvWctgXywMGs1BUdByCFh+POWQGTmpOnc9lMvZ7eQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=ericsson.com; dmarc=pass action=none header.from=ericsson.com;
+ dkim=pass header.d=ericsson.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ericsson.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rbMSgo1zOrU5svzsrWg7Z4+zGAxmnEGW/2OwLcsOzqM=;
+ b=iagvvisppNghfbCKmn+MuDMTLxExWswot6s63YAb3ROv1uKr2CN0Bw79okV1LP2R0FLnYII3oALQd22+vHO2TWFtFBEvVuksfMHGSdEte8tnGIZWFmw8gAsnKmmfrmbBp8guG9/yJ6RtmkaSlMDA2U0ZBxCgnIpHRpjbXC+2YRQRwzrQemdreK9lcYjkuE/n5SXrf2FVTwD1uJWSDVBrEkGW2O1kc7bQjJTuw7UewV/H5KdSfXSWKoW+/h2BxfNuupLy+gkyMnEal1K1bTx/SpBLfwZ+AsfmkjLMad2QIcwM2uYEE17OuWRcFWbaej1LjTdifJNSW/u48Q+vob+KJw==
+Received: from AS5PR07MB9675.eurprd07.prod.outlook.com (2603:10a6:20b:650::6)
+ by AS8PR07MB7192.eurprd07.prod.outlook.com (2603:10a6:20b:257::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8398.26; Mon, 3 Feb
+ 2025 21:38:34 +0000
+Received: from AS5PR07MB9675.eurprd07.prod.outlook.com
+ ([fe80::f2ce:eea1:e9d2:eb11]) by AS5PR07MB9675.eurprd07.prod.outlook.com
+ ([fe80::f2ce:eea1:e9d2:eb11%5]) with mapi id 15.20.8398.021; Mon, 3 Feb 2025
+ 21:38:34 +0000
+From: John Mattsson <john.mattsson@ericsson.com>
+To: TLS List <tls@ietf.org>, "paul.wouters@aiven.io" <paul.wouters@aiven.io>
+Thread-Topic: [TLS] Re: I-D Action: draft-ietf-tls-rfc8446bis-11.txt
+Thread-Index: AQHbdWcnea77V4XTD0+dy94HAKv5RbM2GrBw
+Date: Mon, 3 Feb 2025 21:38:34 +0000
+Message-ID: 
+ <AS5PR07MB9675094EA6F94AC6D9F7C70A89F52@AS5PR07MB9675.eurprd07.prod.outlook.com>
+References: 
+ <GVXPR07MB96783059E1E8E543CF120CC289EA2@GVXPR07MB9678.eurprd07.prod.outlook.com>
+In-Reply-To: 
+ <GVXPR07MB96783059E1E8E543CF120CC289EA2@GVXPR07MB9678.eurprd07.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-GB
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-reactions: allow
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=ericsson.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: AS5PR07MB9675:EE_|AS8PR07MB7192:EE_
+x-ms-office365-filtering-correlation-id: 2f30680e-daec-4dca-456f-08dd449b1c42
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: 
+ BCL:0;ARA:13230040|22122799003|4022899009|1800799024|376014|366016|8096899003|7053199007|13003099007|38070700018;
+x-microsoft-antispam-message-info: 
+ =?us-ascii?Q?OmiVJykR+HG6Fliw7kds0zIwUVdSU/fvjXXRBRNyWi5nnaImwGkaBILXOIql?=
+ =?us-ascii?Q?4wIgdzK3iJTAtslJ59aHQqGLtFU/QLlIhu7XKIZsqBw3hSerBBFHWaA8CvwP?=
+ =?us-ascii?Q?afzhX7bgrEu0i3gDtJ6loCfhU3oa+gSMqf2Lm/SbsXh7yRUKaaAEBuLEQcPR?=
+ =?us-ascii?Q?L4EVgbwr286IGoezRl/KB+crChBayAZ/c7bOcJZS+Lqs93sPcFtiqPryTJw0?=
+ =?us-ascii?Q?aaGq5Ngm0mOR81cJgHzpDFtLfkYzRZHru5l/dOC5tWHjmugmf7b7s6Drinmn?=
+ =?us-ascii?Q?CSeK/CpWbc+6sUleORRYPbiUbVBGTIeye7gOwBU4YXko5Hm5joDDq+QD63Mg?=
+ =?us-ascii?Q?NsFv++LK0NPmwxkLPziuORvFAEr06dz4tca6ZFH4tx0DAaGaYf1hn3wxyn9j?=
+ =?us-ascii?Q?hpfFpYzaxPpbewzSguuBzNWO4566iEhf9mXOOD/XDDXIUqdUSRSjO8Rzhfs7?=
+ =?us-ascii?Q?XSYwXNJHkv5p0UtE7OCPOzoJrUfG+QmH0/0sj53nEbHQx3NX1ZonYwwY+e2k?=
+ =?us-ascii?Q?l9rC1eJpz1yMKU0qj3ZIRcRVV3USjanXUB/bJ62WFe9jvo7YSE1F5sLQDsU/?=
+ =?us-ascii?Q?/oEnRsFFL0du1rlCfCyqaMduiUcQ6LYnOyzLzDS5YAv0OsLjvWTAEh52x7Rx?=
+ =?us-ascii?Q?IeHFXDSk0w42oeBJAhrzG9zRnCJ6NX38Pt7dfT136Tzs5vfid8YhJygMd4Lc?=
+ =?us-ascii?Q?Ur+3bCOm2oDtDcONspzq3aAhMbetCX5Uw6RFOPRlWhMUBumYSNIYeHpidZjF?=
+ =?us-ascii?Q?x/BHH628FAvk3aubyoapj5VwY0FxL2PIKcdJrMkUvEft2vHU4+wfPUvWodFe?=
+ =?us-ascii?Q?kBj405npxCE7aisqJLjQlQOcTp8iASwjW6t+xey13/zk/B1y+2sQGLd8uv3q?=
+ =?us-ascii?Q?cQaaMwjMUQpCk2AONjdZK/JINnr1z0XuZe5Lewq3ftssPPsRUmvUUdpS43gS?=
+ =?us-ascii?Q?hLg5bw1OYulzrHijVO6bVu+y1ipZIZXyES0V7OoIKiBgFXBwc3CxKDtsjH7S?=
+ =?us-ascii?Q?pIsV/usYBVLe7++FvhBOj02EdJTbAybKONOtsqA+KS4TzZkcGPCSH7asZWcx?=
+ =?us-ascii?Q?U/gA20nYZgejSzdpcd74l9K0Q35S7QD9R6Js3ST16/Z/LNk3hdp68qHJpRrL?=
+ =?us-ascii?Q?5ZbHOYAXxq0g3k8vzorIKuJrBN4n8FczGZOn8a8C+2O2yLQKJYQCo+GUcta/?=
+ =?us-ascii?Q?fmG5mSscTsR9ZVze+51pAhQSdE06WThn/RiDQfOrfp4bZhyEVlvmrMO30LfF?=
+ =?us-ascii?Q?lIuc/90hWTwoxzBwJYFLUNhgiSC8Tsv5Uz23zFTmPzn2KIpw7BMxeH5HNmfw?=
+ =?us-ascii?Q?dWjz3sz2RiV/vRnZftwKdqmR00+Ka4dDbQp23OnjVnHRorn/rGdAYk6rv2Oh?=
+ =?us-ascii?Q?GSx6vxQ+oUlB0Q/2nPEmXjus3kCN?=
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS5PR07MB9675.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(22122799003)(4022899009)(1800799024)(376014)(366016)(8096899003)(7053199007)(13003099007)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?us-ascii?Q?QLpFxqMg1oP5uOwcaAjpZEqiag2po+8MvWa4hm8Ipb1k/IEi4web+ujwiiag?=
+ =?us-ascii?Q?lbhn5OQzhVLAkcvhUhO98xOTzlewY9IQhxMXw2w6KLpp3951sr7QXCb8YokP?=
+ =?us-ascii?Q?GGy+hZPsFsExL/TL3j3SvMsU3xIHvd8GFoYYGYD4pb1kWXfmp2/ypKcM3gcB?=
+ =?us-ascii?Q?n+fLXb4tpmpaZkp/Hfq6txLPveKdoZJh/uQhLjEIURyahSzv99hYtPufdmGb?=
+ =?us-ascii?Q?yiqtIR+w3+P2m/roSfWMsxO/5VKPdGXjs+jRDwHOG82H0wllnvkbiXYzLwiz?=
+ =?us-ascii?Q?HFYc9SYuAZcLFTlXk+/jg31tnMq3Yk4fi6SMq1cftg28eZJCWfaJ2OdmbUg+?=
+ =?us-ascii?Q?R3iLtlzsVKpVAzwMRiMG7jmkGGuKgwWwvi55BLhONyazIyT8Yph0it82CQLk?=
+ =?us-ascii?Q?uSSBDk2xk1aMMypIuFNH5qRndRl8Vru2FEZePMG7DJ1M2/1ME+lK3bjhbaiL?=
+ =?us-ascii?Q?Qczsfm/d3lJScpuv/B3vMx6LVtmYWZdxYQ3BhoOrBAf4FXzq7t8SoGRzXz7k?=
+ =?us-ascii?Q?jtyodtQbQtGQ/P5Mr3ywWO/X3oS5lDZxGJjaraAmoytq736EMeu5sZwwI//f?=
+ =?us-ascii?Q?5l7zgvUms/Zk8xTJjVm1UIyPzeCimqylFR68IaI907ZvmZt5aImFdjQc9S+5?=
+ =?us-ascii?Q?qxpKh9JKcC6vFVA8X/NTO5atk4atRmZdiyJ4VyuM8CZYCrBkgiAbNRxNM3Eb?=
+ =?us-ascii?Q?k7/2l7yUoBBj+K7kqV/tpOXetk7G+xor4zOFygMw9/mJenzR0DI8PHtWBDYn?=
+ =?us-ascii?Q?O2zKgoSwF6w/LjW2WAGqw58nJRQHLBjFtNkgV4cqXn7x1eC5rbBJjVaRojn3?=
+ =?us-ascii?Q?cjRTO4FSDGld0K2gPop8LdWfAfVgWSeEaS6JuvG3fBhowgmgbBgKIFCAvb0t?=
+ =?us-ascii?Q?r8nL5QYG2c2V3i3T8rCW+9d+7Dm6fWNVbAOl9SWWuK+3XhFu3K/6qeM/+HRZ?=
+ =?us-ascii?Q?QFmMsaUE2RRi1D/DRxHH8WdIpqzaQrbIEI7dJ7JITc5cueUrbVqgsWJyrYrI?=
+ =?us-ascii?Q?lf/cSS5z7P9uj9sXC5nQXZcxmwTcQrMB8q1Ulcty4tlIOiKJdtbGubPI52N1?=
+ =?us-ascii?Q?HzaXoH3VkVKEF1Se+4s3/sWd3C6WjaGDdG89LmStxveEqJtN8QwVZ42aw0B+?=
+ =?us-ascii?Q?SypFiY8oSPOacsDTtAin+VFak9PsgTPr9LdIek3/FuW9fnBfysEug3I5BOJJ?=
+ =?us-ascii?Q?HOM+zHMtbwufKCTEVHODPu6nMDMiYVMIS28wc6eyvvjDpGHoc6MV9cNbX6nv?=
+ =?us-ascii?Q?gWlJRzyX1rr0r3VoLJ64rSxIRa50k0vTSASE3mhk0x2pjsF4vpWe1s9qRsn0?=
+ =?us-ascii?Q?sTvjFSV0N0Wj4/s2Y+xs3lAhLGhUlrAVWMKahhLPCVewOP8lnK887DeSQLfd?=
+ =?us-ascii?Q?Y7cpa9jbPOVwka8NZbVr1vypJcqYCT1TSgfdvzpS0G56cO+/mXctR0i1l8Ph?=
+ =?us-ascii?Q?vnOZOHR2K9luNWrRAN+nzl4p9aXBs+dMsSID0Fq6WlDgvFBgcVhL4M+963UO?=
+ =?us-ascii?Q?gQj8jeeBgwP9yAbniADXRag/63RcEYEHYifIPqiatmnkSdJjcKhcLguqN8ET?=
+ =?us-ascii?Q?z6+e2KSt4CDUyFiKvvqJnRJftc7DwR5M6J5jZ4bdhk10TGERxJT0DDhvwjky?=
+ =?us-ascii?Q?w0j/AxrPQtfdS2cWJxzwBRA=3D?=
+Content-Type: multipart/alternative;
+	boundary="_000_AS5PR07MB9675094EA6F94AC6D9F7C70A89F52AS5PR07MB9675eurp_"
+MIME-Version: 1.0
+X-OriginatorOrg: ericsson.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AS5PR07MB9675.eurprd07.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ 2f30680e-daec-4dca-456f-08dd449b1c42
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Feb 2025 21:38:34.0726
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 92e84ceb-fbfd-47ab-be52-080c6b87953f
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 
+ eBCKEBbnlNJ0c8KlPkpsMiAAlN2j0DfukxZAe+ZMBnbpOcP/hzwJTejcWbjTV3p287aQYudK/M0os2s850WOUA1ZFXMWSMG/R6cXawpVg8w=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR07MB7192
+Message-ID-Hash: EBMLAOQE7LOZ4F7VM3WPL3K7PPX3BRYA
+X-Message-ID-Hash: EBMLAOQE7LOZ4F7VM3WPL3K7PPX3BRYA
+X-MailFrom: john.mattsson@ericsson.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Re=3A_I-D_Action=3A_draft-ietf-tls-rfc8446bis-11=2Etxt?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/yM6JSHVjCaue5q4b6Kcv_o3l7P0>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+--_000_AS5PR07MB9675094EA6F94AC6D9F7C70A89F52AS5PR07MB9675eurp_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+I made the following two PRs to remove paywalled normative references. Payw=
+alled crypto specifications is a cybersecurity risk. People should not have=
+ to pay to implement or analyze TLS 1.3.
+
+Editorial updates to references #1369
+https://github.com/tlswg/tls13-spec/pull/1369
+
+Remove normative references to paywalled crypto #1370
+https://github.com/tlswg/tls13-spec/pull/1370
+
+#1369 should be editorial. #1370 changes the reference for some of the ECDH=
+ calculation from to [KEYAGREEMENT]. Some of the ECDH calculations already =
+references [KEYAGREEMENT] and the changed text in 7.4.2. does not contain a=
+ny RFC2119 language.
+
+Cheers,
+John
+
+From: John Mattsson <john.mattsson=3D40ericsson.com@dmarc.ietf.org>
+Date: Sunday, 2 February 2025 at 12:45
+To: Sean Turner <sean@sn3rd.com>, TLS List <tls@ietf.org>
+Subject: [TLS] Re: I-D Action: draft-ietf-tls-rfc8446bis-11.txt
+Hi,
+
+I am very happy that both FIPS 186-5 and RFC8446bis has removed the normati=
+ve reference to ANSI X.62. I strongly think RFC8446bis should replace ALL n=
+ormative references to paywalled documents.
+
+I think normative references to paywalled crypto documents is a substantial=
+ cybersecurity risk and goes against everything the IETF stands for [1-3]. =
+I looked through all normative references in RFC8446bis.
+
+- [DH76] This document is freely available at
+https://ee.stanford.edu/~hellman/publications/24.pdf
+but I have a hard time seeing this as a normative referce. I think it shoul=
+d be moved to informal.
+
+- [IEEE1363] This is paywalled. I don't think RFC8446bis should be publishe=
+d with this as a normative reference. I think this can and should be replac=
+ed with NIST SP 800-56A or SECG SEC 1.
+https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-56Ar3.pdf
+https://www.secg.org/sec1-v2.pdf
+
+Additional comments on references
+
+- [RFC8996] "*** BROKEN REFERENCE ***"
+Something wrong here.
+
+- [GCM] Should add an URL
+https://doi.org/10.6028/NIST.SP.800-38D
+
+- [X690] Should add an URL
+https://www.itu.int/rec/T-REC-X.690-202102-I/en
+
+[1]
+https://emanjon.github.io/NIST-comments/2025%20-%20SP%20800-56%20Subseries.=
+pdf
+
+[2]
+https://csrc.nist.gov/News/2024/nist-to-revise-special-publication-80038e
+
+[3]
+https://csrc.nist.gov/csrc/media/projects/crypto-publication-review-project=
+/documents/decision-proposal-comments/sp800-38e-decision-proposal-comments-=
+2023.pdf
+
+Cheers,
+John
+On 2024-09-16, 18:08, "Sean Turner" <sean@sn3rd.com> wrote:
+This version addresses all known issues. I will being work on the write-up,=
+ but I would expect it to be with our AD by next week.
+
+spt
+
+> On Sep 14, 2024, at 16:19, internet-drafts@ietf.org<mailto:internet-draft=
+s@ietf.org> wrote:
+>
+> Internet-Draft draft-ietf-tls-rfc8446bis-11.txt is now available. It is a=
+ work
+> item of the Transport Layer Security (TLS) WG of the IETF.
+>
+>   Title:   The Transport Layer Security (TLS) Protocol Version 1.3
+>   Author:  Eric Rescorla
+>   Name:    draft-ietf-tls-rfc8446bis-11.txt
+>   Pages:   160
+>   Dates:   2024-09-14
+>
+> Abstract:
+>
+>   This document specifies version 1.3 of the Transport Layer Security
+>   (TLS) protocol.  TLS allows client/server applications to communicate
+>   over the Internet in a way that is designed to prevent eavesdropping,
+>   tampering, and message forgery.
+>
+>   This document updates RFCs 5705, 6066, 7627, and 8422 and obsoletes
+>   RFCs 5077, 5246, 6961, 8422, and 8446.  This document also specifies
+>   new requirements for TLS 1.2 implementations.
+>
+> The IETF datatracker status page for this Internet-Draft is:
+> https://datatracker.ietf.org/doc/draft-ietf-tls-rfc8446bis/
+>
+> There is also an HTML version available at:
+> https://www.ietf.org/archive/id/draft-ietf-tls-rfc8446bis-11.html
+>
+> A diff from the previous version is available at:
+> https://author-tools.ietf.org/iddiff?url2=3Ddraft-ietf-tls-rfc8446bis-11
+>
+> Internet-Drafts are also available by rsync at:
+> rsync.ietf.org::internet-drafts
+>
+>
+> _______________________________________________
+> I-D-Announce mailing list -- i-d-announce@ietf.org<mailto:i-d-announce@ie=
+tf.org>
+> To unsubscribe send an email to i-d-announce-leave@ietf.org<mailto:i-d-an=
+nounce-leave@ietf.org>
+
+
+
+--_000_AS5PR07MB9675094EA6F94AC6D9F7C70A89F52AS5PR07MB9675eurp_
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" xmlns:w=3D"urn:sc=
+hemas-microsoft-com:office:word" xmlns:m=3D"http://schemas.microsoft.com/of=
+fice/2004/12/omml" xmlns=3D"http://www.w3.org/TR/REC-html40">
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dus-ascii"=
+>
+<meta name=3D"Generator" content=3D"Microsoft Word 15 (filtered medium)">
+<style><!--
+/* Font Definitions */
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Aptos;
+	panose-1:2 11 0 4 2 2 2 2 2 4;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	font-size:12.0pt;
+	font-family:"Aptos",sans-serif;}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:blue;
+	text-decoration:underline;}
+span.EmailStyle20
+	{mso-style-type:personal-reply;
+	font-family:"Aptos",sans-serif;
+	color:windowtext;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	font-size:10.0pt;
+	mso-ligatures:none;}
+@page WordSection1
+	{size:612.0pt 792.0pt;
+	margin:72.0pt 72.0pt 72.0pt 72.0pt;}
+div.WordSection1
+	{page:WordSection1;}
+--></style>
+</head>
+<body lang=3D"en-SE" link=3D"blue" vlink=3D"purple" style=3D"word-wrap:brea=
+k-word">
+<div class=3D"WordSection1">
+<p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"font-size:11.0pt;mso-f=
+areast-language:EN-US">Hi,<br>
+<br>
+I made the following two PRs to remove paywalled normative references. Payw=
+alled crypto specifications is a cybersecurity risk. People should not have=
+ to pay to implement or analyze TLS 1.3.<br>
+<br>
+Editorial updates to references #1369<br>
+</span><span style=3D"font-size:11.0pt;mso-fareast-language:EN-US"><a href=
+=3D"https://github.com/tlswg/tls13-spec/pull/1369">https://github.com/tlswg=
+/tls13-spec/pull/1369</a><o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;mso-fareast-language=
+:EN-US"><br>
+Remove normative references to paywalled crypto #1370<br>
+<a href=3D"https://github.com/tlswg/tls13-spec/pull/1370">https://github.co=
+m/tlswg/tls13-spec/pull/1370</a><o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;mso-fareast-language=
+:EN-US"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"font-size:11.0pt;mso-f=
+areast-language:EN-US">#1369 should be editorial. #1370 changes the referen=
+ce for some of the ECDH calculation from to [KEYAGREEMENT]. Some of the ECD=
+H calculations already references [KEYAGREEMENT]
+ and the changed text in 7.4.2. does not contain any RFC2119 language.<o:p>=
+</o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"font-size:11.0pt;mso-f=
+areast-language:EN-US"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"font-size:11.0pt;mso-f=
+areast-language:EN-US">Cheers,<br>
+John</span><span style=3D"font-size:11.0pt;mso-fareast-language:EN-US"><o:p=
+></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;mso-fareast-language=
+:EN-US"><o:p>&nbsp;</o:p></span></p>
+<div id=3D"mail-editor-reference-message-container">
+<div>
+<div>
+<div style=3D"border:none;border-top:solid #B5C4DF 1.0pt;padding:3.0pt 0cm =
+0cm 0cm">
+<p class=3D"MsoNormal" style=3D"margin-bottom:12.0pt"><b><span style=3D"col=
+or:black">From:
+</span></b><span style=3D"color:black">John Mattsson &lt;john.mattsson=3D40=
+ericsson.com@dmarc.ietf.org&gt;<br>
+<b>Date: </b>Sunday, 2 February 2025 at 12:45<br>
+<b>To: </b>Sean Turner &lt;sean@sn3rd.com&gt;, TLS List &lt;tls@ietf.org&gt=
+;<br>
+<b>Subject: </b>[TLS] Re: I-D Action: draft-ietf-tls-rfc8446bis-11.txt<o:p>=
+</o:p></span></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"font-size:11.0pt">Hi,<=
+br>
+<br>
+</span><span style=3D"font-size:11.0pt">I am very happy that </span><span l=
+ang=3D"EN-US" style=3D"font-size:11.0pt">both FIPS 186-5 and
+</span><span style=3D"font-size:11.0pt">RFC8446bis has removed the normativ=
+e reference to ANSI X.62. I strongly think RFC8446bis should replace ALL no=
+rmative references to paywalled documents.</span><o:p></o:p></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt">&nbsp;</span><o:p><=
+/o:p></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt">I think normative r=
+eferences to paywalled
+</span><span lang=3D"EN-US" style=3D"font-size:11.0pt">crypto</span><span s=
+tyle=3D"font-size:11.0pt"> documents is a substantial cybersecurity risk an=
+d goes against everything the IETF stands for [1-3].</span><span lang=3D"EN=
+-US" style=3D"font-size:11.0pt"> I looked
+ through all normative references in RFC8446bis.</span><o:p></o:p></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt">&nbsp;</span><o:p><=
+/o:p></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt">- [DH76] This docum=
+ent is freely available at</span><o:p></o:p></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt">https://ee.stanford=
+.edu/~hellman/publications/24.pdf</span><o:p></o:p></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt">but I have a hard t=
+ime seeing this as a normative referce. I think it should be moved to infor=
+mal.</span><o:p></o:p></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt">&nbsp;</span><o:p><=
+/o:p></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt">- [IEEE1363] This i=
+s paywalled. I don't think RFC8446bis should be published with this as a no=
+rmative reference. I think this can and should be replaced with NIST SP 800=
+-56A or SECG SEC 1</span><span lang=3D"EN-US" style=3D"font-size:11.0pt">.<=
+/span><o:p></o:p></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt">https://nvlpubs.nis=
+t.gov/nistpubs/SpecialPublications/NIST.SP.800-56Ar3.pdf</span><o:p></o:p><=
+/p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt">https://www.secg.or=
+g/sec1-v2.pdf</span><o:p></o:p></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"font-size:11.0pt"><br>
+Additional comments on references</span><o:p></o:p></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"font-size:11.0pt">&nbs=
+p;</span><o:p></o:p></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt">- [RFC8996] &quot;*=
+** BROKEN REFERENCE ***&quot;</span><o:p></o:p></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt">Something wrong her=
+e.</span><o:p></o:p></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt">&nbsp;</span><o:p><=
+/o:p></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt">- [GCM] Should add =
+a</span><span lang=3D"EN-US" style=3D"font-size:11.0pt">n</span><span style=
+=3D"font-size:11.0pt"> URL</span><o:p></o:p></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt">https://doi.org/10.=
+6028/NIST.SP.800-38D</span><o:p></o:p></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt">&nbsp;</span><o:p><=
+/o:p></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt">- [X690] Should add=
+ a</span><span lang=3D"EN-US" style=3D"font-size:11.0pt">n</span><span styl=
+e=3D"font-size:11.0pt"> URL</span><o:p></o:p></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt">https://www.itu.int=
+/rec/T-REC-X.690-202102-I/en</span><o:p></o:p></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt">&nbsp;</span><o:p><=
+/o:p></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt">[1]</span><o:p></o:=
+p></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt"><a href=3D"https://=
+emanjon.github.io/NIST-comments/2025%20-%20SP%20800-56%20Subseries.pdf">htt=
+ps://emanjon.github.io/NIST-comments/2025%20-%20SP%20800-56%20Subseries.pdf=
+</a></span><o:p></o:p></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt">&nbsp;</span><o:p><=
+/o:p></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt">[2]</span><o:p></o:=
+p></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt"><a href=3D"https://=
+csrc.nist.gov/News/2024/nist-to-revise-special-publication-80038e">https://=
+csrc.nist.gov/News/2024/nist-to-revise-special-publication-80038e</a></span=
+><o:p></o:p></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt">&nbsp;</span><o:p><=
+/o:p></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt">[3]</span><o:p></o:=
+p></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt"><a href=3D"https://=
+csrc.nist.gov/csrc/media/projects/crypto-publication-review-project/documen=
+ts/decision-proposal-comments/sp800-38e-decision-proposal-comments-2023.pdf=
+">https://csrc.nist.gov/csrc/media/projects/crypto-publication-review-proje=
+ct/documents/decision-proposal-comments/sp800-38e-decision-proposal-comment=
+s-2023.pdf</a></span><o:p></o:p></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt">&nbsp;</span><o:p><=
+/o:p></p>
+<p class=3D"MsoNormal" style=3D"margin-bottom:12.0pt"><span lang=3D"EN-US" =
+style=3D"font-size:11.0pt">Cheers,<br>
+John</span><o:p></o:p></p>
+<p class=3D"MsoNormal" style=3D"margin-bottom:12.0pt">On 2024-09-16, 18:08,=
+ &quot;Sean Turner&quot; &lt;sean@sn3rd.com&gt; wrote:<o:p></o:p></p>
+<div>
+<p class=3D"MsoNormal">This version addresses all known issues. I will bein=
+g work on the write-up, but I would expect it to be with our AD by next wee=
+k.<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&nbsp;<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">spt<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&nbsp;<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&gt; On Sep 14, 2024, at 16:19, <a href=3D"mailto:in=
+ternet-drafts@ietf.org">
+internet-drafts@ietf.org</a> wrote:<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&gt; <o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&gt; Internet-Draft draft-ietf-tls-rfc8446bis-11.txt=
+ is now available. It is a work<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&gt; item of the Transport Layer Security (TLS) WG o=
+f the IETF.<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&gt; <o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&gt;&nbsp;&nbsp; Title:&nbsp;&nbsp; The Transport La=
+yer Security (TLS) Protocol Version 1.3<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&gt;&nbsp;&nbsp; Author:&nbsp;&nbsp;Eric Rescorla<o:=
+p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&gt;&nbsp;&nbsp; Name:&nbsp;&nbsp;&nbsp;&nbsp;draft-=
+ietf-tls-rfc8446bis-11.txt<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&gt;&nbsp;&nbsp; Pages:&nbsp;&nbsp; 160<o:p></o:p></=
+p>
+</div>
+<div>
+<p class=3D"MsoNormal">&gt;&nbsp;&nbsp; Dates:&nbsp;&nbsp; 2024-09-14<o:p><=
+/o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&gt; <o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&gt; Abstract:<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&gt; <o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&gt;&nbsp;&nbsp; This document specifies version 1.3=
+ of the Transport Layer Security<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&gt;&nbsp;&nbsp; (TLS) protocol.&nbsp;&nbsp;TLS allo=
+ws client/server applications to communicate<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&gt;&nbsp;&nbsp; over the Internet in a way that is =
+designed to prevent eavesdropping,<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&gt;&nbsp;&nbsp; tampering, and message forgery.<o:p=
+></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&gt; <o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&gt;&nbsp;&nbsp; This document updates RFCs 5705, 60=
+66, 7627, and 8422 and obsoletes<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&gt;&nbsp;&nbsp; RFCs 5077, 5246, 6961, 8422, and 84=
+46.&nbsp;&nbsp;This document also specifies<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&gt;&nbsp;&nbsp; new requirements for TLS 1.2 implem=
+entations.<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&gt; <o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&gt; The IETF datatracker status page for this Inter=
+net-Draft is:<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&gt; <a href=3D"https://datatracker.ietf.org/doc/dra=
+ft-ietf-tls-rfc8446bis/">
+https://datatracker.ietf.org/doc/draft-ietf-tls-rfc8446bis/</a><o:p></o:p><=
+/p>
+</div>
+<div>
+<p class=3D"MsoNormal">&gt; <o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&gt; There is also an HTML version available at:<o:p=
+></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&gt; <a href=3D"https://www.ietf.org/archive/id/draf=
+t-ietf-tls-rfc8446bis-11.html">
+https://www.ietf.org/archive/id/draft-ietf-tls-rfc8446bis-11.html</a><o:p><=
+/o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&gt; <o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&gt; A diff from the previous version is available a=
+t:<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&gt; <a href=3D"https://author-tools.ietf.org/iddiff=
+?url2=3Ddraft-ietf-tls-rfc8446bis-11">
+https://author-tools.ietf.org/iddiff?url2=3Ddraft-ietf-tls-rfc8446bis-11</a=
+><o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&gt; <o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&gt; Internet-Drafts are also available by rsync at:=
+<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&gt; rsync.ietf.org::internet-drafts<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&gt; <o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&gt; <o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&gt; _______________________________________________=
+<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&gt; I-D-Announce mailing list -- <a href=3D"mailto:=
+i-d-announce@ietf.org">
+i-d-announce@ietf.org</a><o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&gt; To unsubscribe send an email to <a href=3D"mail=
+to:i-d-announce-leave@ietf.org">
+i-d-announce-leave@ietf.org</a><o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&nbsp;<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&nbsp;<o:p></o:p></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
+
+--_000_AS5PR07MB9675094EA6F94AC6D9F7C70A89F52AS5PR07MB9675eurp_--
+

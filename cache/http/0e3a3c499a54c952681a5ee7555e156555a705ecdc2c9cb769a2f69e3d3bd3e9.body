@@ -1,0 +1,168 @@
+From nobody Wed Aug 16 08:31:10 2023
+Return-Path: <sean@sn3rd.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 8B809C153CBF
+ for <tls@ietfa.amsl.com>; Wed, 16 Aug 2023 08:31:08 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.106
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.106 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1,
+ RCVD_IN_ZEN_BLOCKED_OPENDNS=0.001, SPF_HELO_NONE=0.001,
+ SPF_PASS=-0.001, T_SCC_BODY_TEXT_LINE=-0.01, URIBL_BLOCKED=0.001,
+ URIBL_DBL_BLOCKED_OPENDNS=0.001, URIBL_ZEN_BLOCKED_OPENDNS=0.001]
+ autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=sn3rd.com
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 1CgvdnTL-JyB for <tls@ietfa.amsl.com>;
+ Wed, 16 Aug 2023 08:31:03 -0700 (PDT)
+Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com
+ [IPv6:2607:f8b0:4864:20::929])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 3EA0BC14EB19
+ for <tls@ietf.org>; Wed, 16 Aug 2023 08:31:03 -0700 (PDT)
+Received: by mail-ua1-x929.google.com with SMTP id
+ a1e0cc1a2514c-79414715edeso1318034241.0
+ for <tls@ietf.org>; Wed, 16 Aug 2023 08:31:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sn3rd.com; s=google; t=1692199862; x=1692804662;
+ h=to:references:message-id:content-transfer-encoding:cc:date
+ :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=ITObQTH2B+flBsjMl4Mev5o8byvHpIPA38Sdi9TYKrU=;
+ b=YQe61kXSSpHpWFbrqP+bfJGnBOKbHq2eaLnAuouxh9xtRIG/hGdSNUVP7apUh5VU+/
+ MamI1L8u+fhRL1v5R+6Yc9gNDI6/a/3Ba9WuDegyalqPkTxO0Pcm+Y/tFljisYSjYckD
+ g189yT5jsRfJw5rOY7xmXAseHP7fi+cb05XRU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20221208; t=1692199862; x=1692804662;
+ h=to:references:message-id:content-transfer-encoding:cc:date
+ :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=ITObQTH2B+flBsjMl4Mev5o8byvHpIPA38Sdi9TYKrU=;
+ b=T4XmL5oXRjrUyu6aRHEJGMDwF0lyohQ1hBWer8C+kyYey4nWA44Z0NevghSPL34wfP
+ v1Fch79Plo2joXgboWEZiP+cRvagmO4gnDYbHU2g2JItn44uGDZ0iXD86bHIoMuSp6zC
+ HlmYZY4noaj5vRryelfnYRWYcu/vxTheS8PH0NeNB/ADyvlrlQ0qCTV/1eRzZJQPiaDu
+ mUqXfquh9uNN0R1coBBdRDXvg3FwR4cOkiSrW0HEl8rPMK9blAhMhFG8BmozmA7M8zEF
+ 596PlsJfehYhI8P2QkDj/zqqYZH22xlRL3NE+s5hXjEajqcnDIjuMJ9pWC5JBuqAmBES
+ PxtQ==
+X-Gm-Message-State: AOJu0YwUeslvtbIVcCNyV/yHSH/Og2Rq5lDiGXGZNjmcgD72b/4WGJU8
+ kHRGGEh5giS4RfChMErJmfiBSH/lZ7KrG8bVqcc=
+X-Google-Smtp-Source: AGHT+IHP2acFD00gqUNg2CraLq5EzAuHtBwDZRy5YifyqiKCOUnO30JzHNzEK5x/co07G9bCvD5OwQ==
+X-Received: by 2002:a67:e417:0:b0:447:4ce7:527d with SMTP id
+ d23-20020a67e417000000b004474ce7527dmr1301477vsf.19.1692199861884; 
+ Wed, 16 Aug 2023 08:31:01 -0700 (PDT)
+Received: from smtpclient.apple ([2600:4040:253b:7300:707c:c78c:83f1:fece])
+ by smtp.gmail.com with ESMTPSA id
+ c12-20020a0ce14c000000b00631f40503cbsm4945718qvl.12.2023.08.16.08.30.59
+ (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+ Wed, 16 Aug 2023 08:30:59 -0700 (PDT)
+Content-Type: text/plain;
+	charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.15\))
+From: Sean Turner <sean@sn3rd.com>
+In-Reply-To: <75D52C65-A9DC-462C-9A09-7C5FA107FF32@vigilsec.com>
+Date: Wed, 16 Aug 2023 11:30:58 -0400
+Cc: TLS List <tls@ietf.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <1F62E570-2276-4B5E-9390-5F8FDD3FA344@sn3rd.com>
+References: <20230811162318.7CA49E76BE@rfcpa.amsl.com>
+ <75D52C65-A9DC-462C-9A09-7C5FA107FF32@vigilsec.com>
+To: Russ Housley <housley@vigilsec.com>
+X-Mailer: Apple Mail (2.3654.120.0.1.15)
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/eH2tTnFD0mjB0qOqv7N_bCuK5-k>
+Subject: Re: [TLS] [Editorial Errata Reported] RFC8773 (7598)
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Wed, 16 Aug 2023 15:31:08 -0000
+
+Russ,
+
+Yeah the change looks right. The server is selecting based on what=E2=80=99=
+s in the ClientHello. Anybody else see it differently?
+
+spt
+
+> On Aug 11, 2023, at 12:35, Russ Housley <housley@vigilsec.com> wrote:
+>=20
+> I believe thatthis errata should be verified.
+>=20
+>> On Aug 11, 2023, at 12:23 PM, RFC Errata System =
+<rfc-editor@rfc-editor.org> wrote:
+>>=20
+>> The following errata report has been submitted for RFC8773,
+>> "TLS 1.3 Extension for Certificate-Based Authentication with an =
+External Pre-Shared Key".
+>>=20
+>> --------------------------------------
+>> You may review the report below and at:
+>> https://www.rfc-editor.org/errata/eid7598
+>>=20
+>> --------------------------------------
+>> Type: Editorial
+>> Reported by: Russ Housley <housley@vigilsec.com>
+>>=20
+>> Section: 5.1
+>>=20
+>> Original Text
+>> -------------
+>> When the "psk_key_exchange_modes" extension is included in the
+>> ServerHello message, servers MUST select the psk_dhe_ke mode
+>> for the initial handshake.
+>>=20
+>> Corrected Text
+>> --------------
+>> When the "psk_key_exchange_modes" extension is included in the
+>> ClientHello message, servers MUST select the psk_dhe_ke mode
+>> for the initial handshake.
+>>=20
+>> Notes
+>> -----
+>> According to RFC 8446, the "psk_key_exchange_modes" extension only =
+appears in the ClientHello message. Further, the slides presented on =
+this topic at IETF 101show the "psk_key_exchange_modes" extension in the =
+ClientHello message and no other place.  It is pretty clear that this is =
+an editorial error.
+>>=20
+>> Instructions:
+>> -------------
+>> This erratum is currently posted as "Reported". If necessary, please
+>> use "Reply All" to discuss whether it should be verified or
+>> rejected. When a decision is reached, the verifying party =20
+>> can log in to change the status and edit the report, if necessary.=20
+>>=20
+>> --------------------------------------
+>> RFC8773 (draft-ietf-tls-tls13-cert-with-extern-psk-07)
+>> --------------------------------------
+>> Title               : TLS 1.3 Extension for Certificate-Based =
+Authentication with an External Pre-Shared Key
+>> Publication Date    : March 2020
+>> Author(s)           : R. Housley
+>> Category            : EXPERIMENTAL
+>> Source              : Transport Layer Security
+>> Area                : Security
+>> Stream              : IETF
+>> Verifying Party     : IESG
+>=20
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+

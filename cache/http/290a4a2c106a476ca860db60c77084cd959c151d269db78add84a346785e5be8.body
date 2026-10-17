@@ -1,0 +1,182 @@
+Return-Path: <davidben@google.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 56708127978
+ for <tls@ietfa.amsl.com>; Thu,  3 May 2018 08:21:55 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.449
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.449 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ DKIM_VALID_AU=-0.1, HEADER_FROM_DIFFERENT_DOMAINS=0.25,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_LOW=-0.7, SPF_PASS=-0.001,
+ URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=chromium.org
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 0afTG6NRF0uZ for <tls@ietfa.amsl.com>;
+ Thu,  3 May 2018 08:21:53 -0700 (PDT)
+Received: from mail-qk0-x22b.google.com (mail-qk0-x22b.google.com
+ [IPv6:2607:f8b0:400d:c09::22b])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 1FBBE1277BB
+ for <tls@ietf.org>; Thu,  3 May 2018 08:21:53 -0700 (PDT)
+Received: by mail-qk0-x22b.google.com with SMTP id b39so14216935qkb.5
+ for <tls@ietf.org>; Thu, 03 May 2018 08:21:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=pbi/3vUiQr5rpxItfGMveDyjpiScvfh/nDz8p2JjdHI=;
+ b=nsRKL938uu9eWZafuX2gK8MmC4lApsoTdz/y3UsX214YD+LYmchhgP2UH3Ac1Ne1+1
+ nJkFzZOw35L3wd60UKkpPAFPbxUFNzXETQZCGHFYqen6mJbtRRmRkAHO50P5qSvz73i+
+ P1SRsheN0HZJNdP1uYDi6RtZLeqQOWkhwJkrQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=pbi/3vUiQr5rpxItfGMveDyjpiScvfh/nDz8p2JjdHI=;
+ b=SwC9QKPFpTqy7rWgUP199owPjb0bQwoFDqBcIeYFiCveD84cwCpjerahN7hK0NH5gF
+ ozKk1HpG+Iet3PpopjonP9wxAdhcZNlMj1bbMZtx2GnSUOk2EX5i8qif0awfHZu63rSe
+ Wr9Z3hOEpYI7iQOSwoJMr5ZY3zsjstc22pKrU4AsC4+t/g2dzYBDbsNFieXjyd9JVcEJ
+ zLiM6D91HC6LAdNZoigMqO+CElcbXlKIeIfPq/lJtNRyYbwyu6DNBiQxENlozyMDRGW7
+ qR9pWqfmhn3ANOcqQ1jpeIOkenUAvN1TQzVLSzV/EjEbfPphwMRMzp+Yty56fw9cencg
+ wHRg==
+X-Gm-Message-State: ALQs6tDRQgJFyLI6024zp1mLjcFZHoTV4iLypsElHvhxO7cA7EEwXogb
+ K97XCtfXiLPxCvOH7ByNGJ23dRCYtfODMJtFwZD3
+X-Google-Smtp-Source: AB8JxZqswT1Rv2WHlHMSob4KAvl45gbUF/9geaRgUM7PLpYcMFgHXlpm3zxodemNZOVTY2zOd/Eoygtfu1IRcAYoBl0=
+X-Received: by 10.233.220.129 with SMTP id q123mr14866310qkf.318.1525360911972; 
+ Thu, 03 May 2018 08:21:51 -0700 (PDT)
+MIME-Version: 1.0
+References: <DM6PR15MB2266E95752925D1E5D990FFC87870@DM6PR15MB2266.namprd15.prod.outlook.com>
+ <BA2EEC4D-C7D7-4449-AB31-2DEBF3B9C8BC@sn3rd.com>
+In-Reply-To: <BA2EEC4D-C7D7-4449-AB31-2DEBF3B9C8BC@sn3rd.com>
+From: David Benjamin <davidben@chromium.org>
+Date: Thu, 03 May 2018 15:21:41 +0000
+Message-ID: <CAF8qwaA6iBM6Xngm9o2=jog6Uue4Z=yfvJLkSNvWECAZVAumXg@mail.gmail.com>
+To: Sean Turner <sean@sn3rd.com>
+Cc: "Ghosh, Ipsito" <Ipsito.Ghosh@ncr.com>, "tls@ietf.org" <tls@ietf.org>
+Content-Type: multipart/alternative; boundary="94eb2c04551250aabf056b4ec3cd"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/A5quD8VE5faZA0gdB1lQCx2mtWo>
+Subject: Re: [TLS] TLS 1.3 Specification
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Thu, 03 May 2018 15:21:55 -0000
+
+--94eb2c04551250aabf056b4ec3cd
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+BoringSSL and OpenSSL have are draft versions which use different version
+numbers from the final RFC, so as not to collide. Early experimental
+deployment is generally useful to help inform the final standard and flush
+out any non-compliant TLS 1.2 implementations that may cause deployment
+difficulties. (This, of course, also means that any draft versions are
+experimental and doomed to be replaced by the final RFC once published.)
+
+On Thu, May 3, 2018 at 9:08 AM Sean Turner <sean@sn3rd.com> wrote:
+
+> The IESG has approved the draft, but it still needs to complete the RFC
+> editor phase where copy editing, changing of the boilerplate, assigning a=
+n
+> RFC #, etc gets done to make it an RFC.  You can see the RFC editor=E2=80=
+=99s queue
+> here:
+>
+> https://www.rfc-editor.org/current_queue.php
+>
+> spt
+>
+> > On May 3, 2018, at 08:57, Ghosh, Ipsito <Ipsito.Ghosh@ncr.com> wrote:
+> >
+> > Dear Team,
+> >
+> > Some of the SSL providers are already rolled out TLS 1.3 ( OpenSSL ,
+> BoringSSL etc) .
+> >
+> > Does the TLS 1.3 draft is finalized yet ?
+> >
+> > https://tools.ietf.org/html/draft-ietf-tls-tls13-28
+> >
+> >
+> > Regards,
+> > Ipsito
+> > _______________________________________________
+> > TLS mailing list
+> > TLS@ietf.org
+> > https://www.ietf.org/mailman/listinfo/tls
+>
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+>
+
+--94eb2c04551250aabf056b4ec3cd
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">BoringSSL and OpenSSL have are draft versions which use di=
+fferent version numbers from the final RFC, so as not to collide. Early=C2=
+=A0experimental deployment is generally useful to help inform the final sta=
+ndard and flush out any non-compliant TLS 1.2 implementations that may caus=
+e deployment difficulties. (This, of course, also means that any draft vers=
+ions are experimental and doomed to be replaced by the final RFC once publi=
+shed.)<div><div><div><br><div><div class=3D"gmail_quote"><div dir=3D"ltr">O=
+n Thu, May 3, 2018 at 9:08 AM Sean Turner &lt;<a href=3D"mailto:sean@sn3rd.=
+com">sean@sn3rd.com</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quot=
+e" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex">=
+The IESG has approved the draft, but it still needs to complete the RFC edi=
+tor phase where copy editing, changing of the boilerplate, assigning an RFC=
+ #, etc gets done to make it an RFC.=C2=A0 You can see the RFC editor=E2=80=
+=99s queue here:<br>
+<br>
+<a href=3D"https://www.rfc-editor.org/current_queue.php" rel=3D"noreferrer"=
+ target=3D"_blank">https://www.rfc-editor.org/current_queue.php</a><br>
+<br>
+spt<br>
+<br>
+&gt; On May 3, 2018, at 08:57, Ghosh, Ipsito &lt;<a href=3D"mailto:Ipsito.G=
+hosh@ncr.com" target=3D"_blank">Ipsito.Ghosh@ncr.com</a>&gt; wrote:<br>
+&gt; <br>
+&gt; Dear Team, <br>
+&gt;=C2=A0 <br>
+&gt; Some of the SSL providers are already rolled out TLS 1.3 ( OpenSSL , B=
+oringSSL etc) .<br>
+&gt;=C2=A0 <br>
+&gt; Does the TLS 1.3 draft is finalized yet ? <br>
+&gt;=C2=A0 <br>
+&gt; <a href=3D"https://tools.ietf.org/html/draft-ietf-tls-tls13-28" rel=3D=
+"noreferrer" target=3D"_blank">https://tools.ietf.org/html/draft-ietf-tls-t=
+ls13-28</a><br>
+&gt;=C2=A0 <br>
+&gt;=C2=A0 <br>
+&gt; Regards, <br>
+&gt; Ipsito<br>
+&gt; _______________________________________________<br>
+&gt; TLS mailing list<br>
+&gt; <a href=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.org</a><br>
+&gt; <a href=3D"https://www.ietf.org/mailman/listinfo/tls" rel=3D"noreferre=
+r" target=3D"_blank">https://www.ietf.org/mailman/listinfo/tls</a><br>
+<br>
+_______________________________________________<br>
+TLS mailing list<br>
+<a href=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.org</a><br>
+<a href=3D"https://www.ietf.org/mailman/listinfo/tls" rel=3D"noreferrer" ta=
+rget=3D"_blank">https://www.ietf.org/mailman/listinfo/tls</a><br>
+</blockquote></div></div></div></div></div></div>
+
+--94eb2c04551250aabf056b4ec3cd--
+

@@ -1,0 +1,124 @@
+Return-Path: <mrex@sap.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id C9671129568
+ for <tls@ietfa.amsl.com>; Fri, 28 Oct 2016 11:35:48 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -6.922
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.922 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, RCVD_IN_DNSWL_HI=-5, RCVD_IN_MSPIKE_H3=-0.01,
+ RCVD_IN_MSPIKE_WL=-0.01, SPF_HELO_PASS=-0.001, SPF_PASS=-0.001]
+ autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id TKIT0p4IGYDS for <tls@ietfa.amsl.com>;
+ Fri, 28 Oct 2016 11:35:47 -0700 (PDT)
+Received: from smtpde02.smtp.sap-ag.de (smtpde02.smtp.sap-ag.de
+ [155.56.68.140])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 6C91712953B
+ for <tls@ietf.org>; Fri, 28 Oct 2016 11:35:47 -0700 (PDT)
+Received: from mail06.wdf.sap.corp (mail06.sap.corp [194.39.131.54])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by smtpde02.smtp.sap-ag.de (Postfix) with ESMTPS id 3t5CBB0XWbz26Kf;
+ Fri, 28 Oct 2016 20:35:46 +0200 (CEST)
+X-purgate-ID: 152705::1477679746-00003836-9C09BD07/0/0
+X-purgate-size: 2248
+X-purgate: clean
+X-purgate: This mail is considered clean (visit http://www.eleven.de for
+ further information)
+X-purgate-Ad: Categorized by eleven eXpurgate (R) http://www.eleven.de
+X-purgate-type: clean
+X-SAP-SPAM-Status: clean
+Received: from ld9781.wdf.sap.corp (ld9781.wdf.sap.corp [10.21.82.193])
+ by mail06.wdf.sap.corp (Postfix) with ESMTP id 3t5CB94dMPzksH6;
+ Fri, 28 Oct 2016 20:35:45 +0200 (CEST)
+Received: by ld9781.wdf.sap.corp (Postfix, from userid 10159)
+ id 942CC1A56E; Fri, 28 Oct 2016 20:35:45 +0200 (CEST)
+In-Reply-To: <20161028162426.GA25186@LK-Perkele-V2.elisa-laajakaista.fi>
+To: Ilari Liusvaara <ilariliusvaara@welho.com>
+Date: Fri, 28 Oct 2016 20:35:45 +0200 (CEST)
+X-Mailer: ELM [version 2.4ME+ PL125 (25)]
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="US-ASCII"
+Message-Id: <20161028183545.942CC1A56E@ld9781.wdf.sap.corp>
+From: mrex@sap.com (Martin Rex)
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/nStpvbTXLk30VwbyeJDvKJBvCug>
+Cc: "tls@ietf.org" <tls@ietf.org>
+Subject: Re: [TLS] Working Group Last Call for draft-ietf-tls-tls13-18
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.17
+Precedence: list
+Reply-To: mrex@sap.com
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Fri, 28 Oct 2016 18:35:49 -0000
+
+Ilari Liusvaara wrote:
+> Martin Rex wrote:
+>> Joseph Salowey wrote:
+>> 
+>> There are two seriously backwards-incompatible changes in the
+>> current proposal that provide zero value, but completely break
+>> backwards-compatibility with existing middleware infrastructure.
+>> 
+>> 
+>> (1) hiding of the TLS record content types.
+>>     Please leave the TLS record types (handshake/AppData/Alert/CCS)
+>>     clearly visible on the outside of the TLS records, so that
+>>     middleware protocol parsers (which interface to transport-free
+>>     TLS protocol stacks) can continue to work, and continue to
+>>     work efficiently.
+> 
+> Hiding the types does have its benefits (and it is also used for
+> zero-overhead padding scheme).
+
+Nope, ZERO benefits.  But it totally breaks the middleware
+_at_the_endpoints_!
+
+
+> 
+> And also, TLS 1.3 handshake is so darn different from TLS 1.2, that
+> you couldn't do anything sane even if you had record types.
+
+Wrong.
+
+If one is using an architecture where the TLS protocol stack is
+transportless, so that the network communication can be performed
+efficiently (coalescing TLS records that are trickling in), then
+the *REAL* content type is quite important for knowing whether
+the TLS handshake is still ongoing, or whether it is already
+complete.
+
+The way I've built this is that the middleware has a timeout for
+the TLS handshake in its entirety (independent of the number of
+roundtrips), and at the same time promises the application a
+network readable event for every incoming TLS record with
+application data.  This only works if I can leave TLS appdata
+records partially in the incoming network buffer, and for this
+I must be able to recognize them.
+
+For processing TLS records with Handshake messages, pre-reading and
+passing multiple of them is preferable and much more efficient
+(if TLS handshake messages come in seperate TLS records each, which
+some implementations do).  Pre-reading TLS records with handshake messages,
+but not prereading TLS records with AppData (so that network readable
+events will remain visible for app data) is only possible if I see the
+contents on the outside of the record by just reading the TLS record header.
+
+
+-Martin
+

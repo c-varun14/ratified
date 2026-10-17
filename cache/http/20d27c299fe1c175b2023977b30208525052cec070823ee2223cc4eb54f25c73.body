@@ -1,0 +1,97 @@
+Return-Path: <ietf-dane@dukhovni.org>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (ietfa.amsl.com [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 0B15D1ACE9B
+ for <tls@ietfa.amsl.com>; Wed, 21 Oct 2015 12:56:12 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.6
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.6 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, RCVD_IN_DNSWL_LOW=-0.7] autolearn=ham
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id x4dMiPieA-0r for <tls@ietfa.amsl.com>;
+ Wed, 21 Oct 2015 12:56:10 -0700 (PDT)
+Received: from mournblade.imrryr.org (mournblade.imrryr.org [38.117.134.19])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 1EB6A1ACE1F
+ for <tls@ietf.org>; Wed, 21 Oct 2015 12:56:10 -0700 (PDT)
+Received: by mournblade.imrryr.org (Postfix, from userid 1034)
+ id 35AED284DA6; Wed, 21 Oct 2015 19:56:09 +0000 (UTC)
+Date: Wed, 21 Oct 2015 19:56:09 +0000
+From: Viktor Dukhovni <ietf-dane@dukhovni.org>
+To: tls@ietf.org
+Message-ID: <20151021195608.GO15070@mournblade.imrryr.org>
+References: <CABkgnnXYrbRYZjz9Lbid4pjR7kZZn4tpoEo7UeJHmCN4trq23A@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABkgnnXYrbRYZjz9Lbid4pjR7kZZn4tpoEo7UeJHmCN4trq23A@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+Archived-At: <http://mailarchive.ietf.org/arch/msg/tls/d8hO1aBmNDPqFWm_XNCwADrgpEY>
+Subject: Re: [TLS] Controlling use of SHA-1
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.15
+Precedence: list
+Reply-To: tls@ietf.org
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Wed, 21 Oct 2015 19:56:12 -0000
+
+On Wed, Oct 21, 2015 at 12:15:25PM -0700, Martin Thomson wrote:
+
+> The current draft permits the use of SHA-1 in the certificate chain,
+> which gives SHA-1 a free pass indefinitely.
+
+Forbidding the sending of SHA-1 chains was wrong last time we
+discussed this at length, and remains wrong now.
+
+Whether SHA-1 in the chain is used to make trust decisions is only
+known to the client, and the server MUST NOT preempt that by denying
+the client access to whatever chain it has on hand.
+
+Each peer MUST try to send a chain that matches an advertised
+signature algorithm if it has a choice of chains, but otherwise
+MUST send whatever it has.
+
+> That means that clients that want to disable SHA-1 (real soon now, we
+> promise), can signal that preference cleanly.
+
+The clients can indeed not signal SHA-1 support, and SHOULD avoid
+trusting SHA-1, but the server MUST still send whatever chain it
+has and let the client decide.
+
+> I've opened PR #317 for this, but the commit is probably more useful
+> to review, since I built this on top of ekr's client authentication
+> changes (to avoid messy rebases):
+> 
+> https://github.com/martinthomson/tls13-spec/commit/354475cf02819a9cc808457f2c09fdaeb1f82aa5
+
+The final diff "hunk" is dejavu-all-over-again.  This text must
+stay unchanged.
+
+     indicated supported pairs, then it SHOULD continue the handshake by sending
+     the client a certificate chain of its choice that may include algorithms
+     that are not known to be supported by the client. This fallback chain MAY
+    -use the deprecated SHA-1 hash algorithm.
+    +use the deprecated SHA-1 hash algorithm only if the "signature_algorithms"
+    +extension provided by the client permits it.
+     If the client cannot construct an acceptable chain using the provided
+     certificates and decides to abort the handshake, then it MUST send an
+     "unsupported_certificate" alert message and close the connection.
+
+So, no to the diff above.
+
+-- 
+	Viktor.
+

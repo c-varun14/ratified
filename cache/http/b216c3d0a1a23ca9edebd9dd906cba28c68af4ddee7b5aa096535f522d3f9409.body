@@ -1,0 +1,155 @@
+Return-Path: <pgut001@cs.auckland.ac.nz>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 19BD8127201;
+ Sat, 31 Mar 2018 22:29:40 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.91
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.91 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ T_RP_MATCHES_RCVD=-0.01] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=auckland.ac.nz
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id PYSkazA5IPty; Sat, 31 Mar 2018 22:29:39 -0700 (PDT)
+Received: from mx4-int.auckland.ac.nz (mx4-int.auckland.ac.nz
+ [130.216.125.246])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 05AF51271FD;
+ Sat, 31 Mar 2018 22:29:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=auckland.ac.nz; i=@auckland.ac.nz; q=dns/txt; s=mail;
+ t=1522560578; x=1554096578;
+ h=from:to:cc:subject:date:message-id:references:
+ in-reply-to:content-transfer-encoding:mime-version;
+ bh=/egm7DclxaaahF8g9h7Kh21eWJ1Rnmv8hiaLQqmxKTE=;
+ b=Mx2UgD94LGv9jZdVl/LiEQE8342BmjqAeH/K9DYCfVSG1jk6JtHwLcpb
+ R3Gd2tAKX2+KJFGvrXvg/+uRfXht9Zoh2M66SAg0+mpWNSxzkg8mmmlwH
+ 3yCeQ7LluKY6l4Lw9UT/+7+TX4hRFiJkTBrYrSp0aHajKZSdMpVU4dfkO
+ aqXAvwafIpfz6Kk4onVJajccv9wDQ2JUvZWje/w1JMzA5nVvxKfyJFVWB
+ Ih0wgTULZ4gW/AJozfgX35+JM10Hn+2T/R22bVH27wtOcNyZzxYG1a507
+ gsV9GdE8n5SCkkmdwFJRdvJItBNVONEdyaA+/0ZOoqk7qAtqrFAul3m22 w==;
+X-IronPort-AV: E=Sophos;i="5.48,390,1517828400"; 
+   d="scan'208";a="6065790"
+X-Ironport-HAT: MAIL-SERVERS - $RELAYED
+X-Ironport-Source: 10.6.3.9 - Outgoing - Outgoing
+Received: from exchangemx.uoa.auckland.ac.nz (HELO
+ uxcn13-tdc-e.UoA.auckland.ac.nz) ([10.6.3.9])
+ by mx4-int.auckland.ac.nz with ESMTP/TLS/AES256-SHA; 01 Apr 2018 17:29:36 +1200
+Received: from uxcn13-ogg-d.UoA.auckland.ac.nz (10.6.2.5) by
+ uxcn13-tdc-e.UoA.auckland.ac.nz (10.6.3.29) with Microsoft SMTP Server (TLS)
+ id 15.0.1263.5; Sun, 1 Apr 2018 17:29:35 +1200
+Received: from uxcn13-ogg-d.UoA.auckland.ac.nz ([10.6.2.25]) by
+ uxcn13-ogg-d.UoA.auckland.ac.nz ([10.6.2.25]) with mapi id 15.00.1263.000;
+ Sun, 1 Apr 2018 17:29:35 +1200
+From: Peter Gutmann <pgut001@cs.auckland.ac.nz>
+To: Eric Rescorla <ekr@rtfm.com>
+CC: Kathleen Moriarty <kathleen.moriarty.ietf@gmail.com>, Bill Frantz
+ <frantz@pwpconsult.com>, Steve Fenter <steven.fenter58@gmail.com>, "Dale R.
+ Worley" <worley@ariadne.com>, General Area Review Team <gen-art@ietf.org>,
+ IETF discussion list <ietf@ietf.org>, "draft-ietf-tls-tls13.all@ietf.org"
+ <draft-ietf-tls-tls13.all@ietf.org>, "<tls@ietf.org>" <tls@ietf.org>
+Thread-Topic: Expanded alert codes. [Was Re: [TLS] Genart last call review of
+ draft-ietf-tls-tls13-24]
+Thread-Index: AQHTyPY04HM+YxdCYUqINMMcRBjQKqPrYnR7
+Date: Sun, 1 Apr 2018 05:29:34 +0000
+Message-ID: <1522560535687.32559@cs.auckland.ac.nz>
+References: <CABcZeBNB50jY1odzgVZVKqn8F7TCj1b+A_95yG6f=Nde0KVv+g@mail.gmail.com>
+In-Reply-To: <CABcZeBNB50jY1odzgVZVKqn8F7TCj1b+A_95yG6f=Nde0KVv+g@mail.gmail.com>
+Accept-Language: en-NZ, en-GB, en-US
+Content-Language: en-NZ
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [130.216.158.4]
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/H43JPzyMRlVsqoGAmCvjSdDkV04>
+Subject: Re: [TLS] Expanded alert codes. [Was Re: Genart last call review of
+ draft-ietf-tls-tls13-24]
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Sun, 01 Apr 2018 05:29:40 -0000
+
+Eric Rescorla <ekr@rtfm.com> writes:=0A=
+=0A=
+>In my experience, there are four major scenarios for diagnosing this kind =
+of=0A=
+>failure. Under the assumption that you control one end, the other end can =
+be:=0A=
+>=0A=
+>1. A live endpoint.=0A=
+>2. A testing endpoint someone has put up.=0A=
+>3. An endpoint that someone is actively working on with you.=0A=
+>4. An endpoint you control (e.g., you're running it on your own machine).=
+=0A=
+>=0A=
+>If this is a debug-only feature, then it won't be available in case #1, =
+=0A=
+=0A=
+I have the feeling the people who have commented on this were talking from=
+=0A=
+real-world experience, and in the example I gave it was exactly case #1.  T=
+his=0A=
+was a live, large-scale production environment by a major ecommerce=0A=
+organisation (details fudged somewhat to avoid identifying anyone, but=0A=
+everyone here would know the name), and the only way to get things working =
+was=0A=
+to spend several weeks randomly tweaking every conceivable option on the=0A=
+client until things started working, because the only thing the server woul=
+d=0A=
+say was "Handshake failure".  The client-side organisation still has no ide=
+a=0A=
+what made things work, they've narrowed it down by trial and error to about=
+=0A=
+half a dozen things they had to change, but that's it.=0A=
+=0A=
+If they'd been able to get the server operators to turn on extended-alert f=
+or=0A=
+even just a single handshake it would have avoided several weeks' effort an=
+d a=0A=
+fix that even now is pure guesswork.=0A=
+=0A=
+>For the same reason, it's not really that helpful in case #3, because you =
+can=0A=
+>just ask the person you're working with to read the logs, =0A=
+=0A=
+Except that these people are EDI companies, not TLS experts.  They have=0A=
+neither the expertise nor the inclination to help debug TLS issues.  What t=
+hey=0A=
+will do is enable debug on the server so the client can sort things out, bu=
+t=0A=
+they're not going to devote any effort to sorting out the problem at their=
+=0A=
+end.=0A=
+=0A=
+Note that temporarily enabling debug on a live endpoint isn't a big issue,=
+=0A=
+everything will continue to operate as before except for the one client tha=
+t=0A=
+requests debug-level alerts, and that knows what it's up for because it=0A=
+explicitly asked for it.=0A=
+=0A=
+>so this leaves case #2, =0A=
+=0A=
+Actually it leaves 1, 2, and 3.  4 is kinda pathological, so really the=0A=
+problem is "all of the cases".=0A=
+=0A=
+Peter.=0A=
+

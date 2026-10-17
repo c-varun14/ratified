@@ -1,0 +1,125 @@
+Return-Path: <mrex@sap.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 70FF51293E8
+ for <tls@ietfa.amsl.com>; Thu, 10 Nov 2016 09:02:44 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -6.922
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.922 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, RCVD_IN_DNSWL_HI=-5, RCVD_IN_MSPIKE_H3=-0.01,
+ RCVD_IN_MSPIKE_WL=-0.01, SPF_HELO_PASS=-0.001, SPF_PASS=-0.001]
+ autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id m2jS4GwpsgjY for <tls@ietfa.amsl.com>;
+ Thu, 10 Nov 2016 09:02:42 -0800 (PST)
+Received: from smtpde01.smtp.sap-ag.de (smtpde01.smtp.sap-ag.de
+ [155.56.68.170])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 2605C12943B
+ for <tls@ietf.org>; Thu, 10 Nov 2016 09:02:42 -0800 (PST)
+Received: from mail07.wdf.sap.corp (mail04.sap.corp [194.39.131.56])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by smtpde01.smtp.sap-ag.de (Postfix) with ESMTPS id 3tF8Vm1LpMz1HZ2;
+ Thu, 10 Nov 2016 18:02:40 +0100 (CET)
+X-purgate-ID: 152705::1478797360-00003836-72968354/0/0
+X-purgate-size: 2051
+X-purgate: clean
+X-purgate: This mail is considered clean (visit http://www.eleven.de for
+ further information)
+X-purgate-Ad: Categorized by eleven eXpurgate (R) http://www.eleven.de
+X-purgate-type: clean
+X-SAP-SPAM-Status: clean
+Received: from ld9781.wdf.sap.corp (ld9781.wdf.sap.corp [10.21.82.193])
+ by mail07.wdf.sap.corp (Postfix) with ESMTP id 3tF8Vk3FrbzGny7;
+ Thu, 10 Nov 2016 18:02:38 +0100 (CET)
+Received: by ld9781.wdf.sap.corp (Postfix, from userid 10159)
+ id 6A4D91A57D; Thu, 10 Nov 2016 18:02:38 +0100 (CET)
+In-Reply-To: <CACsn0cn1-+1Mk+JL3HMC+7kE9=08kwhK7L0avuDxoikDRq5B=w@mail.gmail.com>
+To: Watson Ladd <watsonbladd@gmail.com>
+Date: Thu, 10 Nov 2016 18:02:38 +0100 (CET)
+X-Mailer: ELM [version 2.4ME+ PL125 (25)]
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="US-ASCII"
+Message-Id: <20161110170238.6A4D91A57D@ld9781.wdf.sap.corp>
+From: mrex@sap.com (Martin Rex)
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/2MRNrm60eG7gQkk3Spgwn5ulzwE>
+Cc: tls@ietf.org
+Subject: Re: [TLS] Working Group Last Call for draft-ietf-tls-tls13-18
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.17
+Precedence: list
+Reply-To: mrex@sap.com
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Thu, 10 Nov 2016 17:02:44 -0000
+
+I'm sorry for the confusion.  It seems I was wrong about OpenSSL behaviour.
+
+Watson Ladd wrote:
+> Martin Rex wrote:
+>>
+>> If you're vaguely familiar with OpenSSL:
+>> when SSL_read() has received and processed a TLS record with a
+>> close_notify alert, do you know what happens to further calls
+>> of SSL_write() of the same handle, which technically is
+>> _the_other_ communication direction.
+> 
+> Is this the case?
+
+Actually -- no, I'm sorry.
+
+I looked at the OpenSSL code again, and it doesn't seem to do that
+on receipt of CLOSE_NOTIFY.  (It's more than 10 years that
+I programmed on top of OpenSSL).  CLOSE_NOTIFY seems to only be sent
+after an explict call of SSL_shutdown(), and connection state
+(for the other direction) does not seem to be harmed by receipt
+CLOSE_NOTIFY, nor by sending of CLOSE_NOTIFY (warning-level) alerts.
+Only the communication direction that carried CLOSE_NOTIFY seems
+(properly) defunct (ignoring further IO requests).
+
+It seems that I was mislead by the semantics described in the TLS 
+specification.
+
+
+
+
+>
+> Actually alerts trigger teardown of both sides. There is
+> no half open state for TLS. Nginx manages fine on OpenSSL.
+
+Teardown of both sides applies to fatal Alerts only.  One of the
+reason for warning level alerts is that they should not tear down the
+connection state, and close_notify (although the semantics described
+in rfc5246 suggest otherwise) should tear down only the direction
+on which it was sent.
+
+So essentially, TLS should allow half-closed state, and at least
+a glance over the OpenSSL code suggests that this implementation
+would support it.
+
+
+
+>From the sequence of (data processing) events, I still want to hold
+off processing of CloseNotify until all prior TLS AppData records
+are properly consumed by the application caller, so that when
+the code writes traces about the progress of processing a connection,
+the processing of the Alert will follow the passing of all prior
+AppData to the application, and never precede it.
+
+
+-Martin
+

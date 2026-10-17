@@ -1,0 +1,148 @@
+Return-Path: <hkario@redhat.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id BCB47130E61
+ for <tls@ietfa.amsl.com>; Wed,  4 Jul 2018 05:42:56 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -4.2
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.2 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, RCVD_IN_DNSWL_MED=-2.3, SPF_PASS=-0.001,
+ URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id ltLoBQdXC6FQ for <tls@ietfa.amsl.com>;
+ Wed,  4 Jul 2018 05:42:54 -0700 (PDT)
+Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 05E47130E5C
+ for <tls@ietf.org>; Wed,  4 Jul 2018 05:42:54 -0700 (PDT)
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.6])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mx1.redhat.com (Postfix) with ESMTPS id 0A39E81A4EA9
+ for <tls@ietf.org>; Wed,  4 Jul 2018 12:42:53 +0000 (UTC)
+Received: from pintsize.usersys.redhat.com (unknown [10.43.21.250])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id BC00F2156889
+ for <tls@ietf.org>; Wed,  4 Jul 2018 12:42:52 +0000 (UTC)
+From: Hubert Kario <hkario@redhat.com>
+To: tls@ietf.org
+Date: Wed, 04 Jul 2018 14:42:51 +0200
+Message-ID: <1857183.8Fq0dhFQ1N@pintsize.usersys.redhat.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="nextPart3572110.byc25XTUlz";
+ micalg="pgp-sha512"; protocol="application/pgp-signature"
+X-Scanned-By: MIMEDefang 2.78 on 10.11.54.6
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16
+ (mx1.redhat.com [10.11.55.8]); Wed, 04 Jul 2018 12:42:53 +0000 (UTC)
+X-Greylist: inspected by milter-greylist-4.5.16 (mx1.redhat.com [10.11.55.8]); 
+ Wed, 04 Jul 2018 12:42:53 +0000 (UTC) for IP:'10.11.54.6'
+ DOMAIN:'int-mx06.intmail.prod.int.rdu2.redhat.com'
+ HELO:'smtp.corp.redhat.com' FROM:'hkario@redhat.com' RCPT:''
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/G5J7wZ3tsf_pV1L4TVLDuMODMgU>
+Subject: [TLS] [PSA] 0-RTT tolerance is mandatory
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.26
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Wed, 04 Jul 2018 12:42:57 -0000
+
+--nextPart3572110.byc25XTUlz
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
+
+All the implementations I deal with in my day-to-day work fail to handle th=
+e=20
+0-RTT client hello correctly when the 0-RTT support is not enabled on the=20
+server.
+
+I.e. they ignore the MUST clause from
+https://tools.ietf.org/html/draft-ietf-tls-tls13-28#page-58 stating that th=
+e=20
+server can handle an early_data extension (and following encrypted data) in=
+=20
+only one of three ways, neither which allows for unconditional connection=20
+abort.
+
+This also runs afoul the recommendation from https://tools.ietf.org/html/
+draft-ietf-tls-tls13-28#section-D.3 on 0-RTT backwards compatibility.
+
+Quick test can be performed by running the tlsfuzzer script.
+Start a server on port 4433 (or use the -p switch to the test case to chang=
+e=20
+it) on localhost (or use -h switch to provide ip or hostname) with support =
+for=20
+draft-28, a RSA server key, support for P-256 ECDH, AES-128-GCM cipher and=
+=20
+SHA-256 signature hash. The server needs to be able to respond to a record=
+=20
+with an HTTP GET query (i.e. either HTTP server or an echo server will work=
+).
+
+Download the requirements:
+git clone https://github.com/tomato42/tlsfuzzer
+pushd tlsfuzzer
+# won't be needed after tlsfuzzer#423 PR is merged
+git checkout 0rtt-garbage-resumption
+git clone https://github.com/tomato42/tlslite-ng .tlslite-ng
+ln -s .tlslite-ng/tlslite tlslite
+git clone https://github.com/warner/python-ecdsa .python-ecdsa
+ln -s .python-ecdsa/ecdsa ecdsa
+
+Run the test case:
+PYTHONPATH=3D. python scripts/test-tls13-0rtt-garbage.py
+
+successful run will print
+Test end
+successful: 3
+failed: 0
+
+at the end
+
+the test case supports also --num-bytes switch to provide how big the early=
+=20
+data should be (sends 2^14B by default).
+=2D-=20
+Regards,
+Hubert Kario
+Senior Quality Engineer, QE BaseOS Security team
+Web: www.cz.redhat.com
+Red Hat Czech s.r.o., Purky=C5=88ova 115, 612 00  Brno, Czech Republic
+--nextPart3572110.byc25XTUlz
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEYeeuxEU+3unL/K+dkqjRuAHS9fUFAls8wMsACgkQkqjRuAHS
+9fUXhw//QyfJR6j8L7OJEDBC2lAzHQvZZ86uE6EsQxA7rJdlUJcfVM7Gmhn3QTAd
+SIQpAXqqfprnqTlwZShxe9J/mGgpMC92ZR3JYwR2IXk2EBrmThabKdBL1YTqZFnI
+XbXTLDfA//MpcI6CQMN3wPSvcMWbsvTEKGCDheFCO5qUta5Qslbd5QfGpP53aKar
+LTCv886b/FYg9I0FuoCQ7+Ht2PL0y+uisX6SQCZxo16ID6i+xGX6nmEf5z7rCaTZ
+aOSFXsNbtuZrJkWbdBjJhlUdGNqPfl4bbHsTZeXSoCUPn8G4WwwD3dV/+csAx9LM
+NhCNP92eh8KbYjoK1aqgoDGiiGHbh9J7UeUoY7pVpuf8p63IZzPgZ5RDbCBLauP0
+DcRijTNqPvzDmweLHY4MLx9Uu13QwF8nHgp/tjqY+zY14OEEg8qtjV7TV7lWoCcv
+h95Vkn/oxD2DyZTsQcEwmr/x3u0Ae/9RUcvYkVPjamn/YFmOa2FiWJoz80mqfChl
+eFjMGGFKMEc4hO6K3GdOOPIqs2Pq6IfJWxotSIYQetK6v8pgzj4CUe3jFb3xjU+R
+dzzx+EyRUk3d0hd/z2PPUCvVqWwoc/cgJ6UFsZda3BpeXS42kQiVz1kpyvtbbCaN
+lY5SSlntD1wOMBWcGe2M6mL1KWM9HBDq9EaomjOQmIoHD2zW/3w=
+=RSpc
+-----END PGP SIGNATURE-----
+
+--nextPart3572110.byc25XTUlz--
+
+
+

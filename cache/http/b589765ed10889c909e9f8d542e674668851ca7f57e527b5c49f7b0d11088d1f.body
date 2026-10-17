@@ -1,0 +1,414 @@
+From do_not_reply@mnot.net  Sun Oct 22 00:39:35 2023
+Return-Path: <do_not_reply@mnot.net>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 8F462C17060D
+ for <tls@ietfa.amsl.com>; Sun, 22 Oct 2023 00:39:35 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -6.705
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.705 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_INVALID=0.1, DKIM_SIGNED=0.1,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_HI=-5, RCVD_IN_MSPIKE_H3=0.001,
+ RCVD_IN_MSPIKE_WL=0.001, RCVD_IN_ZEN_BLOCKED_OPENDNS=0.001,
+ SPF_PASS=-0.001, T_SCC_BODY_TEXT_LINE=-0.01,
+ URIBL_DBL_BLOCKED_OPENDNS=0.001, URIBL_ZEN_BLOCKED_OPENDNS=0.001]
+ autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=fail (2048-bit key)
+ reason="fail (message has been altered)"
+ header.d=mnot.net
+ header.b="lkm/zH+c"; dkim=fail (2048-bit key)
+ reason="fail (message has been altered)" header.d=messagingengine.com
+ header.b="doRAdUmW"
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id Cxh9LJl4bPut for <tls@ietfa.amsl.com>;
+ Sun, 22 Oct 2023 00:39:31 -0700 (PDT)
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+ [66.111.4.25])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id B369FC1705E3
+ for <tls@ietf.org>; Sun, 22 Oct 2023 00:39:10 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+ by mailout.nyi.internal (Postfix) with ESMTP id 061AC5C0309
+ for <tls@ietf.org>; Sun, 22 Oct 2023 03:39:10 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute1.internal (MEProxy); Sun, 22 Oct 2023 03:39:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mnot.net; h=cc
+ :content-type:content-type:date:from:from:in-reply-to
+ :mime-version:reply-to:sender:subject:subject:to:to; s=fm1; t=
+ 1697960350; x=1698046750; bh=5pjjVb6mxdjKqxEhxrhJOaL4Cg95ddPcEgW
+ mE+y9cKo=; b=lkm/zH+c1rbrrhBGSWn4ym7kFdGG8CIlLJe4w0tPwMsV4pmL6B0
+ NYSebRLnVk6wyi0mbI+2Uq38dGd5gFUR3ERMvL4aO3Oxhhjs7cKq5n7T+0s8Pw/Q
+ Bj+ZMeACC6n0tSID+KKg9IQ2+f7UumddaiTzrYhTh1JAnJh2a3HkE/TKRz9Rnqd4
+ DsIezzUREyqSdBc7ir6g8d/51xL+6uXip0etJf/DvXMEJ6+iCz4TlGEOCg77xcFd
+ 9XhOR/bEfu+D+cPqOP3H+4ukkVHn8Nb3kQx/Lo7czoO/mtpDW8SncqP05tk0nnJ8
+ C9BIbOyCQE4I+fd1h95u7miArukT7RsIZ5A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-type:content-type:date
+ :feedback-id:feedback-id:from:from:in-reply-to:mime-version
+ :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+ :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1697960350; x=
+ 1698046750; bh=5pjjVb6mxdjKqxEhxrhJOaL4Cg95ddPcEgWmE+y9cKo=; b=d
+ oRAdUmW40+4v9C2n8lCUSQrdDz5XAlVDOHMat8fytuzB1TT4flFPgI+i3PYrR2MM
+ AA4MsjR8WVBUJxCOpP8PiiG45Rj1NH3yEBxpHB46CVUgUWDxzafZqbq59ZnGZujp
+ nFODyUvH5GpaFBaYZeY/ClQaelCadK/lI+K7n5DP3cQItqAsRW9k9DxeaQ5xfkNV
+ /8/iNlJ2ApZ/7tbq/Xb1RzXTEINJsC920oMqOW3mJc/jbrqSQkakKNaie2+ZTj8/
+ Idj3w+E0ugTOZhS6gbZHWdbvfV5vh9rI4cUjG4vNRjV/BdPMgSOyN8R/N31ld5jM
+ BNYsAYLjCv+cSXkXXNOSw==
+X-ME-Sender: <xms:ndE0ZZR7yYYAIBgYm-NTugBCrUZ8jeyp_ZQcVBkBUgRkFIX8J6YdJw>
+ <xme:ndE0ZSyyNvWaq0rzdvGlHwMcN3al_235Osu8k1nXF0YwPKrT1jHvadfe-wc9pOzTp
+ ltv7IKhrdro1kHN-A>
+X-ME-Received: <xmr:ndE0Ze28Tew33PtIkywSwu2QcLFgAKQMQ3TT0FX7yra_0aVbb0W4OG-wmHqK-FXHQgcj7cmgOMTjdEe3tXlk0ZautuL8OuoGMl1e-6r9M3LqXbFOnMQmNKqyzXIH6HDwSoTOwA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrkedvgddujecutefuodetggdotefrodftvf
+ curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+ uegrihhlohhuthemuceftddtnecupfhoucgurghtvgcufhhivghlugculdegledmnecujf
+ gurheptggghffvufesrgdttdertddtjeenucfhrhhomheptfgvphhoshhithhorhihucet
+ tghtihhvihhthicuufhumhhmrghrhicuuehothcuoeguohgpnhhothgprhgvphhlhiesmh
+ hnohhtrdhnvghtqeenucggtffrrghtthgvrhhnpeekfedvudetjedvfeekheeiveeugfef
+ hfetteevgeffkefffeetffdvleehudeiteenucffohhmrghinhepghhithhhuhgsrdgtoh
+ hmnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugho
+ pghnohhtpghrvghplhihsehmnhhothdrnhgvth
+X-ME-Proxy: <xmx:ndE0ZRDLNWpz4JPfw-EqX_m0b350v7n_eobG2OzaWOifOtFcuhrbGw>
+ <xmx:ndE0ZSiaW9zZknHiwFzziwx_jqcxhI7A_aIdr8ydhZ8W4_R2L-wY-w>
+ <xmx:ndE0ZVovR23iLi-Aog2wSomlzasdqChNSSsfDxhNTm7GoiKh9Ad5vA>
+ <xmx:ntE0ZYd-1hiCWG-9bOJurkqbwMGGKRVGs2JMG_TcgqQrgPEymnSqCA>
+Feedback-ID: i1c3946f2:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA for <tls@ietf.org>; 
+ Sun, 22 Oct 2023 03:39:09 -0400 (EDT)
+Content-Type: multipart/alternative;
+ boundary="===============8156811343066099664=="
+MIME-Version: 1.0
+From: Repository Activity Summary Bot <do_not_reply@mnot.net>
+To: tls@ietf.org
+Message-Id: <20231022073910.B369FC1705E3@ietfa.amsl.com>
+Date: Sun, 22 Oct 2023 00:39:10 -0700 (PDT)
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/XnK4R4OQn0t4QZwR3EOx9otX5Dk>
+Subject: [TLS] Weekly github digest (TLS Working Group Drafts)
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Sun, 22 Oct 2023 07:39:35 -0000
+
+--===============8156811343066099664==
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+
+
+
+
+Issues
+------
+* tlswg/draft-ietf-tls-esni (+1/-4/=F0=9F=92=AC10)
+  1 issues created:
+  - Are we quite right now with "MUST use public_name"? (by sftcd)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/572=20
+
+  1 issues received 10 new comments:
+  - #572 Are we quite right now with "MUST use public_name"? (10 by chris-w=
+ood, martinthomson, sftcd)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/572=20
+
+  4 issues closed:
+  - Reserve some code points for GREASE https://github.com/tlswg/draft-ietf=
+-tls-esni/issues/451 [pre-wglc]=20
+  - Requirements language around retry configs may be too strong https://gi=
+thub.com/tlswg/draft-ietf-tls-esni/issues/565=20
+  - Make anonymity set references consistent (reference single definition?)=
+ https://github.com/tlswg/draft-ietf-tls-esni/issues/568=20
+  - How to retry in ECH is ambiguous https://github.com/tlswg/draft-ietf-tl=
+s-esni/issues/524=20
+
+
+
+Pull requests
+-------------
+* tlswg/draft-ietf-tls-esni (+7/-7/=F0=9F=92=AC32)
+  7 pull requests submitted:
+  - editorial: Thus -> This (by cjpatton)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/576=20
+  - Relax requirements around the outer SNI value (by chris-wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/575=20
+  - Avoid a normative reference to WHATWG-IPV4 (by davidben)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/574=20
+  - Limit DNS label length (by chris-wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/573=20
+  - Only one anonymity set definition (by chris-wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/571=20
+  - Relax requirements around retry config usage (by chris-wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/570=20
+  - Initial grease codepoints (by chris-wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/569=20
+
+  3 pull requests received 32 new comments:
+  - #575 Relax requirements around the outer SNI value (20 by chris-wood, e=
+kr, sftcd)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/575=20
+  - #573 Limit DNS label length (1 by chris-wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/573=20
+  - #569 Initial grease codepoints (11 by chris-wood, davidben, kazuho, sft=
+cd)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/569=20
+
+  7 pull requests merged:
+  - editorial: Thus -> This
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/576=20
+  - Initial grease codepoints
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/569=20
+  - Relax requirements around retry config usage
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/570=20
+  - Only one anonymity set definition
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/571=20
+  - Limit DNS label length
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/573=20
+  - Avoid a normative reference to WHATWG-IPV4
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/574=20
+  - Punt on new transport connection specifics
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/562=20
+
+* tlswg/tls13-spec (+1/-0/=F0=9F=92=AC1)
+  1 pull requests submitted:
+  - md fixes (by seanturner)
+    https://github.com/tlswg/tls13-spec/pull/1329=20
+
+  1 pull requests received 1 new comments:
+  - #1328 Use aasvg for pictures (1 by seanturner)
+    https://github.com/tlswg/tls13-spec/pull/1328=20
+
+
+Repositories tracked by this digest:
+-----------------------------------
+* https://github.com/tlswg/draft-ietf-tls-semistatic-dh
+* https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate
+* https://github.com/tlswg/draft-ietf-tls-esni
+* https://github.com/tlswg/certificate-compression
+* https://github.com/tlswg/draft-ietf-tls-external-psk-importer
+* https://github.com/tlswg/draft-ietf-tls-ticketrequest
+* https://github.com/tlswg/tls13-spec
+* https://github.com/tlswg/tls-flags
+* https://github.com/tlswg/dtls13-spec
+* https://github.com/tlswg/dtls-conn-id
+* https://github.com/tlswg/tls-subcerts
+* https://github.com/tlswg/oldversions-deprecate
+* https://github.com/tlswg/sniencryption
+* https://github.com/tlswg/tls-exported-authenticator
+* https://github.com/tlswg/draft-ietf-tls-ctls
+* https://github.com/tlswg/external-psk-design-team
+
+--===============8156811343066099664==
+Content-Type: text/html; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+
+<!doctype html>
+<html lang=3D"en">
+<head>
+<meta charset=3D"utf-8">
+<title>Weekly github digest (TLS Working Group Drafts)</title>
+<style>
+body { font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;=
+ font-size: 14px; }
+h2 { margin-top: 3em; color: #A52A2A; font-style: italic; font-weight: norm=
+al; }
+h3 { margin-bottom:0; margin-top: 2em; font-size: 1.2em; }
+h1+h2 { margin-top: 1em; }
+a { color: #bb6219; text-decoration: none; }
+li { margin-bottom: .35em; }
+.repos { margin-bottom: 0; margin-top:0; line-height: 1.2; }
+.new { color: red; }
+.label { display: inline;
+	padding: .2em .6em .3em;
+	font-size: 75%;
+	font-weight: 700;
+	line-height: 1;
+	color: #fff;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: baseline;
+	border-radius: .25em;
+}
+details {
+	margin-top: 8em;
+	}
+summary {
+	margin-bottom: 1em;
+	cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+<h1>Sunday October 22, 2023</h1>
+
+
+<h2>Issues</h2>
+
+<h3>tlswg/draft-ietf-tls-esni (+1/-4/=F0=9F=92=AC10)</h3>
+  <p class=3D"new">1 issues created:</p>
+  <ul>
+  <li>#572 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/5=
+72">Are we quite right now with &quot;MUST use public_name&quot;?</a> (by s=
+ftcd) </li>
+  </ul>
+
+  <p>1 issues received 10 new comments:</p>
+  <ul>
+  <li>#572 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/5=
+72">Are we quite right now with &quot;MUST use public_name&quot;?</a> (10 b=
+y chris-wood, martinthomson, sftcd) </li>
+  </ul>
+
+  <p>4 issues closed:</p>
+  <ul>
+  <li>#451 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/4=
+51">Reserve some code points for GREASE</a> <span class=3D"label" style=3D"=
+background-color: #d4c5f9; color: #000000">pre-wglc</span> </li>
+ =20
+  <li>#565 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/5=
+65">Requirements language around retry configs may be too strong</a> </li>
+ =20
+  <li>#568 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/5=
+68">Make anonymity set references consistent (reference single definition?)=
+</a> </li>
+ =20
+  <li>#524 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/5=
+24">How to retry in ECH is ambiguous</a> </li>
+  </ul>
+
+
+
+<h2>Pull requests</h2>
+<h3>tlswg/draft-ietf-tls-esni (+7/-7/=F0=9F=92=AC32)</h3>
+  <p class=3D"new">7 pull requests submitted:</p>
+  <ul>
+  <li>#576 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/576=
+">editorial: Thus -&gt; This</a> (by cjpatton) </li>
+ =20
+  <li>#575 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/575=
+">Relax requirements around the outer SNI value</a> (by chris-wood) </li>
+ =20
+  <li>#574 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/574=
+">Avoid a normative reference to WHATWG-IPV4</a> (by davidben) </li>
+ =20
+  <li>#573 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/573=
+">Limit DNS label length</a> (by chris-wood) </li>
+ =20
+  <li>#571 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/571=
+">Only one anonymity set definition</a> (by chris-wood) </li>
+ =20
+  <li>#570 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/570=
+">Relax requirements around retry config usage</a> (by chris-wood) </li>
+ =20
+  <li>#569 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/569=
+">Initial grease codepoints</a> (by chris-wood) </li>
+  </ul>
+
+  <p>3 pull requests received 32 new comments:</p>
+  <ul>
+  <li>#575 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/575=
+">Relax requirements around the outer SNI value</a> (20 by chris-wood, ekr,=
+ sftcd) </li>
+ =20
+  <li>#573 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/573=
+">Limit DNS label length</a> (1 by chris-wood) </li>
+ =20
+  <li>#569 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/569=
+">Initial grease codepoints</a> (11 by chris-wood, davidben, kazuho, sftcd)=
+ </li>
+  </ul>
+
+  <p>7 pull requests merged:</p>
+  <ul>
+  <li>#576 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/576=
+">editorial: Thus -&gt; This</a> </li>
+ =20
+  <li>#569 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/569=
+">Initial grease codepoints</a> </li>
+ =20
+  <li>#570 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/570=
+">Relax requirements around retry config usage</a> </li>
+ =20
+  <li>#571 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/571=
+">Only one anonymity set definition</a> </li>
+ =20
+  <li>#573 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/573=
+">Limit DNS label length</a> </li>
+ =20
+  <li>#574 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/574=
+">Avoid a normative reference to WHATWG-IPV4</a> </li>
+ =20
+  <li>#562 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/562=
+">Punt on new transport connection specifics</a> </li>
+  </ul>
+
+<h3>tlswg/tls13-spec (+1/-0/=F0=9F=92=AC1)</h3>
+  <p class=3D"new">1 pull requests submitted:</p>
+  <ul>
+  <li>#1329 <a href=3D"https://github.com/tlswg/tls13-spec/pull/1329">md fi=
+xes</a> (by seanturner) </li>
+  </ul>
+
+  <p>1 pull requests received 1 new comments:</p>
+  <ul>
+  <li>#1328 <a href=3D"https://github.com/tlswg/tls13-spec/pull/1328">Use a=
+asvg for pictures</a> (1 by seanturner) </li>
+  </ul>
+
+
+
+  <details>
+    <summary>Repositories tracked by this digest:</summary>
+<ul class=3D"repos">
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-semistatic-dh">htt=
+ps://github.com/tlswg/draft-ietf-tls-semistatic-dh</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate=
+">https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-esni">https://gith=
+ub.com/tlswg/draft-ietf-tls-esni</a></li>
+  <li><a href=3D"https://github.com/tlswg/certificate-compression">https://=
+github.com/tlswg/certificate-compression</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-external-psk-impor=
+ter">https://github.com/tlswg/draft-ietf-tls-external-psk-importer</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-ticketrequest">htt=
+ps://github.com/tlswg/draft-ietf-tls-ticketrequest</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls13-spec">https://github.com/tl=
+swg/tls13-spec</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-flags">https://github.com/tls=
+wg/tls-flags</a></li>
+  <li><a href=3D"https://github.com/tlswg/dtls13-spec">https://github.com/t=
+lswg/dtls13-spec</a></li>
+  <li><a href=3D"https://github.com/tlswg/dtls-conn-id">https://github.com/=
+tlswg/dtls-conn-id</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-subcerts">https://github.com/=
+tlswg/tls-subcerts</a></li>
+  <li><a href=3D"https://github.com/tlswg/oldversions-deprecate">https://gi=
+thub.com/tlswg/oldversions-deprecate</a></li>
+  <li><a href=3D"https://github.com/tlswg/sniencryption">https://github.com=
+/tlswg/sniencryption</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-exported-authenticator">https=
+://github.com/tlswg/tls-exported-authenticator</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-ctls">https://gith=
+ub.com/tlswg/draft-ietf-tls-ctls</a></li>
+  <li><a href=3D"https://github.com/tlswg/external-psk-design-team">https:/=
+/github.com/tlswg/external-psk-design-team</a></li>
+</ul>
+</details>
+</body>
+</html>
+
+--===============8156811343066099664==--
+

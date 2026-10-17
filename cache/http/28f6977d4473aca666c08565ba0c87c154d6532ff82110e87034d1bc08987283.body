@@ -1,0 +1,225 @@
+Return-Path: <ekr@rtfm.com>
+X-Original-To: tls@mail2.ietf.org
+Delivered-To: tls@mail2.ietf.org
+Received: from localhost (localhost [127.0.0.1])
+	by mail2.ietf.org (Postfix) with ESMTP id C37DBD8DB4EE
+	for <tls@mail2.ietf.org>; Thu,  9 Apr 2026 10:52:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1775757133; bh=itkXA4LMLCS24PJwkgl2YNhouMgl6O4mnqP9C2Ai3KU=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc;
+	b=m82DLknb+9TyAXQDOkSkg0VyJznrYqYkLH9HWLJ8Z+PSt5WM+H2znqaVDd9m09pio
+	 AJsmHLGwGNhOzIQEz2eS0umLzBW4pZam5piwud4pZnGP85xUf+c9/uOnKZ1alNd66E
+	 Di2nvboBZJJCEOFFcaANKHLZ6NtvhEFLyaIbdch0=
+X-Virus-Scanned: amavisd-new at ietf.org
+X-Spam-Flag: NO
+X-Spam-Score: -1.897
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.897 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+	HTML_MESSAGE=0.001, RCVD_IN_DNSWL_NONE=-0.0001, SPF_HELO_NONE=0.001,
+	SPF_NONE=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: mail2.ietf.org (amavisd-new); dkim=pass (2048-bit key)
+	header.d=rtfm-com.20251104.gappssmtp.com
+Received: from mail2.ietf.org ([166.84.6.31])
+	by localhost (mail2.ietf.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id ffKJyJHUCpY6 for <tls@mail2.ietf.org>;
+	Thu,  9 Apr 2026 10:52:13 -0700 (PDT)
+Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com
+ [IPv6:2607:f8b0:4864:20::112d])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail2.ietf.org (Postfix) with ESMTPS id 27978D8DB4E7
+	for <tls@ietf.org>; Thu,  9 Apr 2026 10:52:13 -0700 (PDT)
+Received: by mail-yw1-x112d.google.com with SMTP id
+ 00721157ae682-794719afcd4so13977197b3.1
+        for <tls@ietf.org>; Thu, 09 Apr 2026 10:52:13 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1775757133; cv=none;
+        d=google.com; s=arc-20240605;
+        b=C3QgBL7aT3RPqn+cmjz6LVQxr3hEe3JFt9I+97ejnlPlbXyXA7Z940YqjpG1CgPwNe
+         2l3ZBxFZOUH0n+NTjcdHZutFVur6lIRp2gTO3ek5/z2x6s6VURkWyRQbx8BAO2wFfGe5
+         r8UgxO4iyj3LxGZ5Lx+q+ZFvV6BtmSOQbdokgfmJGZRgNVQpbuVmdCJIBCeEo4Bvhbnk
+         2yxasJvxJ9m7EdgtDAlps4ilvuttLWRPzCkZ1h769umLFehzlWttEse/NBQfzWgAbIgn
+         UlHyMS2gCLPksIafx3J51+V3beWRcXQt8VEpD2L5g7NNrN3sQf0LZCMsuzonGVxzTZh0
+         8BWw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20240605;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=itkXA4LMLCS24PJwkgl2YNhouMgl6O4mnqP9C2Ai3KU=;
+        fh=aBFklM+lbEhsMqu3XqvyuE4JizogVOdYr3XggxEskYc=;
+        b=Jsv6QHHuU+8dDTArECdIP7pSzfiTUClG4t5Kcoal2zaY++cORp4EU6ArpJohIkb1o1
+         giqb7jRGXY4HUZpoKoVx8Sll6skhG1dji/a1wRuaZZTfaiFVc6HsyQk9gHKUru0DvO93
+         WCt1570PFcBWqv/lfvW8k5IVAOAduI66eDnprgUCg9KpnS4bbaDfnalb/gpeGIZUhXIZ
+         Yxtp/BCUXx5UzSjjvppw+KKNzC0uof2c3NoV+bxUbmFy15Ig9HMtY3BXIImFlTN2f9Bp
+         898LVJzYrmPWEPBijaIhHDL4HIUCFN4VmpF7IEu83HGE3cnGuu0T+bM/C+iY/QqoUfnK
+         bM9Q==;
+        darn=ietf.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rtfm-com.20251104.gappssmtp.com; s=20251104; t=1775757132;
+ x=1776361932; darn=ietf.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=itkXA4LMLCS24PJwkgl2YNhouMgl6O4mnqP9C2Ai3KU=;
+        b=Y28ofQu10LE+vmrP6lNqyqI9grkGBQlkUyO0iTpAIrs7l0dk+QJZZdFl2P9ckHADSj
+         uwUDeGfeIFeNeYql1YgrD9kSkPvCGn6FaISu3jXi/4LpncVLdalU0gGReORi4sSRIZFA
+         MvPha4dpGFPrlbrCKaB9VbT1EmcEudK0W4Ax/GnNXtQ593qO+U+udY2BFfNUqWryJz6W
+         MZNu+Kk02N4Sr3asGSqhr52075JrJ3MBpUCA8T/r1CuKJIbkYWjq6Ig//5bOO1ESA7HU
+         dCmH08cEKh5McPgz/feZp8guMVjdbBmp7OfUla5KpJeeItkvvMDgN8rvjN/qfRqTrD0Q
+         0V8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1775757132; x=1776361932;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=itkXA4LMLCS24PJwkgl2YNhouMgl6O4mnqP9C2Ai3KU=;
+        b=V1aRxb895og/DCu5WITJuEagSej2i2HWszjfSrnXPDwNPQ530o5XFCq+MIFggUci94
+         N6zLgGOhTsL8D0ox5u9az3NW1obKYn86cUH5qAJI/iOAKr6T/7G3P7Q/sexv7/3ZfIVP
+         3WM26QfQ7qH8UzCmDJn9oPNdONCrWExR4xyJBK5RxnvHWLvnT1lOHVrfvzcOiZ4eqwDb
+         e1Oh6klfDsprnD2U6pLvZUogt3X+Sn0r8yshEMplYZyNJj1WF36pn7blf8sAovf1IqFW
+         CH5UvVnyE2QjS6b1PeYhIS6ydCIraYqFw0uwwWnlefuOLdRi/qiCRMySzObylPw6PXoC
+         jYvg==
+X-Gm-Message-State: AOJu0YzmVWZyiv3SUVQyCQ54MtLnb09B+xcpBhhGwsqPhIKDKf7o7WYt
+	tjR66cxzuQchszlDBJH49MN9eznX58BO23hlbSQ+IktpkOKCP0mSGlLeBPq+qTGNXz0hVyH+LeE
+	Ss7CQw0TJ78255sGe9gPDpUgbAXiDJxfmEr14NVH5QQ==
+X-Gm-Gg: AeBDiesB/D6S8ZntJxLSvkWnw39iioUCliIDHqXhY/aDEN3dJ83LKk0a+IFl+hXT8v+
+	0hJGXbw7DcCZXDt2Z6pzj2XbOdsK38mOBK3tKLeONLi0HZl+2h/NUNXyX7BKAOrUDfNu+gWURhc
+	xbbTvNmgKi3Yeb0CcUHxkoGbsscTfK5Kagrv9ZddqHbM6RlVvYhDhxt+TzTHK/fGosHX5PLe7qt
+	vIQEM0S34hnAh+wDg6F9u+li2O0WuPDRgkBVLy5MwnJA8Tg0qRfd0f2voOvFRHW3fk9kVPNMTaP
+	+5AI0YX8lnAVYYPGKZfHg7tSLWiJjxJ3m9jQdFutY1KZEa6+ZrgHbCkIB0IJQfmcRYRn8G9/Yhm
+	E1EIBhtlYw69XO2QGwjRSvA==
+X-Received: by 2002:a05:690c:c4c9:b0:79b:73dc:d2fb with SMTP id
+ 00721157ae682-7a4d5d5d6a9mr268248267b3.46.1775757132387; Thu, 09 Apr 2026
+ 10:52:12 -0700 (PDT)
+MIME-Version: 1.0
+References: <92B7449C-F212-4A14-8852-58F8432FF131@sn3rd.com>
+ <8FBB6249-FEB1-4715-AFB5-4B57A54601AD@sn3rd.com>
+In-Reply-To: <8FBB6249-FEB1-4715-AFB5-4B57A54601AD@sn3rd.com>
+From: Eric Rescorla <ekr@rtfm.com>
+Date: Thu, 9 Apr 2026 10:51:36 -0700
+X-Gm-Features: AQROBzDXZh5d2dfQrmii4fNQg8lomeSX7-81OFQgJLbWHQU0pGcmGS0aokHJC50
+Message-ID: 
+ <CABcZeBMnAZgqR2wtZpzBsiN+rDQoz_BnOwd=Wix-yuMjk7HKTQ@mail.gmail.com>
+To: Sean Turner <sean@sn3rd.com>
+Content-Type: multipart/alternative; boundary="000000000000156a9c064f0aad8c"
+Message-ID-Hash: ZS3MH7DRTRZFDF2KIY6D2MF2YIL4BTXI
+X-Message-ID-Hash: ZS3MH7DRTRZFDF2KIY6D2MF2YIL4BTXI
+X-MailFrom: ekr@rtfm.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+CC: TLS List <tls@ietf.org>
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Re=3A_WG_Consensus_Call=3A_Prohibit_Key_Share_Reuse_Betw?=
+	=?utf-8?q?een_Connections?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/4ee2m225N5tu-mLwl61SsV5RSh8>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+--000000000000156a9c064f0aad8c
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+PR merged.
+
+
+
+On Thu, Apr 9, 2026 at 10:39=E2=80=AFAM Sean Turner <sean@sn3rd.com> wrote:
+
+> This message closes out the consensus call.
+>
+> The chairs have judged that there is consensus to prohibit key share reus=
+e
+> between connections.
+>
+> spt
+>
+> > On Mar 23, 2026, at 16:40, Sean Turner <sean@sn3rd.com> wrote:
+> >
+> > This message starts a two week consensus call on whether
+> draft-ietf-tls-rfc8446bis should prohibit key share reuse between
+> connections. ekr has already produced a PR; see [1]. Please let the list
+> know whether you do or do not support this change by 6 April 2026. Please
+> note that if you already replied in here:[2] there is no need to also rep=
+ly
+> to this thread unless you changed your mind.
+> >
+> > Note that as draft-ietf-tls-rfc8446bis in currently in AUTH48, this may
+> add some delay to its publication. We believe that any delay would be sma=
+ll
+> because we already know there are outstanding PRs that needed to be worke=
+d.
+> >
+> > TLS Chairs (Joe & Sean)
+> >
+> > [1] https://github.com/tlswg/tls13-spec/pull/1410
+> > [2]
+> https://mailarchive.ietf.org/arch/msg/tls/jpSC_G9chvSpL34X7pH3oCKh6cE/
+> >
+>
+> _______________________________________________
+> TLS mailing list -- tls@ietf.org
+> To unsubscribe send an email to tls-leave@ietf.org
+>
+
+--000000000000156a9c064f0aad8c
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div>PR merged.</div><div><br></div><div><br></div></div><=
+br><div class=3D"gmail_quote gmail_quote_container"><div dir=3D"ltr" class=
+=3D"gmail_attr">On Thu, Apr 9, 2026 at 10:39=E2=80=AFAM Sean Turner &lt;<a =
+href=3D"mailto:sean@sn3rd.com">sean@sn3rd.com</a>&gt; wrote:<br></div><bloc=
+kquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:=
+1px solid rgb(204,204,204);padding-left:1ex">This message closes out the co=
+nsensus call.<br>
+<br>
+The chairs have judged that there is consensus to prohibit key share reuse =
+between connections.<br>
+<br>
+spt<br>
+<br>
+&gt; On Mar 23, 2026, at 16:40, Sean Turner &lt;<a href=3D"mailto:sean@sn3r=
+d.com" target=3D"_blank">sean@sn3rd.com</a>&gt; wrote:<br>
+&gt; <br>
+&gt; This message starts a two week consensus call on whether draft-ietf-tl=
+s-rfc8446bis should prohibit key share reuse between connections. ekr has a=
+lready produced a PR; see [1]. Please let the list know whether you do or d=
+o not support this change by 6 April 2026. Please note that if you already =
+replied in here:[2] there is no need to also reply to this thread unless yo=
+u changed your mind.<br>
+&gt; <br>
+&gt; Note that as draft-ietf-tls-rfc8446bis in currently in AUTH48, this ma=
+y add some delay to its publication. We believe that any delay would be sma=
+ll because we already know there are outstanding PRs that needed to be work=
+ed.<br>
+&gt; <br>
+&gt; TLS Chairs (Joe &amp; Sean)<br>
+&gt; <br>
+&gt; [1] <a href=3D"https://github.com/tlswg/tls13-spec/pull/1410" rel=3D"n=
+oreferrer" target=3D"_blank">https://github.com/tlswg/tls13-spec/pull/1410<=
+/a><br>
+&gt; [2] <a href=3D"https://mailarchive.ietf.org/arch/msg/tls/jpSC_G9chvSpL=
+34X7pH3oCKh6cE/" rel=3D"noreferrer" target=3D"_blank">https://mailarchive.i=
+etf.org/arch/msg/tls/jpSC_G9chvSpL34X7pH3oCKh6cE/</a><br>
+&gt; <br>
+<br>
+_______________________________________________<br>
+TLS mailing list -- <a href=3D"mailto:tls@ietf.org" target=3D"_blank">tls@i=
+etf.org</a><br>
+To unsubscribe send an email to <a href=3D"mailto:tls-leave@ietf.org" targe=
+t=3D"_blank">tls-leave@ietf.org</a><br>
+</blockquote></div>
+
+--000000000000156a9c064f0aad8c--
+

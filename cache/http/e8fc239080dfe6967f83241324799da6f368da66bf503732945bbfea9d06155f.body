@@ -1,0 +1,171 @@
+Return-Path: <davidben@google.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 40D1E12DF6C
+ for <tls@ietfa.amsl.com>; Thu, 18 Aug 2016 08:00:24 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -3.946
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.946 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ DKIM_VALID_AU=-0.1, HEADER_FROM_DIFFERENT_DOMAINS=0.001,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_LOW=-0.7, RP_MATCHES_RCVD=-1.247,
+ SPF_PASS=-0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=chromium.org
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id iTvjR5Pmzmm5 for <tls@ietfa.amsl.com>;
+ Thu, 18 Aug 2016 08:00:22 -0700 (PDT)
+Received: from mail-it0-x230.google.com (mail-it0-x230.google.com
+ [IPv6:2607:f8b0:4001:c0b::230])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 6312212DF67
+ for <tls@ietf.org>; Thu, 18 Aug 2016 08:00:22 -0700 (PDT)
+Received: by mail-it0-x230.google.com with SMTP id e63so2277731ith.1
+ for <tls@ietf.org>; Thu, 18 Aug 2016 08:00:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=iRA+zlg4wJK7ohR1PFyRVYcT01Bv9VV+soVnFSILqLc=;
+ b=H3IdVhBG3RcrhSHo0mFGS3Fq0qU23S/F/kBAHQzU7/NcLB7iVwNRlHWkR3TFsMvwbP
+ tIJF340qIbQD1zjubOna2yMJC6CmmgbOvw64m3N4hhDCTG2ZpBW/WB902EZ9B3btopNs
+ IxkKjHIh9rDRo7SuUJkbrPnLe9bEk86HBKkg8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20130820;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=iRA+zlg4wJK7ohR1PFyRVYcT01Bv9VV+soVnFSILqLc=;
+ b=d6zF9eOhcaEdUmaTOA6h5yqxmwtQmTLNO/Nv7Zvz6R7WGwYmsongad2ujVQtJLrSGY
+ MGG552SyZ2a6u+p4XH19euDE6dqYGD28k2sRFy2Z8vJRr4DQqaL+GNc+co2hC/SFpbHq
+ OBxqWw50nPNtC2h2PDsw1GSRwL7M2+KdczqkSu9nWUYl89O2F7y4f/PXaw29pKj2vHGH
+ IZRc6ZcYG82IU+eZBA7U+QbDqbdFjPIJUkXXi0Oa8ncDq40QlRsTbFbeZSwJogXD8+OD
+ z38lGt6eLg+1gudjn4fgquFhJXvXpEAgtxgP5eOTEOAvjmVPyVAPrlcT9hjYKk8IbSVe
+ T9Yw==
+X-Gm-Message-State: AEkoouuzRlnfEa+dB2OpTWWEQ7XIM/bEU+xrr7XJAYyEOw5bS585/+Ynr2vAN0n05K9+8Vaw+0nSIE0E/lP9whXB
+X-Received: by 10.36.200.134 with SMTP id w128mr3900233itf.92.1471532421706;
+ Thu, 18 Aug 2016 08:00:21 -0700 (PDT)
+MIME-Version: 1.0
+References: <CABcZeBMqykSnQp__TRaNmyhpcLPaU=eeuM120zgAoprwd0555w@mail.gmail.com>
+ <20160818052622.zim6nxwwqw3hzmr6@LK-Perkele-V2.elisa-laajakaista.fi>
+ <CABcZeBOaLhBq64Yw2D-5oXfE56_2atMX8tN31Y=yt9VkWNX2=g@mail.gmail.com>
+ <20160818124602.syi2whfbrom7xfi6@LK-Perkele-V2.elisa-laajakaista.fi>
+ <CABcZeBOqQJ8Hc+FFV5r3xHQNAEyOpNHnvwYADZjnHyOaRV6rZg@mail.gmail.com>
+ <20160818133541.6b2eb5kshva4m5br@LK-Perkele-V2.elisa-laajakaista.fi>
+In-Reply-To: <20160818133541.6b2eb5kshva4m5br@LK-Perkele-V2.elisa-laajakaista.fi>
+From: David Benjamin <davidben@chromium.org>
+Date: Thu, 18 Aug 2016 15:00:10 +0000
+Message-ID: <CAF8qwaCjdnWKBxh97Q2X89q+9yhzgerb50ueKOn00X2aVKYpvw@mail.gmail.com>
+To: Ilari Liusvaara <ilariliusvaara@welho.com>, Eric Rescorla <ekr@rtfm.com>
+Content-Type: multipart/alternative; boundary=94eb2c05797845cc28053a59d7cc
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/FPadfdOiwwevZ3IwItjcpQEWJX8>
+Cc: "tls@ietf.org" <tls@ietf.org>
+Subject: Re: [TLS] draft-ietf-tls-tls13-15
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.17
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Thu, 18 Aug 2016 15:00:24 -0000
+
+--94eb2c05797845cc28053a59d7cc
+Content-Type: text/plain; charset=UTF-8
+
+On Thu, Aug 18, 2016 at 9:35 AM Ilari Liusvaara <ilariliusvaara@welho.com>
+wrote:
+
+> > > David Bejamin already posted a PR about that. Doesn't clearly say
+> > > that unknown reason handling.
+> > >
+> >
+> > Yeah, I read the list before the PRs. I'll take a look but if you want to
+> > comment that would be great.
+>
+> The only comment is that I would prefer to allow extensions the without
+> client including them in ClientHello[1] (obviously fatal if unknown one is
+> seen[2]), instead of special-casing Cookie.
+>
+
+FWIW, I'm not a fan of special-casing Cookie either. I just left it alone
+for that PR and only bothered about moving to an extension since I wasn't
+sure how it should work.
+
+Just removing the requirement altogether seems reasonable? Although it
+doesn't give much guidance on which are and aren't MTI. Is a TLS client
+over TCP obligated to implement Cookie to avoid interop issues? Seems kind
+of pointless to require it there, just more things to remember. Whereas a
+DTLS client over UDP which doesn't implement cookie is unlikely to work
+well. But probably that kind of guidance ought to live elsewhere anyway. Or
+maybe we should just declare cookie MTI everywhere and leave it at that.
+
+(Though, I'm sure, in practice, no one will ever send cookie over TLS and
+thus some clients won't honor it.)
+
+David
+
+
+>
+> [1] Of course, if the error is related to values in extension, then the
+> client had to include it in its ClientHello.
+>
+>
+> [2] Basically, if client is told that its ClientHello is wrong in some
+> way it does not understand, obviously it can't fix it.
+>
+
+--94eb2c05797845cc28053a59d7cc
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div class=3D"gmail_quote"><div dir=3D"ltr">On Thu, Aug 18=
+, 2016 at 9:35 AM Ilari Liusvaara &lt;<a href=3D"mailto:ilariliusvaara@welh=
+o.com">ilariliusvaara@welho.com</a>&gt; wrote:</div><blockquote class=3D"gm=
+ail_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-le=
+ft:1ex">
+&gt; &gt; David Bejamin already posted a PR about that. Doesn&#39;t clearly=
+ say<br>
+&gt; &gt; that unknown reason handling.<br>
+&gt; &gt;<br>
+&gt;<br>
+&gt; Yeah, I read the list before the PRs. I&#39;ll take a look but if you =
+want to<br>
+&gt; comment that would be great.<br>
+<br>
+The only comment is that I would prefer to allow extensions the without<br>
+client including them in ClientHello[1] (obviously fatal if unknown one is<=
+br>
+seen[2]), instead of special-casing Cookie.<br></blockquote><div><br></div>=
+<div>FWIW, I&#39;m not a fan of special-casing Cookie either. I just left i=
+t alone for that PR and only bothered about moving to an extension since I =
+wasn&#39;t sure how it should work.</div><div><br></div><div>Just removing =
+the requirement altogether seems reasonable? Although it doesn&#39;t give m=
+uch guidance on which are and aren&#39;t MTI. Is a TLS client over TCP obli=
+gated to implement Cookie to avoid interop issues? Seems kind of pointless =
+to require it there, just more things to remember. Whereas a DTLS client ov=
+er UDP which doesn&#39;t implement cookie is unlikely to work well. But pro=
+bably that kind of guidance ought to live elsewhere anyway. Or maybe we sho=
+uld just declare cookie MTI everywhere and leave it at that.</div><div><br>=
+</div><div>(Though, I&#39;m sure, in practice, no one will ever send cookie=
+ over TLS and thus some clients won&#39;t honor it.)</div><div><br></div><d=
+iv>David</div><div>=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"m=
+argin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex">
+<br>
+[1] Of course, if the error is related to values in extension, then the<br>
+client had to include it in its ClientHello.<br>
+<br>
+<br>
+[2] Basically, if client is told that its ClientHello is wrong in some<br>
+way it does not understand, obviously it can&#39;t fix it.<br>
+</blockquote></div></div>
+
+--94eb2c05797845cc28053a59d7cc--
+

@@ -1,0 +1,293 @@
+Return-Path: <do_not_reply@mnot.net>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 0C6B9C151075
+	for <tls@ietfa.amsl.com>; Sun,  9 Jun 2024 00:38:55 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -6.706
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.706 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIM_INVALID=0.1, DKIM_SIGNED=0.1,
+	HTML_MESSAGE=0.001, RCVD_IN_DNSWL_HI=-5,
+	RCVD_IN_ZEN_BLOCKED_OPENDNS=0.001, SPF_PASS=-0.001,
+	T_SCC_BODY_TEXT_LINE=-0.01, URIBL_BLOCKED=0.001,
+	URIBL_DBL_BLOCKED_OPENDNS=0.001, URIBL_ZEN_BLOCKED_OPENDNS=0.001]
+	autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=fail (2048-bit key)
+	reason="fail (message has been altered)" header.d=mnot.net
+	header.b="TIJ8BuNO"; dkim=fail (2048-bit key)
+	reason="fail (message has been altered)" header.d=messagingengine.com
+	header.b="AKF386BV"
+Received: from mail.ietf.org ([50.223.129.194])
+	by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id KfBetuy4U-ZV for <tls@ietfa.amsl.com>;
+	Sun,  9 Jun 2024 00:38:50 -0700 (PDT)
+Received: from fout8-smtp.messagingengine.com (fout8-smtp.messagingengine.com
+ [103.168.172.151])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by ietfa.amsl.com (Postfix) with ESMTPS id 80405C14F71B
+	for <tls@ietf.org>; Sun,  9 Jun 2024 00:38:50 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.nyi.internal (Postfix) with ESMTP id 96F8513800F5
+	for <tls@ietf.org>; Sun,  9 Jun 2024 03:38:49 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Sun, 09 Jun 2024 03:38:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mnot.net; h=cc
+	:content-type:content-type:date:from:from:in-reply-to
+	:mime-version:reply-to:subject:subject:to:to; s=fm2; t=
+	1717918729; x=1718005129; bh=WR0JRa5QG9ci7XvDn++tmfxRFUQJB7b+VJx
+	JK3jZ4sM=; b=TIJ8BuNOS+osihV6pFZEtyvGcjaR9iK7Pezs+ToizqgRnpPBDww
+	NjArPlNEO21uRLHfgbBWr+ZPPcJhMFQbbjpmgQKdPpO6PDi6NjdzOGY2OQmKM+hb
+	FLdignz8LqPJWVn0xGRcT1XcqfwCm2IQFPKsMF7SwpMpSDSqb4zRNWsQKo0VQSAI
+	KM7uaVndez7F8KKCiOyUmC+uK4mOl1xuKRgJ4CvYphX6XMA4M9ujkLSCd7EdSaTq
+	s7BzzfKduhCNE0mKZJdr07EK8785ZHDheIukCv2GDzB+WWtvYYEOEcXkRgxnZBrN
+	XoYmUND1vehCqvB8jO9N1Xj3WaoAl4pmKEg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-type:content-type:date
+	:feedback-id:feedback-id:from:from:in-reply-to:mime-version
+	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1717918729; x=
+	1718005129; bh=WR0JRa5QG9ci7XvDn++tmfxRFUQJB7b+VJxJK3jZ4sM=; b=A
+	KF386BVtvvLuVJqBqHIm+nEiXJzL+K+oUmFzeqfYCVU0BJ4riaDidopH+0YMwUHT
+	T7l/XQ7hwh/5VoviIZvg6VR3qY5Y0Tp4OWbGNGdMu+bIpNlzj+TJ+F8JUpFDR0QE
+	XkEQAUvIugrQU3gX6I48n2HYrI5KTmdpu53ZEWh3/KFL5cCllQ+l5Z7z6FrWYoiW
+	ZL69YobMcyhbIghM6Tku/KrfCTS+ZDwVc5eDejZc9eJaFZd4N55gdP9NgbbHNHrG
+	CrP17pPeybVU9O5AR8CwVyld+Wc9s1zortv3UdWoCk90plVlmiCVRMldhCJ9WKXS
+	SE8evUBTnic9ox/b3BNWg==
+X-ME-Sender: <xms:CVxlZpJLcv08PjJDYb1rghWFnU2dneqkb6NNf7t_v15wmTIifrGerQ>
+    <xme:CVxlZlJ1HSg5cHbIBkIoKcw__ZMqR2Gl0f7xClzaY2EAnedT5p9jaEANy75EhyS_e
+    IrPhQOcXuz4nXE5sw>
+X-ME-Received: 
+ <xmr:CVxlZhv46sZn1XUF1kO_bAcXrqO99daVtM1S9-UZEj8wQ_JNCdYRnqqMP8Y8TUI>
+X-ME-Proxy-Cause: 
+ gggruggvucftvghtrhhoucdtuddrgedvledrfedtiedgudekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucfpohcuuggrthgvuchfihgvlhguucdlgeelmdenuc
+    fjughrpegtggfhvffusegrtddtredttdejnecuhfhrohhmpeftvghpohhsihhtohhrhicu
+    tegtthhivhhithihucfuuhhmmhgrrhihuceuohhtuceoughopghnohhtpghrvghplhihse
+    hmnhhothdrnhgvtheqnecuggftrfgrthhtvghrnhepkeefvdduteejvdefkeehieevuefg
+    fefhteetveegffekffefteffvdelheduieetnecuffhomhgrihhnpehgihhthhhusgdrtg
+    homhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegu
+    ohgpnhhothgprhgvphhlhiesmhhnohhtrdhnvght
+X-ME-Proxy: <xmx:CVxlZqZRuzRZbWtrjrz790KeBAsJqID2-8qa_BNTohAUZZzGjEMY6g>
+    <xmx:CVxlZgasaDSvfH9iH8dZ7LPjrQ8WMavuz0PsTTe8j3lS214P38IzGg>
+    <xmx:CVxlZuA-jaVldua6w6dD6r6PS7lRIsWbZmezQOKgjPAjG5DYcGTXIg>
+    <xmx:CVxlZuaWvgxyNbrx0E83tO8SMsr-7bJ3hXiLd9Xozx50JlDDJSvwGw>
+    <xmx:CVxlZvnz_hcrjfY_p5TBJ_-AEq9B0J2V9UbZkT2a67BIxrPrYMWrEFd1>
+Feedback-ID: i1c3946f2:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA for
+ <tls@ietf.org>;
+ Sun, 9 Jun 2024 03:38:49 -0400 (EDT)
+Content-Type: multipart/alternative;
+ boundary="===============1375355643886577050=="
+MIME-Version: 1.0
+From: Repository Activity Summary Bot <do_not_reply@mnot.net>
+To: tls@ietf.org
+Message-Id: <20240609073850.80405C14F71B@ietfa.amsl.com>
+Date: Sun,  9 Jun 2024 00:38:50 -0700 (PDT)
+Message-ID-Hash: T3OGTQCLRWENAYEFEGFWYUBMCQPVY5HS
+X-Message-ID-Hash: T3OGTQCLRWENAYEFEGFWYUBMCQPVY5HS
+X-MailFrom: do_not_reply@mnot.net
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+X-Mailman-Version: 3.3.9rc4
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5DWeekly_github_digest_=28TLS_Working_Group_Drafts=29?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/zpvAlBO7AEWqe-0h1BD0PATCP-0>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+--===============1375355643886577050==
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+
+
+
+
+Issues
+------
+* tlswg/tls13-spec (+2/-0/=F0=9F=92=AC35)
+  2 issues created:
+  - Should x25519 be made MTI? (by sftcd)
+    https://github.com/tlswg/tls13-spec/issues/1359=20
+  - Require sending MTI curves in CH.key_share (by ekr)
+    https://github.com/tlswg/tls13-spec/issues/1358=20
+
+  2 issues received 35 new comments:
+  - #1359 Should x25519 be made MTI? (15 by Andrei-Popov, ekr, emanjon, kad=
+uk, loganaden, richsalz, russhousley, sftcd, tomato42)
+    https://github.com/tlswg/tls13-spec/issues/1359=20
+  - #1358 Require sending MTI curves in CH.key_share (20 by Andrei-Popov, b=
+westerb, davidben, dennisjackson, dvorak42, ekr, emanjon, kaduk, sftcd, tom=
+ato42)
+    https://github.com/tlswg/tls13-spec/issues/1358=20
+
+
+
+Pull requests
+-------------
+* tlswg/tls13-spec (+1/-0/=F0=9F=92=AC0)
+  1 pull requests submitted:
+  - X25519 MTI (by loganaden)
+    https://github.com/tlswg/tls13-spec/pull/1360=20
+
+
+Repositories tracked by this digest:
+-----------------------------------
+* https://github.com/tlswg/draft-ietf-tls-semistatic-dh
+* https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate
+* https://github.com/tlswg/draft-ietf-tls-esni
+* https://github.com/tlswg/certificate-compression
+* https://github.com/tlswg/draft-ietf-tls-external-psk-importer
+* https://github.com/tlswg/draft-ietf-tls-ticketrequest
+* https://github.com/tlswg/tls13-spec
+* https://github.com/tlswg/tls-flags
+* https://github.com/tlswg/dtls13-spec
+* https://github.com/tlswg/dtls-conn-id
+* https://github.com/tlswg/tls-subcerts
+* https://github.com/tlswg/oldversions-deprecate
+* https://github.com/tlswg/sniencryption
+* https://github.com/tlswg/tls-exported-authenticator
+* https://github.com/tlswg/draft-ietf-tls-ctls
+* https://github.com/tlswg/external-psk-design-team
+
+--===============1375355643886577050==
+Content-Type: text/html; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+
+<!doctype html>
+<html lang=3D"en">
+<head>
+<meta charset=3D"utf-8">
+<title>Weekly github digest (TLS Working Group Drafts)</title>
+<style>
+body { font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;=
+ font-size: 14px; }
+h2 { margin-top: 3em; color: #A52A2A; font-style: italic; font-weight: norm=
+al; }
+h3 { margin-bottom:0; margin-top: 2em; font-size: 1.2em; }
+h1+h2 { margin-top: 1em; }
+a { color: #bb6219; text-decoration: none; }
+li { margin-bottom: .35em; }
+.repos { margin-bottom: 0; margin-top:0; line-height: 1.2; }
+.new { color: red; }
+.label { display: inline;
+	padding: .2em .6em .3em;
+	font-size: 75%;
+	font-weight: 700;
+	line-height: 1;
+	color: #fff;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: baseline;
+	border-radius: .25em;
+}
+details {
+	margin-top: 8em;
+	}
+summary {
+	margin-bottom: 1em;
+	cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+<h1>Sunday June 09, 2024</h1>
+
+
+<h2>Issues</h2>
+
+<h3>tlswg/tls13-spec (+2/-0/=F0=9F=92=AC35)</h3>
+  <p class=3D"new">2 issues created:</p>
+  <ul>
+  <li>#1359 <a href=3D"https://github.com/tlswg/tls13-spec/issues/1359">Sho=
+uld x25519 be made MTI?</a> (by sftcd) </li>
+ =20
+  <li>#1358 <a href=3D"https://github.com/tlswg/tls13-spec/issues/1358">Req=
+uire sending MTI curves in CH.key_share</a> (by ekr) </li>
+  </ul>
+
+  <p>2 issues received 35 new comments:</p>
+  <ul>
+  <li>#1359 <a href=3D"https://github.com/tlswg/tls13-spec/issues/1359">Sho=
+uld x25519 be made MTI?</a> (15 by Andrei-Popov, ekr, emanjon, kaduk, logan=
+aden, richsalz, russhousley, sftcd, tomato42) </li>
+ =20
+  <li>#1358 <a href=3D"https://github.com/tlswg/tls13-spec/issues/1358">Req=
+uire sending MTI curves in CH.key_share</a> (20 by Andrei-Popov, bwesterb, =
+davidben, dennisjackson, dvorak42, ekr, emanjon, kaduk, sftcd, tomato42) </=
+li>
+  </ul>
+
+
+
+
+<h2>Pull requests</h2>
+<h3>tlswg/tls13-spec (+1/-0/=F0=9F=92=AC0)</h3>
+  <p class=3D"new">1 pull requests submitted:</p>
+  <ul>
+  <li>#1360 <a href=3D"https://github.com/tlswg/tls13-spec/pull/1360">X2551=
+9 MTI</a> (by loganaden) </li>
+  </ul>
+
+
+
+
+  <details>
+    <summary>Repositories tracked by this digest:</summary>
+<ul class=3D"repos">
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-semistatic-dh">htt=
+ps://github.com/tlswg/draft-ietf-tls-semistatic-dh</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate=
+">https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-esni">https://gith=
+ub.com/tlswg/draft-ietf-tls-esni</a></li>
+  <li><a href=3D"https://github.com/tlswg/certificate-compression">https://=
+github.com/tlswg/certificate-compression</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-external-psk-impor=
+ter">https://github.com/tlswg/draft-ietf-tls-external-psk-importer</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-ticketrequest">htt=
+ps://github.com/tlswg/draft-ietf-tls-ticketrequest</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls13-spec">https://github.com/tl=
+swg/tls13-spec</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-flags">https://github.com/tls=
+wg/tls-flags</a></li>
+  <li><a href=3D"https://github.com/tlswg/dtls13-spec">https://github.com/t=
+lswg/dtls13-spec</a></li>
+  <li><a href=3D"https://github.com/tlswg/dtls-conn-id">https://github.com/=
+tlswg/dtls-conn-id</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-subcerts">https://github.com/=
+tlswg/tls-subcerts</a></li>
+  <li><a href=3D"https://github.com/tlswg/oldversions-deprecate">https://gi=
+thub.com/tlswg/oldversions-deprecate</a></li>
+  <li><a href=3D"https://github.com/tlswg/sniencryption">https://github.com=
+/tlswg/sniencryption</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-exported-authenticator">https=
+://github.com/tlswg/tls-exported-authenticator</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-ctls">https://gith=
+ub.com/tlswg/draft-ietf-tls-ctls</a></li>
+  <li><a href=3D"https://github.com/tlswg/external-psk-design-team">https:/=
+/github.com/tlswg/external-psk-design-team</a></li>
+</ul>
+</details>
+</body>
+</html>
+
+--===============1375355643886577050==--
+

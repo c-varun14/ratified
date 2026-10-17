@@ -1,0 +1,571 @@
+From nobody Mon Jul 19 14:32:17 2021
+Return-Path: <stephen.farrell@cs.tcd.ie>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 0C6BF3A0B13
+ for <tls@ietfa.amsl.com>; Mon, 19 Jul 2021 14:32:15 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.001
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.001 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ DKIM_VALID_AU=-0.1, MSGID_FROM_MTA_HEADER=0.001, NICE_REPLY_A=-0.001,
+ RCVD_IN_MSPIKE_H2=-0.001, SPF_PASS=-0.001, URIBL_BLOCKED=0.001]
+ autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=cs.tcd.ie
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id Gpa_TQ8_674j for <tls@ietfa.amsl.com>;
+ Mon, 19 Jul 2021 14:32:10 -0700 (PDT)
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com
+ (mail-eopbgr70100.outbound.protection.outlook.com [40.107.7.100])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id D671F3A0B0A
+ for <tls@ietf.org>; Mon, 19 Jul 2021 14:32:09 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eXs6kfQ5MF6XZc6SB13tbHHbcizBPQEJfMy0ceIWKL7oerrs/vosFQCfGW0zSVoRbdIltTNofUMmhnMT7jplAMROLyaaHDoy64qNJOOo2Rq1jMGctTNoUfaqlkzMR6zm3x8iqJ4u4BJYWLI+sVaJk1rhXNPinf3IfKXB221AkRGKgsV23ysscbDNuxOv3y3Khuh94mJSQGGsqW1p7NX2eu9c46o8hMKNs4L5720uxtlf8TBwnSyUuJEvqn/CCq5bsTt77eF44+pik/mmKc05tCMyaVhX4Y0nGduHA3yGxKGtLGJ064Y00mpxBlfx3Xlf6yRcBnEN3rA18e6AFQLI+A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MXSQeTcVmFYPXMjJCcIggtwNwDF1VWB8UTkf65LYV6g=;
+ b=UVOe22P6S3NAT5Pqbm/OOhDg4+Yz3Zh3jEBV6X+8xZyjDnZBJFd83zVPkL55myZp7YkwGl14SKaBndEDZoGomoagKTYEm6G+AoiUFvU4qEq2XVSokLmQsvWF4ZlcfvHslXr9uxT8zMceig5mS99ccTVQJGbtjZaIkBGYhvKg+vo6vhuCn9beV8KUeY31/XViW1wB77Seo8Y5iVJA+6ItkGxGGTpSOUpFI+xa5lcZXc9glrXE1Ta0RQtAQX4W1i8aTJhU6YQu1KYElxPgGHXbBVxfXvlwtDzfQiTsyHAZ7mpYy77mBxTNmkKvq/pmRfrX8jz0752nRX+/DQc26l5aQg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cs.tcd.ie; dmarc=pass action=none header.from=cs.tcd.ie;
+ dkim=pass header.d=cs.tcd.ie; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cs.tcd.ie; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MXSQeTcVmFYPXMjJCcIggtwNwDF1VWB8UTkf65LYV6g=;
+ b=KYcuzSyPDVx0B7Mmj7jNVPS0ZBduJgXmbdIfqzx+MCRpZ5VwUQZuyjjO+D6fjNvIY3rF6P0vT/d7e9BW1zVMz9DzN0lcuLe/nk3N1or5QumPb5xhELylIqPFaXlO7bPXR0qL0zw5qenQh6vI3QRsTEJnFwexSDfZzEGeCDq/UnUlLoUBxD3Qj6//IUF3SCUqh5N6K0dXSGLuDutIsSOytvfiMQvnAAPCWQJaAWQkHPlPgGprT7Q1HTKimb+gAJ7s2AQNtl34T+7PClkgcZi1ZR7CtEGdOwNSfOo+PsZB30HZVWQHmtufBYqlgjv05YATCLMROUptIZGf8PoFOwIwvw==
+Authentication-Results: ietf.org; dkim=none (message not signed)
+ header.d=none;ietf.org; dmarc=none action=none header.from=cs.tcd.ie;
+Received: from DB7PR02MB5113.eurprd02.prod.outlook.com (2603:10a6:10:77::15)
+ by DB9PR02MB7387.eurprd02.prod.outlook.com (2603:10a6:10:240::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21; Mon, 19 Jul
+ 2021 21:32:05 +0000
+Received: from DB7PR02MB5113.eurprd02.prod.outlook.com
+ ([fe80::4198:a9d1:7246:8272]) by DB7PR02MB5113.eurprd02.prod.outlook.com
+ ([fe80::4198:a9d1:7246:8272%3]) with mapi id 15.20.4331.033; Mon, 19 Jul 2021
+ 21:32:05 +0000
+To: David Benjamin <davidben@chromium.org>
+Cc: Ryan Sleevi <ryan-ietftls@sleevi.com>,
+ "Salz, Rich" <rsalz=40akamai.com@dmarc.ietf.org>, "TLS@ietf.org"
+ <tls@ietf.org>
+References: <0ad354da-5300-4b48-8925-f7ab18cdf235@www.fastmail.com>
+ <5D834B58-7A0C-4701-96EB-31663BC0C2DE@akamai.com>
+ <2c7c53a8-cf47-f51d-f97b-f6cd5a712024@cs.tcd.ie>
+ <CAErg=HE92wz3-aLDSfNWk_qJA35+V-euUvtW07HKA=B7CVB3iA@mail.gmail.com>
+ <CAF8qwaDKScDihLVHTahVGqwZjU3U1OXwpsygR=SXMt_3rEOZpA@mail.gmail.com>
+ <80e47f63-725f-ad39-5add-161e6e299fba@cs.tcd.ie>
+ <CAF8qwaDzH30--4UE_hA3RHMfcw9V2Z4Hmx-vuQ6AJy3e6BiO3Q@mail.gmail.com>
+ <9bff5f4d-e2ce-c046-5515-882b45079ef9@cs.tcd.ie>
+ <CAF8qwaDudTerAU7AAh1ezvthDGKRZONzGU4fwf=1A4dikkC+Dw@mail.gmail.com>
+ <0f461bf3-3fad-ff65-9f2a-b2be1832fe45@cs.tcd.ie>
+ <CAF8qwaArW2POUkhLXN9HLmTZ19m_oFeW5d5OqCcjsq+zywRKcQ@mail.gmail.com>
+From: Stephen Farrell <stephen.farrell@cs.tcd.ie>
+Message-ID: <177ef2b8-3ae3-2af8-1a37-5757c1656910@cs.tcd.ie>
+Date: Mon, 19 Jul 2021 22:32:03 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <CAF8qwaArW2POUkhLXN9HLmTZ19m_oFeW5d5OqCcjsq+zywRKcQ@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="H4vmDsWXK1KWiq9yMXTjfRWl9V0boUkws"
+X-ClientProxiedBy: DB9PR01CA0012.eurprd01.prod.exchangelabs.com
+ (2603:10a6:10:1d8::17) To DB7PR02MB5113.eurprd02.prod.outlook.com
+ (2603:10a6:10:77::15)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.244.2.119] (95.45.153.252) by
+ DB9PR01CA0012.eurprd01.prod.exchangelabs.com (2603:10a6:10:1d8::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend
+ Transport; Mon, 19 Jul 2021 21:32:04 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2fb56731-b6da-48c2-2eb2-08d94afca71e
+X-MS-TrafficTypeDiagnostic: DB9PR02MB7387:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-Microsoft-Antispam-PRVS: <DB9PR02MB7387814E9571F1DDDE29BC5FA8E19@DB9PR02MB7387.eurprd02.prod.outlook.com>
+X-TCD-Routed-via-EOP: Routed via EOP
+X-TCD-ROUTED: Passed-Transport-Routing-Rules
+X-MS-Oob-TLC-OOBClassifiers: OLM:3631;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OlO+L/18cQKjciJ3ouXWZ9On8XEc2k5TNUjrHqnn+zxAF2fir6sJHsirhGvbAqn7spOTq1ufDBr681SpdayJfrZml1msDujZGouTWZp4d4C3lmOWRWT02JsaO6CVbiZIqjRXi6FijUcaL5pL6vww5i+6iS3PiagFIXFyuRiEeYoxs8DpYoYHS5YRUAczeH01Dr2heGZnnLY6PgkGvt8LmX6Tx5RsxpoJTi6SUiH+O7gQ8q19qj8ti5v6q9h6RHRwn0zRwYwjaZ2bPF6sS4TTd5k+AvMZ4ctuDBoKfCnac30hSYuPPfIAXxkbWx5+5p/KC6eDWzlpkkRRtdMAjNhdSXpyrv01KwmEAcD3mO+2mFpe42/03O2vhO24dl4c/xynYu5phRrSFC16THdf6vJ+6IXrTYOjbyfEN4ovdi9ArB5c2R/oys3AD9URUQvNXCUI+p3JNSWIbfoaDyz51KifJ/b1iGvS6BI9G84qBEAA1i9sz6NwSlOEvom++1kkitqSqMgXBm+T9b9cw98YGZ5Wag4mdOBGNNdkLjpuO3S5sLYm0d5t0mh7qS8nq0bawfDELoMWVoncYhzpNClNjMJv9RN/3nmhU9wMu6UQSBWf8v6ygkKP1Cu0z8bdh1WATIL131zebuRRppn/+metzdULYBFQdwE5wqgDoln0ax3hzSqTL7jaNaQcJDD26h8rvyI4MVJ4BNDcAOxqgYCV6Fi0NweFYEFppT/U175laJNc9oI+SjYxNQvEjp5TwJtrJ9NvJX/zdq2hkLn/5ng8iQSQw3xqXLBgiifIFCLtZvv+rVs=
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:; 
+ IPV:NLI; SFV:NSPM;
+ H:DB7PR02MB5113.eurprd02.prod.outlook.com; PTR:; CAT:NONE; 
+ SFS:(4636009)(376002)(346002)(396003)(366004)(136003)(39850400004)(21480400003)(235185007)(5660300002)(8676002)(83380400001)(8936002)(31686004)(36756003)(6486002)(44832011)(2616005)(956004)(38100700002)(86362001)(186003)(31696002)(2906002)(966005)(66476007)(66946007)(66556008)(66616009)(26005)(54906003)(53546011)(4326008)(6916009)(33964004)(478600001)(786003)(316002)(16576012)(43740500002);
+ DIR:OUT; SFP:1102; 
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?S0lKK1NtOXp4SjI4VVdNM2NBNTN2dmdGbXB6MktaekduVGxyOU1TRFFRRW5z?=
+ =?utf-8?B?RjJ3NGVBd2JmMnBBWnlqYmNCTXhRcTNBcm9aOU0rTDRNQXhRdUJrcVRlek84?=
+ =?utf-8?B?dkdBOFYySEJpRWs1OTY0Slo0dlNhSTQwbEo0eGtqb09iZTc1Y2RQYURQZ25O?=
+ =?utf-8?B?c0dad0lTSDNvQWNGMkxDTHFWVURReVl0aHR3OEVkemJIbGpPdG1GaFYxSmlK?=
+ =?utf-8?B?L292YWlKaFVyTWZKT1pRaG9iUG55Q3VSblAxU1BLVE1rYWx4UTBmd1NDTDA0?=
+ =?utf-8?B?c3YxNkdsNXhkeVNpUTl4VmpWNG1XQ1lSOUcvSVpwcUROV3c4eHM2dGFmWnFs?=
+ =?utf-8?B?YWN6N1R0V200RjE2bHJ6RHRLU0JZWnoxK2JNaUIxSWNtVWdDWXFwd1htR0pG?=
+ =?utf-8?B?M1VoTkhMU3h6OERXendML3RYWXdOVDVOMENmUXdHdnZ0dzRrUzEwZzV4Q0Vk?=
+ =?utf-8?B?b1piSDZoUnR6SmVYeEdkdmhpeE1jR01sbHpFOW9BcENZZUZMQkZwUHZzRHhY?=
+ =?utf-8?B?RERKb3B4ZkFmQUpoVVZRMUtlalE2YVJJQXZLMkNFTlY3NUxqNThjMStBTmJZ?=
+ =?utf-8?B?Rm94VlNiREl2Q3JUK1N0RFVZd0psQXNvRlh6WGxaZzkyYU9HcW9rQVYzZW1x?=
+ =?utf-8?B?SFIrdWpEQmc3TWMvSjNpL3hzU09mTC9hS3BSRzgxZk1uMndwSkVrNzd2UTdv?=
+ =?utf-8?B?NzdiZWZQUFV6b2FueE5kUDNZaVhuQ0NKNUlaSm5LWEVaYjFIMU1xUnQ0RU9X?=
+ =?utf-8?B?UkpoYnFzbWw5NS8xTjlKY3NvbGNtOHczWVZyZTMxQUVHanJNaXIzV3lCS3Zs?=
+ =?utf-8?B?SjlDUk1JOHZGdFFvTUpEOVJTdjN3aG9hdXhTM3FlY25FenhHMGhmSG1GM2JZ?=
+ =?utf-8?B?NVRHdEhzWGtiZWg0YlZWOXZLRENXcnV1bnh4REpTeUNaTFJYVjBMOVhLM0VB?=
+ =?utf-8?B?dDhFVjF6dXJienFadjBJTWtha0VFaDAxSlVWTVN1QS9odHNFNnRXZ3VYaXVM?=
+ =?utf-8?B?V2NsanFEcEpaNWdkTkVUczhaMC9oeVpJb0VoeHU4b2J5bGFjWjFwZ3lWMnl5?=
+ =?utf-8?B?MlBQNzc2WFhqc0pKY2dLN3hTOXZuZGJMS1ExWUVEU044ZXRzNjFHUzFtaEJ2?=
+ =?utf-8?B?NDJjT0dRYkppcDBDVm1IamhBS2pLd2ZJQmpmbGIxeE9xU0dDL1M0N2xZeVJY?=
+ =?utf-8?B?L2lzZDBsL1VGVUlTQVR6UDdGWUMwUTcxZTFLc3Y0Um4rYWZ2eTFvMmx5c1JH?=
+ =?utf-8?B?TXA3YU9xaFhqOEtmUkRGNG5JeFNPL25qejhtd3BvaVZqSS9neDY3enZtS3c2?=
+ =?utf-8?B?SlVnK0xROExCeUNuVGVmdkFFcVJycFJXQ1JncG9LcHZpcFBaZmRwRFFoTU5Y?=
+ =?utf-8?B?YVFERmd4SllmaVlTZ3d0bDF4RCt6WU4zUUY4elp0dEIwL0h0RzdMK3lZR1Mr?=
+ =?utf-8?B?ZGU5aTkxeGdlUnMzTHpmTHlOUnREYzFubEVYZWd4dm5CSkRTZzk5aW8wVlFZ?=
+ =?utf-8?B?Q3RMaWhFa3NCSk5ORm5SQmdVVWpISzlycDV3WWJuMzlMUzNqR1VaYU5vTENi?=
+ =?utf-8?B?d2xjamhFUEVwRkhJcDNOR1JaVEh5YjdqeThWQytvbGl3T0M1V1puTkYrRnZN?=
+ =?utf-8?B?cmJSZXNIQ2QrSkI4QmlZd1lhbFNsSFZxM2F3c3BNTUVKY21xNk9iemxXQ0wv?=
+ =?utf-8?B?ZjE3MHUxd09kelVyb08yQVlUUmQ2VmV1MmwvUjRKQlduc0VIZlVHUWV2MnhM?=
+ =?utf-8?Q?5BHcTowwmGbWAa1f8fyOkhJhJjqMFIoyK+dxR5Z?=
+X-OriginatorOrg: cs.tcd.ie
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2fb56731-b6da-48c2-2eb2-08d94afca71e
+X-MS-Exchange-CrossTenant-AuthSource: DB7PR02MB5113.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2021 21:32:04.9780 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: d595be8d-b306-45f4-8064-9e5b82fbe52b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: NzdEvwuLHLjwGX0fGEUwowYOAM3u1BrIT5hjUw6X3FOuoTE8lVyuWT9EnYP0WNNn
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR02MB7387
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/7rqEajOUYPWah5YtZ0IWadHBbPU>
+Subject: Re: [TLS] WGLC for draft-ietf-tls-cross-sni-resumption
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Mon, 19 Jul 2021 21:32:15 -0000
+
+--H4vmDsWXK1KWiq9yMXTjfRWl9V0boUkws
+Content-Type: multipart/mixed; boundary="z027wlRnVx43XhD6Ei6wfjCC84KEzo46O";
+ protected-headers="v1"
+From: Stephen Farrell <stephen.farrell@cs.tcd.ie>
+To: David Benjamin <davidben@chromium.org>
+Cc: Ryan Sleevi <ryan-ietftls@sleevi.com>,
+ "Salz, Rich" <rsalz=40akamai.com@dmarc.ietf.org>, "TLS@ietf.org"
+ <tls@ietf.org>
+Message-ID: <177ef2b8-3ae3-2af8-1a37-5757c1656910@cs.tcd.ie>
+Subject: Re: [TLS] WGLC for draft-ietf-tls-cross-sni-resumption
+References: <0ad354da-5300-4b48-8925-f7ab18cdf235@www.fastmail.com>
+ <5D834B58-7A0C-4701-96EB-31663BC0C2DE@akamai.com>
+ <2c7c53a8-cf47-f51d-f97b-f6cd5a712024@cs.tcd.ie>
+ <CAErg=HE92wz3-aLDSfNWk_qJA35+V-euUvtW07HKA=B7CVB3iA@mail.gmail.com>
+ <CAF8qwaDKScDihLVHTahVGqwZjU3U1OXwpsygR=SXMt_3rEOZpA@mail.gmail.com>
+ <80e47f63-725f-ad39-5add-161e6e299fba@cs.tcd.ie>
+ <CAF8qwaDzH30--4UE_hA3RHMfcw9V2Z4Hmx-vuQ6AJy3e6BiO3Q@mail.gmail.com>
+ <9bff5f4d-e2ce-c046-5515-882b45079ef9@cs.tcd.ie>
+ <CAF8qwaDudTerAU7AAh1ezvthDGKRZONzGU4fwf=1A4dikkC+Dw@mail.gmail.com>
+ <0f461bf3-3fad-ff65-9f2a-b2be1832fe45@cs.tcd.ie>
+ <CAF8qwaArW2POUkhLXN9HLmTZ19m_oFeW5d5OqCcjsq+zywRKcQ@mail.gmail.com>
+In-Reply-To: <CAF8qwaArW2POUkhLXN9HLmTZ19m_oFeW5d5OqCcjsq+zywRKcQ@mail.gmail.com>
+
+--z027wlRnVx43XhD6Ei6wfjCC84KEzo46O
+Content-Type: multipart/mixed;
+ boundary="------------3C74ABEB79DCE70337F39676"
+Content-Language: en-US
+
+This is a multi-part message in MIME format.
+--------------3C74ABEB79DCE70337F39676
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+
+
+Hiya,
+
+On 19/07/2021 22:13, David Benjamin wrote:
+> I don't think that's an accurate characterization of what's going on. I=
+ at
+> least care about both optimization and privacy.=20
+
+Sure. We just disagree, I've no doubt you care about those.
+
+> We should apply
+> optimizations only where they do not result in a privacy issue, and we
+> should not apply optimizations that result in a privacy issue. That mea=
+ns
+> taking the time to understand a system's privacy goals and how mechanis=
+ms
+> interact with them.
+>=20
+> Even ignoring this document, rfc8446*already*  fails this test. By
+> omission, it implies applications needn't match up their privacy goals =
+with
+> TLS resumption. This is false and indeed that results in a tracking vec=
+tor
+> on the Web, and any other application where multiple contexts talk to t=
+he
+> same domain. That means this 3rd option does not replace the need for t=
+ext.
+> We need to either find wording we're happy with, or remove resumption
+> entirely.
+>=20
+> I've proposed some text for rfc8446bis. I think it captures the right
+> criteria: you may only resume if you were okay correlating the first an=
+d
+> second connections. If you think something is missing, I think that is
+> useful feedback. Given how widespread resumption is, it's important tha=
+t we
+> fully understand the implications.
+> https://github.com/tlswg/tls13-spec/pull/1205
+>=20
+>>From there, we can look at this document.
+
+Now it's me that's confused. Are you arguing that this draft
+ought not progress until 8446bis is done?
+
+Ta,
+S.
+
+> Observe that the rule applies
+> equally well here. Moreover, on the Web, even after you apply the rule,=
+
+> there is still a space where the optimization is useful. This is great.=
+ It
+> means we can both avoid a privacy issue*and*  make things faster. Even
+> better, the optimizations apply to XSS privsep schemes (subdomains with=
+in a
+> site), so there is an indirect security benefit. Other applications may=
+
+> look different (no subresource-like construct, different correlation
+> boundaries), such that the optimization is not useful, but that's still=
+
+> fine. The overall rule simply turns the flag into a no-op.
+
+--------------3C74ABEB79DCE70337F39676
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0x5AB2FAF17B172BEA.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: OpenPGP public key
+Content-Disposition: attachment;
+ filename="OpenPGP_0x5AB2FAF17B172BEA.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsFNBFo9UDIBEADUH4ZPcUnX5WWRWO4kEkHea5Y5eEvZjSwe/YA+G0nrTuOU9nemCP5PMvmh5=
+Cg8
+gBTyWyN4Z2+O25p9Tja5zUb+vPMWYvOtokRrp46yhFZOmiS5b6kTq0IqYzsEv5HI58S+QtaFq=
+978
+CRa4xH9Gi9u4yzUmT03QNIGDXE37honcAM4MOEtEgvw4fVhVWJuyy3w//0F2tzKrEMjmL5VGu=
+D/Q
+9+G/7abuXiYNNd9ZFjv4625AUWwy+pAh4EKzS1FE7BOZp9daMu9MUQmDqtZUbUv0Q+DnQAB/4=
+tNn
+cejJPz0p2z3MWCp5iSwHiQvytYgatMp34a50l6CWqa13n6vY8VcPlIqOVz+7L+WiVfxLbeVqB=
+wV+
+4uL9to9zLF9IyUvl94lCxpscR2kgRgpM6A5LylRDkR6E0oudFnJgb097ZaNyuY1ETghVB5Uir=
+1GC
+YChs8NUNumTHXiOkuzk+Gs4DAHx/a78YxBolKHi+esLH8r2k4LyM2lp5FmBKjG7cGcpBGmWav=
+ACY
+Ea7rwAadg4uBx9SHMV5i33vDXQUZcmW0vslQ2Is02NMK7uB7E7HlVE1IM1zNkVTYYGkKreU8D=
+VQu
+8qNOtPVE/CdaCJ/pbXoYeHz2B1Nvbl9tlyWxn5XiHzFPJleXc0ksb9SkJokAfwTSZzTxeQPER=
+8la
+5lsEEPbU/cDTcwARAQABzSFTdGVwaGVuIEZhcnJlbGwgPHN0ZXBoZW5AamVsbC5pZT7CwX0EE=
+wEI
+ACcFAlo9UYwCGwMFCQmUJgAFCwkIBwIGFQgJCgsCBBYCAwECHgECF4AACgkQWrL68XsXK+qGC=
+xAA
+pYHWYgGOIL3G6/OpkejdAkQoCVQAK8LJUSf6vzwost4iVfxIKcKW/3RqKNKkrRl8beJ7j1CWX=
+Az9
++VXAOsE9+zNxXIDgGA7HlvJnhffl+qwibVgiHgUcJFhCSbBrsjC+1uULaTU8zYEyET//GOGPL=
+F+X
++degkE/sesh4zcEAjF7fGPnlncdCCH3tvPZZsdTcjwOCRVonKsDgQzBTCMz/RPBfEFX44HZx4=
+g1U
+QAcCA4xlucY8QkJEyCrSNGpGnvGK8DcGSmnstl1/a9fnlhpdFxieX3oY2phJ1WKkYTn6Advre=
+k3U
+P71CKxpgtPmkd3iUUz/VZa0Cv6YxQXskspRDVEvdCMYSQBtJPQ4y2+5UxVR9GIQXenwYp9AP2=
+niv
+Voh+ITsDWWeWnnvYMq07rSDjq0nGdj41MJkNX+Yb2PXVyXItcj5ybE3T2+y3pSBGFEZYJGuaL=
+4Nw
+tBJFMOdOtBmUOPbetS2971EL3Izxb7ibOZWDwexv+8R6SWYfP1wVN3p46RyBQuXqJV8ccE11m=
+6vt
+ZTGSYgnLUUFZMRQYH+0hwuYe0T3AA18xDdSYsa8vovCCd3l5S4UNzIM2PMChqGrEzKapUpZg7=
++8A
+CcxRU3b9Ihd7WYjJ+pQPCoWYKozvtEvenbNpE/govO/ED3B14e+R2yevRPjRrsN7PJzSf15fQ=
+LvC
+wFwEEAEIAAYFAlo9UqAACgkQLzyHNoBfjaLrSwf+MIHbFRQ4O5cmLYR5sIByWelN3SuRN/gW8=
+rpK
+o9OkCz6An8uV/iCXy5tNMLzzi0BFl8f22DwBcC5qy9qnlIAdogWam1qWoTAoAD8veEqmuKhYr=
+qJs
+CcAyNrKYmK0hP3rpHxx1LySDmKYXmw/8qtBXKHTouMm+5tSsznhykRMTAAr2p7PSaHgo+hIVa=
+W/r
+KSspHjDhhZS+G9mtOZad1IH29M6G1Q1NCO0Ywe8krKLQIAQlFxtgvOqpPOZNzeKBa/+KbE8TG=
+gMW
+rkOhC8OeEM5PVzdDhlhD9kPzB/pCKDF5DofJ/ZRqnDpbKPQ0bsW38AOig3kOc0A27awiBEw3u=
+rqR
+1cLBcwQQAQgAHRYhBH4XCgRchM9GDit5oBDvedn9g1MSBQJbtyScAAoJEBDvedn9g1MSI/oP/=
+0A9
+J9nrnBMqZpm857lfYWw+rshLK+tyeP4OQeOqnDFvs9jePpcyJLG3DF2r6VbVKPQq+AE6Uf5hc=
+JBD
+EN6BjEhRPSbLcqG3A1cz/nNwm8rPmNp+oKhmaBBQGxwciMLmzgynsDydnjPpMyEs04zvsbsl4=
+vrp
+2095o105l8KcrrxQrioFjbwveGwHQK9bxJKhx9D+gIk+MouBur45UDKTZkMZrr9FGrtkyXCGA=
+xvK
+dcNC5Oa8z9sj1rcUJfG/OpVAMWhArdlZbFUQyoX6pU2Zb1CR2qpWAVerGSfBhmfCyStjARqaK=
+xlf
+tjO+Bj3Jj73Cr5eqej3qB5+V4BCsPjr4RLvVbYUCPsRdxWc+nBLlfVYkRURu21g1hFm5KFPjg=
+Uky
+o1s4vjUOY8DyI+xLGF7f/IhUBG6l+Vswhpwu7ydalZkeFiPx5xna5NfbEYxvsIf71DvipGvIO=
+aHv
+X4egWoFgm8n/9c3rcMxJtpwHPSsUt5dgLsyu6VE0IbvOAc3dN7CWJ355DVFJq9Zg2YVf0izSp=
+yyz
+JeGsgkfjW6xpmdvZxuT2UcN4BTcm6vYqueASGrb3lfhzC5gpeVsc/MoSjTS65vNWbpzONZWMZ=
+uLE
+FraxWJzC0JrDK3NCd0VN3kstqGkVbUIiYOnUm8Vu4zoVMLlGWzHLIGoPRG2nRezn1YyNfyb5w=
+sDc
+BBABCgAGBQJbxcflAAoJEGo7ETk8pK1gE7QL/ApC5P68W5DrI1787WJVZv1u4t/g39vTr7Xer=
+3UM
+TVQg10vpa7pmqOGhjIDzDMg3Pe3K3M7fVzfAlUA1qw6ne4RCueVoRKpubeF4AlYbMr0K6hNCP=
+jt5
+uAxmbBVuejKTc6pru5rv5gKL0nDbr+Snft5xt7juBLSSimw0/41sZnkjCxo9rF/RA/v6+uWyK=
+171
+RKmsEYu8fFtw1eqUNt/Xj792TUixE3pxXheNtQtZGk/9P3W83ChhG4Fh5EQsn0pIh9wZIAbMR=
+Lpg
+RKyW87fWHZC8/YH8h7afarvn9Thl5pFUldCe22mNJj6KLChn2aEHQd+PdY1GBpZEcmNEUPuov=
+wza
+tM0h64hCzTm41eDqRfihZVBT7TbfXQnv8rywa42Mk756RGzzEZcQEhwQXZcMQUfxIQQ2VyJo0=
+zG3
+6VdZTQF7TF/4Lz7/3cJ56jOIm+dwPXtu+C2wAQuD4USOLt4JWPYpqzDfHYJIND/497P9Z9SuQ=
+eah
+r2ez3DRBg3qsHEjBV80yU3RlcGhlbiBGYXJyZWxsICgyMDE3KSA8c3RlcGhlbi5mYXJyZWxsQ=
+GNz
+LnRjZC5pZT7CwYAEEwEIACoCGwMFCQmUJgAFCwkIBwIGFQgJCgsCBBYCAwECHgECF4AFAlo+o=
+3cC
+GQEACgkQWrL68XsXK+qO0A//ZsfQzyXrZlu/eEV5jU620yeOM3P7SW3C3UQYdCgZ/TlvxGgKo=
+w5o
+DSXgjMiUyq9csGqbPBxlDYSxFZHNeDVKYIuP2ZK24tw5k6duTh4+sFwUualTMlcp0zBCIzn3h=
+Rcs
+RvuPKHfl5+6oOi0+xqx3jX/s/69L/fvHmdSKet5LIUAxoYaZkTCruFrPWb01tgAl5JExWkhmC=
+Y98
+iD+EeiIMAWBjMw1xV+p0uCwNbN6XDzcToK7wsm+tAIiWUy3DpP60a6WbVwdV0HNt2WZq5U5Jd=
+h2k
+4S+sN2CnYk4tTW7jHjsWarV3FLISCOObADZuB7ljU4kYfdwZ+WzenXY4LGlxGQSlAblGjwZe4=
+EIk
+CXAJUtzJhoFUuGaF/PlWjxqV3UFRcgTERZTijguVyREre8GNERNgvDxZvuXssEjvz9X5JfcIZ=
+DIJ
+pdzhLiEIj9noUbfx1SzB5KDPQj0O7elMHa1671/rwWcpGr/MfVPTOik4H7F8rcVJelceZTzC4=
+tvy
+a7M+jM4fyFWWt8Y4atTixUiP7U9o4uBZCQ0GzvsmFA4XLqn2pA5rVizMXnGbGOjufAP/efEJ4=
+ul3
+qvjYe8ye8DXEDjKAxo/tuHYtk19XCi83QzFhWls5TT+XQeVTMEvVqo9Wek8yoxo67qvLKKqIc=
+G9g
+ivQd8MxYNAbNYgSPtkbhZ8TCwFwEEAEIAAYFAlo9UqAACgkQLzyHNoBfjaLzHAgAlWT6NXEGt=
+w/r
+1miKNGcopzvzILQ9oB8rKI9U9EL6tOf/y2V5oYee/GyQDb3ZdoPxxYYcJf+RyiH1nMoqUIZiZ=
+Jaf
+3bJXinDZ5+AdfE++UR2NBvqaNyC6u3r24jo1B/sagKbYtWgsYtRqHLD4IWi37MZrVyjBuF7u1=
+4Q0
+7+uhjq6mX2O/tHpCYw/Q82tbeTRPyUf1WQOAfD1kfBpW9PvAva5Iw9FWeXpCXRzwxnCZhYfGf=
+qtu
+Sw6CPBYLdbikqML6FZ7EDuTBb/8um1wK7Y9bgeIQC+CYjhYB5RXa1tDJRab2Js4luCvSR0w/C=
+gHw
+26293tlve2Q6UTrmHxP5U22DlsLBfQQTAQgAJwUCWj1QMgIbAwUJCZQmAAULCQgHAgYVCAkKC=
+wIE
+FgIDAQIeAQIXgAAKCRBasvrxexcr6tJpD/4rrILH+meP07vrx8wW5eYuqCiPGYnh/CXxIF8eL=
+rfb
+e5d4QRgtq+w6UeQPMyzKRIRiCoBXB2oJLBZHyxBPxZlg33dTMrEGn8QWKx2iNuz9rZMXyOSWF=
+etu
+O01d/aUPd5BnbLbIyK5of8xCQlXM6KH8bc+9gQ7edR9mfLTdvBf2FR522hg8BRBM1imKc3vO8=
+v39
++qIHHRjuiwxBBCAOhHtHRsZXripS0uFA07dM46Oi/E8osjx6fQt/lH5z/PN+2adxYSrLSAXfr=
+1oD
+3RxYNhuWgyGFL64/VCQb1YGjf0Z5MBPnWm9jgUoOY5K9eNSS0L83WeJjlF5+Q/WOgB+rb49Pr=
+m2D
+Feo9+S9f2V53Llz1WIspXJg6f+n9lmHE94MfQj1GAHCzI0FeL19lvM+LhD8jJSCbhrC3+yoby=
+y/A
+UOs5Z3E+njjX1FF/VCVAs6iOa6i+XG+Y1hh3ir2y1kckJ5auT10MSU8GEZu9ayU4M3o3N9yxO=
+jao
+P0NuQ4MMLL/n/u4u94AeZaHPNBXn/hVfVRRmpRXtGKvJtFAEppGEYezB+bLKIm6XlpPkhnwYz=
+leL
+Z7AMEco2C6QM8QPB3g3JpS3sqRhA5rEP4lL16BmijmF+CHoPE/zwgKZbKpyVDqvIW5IDgvfIC=
+2X4
+pbZDRvGIUKaGSB4+ksZgUUnNyvfQr2p7jsLBcwQQAQgAHRYhBH4XCgRchM9GDit5oBDvedn9g=
+1MS
+BQJbtySbAAoJEBDvedn9g1MSeKkQAJm44jt1kwHgQgeDBKdjdvl0AjE0xVEQxriZ6lP/l//34=
+YT0
+auFfzsYIrChSpQXAEtobBAr4Ohw1Us+BZe+H5P8vm6LRuPwozC3SjwfX4Iec8+9ot6tIVg4sb=
+edD
+Sgb/CCFVjsmIGcQ1P73JLJTBJ6mxYCV/gn3QC6bwDOFo7kD9FDHCjRN8XfhHQ4Q9cYyt06uF3=
+1qG
+/aumgWYC9geCGgAwiHgwxNYb9GoJ0iZjCROwbYvLTcQgsVUW2bTmsVR13UVKDsdl02sRV7qcV=
+YW6
+R0a3Ra8KudX+nt25H5DRGd382KZ5W8pydsy/viTvD9z6v0ulChBYxAedIvGIClrhbxlLEPmIg=
+4Im
+VOLGqsUgVm32J95WOjEkk4PEZ12xSDBtwhSJqmJNboWlfmw43KdIbY8zNhffIO3N6O7FsdGxm=
+qyH
+eLoTpqY+ySVUPpbuyW8ujnI/J//+6hdTZ9dQsEJQlWngKuWOQ5ma58MPSN88zllsqhZAFQjNx=
+qnk
+SzL6ZQ+v/jvuRRe16B80AeO55DsmbWsMv/YLLD1mSi7+Khy2EtMBhgojWwrGMvdLN6X3mnzNJ=
+Esc
+YyLxM9tSk+iySP2sLthK0BVgpAzBSdaf/ezIz60P+neHDzteNFf8Mn7lmgYk1amvZoJ29s5+n=
+2Hw
+xyRL5dVMyMdyQmntubbctfqrZ0tIwsDcBBABCgAGBQJbxcflAAoJEGo7ETk8pK1gnCYMAJY4F=
+eIY
+jlIXGghFWzsB4fYwK1+iaFpU3fSto5qcrqVtVPjXpwqczqBWeXGyQxiB0kan4OVAXydIeaP8E=
+AuF
+CA7paP3s9STLJBO3KurkwyRkPW5zo0X7xVqaVToRsX2Ul98KVJoHYQD1KdezEtwlvpNwiiBr4=
+2AY
+R751Vm6JBVAbQXuFpB3c8bUV0OkkRxNFtL8/2PieHar58n5dntGkbPlPkztahsFqktgacIgXH=
+X5v
+aT+7YeeZ1DWLOYjGO0wNhkOSeroCmxwJUikU7joBp823L7r5KfpqWTPpSCzVstQKZUGmmoE1q=
+Csw
+Y/Ud5wvp9SccpIILkRXj0rZRtfnE5MpL3hjmtNzfDd9qIsJtBJlSB2hZwAsVm1l+EWN9hG3tq=
+yA4
+3niUMy2n6q690of3berSiQ+kvY/aC9Hx8I+bKzOV9/J2VUTqfaPZa4Uy2rVX5Q2p69n/PMj7m=
+Eer
+0rCL3j9V16J9c+s0BSkXoKdtYdB0TWVhBgUybd9qtYcwHWvhP80uU3RlcGhlbiBGYXJyZWxsI=
+Dxz
+dGVwaGVuQHRvbGVyYW50bmV0d29ya3MuY29tPsLBfQQTAQgAJwUCWj1RWgIbAwUJCZQmAAULC=
+QgH
+AgYVCAkKCwIEFgIDAQIeAQIXgAAKCRBasvrxexcr6jscEADEcB0WQEZn2AkrzDs1RhL0Lp6cZ=
+i0B
+igofkbcGfdhJyMSs19C0dhvncrAFClVI6/Udw3yFtDyYtOCf2W3M3A1K6/RfEizCLzTsdFIhn=
+i9g
+OJLlUpXViQtgrlstjk7hqVV3Ooz4BlCqS4cG7rfqf4LQQPpTAuFUEV9I28FBUB2irqC+v4gTy=
+sIg
+pMw0bA1yBU9sX5jE/tRkzqnuzZrkwiobDtRFJ9qp+7O2JtcY4EsVtLAsaodJKc5cF8R4OvB1n=
+66v
+xxcgg9Eh4JNWZ47xsaCmAGo1Bcb2jIY35OtgAL7gCGLRSMKTtAaPy1/fEgIqhCljJ9x40Fkn/=
+3r2
+BX21WC9HFSPFTBz2RluLRzxdgxOrkYK8EiHUPoE5b1AEzZKw2AbeXfr57f5zYsN3IqfbQLUjM=
+YtU
+N1wK3Pjb+idD972wyXMWt8uOzlI7b9Ocu+nYm2whBfJv9Pmp3QYTmPz+LB9lH65VNVUSxSXVr=
+5iW
+XO3qx1HtEiGEqkporMQCTh3T5Ud3PvMSRBFFKNs9WhJ/Lxz+SV30WLwG6dr5mQqlzAhb4Phc/=
+zek
+ZyXRdS/oDKrBLUucS36O//49JeyRi1QvOfxnfmIqRIAf/k3PoYJmTo5E82//r5Qj3YGlRu78b=
+a0H
+Arxs+ACD6AnEHHcbswpbtVEKYzlSu0Ar0Dc7vRWM/IyQdMLAXAQQAQgABgUCWj1SoAAKCRAvP=
+Ic2
+gF+NosIsB/9f/29FNla3BJfGIEIDnhrqGD0i9bSa89SqBd++uG06TQgW5wsqtNcrwn81yZTq6=
+XE6
+i9VtD4GKfqC0d4KZJr9bnbeD81cI64VOdL8zJWJs0vj5EIXCobKyX74Kb4uePUyZqwT2Q74I1=
+16u
+/HwA9/FXsPo5isbh4ZqD4t0VHpWkmfq1FPT9a/JPyX46qKqB2Fce/7Qy+SQP1NfkuUlbhUH/J=
+G9a
+SSYvk3lznNiH41x9M+FDlL106itXOubrl3oi2fT3fsSedq7uzt+IV0DQEeNaoQAUuwEhdB8IW=
+OMq
+N2woDjGVKJftfsSWY9ilZrnDBNDrp0vRqcx33LUMkIw4d7iBwsFzBBABCAAdFiEEfhcKBFyEz=
+0YO
+K3mgEO952f2DUxIFAlu3JJwACgkQEO952f2DUxJjuw/6ApHSsVTWD4a0H6FJ23A9Ftpy+aXZ4=
+vYl
+zkSrfsn2ECrEfK3lXQh/uzwjJUDYZeB1/BQsFZtcYNQOJSSHbQ49BFRLwb1J/wBZG4bbmrkLx=
+nNb
+KDKQvzxEpclkMW0Dj0J6o7kGrmzIGGrhB+JJN99AcineHRug8ZSFIERRCmigxdhAKU0BFD7P+=
+5HN
+HltSL3DF1c2fFOf2JrgBKVoE+9RhMZjWNbYetFFLCkjXb5Rpay9zeMm1DxfSTGAnuOwUXW6qq=
+4hn
+l5+VC/48ceDZElLLfu7RQUZv44pkSTOWZs+iQoJiHMFHk9wPqyB2Vok1yJ2a2j27WhXrJlPwn=
+Zbg
+JO5RyWDG3p/eVmpl5Uuc2dsfIpR17KnAuWpghK6V+cyFncDoGCl/YG2MvoolsW08FiZh3Ej4d=
+nJj
+j25TZkeFG74JJDXLvMYpJfSBGnmETv4Dhcm2xPqVMuFuL1qJlMbVLrMo2GXeo03OzNyvbs+u8=
+WLI
+aGm5hC7N1CXY8wZs4jo6OJ/expvnc07dEuws4zT3AiWv3nIouWReRStZy9QkavDocqbyPmilc=
+dPC
+Yk4BsOlzpwwO74hNG7iyl0KdAlwTxGQ7y0rJou6HYa1TmRhIEr3vKvlW+JfUUrqtjXgsuacTX=
+o4+
+Ira2JUErL2cYzQMq1j4r1ZyhFnuz93s7Rsx/Nw0+0YvCwNwEEAEKAAYFAlvFx+UACgkQajsRO=
+Tyk
+rWCJqwv+NLVPE4sD4sDA2/6Ek7UsRIUkg+S39fhqWsLc4rtw/mDunv8Un61I3K04fZ2Ry4nF9=
+hZM
+0a710UvXFbStvrzRJO3EAAcdJR9LTCd19e8UeruQbIee3YT91U4NkC9JMpecfq62/teOAU2e5=
+P3f
+WYaLs5ZX7zCLwWuBcW2l3SyoljQczM85HhJ3XHm+FnwQ6D9xRle+lvWTcuC9d1yAyUb8IOosp=
+cL2
+lJTmy8e3r79R24hPlSB4LDe0wEN8AXbagrcAQZjwyaHyWxjJbTwZ0b43WGdfIqZ1ElOeoffbk=
+etP
+GRmWvx5xUvb2ALFBBdETzV270gs5XDJgJ1SIIKOyDADxwvroTe2jD8C/841eEql5QSow3s/U3=
+zRq
+k3mttto8Qw/DN71aeh6dmYSsvd2UjsHw/vofOPRBGxZLEkKTEvMnhmMW9hiKPkPia+QgevYE0=
+20q
+pKSxLEdWA8nprHwxmGiDNesCfXSC6vm1qfyj5g8HzxSckq9ZaMhKMCo7vxflUEDuzsFNBFo9U=
+DIB
+EAD6DdHQfMav8OXfhjTteoarOrlJTSdci727xiezGPuBHmpvceBRZgRasdbaMc4HJee+R9+5x=
+/nL
+PCuy/DxDyIjwIUeJNgc+l7LjI9WfpHTD8U4xxjvR5Mi7+ToQQUOUNuzT0O0pyuxP1uY3RehHE=
+hOV
+fBZO59ipSeZL5iQC6T5MsK1SKfs51pLa5ToC1rc8tBJ4zZmxRAyZiYc/AH2uZ/6rYjTTkAn1D=
+VI9
+DYo2D/zE4bGjXdJW5pKphFB2lX3dG4I7ODi+5e1H6A/QpCu6z8/ZkIQ+9T1xcX/YwiFeA7PbT=
+uW/
+eITbMbI1eV3+fyym9aT7Rsflmp31Zxtr+sZwGGZf00ooMBFmqOS//NUQ/Vf3vDUew1h5QU1yD=
+aWT
+3NApvi+XWPH9TPy6TMfZA2FThHf11sX/gDBa5JWQZbptPEcmoazpiKZt91CrFPOaoXDPck/Q6=
+1df
+mr/oPikfByYnASIM3OwEuXqyQ9JDRfKrem5r+oA/wxWb5jELElAhOpnyqMMvOh7uz1foUssL8=
+MAv
+2TGXmxpVJ8Nu4je6wf96Z22fQ0D38zud+CKH3bMP3ayXXJBcdPoENrzFbWP5FTg/4TTDJ3vOA=
+HZR
+5iCunYghx8b7Ffa4UbkwlD+dh8GiIAtvT51Ac0cO0Wc0Zjc57zPUz1zloMbf+zb1Bsn7DuEQo=
+qj1
+gwARAQABwsFlBBgBCAAPBQJaPVAyAhsMBQkJlCYAAAoJEFqy+vF7FyvqrC8P/1tF6TeR83xD6=
+Mas
+qXyrBjwcLmziaF0Mlkj8k/YUiZ/knb53n97xQnh9yxPv0TT8Wpfdn3BmvqGyh8+ouHX9jMOxi=
+RkM
+dNhIauVYY/8jmRfBSYWcFkfMzdYasvdLtmYJgx252HKTFdeOrszoOjWjEzwmh+tca3AFMu/nB=
+++/
+KAmi5UJV7zsZ7uYJ5jm97LV5SLjNJIXXM+lHqCDrjDaDhNczmq1LCRlU6/WDjvkuwaVhZG4lX=
+xMD
+rvKnXMkjseQ2oKjwrIdfQM86H1z5J31lfhqop+of0cimcIsBgSCPu+h96LHuAzeRBCbDKeqrf=
+ZtA
+ZAGsokRina9947fRWxXHh3O66ILmXKNRxxWbDkPvYnQWUat8SbSTDoPWrDIGDRIAypqYo3pcN=
+2OE
+0C1chqgDZQxkr+9kYZQpupOAN2TR+fM7JvbO9coKI8Uqog8CopoMeDQkd0YjcqlB1E0svODHT=
+zcS
+oRzogDBYDqNLP7qVkNXpcOAXSVioBgiSDf7o5RdS/qmUyXBIeq6I5z8xBcd+BQ/n/9Frkm6K7=
+IKP
+3ngUP4wEoiPx5ZE5+fPIScGmVUcZIMhkvMvem9XXh1yyhqN14gfjmLwPGdWbrgG8QUe0s2WeW=
+Iys
+s6uTiyF+ZbJSo2XOKVc3YFMVUUfgyudqAV1wWdZinUk+H3pkqOKoHAy/8fST
+=3D40Nd
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------3C74ABEB79DCE70337F39676--
+
+--z027wlRnVx43XhD6Ei6wfjCC84KEzo46O--
+
+--H4vmDsWXK1KWiq9yMXTjfRWl9V0boUkws
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEEW7Wm6ldl0sWGPK4nWrL68XsXK+oFAmD171MFAwAAAAAACgkQWrL68XsXK+rT
+kg//XJ34USE8X1RbMt+XHCFpzhS2GfIZh5lnS8f5c99A86UanDOtMyk7dvVLwAJXhlHZmURJJV3w
+NVlI2Awg44z5pzrUMIDRvy8C0K/QUQkZCffOuYlI95nQ5BUS28SrUbFim5IoJavT/RGfnRutB7xB
+mmw4FM1msxPGf80JMN8d9OiZkKuonpWw8pFKyjsJsO7TY+pWyecj+/XzIVLe8+y5t/aN2qDsYDP4
+WVIcq7qn5BuQWI+GuQdRwYqtIxt8+5aI68avTv+biNEdDnZxPdAgUpWEkMsq1laOmziWWQ7htTFQ
+/sxoEF5p7eCNQT60eLPSdlsMbeGMCMhUVO8emSjFb92kJT7uNfFFlBUTwFAv4JvskB38HHdYRspm
+0J1n4N2Lup7ifB+9GKxl1jbkyVVN81vy9L2jDQNZM8/DgNBdzIOmzzqZWQ1+L7Q3J+q3ENjoLWrI
+Bp46vlE9AuusyBEFhF26nUzcge+GKN3Kc7DHWVp4foDsE4VgJJ+zBTslTWnR4gLEJ9GKjw3i9dG4
+hOXduO1pQKn7+36PlzsTKxYdbWqumJXn69JvFTfy8GHe16ULvFlZqI3Aic8WEiZnpEoo01x2Z689
+o0SET/Pau3rfoPIGAin/TPsjriSkXXvZSrdomhI8poBewjSkNYEfh+aUEzi5TfPWaH90XIegUetj
+ZZ0=
+=gJf6
+-----END PGP SIGNATURE-----
+
+--H4vmDsWXK1KWiq9yMXTjfRWl9V0boUkws--
+

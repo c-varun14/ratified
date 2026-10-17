@@ -1,0 +1,724 @@
+Return-Path: <Hanno.Becker@arm.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 880853A0C0B
+ for <tls@ietfa.amsl.com>; Sun, 29 Mar 2020 08:07:15 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: 0.001
+X-Spam-Level: 
+X-Spam-Status: No, score=0.001 tagged_above=-999 required=5
+ tests=[DKIM_SIGNED=0.1, DKIM_VALID=-0.1, HTML_MESSAGE=0.001,
+ RCVD_IN_MSPIKE_H2=-0.001, SPF_PASS=-0.001, UNPARSEABLE_RELAY=0.001,
+ URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=armh.onmicrosoft.com header.b=upy0pr1X;
+ dkim=pass (1024-bit key) header.d=armh.onmicrosoft.com
+ header.b=upy0pr1X
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id WaEIR_5yKzX0 for <tls@ietfa.amsl.com>;
+ Sun, 29 Mar 2020 08:07:12 -0700 (PDT)
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com
+ (mail-eopbgr60042.outbound.protection.outlook.com [40.107.6.42])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 3B81E3A0C0C
+ for <tls@ietf.org>; Sun, 29 Mar 2020 08:07:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com; 
+ s=selector2-armh-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yusZmZ/164o21ri2pmNkGomHm91PGm3Ps+RUlbeR8xc=;
+ b=upy0pr1XK3alJl2bGYyyJoah/y3Ms/fJlR50VZHSikIk3b8V7FAZzE1vUTLmusJ/L0Zih5Koyx2EA1q4BV/7Q6+LT77tgZMVx70erFqHDVHRJgyQwZvIwfo0tlxMdm6DDGMfgPwyXdH2YY1S6gCst/Kpfh0H3ZAm223Ow1ytPFA=
+Received: from AM5PR0201CA0021.eurprd02.prod.outlook.com
+ (2603:10a6:203:3d::31) by HE1PR0801MB1740.eurprd08.prod.outlook.com
+ (2603:10a6:3:88::7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2856.20; Sun, 29 Mar
+ 2020 15:07:08 +0000
+Received: from AM5EUR03FT040.eop-EUR03.prod.protection.outlook.com
+ (2603:10a6:203:3d:cafe::45) by AM5PR0201CA0021.outlook.office365.com
+ (2603:10a6:203:3d::31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2856.20 via Frontend
+ Transport; Sun, 29 Mar 2020 15:07:08 +0000
+Authentication-Results: spf=pass (sender IP is 63.35.35.123)
+ smtp.mailfrom=arm.com; ietf.org; dkim=pass (signature was verified)
+ header.d=armh.onmicrosoft.com;ietf.org; dmarc=bestguesspass action=none
+ header.from=arm.com;
+Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
+ 63.35.35.123 as permitted sender) receiver=protection.outlook.com;
+ client-ip=63.35.35.123; helo=64aa7808-outbound-1.mta.getcheckrecipient.com;
+Received: from 64aa7808-outbound-1.mta.getcheckrecipient.com (63.35.35.123) by
+ AM5EUR03FT040.mail.protection.outlook.com (10.152.17.148) with
+ Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2856.17 via Frontend Transport; Sun, 29 Mar 2020 15:07:08 +0000
+Received: ("Tessian outbound 60d769d68364:v48");
+ Sun, 29 Mar 2020 15:07:08 +0000
+X-CheckRecipientChecked: true
+X-CR-MTA-CID: db1dfd6041879e7d
+X-CR-MTA-TID: 64aa7808
+Received: from abd01a5e639a.1
+ by 64aa7808-outbound-1.mta.getcheckrecipient.com id
+ CBEEDD44-2AE6-43FF-8992-55B771C3B23A.1; 
+ Sun, 29 Mar 2020 15:07:03 +0000
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com
+ by 64aa7808-outbound-1.mta.getcheckrecipient.com with ESMTPS id abd01a5e639a.1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384);
+ Sun, 29 Mar 2020 15:07:03 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ap80EBBx8t73nnNpegpcOXf4m4oFr0Z0B7LBW6icKZjz4q9yqWUNoAeW5slfzStBBpFi1AFiIsbnVfRspj6cKb9/PRoVVca0FQERVoWw8QgILzyunz3jlZrQSHtfDG8IbNZfTyQwiPErXS1sro/3R5msTtvRbs/xtYlzL0vB/aezNsm7smBQRgcvybO4r+AXv5rwLemP9rrqg8Cy6udlbcmalU1C6bjlLsv6h2AuCHzBYGaWfnnI8HLFdGGLu9WsnZYkBV5mRzADLCk3i/81blqfxZVWr4No7N1K1+tEwNrDrGakIEAOpLsTJzFJOkNVwoTFO1LKU/wIOybYR1i9Ig==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yusZmZ/164o21ri2pmNkGomHm91PGm3Ps+RUlbeR8xc=;
+ b=e6qSLWe0Rbg2kebqfT0Bys+sJumq7xe68NewWdBNm+TwbyJoETmFED133x7eHUYkLaC93jmY3RJ8L2ZeDlO53xd7lXDgIScrR73nInXaa/6TO2aYrDOjqXUCQv/IbDPSmPlXPF7Yt0LA/5zNMllZbyeXcFSGM98U+T26sQDvCvjExosMpdkAtNMrkOWyL/LI4D5wi2KwCVSTiGOIGvqnDZVpwkOYL2FyGAn2aVgwIOMa44BXVnYGRVg0Ja/TSruIUNwHFRFUGgv+dw6e+W3BjIiFppxUXbXvC4s1XZK87eXLScnR1zlgwaLB7G/vHD8jDtoSg5AJN1KxwWODOv+KUQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
+ header.d=arm.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com; 
+ s=selector2-armh-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yusZmZ/164o21ri2pmNkGomHm91PGm3Ps+RUlbeR8xc=;
+ b=upy0pr1XK3alJl2bGYyyJoah/y3Ms/fJlR50VZHSikIk3b8V7FAZzE1vUTLmusJ/L0Zih5Koyx2EA1q4BV/7Q6+LT77tgZMVx70erFqHDVHRJgyQwZvIwfo0tlxMdm6DDGMfgPwyXdH2YY1S6gCst/Kpfh0H3ZAm223Ow1ytPFA=
+Received: from AM6PR08MB3318.eurprd08.prod.outlook.com (52.135.163.143) by
+ AM6PR08MB3832.eurprd08.prod.outlook.com (20.178.90.29) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2856.20; Sun, 29 Mar 2020 15:07:01 +0000
+Received: from AM6PR08MB3318.eurprd08.prod.outlook.com
+ ([fe80::1579:b7d9:f543:200d]) by AM6PR08MB3318.eurprd08.prod.outlook.com
+ ([fe80::1579:b7d9:f543:200d%5]) with mapi id 15.20.2856.019; Sun, 29 Mar 2020
+ 15:07:01 +0000
+From: Hanno Becker <Hanno.Becker@arm.com>
+To: Jonathan Hammell <jfhamme.cccs@gmail.com>, Sean Turner <sean@sn3rd.com>
+CC: TLS List <tls@ietf.org>
+Thread-Topic: [TLS] 3rd WGLC for draft-ietf-tls-dtls13
+Thread-Index: AQHV/sJkDO89hoOQBUezhg8xnSTmm6hct5YAgAMBhF0=
+Date: Sun, 29 Mar 2020 15:07:01 +0000
+Message-ID: <AM6PR08MB33183245C41E9FBFBAC3B6909BCA0@AM6PR08MB3318.eurprd08.prod.outlook.com>
+References: <150AD400-C080-4676-80DE-7A0EC0ECE7BD@sn3rd.com>,
+ <CALhKWgiZ74Jd7rmc=88RR=dR=Qbr=yFnpPfSi9OESpuDC_fsoA@mail.gmail.com>
+In-Reply-To: <CALhKWgiZ74Jd7rmc=88RR=dR=Qbr=yFnpPfSi9OESpuDC_fsoA@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+Authentication-Results-Original: spf=none (sender IP is )
+ smtp.mailfrom=Hanno.Becker@arm.com; 
+x-originating-ip: [86.181.127.140]
+x-ms-publictraffictype: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 965f4b28-3694-464a-8574-08d7d3f2d9d9
+x-ms-traffictypediagnostic: AM6PR08MB3832:|HE1PR0801MB1740:
+X-Microsoft-Antispam-PRVS: <HE1PR0801MB17403F9A5972B2E7DEEDD0209BCA0@HE1PR0801MB1740.eurprd08.prod.outlook.com>
+x-checkrecipientrouted: true
+nodisclaimer: true
+x-ms-oob-tlc-oobclassifiers: OLM:3173;OLM:4941;
+x-forefront-prvs: 035748864E
+X-Forefront-Antispam-Report-Untrusted: CIP:255.255.255.255; CTRY:; LANG:en;
+ SCL:1; SRV:; IPV:NLI; SFV:NSPM; H:AM6PR08MB3318.eurprd08.prod.outlook.com;
+ PTR:; CAT:NONE; SFTY:;
+ SFS:(10009020)(4636009)(346002)(366004)(136003)(396003)(39850400004)(376002)(81156014)(110136005)(316002)(186003)(55016002)(26005)(81166006)(478600001)(71200400001)(7696005)(6506007)(53546011)(86362001)(2906002)(19627405001)(33656002)(966005)(4326008)(52536014)(9686003)(5660300002)(76116006)(8676002)(66476007)(8936002)(66446008)(66556008)(64756008)(66946007);
+ DIR:OUT; SFP:1101; 
+received-spf: None (protection.outlook.com: arm.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam-Untrusted: BCL:0;
+X-Microsoft-Antispam-Message-Info-Original: Ai4qA6fSMEWWjyTyTfYFHo9379G14Na3VLJTKWUmAU5N4XsiafE8ptrSWgFXqChI1oaZYo3llsbbt2WjHlc10iQKoWgcR5aSW/DX6WoxW/5spGy0Mht9hSFY1fMloeOh9ZAB720coH8od/h7OtKI/GbX5NDHqV9pNsTkmk+yS4TY9y7yfT2uVoBvwnMSEfnOLdlo5V/XzX2FtuwAsE4f3IdKlW2CAVi1XzinrUZVrQspeRJxXH0p2/fXwzCtmwsdAZT4OjpAaTTs81XvQuRzXMaeW5WdUTbeWnRXAKVANILKTbQQM0IPDaVWeExkWdrv4XP11QFpojbomZkH8Hek3K3bEjOlY+5ZgU6a8RMCG2M0cXgOBxWn8fVgP8uuw+A0jmX0WXu1+rksYQze1K3vpjFMGqAYxIZzmvbm3C8yhZKH6TGisKGPhqzSJ/DAh345vLyfoVM647324bWCsK19zTTcBSowR/aXs4YiSZQftIAEThlUxm5bLJGMI5s9k9nJCfot7jzdz8EVeUtFKvfMfQ==
+x-ms-exchange-antispam-messagedata: tUIUP43HZIObcZhDC5mldHiUYOtRLagwPlxJZjfVRCAakxrU+KIoX6mebEb59+CCNdwMihyfPp2TmXPOmb/ge+Es9iv/mavrj8iUl/+oSQCkRri2dbQ9ywoj/wAWvuuAKhcsU0kpSRBUwWtwhEDZQw==
+x-ms-exchange-transport-forked: True
+Content-Type: multipart/alternative;
+ boundary="_000_AM6PR08MB33183245C41E9FBFBAC3B6909BCA0AM6PR08MB3318eurp_"
+MIME-Version: 1.0
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR08MB3832
+Original-Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=Hanno.Becker@arm.com; 
+X-EOPAttributedMessage: 0
+X-MS-Exchange-Transport-CrossTenantHeadersStripped: AM5EUR03FT040.eop-EUR03.prod.protection.outlook.com
+X-Forefront-Antispam-Report: CIP:63.35.35.123; CTRY:IE; LANG:en; SCL:1; SRV:; 
+ IPV:CAL; SFV:NSPM;
+ H:64aa7808-outbound-1.mta.getcheckrecipient.com; 
+ PTR:ec2-63-35-35-123.eu-west-1.compute.amazonaws.com; CAT:NONE; SFTY:;
+ SFS:(10009020)(4636009)(136003)(39850400004)(396003)(376002)(346002)(46966005)(33656002)(55016002)(86362001)(4326008)(36906005)(70206006)(70586007)(316002)(966005)(26826003)(478600001)(52536014)(53546011)(6506007)(7696005)(336012)(110136005)(5660300002)(186003)(26005)(9686003)(30864003)(19627405001)(8676002)(47076004)(82740400003)(81166006)(81156014)(356004)(8936002)(2906002);
+ DIR:OUT; SFP:1101; 
+X-MS-Office365-Filtering-Correlation-Id-Prvs: 6d85b350-69a9-47cb-840e-08d7d3f2d560
+X-Forefront-PRVS: 035748864E
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: PDzfFog8jJbywF35VXOPU3ErFCFAMC+0gSMLeYmi2aevPmZpA7xu0Uvdjdfkvao+yOPMAaf0QRxzAr637D1bWO5VjT7zvg4X9w55MHdSy8Zqk1Z79nw+xZ3dz40qWbHHLUruH20HY/sLLUhlR7Vlaa86dYca9yY3WLkrjT2OgqKlDkpcE4WOAaC4ZQHyyaW/5qmZvjk1GGbecB1maBhA0tNI79u2BFhjD4btY8XzA98grCA4RTs2LNSUOFK9/L+cK981WyYA5JjFkgIRhC3yhZ2/h12mbXaEKBgHXr7c8Vlyh3jSBgPoruxQKE7Cw6/KqETXvQs2EuSNO66BkbhTjUJy39o8pDRLCNFI2LM9HQ8Q1oYU4vJulHUCvLR9AQORvXdrzjr7xP2JJ3hpxWAmgYHeCjf1e793EpS524K/ije2BuJvb/w2iS1Xz3h/rFrBZGiVR0borwwxYamVlKTSqQK1Ez1HVpHeBG6zyQhQOjn/82XRaDW0VQp8Y+o0gDfjWY0995AB1bCTEo2i4U3MZmO0dF4bOykELLYWfy2BoqrjvwmEFpKxA/IZqaSV04bXhaDXh7RA9vlqcRIitV5MaA==
+X-OriginatorOrg: arm.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Mar 2020 15:07:08.6111 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 965f4b28-3694-464a-8574-08d7d3f2d9d9
+X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d; Ip=[63.35.35.123]; 
+ Helo=[64aa7808-outbound-1.mta.getcheckrecipient.com]
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0801MB1740
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/_ekZDu1Er1A5wFFWOecVxogj3Ds>
+Subject: Re: [TLS] 3rd WGLC for draft-ietf-tls-dtls13
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Sun, 29 Mar 2020 15:07:16 -0000
+
+--_000_AM6PR08MB33183245C41E9FBFBAC3B6909BCA0AM6PR08MB3318eurp_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+Hi Jonathan,
+
+> In Section 7.1, the 2nd bullet following para 1 reads: "When they
+> receive a message or fragment which is out of order, either because it
+> is not the next expected message or because it is not the next piece
+> of the current message. Implementations MUST NOT send ACKs for
+> handshake messages which they discard as
+> out-of-order, because otherwise those messages will not be retransmitted.=
+"
+> This is confusing as the difference between "out of order" messages
+> that require an ACK and those that do not is not quite clear. Also the
+> term "out of order" is written in two ways in this paragraph.
+
+On second read, I agree that this is confusing. The point is that
+while, to my understanding, out-of-order messages should trigger
+the transmission of an ACK acknowledging what has been processed
+so far, the out-of-order messages themselves must not be included
+in those ACKs unless they have been buffered.
+
+In more detail, there are two kinds of feedback signals from the
+handshake layer to the record layer:
+
+1. Signal whether there is some disruption in the incoming flight
+   which the peer should be informed about via an ACK of those
+   messages received and processed so far.
+
+   That's what the first sentence in the above quote is about.
+
+2. Signal whether a handshake message has been processed.
+
+   That's what the second sentence in the above quote is about,
+   which can also be rephased as follows:
+   An ACK must only be sent for those records which consist of
+   handshake messages each of which has been signalled as
+   processed by the handshake layer.
+
+   In particular, in situations where a single record contains
+   multiple handshake messages/fragments, and the implementation
+   processes only some of them, the record must not be acknowledged.
+   A real-world example for this would be an implementation which
+   supports out-of-order buffering but only contiguous reassembly:
+   If the initial fragment of a HS message gets sent in one record
+   which is lost, and the final fragment together with a subsequent
+   handshake message is sent in another record, then this latter
+   record must not be ACKed if the stack drops the fragment.
+
+Unbuffered out-of-order handshake messages do trigger signal 1,
+but they don't trigger signal 2.
+
+At least, that's my understanding.
+
+Best,
+Hanno
+________________________________
+From: TLS <tls-bounces@ietf.org> on behalf of Jonathan Hammell <jfhamme.ccc=
+s@gmail.com>
+Sent: Friday, March 27, 2020 5:10 PM
+To: Sean Turner <sean@sn3rd.com>
+Cc: TLS List <tls@ietf.org>
+Subject: Re: [TLS] 3rd WGLC for draft-ietf-tls-dtls13
+
+I know that this WGLC was supposed to focus on the diff between -34
+and -37.  I don't have any comments on that diff, but I do have some
+comments on the draft following a re-read of the entire document.
+
+# Minor
+
+The term "deprotection" is used twice in document but never defined.
+
+Section 5.11 abandoning vs destroying association.  In the document we
+see the term "abandon" being used, referring to associations. However
+section 5.11 states that a server "MUST NOT destroy the existing
+association" and then further along it states that "the server MUST
+abandon the previous association". Do abandon and destroy mean the
+same thing?
+
+In Section 7, what does "handshake-containing" mean in the phrase "The
+ACK message is used by an endpoint to indicate
+handshake-containing..."?
+
+In Section 7, what does "non-duplicative" mean in phrase
+"Implementations MUST NOT acknowledge records containing
+non-duplicative handshake messages..."?
+
+In Section 7.1, the 2nd bullet following para 1 reads: "When they
+receive a message or fragment which is out of order, either because it
+is not the next expected message or because it is not the next piece
+of the current message. Implementations MUST NOT send ACKs for
+handshake messages which they discard as
+out-of-order, because otherwise those messages will not be retransmitted."
+This is confusing as the difference between "out of order" messages
+that require an ACK and those that do not is not quite clear. Also the
+term "out of order" is written in two ways in this paragraph.
+
+In Figure 10, the edge going from SENDING to FINISHED has no label to
+differentiate with edge to WAITING. Should it read: "send last
+flight"?
+
+In Figure 13, why is there no NewConnectionID message in the exchanges
+since new CIDs are offered?  Also, a short explanation of the CID
+negotiation and exchange could be helpful in the text.
+
+The state machine in Figure 10 is somewhat puzzling.  How do we
+differentiate between "Receive ACK for last flight" and "Receive last
+flight"? According to Figure 7, for example, the last ACK is a flight
+itself.  Also, with respect to the client, if sending last flight
+takes him to finished state, how will he then receive the ACK for his
+final flight?
+
+
+# Nits
+
+Section 3.1 Packet Loss.  Figure 1 is a little confusing since it
+resembles Figure 5; as each has the server sending a
+HelloRetryRequest. Might illustrate the concept better to have the
+server send a ServerHello in Figure 1 rather than a HelloRetryRequest?
+
+Section 5.1. para 3 - Typo.  "The DTLS 1.3 specification changes the
+way how cookies are exchanged compared to DTLS 1.2. DTLS 1.3 re-uses
+the HelloRetryRequest message". The "... the way how cookies..."
+either use "how" or "the way" but not both.
+
+Page 9 last para - Typo.  s/assocatiation/association
+
+In section 3, bullet #3, the term "flight" is used without being
+defined; a reference to section 5.6 would be nice.
+
+MSL is used first in section 4.2.1 but only defined in section 5.7.1
+
+In section 5.11 the notion of "CID concept" is mentioned. Might be
+nice to refer to section 9.1 where an example of the concept is
+presented. Also, section 9.1 never mentions "CID concept"; might be
+good to add the term to know that we are talking about the same
+thing.
+
+Figure 11 has no commentary describing the sequence. It would be helpful, f=
+or
+example, to add details on why the two ACKs are sent.
+
+In Section 6.1, the phrase "...loss and re-order an identifier is needed to
+determine..." could use a comma after "re-order" and possibly replace
+"re-order" with "re-ordering".
+
+In Section 6.1, the phrase "In addition to the key derivation steps
+described in Section 7 of [TLS13] triggered by the states during the
+handshake a sender may want to rekey at any time during the lifetime
+of the connection and has to have a way to indicate that it is
+updating its sending cryptographic keys" is long and difficult to
+follow.  It could be rephrased as "In addition to
+the key derivation steps described in Section 7 of [TLS13], a sender
+may want to rekey at any time during the lifetime of the connection.
+The epoch value provides a means to indicate that the sender is
+updating its sending cryptographic keys."
+
+In Section 6.1, replace "For example, client incorrectly uses..." with
+"For example, if a client incorrectly uses..."
+
+In Section 7, the term "current key" is used in the phrase
+"Implementations SHOULD simply use the current key."  Would it be
+clearer to say that "Implementations SHOULD use the key material of
+the current epoch"?
+
+In Section 8, paragraph 3, what does a "canned ACK message" mean?
+
+Section 11, second para, s/Even with such a test, An/Even with such a test,=
+ an
+
+Section 11, third bullet: the statement "...DTLS 1.3 records
+irrespectively of the use of a CID" could be rephrased as "...DTLS 1.3
+records irrespective of whether a CID is used or not."
+
+On Fri, Mar 20, 2020 at 10:18 AM Sean Turner <sean@sn3rd.com> wrote:
+>
+> This is the third working group last call for the "The Datagram Transport
+> Layer Security (DTLS) Protocol Version 1.3" draft available at
+> https://datatracker.ietf.org/doc/draft-ietf-tls-dtls13/. Please
+> review the document and send your comments to the list by 2359 UTC on
+> 27 March 2019.
+>
+> This is a targeted one-week WGLC intended to focus on the changes from -3=
+4, which was the subject of the second working group last call, and -37. Th=
+e diffs between -34 and -37 can be found at:
+> https://www.ietf.org/rfcdiff?url1=3Ddraft-ietf-tls-dtls13-34&url2=3Ddraft=
+-ietf-tls-dtls13-37
+> As you will see in the diffs, the changes include 2119-language related c=
+hanges in s5.1 and s7. These two changes were introduced in -35, which was =
+post in November.
+>
+> Note the the GH repo for this draft can be found at:
+> https://github.com/tlswg/dtls13-spec
+>
+> Thanks,
+> Chris, Joe, and Sean
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+
+_______________________________________________
+TLS mailing list
+TLS@ietf.org
+https://www.ietf.org/mailman/listinfo/tls
+IMPORTANT NOTICE: The contents of this email and any attachments are confid=
+ential and may also be privileged. If you are not the intended recipient, p=
+lease notify the sender immediately and do not disclose the contents to any=
+ other person, use it for any purpose, or store or copy the information in =
+any medium. Thank you.
+
+--_000_AM6PR08MB33183245C41E9FBFBAC3B6909BCA0AM6PR08MB3318eurp_
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html>
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dus-ascii"=
+>
+<style type=3D"text/css" style=3D"display:none;"> P {margin-top:0;margin-bo=
+ttom:0;} </style>
+</head>
+<body dir=3D"ltr">
+<div style=3D"font-family: Calibri, Arial, Helvetica, sans-serif; font-size=
+: 12pt; color: rgb(0, 0, 0);">
+<span>Hi Jonathan,<br>
+</span>
+<div><br>
+</div>
+<div>&gt; In Section 7.1, the 2nd bullet following para 1 reads: &quot;When=
+ they<br>
+</div>
+<div>&gt; receive a message or fragment which is out of order, either becau=
+se it<br>
+</div>
+<div>&gt; is not the next expected message or because it is not the next pi=
+ece<br>
+</div>
+<div>&gt; of the current message. Implementations MUST NOT send ACKs for<br=
+>
+</div>
+<div>&gt; handshake messages which they discard as<br>
+</div>
+<div>&gt; out-of-order, because otherwise those messages will not be retran=
+smitted.&quot;<br>
+</div>
+<div>&gt; This is confusing as the difference between &quot;out of order&qu=
+ot; messages<br>
+</div>
+<div>&gt; that require an ACK and those that do not is not quite clear. Als=
+o the<br>
+</div>
+<div>&gt; term &quot;out of order&quot; is written in two ways in this para=
+graph.<br>
+</div>
+<div><br>
+</div>
+<div>On second read, I agree that this is confusing. The point is that<br>
+</div>
+<div>while, to my understanding, out-of-order messages should trigger<br>
+</div>
+<div>the transmission of an ACK acknowledging what has been processed<br>
+</div>
+<div>so far, the out-of-order messages themselves must not be included<br>
+</div>
+<div>in those ACKs unless they have been buffered.<br>
+</div>
+<div><br>
+</div>
+<div>In more detail, there are two kinds of feedback signals from the<br>
+</div>
+<div>handshake layer to the record layer:<br>
+</div>
+<div><br>
+</div>
+<div>1. Signal whether there is some disruption in the incoming flight<br>
+</div>
+<div>&nbsp; &nbsp;which the peer should be informed about via an ACK of tho=
+se<br>
+</div>
+<div>&nbsp; &nbsp;messages received and processed so far.<br>
+</div>
+<div><br>
+</div>
+<div>&nbsp; &nbsp;That's what the first sentence in the above quote is abou=
+t.<br>
+</div>
+<div><br>
+</div>
+<div>2. Signal whether a handshake message has been processed.<br>
+</div>
+<div><br>
+</div>
+<div>&nbsp; &nbsp;That's what the second sentence in the above quote is abo=
+ut,<br>
+</div>
+<div>&nbsp; &nbsp;which can also be rephased as follows:<br>
+</div>
+<div>&nbsp; &nbsp;An ACK must only be sent for those records which consist =
+of<br>
+</div>
+<div>&nbsp; &nbsp;handshake messages each of which has been signalled as<br=
+>
+</div>
+<div>&nbsp; &nbsp;processed by the handshake layer.<br>
+</div>
+<div><br>
+</div>
+<div>&nbsp; &nbsp;In particular, in situations where a single record contai=
+ns<br>
+</div>
+<div>&nbsp; &nbsp;multiple handshake messages/fragments, and the implementa=
+tion<br>
+</div>
+<div>&nbsp; &nbsp;processes only some of them, the record must not be ackno=
+wledged.<br>
+</div>
+<div>&nbsp; &nbsp;A real-world example for this would be an implementation =
+which<br>
+</div>
+<div>&nbsp; &nbsp;supports out-of-order buffering but only contiguous reass=
+embly:<br>
+</div>
+<div>&nbsp; &nbsp;If the initial fragment of a HS message gets sent in one =
+record<br>
+</div>
+<div>&nbsp; &nbsp;which is lost, and the final fragment together with a sub=
+sequent<br>
+</div>
+<div>&nbsp; &nbsp;handshake message is sent in another record, then this la=
+tter<br>
+</div>
+<div>&nbsp; &nbsp;record must not be ACKed if the stack drops the fragment.=
+<br>
+</div>
+<div><br>
+</div>
+<div>Unbuffered out-of-order handshake messages do trigger signal 1,<br>
+</div>
+<div>but they don't trigger signal 2.<br>
+</div>
+<div><br>
+</div>
+<div>At least, that's my understanding.<br>
+</div>
+<div><br>
+</div>
+<div>Best,<br>
+</div>
+<span>Hanno</span><br>
+</div>
+<div id=3D"appendonsend"></div>
+<hr style=3D"display:inline-block;width:98%" tabindex=3D"-1">
+<div id=3D"divRplyFwdMsg" dir=3D"ltr"><font face=3D"Calibri, sans-serif" st=
+yle=3D"font-size:11pt" color=3D"#000000"><b>From:</b> TLS &lt;tls-bounces@i=
+etf.org&gt; on behalf of Jonathan Hammell &lt;jfhamme.cccs@gmail.com&gt;<br=
+>
+<b>Sent:</b> Friday, March 27, 2020 5:10 PM<br>
+<b>To:</b> Sean Turner &lt;sean@sn3rd.com&gt;<br>
+<b>Cc:</b> TLS List &lt;tls@ietf.org&gt;<br>
+<b>Subject:</b> Re: [TLS] 3rd WGLC for draft-ietf-tls-dtls13</font>
+<div>&nbsp;</div>
+</div>
+<div class=3D"BodyFragment"><font size=3D"2"><span style=3D"font-size:11pt;=
+">
+<div class=3D"PlainText">I know that this WGLC was supposed to focus on the=
+ diff between -34<br>
+and -37.&nbsp; I don't have any comments on that diff, but I do have some<b=
+r>
+comments on the draft following a re-read of the entire document.<br>
+<br>
+# Minor<br>
+<br>
+The term &quot;deprotection&quot; is used twice in document but never defin=
+ed.<br>
+<br>
+Section 5.11 abandoning vs destroying association.&nbsp; In the document we=
+<br>
+see the term &quot;abandon&quot; being used, referring to associations. How=
+ever<br>
+section 5.11 states that a server &quot;MUST NOT destroy the existing<br>
+association&quot; and then further along it states that &quot;the server MU=
+ST<br>
+abandon the previous association&quot;. Do abandon and destroy mean the<br>
+same thing?<br>
+<br>
+In Section 7, what does &quot;handshake-containing&quot; mean in the phrase=
+ &quot;The<br>
+ACK message is used by an endpoint to indicate<br>
+handshake-containing...&quot;?<br>
+<br>
+In Section 7, what does &quot;non-duplicative&quot; mean in phrase<br>
+&quot;Implementations MUST NOT acknowledge records containing<br>
+non-duplicative handshake messages...&quot;?<br>
+<br>
+In Section 7.1, the 2nd bullet following para 1 reads: &quot;When they<br>
+receive a message or fragment which is out of order, either because it<br>
+is not the next expected message or because it is not the next piece<br>
+of the current message. Implementations MUST NOT send ACKs for<br>
+handshake messages which they discard as<br>
+out-of-order, because otherwise those messages will not be retransmitted.&q=
+uot;<br>
+This is confusing as the difference between &quot;out of order&quot; messag=
+es<br>
+that require an ACK and those that do not is not quite clear. Also the<br>
+term &quot;out of order&quot; is written in two ways in this paragraph.<br>
+<br>
+In Figure 10, the edge going from SENDING to FINISHED has no label to<br>
+differentiate with edge to WAITING. Should it read: &quot;send last<br>
+flight&quot;?<br>
+<br>
+In Figure 13, why is there no NewConnectionID message in the exchanges<br>
+since new CIDs are offered?&nbsp; Also, a short explanation of the CID<br>
+negotiation and exchange could be helpful in the text.<br>
+<br>
+The state machine in Figure 10 is somewhat puzzling.&nbsp; How do we<br>
+differentiate between &quot;Receive ACK for last flight&quot; and &quot;Rec=
+eive last<br>
+flight&quot;? According to Figure 7, for example, the last ACK is a flight<=
+br>
+itself.&nbsp; Also, with respect to the client, if sending last flight<br>
+takes him to finished state, how will he then receive the ACK for his<br>
+final flight?<br>
+<br>
+<br>
+# Nits<br>
+<br>
+Section 3.1 Packet Loss.&nbsp; Figure 1 is a little confusing since it<br>
+resembles Figure 5; as each has the server sending a<br>
+HelloRetryRequest. Might illustrate the concept better to have the<br>
+server send a ServerHello in Figure 1 rather than a HelloRetryRequest?<br>
+<br>
+Section 5.1. para 3 - Typo.&nbsp; &quot;The DTLS 1.3 specification changes =
+the<br>
+way how cookies are exchanged compared to DTLS 1.2. DTLS 1.3 re-uses<br>
+the HelloRetryRequest message&quot;. The &quot;... the way how cookies...&q=
+uot;<br>
+either use &quot;how&quot; or &quot;the way&quot; but not both.<br>
+<br>
+Page 9 last para - Typo.&nbsp; s/assocatiation/association<br>
+<br>
+In section 3, bullet #3, the term &quot;flight&quot; is used without being<=
+br>
+defined; a reference to section 5.6 would be nice.<br>
+<br>
+MSL is used first in section 4.2.1 but only defined in section 5.7.1<br>
+<br>
+In section 5.11 the notion of &quot;CID concept&quot; is mentioned. Might b=
+e<br>
+nice to refer to section 9.1 where an example of the concept is<br>
+presented. Also, section 9.1 never mentions &quot;CID concept&quot;; might =
+be<br>
+good to add the term to know that we are talking about the same<br>
+thing.<br>
+<br>
+Figure 11 has no commentary describing the sequence. It would be helpful, f=
+or<br>
+example, to add details on why the two ACKs are sent.<br>
+<br>
+In Section 6.1, the phrase &quot;...loss and re-order an identifier is need=
+ed to<br>
+determine...&quot; could use a comma after &quot;re-order&quot; and possibl=
+y replace<br>
+&quot;re-order&quot; with &quot;re-ordering&quot;.<br>
+<br>
+In Section 6.1, the phrase &quot;In addition to the key derivation steps<br=
+>
+described in Section 7 of [TLS13] triggered by the states during the<br>
+handshake a sender may want to rekey at any time during the lifetime<br>
+of the connection and has to have a way to indicate that it is<br>
+updating its sending cryptographic keys&quot; is long and difficult to<br>
+follow.&nbsp; It could be rephrased as &quot;In addition to<br>
+the key derivation steps described in Section 7 of [TLS13], a sender<br>
+may want to rekey at any time during the lifetime of the connection.<br>
+The epoch value provides a means to indicate that the sender is<br>
+updating its sending cryptographic keys.&quot;<br>
+<br>
+In Section 6.1, replace &quot;For example, client incorrectly uses...&quot;=
+ with<br>
+&quot;For example, if a client incorrectly uses...&quot;<br>
+<br>
+In Section 7, the term &quot;current key&quot; is used in the phrase<br>
+&quot;Implementations SHOULD simply use the current key.&quot;&nbsp; Would =
+it be<br>
+clearer to say that &quot;Implementations SHOULD use the key material of<br=
+>
+the current epoch&quot;?<br>
+<br>
+In Section 8, paragraph 3, what does a &quot;canned ACK message&quot; mean?=
+<br>
+<br>
+Section 11, second para, s/Even with such a test, An/Even with such a test,=
+ an<br>
+<br>
+Section 11, third bullet: the statement &quot;...DTLS 1.3 records<br>
+irrespectively of the use of a CID&quot; could be rephrased as &quot;...DTL=
+S 1.3<br>
+records irrespective of whether a CID is used or not.&quot;<br>
+<br>
+On Fri, Mar 20, 2020 at 10:18 AM Sean Turner &lt;sean@sn3rd.com&gt; wrote:<=
+br>
+&gt;<br>
+&gt; This is the third working group last call for the &quot;The Datagram T=
+ransport<br>
+&gt; Layer Security (DTLS) Protocol Version 1.3&quot; draft available at<br=
+>
+&gt; <a href=3D"https://datatracker.ietf.org/doc/draft-ietf-tls-dtls13/">ht=
+tps://datatracker.ietf.org/doc/draft-ietf-tls-dtls13/</a>. Please<br>
+&gt; review the document and send your comments to the list by 2359 UTC on<=
+br>
+&gt; 27 March 2019.<br>
+&gt;<br>
+&gt; This is a targeted one-week WGLC intended to focus on the changes from=
+ -34, which was the subject of the second working group last call, and -37.=
+ The diffs between -34 and -37 can be found at:<br>
+&gt; <a href=3D"https://www.ietf.org/rfcdiff?url1=3Ddraft-ietf-tls-dtls13-3=
+4&amp;url2=3Ddraft-ietf-tls-dtls13-37">
+https://www.ietf.org/rfcdiff?url1=3Ddraft-ietf-tls-dtls13-34&amp;url2=3Ddra=
+ft-ietf-tls-dtls13-37</a><br>
+&gt; As you will see in the diffs, the changes include 2119-language relate=
+d changes in s5.1 and s7. These two changes were introduced in -35, which w=
+as post in November.<br>
+&gt;<br>
+&gt; Note the the GH repo for this draft can be found at:<br>
+&gt; <a href=3D"https://github.com/tlswg/dtls13-spec">https://github.com/tl=
+swg/dtls13-spec</a><br>
+&gt;<br>
+&gt; Thanks,<br>
+&gt; Chris, Joe, and Sean<br>
+&gt; _______________________________________________<br>
+&gt; TLS mailing list<br>
+&gt; TLS@ietf.org<br>
+&gt; <a href=3D"https://www.ietf.org/mailman/listinfo/tls">https://www.ietf=
+.org/mailman/listinfo/tls</a><br>
+<br>
+_______________________________________________<br>
+TLS mailing list<br>
+TLS@ietf.org<br>
+<a href=3D"https://www.ietf.org/mailman/listinfo/tls">https://www.ietf.org/=
+mailman/listinfo/tls</a><br>
+</div>
+</span></font></div>
+IMPORTANT NOTICE: The contents of this email and any attachments are confid=
+ential and may also be privileged. If you are not the intended recipient, p=
+lease notify the sender immediately and do not disclose the contents to any=
+ other person, use it for any purpose,
+ or store or copy the information in any medium. Thank you.
+</body>
+</html>
+
+--_000_AM6PR08MB33183245C41E9FBFBAC3B6909BCA0AM6PR08MB3318eurp_--
+

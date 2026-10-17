@@ -1,0 +1,101 @@
+Return-Path: <lists@drh-consultancy.co.uk>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 4BD771296AA
+ for <tls@ietfa.amsl.com>; Fri, 31 Mar 2017 07:12:37 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.609
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.609 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, RCVD_IN_DNSWL_LOW=-0.7, RCVD_IN_MSPIKE_H3=-0.01,
+ RCVD_IN_MSPIKE_WL=-0.01, T_HK_NAME_DR=0.01, URIBL_BLOCKED=0.001]
+ autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id M5DXDuvHwScZ for <tls@ietfa.amsl.com>;
+ Fri, 31 Mar 2017 07:12:34 -0700 (PDT)
+Received: from claranet-outbound-smtp01.uk.clara.net
+ (claranet-outbound-smtp01.uk.clara.net [195.8.89.34])
+ by ietfa.amsl.com (Postfix) with ESMTP id AEE4B1294C4
+ for <tls@ietf.org>; Fri, 31 Mar 2017 07:12:33 -0700 (PDT)
+Received: from host86-161-70-64.range86-161.btcentralplus.com
+ ([86.161.70.64]:34237 helo=[192.168.1.64])
+ by relay01.mail.eu.clara.net (relay.clara.net [81.171.239.31]:10465)
+ with esmtpa (authdaemon_plain:drh) id 1ctxHx-0003bH-4o  for tls@ietf.org
+ (return-path <lists@drh-consultancy.co.uk>); Fri, 31 Mar 2017 14:12:30 +0000
+To: tls@ietf.org
+References: <025D3ABD-199F-421A-9265-6F960135A3B7@sn3rd.com>
+ <58D8C395.8090707@ssi.gouv.fr>
+From: Dr Stephen Henson <lists@drh-consultancy.co.uk>
+Message-ID: <2d2675c3-4495-a373-560e-b9327aa595bc@drh-consultancy.co.uk>
+Date: Fri, 31 Mar 2017 15:12:25 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.8.0
+MIME-Version: 1.0
+In-Reply-To: <58D8C395.8090707@ssi.gouv.fr>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/D2IRqbXqCJx_xLW5J3wlMvV-22g>
+Subject: Re: [TLS] WGLC: draft-ietf-tls-tls13-19
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Fri, 31 Mar 2017 14:12:37 -0000
+
+On 27/03/2017 08:47, Olivier Levillain wrote:
+> 
+> For a longer version, post-handshake records of type Handshake can be of
+> three kinds:
+> - NewSessionTicket (sent by the server, and that can safely be ignored
+> entirely by clients)
+> - KeyUpdate (sent by either party, requiring only a bit of state)
+> - CertificateRequest (sent by the server, an arbirary number of times,
+> and requring the client to keep some state *for each request*)
+> 
+> Of course, this last item makes the post-handshake client state machine
+> explode, whereas the first two items can ben implemented in a trivial
+> way. The client can not indeed ignore all this state to answer, since it
+> is supposed to answer at least with a Finished message, which will cover
+> the CertificateRequest message. Moreover, since each of these Finished
+> messages must cover the initial handshake and the current
+> CertificateRequest message, it requires a forkable hash implementation,
+> which requires more memory.
+> 
+
+To me allowing the server to send multiple certificate request messages and the
+client being permitted to respond to them in arbitrary order adds quite a bit of
+complexity.
+
+Is there a usage scenario for this? Would permitting only one outstanding
+Certificate Request be too limiting?
+
+On a related note in 4.6.2:
+
+   Note: Because client authentication may require prompting the user,
+   servers MUST be prepared for some delay, including receiving an
+   arbitrary number of other messages between sending the
+   CertificateRequest and receiving a response.
+
+I'm assuming that once the client has responded with a Certificate message it
+MUST send CertificateVerify and Finished afterwards and nothing else is
+permissible? That is it can't send application data or respond to other
+outstanding CertificateRequest messages?
+
+Steve.
+-- 
+Dr Stephen N. Henson.
+Core developer of the   OpenSSL project: http://www.openssl.org/
+Freelance consultant see: http://www.drh-consultancy.co.uk/
+Email: shenson@drh-consultancy.co.uk, PGP key: via homepage.
+

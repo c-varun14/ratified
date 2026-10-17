@@ -1,0 +1,130 @@
+Return-Path: <hkario@redhat.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id E1190126D05;
+ Wed, 21 Feb 2018 06:23:34 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.601
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.601 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, RCVD_IN_DNSWL_LOW=-0.7, SPF_PASS=-0.001,
+ T_RP_MATCHES_RCVD=-0.01, T_SPF_HELO_PERMERROR=0.01]
+ autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 9JFyoeLZI8Q0; Wed, 21 Feb 2018 06:23:33 -0800 (PST)
+Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 5CCD91241F3;
+ Wed, 21 Feb 2018 06:23:33 -0800 (PST)
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.3])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mx1.redhat.com (Postfix) with ESMTPS id B0F7640744C6;
+ Wed, 21 Feb 2018 14:23:32 +0000 (UTC)
+Received: from pintsize.usersys.redhat.com (unknown [10.43.21.223])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 37E7710A970B;
+ Wed, 21 Feb 2018 14:23:32 +0000 (UTC)
+From: Hubert Kario <hkario@redhat.com>
+To: ietf@ietf.org
+Cc: draft-ietf-tls-tls13@ietf.org, tls@ietf.org
+Date: Wed, 21 Feb 2018 15:23:31 +0100
+Message-ID: <1668935.r1rRzccTBq@pintsize.usersys.redhat.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="nextPart89371004.WSkUPXqrWn";
+ micalg="pgp-sha512"; protocol="application/pgp-signature"
+X-Scanned-By: MIMEDefang 2.78 on 10.11.54.3
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16
+ (mx1.redhat.com [10.11.55.5]); Wed, 21 Feb 2018 14:23:32 +0000 (UTC)
+X-Greylist: inspected by milter-greylist-4.5.16 (mx1.redhat.com [10.11.55.5]); 
+ Wed, 21 Feb 2018 14:23:32 +0000 (UTC) for IP:'10.11.54.3'
+ DOMAIN:'int-mx03.intmail.prod.int.rdu2.redhat.com'
+ HELO:'smtp.corp.redhat.com' FROM:'hkario@redhat.com' RCPT:''
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/JsseJX4buAamfjDVenUdBQT8Tng>
+Subject: [TLS] external PSK identity enumeration Re: UPDATED Last Call:
+ <draft-ietf-tls-tls13-24.txt> (The Transport Layer Security (TLS) Protocol
+ Version 1.3) to Proposed Standard
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Wed, 21 Feb 2018 14:23:35 -0000
+
+--nextPart89371004.WSkUPXqrWn
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
+
+(fixing missed ietf@ietf.org)
+
+On Friday, 16 February 2018 18:06:41 CET The IESG wrote:
+> The IESG has received a request from the Transport Layer Security WG (tls)
+> to consider the following document: - 'The Transport Layer Security (TLS)
+> Protocol Version 1.3'
+>   <draft-ietf-tls-tls13-24.txt> as Proposed Standard
+
+The current draft states that if the server recognises an identity but is=20
+unable to verify corresponding binder, it "MUST abort the handshake"
+at the same time, they "SHOULD select as single PSK and validate solely the=
+=20
+binder that corresponds to that PSK"
+(Page 60, draft-ietf-tls-tls13-24).
+
+That allows for trivial enumeration of externally established identities - =
+the=20
+attacker just needs to send to the server a list of identity guesses, with=
+=20
+random data as binders, if the server recognises any identity it will abort=
+=20
+connection, if it doesn't, it will continue to a non-PSK handshake.
+
+Behaviour like this is generally considered a vulnerability:
+https://cve.mitre.org/cgi-bin/cvename.cgi?name=3DCVE-2003-0190
+https://cve.mitre.org/cgi-bin/cvename.cgi?name=3DCVE-2006-5229
+
+I was wondering if the document shouldn't recommend ignoring any and all=20
+identities for which binders do not verify to prevent this kind of attack.
+
+=2D-=20
+Regards,
+Hubert Kario
+Senior Quality Engineer, QE BaseOS Security team
+Web: www.cz.redhat.com
+Red Hat Czech s.r.o., Purky=C5=88ova 115, 612 00  Brno, Czech Republic
+--nextPart89371004.WSkUPXqrWn
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEYeeuxEU+3unL/K+dkqjRuAHS9fUFAlqNgOMACgkQkqjRuAHS
+9fWpbw/+MHxJogoEtn0XqU3IKnOyWjXhZ1HmrEAYDVx/MpdMtHOtf17gscsFXJFY
+NSfJRQadpzaztWiUgO4dxTcDeDrEMNu/2DVfkQIEDJ//OcoamtPBBJOO9QOkGHjm
+gEXTmVqMgYITQO4MQXMODFp7pdv31QaunSbrrY0R5fzp3oaehdLHo+wFrsdgKu73
+SV+TkRwqIXGmWT2ePIBUH+GsjXhYZycEIOuKD2q6u77HXUNtMA02M0SetkhId4Gb
+iqEFQxC4Ds9mXim1HYm62REf35gGlhiSD9oHpjQWItZWM1XVg9LtwW6+GI7sI8io
+kC93osUOKedhNyYHJN4glmFkCwKBuTamwCv/wcdxo9hy1sjERXD+X4kroNT17QMm
+eTuPrRhQyyFW2s1UnoYIPyTI1UMStNFUuL58lPddjkWzSTzvhS3PB++2xacHrpUP
+dk3/vReS03JdnNVNfsVdIqaFGq5DWXAKSC3mThD2cjkQz+EPwMqe/Tbu2VMPUCeL
+yKhqwpw+0JrXmY+O3UVY7Ly/yB/TsjF12gssWdU9DCIruubRE/7lrbzqsW4lEQQw
+TXD1jcszTUh89E5pIZS3LAxY+uiRabXqOEpkZIW4CFQRufsgmmkAjP25B9E2gFuz
+GJxUNoVz0Rbkpc6o7N//adjuecZ/a3XXzcHxomQAiOK44hVr8sk=
+=NAFE
+-----END PGP SIGNATURE-----
+
+--nextPart89371004.WSkUPXqrWn--
+
+
+

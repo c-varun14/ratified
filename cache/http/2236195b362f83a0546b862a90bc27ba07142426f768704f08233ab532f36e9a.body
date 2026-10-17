@@ -1,0 +1,781 @@
+Return-Path: <neried7@gmail.com>
+X-Original-To: tls@mail2.ietf.org
+Delivered-To: tls@mail2.ietf.org
+Received: from localhost (localhost [127.0.0.1])
+	by mail2.ietf.org (Postfix) with ESMTP id 39741C307C36
+	for <tls@mail2.ietf.org>; Mon,  2 Mar 2026 16:05:13 -0800 (PST)
+X-Virus-Scanned: amavisd-new at ietf.org
+X-Spam-Flag: NO
+X-Spam-Score: -0.848
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.848 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+	DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, FORGED_GMAIL_RCVD=1,
+	FREEMAIL_ENVFROM_END_DIGIT=0.25, FREEMAIL_FROM=0.001,
+	HTML_MESSAGE=0.001, RCVD_IN_DNSWL_NONE=-0.0001, SPF_HELO_NONE=0.001,
+	SPF_PASS=-0.001] autolearn=no autolearn_force=no
+Authentication-Results: mail2.ietf.org (amavisd-new); dkim=pass (2048-bit key)
+	header.d=gmail.com
+Received: from mail2.ietf.org ([166.84.6.31])
+	by localhost (mail2.ietf.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id C3RLJ59u-HIO for <tls@mail2.ietf.org>;
+	Mon,  2 Mar 2026 16:05:12 -0800 (PST)
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com
+ [IPv6:2607:f8b0:4864:20::f2c])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail2.ietf.org (Postfix) with ESMTPS id CCF09C3071BC
+	for <tls@ietf.org>; Mon,  2 Mar 2026 16:03:17 -0800 (PST)
+Received: by mail-qv1-xf2c.google.com with SMTP id
+ 6a1803df08f44-89a018cbbf8so14572406d6.0
+        for <tls@ietf.org>; Mon, 02 Mar 2026 16:03:17 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1772496191; cv=none;
+        d=google.com; s=arc-20240605;
+        b=LhvwZmtiP6kIuUXUdbZDtLPUl8E5H2q7Sd0kzFZQVTU4qGbGrJ0eQGdccfrL4kSO3x
+         h1GqAJhLFukirxYXXw12J55OeV5MiTfeY1IqurxmybN/MfjW/lIAzqEt0LncDpbbZSzr
+         EDbuPDHEMa9/y9cA7KBLmqmE3EoAs1WUDyrbNqKD0Utf1o46oNfDvP+xzyraxGTgnI8k
+         +45m9b+/TfnPrQRH3NV9L49aqbjjK8p0M8+521TNwOnyTPx9caTaWdboqaEiOSoTdqCb
+         m0QNYueQfdbggu/UNE+wgADFugamXUkf6ZbG0UrUQxdsKXSo0HnMsbuwY3zl0kmG7a6+
+         uPvQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20240605;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=TL4euRN2ItV5vFC57/zIXQ6uoZFXRim3BYSEHgTdBc0=;
+        fh=4jaUtVCIN7ApD2xQKZ1xgIHAeG9pmZ+I/GNK18B2yWw=;
+        b=VycB9hdXU3P19+wRKZn3FMiSKq4hBJQlQOXeSZM0pjgqhz1MLJ2WBSitEdB2cTGhvD
+         jkOlOw6kFcREeo8rxBpvqBbJbPsZrsaNdd5OK42iVDLauxYa8/SqfqGI/wIhfR9sGmEz
+         NLjg7mbWaspQcav6aGoznpeqpr6VBgQSQLTG0fen4kUspGcXVJBgMMntcB3yH/XRhjnw
+         PX5eK1425dgwUD/NQK+vIuzuiAAyijGAzjdsefMhLfJEeru62lB+eUeHOeJvJ8nAKdoZ
+         18IggXjtPQDwULMZCBhJuZ4orm9QdXcu0KhRv4+D5A87e4Pegicjts4eOG5RFGuAJTCF
+         MA4A==;
+        darn=ietf.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1772496191; x=1773100991; darn=ietf.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=TL4euRN2ItV5vFC57/zIXQ6uoZFXRim3BYSEHgTdBc0=;
+        b=WvIA1/gbYXVNUT9wRX9R3wa+Qi29XXnGFHgYbLKPqJu4uXHSRec0NScl3KFSLqWoZq
+         V9i5mTfsQjfp/qDZ5X/sF14mm5+zfj3pOUNNCiFdy7D2NNq9Zc67xwPeLOXgsfjxFOAm
+         Zv/iMl87cIG4NZcIV1Tf62EcHhoGIRh8JlC3h9+1oJHDCnqJRO4W2VGEykXzX49O/JyZ
+         sX+eQkLT/62nHhY8k4q/dMZIcfueKSt5coUIPhO8qd7xsjwHdO+1HXP4gstbTKp/XFcT
+         Dvrh0DSgWsfDy9UbFBVAebQbzM+zLSaTi298n9lLcdVrHkOoNWoE9ezDE+Qxi9Rsm7sI
+         wvjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772496191; x=1773100991;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TL4euRN2ItV5vFC57/zIXQ6uoZFXRim3BYSEHgTdBc0=;
+        b=orfmGbDoonfeZvQeBoMTrV+5rJrM23ovVNzwcngRgcbPL/a4kfQBlJY6i8/X+A0Y/t
+         blsWHQkNc9165n6F7q2pmpeweFfHLw59kNcEGFxqnOKOtoyzXLyHLcQAWq+rkidNp9uf
+         oppIJk6esqtjx2tyAsP2AVYmnfUZ04dIb4rVPMlz/0+ux5xjofXYu7RM1RP9olOcwfpp
+         XYPxXiJPLIlpmqo31+lCJex10tGZZNvfZaLFRa5TcQ+H3vfw+qswHsTXtwqrIPDMX3Ua
+         OzzPzG5SrrnLvzDwUyA/ptZgcC2jrN89YQ3iy+Ns3XtHVyy7C5eD03vQQ2Of6oPpzJYk
+         MGvg==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCVbPyr/EENUATK2gcPaoBQ5oEREfqGbfX3G0U6hWJPhqL8BzVKLJiJ9gCV7vsLXJ/NUl9Q=@ietf.org
+X-Gm-Message-State: AOJu0YymCF2bcxNzc1JVpqUdVp/L6I4N6DisKadJlB2KH9By8rsZjWzR
+	AUXMTcfR0tw9LlmWgOGFtYMCxSxSleuhx4tFFh6RFTp8+hJwsihYcPBmY41d4hjzyYn3J53mLhL
+	JmIBXg6JT6jhUD3xxTKr0Pq8an7KlyqA=
+X-Gm-Gg: ATEYQzzjWWtzP38ubl0daSi0/6mw3NKIQNn5ApqyqQ7xf9EoWeX+DoGLGB0zltfrLub
+	UWsuGo72Re/jPbR6Mr4ZhJsRX5nvvoIZi8t9tbe5MFvdAQVTDQHKMuEfqbj2koQjYtn1cmV+Vyq
+	xFO80K98aEZdPKef6tOx+EKTX9Ye/6ueFFjH1tlMMnVaBC0jQtHXD7sCtlQPmIMnBmPqDSsSm+N
+	m2aQTApn+rJv8QosWlaIkMj1GmLDruvz+gKpCvKKcKAydl8bWRuR46xXJOWfPuP89ZMmlEX9X4F
+	AlpRFpeDSYy37ERndS4TO9SyU0XlYpV7t2tW2tw=
+X-Received: by 2002:ad4:5aa7:0:b0:89a:e8:d188 with SMTP id
+ 6a1803df08f44-89a0a8d7188mr3309926d6.20.1772496191065;
+ Mon, 02 Mar 2026 16:03:11 -0800 (PST)
+MIME-Version: 1.0
+References: 
+ <CAOgPGoDLVqAVesWjrrD9ZR8HMkqQVLMp69vOkXPkk87MzcsOSw@mail.gmail.com>
+ <AS5PR07MB10596FC9D182E975AA0E11F8E8960A@AS5PR07MB10596.eurprd07.prod.outlook.com>
+ <1050A0B9-9F8D-4762-BAF6-1BD290249F90@vigilsec.com>
+ <AS5PR07MB1059644BD0CB1E2DBCEC0A5378975A@AS5PR07MB10596.eurprd07.prod.outlook.com>
+ <CAFR824xDNb65j6RaGvkoFeTj840daSLStLp+r3+Qg-YEhrRNsA@mail.gmail.com>
+ <CAFR824witoQYbeNjQr3WyWpoVspQTHOaVpv6kYQO-vds6=swKw@mail.gmail.com>
+ <voY-M4cIHKSY3Hey1ZyzkO2EEdUrQuXaMerJj4rCRNqDAA2C5p9Zs7HKg1rf-TAWxJx9dGDNZnIX9NIZiroaQ2BycDBJzA4pIFdZHS9lDZM=@marionberry.net>
+ <f38e4a81-32b9-4709-8b7b-d41c168c4345@app.fastmail.com>
+In-Reply-To: <f38e4a81-32b9-4709-8b7b-d41c168c4345@app.fastmail.com>
+From: Deirdre Connolly <durumcrustulum@gmail.com>
+Date: Mon, 2 Mar 2026 19:02:34 -0500
+X-Gm-Features: AaiRm51vijdv6RmeUy7P7BrJJV6jVXpVxWR3YmerORNkzYHTIxRzSdjn_Z4NVB8
+Message-ID: 
+ <CAFR824wQCZj4MkO9kfyBkbOWSrGuGZatigqUyo21JFJb+pT1Yg@mail.gmail.com>
+To: Filippo Valsorda <filippo@ml.filippo.io>
+Content-Type: multipart/alternative; boundary="000000000000d593c6064c136da0"
+Message-ID-Hash: MXHODA6EHBNCPCAL6YCRJDTI2HP3U5XD
+X-Message-ID-Hash: MXHODA6EHBNCPCAL6YCRJDTI2HP3U5XD
+X-MailFrom: neried7@gmail.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+CC: Joshua <joshua=40marionberry.net@dmarc.ietf.org>, tls@ietf.org
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Re=3A_Discuss_2=5E64_reuse_bounds=2C_or_omit=3F_WG_Last_?=
+ =?utf-8?q?Call=3A_draft-ietf-tls-mlkem-07_=28Ends_2026-02-27=29?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/WL1nu_yHT0V0JFDdCJwDqiltIdQ>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+--000000000000d593c6064c136da0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Thanks for the feedback. I've removed all references to 'reuse' from the
+document on GitHub except for one ("secure in case of reuse") in the
+Security Considerations section.
+https://github.com/tlswg/draft-ietf-tls-mlkem/commit/ab5f2bd6c4f6b79a4aec30=
+e7e54240fffa367dfc
+
+On Sat, Feb 28, 2026 at 7:36=E2=80=AFAM Filippo Valsorda <filippo@ml.filipp=
+o.io>
+wrote:
+
+> I agree, 2^128 is a physically impossible lookup table, and 2^-64 is an
+> unusually conservative bound.
+>
+> For comparison, we usually say at most 2^32 messages should be encrypted
+> with a 96-bit random nonce, to keep the probability of collisions to 2^-3=
+2.
+> If we targeted 2^-64 we'd have to limit messages to 65,536.
+>
+> We should say nothing, or that ML-KEM is not vulnerable to practical
+> multi-target attacks, which is what we generally say about e.g. random
+> 256-bit keys.
+>
+> 2026-02-28 03:11 GMT+01:00 Joshua <joshua=3D40marionberry.net@dmarc.ietf.=
+org
+> >:
+>
+> Hi,
+>
+> To confirm I'm reading this right: The attack described is akin to a
+> preimage attack on a 256-bit space, that is if we send 2^64 hashes to an
+> attacker with a rainbow table of size 2^128, there is a probability of
+> 2^-64 that the attacker has that hash in the rainbow table? And inversely=
+,
+> if we send 2^64 hashes to an attacker, then they will learn a preimage
+> after 2^192 operations on average? I'd think this is thoroughly in
+> fantasy-land as far as attacks go. My interpretation of their goal with
+> 'salted' FO is to create domain separation between each ciphertext such
+> that a fantasy-sized rainbow table does not work by simply increasing the
+> message space with a public salt value. This is more relevant for KEMs
+> which use smaller message spaces, eg 128 bits, where a 2^64 brute force
+> aiming to hit any of 2^64 ciphertexts is on shakier footing in terms of
+> feasibility.
+>
+> I'm not sure we want to say "don't use ML-KEM more than 2^128 times with
+> the same key" when the attack itself is of complexity greater than 2^128.
+> If I were writing this, and I had to say something, I would say that
+> "ML-KEM has a message space of 256 bits and is thus not vulnerable to
+> practical multi-target attacks", and use a warning such as "<KA> has a
+> message space of 128 bits, and long-lived keys are vulnerable to
+> multi-target attacks. Public keys SHOULD NOT be used to encapsulate more
+> than 2^64 ciphertexts." for KEMs that use 128-bit messages.
+>
+> So I would personally chip in my vote for dropping the 2^64 ciphertext
+> limit and just treating it as a standard 256-bit keyspace. If anything, I
+> think it'd create more confusion by implying there is actually a practica=
+l
+> attack once that 2^64 threshold is passed, when there is in fact no
+> feasible (known!) attack.
+>
+> Best,
+> Joshua Nabors.
+>
+> On Friday, February 27th, 2026 at 4:33 PM, Deirdre Connolly <
+> durumcrustulum@gmail.com> wrote:
+>
+> > I'm reupping this question to the group as there's been a lot of traffi=
+c
+> on this subject line.
+> >
+> > TL;DR: Do people want to omit any mention of key reuse, implicitly
+> relying on 8446, or include this ~2^64 bounds analysis in some succinct w=
+ay?
+> >
+> >
+> > This document cannot override RFC 8446(bis), which allows key reuse, bu=
+t
+> the bis now says SHOULD NOT reuse. We currently do not have a good citati=
+on
+> with numbers on how many is too many reuses for ML-KEM as specified in FI=
+PS
+> 203 (not for generic Ring-LWE schemes as done in prior work, which ML-KEM
+> isn't=E2=80=94 it is a Module-LWE scheme with the FO transform applied). =
+We
+> currently gesture at any future analyses that come out.
+> >
+> > ML-KEM is of course designed to be IND-CCA, but the multi-target
+> security (specifically multi-ciphertext, or multi-challenge) is a distinc=
+t
+> property that is relevant to a reused keypair, where the
+> collision-resistance in the KEM/PKE message space is pertinent.
+> https://eprint.iacr.org/2025/343.pdf includes a quick analysis of ML-KEM,
+> saying:
+> >
+> > "Targeting 256 bits of security: ML-KEM has 3 variants, targeting 128,
+> 192, or 256 bits of security, but all of these use 256-bit messages
+> [Nat24]. We
+> > note that the parameter nc should not change for the various targeted
+> security levels, as it represents a threshold on the amount of times the
+> same public key will be used for encapsulation in practical deployments. =
+We
+> observe that,
+> > if one targets 256 bits of security, collision finding attacks become
+> relevant again, since an adversary generating 2^128 ciphertexts will find=
+ a
+> collision with one of 2^64 challenge ciphertexts with probability about
+> 2^=E2=88=9264. Thus without salting, even ML-KEM-1024 can only achieve 19=
+2 bits of
+> multi-target security in the random oracle model."
+> >
+> > This appears to indicate an upper bound of reuses for all ML-KEM
+> parameter sets to 2^64 (if I'm parsing this wrong, someone correct me).
+> >
+> > On Wed, Feb 25, 2026 at 4:23=E2=80=AFAM Deirdre Connolly <
+> durumcrustulum@gmail.com> wrote:
+> >
+> > > > My constructive suggestion is to remove all text regarding static
+> keys, as there is no reason for this draft to include them
+> > > This document cannot override RFC 8446, which allows key reuse. We
+> currently do not have a good citation with numbers on how many is too man=
+y
+> reuses for ML-KEM as specified in FIPS 203 (not for generic Ring-LWE
+> schemes as done in prior work, which ML-KEM isn't=E2=80=94 it is a Module=
+-LWE
+> scheme with the FO transform applied). We currently gesture at any future
+> analyses that come out.
+> > >
+> > > ML-KEM is of course designed to be IND-CCA, but the multi-target
+> security (specifically multi-ciphertext, or multi-challenge) is a distinc=
+t
+> property that is relevant to a reused keypair, where the
+> collision-resistsnce in the KEM/PKE message space is pertinent.
+> https://eprint.iacr.org/2025/343.pdf has some nice analysis of such
+> security of salted-FO KEMs (Ml-KEM is not salted) but also include a quic=
+k
+> analysis of ML-KEM, saying:
+> > >
+> > > "Targeting 256 bits of security: ML-KEM has 3 variants, targeting 128=
+,
+> 192, or 256 bits of security, but all of these use 256-bit messages
+> [Nat24]. We
+> > > note that the parameter nc should not change for the various targeted
+> security levels, as it represents a threshold on the amount of times the
+> same public key will be used for encapsulation in practical deployments. =
+We
+> observe that,
+> > > if one targets 256 bits of security, collision finding attacks become
+> relevant again, since an adversary generating 2^128 ciphertexts will find=
+ a
+> collision with one of 2^64 challenge ciphertexts with probability about
+> 2^=E2=88=9264. Thus without salting, even ML-KEM-1024 can only achieve 19=
+2 bits of
+> multi-target security in the random oracle model."
+> > >
+> > > This appears to indicate an upper bound of reuses for all ML-KEM
+> parameter sets to 2^64 (if I'm parsing this wrong someone correct me).
+> > >
+> > > Do people want to omit any mention of key reuse, implicitly relying o=
+n
+> 8446, or include this bounds analysis in some succinct way?
+> > >
+> > > On Wed, Feb 25, 2026, 2:31=E2=80=AFAM John Mattsson <john.mattsson=3D
+> 40ericsson.com@dmarc.ietf.org> wrote:
+> > >
+> > > > Hi
+> > > >
+> > > > I received an offline comment from a senior IETF participant
+> suggesting that I had misunderstood the draft and that the key reuse in
+> question referred to reuse within a single session. That is not accurate.
+> The draft talks about static keys, i.e., keys used in more than one
+> key-establishment.
+> > > >
+> > > > Given the apparent confusion between 1. reuse of ephemeral keys
+> within a session, 2. reuse of ephemeral keys across sessions, and 3. stat=
+ic
+> keys, each of which carries distinct privacy and security implications, I
+> recommend that the AD ensure that all not yet published drafts use very
+> precise terminology. Specifically, a key used in more than one
+> key-establishment should use the well-established term =E2=80=9Cstatic ke=
+y=E2=80=9D.
+> > > >
+> > > > ---
+> > > >
+> > > > 1. Reuse of ephemeral keys within a session:
+> > > >
+> > > > - Session A: ClientHello with MLKEM768 KeyShareEntry1 and
+> X25519MLKEM768 KeyShareEntry2 both containing the same ML-KEM public key.
+> > > >
+> > > > 2. Reuse of ephemeral keys across sessions:
+> > > >
+> > > > - Session B1. ClientHello with MLKEM768 KeyShareEntry3 and X25519
+> KeyShareEntry4. Sever picks X25519 KeyShareEntry4.
+> > > >
+> > > > - Session B2. ClientHello with MLKEM768 KeyShareEntry3 and X25519
+> KeyShareEntry5.
+> > > >
+> > > > 3. Static keys
+> > > >
+> > > > - Session C1. ClientHello with MLKEM768 KeyShareEntry6. Sever picks
+> MLKEM768 KeyShareEntry6
+> > > >
+> > > > - Session C2. ClientHello with MLKEM768 KeyShareEntry6. Sever picks
+> MLKEM768 KeyShareEntry6
+> > > >
+> > > > ---
+> > > >
+> > > > Issues with the text on static keys were clearly raised during the
+> first WGLC and should have been addressed before the second. Having to
+> repeat the same issues is both frustrating and a waste of time.
+> > > >
+> > > > The major issues, that the draft lacks proper security
+> considerations for the use of static keys (they should be quite negative)=
+,
+> and that it does not explain how an implementation using static keys can =
+be
+> conformant with NIST specifications, were raised during the first WGLC an=
+d
+> have not been addressed. During the second WGLC, it was identified that
+> conformance is intrinsically linked to the patent license.
+> > > >
+> > > > My constructive suggestion is to remove all text regarding static
+> keys, as there is no reason for this draft to include them. I do not
+> believe comparisons with draft-ietf-tls-hybrid-design are relevant, since
+> that document serves a completely different purpose and does not register
+> code points.
+> > > >
+> > > > If the draft intends to retain any text on static keys, NIST SP
+> 1800-37, Addressing Visibility Challenges with TLS 1.3 within the
+> Enterprise, is a useful reference regarding the negative privacy and
+> security implications of static keys. I do not have specific guidance on
+> how to achieve conformance with NIST specifications when using static key=
+s,
+> but that issue must clearly be resolved.
+> > > >
+> > > > I do not find any text in RFC 8446 that allows the use of static
+> keys. If the TLS WG intends to explicitly permit static keys again, their
+> use should be explicitly negotiated, as done in TLS 1.2 or
+> draft-rhrd-tls-tls13-visibility.
+> > > >
+> > > > As I have seen no response from the authors indicating that they
+> plan to address this issue, I am opposed to publishing this document.
+> > > >
+> > > > Cheers,
+> > > >
+> > > > John
+> > > >
+> > > >
+> > > >
+> > > > From: Russ Housley <housley@vigilsec.com>
+> > > > Date: Thursday, 12 February 2026 at 22:38
+> > > > To: Joseph Salowey <joe@salowey.net>
+> > > > Cc:<tls@ietf.org>, John Mattsson <john.mattsson@ericsson.com>
+> > > > Subject: Re: [TLS] WG Last Call: draft-ietf-tls-mlkem-05 (Ends
+> 2026-02-27)
+> > > >
+> > > > I support the publication of this document as an RFC. I would prefe=
+r
+> to have the clarity about ephemeral vs. static ML-KEM keys as posted by
+> John Mattsson, but I can live with it as-is.
+> > > >
+> > > > Russ
+> > > >
+> > > >
+> > > >
+> > > > > On Feb 12, 2026, at 3:08=E2=80=AFPM, John Mattsson <john.mattsson=
+=3D
+> 40ericsson.com@dmarc.ietf.org> wrote:
+> > > > >
+> > > > > Hi,
+> > > > >
+> > > > > I support publication iff all text related to =E2=80=9Ckey reuse=
+=E2=80=9D is
+> removed. In its current form, I do not believe -07 should be published.
+> > > > >
+> > > > > Major Comments:
+> > > > >
+> > > > > - FIPS 203 states that:
+> > > > >
+> > > > > =E2=80=9Cthe licensed patents be freely available to be practiced=
+ by any
+> implementer of the ML-KEM algorithm as published by NIST.=E2=80=9D
+> > > > >
+> > > > > =E2=80=9Crequirements for the secure use of KEMs in applications,=
+ see SP
+> 800-227.=E2=80=9D
+> > > > >
+> > > > > A reused key is, by definition, a static key. SP 800-227 imposes
+> additional requirements for static keys compared to ephemeral keys. The
+> draft does not explain how an implementer can satisfy these requirements.
+> This creates potential non-conformance with NIST specifications.
+> > > > >
+> > > > > - The draft does not describe the significant security and privac=
+y
+> problems associated with key reuse. IND-CCA is a theoretical property of
+> the algorithm. However, the security and privacy problems are related to
+> the reuse of keys in the TLS 1.3 protocol in deployments.
+> > > > >
+> > > > > Minor Comments:
+> > > > >
+> > > > > - The discussion of randomness reuse in ciphertexts and reference=
+s
+> to SP 800-227 do not belong in a =E2=80=9Ckey reuse=E2=80=9D section. Cip=
+hertexts are not
+> keys, and SP 800-227 contains broader guidelines and requirements beyond
+> static keys.
+> > > > >
+> > > > > - =E2=80=9CThe client's shares are listed in descending order of =
+client
+> preference; the server selects one algorithm and sends its corresponding
+> share.=E2=80=9D
+> > > > >
+> > > > > The server may also select no share and respond with a
+> handshake_failure or a HelloRetryRequest (HRR). Since this is already
+> specified in RFC 8446, it would be better to remove this text and simply
+> reference RFC 8446.
+> > > > >
+> > > > > - Section 5.1 appears to mix different concepts: hybrids, PQ/T
+> hybrids, and lattice-based PQ/T hybrids. I assume the person asking for
+> this section wanted a comparison with [ECDHE-MLKEM]. I suggest doing that=
+.
+> In the future, PQ/T hybrids will likely become less common, but it is
+> unclear whether other hybrids (e.g., ML-KEM + HQC-KEM) will gain adoption=
+.
+> > > > >
+> > > > > Cheers,
+> > > > > John
+> > > > >
+> > > > > From: Joseph Salowey <joe@salowey.net>
+> > > > > Date: Thursday, 12 February 2026 at 20:06
+> > > > > To:
+> > > > > <tls@ietf.org>
+> > > > > Subject: [TLS] WG Last Call: draft-ietf-tls-mlkem-05 (Ends
+> 2026-02-27)
+> > > > > This message starts the second Working Group Last Call for the
+> pure ML-KEM document (draft-ietf-tls-mlkem-07).
+> > > > >
+> > > > > The file can be retrieved from:
+> > > > > https://datatracker.ietf.org/doc/draft-ietf-tls-mlkem/
+> > > > >
+> > > > > The diff with the previous WGLC draft (-05) is here:
+> > > > >
+> > > > >
+> https://author-tools.ietf.org/iddiff?url1=3Ddraft-ietf-tls-mlkem-05&url2=
+=3Ddraft-ietf-tls-mlkem-07&difftype=3D--html
+> > > > >
+> > > > > The main focus of this WGLC is to review new text providing more
+> context around the use of pure ML-KEM. For those who indicated they wante=
+d
+> this text, please let us know if the new text satisfies you and if you
+> support publication. This working group last call will end on February 27=
+,
+> 2026.
+> > > > >
+> > > > > Thank You.
+> > > > > _______________________________________________
+> > > > > TLS mailing list -- tls@ietf.org
+> > > > > To unsubscribe send an email to tls-leave@ietf.org
+> > > >
+> > > >
+> > > > _______________________________________________
+> > > > TLS mailing list -- tls@ietf.org
+> > > > To unsubscribe send an email to tls-leave@ietf.org
+> _______________________________________________
+> TLS mailing list -- tls@ietf.org
+> To unsubscribe send an email to tls-leave@ietf.org
+>
+>
+> *Attachments:*
+>
+>    - signature.asc
+>
+>
+>
+
+--000000000000d593c6064c136da0
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">Thanks for the feedback. I&#39;ve removed all references t=
+o &#39;reuse&#39; from the document on GitHub except for one (&quot;secure =
+in case of reuse&quot;) in the Security Considerations section. <a href=3D"=
+https://github.com/tlswg/draft-ietf-tls-mlkem/commit/ab5f2bd6c4f6b79a4aec30=
+e7e54240fffa367dfc">https://github.com/tlswg/draft-ietf-tls-mlkem/commit/ab=
+5f2bd6c4f6b79a4aec30e7e54240fffa367dfc</a></div><br><div class=3D"gmail_quo=
+te gmail_quote_container"><div dir=3D"ltr" class=3D"gmail_attr">On Sat, Feb=
+ 28, 2026 at 7:36=E2=80=AFAM Filippo Valsorda &lt;<a href=3D"mailto:filippo=
+@ml.filippo.io">filippo@ml.filippo.io</a>&gt; wrote:<br></div><blockquote c=
+lass=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px soli=
+d rgb(204,204,204);padding-left:1ex"><u></u><div><div>I agree, 2^128 is a p=
+hysically impossible lookup table, and 2^-64 is an unusually conservative b=
+ound.</div><div><br></div><div>For comparison, we usually say at most 2^32 =
+messages should be encrypted with a 96-bit random nonce, to keep the probab=
+ility of collisions to 2^-32. If we targeted 2^-64 we&#39;d have to limit m=
+essages to 65,536.</div><div><br></div><div>We should say nothing, or that =
+ML-KEM is not vulnerable to practical multi-target attacks, which is what w=
+e generally say about e.g. random 256-bit keys.<br></div><div><br></div><di=
+v>2026-02-28 03:11 GMT+01:00 Joshua &lt;joshua=3D<a href=3D"mailto:40marion=
+berry.net@dmarc.ietf.org" target=3D"_blank">40marionberry.net@dmarc.ietf.or=
+g</a>&gt;:</div><blockquote type=3D"cite" id=3D"m_-1669446957932292226qt"><=
+div>Hi,</div><div><br></div><div>To confirm I&#39;m reading this right: The=
+ attack described is akin to a preimage attack on a 256-bit space, that is =
+if we send 2^64 hashes to an attacker with a rainbow table of size 2^128, t=
+here is a probability of 2^-64 that the attacker has that hash in the rainb=
+ow table? And inversely, if we send 2^64 hashes to an attacker, then they w=
+ill learn a preimage after 2^192 operations on average? I&#39;d think this =
+is thoroughly in fantasy-land as far as attacks go. My interpretation of th=
+eir goal with &#39;salted&#39; FO is to create domain separation between ea=
+ch ciphertext such that a fantasy-sized rainbow table does not work by simp=
+ly increasing the message space with a public salt value. This is more rele=
+vant for KEMs which use smaller message spaces, eg 128 bits, where a 2^64 b=
+rute force aiming to hit any of 2^64 ciphertexts is on shakier footing in t=
+erms of feasibility.</div><div><br></div><div>I&#39;m not sure we want to s=
+ay &quot;don&#39;t use ML-KEM more than 2^128 times with the same key&quot;=
+ when the attack itself is of complexity greater than 2^128. If I were writ=
+ing this, and I had to say something, I would say that &quot;ML-KEM has a m=
+essage space of 256 bits and is thus not vulnerable to practical multi-targ=
+et attacks&quot;, and use a warning such as &quot;&lt;KA&gt; has a message =
+space of 128 bits, and long-lived keys are vulnerable to multi-target attac=
+ks. Public keys SHOULD NOT be used to encapsulate more than 2^64 ciphertext=
+s.&quot; for KEMs that use 128-bit messages.</div><div><br></div><div>So I =
+would personally chip in my vote for dropping the 2^64 ciphertext limit and=
+ just treating it as a standard 256-bit keyspace. If anything, I think it&#=
+39;d create more confusion by implying there is actually a practical attack=
+ once that 2^64 threshold is passed, when there is in fact no feasible (kno=
+wn!) attack.</div><div><br></div><div>Best,</div><div>Joshua Nabors.</div><=
+div><br></div><div>On Friday, February 27th, 2026 at 4:33 PM, Deirdre Conno=
+lly &lt;<a href=3D"mailto:durumcrustulum@gmail.com" target=3D"_blank">durum=
+crustulum@gmail.com</a>&gt; wrote:</div><div><br></div><div>&gt; I&#39;m re=
+upping this question to the group as there&#39;s been a lot of traffic on t=
+his subject line.</div><div>&gt;</div><div>&gt; TL;DR: Do people want to om=
+it any mention of key reuse, implicitly relying on 8446, or include this ~2=
+^64 bounds analysis in some succinct way?</div><div>&gt;</div><div>&gt;</di=
+v><div>&gt; This document cannot override RFC 8446(bis), which allows key r=
+euse, but the bis now says SHOULD NOT reuse. We currently do not have a goo=
+d citation with numbers on how many is too many reuses for ML-KEM as specif=
+ied in FIPS 203 (not for generic Ring-LWE schemes as done in prior work, wh=
+ich ML-KEM isn&#39;t=E2=80=94 it is a Module-LWE scheme with the FO transfo=
+rm applied). We currently gesture at any future analyses that come out.</di=
+v><div>&gt;</div><div>&gt; ML-KEM is of course designed to be IND-CCA, but =
+the multi-target security (specifically multi-ciphertext, or multi-challeng=
+e) is a distinct property that is relevant to a reused keypair, where the c=
+ollision-resistance in the KEM/PKE message space is pertinent.=C2=A0<a href=
+=3D"https://eprint.iacr.org/2025/343.pdf" target=3D"_blank">https://eprint.=
+iacr.org/2025/343.pdf</a> includes a quick analysis of ML-KEM, saying:</div=
+><div>&gt;</div><div>&gt; &quot;Targeting 256 bits of security: ML-KEM has =
+3 variants, targeting 128, 192, or 256 bits of security, but all of these u=
+se 256-bit messages [Nat24]. We</div><div>&gt; note that the parameter nc s=
+hould not change for the various targeted security levels, as it represents=
+ a threshold on the amount of times the same public key will be used for en=
+capsulation in practical deployments. We observe that,</div><div>&gt; if on=
+e targets 256 bits of security, collision finding attacks become relevant a=
+gain, since an adversary generating 2^128 ciphertexts will find a collision=
+ with one of 2^64 challenge ciphertexts with probability about 2^=E2=88=926=
+4. Thus without salting, even ML-KEM-1024 can only achieve 192 bits of mult=
+i-target security in the random oracle model.&quot;</div><div>&gt;</div><di=
+v>&gt; This appears to indicate an upper bound of reuses for all ML-KEM par=
+ameter sets to 2^64 (if I&#39;m parsing this wrong, someone correct me).</d=
+iv><div>&gt;</div><div>&gt; On Wed, Feb 25, 2026 at 4:23=E2=80=AFAM Deirdre=
+ Connolly &lt;<a href=3D"mailto:durumcrustulum@gmail.com" target=3D"_blank"=
+>durumcrustulum@gmail.com</a>&gt; wrote:</div><div>&gt;</div><div>&gt; &gt;=
+ &gt; My constructive suggestion is to remove all text regarding static key=
+s, as there is no reason for this draft to include them</div><div>&gt; &gt;=
+ This document cannot override RFC 8446, which allows key reuse. We current=
+ly do not have a good citation with numbers on how many is too many reuses =
+for ML-KEM as specified in FIPS 203 (not for generic Ring-LWE schemes as do=
+ne in prior work, which ML-KEM isn&#39;t=E2=80=94 it is a Module-LWE scheme=
+ with the FO transform applied). We currently gesture at any future analyse=
+s that come out.</div><div>&gt; &gt;</div><div>&gt; &gt; ML-KEM is of cours=
+e designed to be IND-CCA, but the multi-target security (specifically multi=
+-ciphertext, or multi-challenge) is a distinct property that is relevant to=
+ a reused keypair, where the collision-resistsnce in the KEM/PKE message sp=
+ace is pertinent.=C2=A0<a href=3D"https://eprint.iacr.org/2025/343.pdf" tar=
+get=3D"_blank">https://eprint.iacr.org/2025/343.pdf</a> has some nice analy=
+sis of such security of salted-FO KEMs (Ml-KEM is not salted) but also incl=
+ude a quick analysis of ML-KEM, saying:</div><div>&gt; &gt;</div><div>&gt; =
+&gt; &quot;Targeting 256 bits of security: ML-KEM has 3 variants, targeting=
+ 128, 192, or 256 bits of security, but all of these use 256-bit messages [=
+Nat24]. We</div><div>&gt; &gt; note that the parameter nc should not change=
+ for the various targeted security levels, as it represents a threshold on =
+the amount of times the same public key will be used for encapsulation in p=
+ractical deployments. We observe that,</div><div>&gt; &gt; if one targets 2=
+56 bits of security, collision finding attacks become relevant again, since=
+ an adversary generating 2^128 ciphertexts will find a collision with one o=
+f 2^64 challenge ciphertexts with probability about 2^=E2=88=9264. Thus wit=
+hout salting, even ML-KEM-1024 can only achieve 192 bits of multi-target se=
+curity in the random oracle model.&quot;</div><div>&gt; &gt;</div><div>&gt;=
+ &gt; This appears to indicate an upper bound of reuses for all ML-KEM para=
+meter sets to 2^64 (if I&#39;m parsing this wrong someone correct me).</div=
+><div>&gt; &gt;</div><div>&gt; &gt; Do people want to omit any mention of k=
+ey reuse, implicitly relying on 8446, or include this bounds analysis in so=
+me succinct way?</div><div>&gt; &gt;</div><div>&gt; &gt; On Wed, Feb 25, 20=
+26, 2:31=E2=80=AFAM John Mattsson &lt;<a href=3D"http://john.mattsson" targ=
+et=3D"_blank">john.mattsson</a>=3D<a href=3D"mailto:40ericsson.com@dmarc.ie=
+tf.org" target=3D"_blank">40ericsson.com@dmarc.ietf.org</a>&gt; wrote:</div=
+><div>&gt; &gt;</div><div>&gt; &gt; &gt; Hi</div><div>&gt; &gt; &gt;</div><=
+div>&gt; &gt; &gt; I received an offline comment from a senior IETF partici=
+pant suggesting that I had misunderstood the draft and that the key reuse i=
+n question referred to reuse within a single session. That is not accurate.=
+ The draft talks about static keys, i.e., keys used in more than one key-es=
+tablishment.</div><div>&gt; &gt; &gt;</div><div>&gt; &gt; &gt; Given the ap=
+parent confusion between 1. reuse of ephemeral keys within a session, 2. re=
+use of ephemeral keys across sessions, and 3. static keys, each of which ca=
+rries distinct privacy and security implications, I recommend that the AD e=
+nsure that all not yet published drafts use very precise terminology. Speci=
+fically, a key used in more than one key-establishment should use the well-=
+established term =E2=80=9Cstatic key=E2=80=9D.</div><div>&gt; &gt; &gt;</di=
+v><div>&gt; &gt; &gt; ---</div><div>&gt; &gt; &gt;</div><div>&gt; &gt; &gt;=
+ 1. Reuse of ephemeral keys within a session:</div><div>&gt; &gt; &gt;</div=
+><div>&gt; &gt; &gt; - Session A: ClientHello with MLKEM768 KeyShareEntry1 =
+and X25519MLKEM768 KeyShareEntry2 both containing the same ML-KEM public ke=
+y.</div><div>&gt; &gt; &gt;</div><div>&gt; &gt; &gt; 2. Reuse of ephemeral =
+keys across sessions:</div><div>&gt; &gt; &gt;</div><div>&gt; &gt; &gt; - S=
+ession B1. ClientHello with MLKEM768 KeyShareEntry3 and X25519 KeyShareEntr=
+y4. Sever picks X25519 KeyShareEntry4.</div><div>&gt; &gt; &gt;</div><div>&=
+gt; &gt; &gt; - Session B2. ClientHello with MLKEM768 KeyShareEntry3 and X2=
+5519 KeyShareEntry5.</div><div>&gt; &gt; &gt;</div><div>&gt; &gt; &gt; 3. S=
+tatic keys</div><div>&gt; &gt; &gt;</div><div>&gt; &gt; &gt; - Session C1. =
+ClientHello with MLKEM768 KeyShareEntry6. Sever picks MLKEM768 KeyShareEntr=
+y6</div><div>&gt; &gt; &gt;</div><div>&gt; &gt; &gt; - Session C2. ClientHe=
+llo with MLKEM768 KeyShareEntry6. Sever picks MLKEM768 KeyShareEntry6</div>=
+<div>&gt; &gt; &gt;</div><div>&gt; &gt; &gt; ---</div><div>&gt; &gt; &gt;</=
+div><div>&gt; &gt; &gt; Issues with the text on static keys were clearly ra=
+ised during the first WGLC and should have been addressed before the second=
+. Having to repeat the same issues is both frustrating and a waste of time.=
+</div><div>&gt; &gt; &gt;</div><div>&gt; &gt; &gt; The major issues, that t=
+he draft lacks proper security considerations for the use of static keys (t=
+hey should be quite negative), and that it does not explain how an implemen=
+tation using static keys can be conformant with NIST specifications, were r=
+aised during the first WGLC and have not been addressed. During the second =
+WGLC, it was identified that conformance is intrinsically linked to the pat=
+ent license.</div><div>&gt; &gt; &gt;</div><div>&gt; &gt; &gt; My construct=
+ive suggestion is to remove all text regarding static keys, as there is no =
+reason for this draft to include them. I do not believe comparisons with dr=
+aft-ietf-tls-hybrid-design are relevant, since that document serves a compl=
+etely different purpose and does not register code points.</div><div>&gt; &=
+gt; &gt;</div><div>&gt; &gt; &gt; If the draft intends to retain any text o=
+n static keys, NIST SP 1800-37, Addressing Visibility Challenges with TLS 1=
+.3 within the Enterprise, is a useful reference regarding the negative priv=
+acy and security implications of static keys. I do not have specific guidan=
+ce on how to achieve conformance with NIST specifications when using static=
+ keys, but that issue must clearly be resolved.</div><div>&gt; &gt; &gt;</d=
+iv><div>&gt; &gt; &gt; I do not find any text in RFC 8446 that allows the u=
+se of static keys. If the TLS WG intends to explicitly permit static keys a=
+gain, their use should be explicitly negotiated, as done in TLS 1.2 or draf=
+t-rhrd-tls-tls13-visibility.</div><div>&gt; &gt; &gt;</div><div>&gt; &gt; &=
+gt; As I have seen no response from the authors indicating that they plan t=
+o address this issue, I am opposed to publishing this document.</div><div>&=
+gt; &gt; &gt;</div><div>&gt; &gt; &gt; Cheers,</div><div>&gt; &gt; &gt;</di=
+v><div>&gt; &gt; &gt; John</div><div>&gt; &gt; &gt;</div><div>&gt; &gt; &gt=
+;</div><div>&gt; &gt; &gt;</div><div>&gt; &gt; &gt; From: Russ Housley &lt;=
+<a href=3D"mailto:housley@vigilsec.com" target=3D"_blank">housley@vigilsec.=
+com</a>&gt;</div><div>&gt; &gt; &gt; Date: Thursday, 12 February 2026 at 22=
+:38</div><div>&gt; &gt; &gt; To: Joseph Salowey &lt;<a href=3D"mailto:joe@s=
+alowey.net" target=3D"_blank">joe@salowey.net</a>&gt;</div><div>&gt; &gt; &=
+gt; Cc:&lt;<a href=3D"mailto:tls@ietf.org" target=3D"_blank">tls@ietf.org</=
+a>&gt;, John Mattsson &lt;<a href=3D"mailto:john.mattsson@ericsson.com" tar=
+get=3D"_blank">john.mattsson@ericsson.com</a>&gt;</div><div>&gt; &gt; &gt; =
+Subject: Re: [TLS] WG Last Call: draft-ietf-tls-mlkem-05 (Ends 2026-02-27)<=
+/div><div>&gt; &gt; &gt;</div><div>&gt; &gt; &gt; I support the publication=
+ of this document as an RFC. I would prefer to have the clarity about ephem=
+eral vs. static ML-KEM keys as posted by John Mattsson, but I can live with=
+ it as-is.</div><div>&gt; &gt; &gt;</div><div>&gt; &gt; &gt; Russ</div><div=
+>&gt; &gt; &gt;</div><div>&gt; &gt; &gt;</div><div>&gt; &gt; &gt;</div><div=
+>&gt; &gt; &gt; &gt; On Feb 12, 2026, at 3:08=E2=80=AFPM, John Mattsson &lt=
+;<a href=3D"http://john.mattsson" target=3D"_blank">john.mattsson</a>=3D<a =
+href=3D"mailto:40ericsson.com@dmarc.ietf.org" target=3D"_blank">40ericsson.=
+com@dmarc.ietf.org</a>&gt; wrote:</div><div>&gt; &gt; &gt; &gt;</div><div>&=
+gt; &gt; &gt; &gt; Hi,</div><div>&gt; &gt; &gt; &gt;</div><div>&gt; &gt; &g=
+t; &gt; I support publication iff all text related to =E2=80=9Ckey reuse=E2=
+=80=9D is removed. In its current form, I do not believe -07 should be publ=
+ished.</div><div>&gt; &gt; &gt; &gt;</div><div>&gt; &gt; &gt; &gt; Major Co=
+mments:</div><div>&gt; &gt; &gt; &gt;</div><div>&gt; &gt; &gt; &gt; - FIPS =
+203 states that:</div><div>&gt; &gt; &gt; &gt;</div><div>&gt; &gt; &gt; &gt=
+; =E2=80=9Cthe licensed patents be freely available to be practiced by any =
+implementer of the ML-KEM algorithm as published by NIST.=E2=80=9D</div><di=
+v>&gt; &gt; &gt; &gt;</div><div>&gt; &gt; &gt; &gt; =E2=80=9Crequirements f=
+or the secure use of KEMs in applications, see SP 800-227.=E2=80=9D</div><d=
+iv>&gt; &gt; &gt; &gt;</div><div>&gt; &gt; &gt; &gt; A reused key is, by de=
+finition, a static key. SP 800-227 imposes additional requirements for stat=
+ic keys compared to ephemeral keys. The draft does not explain how an imple=
+menter can satisfy these requirements. This creates potential non-conforman=
+ce with NIST specifications.</div><div>&gt; &gt; &gt; &gt;</div><div>&gt; &=
+gt; &gt; &gt; - The draft does not describe the significant security and pr=
+ivacy problems associated with key reuse. IND-CCA is a theoretical property=
+ of the algorithm. However, the security and privacy problems are related t=
+o the reuse of keys in the TLS 1.3 protocol in deployments.</div><div>&gt; =
+&gt; &gt; &gt;</div><div>&gt; &gt; &gt; &gt; Minor Comments:</div><div>&gt;=
+ &gt; &gt; &gt;</div><div>&gt; &gt; &gt; &gt; - The discussion of randomnes=
+s reuse in ciphertexts and references to SP 800-227 do not belong in a =E2=
+=80=9Ckey reuse=E2=80=9D section. Ciphertexts are not keys, and SP 800-227 =
+contains broader guidelines and requirements beyond static keys.</div><div>=
+&gt; &gt; &gt; &gt;</div><div>&gt; &gt; &gt; &gt; - =E2=80=9CThe client&#39=
+;s shares are listed in descending order of client preference; the server s=
+elects one algorithm and sends its corresponding share.=E2=80=9D</div><div>=
+&gt; &gt; &gt; &gt;</div><div>&gt; &gt; &gt; &gt; The server may also selec=
+t no share and respond with a handshake_failure or a HelloRetryRequest (HRR=
+). Since this is already specified in RFC 8446, it would be better to remov=
+e this text and simply reference RFC 8446.</div><div>&gt; &gt; &gt; &gt;</d=
+iv><div>&gt; &gt; &gt; &gt; - Section 5.1 appears to mix different concepts=
+: hybrids, PQ/T hybrids, and lattice-based PQ/T hybrids. I assume the perso=
+n asking for this section wanted a comparison with [ECDHE-MLKEM]. I suggest=
+ doing that. In the future, PQ/T hybrids will likely become less common, bu=
+t it is unclear whether other hybrids (e.g., ML-KEM + HQC-KEM) will gain ad=
+option.</div><div>&gt; &gt; &gt; &gt;</div><div>&gt; &gt; &gt; &gt; Cheers,=
+</div><div>&gt; &gt; &gt; &gt; John</div><div>&gt; &gt; &gt; &gt;</div><div=
+>&gt; &gt; &gt; &gt; From: Joseph Salowey &lt;<a href=3D"mailto:joe@salowey=
+.net" target=3D"_blank">joe@salowey.net</a>&gt;</div><div>&gt; &gt; &gt; &g=
+t; Date: Thursday, 12 February 2026 at 20:06</div><div>&gt; &gt; &gt; &gt; =
+To:</div><div>&gt; &gt; &gt; &gt; &lt;<a href=3D"mailto:tls@ietf.org" targe=
+t=3D"_blank">tls@ietf.org</a>&gt;</div><div>&gt; &gt; &gt; &gt; Subject: [T=
+LS] WG Last Call: draft-ietf-tls-mlkem-05 (Ends 2026-02-27)</div><div>&gt; =
+&gt; &gt; &gt; This message starts the second Working Group Last Call for t=
+he pure ML-KEM document (draft-ietf-tls-mlkem-07).</div><div>&gt; &gt; &gt;=
+ &gt;</div><div>&gt; &gt; &gt; &gt; The file can be retrieved from:</div><d=
+iv>&gt; &gt; &gt; &gt;=C2=A0<a href=3D"https://datatracker.ietf.org/doc/dra=
+ft-ietf-tls-mlkem/" target=3D"_blank">https://datatracker.ietf.org/doc/draf=
+t-ietf-tls-mlkem/</a></div><div>&gt; &gt; &gt; &gt;</div><div>&gt; &gt; &gt=
+; &gt; The diff with the previous WGLC draft (-05) is here:</div><div>&gt; =
+&gt; &gt; &gt;</div><div>&gt; &gt; &gt; &gt;=C2=A0<a href=3D"https://author=
+-tools.ietf.org/iddiff?url1=3Ddraft-ietf-tls-mlkem-05&amp;url2=3Ddraft-ietf=
+-tls-mlkem-07&amp;difftype=3D--html" target=3D"_blank">https://author-tools=
+.ietf.org/iddiff?url1=3Ddraft-ietf-tls-mlkem-05&amp;url2=3Ddraft-ietf-tls-m=
+lkem-07&amp;difftype=3D--html</a></div><div>&gt; &gt; &gt; &gt;</div><div>&=
+gt; &gt; &gt; &gt; The main focus of this WGLC is to review new text provid=
+ing more context around the use of pure ML-KEM. For those who indicated the=
+y wanted this text, please let us know if the new text satisfies you and if=
+ you support publication. This working group last call will end on February=
+ 27, 2026.</div><div>&gt; &gt; &gt; &gt;</div><div>&gt; &gt; &gt; &gt; Than=
+k You.</div><div>&gt; &gt; &gt; &gt; ______________________________________=
+_________</div><div>&gt; &gt; &gt; &gt; TLS mailing list --=C2=A0<a href=3D=
+"mailto:tls@ietf.org" target=3D"_blank">tls@ietf.org</a></div><div>&gt; &gt=
+; &gt; &gt; To unsubscribe send an email to=C2=A0<a href=3D"mailto:tls-leav=
+e@ietf.org" target=3D"_blank">tls-leave@ietf.org</a></div><div>&gt; &gt; &g=
+t;</div><div>&gt; &gt; &gt;</div><div>&gt; &gt; &gt; ______________________=
+_________________________</div><div>&gt; &gt; &gt; TLS mailing list --=C2=
+=A0<a href=3D"mailto:tls@ietf.org" target=3D"_blank">tls@ietf.org</a></div>=
+<div>&gt; &gt; &gt; To unsubscribe send an email to=C2=A0<a href=3D"mailto:=
+tls-leave@ietf.org" target=3D"_blank">tls-leave@ietf.org</a></div><div>____=
+___________________________________________</div><div>TLS mailing list --=
+=C2=A0<a href=3D"mailto:tls@ietf.org" target=3D"_blank">tls@ietf.org</a></d=
+iv><div>To unsubscribe send an email to=C2=A0<a href=3D"mailto:tls-leave@ie=
+tf.org" target=3D"_blank">tls-leave@ietf.org</a></div><div><br></div><div><=
+br></div><div><b>Attachments:</b></div><ul><li>signature.asc</li></ul></blo=
+ckquote><div><br></div></div></blockquote></div>
+
+--000000000000d593c6064c136da0--
+

@@ -1,0 +1,97 @@
+From nobody Thu Jan 12 08:06:04 2023
+Return-Path: <wwwrun@rfcpa.amsl.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 7125BC152716
+ for <tls@ietfa.amsl.com>; Thu, 12 Jan 2023 08:06:02 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -6.647
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.647 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, HEADER_FROM_DIFFERENT_DOMAINS=0.25,
+ RCVD_IN_DNSWL_HI=-5, RCVD_IN_ZEN_BLOCKED_OPENDNS=0.001,
+ SPF_PASS=-0.001, URIBL_BLOCKED=0.001, URIBL_DBL_BLOCKED_OPENDNS=0.001,
+ URIBL_ZEN_BLOCKED_OPENDNS=0.001] autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id lfk_jh-SVZWU for <tls@ietfa.amsl.com>;
+ Thu, 12 Jan 2023 08:05:58 -0800 (PST)
+Received: from rfcpa.amsl.com (rfc-editor.org [50.223.129.200])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 56682C153CA0
+ for <tls@ietf.org>; Thu, 12 Jan 2023 08:05:58 -0800 (PST)
+Received: by rfcpa.amsl.com (Postfix, from userid 499)
+ id 15BA54C920; Thu, 12 Jan 2023 08:05:58 -0800 (PST)
+To: ekr@rtfm.com, rdd@cert.org, paul.wouters@aiven.io, caw@heapingbits.net,
+ joe@salowey.net, sean+ietf@sn3rd.com
+From: RFC Errata System <rfc-editor@rfc-editor.org>
+Cc: ericlaw@microsoft.com, tls@ietf.org, rfc-editor@rfc-editor.org
+Content-Type: text/plain; charset=UTF-8
+Message-Id: <20230112160558.15BA54C920@rfcpa.amsl.com>
+Date: Thu, 12 Jan 2023 08:05:58 -0800 (PST)
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/H43bEkZhY3_bGrj9T99AagVhpjs>
+Subject: [TLS] [Technical Errata Reported] RFC8446 (7303)
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Thu, 12 Jan 2023 16:06:02 -0000
+
+The following errata report has been submitted for RFC8446,
+"The Transport Layer Security (TLS) Protocol Version 1.3".
+
+--------------------------------------
+You may review the report below and at:
+https://www.rfc-editor.org/errata/eid7303
+
+--------------------------------------
+Type: Technical
+Reported by: Eric Lawrence <ericlaw@microsoft.com>
+
+Section: 6.1
+
+Original Text
+-------------
+This alert notifies the recipient that the sender will not send any more messages on this connection. 
+
+Corrected Text
+--------------
+This alert notifies the recipient that the sender will not send any more messages on this connection. close_notify alerts should be sent with a severity level of WARNING.
+
+Notes
+-----
+Apparently, TLS/1.0 specified these should be set to WARNING, not FATAL, but this text got lost somewhere along the way. https://github.com/pion/dtls/issues/195
+
+OpenSSL/NSS both send as WARNING, and servers that have tried sending as FATAL have encountered compatibility problems with clients which treat FATAL alerts differently than WARNING alerts: e.g. https://source.chromium.org/chromium/chromium/src/+/main:third_party/boringssl/src/ssl/tls_record.cc;l=591;drc=c0872c02015009bf3dbab0a83c0452d141e8e9cf?q=tls_open_record&ss=chromium%2Fchromium%2Fsrc
+
+Instructions:
+-------------
+This erratum is currently posted as "Reported". If necessary, please
+use "Reply All" to discuss whether it should be verified or
+rejected. When a decision is reached, the verifying party  
+can log in to change the status and edit the report, if necessary. 
+
+--------------------------------------
+RFC8446 (draft-ietf-tls-tls13-28)
+--------------------------------------
+Title               : The Transport Layer Security (TLS) Protocol Version 1.3
+Publication Date    : August 2018
+Author(s)           : E. Rescorla
+Category            : PROPOSED STANDARD
+Source              : Transport Layer Security
+Area                : Security
+Stream              : IETF
+Verifying Party     : IESG
+

@@ -1,0 +1,135 @@
+Return-Path: <mt@lowentropy.net>
+X-Original-To: tls@mail2.ietf.org
+Delivered-To: tls@mail2.ietf.org
+Received: from localhost (localhost [127.0.0.1])
+	by mail2.ietf.org (Postfix) with ESMTP id E85374D2812B
+	for <tls@mail2.ietf.org>; Wed, 30 Jul 2025 00:17:26 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at ietf.org
+X-Spam-Flag: NO
+X-Spam-Score: -2.799
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.799 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+	DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, RCVD_IN_DNSWL_LOW=-0.7,
+	RCVD_IN_VALIDITY_RPBL_BLOCKED=0.001,
+	RCVD_IN_VALIDITY_SAFE_BLOCKED=0.001, SPF_PASS=-0.001]
+	autolearn=ham autolearn_force=no
+Authentication-Results: mail2.ietf.org (amavisd-new); dkim=pass (2048-bit key)
+	header.d=lowentropy.net header.b="hXVjCdAa"; dkim=pass (2048-bit key)
+	header.d=messagingengine.com header.b="CX7f4dYe"
+Received: from mail2.ietf.org ([166.84.6.31])
+	by localhost (mail2.ietf.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 5Rb8bHUugc0M for <tls@mail2.ietf.org>;
+	Wed, 30 Jul 2025 00:17:26 -0700 (PDT)
+Received: from fout-b1-smtp.messagingengine.com
+ (fout-b1-smtp.messagingengine.com [202.12.124.144])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail2.ietf.org (Postfix) with ESMTPS id 886B94D28124
+	for <tls@ietf.org>; Wed, 30 Jul 2025 00:17:26 -0700 (PDT)
+Received: from phl-compute-06.internal (phl-compute-06.phl.internal
+ [10.202.2.46])
+	by mailfout.stl.internal (Postfix) with ESMTP id 3C9AC1D0233C
+	for <tls@ietf.org>; Wed, 30 Jul 2025 03:17:26 -0400 (EDT)
+Received: from phl-imap-15 ([10.202.2.104])
+  by phl-compute-06.internal (MEProxy); Wed, 30 Jul 2025 03:17:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lowentropy.net;
+	 h=cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1753859846;
+	 x=1753946246; bh=J+/S7xRCCiWjw0I7dyGXewZacR0wLbSnz0/5znWKjMU=; b=
+	hXVjCdAazNT3prbKz+W8W2BOPj83uk5lWliG1QwML1QIyU4tr1CXCO0zCNapB6FJ
+	cOVU663ub4SGI6nbutwlfmxH+MEU19srIe3oovt23ayk66ZFvRwzk294rSZtBVig
+	tUDcILYCZS1wXVOEjybW0jOW/eeMv/UwH54OLsPWZ5w6ETJEGfWhPQjp0Eq1G3dr
+	IMZDIx5e1jomGFbankmcG5LzNc3dfGIlNJ/dPsGLQjxR1bPTAdqhQTDSNUezi+hi
+	+3iVMdC3AZtstthfTTGdXkmbltMWSMuMDmN2Wf8ruIkNaOaqJ9GI1gIpkGhzcrk/
+	uh2UDhIks6/49/0sNN7scw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to:x-me-proxy:x-me-sender
+	:x-me-sender:x-sasl-enc; s=fm3; t=1753859846; x=1753946246; bh=J
+	+/S7xRCCiWjw0I7dyGXewZacR0wLbSnz0/5znWKjMU=; b=CX7f4dYeCg/8AREil
+	tEqKaLbTyKifA4uN4uzxp5bVBoGkbwP5EQSwfzhPpvOetsVyyLCMU2wCYtDfw/Mr
+	u1vAg9EcQjg+VUCYB3cRxgLGNxDY+TPA4oqFDUD/YBwmuxpiKtxaDaOAn2ctk9L3
+	AbQc84UXhaHnpLxZZYVtOc4yNihJyJFsuL9+dSdAIZziPok0RZ2OpoMgqGU6J6CE
+	C53bEUFIQErEz8eY+/NUC4leKwNLcAZJNqKTtC/QpBcQZHLoW0i4mfbGxVRTrLtH
+	NQVShmw58MLsg3wF9Zh8mW4lCMlBRA7jdGaMHvYNaOxibbv4CIeogRAiPL3sCiwh
+	gdJUg==
+X-ME-Sender: <xms:BceJaCKxc8AOBNis45cMEWG2o2cLFdXk41LByp05HmBF-xZtQte4cA>
+    <xme:BceJaKITtfEGwX7xOY_E4iHeliyz_ddFibLnshCjvsoOuFCVrjz0vkumoBIDIUW0Y
+    f8qVmX4EufWnDYbPnU>
+X-ME-Proxy-Cause: 
+ gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdeljeefudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecunecujfgurhepofggfffhvffkjghfufgtgfesthejredtre
+    dttdenucfhrhhomhepfdforghrthhinhcuvfhhohhmshhonhdfuceomhhtsehlohifvghn
+    thhrohhphidrnhgvtheqnecuggftrfgrthhtvghrnhepueeludegfeelhfektdffveelge
+    fhtefguddtfeevteettdevgefgfeeilefftefgnecuvehluhhsthgvrhfuihiivgeptden
+    ucfrrghrrghmpehmrghilhhfrhhomhepmhhtsehlohifvghnthhrohhphidrnhgvthdpnh
+    gspghrtghpthhtohepuddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepthhlshes
+    ihgvthhfrdhorhhg
+X-ME-Proxy: <xmx:BceJaCleKO45Mistunk3Qs-rjnTWmQ6rElHwMspv1AzOVWff09IFYw>
+    <xmx:BceJaL1Yt4OKbdKahuHJuQM0olS9R7VheHejGWbUX2DiAfLIdVjeMg>
+    <xmx:BceJaKAXfOtARRDU-O5G3PhGZFtW2TI-7v3q0DuaHXSS-Rvaj6P-lw>
+    <xmx:BceJaIzEtOk9-O9ZyEJBCxDbZ9cUHI12x-B6EDEjBMvdT5fp3Zv4-A>
+    <xmx:BseJaNQ5A5yYTwqEsIfuVPsMx33V53_0sXt1eywvWtKOT9CR5_ynf37a>
+Feedback-ID: ic129442d:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id D6AFE780070; Wed, 30 Jul 2025 03:17:25 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+MIME-Version: 1.0
+X-ThreadId: T4023cb78dff6f400
+Date: Wed, 30 Jul 2025 17:17:06 +1000
+From: "Martin Thomson" <mt@lowentropy.net>
+To: tls@ietf.org
+Message-Id: <75198ba5-6753-44ab-a2ba-617895155dae@betaapp.fastmail.com>
+In-Reply-To: <A729C01D-2CFA-48DD-B709-70D3DBB41250@sn3rd.com>
+References: <A729C01D-2CFA-48DD-B709-70D3DBB41250@sn3rd.com>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: AVSO2R5T6P3YU4H32DYTVUVFZWZGZMLV
+X-Message-ID-Hash: AVSO2R5T6P3YU4H32DYTVUVFZWZGZMLV
+X-MailFrom: mt@lowentropy.net
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Re=3A_Working_Group_Last_Call_for_Legacy_RSASSA-PKCS1-v1?=
+ =?utf-8?q?=5F5_codepoints_for_TLS_1=2E3?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/buqQ0XUE_n1hSUh6Idikxjavmsw>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+On Thu, Jul 24, 2025, at 17:00, Sean Turner wrote:
+> This is the working group last call for Legacy RSASSA-PKCS1-v1_5 
+> codepoints for TLS 1.3. Please review draft-ietf-tls-tls13-pkcs1 [1] 
+> and reply to this thread indicating if you think it is ready for 
+> publication or not.  If you do not think it is ready please indicate 
+> why.  This call will end on at 2359 UTC on 07 August 2024.
+
+A few minor things:
+
+>  Clients SHOULD NOT negotiate them with keys that support RSASSA-PSS.
+
+This is a "SHOULD NOT" without explanation, but I wonder if this could be a "MUST NOT" instead.  Validation of these will be possible because PSS is mandatory to support.
+
+> TLS implementations SHOULD disable these code points by default.
+
+Another "SHOULD"; maybe the context is enough to cover the explanation, but it might be worth adding some: "These algorithms are not safe to use in the general case; see {{security}}."
+
+> external fallbacks break TLS's security analysis and may introduce vulnerabilities [POODLE]. 
+
+TLS 1.3 -> TLS 1.2 external fallbacks are (doubly) protected.  Maybe not as well as you might like, but I'm not sure that you need to elaborate this particular point.
+

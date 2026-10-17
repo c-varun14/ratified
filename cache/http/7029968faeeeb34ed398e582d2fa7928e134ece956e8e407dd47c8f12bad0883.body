@@ -1,0 +1,151 @@
+Return-Path: <rsalz@akamai.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 5E2C6C20796A;
+	Wed, 24 Jul 2024 16:48:56 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.253
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.253 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIMWL_WL_HIGH=-0.148, DKIM_SIGNED=0.1,
+	DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1,
+	SPF_HELO_NONE=0.001, SPF_NONE=0.001, T_SCC_BODY_TEXT_LINE=-0.01,
+	URIBL_BLOCKED=0.001, URIBL_DBL_BLOCKED_OPENDNS=0.001,
+	URIBL_ZEN_BLOCKED_OPENDNS=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+	header.d=akamai.com
+Received: from mail.ietf.org ([50.223.129.194])
+	by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id M7yKTkSA-E5J; Wed, 24 Jul 2024 16:48:52 -0700 (PDT)
+Received: from mx0b-00190b01.pphosted.com (mx0b-00190b01.pphosted.com
+ [IPv6:2620:100:9005:57f::1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ietfa.amsl.com (Postfix) with ESMTPS id C32DEC1D61F5;
+	Wed, 24 Jul 2024 16:48:41 -0700 (PDT)
+Received: from pps.filterd (m0050096.ppops.net [127.0.0.1])
+	by m0050096.ppops.net-00190b01. (8.18.1.2/8.18.1.2) with ESMTP id
+ 46OKXtXc024825;
+	Thu, 25 Jul 2024 00:48:40 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=
+	content-id:content-transfer-encoding:content-type:date:from
+	:in-reply-to:message-id:mime-version:references:subject:to; s=
+	jan2016.eng; bh=keph7/oGI60LpE6xj+cQZp7ShmHvKc3+Db88F6dmxiQ=; b=
+	f9Jy3dfHxNFpkSbuyDC8f+uxP44S9mrWd7F8nNPyk292N4aIxxNesUE9lmSfUq7Q
+	5IZO/7zqbxytj1IDsntWwQbzZm1rCneXRHqLu079J4oDvBPfodFkUgz3Tzxf2WIM
+	yM+wEbK/Yqdq+QdSaR06uwZPjsSa1MlH0wkZyaL+Ih/D9KjooIZG2YNCjDpMYtz4
+	UZ937JddWwGVzFomcw3Cv23T8wcibgyOtAzRZ7kThtjZay31m4BiDfvSlBH06RiK
+	e5uMOaIdg3UqLCgxNa6PQcHUOLOSUqf2xN5V9Kg20jvqO4fkjTgUimdAcO2k7CP3
+	rhdyU4xGT2dHyiUD6npONw==
+Received: from prod-mail-ppoint6 (prod-mail-ppoint6.akamai.com [184.51.33.61]
+ (may be forged))
+	by m0050096.ppops.net-00190b01. (PPS) with ESMTPS id 40g5nder87-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 25 Jul 2024 00:48:40 +0100 (BST)
+Received: from pps.filterd (prod-mail-ppoint6.akamai.com [127.0.0.1])
+	by prod-mail-ppoint6.akamai.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 46ONM0QF008166;
+	Wed, 24 Jul 2024 19:48:08 -0400
+Received: from email.msg.corp.akamai.com ([172.27.50.205])
+	by prod-mail-ppoint6.akamai.com (PPS) with ESMTPS id 40jcv65wgg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Jul 2024 19:48:08 -0400
+Received: from ustx2ex-dag4mb4.msg.corp.akamai.com (172.27.50.203) by
+ ustx2ex-dag4mb6.msg.corp.akamai.com (172.27.50.205) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.34; Wed, 24 Jul 2024 16:48:08 -0700
+Received: from ustx2ex-dag4mb4.msg.corp.akamai.com ([172.27.50.203]) by
+ ustx2ex-dag4mb4.msg.corp.akamai.com ([172.27.50.203]) with mapi id
+ 15.02.1258.034; Wed, 24 Jul 2024 16:48:08 -0700
+From: "Salz, Rich" <rsalz@akamai.com>
+To: "tls@ietf.org" <tls@ietf.org>, "tls-chairs@ietf.org" <tls-chairs@ietf.org>
+Thread-Topic: [TLS]I-D Action: draft-ietf-tls-tls12-frozen-01.txt
+Thread-Index: AQHa3iNzNFpZKQnt1Eu6+v3D1OiRLrIGveGA
+Date: Wed, 24 Jul 2024 23:48:07 +0000
+Message-ID: <38D51594-21E9-43EE-9DA1-AB01EF598A96@akamai.com>
+References: 
+ <172186453602.956203.144429070479040380@dt-datatracker-659f84ff76-9wqgv>
+In-Reply-To: 
+ <172186453602.956203.144429070479040380@dt-datatracker-659f84ff76-9wqgv>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Microsoft-MacOutlook/16.87.24071426
+x-originating-ip: [172.27.118.139]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <22087678D5EFE143B8418DBF2FC0E49A@akamai.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-07-24_25,2024-07-24_01,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0
+ phishscore=0
+ malwarescore=0 bulkscore=0 mlxscore=0 spamscore=0 mlxlogscore=999
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2407110000 definitions=main-2407240167
+X-Proofpoint-ORIG-GUID: jYP5lgHmmTDrtLErI0vCUSjhHFHA40x_
+X-Proofpoint-GUID: jYP5lgHmmTDrtLErI0vCUSjhHFHA40x_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-07-24_26,2024-07-24_01,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0
+ suspectscore=0
+ malwarescore=0 clxscore=1015 lowpriorityscore=0 mlxscore=0
+ priorityscore=1501 mlxlogscore=999 bulkscore=0 phishscore=0 adultscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2407110000 definitions=main-2407240169
+Message-ID-Hash: JK2UXW2TT6GKY7TQWSUSK7HCI2TZXN5D
+X-Message-ID-Hash: JK2UXW2TT6GKY7TQWSUSK7HCI2TZXN5D
+X-MailFrom: rsalz@akamai.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+X-Mailman-Version: 3.3.9rc4
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5DRe=3A_I-D_Action=3A_draft-ietf-tls-tls12-frozen-01=2Etxt?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/fs_yS7VaiH1elwrkuk1Co0S6hUM>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+VGhpcyB2ZXJzaW9uIHJlbW92ZXMgYWxsIHRleHQgdGhhdCBpcyBkdXBsaWNhdGVkIGluIHRoZSBV
+VEEgInJlcXVpcmUgVExTIDEuMyIgZHJhZnQuWzFdDQoNCkluIG15IHZpZXcsIHRoaXMgaXMgcmVh
+ZHkgZm9yIFdHTEMuIA0KDQpbMV0gaHR0cHM6Ly9kYXRhdHJhY2tlci5pZXRmLm9yZy9kb2MvZHJh
+ZnQtaWV0Zi11dGEtcmVxdWlyZS10bHMxMy8NCg0KDQrvu79PbiA3LzI0LzI0LCA0OjQ0IFBNLCAi
+aW50ZXJuZXQtZHJhZnRzQGlldGYub3JnIDxtYWlsdG86aW50ZXJuZXQtZHJhZnRzQGlldGYub3Jn
+PiIgPGludGVybmV0LWRyYWZ0c0BpZXRmLm9yZyA8bWFpbHRvOmludGVybmV0LWRyYWZ0c0BpZXRm
+Lm9yZz4+IHdyb3RlOg0KDQoNCkludGVybmV0LURyYWZ0IGRyYWZ0LWlldGYtdGxzLXRsczEyLWZy
+b3plbi0wMS50eHQgaXMgbm93IGF2YWlsYWJsZS4gSXQgaXMgYQ0Kd29yayBpdGVtIG9mIHRoZSBU
+cmFuc3BvcnQgTGF5ZXIgU2VjdXJpdHkgKFRMUykgV0cgb2YgdGhlIElFVEYuDQoNCg0KVGl0bGU6
+IFRMUyAxLjIgaXMgaW4gRmVhdHVyZSBGcmVlemUNCkF1dGhvcnM6IFJpY2ggU2Fseg0KTmltcm9k
+IEF2aXJhbQ0KTmFtZTogZHJhZnQtaWV0Zi10bHMtdGxzMTItZnJvemVuLTAxLnR4dA0KUGFnZXM6
+IDUNCkRhdGVzOiAyMDI0LTA3LTI0DQoNCg0KQWJzdHJhY3Q6DQoNCg0KVExTIDEuMiBpcyBpbiB3
+aWRlc3ByZWFkIHVzZSBhbmQgY2FuIGJlIGNvbmZpZ3VyZWQgc3VjaCB0aGF0IGl0DQpwcm92aWRl
+cyBnb29kIHNlY3VyaXR5IHByb3BlcnRpZXMuIFRMUyAxLjMgaXMgYWxzbyBpbiB3aWRlc3ByZWFk
+IHVzZQ0KYW5kIGZpeGVzIHNvbWUga25vd24gZGVmaWNpZW5jaWVzIHdpdGggVExTIDEuMiwgc3Vj
+aCBhcyByZW1vdmluZw0KZXJyb3ItcHJvbmUgY3J5cHRvZ3JhcGhpYyBwcmltaXRpdmVzIGFuZCBl
+bmNyeXB0aW5nIG1vcmUgb2YgdGhlDQp0cmFmZmljIHNvIHRoYXQgaXQgaXMgbm90IHJlYWRhYmxl
+IGJ5IG91dHNpZGVycy4NCg0KDQpCb3RoIHZlcnNpb25zIGhhdmUgc2V2ZXJhbCBleHRlbnNpb24g
+cG9pbnRzLCBzbyBpdGVtcyBsaWtlIG5ldw0KY3J5cHRvZ3JhcGhpYyBhbGdvcml0aG1zLCBuZXcg
+c3VwcG9ydGVkIGdyb3VwcyAoZm9ybWVybHkgIm5hbWVkDQpjdXJ2ZXMiKSwgZXRjLiwgY2FuIGJl
+IGFkZGVkIHdpdGhvdXQgZGVmaW5pbmcgYSBuZXcgcHJvdG9jb2wuIFRoaXMNCmRvY3VtZW50IHNw
+ZWNpZmllcyB0aGF0IG91dHNpZGUgb2YgdXJnZW50IHNlY3VyaXR5IGZpeGVzLCBubyBuZXcNCmZl
+YXR1cmVzIHdpbGwgYmUgYXBwcm92ZWQgZm9yIFRMUyAxLjIuIFRoaXMgcHJlc2NyaXB0aW9uIGRv
+ZXMgbm90DQpwZXJ0YWluIHRvIERUTFMgKGluIGFueSBEVExTIHZlcnNpb24pOyBpdCBwZXJ0YWlu
+cyB0byBUTFMgb25seS4NCg0KDQpUaGUgSUVURiBkYXRhdHJhY2tlciBzdGF0dXMgcGFnZSBmb3Ig
+dGhpcyBJbnRlcm5ldC1EcmFmdCBpczoNCmh0dHBzOi8vZGF0YXRyYWNrZXIuaWV0Zi5vcmcvZG9j
+L2RyYWZ0LWlldGYtdGxzLXRsczEyLWZyb3plbi8NCg0KDQpUaGVyZSBpcyBhbHNvIGFuIEhUTUwg
+dmVyc2lvbiBhdmFpbGFibGUgYXQ6DQpodHRwczovL3d3dy5pZXRmLm9yZy9hcmNoaXZlL2lkL2Ry
+YWZ0LWlldGYtdGxzLXRsczEyLWZyb3plbi0wMS5odG1sIA0KDQoNCg0K
+

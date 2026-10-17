@@ -1,0 +1,523 @@
+From davidben@google.com  Mon Mar 18 04:46:50 2024
+Return-Path: <davidben@google.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id B71FBC15108A
+ for <tls@ietfa.amsl.com>; Mon, 18 Mar 2024 04:46:50 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -9.257
+X-Spam-Level: 
+X-Spam-Status: No, score=-9.257 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIMWL_WL_HIGH=-0.001, DKIM_SIGNED=0.1,
+ DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1,
+ HEADER_FROM_DIFFERENT_DOMAINS=0.249, HTML_MESSAGE=0.001,
+ RCVD_IN_ZEN_BLOCKED_OPENDNS=0.001, SPF_HELO_NONE=0.001,
+ SPF_PASS=-0.001, T_SCC_BODY_TEXT_LINE=-0.01, URIBL_BLOCKED=0.001,
+ URIBL_DBL_BLOCKED_OPENDNS=0.001, URIBL_ZEN_BLOCKED_OPENDNS=0.001,
+ USER_IN_DEF_SPF_WL=-7.5] autolearn=no autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=chromium.org
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 7uyPBZ8YYBff for <tls@ietfa.amsl.com>;
+ Mon, 18 Mar 2024 04:46:46 -0700 (PDT)
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com
+ [IPv6:2607:f8b0:4864:20::b29])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 94395C14F749
+ for <tls@ietf.org>; Mon, 18 Mar 2024 04:46:46 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id
+ 3f1490d57ef6-dcd9e34430cso4302139276.1
+ for <tls@ietf.org>; Mon, 18 Mar 2024 04:46:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=chromium.org; s=google; t=1710762405; x=1711367205; darn=ietf.org;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=w6MYF1KMiHSZEGrs4vfOjMUZ4NK5rR0UQGz6GmWNJuU=;
+ b=AA5u0EZtoiFVPUmovY1819vYmh2D9V+dPsAyKFfHOjyHVcDhZ2EeHf2IYmIK1x3odJ
+ 7RStnfSGGCFWyijOgIkZ7YGWBmXNC8JGdK3Fnjq45M8Tf/AVMSp8iqbQeeQZ8AY1K9JU
+ rsuSvsolwiP6mDEcJt7ft5WETrqYg5NLfqJVY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1710762405; x=1711367205;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=w6MYF1KMiHSZEGrs4vfOjMUZ4NK5rR0UQGz6GmWNJuU=;
+ b=w+1TmsXVC9q4AkBzURMCX7cX4w4e7EqdE4YnkJkJQehYto+YcJgT1KCvvGaXUjRoa2
+ ncAtjjZrSwmi6lw9OE1+ouEFce0G6njutmk2rRGGcVXd4jNF3lnkbqvzGabSmsxrOcim
+ ADJnJJkwoQmlu7MMLgGAyeSKx20YLAnMWL8hawoeylEIarMxIl3ntbGf51B02VfYb6f0
+ AwvHVPnnMBdE5kzw3LxPUX2AIu8zQ+9Hfr4dqVPWp1nRCsSegvdEH5HuNmKuz12/KmR3
+ 2yPoxcLSwL1SPOcEA1rBSC9jUwFowuLTEReUG60nJ9FmBFDN+pGrCXgApAXLgdxQgKv2
+ Haow==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCWDAgX+icNPRgOL9XfBHOi9HPF8r0UipoIaKa30mfaLKz82Aq0r6oJLULoyS1+19+3rutgZmMjfanGIiqY=
+X-Gm-Message-State: AOJu0Yx+Sr1jOaybDgGQQP0wpBe2XnIiRf3UnQ6cSIX631GcshbzjWSi
+ ORUTzW3xCwuJMFxlmH1oHG9gLEnypH1v7r59Bb1ejsjdLRD76qk/8zWsHVn6sGAbhfLw7s41sHZ
+ JpO3DkxuY6gK55vPqEMhR3Bvw5XzX/Yilqds=
+X-Google-Smtp-Source: AGHT+IH756IpN5Qb0Nib+1pxKE+g6XMyNRK5EjE0hjO2d48a/UKq16Pe0EL0ARwuTXK3lwY2QpF7N7iE91l+2j1Os8A=
+X-Received: by 2002:a0d:c203:0:b0:609:f3be:9c8d with SMTP id
+ e3-20020a0dc203000000b00609f3be9c8dmr12676514ywd.27.1710762405159; Mon, 18
+ Mar 2024 04:46:45 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAF8qwaB6OZr=Cw7aGyo+9EEo_wQ5Da7KF=3CSEttWqyHQn=+fw@mail.gmail.com>
+ <CACsn0cmc3zM6bWdvFffj11R5vomrnfYQBTe_4j1c=1Sq-GUNyw@mail.gmail.com>
+ <CAF8qwaBsDkL-F8cThUCb5LWnXqj0BD5_ac-WcGpRKF2FvZpXdQ@mail.gmail.com>
+ <MW2PR2101MB1083F45D236CDD378DAA885D8C2B2@MW2PR2101MB1083.namprd21.prod.outlook.com>
+In-Reply-To: <MW2PR2101MB1083F45D236CDD378DAA885D8C2B2@MW2PR2101MB1083.namprd21.prod.outlook.com>
+From: David Benjamin <davidben@chromium.org>
+Date: Mon, 18 Mar 2024 21:46:32 +1000
+Message-ID: <CAF8qwaCxU=9w9bgu0EfWPp3TLve8GCUnuXYT3THGtKkHxrPzbQ@mail.gmail.com>
+To: Andrei Popov <Andrei.Popov@microsoft.com>
+Cc: Watson Ladd <watsonbladd@gmail.com>, "<tls@ietf.org>" <tls@ietf.org>
+Content-Type: multipart/alternative; boundary="0000000000007522b90613ede9ac"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/WWguKCuAFqobH1jljGQ8cQ-GqrE>
+Subject: Re: [TLS] [EXTERNAL] Re:  Next steps for key share prediction
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Mon, 18 Mar 2024 11:46:50 -0000
+
+--0000000000007522b90613ede9ac
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+> =E2=80=A6and now I'm coming around to the idea that we don't need to do a=
+nything
+special to account for the "wrong" server behavior. Since RFC8446 already
+explicitly said that clients are allowed to not predict their most
+preferred groups, we can already reasonably infer that such servers
+actively believe that all their groups are comparable in security.
+
+I've now updated the draft to do this.
+https://www.ietf.org/archive/id/draft-davidben-tls-key-share-prediction-01.=
+html
+
+It is now considerably simpler and just contains the DNS mechanism, plus a
+discussion in Security Considerations why this is OK.
+
+On Tue, Mar 12, 2024 at 10:04=E2=80=AFAM Andrei Popov <Andrei.Popov@microso=
+ft.com>
+wrote:
+
+>
+>    - =E2=80=A6and now I'm coming around to the idea that we don't need to=
+ do
+>    anything special to account for the "wrong" server behavior. Since RFC=
+8446
+>    already explicitly said that clients are allowed to not predict their =
+most
+>    preferred groups, we can already reasonably infer that such servers
+>    actively believe that all their groups are comparable in security.
+>
+> It makes sense for some services to prioritize RTT reduction; others may
+> prioritize group strength. There are a lot of services out there
+> prioritizing weaker groups for CPU savings (e.g., this is one of the
+> reasons why Curve 25519 is so popular).
+>
+>
+>
+>    - I... question whether taking that position is wise, given the
+>    ongoing postquantum transition, but so it goes
+>
+> Servers will have to be updated and reconfigured for PQC/hybrid support,
+> at which time they will likely apply a different policy.
+>
+>
+>
+>    - Hopefully your TLS server software, if it advertises pluggable
+>    cryptography with a PQ use case, and yet opted for a PQ-incompatible
+>    selection criteria, has clearly documented this so it isn't a surprise=
+ to
+>    you. ;-)
+>
+> Correct.
+>
+>
+>
+>    - Between all that, we probably can reasonably say that's the server
+>    operator's responsibility?
+>
+> Yes.
+>
+>
+>
+> Cheers,
+>
+>
+>
+> Andrei
+>
+>
+>
+> *From:* TLS <tls-bounces@ietf.org> *On Behalf Of *David Benjamin
+> *Sent:* Friday, March 8, 2024 3:25 PM
+> *To:* Watson Ladd <watsonbladd@gmail.com>
+> *Cc:* <tls@ietf.org> <tls@ietf.org>
+> *Subject:* [EXTERNAL] Re: [TLS] Next steps for key share prediction
+>
+>
+>
+> On Thu, Mar 7, 2024 at 6:34=E2=80=AFPM Watson Ladd <watsonbladd@gmail.com=
+> wrote:
+>
+> On Thu, Mar 7, 2024 at 2:56=E2=80=AFPM David Benjamin <davidben@chromium.=
+org>
+> wrote:
+> >
+> > Hi all,
+> >
+> > With the excitement about, sometime in the far future, possibly
+> transitioning from a hybrid, or to a to-be-developed better PQ algorithm,=
+ I
+> thought it would be a good time to remind folks that, right now, we have =
+no
+> way to effectively transition between PQ-sized KEMs at all.
+> >
+> > At IETF 118, we discussed draft-davidben-tls-key-share-prediction, whic=
+h
+> aims to address this. For a refresher, here are some links:
+> >
+> https://davidben.github.io/tls-key-share-prediction/draft-davidben-tls-ke=
+y-share-prediction.html
+> >
+> https://datatracker.ietf.org/meeting/118/materials/slides-118-tls-key-sha=
+re-prediction-00
+> > (Apologies, I forgot to cut a draft-01 with some of the outstanding
+> changes in the GitHub, so the link above is probably better than draft-00=
+.)
+> >
+> > If I recall, the outcome from IETF 118 was two-fold:
+> >
+> > First, we'd clarify in rfc8446bis that the "key_share first" selection
+> algorithm is not quite what you want. This was done in
+> https://github.com/tlswg/tls13-spec/pull/1331
+> >
+> > Second, there was some discussion over whether what's in the draft is
+> the best way to resolve a hypothetical future transition, or if there was
+> another formulation. I followed up with folks briefly offline afterwards,
+> but an alternative never came to fruition.
+> >
+> > Since we don't have another solution yet, I'd suggest we move forward
+> with what's in the draft as a starting point. (Or if this email inspires
+> folks to come up with a better solution, even better! :-D) In particular,
+> whatever the rfc8446bis guidance is, there are still TLS implementations
+> out there with the problematic selection algorithm. Concretely, OpenSSL's
+> selection algorithm is incompatible with this kind of transition. See
+> https://github.com/openssl/openssl/issues/22203
+>
+> Is that asking whether or not we want adoption? I want adoption.
+>
+>
+>
+> I suppose that would be the next step. :-) I think, last meeting, we were
+> a little unclear what we wanted the document to be, so I was trying to ta=
+ke
+> stock first. Though MT prompted me to ponder this a bit more in
+> https://github.com/davidben/tls-key-share-prediction/issues/5, and now
+> I'm coming around to the idea that we don't need to do anything special t=
+o
+> account for the "wrong" server behavior. Since RFC8446 already explicitly
+> said that clients are allowed to not predict their most preferred groups,
+> we can already reasonably infer that such servers actively believe that a=
+ll
+> their groups are comparable in security. OpenSSL, at least, seems to be
+> taking that position. I... question whether taking that position is wise,
+> given the ongoing postquantum transition, but so it goes. Hopefully your
+> TLS server software, if it advertises pluggable cryptography with a PQ us=
+e
+> case, and yet opted for a PQ-incompatible selection criteria, has clearly
+> documented this so it isn't a surprise to you. ;-)
+>
+>
+>
+> Between all that, we probably can reasonably say that's the server
+> operator's responsibility? I'm going to take some time to draft a hopeful=
+ly
+> simpler version of the draft that only defines the DNS hint, and just
+> includes some rough text warning about the implications. Maybe also some
+> SHOULD level text to call out that servers should be sure their policy is
+> what they want. Hopefully, in drafting that, it'll be clearer what the
+> options are. If nothing else, I'm sure writing it will help me crystalize
+> my own preferences!
+>
+>
+>
+> > Given that, I don't see a clear way to avoid some way to separate the
+> old behavior (which impacts the existing groups) from the new behavior. T=
+he
+> draft proposes to do it by keying on the codepoint, and doing our future
+> selves a favor by ensuring that the current generation of PQ codepoints a=
+re
+> ready for this. That's still the best solution I see right now for this
+> situation.
+> >
+> > Thoughts?
+>
+> I think letting the DNS signal also be an indicator the server
+> implements the correct behavior would be a good idea.
+>
+>
+>
+> I'm afraid DNS is typically unauthenticated. In most TLS deployments, we
+> have to assume that the attacker has influence over DNS, which makes it
+> unsuitable for such a signal. Of course, if we end up settling on not
+> needing a signal, this is moot.
+>
+>
+>
+> David
+>
+
+--0000000000007522b90613ede9ac
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"auto"><div dir=3D"ltr"><div dir=3D"ltr"><div>&gt;=C2=A0=E2=80=
+=A6and now I&#39;m coming around to the idea that we don&#39;t need to do a=
+nything special to account for the &quot;wrong&quot; server behavior. Since=
+ RFC8446 already explicitly said that clients are allowed to not predict th=
+eir most preferred groups, we can already reasonably infer that such server=
+s actively believe that all their groups are comparable in security.</div><=
+div><br></div><div>I&#39;ve now updated the draft to do this.</div><a href=
+=3D"https://www.ietf.org/archive/id/draft-davidben-tls-key-share-prediction=
+-01.html" rel=3D"noreferrer noreferrer" target=3D"_blank">https://www.ietf.=
+org/archive/id/draft-davidben-tls-key-share-prediction-01.html</a><br></div=
+><div dir=3D"ltr"><br></div><div dir=3D"ltr">It is now considerably simpler=
+ and just contains the DNS mechanism, plus a discussion in Security Conside=
+rations why this is OK.</div><br><div class=3D"gmail_quote"><div dir=3D"ltr=
+" class=3D"gmail_attr">On Tue, Mar 12, 2024 at 10:04=E2=80=AFAM Andrei Popo=
+v &lt;<a href=3D"mailto:Andrei.Popov@microsoft.com" rel=3D"noreferrer noref=
+errer" target=3D"_blank">Andrei.Popov@microsoft.com</a>&gt; wrote:<br></div=
+><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border=
+-left:1px solid rgb(204,204,204);padding-left:1ex"><div>
+
+
+
+
+
+<div lang=3D"EN-US">
+<div>
+<ul style=3D"margin-top:0in" type=3D"disc">
+<li style=3D"margin-left:0in">=E2=80=A6and now I&#39;m coming around to the=
+ idea that we don&#39;t need to do anything special to account for the &quo=
+t;wrong&quot; server behavior. Since RFC8446 already explicitly said that c=
+lients are
+ allowed to not predict their most preferred groups, we can already reasona=
+bly infer that such servers actively believe that all their groups are comp=
+arable in security.<span style=3D"font-size:11pt"><u></u><u></u></span></li=
+></ul>
+<p class=3D"MsoNormal">It makes sense for some services to prioritize RTT r=
+eduction; others may prioritize group strength. There are a lot of services=
+ out there prioritizing weaker groups for CPU savings (e.g., this is one of=
+ the reasons why Curve 25519 is so
+ popular).<u></u><u></u></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt"><u></u>=C2=A0<u></u><=
+/span></p>
+<ul style=3D"margin-top:0in" type=3D"disc">
+<li style=3D"margin-left:0in">I... question whether taking that position is=
+ wise, given the ongoing postquantum transition, but so it goes<span style=
+=3D"font-size:11pt"><u></u><u></u></span></li></ul>
+<p class=3D"MsoNormal">Servers will have to be updated and reconfigured for=
+ PQC/hybrid support, at which time they will likely apply a different polic=
+y.<u></u><u></u></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt"><u></u>=C2=A0<u></u><=
+/span></p>
+<ul style=3D"margin-top:0in" type=3D"disc">
+<li style=3D"margin-left:0in">Hopefully your TLS server software, if it adv=
+ertises=C2=A0pluggable cryptography with a PQ use case, and yet=C2=A0opted =
+for a PQ-incompatible selection criteria, has clearly documented this
+ so it isn&#39;t a surprise to you. ;-)<span style=3D"font-size:11pt"><u></=
+u><u></u></span></li></ul>
+<p class=3D"MsoNormal">Correct.<u></u><u></u></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt"><u></u>=C2=A0<u></u><=
+/span></p>
+<ul style=3D"margin-top:0in" type=3D"disc">
+<li style=3D"margin-left:0in">Between all that, we probably can reasonably =
+say that&#39;s the server operator&#39;s responsibility?<span style=3D"font=
+-size:11pt"><u></u><u></u></span></li></ul>
+<p class=3D"MsoNormal">Yes.<u></u><u></u></p>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+<p class=3D"MsoNormal">Cheers,<u></u><u></u></p>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+<p class=3D"MsoNormal">Andrei<u></u><u></u></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt"><u></u>=C2=A0<u></u><=
+/span></p>
+<div style=3D"border-right:none;border-bottom:none;border-left:none;border-=
+top:1pt solid rgb(225,225,225);padding:3pt 0in 0in">
+<p class=3D"MsoNormal"><b><span style=3D"font-size:11pt;font-family:Calibri=
+,sans-serif">From:</span></b><span style=3D"font-size:11pt;font-family:Cali=
+bri,sans-serif"> TLS &lt;<a href=3D"mailto:tls-bounces@ietf.org" rel=3D"nor=
+eferrer noreferrer" target=3D"_blank">tls-bounces@ietf.org</a>&gt;
+<b>On Behalf Of </b>David Benjamin<br>
+<b>Sent:</b> Friday, March 8, 2024 3:25 PM<br>
+<b>To:</b> Watson Ladd &lt;<a href=3D"mailto:watsonbladd@gmail.com" rel=3D"=
+noreferrer noreferrer" target=3D"_blank">watsonbladd@gmail.com</a>&gt;<br>
+<b>Cc:</b> &lt;<a href=3D"mailto:tls@ietf.org" rel=3D"noreferrer noreferrer=
+" target=3D"_blank">tls@ietf.org</a>&gt; &lt;<a href=3D"mailto:tls@ietf.org=
+" rel=3D"noreferrer noreferrer" target=3D"_blank">tls@ietf.org</a>&gt;<br>
+<b>Subject:</b> [EXTERNAL] Re: [TLS] Next steps for key share prediction<u>=
+</u><u></u></span></p>
+</div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+<div>
+<div>
+<p class=3D"MsoNormal">On Thu, Mar 7, 2024 at 6:34<span style=3D"font-famil=
+y:Arial,sans-serif">=E2=80=AF</span>PM Watson Ladd &lt;<a href=3D"mailto:wa=
+tsonbladd@gmail.com" rel=3D"noreferrer noreferrer" target=3D"_blank">watson=
+bladd@gmail.com</a>&gt; wrote:<u></u><u></u></p>
+</div>
+<div>
+<blockquote style=3D"border-top:none;border-right:none;border-bottom:none;b=
+order-left:1pt solid rgb(204,204,204);padding:0in 0in 0in 6pt;margin-left:4=
+.8pt;margin-right:0in">
+<p class=3D"MsoNormal">On Thu, Mar 7, 2024 at 2:56<span style=3D"font-famil=
+y:Arial,sans-serif">=E2=80=AF</span>PM David Benjamin &lt;<a href=3D"mailto=
+:davidben@chromium.org" rel=3D"noreferrer noreferrer" target=3D"_blank">dav=
+idben@chromium.org</a>&gt; wrote:<br>
+&gt;<br>
+&gt; Hi all,<br>
+&gt;<br>
+&gt; With the excitement about, sometime in the far future, possibly transi=
+tioning from a hybrid, or to a to-be-developed better PQ algorithm, I thoug=
+ht it would be a good time to remind folks that, right now, we have no way =
+to effectively transition between PQ-sized
+ KEMs at all.<br>
+&gt;<br>
+&gt; At IETF 118, we discussed draft-davidben-tls-key-share-prediction, whi=
+ch aims to address this. For a refresher, here are some links:<br>
+&gt; <a href=3D"https://davidben.github.io/tls-key-share-prediction/draft-d=
+avidben-tls-key-share-prediction.html" rel=3D"noreferrer noreferrer" target=
+=3D"_blank">
+https://davidben.github.io/tls-key-share-prediction/draft-davidben-tls-key-=
+share-prediction.html</a><br>
+&gt; <a href=3D"https://datatracker.ietf.org/meeting/118/materials/slides-1=
+18-tls-key-share-prediction-00" rel=3D"noreferrer noreferrer" target=3D"_bl=
+ank">
+https://datatracker.ietf.org/meeting/118/materials/slides-118-tls-key-share=
+-prediction-00</a><br>
+&gt; (Apologies, I forgot to cut a draft-01 with some of the outstanding ch=
+anges in the GitHub, so the link above is probably better than draft-00.)<b=
+r>
+&gt;<br>
+&gt; If I recall, the outcome from IETF 118 was two-fold:<br>
+&gt;<br>
+&gt; First, we&#39;d clarify in rfc8446bis that the &quot;key_share first&q=
+uot; selection algorithm is not quite what you want. This was done in
+<a href=3D"https://github.com/tlswg/tls13-spec/pull/1331" rel=3D"noreferrer=
+ noreferrer" target=3D"_blank">https://github.com/tlswg/tls13-spec/pull/133=
+1</a><br>
+&gt;<br>
+&gt; Second, there was some discussion over whether what&#39;s in the draft=
+ is the best way to resolve a hypothetical future transition, or if there w=
+as another formulation. I followed up with folks briefly offline afterwards=
+, but an alternative never came to fruition.<br>
+&gt;<br>
+&gt; Since we don&#39;t have another solution yet, I&#39;d suggest we move =
+forward with what&#39;s in the draft as a starting point. (Or if this email=
+ inspires folks to come up with a better solution, even better! :-D) In par=
+ticular, whatever the rfc8446bis guidance is, there
+ are still TLS implementations out there with the problematic selection alg=
+orithm. Concretely, OpenSSL&#39;s selection algorithm is incompatible with =
+this kind of transition. See
+<a href=3D"https://github.com/openssl/openssl/issues/22203" rel=3D"noreferr=
+er noreferrer" target=3D"_blank">https://github.com/openssl/openssl/issues/=
+22203</a><br>
+<br>
+Is that asking whether or not we want adoption? I want adoption.<u></u><u><=
+/u></p>
+</blockquote>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">I suppose that would be the next step. :-) I think, =
+last meeting, we were a little unclear what we wanted the document to be, s=
+o I was trying to take stock first. Though MT prompted me to ponder this a =
+bit more in
+<a href=3D"https://github.com/davidben/tls-key-share-prediction/issues/5" r=
+el=3D"noreferrer noreferrer" target=3D"_blank">
+https://github.com/davidben/tls-key-share-prediction/issues/5</a>, and now =
+I&#39;m coming around to the idea that we don&#39;t need to do anything spe=
+cial to account for the &quot;wrong&quot; server behavior. Since RFC8446 al=
+ready explicitly said that clients are allowed to
+ not predict their most preferred groups, we can already reasonably infer t=
+hat such servers actively believe that all their groups are comparable in s=
+ecurity. OpenSSL, at least, seems to be taking that position. I... question=
+ whether taking that position is
+ wise, given the ongoing postquantum transition, but so it goes. Hopefully =
+your TLS server software, if it advertises=C2=A0pluggable cryptography with=
+ a PQ use case, and yet=C2=A0opted for a PQ-incompatible selection criteria=
+, has clearly documented this so it isn&#39;t
+ a surprise to you. ;-)<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">Between all that, we probably can reasonably say tha=
+t&#39;s the server operator&#39;s responsibility? I&#39;m going to take som=
+e time to draft a hopefully simpler version of the draft that only defines =
+the DNS hint, and just includes some rough text
+ warning about the implications. Maybe also some SHOULD level text to call =
+out that servers should be sure their policy is what they want. Hopefully, =
+in drafting that, it&#39;ll be clearer what the options are. If nothing els=
+e, I&#39;m sure writing it will help me=C2=A0crystalize
+ my own preferences!<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">=C2=A0<u></u><u></u></p>
+</div>
+<blockquote style=3D"border-top:none;border-right:none;border-bottom:none;b=
+order-left:1pt solid rgb(204,204,204);padding:0in 0in 0in 6pt;margin-left:4=
+.8pt;margin-right:0in">
+<p class=3D"MsoNormal">&gt; Given that, I don&#39;t see a clear way to avoi=
+d some way to separate the old behavior (which impacts the existing groups)=
+ from the new behavior. The draft proposes to do it by keying on the codepo=
+int, and doing our future selves a favor
+ by ensuring that the current generation of PQ codepoints are ready for thi=
+s. That&#39;s still the best solution I see right now for this situation.<b=
+r>
+&gt;<br>
+&gt; Thoughts?<br>
+<br>
+I think letting the DNS signal also be an indicator the server<br>
+implements the correct behavior would be a good idea.<u></u><u></u></p>
+</blockquote>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">I&#39;m=C2=A0afraid DNS is typically unauthenticated=
+. In most TLS deployments, we have to assume that the attacker has influenc=
+e over DNS, which makes it unsuitable for such a signal. Of course, if we e=
+nd up settling on not needing a signal, this
+ is moot.<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">David=C2=A0<u></u><u></u></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</div></blockquote></div></div></div>
+
+--0000000000007522b90613ede9ac--
+

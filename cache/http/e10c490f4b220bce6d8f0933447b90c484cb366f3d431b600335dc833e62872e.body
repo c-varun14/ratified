@@ -1,0 +1,676 @@
+Return-Path: <ekr@rtfm.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id E58CD129AC5
+ for <tls@ietfa.amsl.com>; Tue, 11 Apr 2017 13:47:53 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.598
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.598 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_LOW=-0.7, URIBL_BLOCKED=0.001]
+ autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=rtfm-com.20150623.gappssmtp.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 2EW4b8CYdbj3 for <tls@ietfa.amsl.com>;
+ Tue, 11 Apr 2017 13:47:50 -0700 (PDT)
+Received: from mail-yw0-x22f.google.com (mail-yw0-x22f.google.com
+ [IPv6:2607:f8b0:4002:c05::22f])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id C7D5F129A9F
+ for <tls@ietf.org>; Tue, 11 Apr 2017 13:47:49 -0700 (PDT)
+Received: by mail-yw0-x22f.google.com with SMTP id k13so4047732ywk.1
+ for <tls@ietf.org>; Tue, 11 Apr 2017 13:47:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=rtfm-com.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+ :cc; bh=78MXOqO9vpFKYpBAINSCorC0pOEE8uU5YdZAEs3VGRg=;
+ b=Y1hM+/aQ7GLbCuuOC3w+qQrN6tn7qPNxRQc7dSgbgtBFISb9438Xv/t2n5jbz4ljY0
+ oeZEXzuWp9IrVliu+neC3XrIjjDyHMhkBAdkzHWRoCcmCK3iEn4B770ZRJaH8x7+53rg
+ wT8+dAaX5tzjLSpxQXbWRmPPl/WhTO6SuENhGlDrtOLv1etQL7cWTPpJEhZVLI4c2Zsn
+ GJMIiZIMdsN5emfuUZu2qcQpuakkqcCp9tng1Nk4W7MwleM8eRDTTNeV4yjS1BjwYFXk
+ gfbKYyIGxOhDsUVgRCjE5roiECdaYMKbXFSzpXYUZRAy7FBEQLv6AKUA4X+VaMih2/w9
+ 4ihg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+ :message-id:subject:to:cc;
+ bh=78MXOqO9vpFKYpBAINSCorC0pOEE8uU5YdZAEs3VGRg=;
+ b=JSnXyXSZNhHkpcX6wA2FV00hCfK43H8tpZ+1yRiXYMDAajGr2T/aHlCAfdrnEgcaNp
+ 136e5BmxJPBMckMcJoTeFl/zgvJfMNF3GtyvxUWYfj6R5SYIrgjSKLWBbNhEK5EMJDt9
+ XXTOmT+bj85MfsxT7AswUQCihmlptt0/NyouHYwPp05GDQBAxv+WafIi/6vhBcu5DiG2
+ jspDewX6p7dmxC33QjbRP5HRA9dI8jdXLqSKJqWDrIRQj14WIVh2dwu8uebR9z8Df9vI
+ 8KTujyQf8zMsg9jGg4AfPE82RnzFGqp2l/qNKNOyzECmzq15VvKiNOfvy32VyVvQ5vW2
+ mjFQ==
+X-Gm-Message-State: AN3rC/5sRFGW1EYeC041jmmLawb+hjdxr5+Rs6sWKFi/pr0QtemAfpawxwzIrDFysRdARtjzzvMT/SJcZeP+JQ==
+X-Received: by 10.129.182.65 with SMTP id h1mr7486366ywk.337.1491943668642;
+ Tue, 11 Apr 2017 13:47:48 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 10.129.113.7 with HTTP; Tue, 11 Apr 2017 13:47:08 -0700 (PDT)
+In-Reply-To: <1490797957.28079.20.camel@redhat.com>
+References: <1490797726.28079.18.camel@redhat.com>
+ <1490797957.28079.20.camel@redhat.com>
+From: Eric Rescorla <ekr@rtfm.com>
+Date: Tue, 11 Apr 2017 13:47:08 -0700
+Message-ID: <CABcZeBMCZrVKM959F3ycKN_WAky2NAZTy9OOetnC+KJAj3L+Pw@mail.gmail.com>
+To: Nikos Mavrogiannopoulos <nmav@redhat.com>
+Cc: "tls@ietf.org" <tls@ietf.org>
+Content-Type: multipart/alternative; boundary=94eb2c1bde9c651056054cea3434
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/-nvOc9zmIi3_Wma78QfDzmmqXVQ>
+Subject: Re: [TLS] comments on draft-ietf-tls-tls13-19
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Tue, 11 Apr 2017 20:47:54 -0000
+
+--94eb2c1bde9c651056054cea3434
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+Thanks for your comments.
+
+
+> 1.2. Major Differences from TLS 1.2
+>  It is very hard to make use of this section as is. It is organized on
+> per-draft, while it would be expected to have the changes of the
+> document since TLS 1.2. It contains phrases like "Remove spurious
+> requirement to implement "pre_shared_key"." At its current state it is
+> not useful to someone familiar with TLS 1.2.
+
+Yes, I agree. This is an action item for me.
+
+
+
+> 2. Figure 1 ascii art is a bit awkward (IMHO). "Key Exch" looks like
+> bad shortening. Symbols '^' and 'v' were confusing on the first read.
+> A suggestion could be to avoid ^v, and define shortened terminology
+> upfront and use it on the figures.
+>
+> One the content, Figure 1 contents are too many to swallow at an
+> overview. A suggestion would be to split into two diagrams (preshared
+> keys and not).
+
+I agree that this is a bit hard to take in, but I'd like to have
+a unified diagram. I'll see what I can do about the shortening.
+
+
+> A more general note on the section/document, is that although the PKIX
+> identity (certificate) is protected from passive adversaries, the PSK
+> identity is not. This is a discrepancy in terms of protecting the
+> user's identity between PSK and certificate authentication (that should
+> warrant .
+
+I agree. I will mention this.
+
+
+> 4.1.1. HelloRetryRequest how many times can it be re-sent by the
+> server? I assume only a single one, but it maybe good to make it
+> explicit.
+
+This is forbidden in S 4.1.4.
+https://tlswg.github.io/tls13-spec/#hello-retry-request
+
+   If a client receives a second HelloRetryRequest in the same
+   connection (i.e., where the ClientHello was itself in response to a
+   HelloRetryRequest), it MUST abort the handshake with an
+   =E2=80=9Cunexpected_message=E2=80=9D alert.
+
+Does this seem sufficient?
+
+
+
+
+
+> 4.1.2. It is not defined what a server should do if encountered with a
+> ProtocolVersion of TLS 1.3.
+
+https://tlswg.github.io/tls13-spec/#supported-versions says:
+
+   If this extension is not present, servers which are compliant with
+   this specification MUST negotiate TLS 1.2 or prior as specified in
+   [RFC5246], even if ClientHello.legacy_version is 0x0304 or
+   later. Servers MAY abort the handshake upon receiving a ClientHello
+   with legacy_version 0x0304 or later.
+
+
+
+
+
+> 4.2. rfc6961 is standard's track but TLS 1.3 only uses the RFC6066
+> status request. Why not require RFC6961?
+
+Because TLS 1.3 allows you to attach OSCP-stapled responses to each
+certificate with status_request, we felt that 6961 was superseded.
+
+
+> 4.2. the exception for including cookie in HelloRetryRequest seems like
+> something that could cause issues in future revisions. Any future
+> revision of the protocol would not be able to add such exceptions
+> (since they will be rejected by existing clients), and the fact that
+> the cookie is there, it indicates that such an exception may be useful.
+> A suggestion to address that would be to allow the HelloRetryRequest
+> contain any extension or grant an exception to a specific extension
+> number range.
+
+Yes, this is an interesting suggestion. I have filed issue:
+
+https://github.com/tlswg/tls13-spec/issues/939
+
+However, as David Benjamin points out, it's not clear how one would
+handle this in practice, because HRR is an instruction to the client
+to do something, so if it can't parse that then the handshake fails.
+
+
+> 4.2.5.2. The parameters are informally defined.
+> I'd suggest to follow rfc4492bis and use its text as in:
+>  https://tools.ietf.org/html/draft-ietf-tls-rfc4492bis-16#section-5.4.1
+
+Good idea.
+https://github.com/tlswg/tls13-spec/issues/943
+
+
+> 4.2.7. There is no guidance on the use of max_early_data_size.
+> I'd find it natural to have a recommended minimum value for application
+> protocols layered on TLS to take into account. E.g., text like servers
+> supporting early_data SHOULD allow at least 1024 bytes of data
+> (arbitrary number). Is the 32-bit upper limit intentional?
+
+I think it's just a result of the way the PDU is formatted. I
+would be interested in seeing a PR with guidance...
+
+
+> 4.2.8. This section changes the semantics for pre-shared keys as used
+> in any other protocol (including TLS 1.2). With the new text it
+> implies, pre-shared keys must be combined with a hash algorithm. Thus
+> existing PSK deployments which share keys and would like to upgrade to
+> TLS 1.3 cannot do transparently. They would have to fix to a specific
+> hash algorithm for their existing PSKs, and make sure they provide that
+> information to all the underlying software (which may be different on
+> the server and client side). I could find no implementation guideline
+> on what to do in the case of pre-existing PSKs in that text.
+>
+> My recommendation would be to switch the sentence "For externally
+> established PSKs, the Hash algorithm MUST be set when the PSK is
+> established" to "For externally established PSKs, the Hash algorithm
+> MUST be set when the PSK is established, or default to SHA-256". That
+> way implementations can cope transparently with an upgrade to TLS 1.3
+> for already present PSK keys without requiring an additional RFC
+> describing that.
+
+This seems like a good change. I have made it.
+
+
+> 4.2.8. The overlap of the namespace for usernames to be used in PSK
+> authentication, and the namespace for "resumption" does not give a good
+> feeling.
+
+Yeah, I can see that perspective. That's part of why we domain
+separate in the implementation.
+
+
+
+> 4.2.8. Related to the above, it is unclear what obfuscated_ticket_age
+> should contain when using PSK authentication (but not resumption).
+
+https://tlswg.github.io/tls13-spec/#pre-shared-key-extension:
+
+    For identities established externally an obfuscated_ticket_age of
+    0 SHOULD be used, and servers MUST ignore the value.
+
+
+> 4.2.8.1. It is not defined what the binder should contain when using
+> PSK authentication (but not resumption).
+
+It's intended to be the same (modulo the domain separation in the label).
+
+
+> 4.2.8.1. If a single binder corresponds to a single identity, the
+> parsing and mapping of binders in the PreSharedKeyExtension seems
+> unnecessarily complicated. A suggestion is to move the binder inside
+> each identity structure:
+> struct {
+>           opaque identity<1..2^16-1>;
+>           uint32 obfuscated_ticket_age;
+>           opaque PskBinderEntry<32..255>;
+> } PskIdentity;
+
+I did consider that, but it's not possible because you want the
+binders to cover the other key identities so that it's not possible
+to remove one without detection (unless you reject PSK entirely,
+in which case this is detected in the Finished).
+
+
+> 4.2.8.3. I believe that section can benefit from some improvements.
+> >From a first read it is not clear what this section wants to protect
+> from. It provides some checks, but it is unclear to me what these
+> protect from.
+>
+> Some more concrete comments on the same section:
+> It mentions "see if the value used by the client matches its
+> expectations". A question that arises, is what is the recommended
+> expectation for a server? Given the text in 4.2.8 that should be a
+> week, but the text in 4.2.8 seems to imply that the restriction is
+> defined somewhere else, and I would have expected it to be here.
+>
+> The text recommends: "a server SHOULD measure the round trip time prior
+> to sending the NewSessionTicket message". I see two issues here. (1) it
+> doesn't mention how to do this measurement --my guess is that this can
+> be done in the context of TLS--, and (2) it assumes that round-trips
+> are fixed over time. About (1), I ask because the obvious measurement
+> time between [server Application Data*] and client [Certificate*] would
+> include the processing of the application data by the client.
+> On (2), this check will not work as is for mobile clients which will
+> have variable round-trips.
+>
+> The check 'ticket age must be shorter than elapsed time by a round-
+> trip', is unclear to me what it intends to protect from.
+>
+> A clarification: "the actual time elapsed on the server", elapsed since
+> when? (I guess since the first message was received).
+
+Thanks. I will try to clean this up. I have filed
+
+
+> 4.3.2.1. The OID Filters extension on a first look seems quite
+> independent and unrelated to everything else in this document (seemed
+> quite a distraction that could have been in an appendix as well).
+
+This is a fair point, but it's been in the document a long time,
+so I think this would require WG Consensus.
+
+
+> 4.4.2.1.  OCSP Status and SCT Extensions
+> This is a very nice addition to TLS 1.3. Something that I miss as an
+> implementer is guidelines on how to determine the (time) validity of an
+> OCSP stapled response. Here my point is that OCSP responses have
+> several fields optional (e.g., nextUpdate), which make a validation to
+> be hand-wavy. It would be nice to have a profile of OCSP responses that
+> would be recommended for use in TLS, as well or a recommendation of
+> what constitutes a "fresh" response for use in TLS.
+
+Do you have any thoughts on what text we should insert here? I admit
+to being not that familiar with the practical matters of OCSP stapling.
+
+
+
+> 4.4.2.2., 4.4.2.3.
+> I think the reference to RFC5081 should be replaced with RFC5270 which
+> obsoletes the former even though not explicitly.
+
+Indeed. Also, we are now explicitly prohibiting OpenPGP per discussion
+in Chicago.
+
+
+> 4.4.3. "RSA signatures MUST use an RSASSA-PSS algorithm". What should a
+> client or server do when encounters an non RSA-PSS signature in TLS
+
+
+> 4.6.3. My comment on this section, is that leaving up to the
+> implementer to decide the re-key, would most probably result in the
+> implementer delegating that decision to the application. In my
+> experience that would mean no re-key in practice for the majority of
+> applications. I'd have preferred a one-size fits all approach, where
+> re-key is done on decided points.
+
+I can understand that, but we did litigate this extensively, so I think
+any change would require WG consensus at this point.
+
+
+> 5.1. I miss a maximum number of alerts received per session, or some
+> other alert limiting mechanism (having CVE-2016-8610 in mind).
+
+All alerts now result in connection termination, so the limit
+seems to implicitly be 1.
+
+
+> 7.5. There is no definition of early_exporter_secret, and it is unclear
+> why it is even mentioned. In short how is this supposed to be used, and
+> why should implementations consider adding an interface to it?
+
+It is defined in:
+https://tlswg.github.io/tls13-spec/#key-schedule
+
+I added some text to explain why you would want it.
+
+
+> A. Is the described state machine intended to be normative or
+> informative? I.e., which takes precedence, this description or the text
+> above? (would be nice to clarify)
+
+They are intended to be consistent. I wiould appreciate WG feedback
+on this point.
+
+
+> B.4.
+> I believe it was discussed before, but I miss the AES-256-CCM
+> ciphersuites. If only one must be defined, it may be better to only
+> have the 256-bit variants (at least for the non-mac-truncated version)
+
+Open to WG feedback here as well.
+
+
+> E. I'd find it natural for this to be the security considerations
+> rather than an appendix.
+>
+>
+> G. Quite a long list. Would be nice to have the contributors to TLS 1.3
+> separately.
+
+I'd rather not try to draw this distinction in acknowledgements. My
+feeling is that people have been doing good work on this back to
+SSLv3. I will, however, try to typeset it into two columns.
+
+
+> Bibliography: There are references to PKCS6 and PKCS7 that are never
+> used throughout the text (I guess there are more).
+
+Thanks. We will fix this pre-publication.
+
+
+-Ekr
+
+
+On Wed, Mar 29, 2017 at 7:32 AM, Nikos Mavrogiannopoulos <nmav@redhat.com>
+wrote:
+
+> On Wed, 2017-03-29 at 16:28 +0200, Nikos Mavrogiannopoulos wrote:
+>
+> > A more general note on the section/document, is that although the
+> > PKIX
+> > identity (certificate) is protected from passive adversaries, the PSK
+> > identity is not. This is a discrepancy in terms of protecting the
+> > user's identity between PSK and certificate authentication (that
+> > should
+> > warrant .
+>
+> ... an entry in the security considerations.
+>
+> > 4.2. rfc6961 is standard's track but TLS 1.3 only uses the RFC6066
+> > status request. Why not require RFC6961?
+>
+> Please ignore that. I forgot to delete in my draft.
+>
+> regards,
+> Nikos
+>
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+>
+
+--94eb2c1bde9c651056054cea3434
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div>Thanks for your comments.</div><div><br></div><div><b=
+r></div><div>&gt; 1.2. Major Differences from TLS 1.2</div><div>&gt; =C2=A0=
+It is very hard to make use of this section as is. It is organized on</div>=
+<div>&gt; per-draft, while it would be expected to have the changes of the<=
+/div><div>&gt; document since TLS 1.2. It contains phrases like &quot;Remov=
+e spurious</div><div>&gt; requirement to implement &quot;pre_shared_key&quo=
+t;.&quot; At its current state it is</div><div>&gt; not useful to someone f=
+amiliar with TLS 1.2.</div><div><br></div><div>Yes, I agree. This is an act=
+ion item for me.</div><div><br></div><div><br></div><div><br></div><div>&gt=
+; 2. Figure 1 ascii art is a bit awkward (IMHO). &quot;Key Exch&quot; looks=
+ like</div><div>&gt; bad shortening. Symbols &#39;^&#39; and &#39;v&#39; we=
+re confusing on the first read.</div><div>&gt; A suggestion could be to avo=
+id ^v, and define shortened terminology</div><div>&gt; upfront and use it o=
+n the figures.</div><div>&gt;=C2=A0</div><div>&gt; One the content, Figure =
+1 contents are too many to swallow at an</div><div>&gt; overview. A suggest=
+ion would be to split into two diagrams (preshared</div><div>&gt; keys and =
+not).</div><div><br></div><div>I agree that this is a bit hard to take in, =
+but I&#39;d like to have</div><div>a unified diagram. I&#39;ll see what I c=
+an do about the shortening.</div><div><br></div><div><br></div><div>&gt; A =
+more general note on the section/document, is that although the PKIX</div><=
+div>&gt; identity (certificate) is protected from passive adversaries, the =
+PSK</div><div>&gt; identity is not. This is a discrepancy in terms of prote=
+cting the</div><div>&gt; user&#39;s identity between PSK and certificate au=
+thentication (that should</div><div>&gt; warrant .</div><div><br></div><div=
+>I agree. I will mention this.</div><div><br></div><div><br></div><div>&gt;=
+ 4.1.1. HelloRetryRequest how many times can it be re-sent by the</div><div=
+>&gt; server? I assume only a single one, but it maybe good to make it</div=
+><div>&gt; explicit.</div><div><br></div><div>This is forbidden in S 4.1.4.=
+</div><div><a href=3D"https://tlswg.github.io/tls13-spec/#hello-retry-reque=
+st">https://tlswg.github.io/tls13-spec/#hello-retry-request</a></div><div><=
+br></div><div>=C2=A0 =C2=A0If a client receives a second HelloRetryRequest =
+in the same</div><div>=C2=A0 =C2=A0connection (i.e., where the ClientHello =
+was itself in response to a</div><div>=C2=A0 =C2=A0HelloRetryRequest), it M=
+UST abort the handshake with an</div><div>=C2=A0 =C2=A0=E2=80=9Cunexpected_=
+message=E2=80=9D alert.</div><div>=C2=A0 =C2=A0</div><div>Does this seem su=
+fficient?</div><div><br></div><div><br></div><div><br></div><div><br></div>=
+<div><br></div><div>&gt; 4.1.2. It is not defined what a server should do i=
+f encountered with a</div><div>&gt; ProtocolVersion of TLS 1.3.</div><div><=
+br></div><div><a href=3D"https://tlswg.github.io/tls13-spec/#supported-vers=
+ions">https://tlswg.github.io/tls13-spec/#supported-versions</a> says:</div=
+><div><br></div><div>=C2=A0 =C2=A0If this extension is not present, servers=
+ which are compliant with</div><div>=C2=A0 =C2=A0this specification MUST ne=
+gotiate TLS 1.2 or prior as specified in</div><div>=C2=A0 =C2=A0[RFC5246], =
+even if ClientHello.legacy_version is 0x0304 or</div><div>=C2=A0 =C2=A0late=
+r. Servers MAY abort the handshake upon receiving a ClientHello</div><div>=
+=C2=A0 =C2=A0with legacy_version 0x0304 or later.</div><div>=C2=A0 =C2=A0</=
+div><div><br></div><div><br></div><div><br></div><div><br></div><div>&gt; 4=
+.2. rfc6961 is standard&#39;s track but TLS 1.3 only uses the RFC6066</div>=
+<div>&gt; status request. Why not require RFC6961?</div><div><br></div><div=
+>Because TLS 1.3 allows you to attach OSCP-stapled responses to each</div><=
+div>certificate with status_request, we felt that 6961 was superseded.</div=
+><div><br></div><div><br></div><div>&gt; 4.2. the exception for including c=
+ookie in HelloRetryRequest seems like</div><div>&gt; something that could c=
+ause issues in future revisions. Any future</div><div>&gt; revision of the =
+protocol would not be able to add such exceptions</div><div>&gt; (since the=
+y will be rejected by existing clients), and the fact that</div><div>&gt; t=
+he cookie is there, it indicates that such an exception may be useful.</div=
+><div>&gt; A suggestion to address that would be to allow the HelloRetryReq=
+uest</div><div>&gt; contain any extension or grant an exception to a specif=
+ic extension</div><div>&gt; number range.</div><div><br></div><div>Yes, thi=
+s is an interesting suggestion. I have filed issue:</div><div><br></div><di=
+v><a href=3D"https://github.com/tlswg/tls13-spec/issues/939">https://github=
+.com/tlswg/tls13-spec/issues/939</a></div><div><br></div><div>However, as D=
+avid Benjamin points out, it&#39;s not clear how one would</div><div>handle=
+ this in practice, because HRR is an instruction to the client</div><div>to=
+ do something, so if it can&#39;t parse that then the handshake fails.</div=
+><div><br></div><div><br></div><div>&gt; 4.2.5.2. The parameters are inform=
+ally defined.</div><div>&gt; I&#39;d suggest to follow rfc4492bis and use i=
+ts text as in:</div><div>&gt; =C2=A0<a href=3D"https://tools.ietf.org/html/=
+draft-ietf-tls-rfc4492bis-16#section-5.4.1">https://tools.ietf.org/html/dra=
+ft-ietf-tls-rfc4492bis-16#section-5.4.1</a></div><div><br></div><div>Good i=
+dea.</div><div><a href=3D"https://github.com/tlswg/tls13-spec/issues/943">h=
+ttps://github.com/tlswg/tls13-spec/issues/943</a></div><div><br></div><div>=
+<br></div><div>&gt; 4.2.7. There is no guidance on the use of max_early_dat=
+a_size.=C2=A0</div><div>&gt; I&#39;d find it natural to have a recommended =
+minimum value for application</div><div>&gt; protocols layered on TLS to ta=
+ke into account. E.g., text like servers</div><div>&gt; supporting early_da=
+ta SHOULD allow at least 1024 bytes of data</div><div>&gt; (arbitrary numbe=
+r). Is the 32-bit upper limit intentional?</div><div><br></div><div>I think=
+ it&#39;s just a result of the way the PDU is formatted. I</div><div>would =
+be interested in seeing a PR with guidance...</div><div><br></div><div><br>=
+</div><div>&gt; 4.2.8. This section changes the semantics for pre-shared ke=
+ys as used</div><div>&gt; in any other protocol (including TLS 1.2). With t=
+he new text it</div><div>&gt; implies, pre-shared keys must be combined wit=
+h a hash algorithm. Thus</div><div>&gt; existing PSK deployments which shar=
+e keys and would like to upgrade to</div><div>&gt; TLS 1.3 cannot do transp=
+arently. They would have to fix to a specific</div><div>&gt; hash algorithm=
+ for their existing PSKs, and make sure they provide that</div><div>&gt; in=
+formation to all the underlying software (which may be different on</div><d=
+iv>&gt; the server and client side). I could find no implementation guideli=
+ne</div><div>&gt; on what to do in the case of pre-existing PSKs in that te=
+xt.</div><div>&gt;=C2=A0</div><div>&gt; My recommendation would be to switc=
+h the sentence &quot;For externally</div><div>&gt; established PSKs, the Ha=
+sh algorithm MUST be set when the PSK is</div><div>&gt; established&quot; t=
+o &quot;For externally established PSKs, the Hash algorithm</div><div>&gt; =
+MUST be set when the PSK is established, or default to SHA-256&quot;. That<=
+/div><div>&gt; way implementations can cope transparently with an upgrade t=
+o TLS 1.3</div><div>&gt; for already present PSK keys without requiring an =
+additional RFC</div><div>&gt; describing that.</div><div><br></div><div>Thi=
+s seems like a good change. I have made it.</div><div><br></div><div><br></=
+div><div>&gt; 4.2.8. The overlap of the namespace for usernames to be used =
+in PSK</div><div>&gt; authentication, and the namespace for &quot;resumptio=
+n&quot; does not give a good</div><div>&gt; feeling.</div><div><br></div><d=
+iv>Yeah, I can see that perspective. That&#39;s part of why we domain</div>=
+<div>separate in the implementation.</div><div><br></div><div><br></div><di=
+v><br></div><div>&gt; 4.2.8. Related to the above, it is unclear what obfus=
+cated_ticket_age</div><div>&gt; should contain when using PSK authenticatio=
+n (but not resumption).</div><div><br></div><div><a href=3D"https://tlswg.g=
+ithub.io/tls13-spec/#pre-shared-key-extension">https://tlswg.github.io/tls1=
+3-spec/#pre-shared-key-extension</a>:</div><div><br></div><div>=C2=A0 =C2=
+=A0 For identities established externally an obfuscated_ticket_age of</div>=
+<div>=C2=A0 =C2=A0 0 SHOULD be used, and servers MUST ignore the value.</di=
+v><div><br></div><div><br></div><div>&gt; 4.2.8.1. It is not defined what t=
+he binder should contain when using</div><div>&gt; PSK authentication (but =
+not resumption).</div><div><br></div><div>It&#39;s intended to be the same =
+(modulo the domain separation in the label).</div><div><br></div><div><br><=
+/div><div>&gt; 4.2.8.1. If a single binder corresponds to a single identity=
+, the</div><div>&gt; parsing and mapping of binders in the PreSharedKeyExte=
+nsion seems</div><div>&gt; unnecessarily complicated. A suggestion is to mo=
+ve the binder inside</div><div>&gt; each identity structure:</div><div>&gt;=
+ struct {</div><div>&gt; =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 opaque identity=
+&lt;1..2^16-1&gt;;</div><div>&gt; =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 uint32=
+ obfuscated_ticket_age;</div><div>&gt; =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 o=
+paque PskBinderEntry&lt;32..255&gt;;</div><div>&gt; } PskIdentity;</div><di=
+v><br></div><div>I did consider that, but it&#39;s not possible because you=
+ want the</div><div>binders to cover the other key identities so that it&#3=
+9;s not possible</div><div>to remove one without detection (unless you reje=
+ct PSK entirely,</div><div>in which case this is detected in the Finished).=
+</div><div><br></div><div><br></div><div>&gt; 4.2.8.3. I believe that secti=
+on can benefit from some improvements.</div><div>&gt; &gt;From a first read=
+ it is not clear what this section wants to protect</div><div>&gt; from. It=
+ provides some checks, but it is unclear to me what these</div><div>&gt; pr=
+otect from.</div><div>&gt;=C2=A0</div><div>&gt; Some more concrete comments=
+ on the same section:</div><div>&gt; It mentions &quot;see if the value use=
+d by the client matches its</div><div>&gt; expectations&quot;. A question t=
+hat arises, is what is the recommended</div><div>&gt; expectation for a ser=
+ver? Given the text in 4.2.8 that should be a</div><div>&gt; week, but the =
+text in 4.2.8 seems to imply that the restriction is</div><div>&gt; defined=
+ somewhere else, and I would have expected it to be here.</div><div>&gt;=C2=
+=A0</div><div>&gt; The text recommends: &quot;a server SHOULD measure the r=
+ound trip time prior</div><div>&gt; to sending the NewSessionTicket message=
+&quot;. I see two issues here. (1) it</div><div>&gt; doesn&#39;t mention ho=
+w to do this measurement --my guess is that this can</div><div>&gt; be done=
+ in the context of TLS--, and (2) it assumes that round-trips</div><div>&gt=
+; are fixed over time. About (1), I ask because the obvious measurement</di=
+v><div>&gt; time between [server Application Data*] and client [Certificate=
+*] would</div><div>&gt; include the processing of the application data by t=
+he client.</div><div>&gt; On (2), this check will not work as is for mobile=
+ clients which will</div><div>&gt; have variable round-trips.</div><div>&gt=
+;=C2=A0</div><div>&gt; The check &#39;ticket age must be shorter than elaps=
+ed time by a round-</div><div>&gt; trip&#39;, is unclear to me what it inte=
+nds to protect from.</div><div>&gt;=C2=A0</div><div>&gt; A clarification: &=
+quot;the actual time elapsed on the server&quot;, elapsed since</div><div>&=
+gt; when? (I guess since the first message was received).</div><div><br></d=
+iv><div>Thanks. I will try to clean this up. I have filed=C2=A0</div><div><=
+br></div><div><br></div><div>&gt; 4.3.2.1. The OID Filters extension on a f=
+irst look seems quite</div><div>&gt; independent and unrelated to everythin=
+g else in this document (seemed</div><div>&gt; quite a distraction that cou=
+ld have been in an appendix as well).</div><div><br></div><div>This is a fa=
+ir point, but it&#39;s been in the document a long time,</div><div>so I thi=
+nk this would require WG Consensus.</div><div><br></div><div><br></div><div=
+>&gt; 4.4.2.1.=C2=A0 OCSP Status and SCT Extensions</div><div>&gt; This is =
+a very nice addition to TLS 1.3. Something that I miss as an</div><div>&gt;=
+ implementer is guidelines on how to determine the (time) validity of an</d=
+iv><div>&gt; OCSP stapled response. Here my point is that OCSP responses ha=
+ve</div><div>&gt; several fields optional (e.g., nextUpdate), which make a =
+validation to</div><div>&gt; be hand-wavy. It would be nice to have a profi=
+le of OCSP responses that</div><div>&gt; would be recommended for use in TL=
+S, as well or a recommendation of</div><div>&gt; what constitutes a &quot;f=
+resh&quot; response for use in TLS.</div><div><br></div><div>Do you have an=
+y thoughts on what text we should insert here? I admit</div><div>to being n=
+ot that familiar with the practical matters of OCSP stapling.</div><div><br=
+></div><div><br></div><div><br></div><div>&gt; 4.4.2.2., 4.4.2.3.</div><div=
+>&gt; I think the reference to RFC5081 should be replaced with RFC5270 whic=
+h</div><div>&gt; obsoletes the former even though not explicitly.</div><div=
+><br></div><div>Indeed. Also, we are now explicitly prohibiting OpenPGP per=
+ discussion</div><div>in Chicago.</div><div><br></div><div><br></div><div>&=
+gt; 4.4.3. &quot;RSA signatures MUST use an RSASSA-PSS algorithm&quot;. Wha=
+t should a</div><div>&gt; client or server do when encounters an non RSA-PS=
+S signature in TLS</div><div><br></div><div><br></div><div>&gt; 4.6.3. My c=
+omment on this section, is that leaving up to the</div><div>&gt; implemente=
+r to decide the re-key, would most probably result in the</div><div>&gt; im=
+plementer delegating that decision to the application. In my</div><div>&gt;=
+ experience that would mean no re-key in practice for the majority of</div>=
+<div>&gt; applications. I&#39;d have preferred a one-size fits all approach=
+, where</div><div>&gt; re-key is done on decided points.</div><div><br></di=
+v><div>I can understand that, but we did litigate this extensively, so I th=
+ink</div><div>any change would require WG consensus at this point.</div><di=
+v><br></div><div><br></div><div>&gt; 5.1. I miss a maximum number of alerts=
+ received per session, or some</div><div>&gt; other alert limiting mechanis=
+m (having CVE-2016-8610 in mind).</div><div><br></div><div>All alerts now r=
+esult in connection termination, so the limit</div><div>seems to implicitly=
+ be 1.</div><div><br></div><div><br></div><div>&gt; 7.5. There is no defini=
+tion of early_exporter_secret, and it is unclear</div><div>&gt; why it is e=
+ven mentioned. In short how is this supposed to be used, and</div><div>&gt;=
+ why should implementations consider adding an interface to it?</div><div><=
+br></div><div>It is defined in:</div><div><a href=3D"https://tlswg.github.i=
+o/tls13-spec/#key-schedule">https://tlswg.github.io/tls13-spec/#key-schedul=
+e</a></div><div><br></div><div>I added some text to explain why you would w=
+ant it.</div><div><br></div><div><br></div><div>&gt; A. Is the described st=
+ate machine intended to be normative or</div><div>&gt; informative? I.e., w=
+hich takes precedence, this description or the text</div><div>&gt; above? (=
+would be nice to clarify)</div><div><br></div><div>They are intended to be =
+consistent. I wiould appreciate WG feedback</div><div>on this point.</div><=
+div><br></div><div><br></div><div>&gt; B.4.</div><div>&gt; I believe it was=
+ discussed before, but I miss the AES-256-CCM</div><div>&gt; ciphersuites. =
+If only one must be defined, it may be better to only</div><div>&gt; have t=
+he 256-bit variants (at least for the non-mac-truncated version)</div><div>=
+<br></div><div>Open to WG feedback here as well.</div><div><br></div><div><=
+br></div><div>&gt; E. I&#39;d find it natural for this to be the security c=
+onsiderations</div><div>&gt; rather than an appendix.</div><div>&gt;=C2=A0<=
+/div><div>&gt;=C2=A0</div><div>&gt; G. Quite a long list. Would be nice to =
+have the contributors to TLS 1.3</div><div>&gt; separately.</div><div><br><=
+/div><div>I&#39;d rather not try to draw this distinction in acknowledgemen=
+ts. My</div><div>feeling is that people have been doing good work on this b=
+ack to =C2=A0</div><div>SSLv3. I will, however, try to typeset it into two =
+columns.</div><div><br></div><div><br></div><div>&gt; Bibliography: There a=
+re references to PKCS6 and PKCS7 that are never</div><div>&gt; used through=
+out the text (I guess there are more).</div><div><br></div><div>Thanks. We =
+will fix this pre-publication.</div><div><br></div><div><br></div><div>-Ekr=
+</div><div><br></div></div><div class=3D"gmail_extra"><br><div class=3D"gma=
+il_quote">On Wed, Mar 29, 2017 at 7:32 AM, Nikos Mavrogiannopoulos <span di=
+r=3D"ltr">&lt;<a href=3D"mailto:nmav@redhat.com" target=3D"_blank">nmav@red=
+hat.com</a>&gt;</span> wrote:<br><blockquote class=3D"gmail_quote" style=3D=
+"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex"><span class=
+=3D"">On Wed, 2017-03-29 at 16:28 +0200, Nikos Mavrogiannopoulos wrote:<br>
+<br>
+&gt; A more general note on the section/document, is that although the<br>
+&gt; PKIX<br>
+&gt; identity (certificate) is protected from passive adversaries, the PSK<=
+br>
+&gt; identity is not. This is a discrepancy in terms of protecting the<br>
+&gt; user&#39;s identity between PSK and certificate authentication (that<b=
+r>
+&gt; should<br>
+&gt; warrant .<br>
+<br>
+</span>... an entry in the security considerations.<br>
+<span class=3D""><br>
+&gt; 4.2. rfc6961 is standard&#39;s track but TLS 1.3 only uses the RFC6066=
+<br>
+&gt; status request. Why not require RFC6961?<br>
+<br>
+</span>Please ignore that. I forgot to delete in my draft.<br>
+<div class=3D"HOEnZb"><div class=3D"h5"><br>
+regards,<br>
+Nikos<br>
+<br>
+______________________________<wbr>_________________<br>
+TLS mailing list<br>
+<a href=3D"mailto:TLS@ietf.org">TLS@ietf.org</a><br>
+<a href=3D"https://www.ietf.org/mailman/listinfo/tls" rel=3D"noreferrer" ta=
+rget=3D"_blank">https://www.ietf.org/mailman/<wbr>listinfo/tls</a><br>
+</div></div></blockquote></div><br></div>
+
+--94eb2c1bde9c651056054cea3434--
+

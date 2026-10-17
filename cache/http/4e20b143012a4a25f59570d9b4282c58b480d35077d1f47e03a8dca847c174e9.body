@@ -1,0 +1,344 @@
+Return-Path: <neried7@gmail.com>
+X-Original-To: tls@mail2.ietf.org
+Delivered-To: tls@mail2.ietf.org
+Received: from localhost (localhost [127.0.0.1])
+	by mail2.ietf.org (Postfix) with ESMTP id C4C30921D5CC
+	for <tls@mail2.ietf.org>; Fri, 28 Nov 2025 06:54:55 -0800 (PST)
+X-Virus-Scanned: amavisd-new at ietf.org
+X-Spam-Flag: NO
+X-Spam-Score: -1.848
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.848 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+	DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1,
+	FREEMAIL_ENVFROM_END_DIGIT=0.25, FREEMAIL_FROM=0.001,
+	HTML_MESSAGE=0.001, RCVD_IN_DNSWL_NONE=-0.0001, SPF_HELO_NONE=0.001,
+	SPF_PASS=-0.001] autolearn=ham autolearn_force=no
+Authentication-Results: mail2.ietf.org (amavisd-new); dkim=pass (2048-bit key)
+	header.d=gmail.com
+Received: from mail2.ietf.org ([166.84.6.31])
+	by localhost (mail2.ietf.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id ujtgM_uaW0NG for <tls@mail2.ietf.org>;
+	Fri, 28 Nov 2025 06:54:55 -0800 (PST)
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com
+ [IPv6:2607:f8b0:4864:20::733])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail2.ietf.org (Postfix) with ESMTPS id 3F521921D5BD
+	for <tls@ietf.org>; Fri, 28 Nov 2025 06:54:55 -0800 (PST)
+Received: by mail-qk1-x733.google.com with SMTP id
+ af79cd13be357-8b22624bcdaso220080085a.3
+        for <tls@ietf.org>; Fri, 28 Nov 2025 06:54:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1764341689; x=1764946489; darn=ietf.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=hr38tLjfqVTlWPELii7ymB9OTKRKTE9S6w2i1KD7Jck=;
+        b=JvNWoFuCtgGIytd4fkEybBGZ7wWb4Rrl0Zgrk2rGasbLjZVgRbGQuSKIxxYefMZV8K
+         JL3E9yyVwEwpl/Ad5yvZ7HiGNnwJCt90DTFs2+lvH7qj7fuXypnybJraE1pHctfC9b+O
+         qO4WPX3DEkY6teSWKr440fs7PEPoYBzAb+EQlmYl5lx1Q3H3Min0Gp/7XIg7HqJDmc1e
+         uHODRfilrd7TN/1xuRhoURC79Guujn8WC+xN0JdnQ76Uy5G9x91dvsU5aYqHDxbU6Cjr
+         Wo5aJm8z6e0m6TdHDyNizPrzmuqdX9Xt5sLU4MNxdF2n6M9oZrUkInvnDopR/A8H/7xs
+         8qxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1764341689; x=1764946489;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hr38tLjfqVTlWPELii7ymB9OTKRKTE9S6w2i1KD7Jck=;
+        b=OouHxIWhxjrpsAVLIabQaJLPXAas8jF+nmSSDm7ylnDCwYHRM8rPBSk7JgN+OF3S45
+         KbFvALj8cgK7tPAoPZ+Mj5FULDm77olEjVHz8nN/oqvmc11Gj0s3Iqzma25zGuS+G/2L
+         GHJBvATtVBeSQFVCI0IVtKJYj53t5Lj8ET0Gf5c6WyYWO37PXZOs1mJukBciEY5X1JLv
+         QyelYzN7b9rFzWkSl1V9Iujx/EjBk2OqVjSEQXTKTkqX9JAT+0rK9zHRNr+b3hBtxjX2
+         CXw5VWmFaWjJCZoW44m+tfdNR9SRluoL5qkeU3pC9QsFDBGEQTauAjebFuW6K5TBFvn0
+         yiyA==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCW4YU0HhsoUAz3mtfNsIKG392VBKMR5OY3LxCpfgFcSDU8oBq4KWnGkGArvp9qO49rkUyA=@ietf.org
+X-Gm-Message-State: AOJu0YxSmPV1bs0cM+nSrj5VBSWngjhufernpDOSysmSHaYNcQx0D5kQ
+	P+s5T5Bsoz8FrGy6/r3kHx17qPIPxqHh6NHE/47tAGA95Fju1CMXYduHN8jysQS191lwh2HX9In
+	8w94x48ejQfjuwzvFcmGzPielZy5haLc=
+X-Gm-Gg: ASbGncsdmTN0X77IzdCsI+lqb34BP9xA53eMNyWXGjkVX3aVoh0eO40k2RZY1/GPxpu
+	dbJ2ZBFx25XIklNTExlmF0lItRcW2tOs3vSx9jy3momMcEH5V/rU27f16X5ODwlA4+8cpyKdrSr
+	Ki9imWscAfmAvXtW56DtaFmhhjc80JrqvsfJgQfLfPbH0SkFH+rrzFc7fX/jYSfOsKifrUZHnOh
+	0VFr67VFUyP4lW0jUKU/IHrfTMAHvzIWMK4dLur7VvRb4VF2zufkx0UMc53Q7hiROhagqg=
+X-Google-Smtp-Source: 
+ AGHT+IG4KOZ2XSjxCu5O/Y5L5iWklpRJ9EkKRwAKQa681S/nrLOxkEXIPxb8BNqJGEP3Y1Gv77TSWF4fcWTB9Lol6Io=
+X-Received: by 2002:a05:620a:4402:b0:8b2:e17a:37 with SMTP id
+ af79cd13be357-8b33d478a6emr3392278485a.43.1764341688605; Fri, 28 Nov 2025
+ 06:54:48 -0800 (PST)
+MIME-Version: 1.0
+References: 
+ <GVXPR07MB9678B44C77FACE5495ABD97789DCA@GVXPR07MB9678.eurprd07.prod.outlook.com>
+In-Reply-To: 
+ <GVXPR07MB9678B44C77FACE5495ABD97789DCA@GVXPR07MB9678.eurprd07.prod.outlook.com>
+From: Deirdre Connolly <durumcrustulum@gmail.com>
+Date: Fri, 28 Nov 2025 09:54:37 -0500
+X-Gm-Features: AWmQ_bnVkk6NvxV60ZFTPW0dO6lNBashCIaJxG9snrD9MnBHtXuzXlVGwXm3Jlw
+Message-ID: 
+ <CAFR824xWR2xQmTF20JKyFc-wDoOSYHCc-MLizqV5MABTGBwcxQ@mail.gmail.com>
+To: John Mattsson <john.mattsson=40ericsson.com@dmarc.ietf.org>
+Content-Type: multipart/alternative; boundary="0000000000009ca1a90644a8cfd6"
+Message-ID-Hash: X7UWF7ZMEPTHWV35C36U33R74Y5DNJTR
+X-Message-ID-Hash: X7UWF7ZMEPTHWV35C36U33R74Y5DNJTR
+X-MailFrom: neried7@gmail.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+CC: "TLS@ietf.org" <tls@ietf.org>
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Re=3A_WG_Last_Call=3A_draft-ietf-tls-mlkem-05_=28Ends_20?=
+	=?utf-8?q?25-11-26=29?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/grReeJm8KUkW8XdYPbKtsmPI8ss>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+--0000000000009ca1a90644a8cfd6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+> Yes, Meta has a good article on the topic
+
+>
+https://engineering.fb.com/2024/05/22/security/post-quantum-readiness-tls-p=
+qr-meta/
+
+This is a good article=E2=80=94 I want to highlight that Meta deployed
+Kyber/ML-KEM-512 only on their internal connections, and don't seem to have
+any plans to roll that out to their external connections. While -512 nicely
+fits existing infra, and I agree it should be available especially for IoT
+settings and internal deployments like Meta's, in general public internet
+settings it seems to be a a little riskier as a right-on-the-line parameter
+set for NIST Level 1 security than say -768, which has more headroom
+security-wise.
+
+On Fri, Nov 28, 2025, 2:17=E2=80=AFAM John Mattsson <john.mattsson=3D
+40ericsson.com@dmarc.ietf.org> wrote:
+
+> Hi Stephen,
+>
+> >Do you know if anyone's written up a description of that?
+>
+> Yes, Meta has a good article on the topic
+>
+>
+> https://engineering.fb.com/2024/05/22/security/post-quantum-readiness-tls=
+-pqr-meta/
+> <https://engineering.fb.com/2024/05/22/security/post-quantum-readiness-tl=
+s-pqr-meta/?utm_source=3Dchatgpt.com>
+>
+> There has also been quite a lot written about middleboxes,
+> load-balancers, and other software that assume the ClientHello always fit=
+s
+> in a single packet. See e.g.,
+>
+> https://blog.cloudflare.com/pq-2025/
+> https://www.ietf.org/archive/id/draft-reddy-uta-pqc-app-07.html
+>
+> Just looking at the key share sizes, it is quite easy to see that you can
+> use ML-KEM-512 (800 bytes) and would have been able to fit X25519MLKEM512=
+ (832
+> bytes) and still fit ClientHello in a single packet. It is also quite
+> easy to see that it for many PMTUs it is problematic to fit ML-KEM-768
+> (1184 bytes) and X25519MLKEM768 (1216 bytes) in a single packet.
+>
+>
+> https://datatracker.ietf.org/doc/draft-ietf-iotops-security-protocol-comp=
+arison/
+> https://tls13.xargs.org/#client-hello
+> https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.203.pdf
+>
+> While it did argue for X25519MLKEM512 (and X448MLKEM1024) I did not
+> understand at the time that I would have wanted X25519MLKEM512 for
+> middlebox traversal. Then I would have argued harder for X25519MLKEM512.
+>
+> The current situation is that OpenSSL 3.5 LTS has shipped with
+> X25519MLKEM768, ML-KEM-512, ML-KEM-768, and ML-KEM-1024 and even if TLS W=
+G
+> standardise X25519MLKEM512 now, it will take several more years until it
+> would be added to a OpenSSL LTS, which a lot of infrastructure is based o=
+n.
+> That would make it hard to meet 2030 deadlines for PQC migration but woul=
+d
+> meet 2035 deadlines. I can live with ML-KEM-512 for middle box traversal,
+> but if TLS WG does not publish ML-KEM-512, I would suggest that
+> X25519MLKEM512 is added to draft-ietf-tls-ecdhe-mlkem.
+>
+> (Regarding misbehaving servers, if they don=E2=80=99t handle fragmented
+> ClientHello they likely don=E2=80=99t support ML-KEM anyway and you need =
+to retry
+> with standalone X25519. Middleboxes and load-balancers is the big problem=
+)
+>
+> Cheers,
+> John
+>
+> On 2025-11-27, 20:43, "Stephen Farrell" <stephen.farrell@cs.tcd.ie> wrote=
+:
+>
+>
+> Hi John,
+>
+> On 27/11/2025 16:02, John Mattsson wrote:
+> > - ML-KEM-512 is the only adopted quantum-resistant algorithm that
+> > can be used to bypass legacy middle boxes.
+>
+> Do you know if anyone's written up a description of that?
+>
+> Thanks,
+> S.
+>
+>
+> _______________________________________________
+> TLS mailing list -- tls@ietf.org
+> To unsubscribe send an email to tls-leave@ietf.org
+>
+
+--0000000000009ca1a90644a8cfd6
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"auto">&gt; Yes, Meta has a good article on the topic<div dir=3D=
+"auto"><br></div><div dir=3D"auto">&gt; <a href=3D"https://engineering.fb.c=
+om/2024/05/22/security/post-quantum-readiness-tls-pqr-meta/">https://engine=
+ering.fb.com/2024/05/22/security/post-quantum-readiness-tls-pqr-meta/</a></=
+div><div dir=3D"auto"><br></div><div dir=3D"auto">This is a good article=E2=
+=80=94 I want to highlight that Meta deployed Kyber/ML-KEM-512 only on thei=
+r internal connections, and don&#39;t seem to have any plans to roll that o=
+ut to their external connections. While -512 nicely fits existing infra, an=
+d I agree it should be available especially for IoT settings and internal d=
+eployments like Meta&#39;s, in general public internet settings it seems to=
+ be a a little riskier as a right-on-the-line parameter set for NIST Level =
+1 security than say -768, which has more headroom security-wise.=C2=A0</div=
+></div><br><div class=3D"gmail_quote gmail_quote_container"><div dir=3D"ltr=
+" class=3D"gmail_attr">On Fri, Nov 28, 2025, 2:17=E2=80=AFAM John Mattsson =
+&lt;john.mattsson=3D<a href=3D"mailto:40ericsson.com@dmarc.ietf.org">40eric=
+sson.com@dmarc.ietf.org</a>&gt; wrote:<br></div><blockquote class=3D"gmail_=
+quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1=
+ex"><div><div dir=3D"ltr" style=3D"font-family:Aptos,Arial,Helvetica,sans-s=
+erif;font-size:12pt;color:rgb(0,0,0)">Hi Stephen,</div><div dir=3D"ltr" sty=
+le=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt;color:rgb=
+(0,0,0)"><br></div><div dir=3D"ltr" style=3D"font-family:Aptos,Arial,Helvet=
+ica,sans-serif;font-size:16px;color:rgb(0,0,0)"><span style=3D"background-c=
+olor:rgb(255,255,255)">&gt;Do you know if anyone&#39;s written up a descrip=
+tion of that?</span></div><div dir=3D"ltr" style=3D"font-family:Aptos,Arial=
+,Helvetica,sans-serif;font-size:16px;color:rgb(0,0,0)"><span style=3D"backg=
+round-color:rgb(255,255,255)"><br></span></div><div dir=3D"ltr" style=3D"fo=
+nt-family:Aptos,Arial,Helvetica,sans-serif;font-size:16px;color:rgb(0,0,0)"=
+><span style=3D"background-color:rgb(255,255,255)">Yes, Meta has a good art=
+icle on the topic</span></div><div dir=3D"ltr" style=3D"font-family:Aptos,A=
+rial,Helvetica,sans-serif;font-size:16px;color:rgb(0,0,0)"><span style=3D"b=
+ackground-color:rgb(255,255,255)"><br></span></div><div dir=3D"ltr" style=
+=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:16px;color:rgb(0=
+,0,0)"><span style=3D"background-color:rgb(255,255,255)"><a href=3D"https:/=
+/engineering.fb.com/2024/05/22/security/post-quantum-readiness-tls-pqr-meta=
+/?utm_source=3Dchatgpt.com" target=3D"_blank" rel=3D"noreferrer">https://en=
+gineering.fb.com/2024/05/22/security/post-quantum-readiness-tls-pqr-meta/</=
+a></span></div><div dir=3D"ltr" style=3D"font-family:Aptos,Arial,Helvetica,=
+sans-serif;font-size:16px;color:rgb(0,0,0)"><span style=3D"background-color=
+:rgb(255,255,255)"><br></span></div><div dir=3D"ltr"><span style=3D"backgro=
+und-color:rgb(255,255,255)">There has also=C2=A0been quite a lot written ab=
+out </span><span style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font=
+-size:16px;color:rgb(0,0,0);background-color:rgb(255,255,255)">middleboxes,=
+ load-balancers, and other software that assume the ClientHello always fits=
+ in a single packet. See e.g.,=C2=A0</span></div><div dir=3D"ltr" style=3D"=
+font-family:Aptos,Arial,Helvetica,sans-serif;font-size:16px;color:rgb(0,0,0=
+)"><span style=3D"background-color:rgb(255,255,255)"><br></span></div><div =
+dir=3D"ltr" style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size=
+:12pt;color:rgb(0,0,0)"><a href=3D"https://blog.cloudflare.com/pq-2025/" ta=
+rget=3D"_blank" rel=3D"noreferrer">https://blog.cloudflare.com/pq-2025/</a>=
+</div><div dir=3D"ltr" style=3D"font-family:Aptos,Arial,Helvetica,sans-seri=
+f;font-size:12pt;color:rgb(0,0,0)"><a href=3D"https://www.ietf.org/archive/=
+id/draft-reddy-uta-pqc-app-07.html" target=3D"_blank" rel=3D"noreferrer">ht=
+tps://www.ietf.org/archive/id/draft-reddy-uta-pqc-app-07.html</a></div><div=
+ dir=3D"ltr" style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-siz=
+e:12pt;color:rgb(0,0,0)"><br></div><div dir=3D"ltr"><span style=3D"font-fam=
+ily:Aptos,Arial,Helvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">Just =
+looking at the key share sizes, it is quite easy to see that you can use ML=
+-KEM-512=C2=A0(800 bytes)=C2=A0and would have been able to fit X25519MLKEM5=
+12 </span><span style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-=
+size:16px;color:rgb(0,0,0);background-color:rgb(255,255,255)">(832 bytes) <=
+/span><span style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size=
+:12pt;color:rgb(0,0,0)">and still fit </span><span style=3D"background-colo=
+r:rgb(255,255,255)">ClientHello in a single packet. It is also quite easy t=
+o see that it for many PMTUs it is problematic to fit </span><span style=3D=
+"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:16px;color:rgb(0,0,=
+0);background-color:rgb(255,255,255)">ML-KEM-768 (1184 bytes) and X25519MLK=
+EM768=C2=A0(1216 bytes) in a single packet.</span></div><div dir=3D"ltr" st=
+yle=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt;color:rg=
+b(0,0,0)"><br></div><div dir=3D"ltr" style=3D"font-family:Aptos,Arial,Helve=
+tica,sans-serif;font-size:12pt;color:rgb(0,0,0)"><a href=3D"https://datatra=
+cker.ietf.org/doc/draft-ietf-iotops-security-protocol-comparison/" style=3D=
+"color:rgb(0,0,0);text-decoration:none" target=3D"_blank" rel=3D"noreferrer=
+">https://datatracker.ietf.org/doc/draft-ietf-iotops-security-protocol-comp=
+arison/</a></div><div dir=3D"ltr" style=3D"font-family:Aptos,Arial,Helvetic=
+a,sans-serif;font-size:12pt;color:rgb(0,0,0)"><a href=3D"https://tls13.xarg=
+s.org/#client-hello" target=3D"_blank" rel=3D"noreferrer">https://tls13.xar=
+gs.org/#client-hello</a><br><a href=3D"https://nvlpubs.nist.gov/nistpubs/FI=
+PS/NIST.FIPS.203.pdf" style=3D"color:rgb(0,0,0);text-decoration:none" targe=
+t=3D"_blank" rel=3D"noreferrer">https://nvlpubs.nist.gov/nistpubs/FIPS/NIST=
+.FIPS.203.pdf</a></div><div dir=3D"ltr" style=3D"font-family:Aptos,Arial,He=
+lvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)"><br></div><div dir=3D"l=
+tr"><span style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:1=
+2pt;color:rgb(0,0,0)">While it did argue for </span><span style=3D"backgrou=
+nd-color:rgb(255,255,255)">X25519MLKEM512=C2=A0(and X448MLKEM1024) I did no=
+t understand at the time that I would have wanted X25519MLKEM512 for middle=
+box traversal. Then I would have argued harder for </span><span style=3D"fo=
+nt-family:Aptos,Arial,Helvetica,sans-serif;font-size:16px;color:rgb(0,0,0);=
+background-color:rgb(255,255,255)">X25519MLKEM512.</span></div><div dir=3D"=
+ltr" style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:16px;c=
+olor:rgb(0,0,0)"><span style=3D"background-color:rgb(255,255,255)"><br></sp=
+an></div><div dir=3D"ltr"><span style=3D"background-color:rgb(255,255,255)"=
+>The current situation is that OpenSSL 3.5 LTS has shipped with X25519MLKEM=
+768, ML-KEM-512, ML-KEM-768, and ML-KEM-1024 and even if TLS WG standardise=
+ </span><span style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-si=
+ze:16px;color:rgb(0,0,0);background-color:rgb(255,255,255)">X25519MLKEM512<=
+/span><span style=3D"background-color:rgb(255,255,255)">=C2=A0now, it will =
+take several more years until it would be added to a OpenSSL LTS, which a l=
+ot of infrastructure is based on. That would make it hard to meet 2030 dead=
+lines for PQC migration but would meet 2035 deadlines. I can live with ML-K=
+EM-512 for middle box traversal, but if TLS WG does not publish </span><spa=
+n style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:16px;colo=
+r:rgb(0,0,0);background-color:rgb(255,255,255)">ML-KEM-512, I would suggest=
+ that X25519MLKEM512 is added to draft-ietf-tls-ecdhe-mlkem.</span></div><d=
+iv dir=3D"ltr" style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-s=
+ize:12pt;color:rgb(0,0,0)"><br></div><div dir=3D"ltr" style=3D"font-family:=
+Aptos,Arial,Helvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">(Regardin=
+g misbehaving servers, if they don=E2=80=99t handle fragmented ClientHello =
+they likely don=E2=80=99t support ML-KEM anyway and you need to retry with =
+standalone X25519. Middleboxes and load-balancers is the big problem)</div>=
+<div dir=3D"ltr" style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font=
+-size:12pt;color:rgb(0,0,0)"><br></div><div dir=3D"ltr" style=3D"font-famil=
+y:Aptos,Arial,Helvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">Cheers,=
+</div><div dir=3D"ltr" style=3D"font-family:Aptos,Arial,Helvetica,sans-seri=
+f;font-size:12pt;color:rgb(0,0,0)">John</div><div dir=3D"ltr" style=3D"font=
+-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)"><=
+br></div><span style=3D"color:rgb(0,0,0)">On 2025-11-27, 20:43, &quot;Steph=
+en Farrell&quot; &lt;<a href=3D"mailto:stephen.farrell@cs.tcd.ie" target=3D=
+"_blank" rel=3D"noreferrer">stephen.farrell@cs.tcd.ie</a>&gt; wrote:<br><br=
+></span><div dir=3D"ltr" style=3D"color:rgb(0,0,0)"><br></div><div style=3D=
+"color:rgb(0,0,0)">Hi John,</div><div dir=3D"ltr" style=3D"color:rgb(0,0,0)=
+"><br></div><div style=3D"color:rgb(0,0,0)">On 27/11/2025 16:02, John Matts=
+son wrote:</div><div>&gt; - ML-KEM-512 is the only adopted quantum-resistan=
+t algorithm that</div><div>&gt; can be used to bypass legacy middle boxes.<=
+/div><div dir=3D"ltr"><br></div><div>Do you know if anyone&#39;s written up=
+ a description of that?</div><div dir=3D"ltr"><br></div><div>Thanks,</div><=
+div>S.</div><div dir=3D"ltr"><br></div><div dir=3D"ltr"><br></div></div>___=
+____________________________________________<br>
+TLS mailing list -- <a href=3D"mailto:tls@ietf.org" target=3D"_blank" rel=
+=3D"noreferrer">tls@ietf.org</a><br>
+To unsubscribe send an email to <a href=3D"mailto:tls-leave@ietf.org" targe=
+t=3D"_blank" rel=3D"noreferrer">tls-leave@ietf.org</a><br>
+</blockquote></div>
+
+--0000000000009ca1a90644a8cfd6--
+

@@ -1,0 +1,156 @@
+Return-Path: <mellon@fugue.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id B437C1242F7
+ for <tls@ietfa.amsl.com>; Tue,  6 Mar 2018 14:42:44 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.6
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.6 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_LOW=-0.7, SPF_PASS=-0.001]
+ autolearn=unavailable autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=fugue-com.20150623.gappssmtp.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id bP5Mdq0oPLvM for <tls@ietfa.amsl.com>;
+ Tue,  6 Mar 2018 14:42:42 -0800 (PST)
+Received: from mail-qk0-x22e.google.com (mail-qk0-x22e.google.com
+ [IPv6:2607:f8b0:400d:c09::22e])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 06456124319
+ for <tls@ietf.org>; Tue,  6 Mar 2018 14:42:42 -0800 (PST)
+Received: by mail-qk0-x22e.google.com with SMTP id l206so393871qke.1
+ for <tls@ietf.org>; Tue, 06 Mar 2018 14:42:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=fugue-com.20150623.gappssmtp.com; s=20150623;
+ h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+ :references; bh=fmXIRWsikUovHvYqP1/V0vpOn+QMX8twI3ss2ykVwgI=;
+ b=vwYZ1jTe3CAqN4oybqSEJcwi46nH3t2i7ZXxFR0EMkNpRErGjHtxvJNgoTE3osbpeT
+ la2dRYD3BwMsQAvRa8t+fFraQ3ZzIrnTL8kOdziNrjNR23q5B0iNi49HkUClQk1b5Gzh
+ c98AoWmN6ar2Am8FvtHxNg3mEyM06C6xz+XyWzdHJiD11jb02SIEkQrPaBVjfVMyb++P
+ pXxEK0sX3ValHOd2Fh9Lcw6sfAfkL1ArUCRC8xLRXr0gjKyblhouu9a+ZCbeypbcJu4T
+ bnGPCFsXjoZjcXHnq2/TOYQyUtS5wtRFBhaWCIJ2vPvMpoPViPxItdwIFpIDudYuGaL9
+ UQdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:message-id:mime-version:subject:date
+ :in-reply-to:cc:to:references;
+ bh=fmXIRWsikUovHvYqP1/V0vpOn+QMX8twI3ss2ykVwgI=;
+ b=i+QgGzNqEtb7RvYgNCoDOelFChvZwDSDDHaC3QhKtPTMXd7yCHltbY+DdCX7QxJtxu
+ pOmyzpnyqs5cN937HVlMrgf6P4n+sKzYPAE6H2mz22svU9EfnuL0PzgoIXMa4rU6tgdW
+ sjT5bre2GU8aE/JV5v8+A6z5EIxMR7psJvvxMPjIRI/Yvj/+e5/8JYfh/18QlLONOLWb
+ J1Skmbtc1RuY7kZTU1UNRrrx8bDrBIKGg1v8skIOccZ3U9X0Zy5UDyNZlPmnJKzNwnJ4
+ snzSaziFiQ4U/fRHNkk7FCm5bdxjPWFIg3JWQ4T0I4puht+2y/05nfqEOvJWZOj6QsQm
+ GPRg==
+X-Gm-Message-State: AElRT7F/NqNh7mMyNNqPrGarrA6r0L6FlZuHbMpOPjanClB+9GSzCTnX
+ hibAO+U3gPxlz79/Cxyrq62BEw==
+X-Google-Smtp-Source: AG47ELsIjgwU64Jg2GXTgf3jNxWCvJXZsQ3oo9kzSEx11dmUlSwLtIrjpcPjvttdgJYT0fGEc3HwNg==
+X-Received: by 10.55.152.133 with SMTP id a127mr19414918qke.100.1520376160988; 
+ Tue, 06 Mar 2018 14:42:40 -0800 (PST)
+Received: from [10.0.1.12] ([8.20.190.66])
+ by smtp.gmail.com with ESMTPSA id m66sm10813314qkl.43.2018.03.06.14.42.40
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Tue, 06 Mar 2018 14:42:40 -0800 (PST)
+From: Ted Lemon <mellon@fugue.com>
+Message-Id: <6EBE3EC6-AA06-4BA8-8824-FA4BEC924138@fugue.com>
+Content-Type: multipart/alternative;
+ boundary="Apple-Mail=_2EE582FA-37AC-4DE1-B570-27AA3C2C3770"
+Mime-Version: 1.0 (Mac OS X Mail 11.2 \(3445.5.20\))
+Date: Tue, 6 Mar 2018 17:42:39 -0500
+In-Reply-To: <CAAF6GDcBFHhe8oWJqF-LVUfYdR7HRW_Gk9c0KgxNRKoQzauvpQ@mail.gmail.com>
+Cc: Dale Worley <worley@ariadne.com>, gen-art@ietf.org, IETF <ietf@ietf.org>, 
+ draft-ietf-tls-tls13.all@ietf.org, "<tls@ietf.org>" <tls@ietf.org>
+To: =?utf-8?Q?Colm_MacC=C3=A1rthaigh?= <colm@allcosts.net>
+References: <152004960327.8290.4628820807186314931@ietfa.amsl.com>
+ <CAAF6GDcBFHhe8oWJqF-LVUfYdR7HRW_Gk9c0KgxNRKoQzauvpQ@mail.gmail.com>
+X-Mailer: Apple Mail (2.3445.5.20)
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/9aoBzOp3uVdqR8vihbz_AEA6jD4>
+Subject: Re: [TLS] Genart last call review of draft-ietf-tls-tls13-24
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Tue, 06 Mar 2018 22:42:45 -0000
+
+
+--Apple-Mail=_2EE582FA-37AC-4DE1-B570-27AA3C2C3770
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=utf-8
+
+On Mar 6, 2018, at 5:35 PM, Colm MacC=C3=A1rthaigh <colm@allcosts.net> =
+wrote:
+> There's a general conjecture that the more information that is =
+provided to attackers, the more easily they can leverage into a =
+compromise. Personally I believe that conjecture, and would actually =
+prefer to see fewer signals, ideally as few as one big error code. There =
+is a trade-off against debugability, but I've only seen a handful of =
+people have the skills to debug low level TLS issues and it doesn't seem =
+worth the risk. Others disagree, which is valid, but it's at least an =
+area of reasonable contention. =20
+
+This makes perfect sense.   Stuart Cheshire and I were having the same =
+discussion a while back about DNS Session Signaling, and he pointed out =
+(I was playing Dale's role) that there's an important distinction to be =
+made between "buggy implementation" and "actionable notification where =
+no bug exists."   Any alert that signals "buggy implementation" is bad, =
+for the reason you've stated, and also because such signals are not =
+actionable=E2=80=94if you've run into a bug you should probably just =
+give up, and not try to somehow guess in your implementation what might =
+work when the bug happens.   The only reason to send a signal is if =
+there is a known and clear action to take upon receiving the signal, =
+other than "we're borked, give up."
+
+
+--Apple-Mail=_2EE582FA-37AC-4DE1-B570-27AA3C2C3770
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html;
+	charset=utf-8
+
+<html><head><meta http-equiv=3D"Content-Type" content=3D"text/html; =
+charset=3Dutf-8"></head><body style=3D"word-wrap: break-word; =
+-webkit-nbsp-mode: space; line-break: after-white-space;" class=3D"">On =
+Mar 6, 2018, at 5:35 PM, Colm MacC=C3=A1rthaigh &lt;<a =
+href=3D"mailto:colm@allcosts.net" class=3D"">colm@allcosts.net</a>&gt; =
+wrote:<div><blockquote type=3D"cite" class=3D""><div class=3D""><span =
+style=3D"font-family: Helvetica; font-size: 18px; font-style: normal; =
+font-variant-caps: normal; font-weight: normal; letter-spacing: normal; =
+text-align: start; text-indent: 0px; text-transform: none; white-space: =
+normal; word-spacing: 0px; -webkit-text-stroke-width: 0px; float: none; =
+display: inline !important;" class=3D"">There's a general conjecture =
+that the more information that is provided to attackers, the more easily =
+they can leverage into a compromise. Personally I believe that =
+conjecture, and would actually prefer to see fewer signals, ideally as =
+few as one big error code. There is a trade-off against debugability, =
+but I've only seen a handful of people have the skills to debug low =
+level TLS issues and it doesn't seem worth the risk. Others disagree, =
+which is valid, but it's at least an area of reasonable contention. =
+&nbsp;</span></div></blockquote></div><br class=3D""><div class=3D"">This =
+makes perfect sense. &nbsp; Stuart Cheshire and I were having the same =
+discussion a while back about DNS Session Signaling, and he pointed out =
+(I was playing Dale's role) that there's an important distinction to be =
+made between "buggy implementation" and "actionable notification where =
+no bug exists." &nbsp; Any alert that signals "buggy implementation" is =
+bad, for the reason you've stated, and also because such signals are not =
+actionable=E2=80=94if you've run into a bug you should probably just =
+give up, and not try to somehow guess in your implementation what might =
+work when the bug happens. &nbsp; The only reason to send a signal is if =
+there is a known and clear action to take upon receiving the signal, =
+other than "we're borked, give up."</div><div class=3D""><br =
+class=3D""></div></body></html>=
+
+--Apple-Mail=_2EE582FA-37AC-4DE1-B570-27AA3C2C3770--
+

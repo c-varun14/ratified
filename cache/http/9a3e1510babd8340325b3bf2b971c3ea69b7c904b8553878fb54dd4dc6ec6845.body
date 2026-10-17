@@ -1,0 +1,97 @@
+From wwwrun@rfcpa.amsl.com  Thu Mar 28 18:04:59 2024
+Return-Path: <wwwrun@rfcpa.amsl.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 43B86C169410;
+ Thu, 28 Mar 2024 18:04:59 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -3.949
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.949 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, HEADER_FROM_DIFFERENT_DOMAINS=0.249,
+ RCVD_IN_DNSWL_MED=-2.3, RCVD_IN_ZEN_BLOCKED_OPENDNS=0.001,
+ SPF_PASS=-0.001, URIBL_DBL_BLOCKED_OPENDNS=0.001,
+ URIBL_ZEN_BLOCKED_OPENDNS=0.001]
+ autolearn=unavailable autolearn_force=no
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id cwtNSeQsDrSI; Thu, 28 Mar 2024 18:04:55 -0700 (PDT)
+Received: from rfcpa.amsl.com (rfcpa.amsl.com [50.223.129.200])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 82149C169415;
+ Thu, 28 Mar 2024 18:04:34 -0700 (PDT)
+Received: by rfcpa.amsl.com (Postfix, from userid 499)
+ id 4A74E191A4B4; Thu, 28 Mar 2024 18:04:34 -0700 (PDT)
+To: ericlaw@microsoft.com, ekr@rtfm.com
+From: RFC Errata System <rfc-editor@rfc-editor.org>
+Cc: paul.wouters@aiven.io, iesg@ietf.org, tls@ietf.org, iana@iana.org,
+ rfc-editor@rfc-editor.org
+Content-Type: text/plain; charset=UTF-8
+Message-Id: <20240329010434.4A74E191A4B4@rfcpa.amsl.com>
+Date: Thu, 28 Mar 2024 18:04:34 -0700 (PDT)
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/Oh_Ne1xvBF64W7L7yoFj-1VgwQ8>
+Subject: [TLS] [Errata Verified] RFC8446 (7303)
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Fri, 29 Mar 2024 01:04:59 -0000
+
+The following errata report has been verified for RFC8446,
+"The Transport Layer Security (TLS) Protocol Version 1.3". 
+
+--------------------------------------
+You may review the report below and at:
+https://www.rfc-editor.org/errata/eid7303
+
+--------------------------------------
+Status: Verified
+Type: Technical
+
+Reported by: Eric Lawrence <ericlaw@microsoft.com>
+Date Reported: 2023-01-12
+Verified by: Paul Wouters (IESG)
+
+Section: 6.1
+
+Original Text
+-------------
+This alert notifies the recipient that the sender will not send any more messages on this connection. 
+
+Corrected Text
+--------------
+This alert notifies the recipient that the sender will not send any more messages on this connection. close_notify alerts should be sent with a severity level of WARNING.
+
+Notes
+-----
+Apparently, TLS/1.0 specified these should be set to WARNING, not FATAL, but this text got lost somewhere along the way. https://github.com/pion/dtls/issues/195
+
+OpenSSL/NSS both send as WARNING, and servers that have tried sending as FATAL have encountered compatibility problems with clients which treat FATAL alerts differently than WARNING alerts: e.g. https://source.chromium.org/chromium/chromium/src/+/main:third_party/boringssl/src/ssl/tls_record.cc;l=591;drc=c0872c02015009bf3dbab0a83c0452d141e8e9cf?q=tls_open_record&ss=chromium%2Fchromium%2Fsrc
+
+Paul Wouters(AD): Resolved but with the following Corrected Text:
+
+close_notify:  This alert notifies the recipient that the sender will not send any more messages on this connection.  Any data received after a closure alert has been received MUST be ignored. This alert MUST be sent with AlertLevel=warning.
+
+--------------------------------------
+RFC8446 (draft-ietf-tls-tls13-28)
+--------------------------------------
+Title               : The Transport Layer Security (TLS) Protocol Version 1.3
+Publication Date    : August 2018
+Author(s)           : E. Rescorla
+Category            : PROPOSED STANDARD
+Source              : Transport Layer Security
+Stream              : IETF
+Verifying Party     : IESG
+

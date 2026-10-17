@@ -1,0 +1,118 @@
+Return-Path: <ilariliusvaara@welho.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id EF58212DD35
+ for <tls@ietfa.amsl.com>; Thu, 18 Aug 2016 05:48:07 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -3.147
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.147 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, RCVD_IN_DNSWL_NONE=-0.0001,
+ RP_MATCHES_RCVD=-1.247] autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 3YnRNCVTD34a for <tls@ietfa.amsl.com>;
+ Thu, 18 Aug 2016 05:48:05 -0700 (PDT)
+Received: from welho-filter3.welho.com (welho-filter3.welho.com [83.102.41.25])
+ by ietfa.amsl.com (Postfix) with ESMTP id 06A8312DD6C
+ for <tls@ietf.org>; Thu, 18 Aug 2016 05:46:12 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+ by welho-filter3.welho.com (Postfix) with ESMTP id B51F9FD6D;
+ Thu, 18 Aug 2016 15:46:11 +0300 (EEST)
+X-Virus-Scanned: Debian amavisd-new at pp.htv.fi
+Received: from welho-smtp3.welho.com ([IPv6:::ffff:83.102.41.86])
+ by localhost (welho-filter3.welho.com [::ffff:83.102.41.25]) (amavisd-new,
+ port 10024)
+ with ESMTP id sk8P8LKq6XrU; Thu, 18 Aug 2016 15:46:10 +0300 (EEST)
+Received: from LK-Perkele-V2 (87-100-177-32.bb.dnainternet.fi [87.100.177.32])
+ (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by welho-smtp3.welho.com (Postfix) with ESMTPSA id 76B362315;
+ Thu, 18 Aug 2016 15:46:10 +0300 (EEST)
+Date: Thu, 18 Aug 2016 15:46:02 +0300
+From: Ilari Liusvaara <ilariliusvaara@welho.com>
+To: Eric Rescorla <ekr@rtfm.com>
+Message-ID: <20160818124602.syi2whfbrom7xfi6@LK-Perkele-V2.elisa-laajakaista.fi>
+References: <CABcZeBMqykSnQp__TRaNmyhpcLPaU=eeuM120zgAoprwd0555w@mail.gmail.com>
+ <20160818052622.zim6nxwwqw3hzmr6@LK-Perkele-V2.elisa-laajakaista.fi>
+ <CABcZeBOaLhBq64Yw2D-5oXfE56_2atMX8tN31Y=yt9VkWNX2=g@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CABcZeBOaLhBq64Yw2D-5oXfE56_2atMX8tN31Y=yt9VkWNX2=g@mail.gmail.com>
+User-Agent: Mutt/1.6.2-neo (2016-08-08)
+Sender: ilariliusvaara@welho.com
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/c_us1DjbV-Q0OCGFanjpjhwyl7A>
+Cc: "tls@ietf.org" <tls@ietf.org>
+Subject: Re: [TLS] draft-ietf-tls-tls13-15
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.17
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Thu, 18 Aug 2016 12:48:08 -0000
+
+On Thu, Aug 18, 2016 at 05:29:34AM -0700, Eric Rescorla wrote:
+> Thanks for the quick review.
+> 
+> On Wed, Aug 17, 2016 at 10:26 PM, Ilari Liusvaara <ilariliusvaara@welho.com>
+> wrote:
+> 
+> - I note that accepting PSK and selecting the auth mode seem to be
+> >   in separate messages, which seems quite annoying implementation-
+> >   wise..
+> 
+> 
+> Can you elaborate on this? The intend is that they both appear in
+> ServerHello
+> (in pre_shared_key and signature_algorithms respectively).
+
+Eeh, I thought it was in EncryptedExtensions. Reading the text
+again, it is IMO really unclear where it goes.
+
+Checking the extension table, it says "Client". Which impiles that
+servers don't send it, but 4.2.2 says servers must send it in some
+cases.
+
+> 
+> - Can the server send arbitrary certificate in response to PSK or is
+> >   it somehow restricted? The document does not seem to talk about it.
+> >
+> 
+> The document right now is supposed to be PSK XOR server signs, so the
+> answer is supposed to be "no". If/when we allow both together, then
+> we'll have to address this, which is a bit tricky.
+
+Then why does that server signature_algorithms exist? I think that
+special PSK authentication modes should be specified in the PSK
+extension, so non-PSK clients don't get confused and do inapporiate
+things with those indications.
+
+> > - The HelloRetryRequest is problematic in pure-PSK case[1].
+> >
+> >
+> > [1] One way to do it would be to move the group to extension, which
+> > would only be sent if new group was needed. Then one could always
+> > require at least one extension (the field could also be renamed).
+> > Also, one could make it so that HRR extensions don't have to
+> > correspond to CH extensions (and unsupported one is a fatal error).
+> >
+> 
+> Agreed on both counts. PR wanted.
+> https://github.com/tlswg/tls13-spec/issues/560
+ 
+David Bejamin already posted a PR about that. Doesn't clearly say
+that unknown reason handling.
+
+
+-Ilari
+

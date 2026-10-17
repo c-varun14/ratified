@@ -1,0 +1,469 @@
+Return-Path: <watsonbladd@gmail.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id E0A6B12F547
+ for <tls@ietfa.amsl.com>; Sat, 15 Jul 2017 16:08:01 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.998
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.998 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ DKIM_VALID_AU=-0.1, FREEMAIL_FROM=0.001, HTML_MESSAGE=0.001,
+ RCVD_IN_DNSWL_NONE=-0.0001, SPF_PASS=-0.001, URIBL_BLOCKED=0.001]
+ autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=gmail.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id P_VDEbS3jdYr for <tls@ietfa.amsl.com>;
+ Sat, 15 Jul 2017 16:08:00 -0700 (PDT)
+Received: from mail-pg0-x233.google.com (mail-pg0-x233.google.com
+ [IPv6:2607:f8b0:400e:c05::233])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id D8B6712EC2B
+ for <tls@ietf.org>; Sat, 15 Jul 2017 16:07:59 -0700 (PDT)
+Received: by mail-pg0-x233.google.com with SMTP id k14so61722459pgr.0
+ for <tls@ietf.org>; Sat, 15 Jul 2017 16:07:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025; 
+ h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+ :cc; bh=wIB/zstwDXSGDkOvuyA/EIafFl6jal9Uw5Q9o7ot6Z8=;
+ b=PF0lkaSOhvRsTvGq9ASnDUhwl1Wnd8y1Y9bmVJegYcO9PLCfNDJNoMc5ro0ctRRRep
+ dyKovtFw3OcvgaUtftC4MkGYF9SazPAYiLBOFw/XjQTLVvWZYCUu3ZAfZq97gQD5FeOj
+ qucO3hvU6DZ7oy0Q3LG8hr7B+4GvIYwLkI+Cydhpz9eDaQgOgYtYLc9ZlQC16WVxNQ2K
+ fwka1OxjKbFwmfOYPG4F11uWu4P8sPv1bV6VyYdGAISrepRxQD8Iu+1YJ4aWlSVd4GV6
+ O6pYMMOSI+fG2J5u89+4+3PNi9Bg3ed8yd/vQ3UaimPw/Puvmn6PyiyOrOr1WoaKOZAq
+ +OGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+ :message-id:subject:to:cc;
+ bh=wIB/zstwDXSGDkOvuyA/EIafFl6jal9Uw5Q9o7ot6Z8=;
+ b=I7W0dDqOpvtPVSCYGM+9Mqzcs3bGzbVUMYqBBV9xDnlhFLqo414+6nj+3RemFnXlxj
+ CEaCiBBzVL/I0fDdEiqmREpuASKhSIOoUYq6+Y6PX0kKqATBc/c0DHjwWe/FCgcQlVps
+ hiZluKG79PE3H1aY+hKyXzAIyRR2NNN+7GvaSBb4QQPAkFc4WOYjN+35iYBzcNLtC7sN
+ 4araHpB1/cKftQEVE0oT8l3rLYSmB/6Hq+jlgxhUi6neWqmwi6q5Y+HO6tsPAsCtRbUI
+ /wC27fYcKvgUS+aOiEZAP1ByWylw8T7ugdd77E4TjJ5OgH1DBYGYZW7Kkihk9ycppg9N
+ louA==
+X-Gm-Message-State: AIVw110YsnnBSky6qaOrUZFQ79aPR6OapX8cJUmzF8yLQT+cOZ5XEAsh
+ YHitZkvjpZGwwBRZlYIPODxDMVl8nQ==
+X-Received: by 10.84.132.13 with SMTP id 13mr22807059ple.42.1500160079504;
+ Sat, 15 Jul 2017 16:07:59 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 10.100.187.77 with HTTP; Sat, 15 Jul 2017 16:07:58 -0700 (PDT)
+Received: by 10.100.187.77 with HTTP; Sat, 15 Jul 2017 16:07:58 -0700 (PDT)
+In-Reply-To: <CY4PR14MB1368B4DD5D3B4EF22C8195D6D7A20@CY4PR14MB1368.namprd14.prod.outlook.com>
+References: <CAPCANN-xgf3auqy+pFfL6VO5GpEsCCHYkROAwiB1u=8a4yj+Fg@mail.gmail.com>
+ <CAL02cgRJeauV9NQ2OrGK1ocQtg-M2tbWm2+5HUc4-Wc8KC3vxQ@mail.gmail.com>
+ <71E07F32-230F-447C-B85B-9B3B4146D386@vigilsec.com>
+ <39bad3e9-2e17-30f6-48a7-a035d449dce7@cs.tcd.ie>
+ <CAJU8_nXBFkpncFDy4QFnd6hFpC7oOZn-F1-EuBC2vk3Y6QKq3A@mail.gmail.com>
+ <f0554055-cdd3-a78c-8ab1-e84f9b624fda@cs.tcd.ie>
+ <A0BEC2E3-8CF5-433D-BA77-E8474A2C922A@vigilsec.com>
+ <87k23arzac.fsf@fifthhorseman.net>
+ <D37DF005-4C6E-4EA8-9D9D-6016A04DF69E@arbor.net>
+ <CAPt1N1nVhCQBnHd_MCm79e7c1gO6CY6vZG_rZSNePPvmmU_Bow@mail.gmail.com>
+ <44AB7CB8-13C1-44A0-9EC4-B6824272A247@arbor.net>
+ <CAPt1N1=rvtssKXCnsNmr1vy4ejb6YDUxO2kDcgh-ZMh5WGjfWg@mail.gmail.com>
+ <CY4PR14MB136850FD3287DEAD0CD44C78D7A20@CY4PR14MB1368.namprd14.prod.outlook.com>
+ <46888EEF-750B-46CF-BA77-1827DD6D3607@arbor.net>
+ <BN6PR14MB13612896CAA0EA9AB34BA390D7A20@BN6PR14MB1361.namprd14.prod.outlook.com>
+ <CACsn0cmkj22DzMSog8LZ8c_0U3hjyp+m7dShk7-s9r-m0S0uLg@mail.gmail.com>
+ <CY4PR14MB1368B4DD5D3B4EF22C8195D6D7A20@CY4PR14MB1368.namprd14.prod.outlook.com>
+From: Watson Ladd <watsonbladd@gmail.com>
+Date: Sat, 15 Jul 2017 16:07:58 -0700
+Message-ID: <CACsn0c=f5Mm6jHGwB9eoYRVUL5SHm0K-DrGiP8M_GdY_dR3Lgg@mail.gmail.com>
+To: "Ackermann, Michael" <MAckermann@bcbsm.com>
+Cc: Matthew Green <matthewdgreen@gmail.com>, "Dobbins,
+ Roland" <rdobbins@arbor.net>, IETF TLS <tls@ietf.org>
+Content-Type: multipart/alternative; boundary="94eb2c1254e6a5298a0554633cc6"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/fye4VSvQGWXULkRFtIepf2Zsgpc>
+Subject: Re: [TLS] draft-green-tls-static-dh-in-tls13-01
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Sat, 15 Jul 2017 23:08:02 -0000
+
+--94eb2c1254e6a5298a0554633cc6
+Content-Type: text/plain; charset="UTF-8"
+
+On Jul 15, 2017 12:39 PM, "Ackermann, Michael" <MAckermann@bcbsm.com> wrote:
+
+I would be interested in how you initiate the traces at all the  hundreds
+of thousands of servers and clients and how you control the flow of pcap
+files back to where they need to be processed?     How are users and apps
+not impacted?
+
+Currently I work at Cloudflare, not in ops. It's possible some of what I
+say is wrong.
+
+We don't collect all traces if I understand what you mean by trace as a
+packet capture. I misread your email. No technology I know of would make
+that possible at our scale.
+
+We do log a significant amount of information on requests and our responses
+include headers that indicate the path taken through the system.(the cf-ray
+you see when some sites fail behind us) We can quickly determine what went
+wrong if something did through internal inspection tools starting from
+those id's and problematic requests.
+
+This works to identify, isolate, and fix problems in a complex system with
+multiple internal services.
+
+This architecture scales to what we estimate as x% of all HTTP requests.
+Not x% of what we see, but of all of them. ( the x is sizeable)
+
+The logging is done with open source log collection software. Because
+packet capture and later decryption was not an option we created other
+tools.
+
+I don't know about internal app troubleshooting. Maybe we are talking at
+cross purposes, because I don't see why apps cannot log to local disk/ have
+a good idea of situations where pcap is really necessary and you can't log
+the keys. If you can log pcaps, you can log to disk somewhere.
+
+
+
+
+
+
+
+*From:* Watson Ladd [mailto:watsonbladd@gmail.com]
+*Sent:* Saturday, July 15, 2017 3:26 PM
+*To:* Ackermann, Michael <MAckermann@bcbsm.com>
+*Cc:* Matthew Green <matthewdgreen@gmail.com>; Dobbins, Roland <
+rdobbins@arbor.net>; IETF TLS <tls@ietf.org>
+*Subject:* Re: [TLS] draft-green-tls-static-dh-in-tls13-01
+
+
+
+
+
+
+
+On Jul 15, 2017 11:16 AM, "Ackermann, Michael" <MAckermann@bcbsm.com> wrote:
+
+YES!
+
+I tried to say in my message that collecting traces on thousands,  or
+hundreds of thousands of hosts,  is just not practical or possible.   Not
+to mention the administrative domain barriers to this.
+
+
+
+
+
+We do it every day at my current employer. Guess we do the impossible.
+
+
+
+
+
+
+
+*From:* Dobbins, Roland [mailto:rdobbins@arbor.net]
+*Sent:* Saturday, July 15, 2017 2:03 PM
+*To:* Ackermann, Michael <MAckermann@bcbsm.com>
+*Cc:* Ted Lemon <mellon@fugue.com>; IETF TLS <tls@ietf.org>; Matthew Green <
+matthewdgreen@gmail.com>
+*Subject:* Re: [TLS] draft-green-tls-static-dh-in-tls13-01
+
+
+
+
+
+
+On Jul 15, 2017, at 22:36, Ackermann, Michael <MAckermann@bcbsm.com> wrote:
+
+That being the unencrypted stream is available to the endpoints
+
+
+
+Even where it is eventually available, they don't have the horsepower to
+capture & forward.
+
+
+
+-----------------------------------
+Roland Dobbins <rdobbins@arbor.net>
+
+
+
+
+
+
+
+The information contained in this communication is highly confidential and
+is intended solely for the use of the individual(s) to whom this
+communication is directed. If you are not the intended recipient, you are
+hereby notified that any viewing, copying, disclosure or distribution of
+this information is prohibited. Please notify the sender, by electronic
+mail or telephone, of any unintended receipt and delete the original
+message without making any copies.
+
+Blue Cross Blue Shield of Michigan and Blue Care Network of Michigan are
+nonprofit corporations and independent licensees of the Blue Cross and Blue
+Shield Association.
+
+
+_______________________________________________
+TLS mailing list
+TLS@ietf.org
+https://www.ietf.org/mailman/listinfo/tls
+
+
+
+The information contained in this communication is highly confidential and
+is intended solely for the use of the individual(s) to whom this
+communication is directed. If you are not the intended recipient, you are
+hereby notified that any viewing, copying, disclosure or distribution of
+this information is prohibited. Please notify the sender, by electronic
+mail or telephone, of any unintended receipt and delete the original
+message without making any copies.
+
+Blue Cross Blue Shield of Michigan and Blue Care Network of Michigan are
+nonprofit corporations and independent licensees of the Blue Cross and Blue
+Shield Association.
+
+--94eb2c1254e6a5298a0554633cc6
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"auto"><div><br><div class=3D"gmail_extra"><br><div class=3D"gma=
+il_quote">On Jul 15, 2017 12:39 PM, &quot;Ackermann, Michael&quot; &lt;<a h=
+ref=3D"mailto:MAckermann@bcbsm.com" target=3D"_blank">MAckermann@bcbsm.com<=
+/a>&gt; wrote:<br type=3D"attribution"><blockquote class=3D"m_-237557277032=
+2270351quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding=
+-left:1ex">
+
+
+
+
+
+<div lang=3D"EN-US" link=3D"blue" vlink=3D"purple">
+<div class=3D"m_-2375572770322270351m_-228347256406509724WordSection1">
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;font-family:&quot;Ca=
+libri&quot;,sans-serif">I would be interested in how you initiate the trace=
+s at all the =C2=A0hundreds of thousands of servers and clients and how you=
+ control the flow of pcap files back to where they
+ need to be processed?=C2=A0=C2=A0=C2=A0=C2=A0 How are users and apps not i=
+mpacted?=C2=A0</span></p></div></div></blockquote></div></div></div><div di=
+r=3D"auto">Currently I work at Cloudflare, not in ops. It&#39;s possible so=
+me of what I say is wrong.</div><div dir=3D"auto"><br></div><div dir=3D"aut=
+o">We don&#39;t collect all traces if I understand what you mean by trace a=
+s a packet capture. I misread your email. No technology I know of would mak=
+e that possible at our scale.=C2=A0</div><div dir=3D"auto"><br></div><div d=
+ir=3D"auto">We do log a significant amount of information on requests and o=
+ur responses include headers that indicate the path taken through the syste=
+m.(the cf-ray you see when some sites fail behind us) We can quickly determ=
+ine what went wrong if something did through internal inspection tools star=
+ting from those id&#39;s and problematic requests.</div><div dir=3D"auto"><=
+br></div><div dir=3D"auto">This works to identify, isolate, and fix problem=
+s in a complex system with multiple internal services.</div><div dir=3D"aut=
+o"><br></div><div dir=3D"auto">This architecture scales to what we estimate=
+ as x% of all HTTP requests. Not x% of what we see, but of all of them. ( t=
+he x is sizeable)</div><div dir=3D"auto"><br></div><div dir=3D"auto">The lo=
+gging is done with open source log collection software. Because packet capt=
+ure and later decryption was not an option we created other tools.</div><di=
+v dir=3D"auto"><br></div><div dir=3D"auto">I don&#39;t know about internal =
+app troubleshooting. Maybe we are talking at cross purposes, because I don&=
+#39;t see why apps cannot log to local disk/ have a good idea of situations=
+ where pcap is really necessary and you can&#39;t log the keys. If you can =
+log pcaps, you can log to disk somewhere.</div><div dir=3D"auto"><div class=
+=3D"gmail_extra"><div class=3D"gmail_quote"><blockquote class=3D"m_-2375572=
+770322270351quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;pa=
+dding-left:1ex"><div lang=3D"EN-US" link=3D"blue" vlink=3D"purple"><div cla=
+ss=3D"m_-2375572770322270351m_-228347256406509724WordSection1"><p class=3D"=
+MsoNormal"><span style=3D"font-size:11.0pt;font-family:&quot;Calibri&quot;,=
+sans-serif"> <u></u><u></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;font-family:&quot;Ca=
+libri&quot;,sans-serif"><u></u>=C2=A0<u></u></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;font-family:&quot;Ca=
+libri&quot;,sans-serif"><u></u>=C2=A0<u></u></span></p>
+<p class=3D"MsoNormal"><a name=3D"m_-2375572770322270351_m_-228347256406509=
+724__MailEndCompose"><span style=3D"font-size:11.0pt;font-family:&quot;Cali=
+bri&quot;,sans-serif"><u></u>=C2=A0<u></u></span></a></p>
+<span></span>
+<p class=3D"MsoNormal"><b><span style=3D"font-size:11.0pt;font-family:&quot=
+;Calibri&quot;,sans-serif">From:</span></b><span style=3D"font-size:11.0pt;=
+font-family:&quot;Calibri&quot;,sans-serif"> Watson Ladd [mailto:<a href=3D=
+"mailto:watsonbladd@gmail.com" target=3D"_blank">watsonbladd@gmail.com</a>]
+<br>
+<b>Sent:</b> Saturday, July 15, 2017 3:26 PM<br>
+<b>To:</b> Ackermann, Michael &lt;<a href=3D"mailto:MAckermann@bcbsm.com" t=
+arget=3D"_blank">MAckermann@bcbsm.com</a>&gt;<br>
+<b>Cc:</b> Matthew Green &lt;<a href=3D"mailto:matthewdgreen@gmail.com" tar=
+get=3D"_blank">matthewdgreen@gmail.com</a>&gt;; Dobbins, Roland &lt;<a href=
+=3D"mailto:rdobbins@arbor.net" target=3D"_blank">rdobbins@arbor.net</a>&gt;=
+; IETF TLS &lt;<a href=3D"mailto:tls@ietf.org" target=3D"_blank">tls@ietf.o=
+rg</a>&gt;<br>
+<b>Subject:</b> Re: [TLS] draft-green-tls-static-dh-in-t<wbr>ls13-01<u></u>=
+<u></u></span></p><div class=3D"m_-2375572770322270351quoted-text">
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+<div>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+<div>
+<p class=3D"MsoNormal">On Jul 15, 2017 11:16 AM, &quot;Ackermann, Michael&q=
+uot; &lt;<a href=3D"mailto:MAckermann@bcbsm.com" target=3D"_blank">MAckerma=
+nn@bcbsm.com</a>&gt; wrote:<u></u><u></u></p>
+<blockquote style=3D"border:none;border-left:solid #cccccc 1.0pt;padding:0i=
+n 0in 0in 6.0pt;margin-left:4.8pt;margin-right:0in">
+<div>
+<div>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;font-family:&quot;Ca=
+libri&quot;,sans-serif">YES!</span><u></u><u></u></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;font-family:&quot;Ca=
+libri&quot;,sans-serif">I tried to say in my message that collecting traces=
+ on thousands,=C2=A0 or hundreds of thousands of hosts,=C2=A0 is just not
+ practical or possible.=C2=A0=C2=A0 Not to mention the administrative domai=
+n barriers to this.=C2=A0</span><u></u><u></u></p>
+</div>
+</div>
+</blockquote>
+</div>
+</div>
+</div>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">We do it every day at my current employer. Guess we =
+do the impossible.<u></u><u></u></p>
+</div>
+<div>
+<div>
+<div>
+<blockquote style=3D"border:none;border-left:solid #cccccc 1.0pt;padding:0i=
+n 0in 0in 6.0pt;margin-left:4.8pt;margin-right:0in">
+<div>
+<div>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;font-family:&quot;Ca=
+libri&quot;,sans-serif">=C2=A0</span><u></u><u></u></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;font-family:&quot;Ca=
+libri&quot;,sans-serif">=C2=A0</span><u></u><u></u></p>
+<p class=3D"MsoNormal"><a name=3D"m_-2375572770322270351_m_-228347256406509=
+724_m_-6566502152638967984__MailEndCompose"><span style=3D"font-size:11.0pt=
+;font-family:&quot;Calibri&quot;,sans-serif">=C2=A0</span></a><u></u><u></u=
+></p>
+<div>
+<div style=3D"border:none;border-top:solid #e1e1e1 1.0pt;padding:3.0pt 0in =
+0in 0in">
+<p class=3D"MsoNormal"><b><span style=3D"font-size:11.0pt;font-family:&quot=
+;Calibri&quot;,sans-serif">From:</span></b><span style=3D"font-size:11.0pt;=
+font-family:&quot;Calibri&quot;,sans-serif"> Dobbins, Roland [mailto:<a hre=
+f=3D"mailto:rdobbins@arbor.net" target=3D"_blank">rdobbins@arbor.net</a>]
+<br>
+<b>Sent:</b> Saturday, July 15, 2017 2:03 PM<br>
+<b>To:</b> Ackermann, Michael &lt;<a href=3D"mailto:MAckermann@bcbsm.com" t=
+arget=3D"_blank">MAckermann@bcbsm.com</a>&gt;<br>
+<b>Cc:</b> Ted Lemon &lt;<a href=3D"mailto:mellon@fugue.com" target=3D"_bla=
+nk">mellon@fugue.com</a>&gt;; IETF TLS &lt;<a href=3D"mailto:tls@ietf.org" =
+target=3D"_blank">tls@ietf.org</a>&gt;; Matthew Green &lt;<a href=3D"mailto=
+:matthewdgreen@gmail.com" target=3D"_blank">matthewdgreen@gmail.com</a>&gt;=
+<br>
+<b>Subject:</b> Re: [TLS] draft-green-tls-static-dh-in-t<wbr>ls13-01</span>=
+<u></u><u></u></p>
+</div>
+</div>
+<div>
+<p class=3D"MsoNormal">=C2=A0<u></u><u></u></p>
+<div>
+<p class=3D"MsoNormal">=C2=A0<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal" style=3D"margin-bottom:12.0pt"><br>
+On Jul 15, 2017, at 22:36, Ackermann, Michael &lt;<a href=3D"mailto:MAckerm=
+ann@bcbsm.com" target=3D"_blank">MAckermann@bcbsm.com</a>&gt; wrote:<u></u>=
+<u></u></p>
+</div>
+</div>
+<blockquote style=3D"margin-top:5.0pt;margin-bottom:5.0pt">
+<div>
+<p class=3D"MsoNormal">That being the unencrypted stream is available to th=
+e endpoints=C2=A0<u></u><u></u></p>
+</div>
+</blockquote>
+<p class=3D"MsoNormal">=C2=A0<u></u><u></u></p>
+<div>
+<p class=3D"MsoNormal">Even where it is eventually available, they don&#39;=
+t have the horsepower to capture &amp; forward.=C2=A0<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">=C2=A0<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">------------------------------<wbr>-----<br>
+Roland Dobbins &lt;<a href=3D"mailto:rdobbins@arbor.net" target=3D"_blank">=
+rdobbins@arbor.net</a>&gt;<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">=C2=A0<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">=C2=A0<u></u><u></u></p>
+</div>
+</div>
+</div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+<p>The information contained in this communication is highly confidential a=
+nd is intended solely for the use of the individual(s) to whom this communi=
+cation is directed. If you are not the intended recipient, you are hereby n=
+otified that any viewing, copying,
+ disclosure or distribution of this information is prohibited. Please notif=
+y the sender, by electronic mail or telephone, of any unintended receipt an=
+d delete the original message without making any copies.<u></u><u></u></p>
+<p>Blue Cross Blue Shield of Michigan and Blue Care Network of Michigan are=
+ nonprofit corporations and independent licensees of the Blue Cross and Blu=
+e Shield Association.<u></u><u></u></p>
+<p class=3D"MsoNormal" style=3D"margin-bottom:12.0pt"><br>
+______________________________<wbr>_________________<br>
+TLS mailing list<br>
+<a href=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.org</a><br>
+<a href=3D"https://www.ietf.org/mailman/listinfo/tls" target=3D"_blank">htt=
+ps://www.ietf.org/mailman/l<wbr>istinfo/tls</a><u></u><u></u></p>
+</blockquote>
+</div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+</div>
+</div>
+</div></div>
+</div><div class=3D"m_-2375572770322270351elided-text">
+
+
+
+<br>
+
+ <p>The information contained in this communication is highly confidential =
+and is intended solely for the use of the individual(s) to whom this commun=
+ication is directed. If you are not the intended recipient, you are hereby =
+notified that any viewing, copying, disclosure or distribution of this info=
+rmation is prohibited. Please notify the sender, by electronic mail or tele=
+phone, of any unintended receipt and delete the original message without ma=
+king any copies.</p>
+ <p>Blue Cross Blue Shield of Michigan and Blue Care Network of Michigan ar=
+e nonprofit corporations and independent licensees of the Blue Cross and Bl=
+ue Shield Association.</p>
+ =20
+
+</div></blockquote></div><br></div></div></div>
+
+--94eb2c1254e6a5298a0554633cc6--
+

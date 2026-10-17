@@ -1,0 +1,348 @@
+Return-Path: <mcgrew@cisco.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id CED3812D108
+ for <tls@ietfa.amsl.com>; Mon, 18 Jul 2016 14:11:19 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -15.808
+X-Spam-Level: 
+X-Spam-Status: No, score=-15.808 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ DKIM_VALID_AU=-0.1, RCVD_IN_DNSWL_HI=-5, RCVD_IN_MSPIKE_H3=-0.01,
+ RCVD_IN_MSPIKE_WL=-0.01, RP_MATCHES_RCVD=-1.287, SPF_PASS=-0.001,
+ USER_IN_DEF_DKIM_WL=-7.5] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=cisco.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id GhmWesIQ1jJO for <tls@ietfa.amsl.com>;
+ Mon, 18 Jul 2016 14:11:17 -0700 (PDT)
+Received: from alln-iport-4.cisco.com (alln-iport-4.cisco.com [173.37.142.91])
+ (using TLSv1.2 with cipher DHE-RSA-SEED-SHA (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 53B3112B049
+ for <tls@ietf.org>; Mon, 18 Jul 2016 14:11:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=cisco.com; i=@cisco.com; l=7893; q=dns/txt; s=iport;
+ t=1468876277; x=1470085877;
+ h=mime-version:subject:from:in-reply-to:date:cc:
+ content-transfer-encoding:message-id:references:to;
+ bh=RdVdb+1mmYJAL0vzKDNU4cerZaxzd29VTKUtlhO6SRY=;
+ b=N5Lrk1278iUDtLnyk9U5sQZATDaa8w2XjyKGCGgX6IP0foZikrpXMBa0
+ Lfa87Nlcrm9pqpEISeiMVqUaTpXgxTdaiUagFSVSWDA/luT7B7sw73Kuq
+ qtbuhF/LhOxZ0HwS8bo0y/O6ICKvK74wz4O0YhWnRd5Hzo5ZmXGMlaTMZ Y=;
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0DGAgDsRI1X/4MNJK1bgz9WfKxKjBuBe?=
+ =?us-ascii?q?iKFeAKBNTgUAQEBAQEBAWUnhFwBAQQBAQEhSwsFBwQLEQQBAQECAiMDAgIhBh8?=
+ =?us-ascii?q?JCAYTiBYDDwgOsCmJWw2EHgEBAQEBAQEBAQEBAQEBAQEBAQEBARyBAYchCIJNg?=
+ =?us-ascii?q?kOBWQEjgwErgi8FmHA0hhOCN4N6ghuCOYx+hD+DZod5HjaCCAMcgWggMgGGHQE?=
+ =?us-ascii?q?lgR4BAQE?=
+X-IronPort-AV: E=Sophos;i="5.28,385,1464652800"; d="scan'208";a="298483787"
+Received: from alln-core-1.cisco.com ([173.36.13.131])
+ by alln-iport-4.cisco.com with ESMTP/TLS/DHE-RSA-AES256-SHA;
+ 18 Jul 2016 21:11:16 +0000
+Received: from rtp-mcgrew-89110.cisco.com (rtp-mcgrew-89110.cisco.com
+ [10.117.10.235])
+ by alln-core-1.cisco.com (8.14.5/8.14.5) with ESMTP id u6ILBFZY006178
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+ Mon, 18 Jul 2016 21:11:15 GMT
+Content-Type: text/plain; charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
+From: David McGrew <mcgrew@cisco.com>
+In-Reply-To: <D3ABBB57.27CAC%qdang@nist.gov>
+Date: Mon, 18 Jul 2016 17:11:15 -0400
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <88AC1F39-6222-4D7A-AB1D-5FA4156C42C3@cisco.com>
+References: <CABcZeBMiLmwBeuLt=v4qdcJwe5rdsK_9R4-2TUXYC=sttmwH-g@mail.gmail.com>
+ <D3AA5BD6.27AC0%qdang@nist.gov> <D3AAB674.709EA%kenny.paterson@rhul.ac.uk>
+ <D3AA7549.27B09%qdang@nist.gov>
+ <d1f35d74e93b4067bf17f587b904ebff@XCH-RTP-006.cisco.com>
+ <D3AAD721.70A11%kenny.paterson@rhul.ac.uk> <D3AA9B01.27B9F%qdang@nist.gov>
+ <D3AAE2B7.70A78%kenny.paterson@rhul.ac.uk>
+ <ede4e2ffadd142f781e7a9c04081c825@XCH-RTP-006.cisco.com>
+ <0ad33f70cbe2aabba1f16f4cac876b0f@esat.kuleuven.be>
+ <D3AB99DD.27C8B%qdang@nist.gov>
+ <553ea052cc05b4f7315e19c943b0c2b0@esat.kuleuven.be>
+ <CACsn0ckFJSEabLOw60-1Pt=e3gLj1W+5yVvWRGzB=avNMQ_X+g@mail.gmail.com>
+ <D3ABBB57.27CAC%qdang@nist.gov>
+To: "Dang, Quynh (Fed)" <quynh.dang@nist.gov>
+X-Mailer: Apple Mail (2.3124)
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/gk0PI7XGHtkbUWX9_hFjMGlm5LA>
+Cc: "tls@ietf.org" <tls@ietf.org>
+Subject: Re: [TLS] New draft: draft-ietf-tls-tls13-14.txt
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.17
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Mon, 18 Jul 2016 21:11:20 -0000
+
+Hi Quynh,
+
+> On Jul 13, 2016, at 9:58 AM, Dang, Quynh (Fed) <quynh.dang@nist.gov> =
+wrote:
+>=20
+>=20
+>=20
+> On 7/13/16, 9:26 AM, "Watson Ladd" <watsonbladd@gmail.com> wrote:
+>=20
+>> On Wed, Jul 13, 2016 at 5:30 AM, Atul Luykx =
+<Atul.Luykx@esat.kuleuven.be>
+>> wrote:
+>>> Hey Quynh,
+>>>=20
+>>>> How can one use the distinguishing attack with the data complexity
+>>>> bound I
+>>>> suggested for recovering 1 bit of the encryption key in the context =
+of
+>>>> TLS
+>>>> ?
+>>>=20
+>>> You cannot recover any bits of the encryption key unless you attack =
+AES.
+>>>=20
+>>> No-one, as far as I know, has analyzed what kind of attacks one can
+>>> perform
+>>> against GCM around and beyond the birthday bound (except for the =
+forgery
+>>> attacks, which require repeated nonces or known forgeries). However,
+>>> for CTR
+>>> mode, the underlying encryption of GCM, David McGrew typed up a =
+document
+>>> describing an attack one could perform to recover information about =
+the
+>>> plaintext:
+>>> http://eprint.iacr.org/2012/623
+>>> He describes it for 64 bit block ciphers, but the attacks work =
+equally
+>>> well
+>>> for 128 bit block ciphers, at a higher data complexity of course.
+>>>=20
+>>> Basically, there are a lot of unknowns, and it could be that the =
+bounds
+>>> you
+>>> recommend will be good enough in practice. However, it's important =
+to be
+>>> clear about the risks involved in venturing into unknown territory.
+>>>=20
+>>> Atul
+>>=20
+>> Furthermore the cost of avoiding this is trivial. The rekeying
+>> mechanism has been designed to have minimal code complexity.
+>=20
+> GCM with data complexity of about 3^38 records is not vulnerable to =
+that
+> plaintext recovery attack. Therefore, there are no needs to rekey =
+before
+> that data complexity is reached.
+
+That=E2=80=99s right, as long as the number of 16-byte blocks per record =
+is guaranteed to be significantly below 2^26. =20
+
+>=20
+> For counter-mode, I think the attack works if there is a large set of
+> known plaintexts. In protocols such as TLS and Ipsec, there are known
+> plaintexts, but I don=C2=B9t think the amount of known plaintexts =
+(even though
+> the amount of encrypted repeated-plaintexts can be big) is enough to
+> create risk for AES_128 by the targeted plaintext recovery attack.
+
+What is especially cool about counter mode encryption is how its real =
+world security degrades more gracefully than CBC mode encryption.  I am =
+not sure that the FSE paper did a good job of saying it in English as =
+opposed to math (except for the last sentence of Section 4), but even =
+though CTR may be just as distinguishable as CBC after some amount of =
+known plaintext is encrypted, counter mode in practice gives away much =
+less information.    =20
+
+best
+
+David
+
+> A known
+> plaintext can be encrypted multiple times with different keys, not =
+with
+> the same key.
+>=20
+> Regards,
+> Quynh.
+>=20
+>=20
+>>>=20
+>>>=20
+>>> On 2016-07-13 13:14, Dang, Quynh (Fed) wrote:
+>>>>=20
+>>>> Hi Atul,
+>>>>=20
+>>>> On 7/12/16, 3:50 PM, "Atul Luykx" <Atul.Luykx@esat.kuleuven.be> =
+wrote:
+>>>>=20
+>>>>>> To be clear, this probability is that an attacker would be able =
+to
+>>>>>> take a huge (4+ Petabyte) ciphertext, and a compatibly sized
+>>>>>> potential
+>>>>>> (but incorrect) plaintext, and with probability 2^{-32}, be able =
+to
+>>>>>> determine that this plaintext was not the one used for the =
+ciphertext
+>>>>>> (and with probability 0.999999999767..., know nothing about =
+whether
+>>>>>> his guessed plaintext was correct or not).
+>>>>>=20
+>>>>>=20
+>>>>> You need to be careful when making such claims. There are schemes =
+for
+>>>>> which when you reach the birthday bound you can perform partial =
+key
+>>>>> recovery.
+>>>>>=20
+>>>>> The probabilities we calculated guarantee that there won't be any
+>>>>> attacks (with the usual assumptions...). Beyond the bounds, there =
+are
+>>>>> no
+>>>>> guarantees. In particular, you cannot conclude that one, for =
+example,
+>>>>> loses 1 bit of security once beyond the birthday bound.
+>>>>=20
+>>>>=20
+>>>> How can one use the distinguishing attack with the data complexity
+>>>> bound I
+>>>> suggested for recovering 1 bit of the encryption key in the context =
+of
+>>>> TLS
+>>>> ?
+>>>>=20
+>>>>=20
+>>>> Regards,
+>>>> Quynh.
+>>>>=20
+>>>>=20
+>>>>=20
+>>>>=20
+>>>>>=20
+>>>>> Atul
+>>>>>=20
+>>>>> On 2016-07-12 20:06, Scott Fluhrer (sfluhrer) wrote:
+>>>>>>>=20
+>>>>>>> -----Original Message-----
+>>>>>>> From: Paterson, Kenny [mailto:Kenny.Paterson@rhul.ac.uk]
+>>>>>>> Sent: Tuesday, July 12, 2016 1:17 PM
+>>>>>>> To: Dang, Quynh (Fed); Scott Fluhrer (sfluhrer); Eric Rescorla;
+>>>>>>> tls@ietf.org
+>>>>>>> Subject: Re: [TLS] New draft: draft-ietf-tls-tls13-14.txt
+>>>>>>>=20
+>>>>>>> Hi
+>>>>>>>=20
+>>>>>>> On 12/07/2016 18:04, "Dang, Quynh (Fed)" <quynh.dang@nist.gov>
+>>>>>>> wrote:
+>>>>>>>=20
+>>>>>>>> Hi Kenny,
+>>>>>>>>=20
+>>>>>>>> On 7/12/16, 12:33 PM, "Paterson, Kenny" =
+<Kenny.Paterson@rhul.ac.uk>
+>>>>>>> wrote:
+>>>>>>>>=20
+>>>>>>>>> Finally, you write "to come to the 2^38 record limit, they =
+assume
+>>>>>>> that
+>>>>>>>>> each record is the maximum 2^14 bytes". For clarity, we did =
+not
+>>>>>>>>> recommend a limit of 2^38 records. That's Quynh's preferred
+>>>>>>> number,
+>>>>>>>>> and is unsupported by our analysis.
+>>>>>>>>=20
+>>>>>>>> What is problem with my suggestion even with the record size =
+being
+>>>>>>> the
+>>>>>>>> maximum value?
+>>>>>>>=20
+>>>>>>> There may be no problem with your suggestion. I was simply =
+trying to
+>>>>>>> make it
+>>>>>>> clear that 2^38 records was your suggestion for the record limit =
+and
+>>>>>>> not ours.
+>>>>>>> Indeed, if one reads our note carefully, one will find that we =
+do
+>>>>>>> not
+>>>>>>> make any
+>>>>>>> specific recommendations. We consider the decision to be one for =
+the
+>>>>>>> WG;
+>>>>>>> our preferred role is to supply the analysis and help interpret =
+it
+>>>>>>> if
+>>>>>>> people
+>>>>>>> want that. Part of that involves correcting possible =
+misconceptions
+>>>>>>> and
+>>>>>>> misinterpretations before they get out of hand.
+>>>>>>>=20
+>>>>>>> Now 2^38 does come out of our analysis if you are willing to =
+accept
+>>>>>>> single key
+>>>>>>> attack security (in the indistinguishability sense) of 2^{-32}. =
+So
+>>>>>>> in
+>>>>>>> that limited
+>>>>>>> sense, 2^38 is supported by our analysis. But it is not our
+>>>>>>> recommendation.
+>>>>>>>=20
+>>>>>>> But, speaking now in a personal capacity, I consider that =
+security
+>>>>>>> margin to be
+>>>>>>> too small (i.e. I think that 2^{-32} is too big a success
+>>>>>>> probability).
+>>>>>>=20
+>>>>>>=20
+>>>>>> To be clear, this probability is that an attacker would be able =
+to
+>>>>>> take a huge (4+ Petabyte) ciphertext, and a compatibly sized
+>>>>>> potential
+>>>>>> (but incorrect) plaintext, and with probability 2^{-32}, be able =
+to
+>>>>>> determine that this plaintext was not the one used for the =
+ciphertext
+>>>>>> (and with probability 0.999999999767..., know nothing about =
+whether
+>>>>>> his guessed plaintext was correct or not).
+>>>>>>=20
+>>>>>> I'm just trying to get people to understand what we're talking =
+about.
+>>>>>> This is not "with probability 2^{-32}, he can recover the =
+plaintext"
+>>>>>>=20
+>>>>>>=20
+>>>>>>>=20
+>>>>>>> Regards,
+>>>>>>>=20
+>>>>>>> Kenny
+>>>>>>=20
+>>>>>>=20
+>>>>>> _______________________________________________
+>>>>>> TLS mailing list
+>>>>>> TLS@ietf.org
+>>>>>> https://www.ietf.org/mailman/listinfo/tls
+>>>=20
+>>>=20
+>>> _______________________________________________
+>>> TLS mailing list
+>>> TLS@ietf.org
+>>> https://www.ietf.org/mailman/listinfo/tls
+>>=20
+>>=20
+>>=20
+>> --
+>> "Man is born free, but everywhere he is in chains".
+>> --Rousseau.
+>=20
+

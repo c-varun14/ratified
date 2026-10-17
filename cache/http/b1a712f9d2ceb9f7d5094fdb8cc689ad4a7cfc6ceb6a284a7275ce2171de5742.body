@@ -1,0 +1,314 @@
+Return-Path: <arnaud.taddei@broadcom.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+	by ietfa.amsl.com (Postfix) with ESMTP id E6692C1E7247
+	for <tls@ietfa.amsl.com>; Wed, 24 Jul 2024 13:28:34 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.251
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.251 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIMWL_WL_HIGH=-0.148, DKIM_SIGNED=0.1,
+	DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1,
+	HTML_MESSAGE=0.001, RCVD_IN_DNSWL_NONE=-0.0001,
+	RCVD_IN_ZEN_BLOCKED_OPENDNS=0.001, SPF_HELO_NONE=0.001,
+	SPF_NONE=0.001, T_SCC_BODY_TEXT_LINE=-0.01, URIBL_BLOCKED=0.001,
+	URIBL_DBL_BLOCKED_OPENDNS=0.001, URIBL_ZEN_BLOCKED_OPENDNS=0.001]
+	autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+	header.d=broadcom.com
+Received: from mail.ietf.org ([50.223.129.194])
+	by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id Nhrc73BpfSBY for <tls@ietfa.amsl.com>;
+	Wed, 24 Jul 2024 13:28:31 -0700 (PDT)
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com
+ [IPv6:2607:f8b0:4864:20::42c])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by ietfa.amsl.com (Postfix) with ESMTPS id 10F34C1E0D69
+	for <tls@ietf.org>; Wed, 24 Jul 2024 13:28:25 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id
+ d2e1a72fcca58-70b703eda27so139112b3a.3
+        for <tls@ietf.org>; Wed, 24 Jul 2024 13:28:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1721852905; x=1722457705; darn=ietf.org;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=DED4Q09SVETGrx6nTulm5RkSDIjE3ga/XyHX/i5zbng=;
+        b=GTb6y5UED+BLdFraT/2Hp24aZrapnVcWlVMIWFtatlaHaBYZLRbi7Ud8RnJWWMWuTy
+         g01iSxGmra1VuiYGlqGBc4nPXRSDFdaA0LmUmzODbQOqtFd1IF86rabP+kPAnD+xzXgy
+         HIt9xOuplR+GCb7UCTDD8qFYyLlmGhhnW7qHo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721852905; x=1722457705;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DED4Q09SVETGrx6nTulm5RkSDIjE3ga/XyHX/i5zbng=;
+        b=QOKeUp1Jut1L83Wt7XRYDirn5c+zqZmYuDffT1PgLg7ca7fQkWUUz1wVKqzJGYuNAx
+         8EaTX/DIkMyILFXpl3cRfIF0xQLtIPriKG5cdEBf3dWecLDQW8Y7Fch5KxOgA++qZRJC
+         eFJbSelcGmSBNt5JOVNAKFGZPzlL02QF/1jyeWk2F8NOEI/1rD1TeHyWgPs49Hma+9Wx
+         dJjInj9GAi9YiBUkssK4haNUrQ//b1enFhTGk1q/QYG7L7jSLmvSVml0diO2x4XuGs53
+         Xx2jvOKN9fIeRFb5rVmJUqkKdqTVq273+dY8CxXZLxueK5jpQIZK0PBYCkzdL3BgzG8W
+         cy9g==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCUvD+t2wxhLjf6sxXO4uyRGAkY4IxmSjDIvIgSqIlzD/QOLBHMu8e6JWuwgCc6JPAviGnJLpcFOqVzoNCU=
+X-Gm-Message-State: AOJu0Yx3zUeFNgRcqLPcDrTQAysW7KJP5MZyWZk+Sv2/NKJ01tkGA3+X
+	wch41oPOsdHPLrkxxmfSS3FsVITEBT9Q5MBvwvaBRDy0tQYDnvNW3vZb60rbzRS9h5ELeB2evUc
+	qXzES5gkdIbLL+MZRRZPBa16jxbqjuq+kbW5Ani6qgUr7+MR46W4=
+X-Google-Smtp-Source: 
+ AGHT+IF/EAoj0/REtM2ixaLe8zSXP9x2elDeitaFIFDS6g8GT0XOKfDZyISEV6ydcrqSQeeDMscuUw==
+X-Received: by 2002:a05:6a00:88e:b0:70b:2a:15da with SMTP id
+ d2e1a72fcca58-70eaa8732f4mr906784b3a.4.1721852904734;
+        Wed, 24 Jul 2024 13:28:24 -0700 (PDT)
+Received: from smtpclient.apple (dhcp-8343.meeting.ietf.org. [31.133.131.67])
+        by smtp.gmail.com with ESMTPSA id
+ d2e1a72fcca58-70d25f1c146sm5649471b3a.48.2024.07.24.13.28.24
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 24 Jul 2024 13:28:24 -0700 (PDT)
+From: Arnaud Taddei <arnaud.taddei@broadcom.com>
+Message-Id: <025B7B98-9253-4034-9C20-39CDD0ADB00D@broadcom.com>
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.600.62\))
+Date: Wed, 24 Jul 2024 13:28:21 -0700
+In-Reply-To: <d5100c34-0663-4717-bb40-7d1192ee8a69@cs.tcd.ie>
+To: Stephen Farrell <stephen.farrell@cs.tcd.ie>
+References: <2543C9B1-9352-43AA-B248-A92F10309B15@sn3rd.com>
+ <d5100c34-0663-4717-bb40-7d1192ee8a69@cs.tcd.ie>
+X-Mailer: Apple Mail (2.3774.600.62)
+Content-Type: multipart/alternative;
+	boundary="Apple-Mail=_EA9B1BB5-74F1-4A77-94ED-22246AACE7FB"
+Message-ID-Hash: 4USEPPJN27D2SEFONXXLSMNK626WZZAV
+X-Message-ID-Hash: 4USEPPJN27D2SEFONXXLSMNK626WZZAV
+X-MailFrom: arnaud.taddei@broadcom.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+CC: "TLS@ietf.org" <tls@ietf.org>
+X-Mailman-Version: 3.3.9rc4
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5DRe=3A_tls=40ietf120=3A_WG_I-D_status?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/GSaX0sIKlI08l10rLga-pJQVscE>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+
+--Apple-Mail=_EA9B1BB5-74F1-4A77-94ED-22246AACE7FB
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
+
+Funny I had the SAME question earlier too with someone else.
+
+So, ditto
+
+Arnaud Taddei
+Global Security Strategist | Enterprise Security Group
+
+mobile: +41 79 506 1129=20
+Geneva, Switzerland
+arnaud.taddei@broadcom.com <mailto:arnaud.taddei@broadcom.com> | broadcom.c=
+om
+
+> On 24 Jul 2024, at 13:22, Stephen Farrell <stephen.farrell@cs.tcd.ie> wro=
+te:
+>=20
+>=20
+> Hiya,
+>=20
+> What's the status/plan for draft-ietf-tls-esni-18?
+>=20
+> Thanks,
+> S.
+>=20
+> On 24/07/2024 20:57, Sean Turner wrote:
+>> [External Email] This email originated outside of Trinity College Dublin=
+. Do not click links or open attachments unless you recognise the sender an=
+d know the content is safe.
+>> Hi! We often review the WG I-Ds=E2=80=99 status during the chairs=E2=80=
+=99 slides. I=E2=80=99d like to try an experiment to save us more time for =
+the session by sending the update via email; it=E2=80=99s also in the chair=
+s=E2=80=99 slides. If any I-D authors disagree with this very brief summary=
+ please let us know.  The list is sorted based on datatracker order.
+>> - draft-ietf-tls-svcb-ech-03: Needs a -04 to address WGLC comments from =
+Rich Salz and Chris Patton.
+>> - draft-ietf-tls-8773bis-02: Refer to Formal Analysis Triage Team (FATT)=
+ discussion in meeting.
+>> - draft-ietf-tls-wkech-05: See Stephen=E2=80=99s slides for IETF 120.
+>> - draft-ietf-tls-deprecate-obsolete-kex-04: Joe needs to do some minor w=
+ord tweaking before moving it forward.
+>> - draft-ietf-tls-key-share-prediction-00: It=E2=80=99s new, needs WG rev=
+iew.
+>> - draft-ietf-tls-tls13-pkcs1-01: Through WGLC, will enter FATT process o=
+nce 8773bis is resolved; technically behind -rrc.
+>> - draft-ietf-tls-rfc8447bis-09: Awaiting WGLC; Deirdre to run.
+>> - draft-ietf-tls-keylogfile-02: With RFC Editor.
+>> - draft-ietf-tls-ctls-10: Stalled, but Hannes said he will have more tim=
+e late summer.
+>> - draft-ietf-tls-hybrid-design-10: See Deirdre=E2=80=99s slides for IETF=
+ 120.
+>> - draft-ietf-tls-tls12-frozen-00: See Rich=E2=80=99s slides for IETF 120=
+.
+>> - draft-ietf-tls-dtls-rrc-11: Through WGLC, will enter FATT process once=
+ 8773bis is resolved.
+>> - draft-davidben-tls-key-share-prediction-01: WG review needed.
+>> - draft-ietf-tls-cert-abridge-01: Needs WG review.
+>> - draft-ietf-tls-tlsflags-13: Awaiting implementations; would move if dr=
+aft-jhoyla-req-mtls-flag was adopted.
+>> - draft-ietf-tls-rfc8446bis-10: See Sean=E2=80=99s slides for IETF 120.
+>> Cheers,
+>> spt
+>> _______________________________________________
+>> TLS mailing list -- tls@ietf.org
+>> To unsubscribe send an email to tls-leave@ietf.org
+>=20
+> _______________________________________________
+> TLS mailing list -- tls@ietf.org
+> To unsubscribe send an email to tls-leave@ietf.org
+
+
+--=20
+This electronic communication and the information and any files transmitted=
+=20
+with it, or attached to it, are confidential and are intended solely for=20
+the use of the individual or entity to whom it is addressed and may contain=
+=20
+information that is confidential, legally privileged, protected by privacy=
+=20
+laws, or otherwise restricted from disclosure to anyone else. If you are=20
+not the intended recipient or the person responsible for delivering the=20
+e-mail to the intended recipient, you are hereby notified that any use,=20
+copying, distributing, dissemination, forwarding, printing, or copying of=
+=20
+this e-mail is strictly prohibited. If you received this e-mail in error,=
+=20
+please return the e-mail to the sender, delete it from your computer, and=
+=20
+destroy any printed copy of it.
+
+--Apple-Mail=_EA9B1BB5-74F1-4A77-94ED-22246AACE7FB
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html; charset="UTF-8"
+
+<html><head><meta http-equiv=3D"content-type" content=3D"text/html; charset=
+=3Dutf-8"></head><body style=3D"overflow-wrap: break-word; -webkit-nbsp-mod=
+e: space; line-break: after-white-space;">Funny I had the SAME question ear=
+lier too with someone else.<div><br></div><div>So, ditto<br><div><br></div>=
+<div><div><div>
+<meta charset=3D"UTF-8"><div dir=3D"auto" style=3D"caret-color: rgb(0, 0, 0=
+); color: rgb(0, 0, 0); letter-spacing: normal; text-align: start; text-ind=
+ent: 0px; text-transform: none; white-space: normal; word-spacing: 0px; -we=
+bkit-text-stroke-width: 0px; text-decoration: none; overflow-wrap: break-wo=
+rd; -webkit-nbsp-mode: space; line-break: after-white-space;"><span style=
+=3D"font-family: Helvetica; font-size: 12px; font-style: normal; font-varia=
+nt-caps: normal; font-weight: normal; letter-spacing: normal; text-align: s=
+tart; text-indent: 0px; text-transform: none; white-space: normal; word-spa=
+cing: 0px; -webkit-text-stroke-width: 0px; text-decoration: none; caret-col=
+or: rgb(0, 0, 0); color: rgb(0, 0, 0); float: none; display: inline !import=
+ant;"><b>Arnaud Taddei</b></span><br style=3D"font-family: Helvetica; font-=
+size: 12px; font-style: normal; font-variant-caps: normal; font-weight: nor=
+mal; letter-spacing: normal; text-align: start; text-indent: 0px; text-tran=
+sform: none; white-space: normal; word-spacing: 0px; -webkit-text-stroke-wi=
+dth: 0px; text-decoration: none; caret-color: rgb(0, 0, 0); color: rgb(0, 0=
+, 0);"><span style=3D"caret-color: rgb(0, 0, 0); color: rgb(0, 0, 0); font-=
+family: Helvetica; font-size: 12px; font-style: normal; font-variant-caps: =
+normal; font-weight: 400; letter-spacing: normal; text-align: start; text-i=
+ndent: 0px; text-transform: none; white-space: normal; word-spacing: 0px; -=
+webkit-text-stroke-width: 0px; text-decoration: none; float: none; display:=
+ inline !important;">Global Security Strategist | Enterprise Security Group=
+</span><br style=3D"font-family: Helvetica; font-size: 12px; font-style: no=
+rmal; font-variant-caps: normal; font-weight: normal; letter-spacing: norma=
+l; text-align: start; text-indent: 0px; text-transform: none; white-space: =
+normal; word-spacing: 0px; -webkit-text-stroke-width: 0px; text-decoration:=
+ none; caret-color: rgb(0, 0, 0); color: rgb(0, 0, 0);"><br style=3D"font-f=
+amily: Helvetica; font-size: 12px; font-style: normal; font-variant-caps: n=
+ormal; font-weight: normal; letter-spacing: normal; text-align: start; text=
+-indent: 0px; text-transform: none; white-space: normal; word-spacing: 0px;=
+ -webkit-text-stroke-width: 0px; text-decoration: none; caret-color: rgb(0,=
+ 0, 0); color: rgb(0, 0, 0);"><span style=3D"font-family: Helvetica; font-s=
+ize: 12px; font-style: normal; font-variant-caps: normal; font-weight: norm=
+al; letter-spacing: normal; text-align: start; text-indent: 0px; text-trans=
+form: none; white-space: normal; word-spacing: 0px; -webkit-text-stroke-wid=
+th: 0px; text-decoration: none; caret-color: rgb(0, 0, 0); color: rgb(0, 0,=
+ 0); float: none; display: inline !important;"><b>mobile:</b></span><span s=
+tyle=3D"font-family: Helvetica; font-size: 12px; font-style: normal; font-v=
+ariant-caps: normal; font-weight: normal; letter-spacing: normal; text-alig=
+n: start; text-indent: 0px; text-transform: none; white-space: normal; word=
+-spacing: 0px; -webkit-text-stroke-width: 0px; text-decoration: none; caret=
+-color: rgb(0, 0, 0); color: rgb(0, 0, 0); float: none; display: inline !im=
+portant;">&nbsp;+41 79 506 1129&nbsp;</span><div>Geneva, Switzerland<br sty=
+le=3D"font-family: Helvetica; font-size: 12px; font-style: normal; font-var=
+iant-caps: normal; font-weight: normal; letter-spacing: normal; text-align:=
+ start; text-indent: 0px; text-transform: none; white-space: normal; word-s=
+pacing: 0px; -webkit-text-stroke-width: 0px; text-decoration: none; caret-c=
+olor: rgb(0, 0, 0); color: rgb(0, 0, 0);"><a href=3D"mailto:arnaud.taddei@b=
+roadcom.com" style=3D"font-family: Helvetica; font-size: 12px; font-style: =
+normal; font-variant-caps: normal; font-weight: normal; letter-spacing: nor=
+mal; text-align: start; text-indent: 0px; text-transform: none; white-space=
+: normal; word-spacing: 0px; -webkit-text-stroke-width: 0px;">arnaud.taddei=
+@broadcom.com</a>&nbsp;<span style=3D"font-family: Helvetica; font-size: 12=
+px; font-style: normal; font-variant-caps: normal; font-weight: normal; let=
+ter-spacing: normal; text-align: start; text-indent: 0px; text-transform: n=
+one; white-space: normal; word-spacing: 0px; -webkit-text-stroke-width: 0px=
+; text-decoration: none; caret-color: rgb(0, 0, 0); color: rgb(0, 0, 0); fl=
+oat: none; display: inline !important;">| broadcom.com</span><br></div></di=
+v>
+</div>
+<div><br><blockquote type=3D"cite"><div>On 24 Jul 2024, at 13:22, Stephen F=
+arrell &lt;stephen.farrell@cs.tcd.ie&gt; wrote:</div><br class=3D"Apple-int=
+erchange-newline"><div><div><br>Hiya,<br><br>What's the status/plan for dra=
+ft-ietf-tls-esni-18?<br><br>Thanks,<br>S.<br><br>On 24/07/2024 20:57, Sean =
+Turner wrote:<br><blockquote type=3D"cite">[External Email] This email orig=
+inated outside of Trinity College Dublin. Do not click links or open attach=
+ments unless you recognise the sender and know the content is safe.<br>Hi! =
+We often review the WG I-Ds=E2=80=99 status during the chairs=E2=80=99 slid=
+es. I=E2=80=99d like to try an experiment to save us more time for the sess=
+ion by sending the update via email; it=E2=80=99s also in the chairs=E2=80=
+=99 slides. If any I-D authors disagree with this very brief summary please=
+ let us know. &nbsp;The list is sorted based on datatracker order.<br>- dra=
+ft-ietf-tls-svcb-ech-03: Needs a -04 to address WGLC comments from Rich Sal=
+z and Chris Patton.<br>- draft-ietf-tls-8773bis-02: Refer to Formal Analysi=
+s Triage Team (FATT) discussion in meeting.<br>- draft-ietf-tls-wkech-05: S=
+ee Stephen=E2=80=99s slides for IETF 120.<br>- draft-ietf-tls-deprecate-obs=
+olete-kex-04: Joe needs to do some minor word tweaking before moving it for=
+ward.<br>- draft-ietf-tls-key-share-prediction-00: It=E2=80=99s new, needs =
+WG review.<br>- draft-ietf-tls-tls13-pkcs1-01: Through WGLC, will enter FAT=
+T process once 8773bis is resolved; technically behind -rrc.<br>- draft-iet=
+f-tls-rfc8447bis-09: Awaiting WGLC; Deirdre to run.<br>- draft-ietf-tls-key=
+logfile-02: With RFC Editor.<br>- draft-ietf-tls-ctls-10: Stalled, but Hann=
+es said he will have more time late summer.<br>- draft-ietf-tls-hybrid-desi=
+gn-10: See Deirdre=E2=80=99s slides for IETF 120.<br>- draft-ietf-tls-tls12=
+-frozen-00: See Rich=E2=80=99s slides for IETF 120.<br>- draft-ietf-tls-dtl=
+s-rrc-11: Through WGLC, will enter FATT process once 8773bis is resolved.<b=
+r>- draft-davidben-tls-key-share-prediction-01: WG review needed.<br>- draf=
+t-ietf-tls-cert-abridge-01: Needs WG review.<br>- draft-ietf-tls-tlsflags-1=
+3: Awaiting implementations; would move if draft-jhoyla-req-mtls-flag was a=
+dopted.<br>- draft-ietf-tls-rfc8446bis-10: See Sean=E2=80=99s slides for IE=
+TF 120.<br>Cheers,<br>spt<br>______________________________________________=
+_<br>TLS mailing list -- tls@ietf.org<br>To unsubscribe send an email to tl=
+s-leave@ietf.org<br></blockquote><br>______________________________________=
+_________<br>TLS mailing list -- tls@ietf.org<br>To unsubscribe send an ema=
+il to tls-leave@ietf.org<br></div></div></blockquote></div><br></div></div>=
+</div></body></html>
+<br>
+<span style=3D"background-color:rgb(255,255,255)"><font size=3D"2">This ele=
+ctronic communication and the information and any files transmitted with it=
+, or attached to it, are confidential and are intended solely for the use o=
+f the individual or entity to whom it is addressed and may contain informat=
+ion that is confidential, legally privileged, protected by privacy laws, or=
+ otherwise restricted from disclosure to anyone else. If you are not the in=
+tended recipient or the person responsible for delivering the e-mail to the=
+ intended recipient, you are hereby notified that any use, copying, distrib=
+uting, dissemination, forwarding, printing, or copying of this e-mail is st=
+rictly prohibited. If you received this e-mail in error, please return the =
+e-mail to the sender, delete it from your computer, and destroy any printed=
+ copy of it.</font></span>
+--Apple-Mail=_EA9B1BB5-74F1-4A77-94ED-22246AACE7FB--
+

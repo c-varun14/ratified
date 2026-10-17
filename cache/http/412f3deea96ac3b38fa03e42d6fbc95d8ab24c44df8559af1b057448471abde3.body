@@ -1,0 +1,297 @@
+Return-Path: <ekr@rtfm.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id C2E30128768
+ for <tls@ietfa.amsl.com>; Tue, 11 Apr 2017 14:53:49 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.898
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.898 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_NONE=-0.0001, URIBL_BLOCKED=0.001]
+ autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=rtfm-com.20150623.gappssmtp.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id BYyM1bFBXHAf for <tls@ietfa.amsl.com>;
+ Tue, 11 Apr 2017 14:53:47 -0700 (PDT)
+Received: from mail-yb0-x236.google.com (mail-yb0-x236.google.com
+ [IPv6:2607:f8b0:4002:c09::236])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 74C4412EBF0
+ for <tls@ietf.org>; Tue, 11 Apr 2017 14:53:47 -0700 (PDT)
+Received: by mail-yb0-x236.google.com with SMTP id m133so2654138ybb.1
+ for <tls@ietf.org>; Tue, 11 Apr 2017 14:53:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=rtfm-com.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+ :cc; bh=H+rGZ7igG1j0eDM/9gFuU18ktiTN9wETe/WUHnCxptU=;
+ b=Fw9AqMka2MmqZAiJfvFgimh2P1YnFtNlIVKdfTVU55qu6uP0WYQ9WAjVhknIIaeWzK
+ CgifzCRB9H9ubFQQywwHmbhh7+/0XJmQnhz7E9AT79MTkXdf9hNOzNcqN8/FEwoHExJJ
+ M5f16V3EnmmdCUuYpWkAePtUrZyU4IjBy4emAaH0cHPsXjmkGe/6YFxRy+pq9L+ntizV
+ VNtlo+j2JYxh12n8CKAx3PSWGsccVWToh7UT0l/9sqmC85UbehLvovr443nBDRvETfmO
+ IMisPb8ghZT+Tc87QVw5VHOuTntpKTxAA4XbYAl9LCrZ0awbE1mS13S0nQFzTiv3Th7U
+ Weqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+ :message-id:subject:to:cc;
+ bh=H+rGZ7igG1j0eDM/9gFuU18ktiTN9wETe/WUHnCxptU=;
+ b=LRxD9kI99w4ESXwh0YXdP/QIwv7iHKpp6/Us5rtIViiJx9lGgpH9PUKj4r+R9Nz8HU
+ RXj8ZeDO2z33/7s8nkAuel1zkWcKmI1VCi1zSlBYzDMf5bz5TBAV1kvpQKhlf0Ow72oN
+ BcFU7omIrfS+YLVz0V0p+Ze/jJMFItaguPLsdIwB4ht7lOpp9gzMZZuBVxN1s7BAYaiF
+ jLy3bFdzKG70aygLbY2WS9udkeEq34MxE+6wNOcEEgKuBHNP6xNp3OccisZBw4MUCi1N
+ FIEknG5mJGd60PCoBejYppOWxUMb8bFicyh6w5xhzvl3P7bSEmoL4mUyc8LZSufkmZx+
+ llNA==
+X-Gm-Message-State: AN3rC/7w7/+HazCtSy2kAUopY8fB6AwnnXoZ4Hccair/FTOOWHpJzCAlzyRrv49k4nz+a5di5xiMglISk8m5tw==
+X-Received: by 10.37.173.225 with SMTP id d33mr9742909ybe.64.1491947626706;
+ Tue, 11 Apr 2017 14:53:46 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 10.129.113.7 with HTTP; Tue, 11 Apr 2017 14:53:06 -0700 (PDT)
+In-Reply-To: <20170411212538.GA17709@LK-Perkele-V2.elisa-laajakaista.fi>
+References: <1490797726.28079.18.camel@redhat.com>
+ <1490797957.28079.20.camel@redhat.com>
+ <CABcZeBMCZrVKM959F3ycKN_WAky2NAZTy9OOetnC+KJAj3L+Pw@mail.gmail.com>
+ <20170411212538.GA17709@LK-Perkele-V2.elisa-laajakaista.fi>
+From: Eric Rescorla <ekr@rtfm.com>
+Date: Tue, 11 Apr 2017 14:53:06 -0700
+Message-ID: <CABcZeBNfghTSFN1RAp1Mfkq5rDs=p39mj0tGCHA0GT4Byr5FPA@mail.gmail.com>
+To: Ilari Liusvaara <ilariliusvaara@welho.com>
+Cc: Nikos Mavrogiannopoulos <nmav@redhat.com>, "tls@ietf.org" <tls@ietf.org>
+Content-Type: multipart/alternative; boundary=f403045eb87a506159054ceb20fe
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/oNrV32fkVEgdfauxq85L7miQjJE>
+Subject: Re: [TLS] comments on draft-ietf-tls-tls13-19
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Tue, 11 Apr 2017 21:53:50 -0000
+
+--f403045eb87a506159054ceb20fe
+Content-Type: text/plain; charset=UTF-8
+
+On Tue, Apr 11, 2017 at 2:25 PM, Ilari Liusvaara <ilariliusvaara@welho.com>
+wrote:
+
+> On Tue, Apr 11, 2017 at 01:47:08PM -0700, Eric Rescorla wrote:
+> > Thanks for your comments.
+> >
+> > > 4.1.2. It is not defined what a server should do if encountered with a
+> > > ProtocolVersion of TLS 1.3.
+> >
+> > https://tlswg.github.io/tls13-spec/#supported-versions says:
+> >
+> >    If this extension is not present, servers which are compliant with
+> >    this specification MUST negotiate TLS 1.2 or prior as specified in
+> >    [RFC5246], even if ClientHello.legacy_version is 0x0304 or
+> >    later. Servers MAY abort the handshake upon receiving a ClientHello
+> >    with legacy_version 0x0304 or later.
+>
+> I think that MAY abort should be removed. client_version field has
+> always been defined to be tolerant to higher values.
+>
+
+It seems like we are ossifyng that extension point. Otherwise it's very
+hard to interpret. But I'm willing to defer if the WG objects.
+
+
+> > However, as David Benjamin points out, it's not clear how one would
+> > handle this in practice, because HRR is an instruction to the client
+> > to do something, so if it can't parse that then the handshake fails.
+>
+> I think if one wanted to have new mandatory HRR extension, one could
+> just have it sent, resulting older clients blowing up. But those would
+> not be able to connect anyway.
+>
+
+That's what we have now :)
+
+
+
+> > > 4.3.2.1. The OID Filters extension on a first look seems quite
+> > > independent and unrelated to everything else in this document (seemed
+> > > quite a distraction that could have been in an appendix as well).
+> >
+> > This is a fair point, but it's been in the document a long time,
+> > so I think this would require WG Consensus.
+>
+> Also, I have no idea of exact contents of that extension (maybe some mail
+> to this list has those, but that won't do with RFCs), as I can interpret
+> the thing in multiple ways.
+
+
+Hmm.. I did think the text was reasonably clear, but maybe I am in too deep.
+
+
+
+> > > 4.4.2.2., 4.4.2.3.
+> > > I think the reference to RFC5081 should be replaced with RFC5270 which
+> > > obsoletes the former even though not explicitly.
+> >
+> > Indeed. Also, we are now explicitly prohibiting OpenPGP per discussion
+> > in Chicago.
+>
+> Also, maybe needs some text about possible future Certificate Types
+> (or are those akin to DNS classes: heavy objects dropped by bad idea
+> fairy? :-) ).
+>
+> Also, client_certificate_type looks to be still CH,EE, which is not
+> good if any future certificate types might get defined (or even if
+> just RPK is allowed).
+>
+
+Actually, I think this is still right. The reason is that this extension
+applies
+to the client's entire certificate message, not to each certificate, so it
+needs to be negotiated up front.
+
+-Ekr
+
+
+
+> > > B.4.
+> > > I believe it was discussed before, but I miss the AES-256-CCM
+> > > ciphersuites. If only one must be defined, it may be better to only
+> > > have the 256-bit variants (at least for the non-mac-truncated version)
+> >
+> > Open to WG feedback here as well.
+>
+> Also, who uses those? It seems like CCM is mostly for things, and those
+> don't use AES-256, as AES-128 already seems quite much for various IoS.
+>
+> Also, if one wanted special ciphersuite for things, I think there are
+> ones that are implementable in smaller space than AES CCM.
+>
+>
+> -Ilari
+>
+
+--f403045eb87a506159054ceb20fe
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><br><div class=3D"gmail_extra"><br><div class=3D"gmail_quo=
+te">On Tue, Apr 11, 2017 at 2:25 PM, Ilari Liusvaara <span dir=3D"ltr">&lt;=
+<a href=3D"mailto:ilariliusvaara@welho.com" target=3D"_blank">ilariliusvaar=
+a@welho.com</a>&gt;</span> wrote:<br><blockquote class=3D"gmail_quote" styl=
+e=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex">On Tue,=
+ Apr 11, 2017 at 01:47:08PM -0700, Eric Rescorla wrote:<br>
+&gt; Thanks for your comments.<br>
+<span class=3D"">&gt;<br>
+&gt; &gt; 4.1.2. It is not defined what a server should do if encountered w=
+ith a<br>
+&gt; &gt; ProtocolVersion of TLS 1.3.<br>
+&gt;<br>
+&gt; <a href=3D"https://tlswg.github.io/tls13-spec/#supported-versions" rel=
+=3D"noreferrer" target=3D"_blank">https://tlswg.github.io/tls13-<wbr>spec/#=
+supported-versions</a> says:<br>
+&gt;<br>
+&gt;=C2=A0 =C2=A0 If this extension is not present, servers which are compl=
+iant with<br>
+&gt;=C2=A0 =C2=A0 this specification MUST negotiate TLS 1.2 or prior as spe=
+cified in<br>
+&gt;=C2=A0 =C2=A0 [RFC5246], even if ClientHello.legacy_version is 0x0304 o=
+r<br>
+&gt;=C2=A0 =C2=A0 later. Servers MAY abort the handshake upon receiving a C=
+lientHello<br>
+&gt;=C2=A0 =C2=A0 with legacy_version 0x0304 or later.<br>
+<br>
+</span>I think that MAY abort should be removed. client_version field has<b=
+r>
+always been defined to be tolerant to higher values.<br></blockquote><div><=
+br></div><div>It seems like we are ossifyng that extension point. Otherwise=
+ it&#39;s very hard to interpret. But I&#39;m willing to defer if the WG ob=
+jects.</div><div><br></div><blockquote class=3D"gmail_quote" style=3D"margi=
+n:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex">
+<span class=3D""><br>
+&gt; However, as David Benjamin points out, it&#39;s not clear how one woul=
+d<br>
+&gt; handle this in practice, because HRR is an instruction to the client<b=
+r>
+&gt; to do something, so if it can&#39;t parse that then the handshake fail=
+s.<br>
+<br>
+</span>I think if one wanted to have new mandatory HRR extension, one could=
+<br>
+just have it sent, resulting older clients blowing up. But those would<br>
+not be able to connect anyway.<br></blockquote><div><br></div><div>That&#39=
+;s what we have now :)</div><div><br></div><div>=C2=A0</div><blockquote cla=
+ss=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;pa=
+dding-left:1ex"><span class=3D"">&gt; &gt; 4.3.2.1. The OID Filters extensi=
+on on a first look seems quite<br>
+&gt; &gt; independent and unrelated to everything else in this document (se=
+emed<br>
+&gt; &gt; quite a distraction that could have been in an appendix as well).=
+<br>
+&gt;<br>
+&gt; This is a fair point, but it&#39;s been in the document a long time,<b=
+r>
+&gt; so I think this would require WG Consensus.<br>
+<br>
+</span>Also, I have no idea of exact contents of that extension (maybe some=
+ mail<br>
+to this list has those, but that won&#39;t do with RFCs), as I can interpre=
+t<br>
+the thing in multiple ways.</blockquote><div><br></div><div>Hmm.. I did thi=
+nk the text was reasonably clear, but maybe I am in too deep.<br></div><div=
+><br></div><div>=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"marg=
+in:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1e=
+x"><span class=3D"">
+&gt; &gt; 4.4.2.2., 4.4.2.3.<br>
+&gt; &gt; I think the reference to RFC5081 should be replaced with RFC5270 =
+which<br>
+&gt; &gt; obsoletes the former even though not explicitly.<br>
+&gt;<br>
+&gt; Indeed. Also, we are now explicitly prohibiting OpenPGP per discussion=
+<br>
+&gt; in Chicago.<br>
+<br>
+</span>Also, maybe needs some text about possible future Certificate Types<=
+br>
+(or are those akin to DNS classes: heavy objects dropped by bad idea<br>
+fairy? :-) ).<br>
+<br>
+Also, client_certificate_type looks to be still CH,EE, which is not<br>
+good if any future certificate types might get defined (or even if<br>
+just RPK is allowed).<br></blockquote><div><br></div><div>Actually, I think=
+ this is still right. The reason is that this extension applies</div><div>t=
+o the client&#39;s entire certificate message, not to each certificate, so =
+it</div><div>needs to be negotiated up front.</div><div><br></div><div>-Ekr=
+</div><div><br></div><div>=C2=A0</div><blockquote class=3D"gmail_quote" sty=
+le=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);paddi=
+ng-left:1ex"><span class=3D"">
+&gt; &gt; B.4.<br>
+&gt; &gt; I believe it was discussed before, but I miss the AES-256-CCM<br>
+&gt; &gt; ciphersuites. If only one must be defined, it may be better to on=
+ly<br>
+&gt; &gt; have the 256-bit variants (at least for the non-mac-truncated ver=
+sion)<br>
+&gt;<br>
+&gt; Open to WG feedback here as well.<br>
+<br>
+</span>Also, who uses those? It seems like CCM is mostly for things, and th=
+ose<br>
+don&#39;t use AES-256, as AES-128 already seems quite much for various IoS.=
+<br>
+<br>
+Also, if one wanted special ciphersuite for things, I think there are<br>
+ones that are implementable in smaller space than AES CCM.<br>
+<span class=3D"HOEnZb"><font color=3D"#888888"><br>
+<br>
+-Ilari<br>
+</font></span></blockquote></div><br></div></div>
+
+--f403045eb87a506159054ceb20fe--
+

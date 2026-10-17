@@ -1,0 +1,132 @@
+Return-Path: <pgut001@cs.auckland.ac.nz>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id E5DDA126D45
+ for <tls@ietfa.amsl.com>; Sat,  7 Apr 2018 17:38:04 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.91
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.91 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ T_RP_MATCHES_RCVD=-0.01] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=auckland.ac.nz
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id t3PIW3HTuGrE for <tls@ietfa.amsl.com>;
+ Sat,  7 Apr 2018 17:38:02 -0700 (PDT)
+Received: from mx4-int.auckland.ac.nz (mx4-int.auckland.ac.nz
+ [130.216.125.246])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 3F62F124D68
+ for <tls@ietf.org>; Sat,  7 Apr 2018 17:38:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=auckland.ac.nz; i=@auckland.ac.nz; q=dns/txt; s=mail;
+ t=1523147882; x=1554683882;
+ h=from:to:subject:date:message-id:references:in-reply-to:
+ content-transfer-encoding:mime-version;
+ bh=bSDGId/Pl5StcKWDZ0T605abMfDt/SiqwOK+rH2OPZM=;
+ b=D0eJ/WM/Ex7Z08qEQIyzC6OxSqZbTEjs04yoQNcpNsAXefOEImB+DRio
+ huVMUTxpDlsVOv7PTp5d+vgdw3YFlmfzVg9mVtaxfhJiEIh1Jgxzc0fU9
+ ma72N4lZTAHo3cz/gIbRrWVHb1e5Uq5fRELGcJjLrQZq4/hpwxxkMqWPz
+ EgKhy79tFDARFRcTGqbHFUvaRTuvYCjhUIUm2k218ZVuVwAd9KJ8BKzJc
+ vgNqlY8YoNb4P/IMN+tkN4wtI3ggmRsbAPJRU6HQwg7tAkOVnfCYzMwAi
+ dA8jqzhtXWIAbGGKd98oEyiifU0o/v2ZLN51/sPvKrc5MFUr0CesH1qwU g==;
+X-IronPort-AV: E=Sophos;i="5.48,421,1517828400"; 
+   d="scan'208";a="6670279"
+X-Ironport-HAT: MAIL-SERVERS - $RELAYED
+X-Ironport-Source: 10.6.3.5 - Outgoing - Outgoing
+Received: from exchangemx.uoa.auckland.ac.nz (HELO
+ uxcn13-tdc-d.UoA.auckland.ac.nz) ([10.6.3.5])
+ by mx4-int.auckland.ac.nz with ESMTP/TLS/AES256-SHA; 08 Apr 2018 12:37:57 +1200
+Received: from uxcn13-ogg-d.UoA.auckland.ac.nz (10.6.2.5) by
+ uxcn13-tdc-d.UoA.auckland.ac.nz (10.6.3.25) with Microsoft SMTP Server (TLS)
+ id 15.0.1263.5; Sun, 8 Apr 2018 12:37:57 +1200
+Received: from uxcn13-ogg-d.UoA.auckland.ac.nz ([10.6.2.25]) by
+ uxcn13-ogg-d.UoA.auckland.ac.nz ([10.6.2.25]) with mapi id 15.00.1263.000;
+ Sun, 8 Apr 2018 12:37:57 +1200
+From: Peter Gutmann <pgut001@cs.auckland.ac.nz>
+To: "tls@ietf.org" <tls@ietf.org>
+Thread-Topic: [TLS] Genart last call review of draft-ietf-tls-tls13-24
+Thread-Index: AQHTyXh+/Lp+FYBJG0WUfSNMD3DC66PzGXCC///K/YCAALimAIACcIhU
+Date: Sun, 8 Apr 2018 00:37:56 +0000
+Message-ID: <1523147824699.14023@cs.auckland.ac.nz>
+References: <1522377304060.20682@cs.auckland.ac.nz>
+ <r470Ps-10133i-7B3DEB3D7CF1410DB2E2FF250A811BB1@Williams-MacBook-Pro.local>
+ <CABcZeBMFrnSUddraBps-b=CujitVfaQuqBFHD9WCAcCKg9M7Tw@mail.gmail.com>
+ <CDC57F65-C88C-43BB-B4DB-77AEE9B437EF@gmail.com>
+ <1522462562850.29528@cs.auckland.ac.nz>
+ <2C1F7A14-45B0-49DE-98B1-897223F7A1B0@akamai.com>
+ <1522559738688.99197@cs.auckland.ac.nz>
+ <7EBF2F91-6FEA-4705-BB1A-3FB5D7E33949@akamai.com>
+ <2DA08233-1EC4-4371-943B-E41BF5D8DA8C@dukhovni.org>
+ <109337BE-3299-46B5-A2F8-9583107AB537@akamai.com>,
+ <20180406231127.GN3322@mournblade.imrryr.org>
+In-Reply-To: <20180406231127.GN3322@mournblade.imrryr.org>
+Accept-Language: en-NZ, en-GB, en-US
+Content-Language: en-NZ
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [130.216.158.4]
+Content-Type: text/plain; charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/lDZpmz0_jUGdInnFpi--sbi4Q9M>
+Subject: Re: [TLS] Genart last call review of draft-ietf-tls-tls13-24
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Sun, 08 Apr 2018 00:38:05 -0000
+
+I can't believe the amount of pointless bikeshedding that's already been do=
+ne=0A=
+over something that's going to be a rarely-if-ever used mechanism for one s=
+et=0A=
+of hardcore technical developers to communicate to another set of hardcore=
+=0A=
+technical developers.  This isn't a design for a multilingual IM system wit=
+h=0A=
+emojis and animated GIFs, it's a rarely-used debugging/diagnostic facility,=
+=0A=
+and yet we're arguing over whether a developer who can read a lengthy=0A=
+technical document specified entirely in US-ASCII (TLS RFC) and implement i=
+t=0A=
+in C or Java (US-ASCII, English keywords) will be unable to communicate an=
+=0A=
+error message in anything but Cantonese (or Mandarin, or Qiang, or Kam=96Su=
+i, or=0A=
+Kipchak, or whatever was meant by "Chinese").=0A=
+=0A=
+Even for the few steps in the process where there's i18n available like the=
+=0A=
+gcc compile stage, the Chinese-speaking devs I know use the English version=
+=0A=
+because they don't want an attempted guess in another language at what the=
+=0A=
+error is, they want the actual error message from the compiler authors (man=
+y=0A=
+gcc error messages are barely comprehensible in English, let alone in an=0A=
+Uighur translation.  Or maybe there are in Uighur, which is why I have trou=
+ble=0A=
+figuring out what they're saying).=0A=
+=0A=
+In any case it's a rarely-used, optional, by-special-request debugging=0A=
+facility for technical developers, make it UTF-8 and the devs can decide wh=
+at=0A=
+they put in there.=0A=
+=0A=
+Peter.=0A=
+

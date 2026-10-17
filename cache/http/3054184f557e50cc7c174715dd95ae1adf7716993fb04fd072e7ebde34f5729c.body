@@ -1,0 +1,196 @@
+Return-Path: <stephen.farrell@cs.tcd.ie>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 1C73D13C0FD
+ for <tls@ietfa.amsl.com>; Sun, 22 Oct 2017 16:50:22 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -4.3
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.3 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ DKIM_VALID_AU=-0.1, RCVD_IN_DNSWL_MED=-2.3, SPF_PASS=-0.001,
+ URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=cs.tcd.ie
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id KNtnZunVbJ25 for <tls@ietfa.amsl.com>;
+ Sun, 22 Oct 2017 16:50:20 -0700 (PDT)
+Received: from mercury.scss.tcd.ie (mercury.scss.tcd.ie [134.226.56.6])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id BBF5013C0FA
+ for <tls@ietf.org>; Sun, 22 Oct 2017 16:50:19 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+ by mercury.scss.tcd.ie (Postfix) with ESMTP id 5AC39BE53;
+ Mon, 23 Oct 2017 00:50:17 +0100 (IST)
+X-Virus-Scanned: Debian amavisd-new at scss.tcd.ie
+Received: from mercury.scss.tcd.ie ([127.0.0.1])
+ by localhost (mercury.scss.tcd.ie [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id aM1FiZn4RmcK; Mon, 23 Oct 2017 00:50:15 +0100 (IST)
+Received: from [10.244.2.100]
+ (95-45-153-252-dynamic.agg2.phb.bdt-fng.eircom.net [95.45.153.252])
+ by mercury.scss.tcd.ie (Postfix) with ESMTPSA id 963FABE2E;
+ Mon, 23 Oct 2017 00:50:15 +0100 (IST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cs.tcd.ie; s=mail;
+ t=1508716215; bh=anXJxG2qrY/y58y4V8xl+1TimgQzOuR9tOR1nr5qSNY=;
+ h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+ b=q6zxWH1XaG/oFYontbxeg0YhWTpoSLohGgp2HcEBAqSU0IzN5mkio2yFu82iVLHcR
+ Cqo8cv0FXR9GwnJDAzynBPkSXSuw98L2pU5uruPvR+aYCnaOIUj/0Uta56BY1TYSie
+ AEm5ZwpIcTYsoOSkxcj1VNYbjgAFTfJB3tKv5hks=
+To: Ted Lemon <mellon@fugue.com>, Steve Fenter <steven.fenter58@gmail.com>
+Cc: Paul Turner <PAUL.TURNER@venafi.com>, "tls@ietf.org" <tls@ietf.org>
+References: <7E6C8F1F-D341-456B-9A48-79FA7FEC0BC1@gmail.com>
+ <a599d6ad-54db-e525-17d6-6ea882880021@akamai.com>
+ <71e75d23f4544735a9731c4ec3dc7048@venafi.com>
+ <3D2E3E26-B2B9-4B04-9704-0BBEE2E2A8F7@akamai.com>
+ <000501d348e5$1f273450$5d759cf0$@equio.com>
+ <70837127-37AB-4132-9535-4A0EB072BA41@akamai.com>
+ <e8417cc424fe4bf3b240416dfffd807a@venafi.com>
+ <B11A4F30-2F87-4310-A2F0-397582E78E1D@akamai.com>
+ <fd12a8a8c29e4c7f9e9192e1a1d972d6@venafi.com>
+ <D2CAAA44-339E-4B41-BCE0-865C76B50E2F@akamai.com>
+ <d76828f02fc34287a961eba21901247b@venafi.com>
+ <56687FEC-508F-4457-83CC-7C379387240D@akamai.com>
+ <c1c0d010293c449481f8751c3b85d6ae@venafi.com>
+ <4167392E-07FB-46D5-9FBC-4773881BFD2C@akamai.com>
+ <3d5a0c1aab3e4ceb85ff631f8365618f@venafi.com>
+ <E84889BB-08B3-4A3A-AE3A-687874B16440@akamai.com>
+ <CAPBBiVQvtQbD4j3ofpCmG63MEyRWF15VL90NOTjeNqUOiyo6xg@mail.gmail.com>
+ <7ed40a30-196f-d280-59a5-814a5ea4676e@huitema.net>
+ <13B309B8-D380-450D-9792-81DFC22C03F0@gmail.com>
+ <6125D547-7B3A-493E-B3C9-799CEE9E7CC5@fugue.com>
+From: Stephen Farrell <stephen.farrell@cs.tcd.ie>
+Openpgp: id=D66EA7906F0B897FB2E97D582F3C8736805F8DA2; url=
+Message-ID: <019250c3-69c2-9513-2772-ef4415146125@cs.tcd.ie>
+Date: Mon, 23 Oct 2017 00:50:14 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.4.0
+MIME-Version: 1.0
+In-Reply-To: <6125D547-7B3A-493E-B3C9-799CEE9E7CC5@fugue.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="EKFuiIKaW2fjeloOGohbhEo6Lpc99COAJ"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/zxC7HxjgHG_ByJE9-0AQHwYMRow>
+Subject: Re: [TLS] Publication of draft-rhrd-tls-tls13-visibility-00
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Sun, 22 Oct 2017 23:50:22 -0000
+
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--EKFuiIKaW2fjeloOGohbhEo6Lpc99COAJ
+Content-Type: multipart/mixed; boundary="iqTpkkJB4LxOOALueXhD5jsv6VsXhuK6P";
+ protected-headers="v1"
+From: Stephen Farrell <stephen.farrell@cs.tcd.ie>
+To: Ted Lemon <mellon@fugue.com>, Steve Fenter <steven.fenter58@gmail.com>
+Cc: Paul Turner <PAUL.TURNER@venafi.com>, "tls@ietf.org" <tls@ietf.org>
+Message-ID: <019250c3-69c2-9513-2772-ef4415146125@cs.tcd.ie>
+Subject: Re: [TLS] Publication of draft-rhrd-tls-tls13-visibility-00
+References: <7E6C8F1F-D341-456B-9A48-79FA7FEC0BC1@gmail.com>
+ <a599d6ad-54db-e525-17d6-6ea882880021@akamai.com>
+ <71e75d23f4544735a9731c4ec3dc7048@venafi.com>
+ <3D2E3E26-B2B9-4B04-9704-0BBEE2E2A8F7@akamai.com>
+ <000501d348e5$1f273450$5d759cf0$@equio.com>
+ <70837127-37AB-4132-9535-4A0EB072BA41@akamai.com>
+ <e8417cc424fe4bf3b240416dfffd807a@venafi.com>
+ <B11A4F30-2F87-4310-A2F0-397582E78E1D@akamai.com>
+ <fd12a8a8c29e4c7f9e9192e1a1d972d6@venafi.com>
+ <D2CAAA44-339E-4B41-BCE0-865C76B50E2F@akamai.com>
+ <d76828f02fc34287a961eba21901247b@venafi.com>
+ <56687FEC-508F-4457-83CC-7C379387240D@akamai.com>
+ <c1c0d010293c449481f8751c3b85d6ae@venafi.com>
+ <4167392E-07FB-46D5-9FBC-4773881BFD2C@akamai.com>
+ <3d5a0c1aab3e4ceb85ff631f8365618f@venafi.com>
+ <E84889BB-08B3-4A3A-AE3A-687874B16440@akamai.com>
+ <CAPBBiVQvtQbD4j3ofpCmG63MEyRWF15VL90NOTjeNqUOiyo6xg@mail.gmail.com>
+ <7ed40a30-196f-d280-59a5-814a5ea4676e@huitema.net>
+ <13B309B8-D380-450D-9792-81DFC22C03F0@gmail.com>
+ <6125D547-7B3A-493E-B3C9-799CEE9E7CC5@fugue.com>
+In-Reply-To: <6125D547-7B3A-493E-B3C9-799CEE9E7CC5@fugue.com>
+
+--iqTpkkJB4LxOOALueXhD5jsv6VsXhuK6P
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
+
+
+Hi Ted,
+
+On 23/10/17 00:35, Ted Lemon wrote:
+> On Oct 22, 2017, at 7:26 PM, Steve Fenter <steven.fenter58@gmail.com>
+> wrote:
+>> I have been saying to anyone who will listen that the IETF needs a
+>> private forum for enterprises, to enable them to come forward and
+>> discuss their real requirements. Without this input the IETF is
+>> trying to architect and engineer solutions without knowing the
+>> complete set of requirements, at least on the enterprise side.
+>> This results in sub-optimal design decisions (from an enterprise
+>> perspective), which in this case will break mission critical
+>> enterprise monitoring and troubleshooting systems.
+>=20
+> The reason we don't have that is that designing secure protocols in
+> secret isn't a trustworthy approach.   Of course, you can always get
+> together privately.
+
+Well, to be fair, that ask - for (literally!) secret handshakes
+does explain one part of this debacle that has puzzled me so far.
+We've seen the following interactions:
+
+snooping-proponents: "we need snooping, because <foo>"
+others: "that has all sorts of bad side-effects, e.g. A,B,C..."
+=2E..
+=2E..silence from snooping proponents...
+
+The ask for secrecy I think demonstrates that the silence in
+response to explanations of derived demonstrable damage is not
+due to a lack of understanding, but must be down to caring
+only about one's own "constituency" and not at all about the
+Internet more broadly.
+
+I think I now understand some of this better (but deplore it
+more), but am left more puzzled as to the what it was that
+inspired draft-rehired authors.
+
+S.
+
+>=20
+>=20
+>=20
+>=20
+> _______________________________________________ TLS mailing list=20
+> TLS@ietf.org https://www.ietf.org/mailman/listinfo/tls
+>=20
+
+
+--iqTpkkJB4LxOOALueXhD5jsv6VsXhuK6P--
+
+--EKFuiIKaW2fjeloOGohbhEo6Lpc99COAJ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAEBCAAGBQJZ7S62AAoJEC88hzaAX42iLY0H/idXNU0mFDsj3jdBnNk7ykem
+nfCux2f4TKIWWnywtVkaFuZvmeBeJCImfVsvnne2y3bg4VEk0v4G4vIhE012oNvD
+oD2j1scpVROlQppTxgrNNGeU9tuZKgfFeBHUlxfpUHTButXHQCV+QN+TlWZJWHMR
+3C5ydxl1KRR7fQVf0fcR9NALUcUIjnOk9mjCcxRzG3xIJvFSJox/Bxvl7J2J+xTa
+a6u/WtJPn491t93lTZy0HhfprxSgYrvDizXDtTiRcBK9/0Cm0Bbf5DnDXTdcGh6z
+Jcd0SWOzZH4FozbIyMKdxPk9bNbBTdFQ440q4F7jZFrNAG6gLjFiphKKugSjOgA=
+=AX1b
+-----END PGP SIGNATURE-----
+
+--EKFuiIKaW2fjeloOGohbhEo6Lpc99COAJ--
+

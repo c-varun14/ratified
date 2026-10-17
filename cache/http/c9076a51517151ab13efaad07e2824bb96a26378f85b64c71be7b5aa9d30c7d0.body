@@ -1,0 +1,365 @@
+Return-Path: <ekr@rtfm.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id C010E131057
+ for <tls@ietfa.amsl.com>; Wed,  1 Aug 2018 05:17:02 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.908
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.908 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_NONE=-0.0001, T_DKIMWL_WL_MED=-0.01,
+ URIBL_BLOCKED=0.001] autolearn=unavailable autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=rtfm-com.20150623.gappssmtp.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id C4uJzk5qeqMU for <tls@ietfa.amsl.com>;
+ Wed,  1 Aug 2018 05:17:00 -0700 (PDT)
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com
+ [IPv6:2a00:1450:4864:20::234])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id AC015131091
+ for <tls@ietf.org>; Wed,  1 Aug 2018 05:16:55 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id f1-v6so16674379ljc.9
+ for <tls@ietf.org>; Wed, 01 Aug 2018 05:16:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=rtfm-com.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+ :cc; bh=6RvKWjS2UV1BFesVEvYP7hjpueCcAHkXbt2w8s2aO2M=;
+ b=2IV6gNtkFRWJMwrcDe+msseBYn8Wwepv48Vb3riFU3zYya9OHBqk86D7UTnkvIJ5Vr
+ sBMs3xFxGdRGWObzPtcfN3Vnx7nxMQ9NcWWGTadPw9k1k/4ZC0gFrVIJiFtI+Ujs+f9u
+ WjgKr9OMsvhb4gcXndUXiqgWz3rPa/sGaz3dyBmKIoRtx4FQJhWAPODPgYCqyyzhgten
+ 7INCF5CUCqt2SfWh7TJQw58gua4x4idYB9dhNrhhQCML+OiN/yc+1ll/cOneHE8pKlk2
+ qZ4A6uUX7h8/wE+qjRvPEwlztG/TedvQU6WSherReKLRjHFV70brJtXFjoV3gjgyXr+j
+ TboQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+ :message-id:subject:to:cc;
+ bh=6RvKWjS2UV1BFesVEvYP7hjpueCcAHkXbt2w8s2aO2M=;
+ b=ko7yWjuJCj0tK520TmUUYjTeyZwfy3XjGF5qRQV8ll8uQa163sqfNHUSE1Cv/we+r2
+ f2akc95+HhIoKmcCaNd7fZpFEsNxquCGlSTQAfKlJUgAGMidPevqznlkGPvEpVlXw7aE
+ 5658EYifqMc0nMmSEno/S1ixFvjp8WzwFYZxSVPu5aFfH7CSS/S8qO7tFmiJI//IcYBL
+ 2GbUsED44D7dhsKEODGlB8O/Sr88Vz9CVq87kxYQgNvnX31L6BSajadpjr4j6YT8S0g1
+ ppdE4HHXc4hki/7ce+DOn0ByVG5HEa7PL2urxLDj3d/V6yR5lfjXn/6vSV7hyvKkBNgB
+ m1YQ==
+X-Gm-Message-State: AOUpUlH828zv0taij9HZ93FEhyg+2kLAs6H1mRqQG1C3QOkbaMeLSsjr
+ CbhnTGIkRtTGU9ptJa5jJz82xtSM78TWT0IKPzNQSg==
+X-Google-Smtp-Source: AAOMgpf24QzQ/nDP+s1j1rmjmEqTEGzVI7At3w/Zty3F6LJCCd7krY5RNoLZnFEK7pbpX6ro5qJcxv6vAnmCEFm4Zf8=
+X-Received: by 2002:a2e:1b83:: with SMTP id c3-v6mr18658378ljf.0.1533125813792; 
+ Wed, 01 Aug 2018 05:16:53 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 2002:ab3:4091:0:0:0:0:0 with HTTP;
+ Wed, 1 Aug 2018 05:16:13 -0700 (PDT)
+In-Reply-To: <CABkgnnUDBN0fW-ZXiyqwzxqXjsSaYmX=Tev8KcKQqaqO4doV9A@mail.gmail.com>
+References: <153307887249.3105.12827768403582747815.idtracker@ietfa.amsl.com>
+ <CABkgnnUDBN0fW-ZXiyqwzxqXjsSaYmX=Tev8KcKQqaqO4doV9A@mail.gmail.com>
+From: Eric Rescorla <ekr@rtfm.com>
+Date: Wed, 1 Aug 2018 05:16:13 -0700
+Message-ID: <CABcZeBPCqkakU313mHT2e+yxZOnMQUQYjkYBtE-i43i8mvoE2Q@mail.gmail.com>
+To: Martin Thomson <martin.thomson@gmail.com>
+Cc: The IESG <iesg@ietf.org>, Sean Turner <sean@sn3rd.com>,
+ tls-chairs <tls-chairs@ietf.org>, 
+ draft-ietf-tls-tls13-vectors@ietf.org, "<tls@ietf.org>" <tls@ietf.org>
+Content-Type: multipart/alternative; boundary="0000000000008702f605725eab71"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/46uGEBebjFuydFbHLvm3wgO8E0A>
+Subject: Re: [TLS] Eric Rescorla's No Objection on
+ draft-ietf-tls-tls13-vectors-06: (with COMMENT)
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.27
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Wed, 01 Aug 2018 12:17:03 -0000
+
+--0000000000008702f605725eab71
+Content-Type: text/plain; charset="UTF-8"
+
+On Tue, Jul 31, 2018 at 10:03 PM, Martin Thomson <martin.thomson@gmail.com>
+wrote:
+
+> Thanks for checking on this.  I had a couple of bugs with
+> deduplication that made some of the values unnecessarily repetitious.
+> There are a few values around Finished calculation that I added (the
+> values were there already, but you had to extract them from other
+> values).
+>
+> A preview is available (though that uses the draft version numbers and
+> it doesn't have the Finished values because those changes haven't made
+> it into NSS yet):
+> https://tlswg.github.io/draft-ietf-tls-tls13-vectors/draft-
+> ietf-tls-tls13-vectors.html
+>
+> The diff isn't particularly enlightening because the handshakes are
+> completely different each time, but you should be able to find the
+> specific changes if you look for them.
+>
+> On Wed, Aug 1, 2018 at 9:14 AM Eric Rescorla <ekr@rtfm.com> wrote:
+> > Has anyone checked these besides MT?
+>
+> I wasn't aware that openssl was using them, but Kazu provided a ton of
+> feedback when building this.
+>
+> > COMMENTS
+> > >         salt:  (absent)
+> >
+> > ARen't we using the convention 0?
+>
+> Yes, but "salt: 0" is hard to distinguish from "salt (1 octet): 00",
+> so I decided to be more explicit.  I built special code for this, so
+> it could say anything; what would you prefer it to say?   "(zero)"?  I
+> tend to think that this is OK, but I don't care what it says.
+>
+
+Yes, I think 0 would be better.
+
+
+> > S 3.
+> > >      {server}  extract secret "handshake":
+> > >
+> > >         salt (32 octets):  6f 26 15 a1 08 c7 02 c5 67 8f 54 fc 9d ba
+> b6 97
+> > >            16 c0 76 18 9c 48 25 0c eb ea c3 57 6c 36 11 ba
+> > >
+> > >         IKM (32 octets):  81 51 d1 46 4c 1b 55 53 36 23 b9 c2 24 6a 6a
+> 0e
+> >
+> > You should specify Z above with the DH.
+>
+> The IKM is Z.  I didn't see much point in repeating it.  Besides,
+> because this is driven from logging, it would require a whole bunch of
+> new logging to support recording of the key exchange.
+>
+
+I'm suggesting you manually edit the draft.
+
+
+
+> > S 3.
+> > >      {server}  send a Finished handshake message
+> >
+> > Maybe include more of the finished computaitons.
+>
+> Yeah, the computed HMAC wasn't logged, so I missed it.  If you are
+> willing to review the change to NSS to log the result
+> (https://phabricator.services.mozilla.com/D2589), I can include that
+> in the block explicitly, which is better.
+>
+> > S 3.
+> > >         key output (16 octets):  26 79 a4 3e 1d 76 78 40 34 ea 17 97
+> d5 ad
+> > >            26 49
+> > >
+> > >         iv info (12 octets):  00 0c 08 74 6c 73 31 33 20 69 76 00
+> > >
+> > >         iv output (12 octets):  54 82 40 52 90 dd 0d 2f 81 c0 d9 42
+> >
+> > This is kind of an odd order.
+>
+> I don't know how else to order this.
+>
+
+It's odd that we're computing the handshake keys after the application keys.
+It's just an oddity in NSS.
+
+
+> > S 4.
+> > >         secret (32 octets):  04 8b 40 aa 09 ff d4 c6 76 9c 54 1a 2f 46
+> e2
+> > >            84 66 06 f7 0d 62 a6 15 97 77 29 c5 b2 81 c7 e7 15
+> > >
+> > >      {client}  send a ClientHello handshake message
+> > >
+> > >      {client}  calculate finished "tls13 finished":
+> >
+> > You should label this as the binder.
+>
+> Done.  I've added the other inputs to this as well.
+>
+> > S 4.
+> > >         output (32 octets):  a8 19 28 e3 08 5c 3a 85 63 ed 82 2d a9 af
+> 7a
+> > >            b7 1a c5 43 2a 5f 9d 1e 6f 71 32 f1 8b 36 e2 c7 05
+> > >
+> > >      {client}  send handshake record:
+> > >
+> > >         payload (512 octets):  01 00 01 fc 03 03 88 09 d2 a3 9b f9 ae
+> b3
+> >
+> > You should explain why this is 512
+>
+> I don't think that it's appropriate to document all the design choices
+> here; that this is padded is one from many.  (It's also very hard to
+> pick this sort of exceptional condition out for special treatment.)
+>
+
+What's relevant is that the previous one is padded and this is not. I think
+that's a very appropriate thing to note. As for special treatment, again,
+you can edit the output. Once this is approved by the IESG, you're not
+going to be able to regenerate it anyway.
+
+
+-Ekr
+
+--0000000000008702f605725eab71
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><br><div class=3D"gmail_extra"><br><div class=3D"gmail_quo=
+te">On Tue, Jul 31, 2018 at 10:03 PM, Martin Thomson <span dir=3D"ltr">&lt;=
+<a href=3D"mailto:martin.thomson@gmail.com" target=3D"_blank">martin.thomso=
+n@gmail.com</a>&gt;</span> wrote:<br><blockquote class=3D"gmail_quote" styl=
+e=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex">Thanks =
+for checking on this.=C2=A0 I had a couple of bugs with<br>
+deduplication that made some of the values unnecessarily repetitious.<br>
+There are a few values around Finished calculation that I added (the<br>
+values were there already, but you had to extract them from other<br>
+values).<br>
+<br>
+A preview is available (though that uses the draft version numbers and<br>
+it doesn&#39;t have the Finished values because those changes haven&#39;t m=
+ade<br>
+it into NSS yet):<br>
+<a href=3D"https://tlswg.github.io/draft-ietf-tls-tls13-vectors/draft-ietf-=
+tls-tls13-vectors.html" rel=3D"noreferrer" target=3D"_blank">https://tlswg.=
+github.io/draft-<wbr>ietf-tls-tls13-vectors/draft-<wbr>ietf-tls-tls13-vecto=
+rs.html</a><br>
+<br>
+The diff isn&#39;t particularly enlightening because the handshakes are<br>
+completely different each time, but you should be able to find the<br>
+specific changes if you look for them.<br>
+<span class=3D""><br>
+On Wed, Aug 1, 2018 at 9:14 AM Eric Rescorla &lt;<a href=3D"mailto:ekr@rtfm=
+.com">ekr@rtfm.com</a>&gt; wrote:<br>
+&gt; Has anyone checked these besides MT?<br>
+<br>
+</span>I wasn&#39;t aware that openssl was using them, but Kazu provided a =
+ton of<br>
+feedback when building this.<br>
+<br>
+&gt; COMMENTS<br>
+<span class=3D"">&gt; &gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0salt:=C2=A0 (ab=
+sent)<br>
+&gt;<br>
+&gt; ARen&#39;t we using the convention 0?<br>
+<br>
+</span>Yes, but &quot;salt: 0&quot; is hard to distinguish from &quot;salt =
+(1 octet): 00&quot;,<br>
+so I decided to be more explicit.=C2=A0 I built special code for this, so<b=
+r>
+it could say anything; what would you prefer it to say?=C2=A0 =C2=A0&quot;(=
+zero)&quot;?=C2=A0 I<br>
+tend to think that this is OK, but I don&#39;t care what it says.<br></bloc=
+kquote><div><br></div><div>Yes, I think 0 would be better.</div><div> <br><=
+/div><blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-le=
+ft:1px #ccc solid;padding-left:1ex">
+<span class=3D""><br>
+&gt; S 3.<br>
+&gt; &gt;=C2=A0 =C2=A0 =C2=A0 {server}=C2=A0 extract secret &quot;handshake=
+&quot;:<br>
+&gt; &gt;<br>
+&gt; &gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0salt (32 octets):=C2=A0 6f 26 15=
+ a1 08 c7 02 c5 67 8f 54 fc 9d ba b6 97<br>
+&gt; &gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 16 c0 76 18 9c 48 25 0c =
+eb ea c3 57 6c 36 11 ba<br>
+&gt; &gt;<br>
+&gt; &gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0IKM (32 octets):=C2=A0 81 51 d1 =
+46 4c 1b 55 53 36 23 b9 c2 24 6a 6a 0e<br>
+&gt;<br>
+&gt; You should specify Z above with the DH.<br>
+<br>
+</span>The IKM is Z.=C2=A0 I didn&#39;t see much point in repeating it.=C2=
+=A0 Besides,<br>
+because this is driven from logging, it would require a whole bunch of<br>
+new logging to support recording of the key exchange.<br></blockquote><div>=
+<br></div><div>I&#39;m suggesting you manually edit the draft.</div><div><b=
+r></div><div>=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"margin:=
+0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex">
+&gt; S 3.<br>
+<span class=3D"">&gt; &gt;=C2=A0 =C2=A0 =C2=A0 {server}=C2=A0 send a Finish=
+ed handshake message<br>
+&gt;<br>
+&gt; Maybe include more of the finished computaitons.<br>
+<br>
+</span>Yeah, the computed HMAC wasn&#39;t logged, so I missed it.=C2=A0 If =
+you are<br>
+willing to review the change to NSS to log the result<br>
+(<a href=3D"https://phabricator.services.mozilla.com/D2589" rel=3D"noreferr=
+er" target=3D"_blank">https://phabricator.services.<wbr>mozilla.com/D2589</=
+a>), I can include that<br>
+in the block explicitly, which is better.<br>
+<span class=3D""><br>
+&gt; S 3.<br>
+&gt; &gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0key output (16 octets):=C2=A0 26=
+ 79 a4 3e 1d 76 78 40 34 ea 17 97 d5 ad<br>
+&gt; &gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 26 49<br>
+&gt; &gt;<br>
+&gt; &gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0iv info (12 octets):=C2=A0 00 0c=
+ 08 74 6c 73 31 33 20 69 76 00<br>
+&gt; &gt;<br>
+&gt; &gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0iv output (12 octets):=C2=A0 54 =
+82 40 52 90 dd 0d 2f 81 c0 d9 42<br>
+&gt;<br>
+&gt; This is kind of an odd order.<br>
+<br>
+</span>I don&#39;t know how else to order this.<br></blockquote><div><br></=
+div><div>It&#39;s odd that we&#39;re computing the handshake keys after the=
+ application keys.</div><div>It&#39;s just an oddity in NSS.<br></div><div>=
+ <br></div><blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;bor=
+der-left:1px #ccc solid;padding-left:1ex">
+<span class=3D""></span><span class=3D""><br>
+&gt; S 4.<br>
+&gt; &gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0secret (32 octets):=C2=A0 04 8b =
+40 aa 09 ff d4 c6 76 9c 54 1a 2f 46 e2<br>
+&gt; &gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 84 66 06 f7 0d 62 a6 15 =
+97 77 29 c5 b2 81 c7 e7 15<br>
+&gt; &gt;<br>
+&gt; &gt;=C2=A0 =C2=A0 =C2=A0 {client}=C2=A0 send a ClientHello handshake m=
+essage<br>
+&gt; &gt;<br>
+&gt; &gt;=C2=A0 =C2=A0 =C2=A0 {client}=C2=A0 calculate finished &quot;tls13=
+ finished&quot;:<br>
+&gt;<br>
+&gt; You should label this as the binder.<br>
+<br>
+</span>Done.=C2=A0 I&#39;ve added the other inputs to this as well.<br>
+<span class=3D""><br>
+&gt; S 4.<br>
+&gt; &gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0output (32 octets):=C2=A0 a8 19 =
+28 e3 08 5c 3a 85 63 ed 82 2d a9 af 7a<br>
+&gt; &gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 b7 1a c5 43 2a 5f 9d 1e =
+6f 71 32 f1 8b 36 e2 c7 05<br>
+&gt; &gt;<br>
+&gt; &gt;=C2=A0 =C2=A0 =C2=A0 {client}=C2=A0 send handshake record:<br>
+&gt; &gt;<br>
+&gt; &gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0payload (512 octets):=C2=A0 01 0=
+0 01 fc 03 03 88 09 d2 a3 9b f9 ae b3<br>
+&gt;<br>
+&gt; You should explain why this is 512<br>
+<br>
+</span>I don&#39;t think that it&#39;s appropriate to document all the desi=
+gn choices<br>
+here; that this is padded is one from many.=C2=A0 (It&#39;s also very hard =
+to<br>
+pick this sort of exceptional condition out for special treatment.)<br></bl=
+ockquote><div><br></div><div>What&#39;s relevant is that the previous one i=
+s padded and this is not. I think</div><div>that&#39;s a very appropriate t=
+hing to note. As for special treatment, again,</div><div>you can edit the o=
+utput. Once this is approved by the IESG, you&#39;re not</div><div>going to=
+ be able to regenerate it anyway.<br></div><div><br> </div><div><br><span c=
+lass=3D""></span></div><span class=3D""></span>-Ekr</div><div class=3D"gmai=
+l_quote"><br></div></div></div>
+
+--0000000000008702f605725eab71--
+

@@ -1,0 +1,264 @@
+Return-Path: <mglt.ietf@gmail.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 27D681294EC;
+ Fri, 19 May 2017 09:07:41 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.399
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.399 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ FREEMAIL_FORGED_FROMDOMAIN=0.199, FREEMAIL_FROM=0.001,
+ HEADER_FROM_DIFFERENT_DOMAINS=0.001, HTML_MESSAGE=0.001,
+ RCVD_IN_DNSWL_LOW=-0.7, SPF_PASS=-0.001]
+ autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=gmail.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id PCfPhlC85vcB; Fri, 19 May 2017 09:07:39 -0700 (PDT)
+Received: from mail-lf0-x22d.google.com (mail-lf0-x22d.google.com
+ [IPv6:2a00:1450:4010:c07::22d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 0CB561294A4;
+ Fri, 19 May 2017 09:07:39 -0700 (PDT)
+Received: by mail-lf0-x22d.google.com with SMTP id h4so3511215lfj.3;
+ Fri, 19 May 2017 09:07:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025; 
+ h=mime-version:sender:in-reply-to:references:from:date:message-id
+ :subject:to:cc;
+ bh=uwHBmfuU4afjEOllwHYg5B3VzGqkeebVf6XvE+EY0gg=;
+ b=PO7WgfJRI5Y2h5a5x+4Z48haRK7enlYhKEX82+icO7n1mXyV5LjnAMlkEKk8fxjSWz
+ 0+jvf7sEfKtlfVuiiTLACjUsvyfQkiXTmfyx9+i+qErhswNaQ3CSyeA1YdCJvI4GU0Zn
+ wasg2WwNIH6Mzx+NFCyywmA/GqQYfgeTmyxyt6E0l+zTHS8W3l+5XXEVLqvL4c535EOJ
+ roVDEwTB/rrT+TjPv6DhSKU5JPNlvdHzK2GHmBa/MLwo7q43n2rQSEf5Ld4TT2Lw5TOt
+ uLsg9L4mTEyeKkZVHW3xCYLxhNToAHy6IsuRNcDProQyaqvlaPHfbyHCzR70vDCTJ4gi
+ C/QA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:sender:in-reply-to:references:from
+ :date:message-id:subject:to:cc;
+ bh=uwHBmfuU4afjEOllwHYg5B3VzGqkeebVf6XvE+EY0gg=;
+ b=jcE9OllRpEQvmDUK1qHMHPaF4cRWxb6b7K8a6D7knpGDQoYa4hb9bSn7PP2qkPKZhy
+ kPmeVXUU6/krEFWdSXaKRe8AoDZim750iPbRXHyViaesNYSbAHn2rlAYxwQOmdWfGzaN
+ +/KAliemmMBtDD2ZlUu5mJMu0BZM5o8OAejs73kzwic248aUAOGJiBSC5e4mq/JHaLjX
+ UsUM3xy0Vz+3g54RSqIsUy+NobKhahCr9U9CkDo7FFjVzVRxhxs9w9fK8tNwXVwONqCw
+ /Ak15+sViJxy7TzRfa1jNKytQ2mq2fyBMHQXKotof7YHkAlGw4bFGOB8YgxFeifX8tZh
+ CqGQ==
+X-Gm-Message-State: AODbwcAQaJZNqMAwWyonSD+mhrlgw3B0A/VEGis8np0z/FzsIfn/ut7C
+ LZhl8xdQk0a+isiKe/At5gS06a1JVw==
+X-Received: by 10.25.193.145 with SMTP id r139mr1531754lff.111.1495210057237; 
+ Fri, 19 May 2017 09:07:37 -0700 (PDT)
+MIME-Version: 1.0
+Sender: mglt.ietf@gmail.com
+Received: by 10.46.0.14 with HTTP; Fri, 19 May 2017 09:07:36 -0700 (PDT)
+In-Reply-To: <010db57b-37a9-a543-d33c-cc0dd7a75fcf@akamai.com>
+References: <20170519043827.GL39245@kduck.kaduk.org>
+ <201705190316.33316.davemgarrett@gmail.com>
+ <010db57b-37a9-a543-d33c-cc0dd7a75fcf@akamai.com>
+From: Daniel Migault <daniel.migault@ericsson.com>
+Date: Fri, 19 May 2017 12:07:36 -0400
+X-Google-Sender-Auth: 9qEQEUqd_BBy51at4x7pj0L4Fqc
+Message-ID: <CADZyTknj9HrEW+ZwCgoVvsV3cQMk_m+H9_QGVL6-aO_1OMx5Zw@mail.gmail.com>
+To: Benjamin Kaduk <bkaduk@akamai.com>
+Cc: Dave Garrett <davemgarrett@gmail.com>, tls <tls@ietf.org>,
+ The IESG <iesg@ietf.org>, 
+ Benjamin Kaduk <kaduk@mit.edu>, draft-ietf-tls-ecdhe-psk-aead.all@ietf.org, 
+ "ietf@ietf.org" <ietf@ietf.org>, secdir@ietf.org
+Content-Type: multipart/alternative; boundary="94eb2c1a0878538d39054fe2b8a6"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/SpiDcZHvoWUhSFl8O856L_RfZPY>
+Subject: Re: [TLS] secdir review of draft-ietf-tls-ecdhe-psk-aead-03
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Fri, 19 May 2017 16:07:41 -0000
+
+--94eb2c1a0878538d39054fe2b8a6
+Content-Type: text/plain; charset="UTF-8"
+
+Hi Benjamin and Dave,
+
+Thanks for the clarification. Considering also Roman' s and Ben' s comments
+the section is built as follow. 1) Limit cipher suites to TLS1.2, 2)
+explain how TLS1.3 and higher version negotiate them 3) bring all
+explanation foe the previous versions.
+
+Yours,
+Daniel
+
+The text is as follows:
+
+<t> The cipher suites defined in this document MUST NOT be negotiated
+for any version of (D)TLS other than TLS1.2.</t>
+
+<t> TLS version 1.3 and later negotiate these features in a different
+manner. Unlike TLS1.2, TLS1.3 separates authentication and cipher suite
+negotiation <xref target="I-D.ietf-tls-tls13"/> Section 1.2. TLS1.3
+supports PSK with ECDHE key exchange and the cipher suites
+TLS_AES_128_GCM_SHA256, TLS_AES_256_GCM_SHA384, TLS_AES_128_CCM_8_SHA256
+and  TLS_AES_128_CCM_SHA256 are part of the specification. As a result,
+TLS 1.3 and higher versions, negotiate and support these cipher suites
+in a different way. </t>
+
+<t>The cipher suites defined in this document make use of the
+authenticated encryption with additional data (AEAD) defined in TLS 1.2
+<xref target="RFC5246"/> and DTLS 1.2 <xref target="RFC6347" />.
+Earlier versions of TLS do not have support for AEAD and consequently,
+the cipher suites defined in this document MUST NOT be negotiated in TLS
+versions prior to 1.2.  In addition, it is worth noting that TLS1.0
+<xref target="RFC2246"/> and TL1.2 <xref target="RFC4346"/> splits teh
+pre-master in two parts. The PRF results of mixing the two pseudorandom
+streams with distinct hash functions (MD5 and SHA-1) by exclusive-ORing
+them together. In the case of ECDHE_PSK authentication, the PSK and
+pre-master are treated by distinct hash function with distinct
+properties. This may introduce vulnerabilities over the expected
+security provided by the constructed pre-master. As such TLS1.0 and
+TLS1.1 SHOULD NOT be used with ECDHE_PSK.  Clients MUST NOT offer these
+cipher suites defined in this document if they do not offer TLS 1.2 or
+later. Servers that select an earlier version of TLS MUST NOT select one
+of these cipher suites. A client MUST treat the selection of these
+cipher suites in combination with a version of TLS that does not support
+AEAD (i.e., TLS 1.1 or earlier) as an error and generate a fatal
+'illegal_parameter' TLS alert.</t>
+
+
+
+
+On Fri, May 19, 2017 at 10:39 AM, Benjamin Kaduk <bkaduk@akamai.com> wrote:
+
+> On 05/19/2017 02:16 AM, Dave Garrett wrote:
+>
+> On Friday, May 19, 2017 12:38:27 am Benjamin Kaduk wrote:
+>
+> In section 4, "these cipher suites MUST NOT be negotiated in TLS
+> versions prior to 1.2" should probably clarify that "these" cipher
+> suites are the new ones specified by this document.
+>
+> Probably should be: "the cipher suites defined in this document
+> MUST NOT be negotiated for any version of TLS other than 1.2."
+>
+> The sentence mentioning TLS 1.3+ could be moved up to right after
+> and just say: "TLS version 1.3 and later negotiate these features in
+> a different manner."
+>
+>
+>
+>
+> That's probably best, yes.  The interaction between this document and TLS
+> 1.3 is a little weird, and it's not entirely clear to me that this one
+> needs to say much of anything about TLS 1.3, given that TLS 1.3 changes all
+> the relevant messages and key hierarchy and such.
+>
+> -Ben
+>
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+>
+>
+
+--94eb2c1a0878538d39054fe2b8a6
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div><div>Hi Benjamin and Dave, <br><br></div>Thanks for t=
+he clarification. Considering also Roman&#39; s and Ben&#39; s comments the=
+ section is built as follow. 1) Limit cipher suites to TLS1.2, 2) explain h=
+ow TLS1.3 and higher version negotiate them 3) bring all explanation foe th=
+e previous versions.<br><br></div><div>Yours, <br></div><div>Daniel<br><br>=
+</div>The text is as follows:<br><br>&lt;t&gt; The cipher suites defined in=
+ this document MUST NOT be negotiated<br>for any version of (D)TLS other th=
+an TLS1.2.&lt;/t&gt;<br><br>&lt;t&gt; TLS version 1.3 and later negotiate t=
+hese features in a different<br>manner. Unlike TLS1.2, TLS1.3 separates aut=
+hentication and cipher suite<br>negotiation &lt;xref target=3D&quot;I-D.iet=
+f-tls-tls13&quot;/&gt; Section 1.2. TLS1.3<br>supports PSK with ECDHE key e=
+xchange and the cipher suites<br>TLS_AES_128_GCM_SHA256, TLS_AES_256_GCM_SH=
+A384, TLS_AES_128_CCM_8_SHA256 <br>and=C2=A0 TLS_AES_128_CCM_SHA256 are par=
+t of the specification. As a result,<br>TLS 1.3 and higher versions, negoti=
+ate and support these cipher suites<br>in a different way. &lt;/t&gt;<br><b=
+r>&lt;t&gt;The cipher suites defined in this document make use of the<br>au=
+thenticated encryption with additional data (AEAD) defined in TLS 1.2<br>&l=
+t;xref target=3D&quot;RFC5246&quot;/&gt; and DTLS 1.2 &lt;xref target=3D&qu=
+ot;RFC6347&quot; /&gt;.<br>Earlier versions of TLS do not have support for =
+AEAD and consequently,<br>the cipher suites defined in this document MUST N=
+OT be negotiated in TLS<br>versions prior to 1.2.=C2=A0 In addition, it is =
+worth noting that TLS1.0<br>&lt;xref target=3D&quot;RFC2246&quot;/&gt; and =
+TL1.2 &lt;xref target=3D&quot;RFC4346&quot;/&gt; splits teh<br>pre-master i=
+n two parts. The PRF results of mixing the two pseudorandom<br>streams with=
+ distinct hash functions (MD5 and SHA-1) by exclusive-ORing<br>them togethe=
+r. In the case of ECDHE_PSK authentication, the PSK and<br>pre-master are t=
+reated by distinct hash function with distinct<br>properties. This may intr=
+oduce vulnerabilities over the expected<br>security provided by the constru=
+cted pre-master. As such TLS1.0 and<br>TLS1.1 SHOULD NOT be used with ECDHE=
+_PSK.=C2=A0 Clients MUST NOT offer these<br>cipher suites defined in this d=
+ocument if they do not offer TLS 1.2 or<br>later. Servers that select an ea=
+rlier version of TLS MUST NOT select one<br>of these cipher suites. A clien=
+t MUST treat the selection of these<br>cipher suites in combination with a =
+version of TLS that does not support<br>AEAD (i.e., TLS 1.1 or earlier) as =
+an error and generate a fatal <br>&#39;illegal_parameter&#39; TLS alert.&lt=
+;/t&gt;<br><br>=C2=A0 <br><div><div><br><div><div class=3D"gmail_extra"><br=
+><div class=3D"gmail_quote">On Fri, May 19, 2017 at 10:39 AM, Benjamin Kadu=
+k <span dir=3D"ltr">&lt;<a href=3D"mailto:bkaduk@akamai.com" target=3D"_bla=
+nk">bkaduk@akamai.com</a>&gt;</span> wrote:<br><blockquote class=3D"gmail_q=
+uote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,2=
+04);padding-left:1ex">
+ =20
+   =20
+ =20
+  <div bgcolor=3D"#FFFFFF"><span class=3D"gmail-">
+    On 05/19/2017 02:16 AM, Dave Garrett wrote:<br>
+    <blockquote type=3D"cite">
+      <pre>On Friday, May 19, 2017 12:38:27 am Benjamin Kaduk wrote:
+</pre>
+      <blockquote type=3D"cite">
+        <pre>In section 4, &quot;these cipher suites MUST NOT be negotiated=
+ in TLS
+versions prior to 1.2&quot; should probably clarify that &quot;these&quot; =
+cipher
+suites are the new ones specified by this document.
+</pre>
+      </blockquote>
+      <pre>Probably should be: &quot;the cipher suites defined in this docu=
+ment
+MUST NOT be negotiated for any version of TLS other than 1.2.&quot;
+
+The sentence mentioning TLS 1.3+ could be moved up to right after
+and just say: &quot;TLS version 1.3 and later negotiate these features in
+a different manner.&quot;
+
+
+</pre>
+    </blockquote>
+    <br></span>
+    That&#39;s probably best, yes.=C2=A0 The interaction between this docum=
+ent
+    and TLS 1.3 is a little weird, and it&#39;s not entirely clear to me
+    that this one needs to say much of anything about TLS 1.3, given
+    that TLS 1.3 changes all the relevant messages and key hierarchy and
+    such.<br>
+    <br>
+    -Ben<br>
+  </div>
+
+<br>______________________________<wbr>_________________<br>
+TLS mailing list<br>
+<a href=3D"mailto:TLS@ietf.org">TLS@ietf.org</a><br>
+<a href=3D"https://www.ietf.org/mailman/listinfo/tls" rel=3D"noreferrer" ta=
+rget=3D"_blank">https://www.ietf.org/mailman/<wbr>listinfo/tls</a><br>
+<br></blockquote></div><br></div></div></div></div></div>
+
+--94eb2c1a0878538d39054fe2b8a6--
+

@@ -1,0 +1,222 @@
+From nobody Thu Sep 24 03:19:14 2020
+Return-Path: <Hannes.Tschofenig@arm.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id ED5673A00C9
+ for <tls@ietfa.amsl.com>; Thu, 24 Sep 2020 03:19:12 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.9
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ RCVD_IN_MSPIKE_H2=-0.001, SPF_PASS=-0.001, UNPARSEABLE_RELAY=0.001,
+ URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=armh.onmicrosoft.com header.b=4RaxSlBl;
+ dkim=pass (1024-bit key) header.d=armh.onmicrosoft.com
+ header.b=4RaxSlBl
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 4cmgvbZPJhUP for <tls@ietfa.amsl.com>;
+ Thu, 24 Sep 2020 03:19:11 -0700 (PDT)
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com
+ (mail-eopbgr130045.outbound.protection.outlook.com [40.107.13.45])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id AC9C93A00C4
+ for <tls@ietf.org>; Thu, 24 Sep 2020 03:19:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com; 
+ s=selector2-armh-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gTZljbrK1RAho3q0teUlmFYN0ilv9SsoWAYLaTm9vzU=;
+ b=4RaxSlBltNRrszV/oomWuxqQ3ZDHaTc8cgvXGCmH829xOjKhOl5XYKmWyFwzbTPQ86lW6EdbFcPUToMVj6LfpjViGmePhz23XwDmUG8jFa1F0GU9itVumNEw9+KVVfZMqf+LRPPQlDi63gIT4jMFa7Zcdxw7TAj1pOqCNMsCZ4Q=
+Received: from AM7PR02CA0023.eurprd02.prod.outlook.com (2603:10a6:20b:100::33)
+ by AM0PR08MB3570.eurprd08.prod.outlook.com (2603:10a6:208:e0::31)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.21; Thu, 24 Sep
+ 2020 10:19:07 +0000
+Received: from VE1EUR03FT022.eop-EUR03.prod.protection.outlook.com
+ (2603:10a6:20b:100:cafe::1e) by AM7PR02CA0023.outlook.office365.com
+ (2603:10a6:20b:100::33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.22 via Frontend
+ Transport; Thu, 24 Sep 2020 10:19:07 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 63.35.35.123)
+ smtp.mailfrom=arm.com; ietf.org; dkim=pass (signature was verified)
+ header.d=armh.onmicrosoft.com;ietf.org; dmarc=bestguesspass action=none
+ header.from=arm.com;
+Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
+ 63.35.35.123 as permitted sender) receiver=protection.outlook.com;
+ client-ip=63.35.35.123; helo=64aa7808-outbound-1.mta.getcheckrecipient.com;
+Received: from 64aa7808-outbound-1.mta.getcheckrecipient.com (63.35.35.123) by
+ VE1EUR03FT022.mail.protection.outlook.com (10.152.18.64) with
+ Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3412.21 via Frontend Transport; Thu, 24 Sep 2020 10:19:07 +0000
+Received: ("Tessian outbound bac899b43a54:v64");
+ Thu, 24 Sep 2020 10:19:06 +0000
+X-CR-MTA-TID: 64aa7808
+Received: from 9cd0266f6903.1
+ by 64aa7808-outbound-1.mta.getcheckrecipient.com id
+ 375EF371-F80F-4CC2-9BA6-15646B60BE40.1; 
+ Thu, 24 Sep 2020 10:19:01 +0000
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com
+ by 64aa7808-outbound-1.mta.getcheckrecipient.com with ESMTPS id 9cd0266f6903.1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384);
+ Thu, 24 Sep 2020 10:19:01 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TXTTRbiHwDYS0PUpTTGrnquSqRGMH7O8hzUO00+GE+UGX4I2R0OjZIlW6Az9azQ8xNhtOOV2iAdRUaXOgmBqTkuPLBglM/0mwocFiIQIb2hvzeJqMFmXs1UP+9j3sID76sacU5RRwslKmuXoYGYaB2OZTjX9TR65DITjW4c04YrS0KuevlqzuzXGXCLWpu099MXwm385knfEu0MCBz04DUnRv6KhLyZGhlghTJE9yCtGMGPA/XqkjwFhmSqq0NF3Kmcybr9/LRlLRZuCt9WkvwogB8LtQnK8q8LDua6Tz9AVFbv87OncuMvFYi067HsQhNGd+9yqG7vMkrOzpWCyUA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gTZljbrK1RAho3q0teUlmFYN0ilv9SsoWAYLaTm9vzU=;
+ b=ZUU6bSUKtlezyCCF6sVBiYi4hR8qRmqeZ2YNCt97c3VXHesyWgM1It5oNzJGBSbWS4N++hSBk7MU+Li6KvfHRyAiq+W75aWSpuLVkiyQkmSk0K+cSc7jKYc5/ym0WG76MN8RCUQ9MBSSlzQ7hC5Uvq7GbivW4hZpkRtpl3SOvNDCLjAh8XTCHMEHzbISzuuSqM12czy0xvL0yG+563baK6uftEGoRecQuph5hs0dG3KGK++cx5dNx/3QdMRbuWXZj29ra4Uk5IW4kFCUE+JEqfa1OPtVwUUcSnWEuZ4TV+RpsL+eUz+zAKlYl0oEmmcCtfgFPBpxX5rM4uuBYz9yFA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
+ header.d=arm.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com; 
+ s=selector2-armh-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gTZljbrK1RAho3q0teUlmFYN0ilv9SsoWAYLaTm9vzU=;
+ b=4RaxSlBltNRrszV/oomWuxqQ3ZDHaTc8cgvXGCmH829xOjKhOl5XYKmWyFwzbTPQ86lW6EdbFcPUToMVj6LfpjViGmePhz23XwDmUG8jFa1F0GU9itVumNEw9+KVVfZMqf+LRPPQlDi63gIT4jMFa7Zcdxw7TAj1pOqCNMsCZ4Q=
+Received: from AM0PR08MB3716.eurprd08.prod.outlook.com (2603:10a6:208:106::13)
+ by AM0PR08MB3906.eurprd08.prod.outlook.com (2603:10a6:208:100::18)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.22; Thu, 24 Sep
+ 2020 10:19:00 +0000
+Received: from AM0PR08MB3716.eurprd08.prod.outlook.com
+ ([fe80::900e:c64d:a006:4860]) by AM0PR08MB3716.eurprd08.prod.outlook.com
+ ([fe80::900e:c64d:a006:4860%6]) with mapi id 15.20.3412.022; Thu, 24 Sep 2020
+ 10:19:00 +0000
+From: Hannes Tschofenig <Hannes.Tschofenig@arm.com>
+To: Peter Gutmann <pgut001@cs.auckland.ac.nz>, Filippo Valsorda
+ <filippo@ml.filippo.io>, Carrick Bartle <cbartle891@icloud.com>
+CC: "tls@ietf.org" <tls@ietf.org>
+Thread-Topic: [TLS] The future of external PSK in TLS 1.3
+Thread-Index: AQHWjng9Pwzr8fTsOkSjvpJZy/djPKlv2BqIgABG0ACAAlNKgIAAVNSggACB6oCAAAGjAIAC9lQAgAFVxoCAAAPioA==
+Date: Thu, 24 Sep 2020 10:19:00 +0000
+Message-ID: <AM0PR08MB37164FED3DEFA4606492587DFA390@AM0PR08MB3716.eurprd08.prod.outlook.com>
+References: <77039F11-188E-4408-8B39-57B908DDCB80@ericsson.com>
+ <1600516093048.75181@cs.auckland.ac.nz>
+ <2f2ecb30-bef5-414a-8ff7-d707d773c7ea@www.fastmail.com>
+ <FDD012C2-9B37-461D-BC81-854135EE994E@icloud.com>
+ <AM0PR08MB3716861B782527DAB3C1EA1BFA3A0@AM0PR08MB3716.eurprd08.prod.outlook.com>
+ <DF3B268F-2E80-4444-B643-D33BC0C7151E@icloud.com>
+ <AM0PR08MB371678103D9EEB89C9AA44C1FA380@AM0PR08MB3716.eurprd08.prod.outlook.com>,
+ <ff5f77a9-ea45-4a72-b075-65c2d5e8ab45@www.fastmail.com>
+ <1600941749816.32242@cs.auckland.ac.nz>
+In-Reply-To: <1600941749816.32242@cs.auckland.ac.nz>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ts-tracking-id: 8E4D10525CBD01479B098F0B21E1A330.0
+x-checkrecipientchecked: true
+Authentication-Results-Original: cs.auckland.ac.nz; dkim=none (message not
+ signed) header.d=none;cs.auckland.ac.nz; dmarc=none action=none
+ header.from=arm.com;
+x-originating-ip: [80.92.122.149]
+x-ms-publictraffictype: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 9c6f1530-0c48-4115-7909-08d860734559
+x-ms-traffictypediagnostic: AM0PR08MB3906:|AM0PR08MB3570:
+X-Microsoft-Antispam-PRVS: <AM0PR08MB357088522C8A68AF4D8330B8FA390@AM0PR08MB3570.eurprd08.prod.outlook.com>
+x-checkrecipientrouted: true
+nodisclaimer: true
+x-ms-oob-tlc-oobclassifiers: OLM:4941;OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam-Untrusted: BCL:0;
+X-Microsoft-Antispam-Message-Info-Original: fTp9aOpai28NvRm4YHu8+8096pn7CqZ3K7temrhgwHuJip/rVkesuRiRr+TWdtanjKVut48orNCT+PIoA+fbf8DF/crWqMkxV7w/y1Qw70fUGMxJvv/UtkSuHQAicIkQrP7B8BVLFYD8xE1dfXtmJzSk+05UWmQHe4yN8FwQLHmCNCPkN207W/AWSHjX/fNQjw29zFzgRTuvhpBnYGhLKkWEZoVuKIpltxAKFK5KRMrP52WvV+tevQCHb8d9fnRQjXV88T1zgyIhUYKwV46JnIIWhD+mLaFN65U4JPgLH7EyZoxT811og7fhqimm/vYOP5QEKtnU6cLVJmMyVQ2yIw==
+X-Forefront-Antispam-Report-Untrusted: CIP:255.255.255.255; CTRY:; LANG:en;
+ SCL:1; SRV:; IPV:NLI; SFV:NSPM; H:AM0PR08MB3716.eurprd08.prod.outlook.com;
+ PTR:; CAT:NONE;
+ SFS:(4636009)(396003)(346002)(136003)(39860400002)(376002)(366004)(86362001)(55016002)(316002)(9686003)(4326008)(478600001)(110136005)(64756008)(8676002)(5660300002)(2906002)(66556008)(66446008)(8936002)(52536014)(66476007)(33656002)(71200400001)(83380400001)(76116006)(66946007)(53546011)(6506007)(26005)(7696005)(186003);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata: 8lhQUct7H/zbpO15pLOkHAFEvu1NPRG4f1ygRz6JhmfkL3Cf8N7xWNubFT2JPPxg19wBwoyVaFVK957rYAA14UANcQsdN7nnHJ+YpLaKpAI8CylBXm8vk9ipDloQMvhcYtaRhyPDREQFxwZIHWGJpiyQ6OtoWvsDmKNP5dHI1cUkWErH0R8RH7LGKyWMK8Y+1+yfZSV9CqwS74An3VTCXKvAkWU4L3IJWyLrxKeocoEqC6fOGDlE4V7sJo4YbjxWATB/9Bf0M4fMpGVhvs+oUZWz789xoU9zvD8uJUaUw7kDABzpqX2Lq34fv9Gh0dVaux7zW+9FbUcOVYt2pdM3FmF32wJCdlyYckU/o1BlxGfkNNhWn9DZASZRmlvz8pkXWBzlhqIk0mb5vBaZP7zf+G/XzJAWPAy5MKp7YgEF0ljB2wG7nCjQl4HGujrpEWmSfMUVqczcmseyXyBbASrRRER5KQbYORaynAbwDJbbxE/3CTaX9otAEjy8QUl3N94J1ra/WJbWwadqzGRnPN0oDik/qopQqrHLpnJnH9aCUe6YFvjb/lSufIlqCjCTPtO1lHh9se5VgDrbReP9F3aZc3JZULxLdForRLmRI4RpOA1zxl2emTgRpBI7EDPQ5sISMnhjEhwlXaQKTAKop+jwkw==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR08MB3906
+Original-Authentication-Results: cs.auckland.ac.nz;
+ dkim=none (message not signed)
+ header.d=none;cs.auckland.ac.nz; dmarc=none action=none header.from=arm.com;
+X-EOPAttributedMessage: 0
+X-MS-Exchange-Transport-CrossTenantHeadersStripped: VE1EUR03FT022.eop-EUR03.prod.protection.outlook.com
+X-MS-Office365-Filtering-Correlation-Id-Prvs: 4a35b6a3-8711-476c-c305-08d860734178
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ekt+BaRZHedlqfh/oT81gMxWzONKMBHAHImkYSqXIOuWXGjmqgPfR8BuoQMClSxu/JaVXg2I5dKezWxZv3qjRgQBAGIZDreS1XXWt2/I2JOZvRNfS+vVD5bPBcwkKF8CQejJDUyhIAg6rHwQr5uzLqbIgmtzJQkapqBGJ+QpOHmSEeGUu9f5SCdJXy09DGw9pNUvzYTuYGEuJQmQ1ZyiMuZ7xjC5yb4naxhT+mjFl27e1Z9jtmOFl0BxDaT6yppO4B0ZyV99e71tiXHMZpy4rbq7X7lUusHbKTa0GV+23ibfN0p6JcAESdxJwkOl+i20OIWaEilh7UiFh44aeovgx26OLJmjrawSjl6B4eGd1u+FSTY2MR6BOAc3r3gcKlYIjBZpWHZjXlhBjwt4+Hvw4655HiCYtoI6mgrF5j+jLXC8VVMA+c6f0cHADr1vH1sY
+X-Forefront-Antispam-Report: CIP:63.35.35.123; CTRY:IE; LANG:en; SCL:1; SRV:; 
+ IPV:CAL; SFV:NSPM;
+ H:64aa7808-outbound-1.mta.getcheckrecipient.com; 
+ PTR:ec2-63-35-35-123.eu-west-1.compute.amazonaws.com; CAT:NONE;
+ SFS:(4636009)(346002)(396003)(136003)(376002)(39860400002)(46966005)(70586007)(53546011)(9686003)(70206006)(186003)(83380400001)(6506007)(81166007)(82310400003)(55016002)(86362001)(82740400003)(47076004)(356005)(36906005)(52536014)(4326008)(33656002)(478600001)(5660300002)(2906002)(316002)(8936002)(7696005)(110136005)(26005)(8676002)(336012);
+ DIR:OUT; SFP:1101; 
+X-OriginatorOrg: arm.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Sep 2020 10:19:07.2809 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9c6f1530-0c48-4115-7909-08d860734559
+X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d; Ip=[63.35.35.123]; 
+ Helo=[64aa7808-outbound-1.mta.getcheckrecipient.com]
+X-MS-Exchange-CrossTenant-AuthSource: VE1EUR03FT022.eop-EUR03.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR08MB3570
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/fdToD1_w8FQydfTJRG0Kixq9Jkc>
+Subject: Re: [TLS] The future of external PSK in TLS 1.3
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Thu, 24 Sep 2020 10:19:13 -0000
+
+Nicely said, Peter.
+
+To add: this is also the reason why the UTA group has been working on two s=
+ets of documents to capture profiles for the web (+email+IM) and IoT:
+1) RFC 7590 and now draft-ietf-uta-tls13-iot-profile-00
+2) RFC 7525 and now draft-sheffer-uta-rfc7525bis
+
+-----Original Message-----
+From: Peter Gutmann <pgut001@cs.auckland.ac.nz>
+Sent: Thursday, September 24, 2020 12:02 PM
+To: Filippo Valsorda <filippo@ml.filippo.io>; Hannes Tschofenig <Hannes.Tsc=
+hofenig@arm.com>; Carrick Bartle <cbartle891@icloud.com>
+Cc: tls@ietf.org
+Subject: Re: [TLS] The future of external PSK in TLS 1.3
+
+Filippo Valsorda <filippo@ml.filippo.io> writes:
+
+>The average user of OpenSSL or BoringSSL or LibreSSL or Go crypto/tls
+>or NSS or Java doesn't do SCADA, doesn't do IoT, doesn't do smart cards
+
+How do you know that?  I don't know of any data supporting that (I'd love t=
+o see it if you've got it, non-web use of TLS is the submerged part of the =
+iceberg).  Taking "SCADA/IoT/etc" to be a placeholder for M2M or more gener=
+ally "non-web use", an awful lot of TLS gets done outside the web, which us=
+es it it completely different ways than web users do.  For example pretty m=
+uch all of the fancy features in TLS 1.3, both in the core protocol and the=
+ endless add-ons, have no purpose or function in M2M communications.  So pe=
+rhaps the answer is to have two sets of requirements, one for web use, one =
+for everything else.  If you try for a one-size-fits-all approach you'll ei=
+ther get the currently widespread "TLS =3D=3D the web" or have to include t=
+wo mostly nonintersecting sets of options to cover web vs. M2M use.
+
+Peter.
+
+
+IMPORTANT NOTICE: The contents of this email and any attachments are confid=
+ential and may also be privileged. If you are not the intended recipient, p=
+lease notify the sender immediately and do not disclose the contents to any=
+ other person, use it for any purpose, or store or copy the information in =
+any medium. Thank you.
+

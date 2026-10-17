@@ -1,0 +1,262 @@
+Return-Path: <ekr@rtfm.com>
+X-Original-To: tls@mail2.ietf.org
+Delivered-To: tls@mail2.ietf.org
+Received: from localhost (localhost [127.0.0.1])
+	by mail2.ietf.org (Postfix) with ESMTP id 2DBC37BDA0FC
+	for <tls@mail2.ietf.org>; Fri, 24 Oct 2025 14:38:05 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at ietf.org
+X-Spam-Flag: NO
+X-Spam-Score: -1.897
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.897 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+	HTML_MESSAGE=0.001, RCVD_IN_DNSWL_NONE=-0.0001, SPF_HELO_NONE=0.001,
+	SPF_NONE=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: mail2.ietf.org (amavisd-new); dkim=pass (2048-bit key)
+	header.d=rtfm-com.20230601.gappssmtp.com
+Received: from mail2.ietf.org ([166.84.6.31])
+	by localhost (mail2.ietf.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id v5L3bjxc3Dti for <tls@mail2.ietf.org>;
+	Fri, 24 Oct 2025 14:38:04 -0700 (PDT)
+Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com
+ [IPv6:2607:f8b0:4864:20::112b])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail2.ietf.org (Postfix) with ESMTPS id 5EF887BDA0F5
+	for <tls@ietf.org>; Fri, 24 Oct 2025 14:38:04 -0700 (PDT)
+Received: by mail-yw1-x112b.google.com with SMTP id
+ 00721157ae682-7849f01e56eso29831037b3.0
+        for <tls@ietf.org>; Fri, 24 Oct 2025 14:38:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rtfm-com.20230601.gappssmtp.com; s=20230601; t=1761341878;
+ x=1761946678; darn=ietf.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=bq/JTzfpaARB7pSrGhgJO5cswETTi1UGhuJM842h344=;
+        b=usmf9A3jiiSUZj4MXs6v2Ck3vY+BcZA4SjomMyNdW8UW4bt45yDP8RNn5NEwGCW3DO
+         2aUsN50vPEu2VBcoRqaRtUYQng8GUajTrqFtGUF2vSZ+/wZ6O1wJRthjfS8vLz3edccg
+         8zCjpb8lgpv5/8jL8Wu8lu+Na5hCeHtFIVCSyMdiGf7plbcjCw+dt6W+lu3ZuVlUGp9q
+         McQCkmGzZsd4HZau0BEgnHikC0VflYI+HgpQZEyuuTcv3BMMfaNrDoeE2L1lFmbxx7xA
+         V9KDfZLHZwe0VBeHO5Sts5c2rJijbAsHVgR618Ogf7b17FNEsFYaQBWNTNK/G6VFIXZR
+         GRcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761341878; x=1761946678;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bq/JTzfpaARB7pSrGhgJO5cswETTi1UGhuJM842h344=;
+        b=XZqro+cfszf41b4q1DWNccgBsIQxrUAC10NjdIPkNIPd+F0JZQ8Lj+/+3LWgzONQO9
+         2GhuwlGl5INV+2x4O7S7nXFRJvQwoUIDTbNiOXof1+hwos7tgy5RHnRyuuyV1dR9w12u
+         qa/yO+epiiX6vc0SfWIcXZnn73tyPmrVxD4vKCZ/9GORokrrGn4Ptjj5wqRE7zp0Y0lV
+         AA4nxsP7iALbs71VkHGyZzV2nLWi0mraKEJ63AejiP4w4XlH5gVN4s5odBa0CGoJ1n36
+         bu/b8/Pvl9PQHd+/7UQrsDSt/3puuIELosWOt6mz0/E/r7MwEh3eOZ5MD4fCpPKoo6DH
+         PmZg==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCVpwoRqNkaTrKVmVTDHyjrqmuR4Tv0/qDT9gMWKgk6reWEzwDT7Fa+MhDTUHYLJLbbGGXs=@ietf.org
+X-Gm-Message-State: AOJu0YwUir0kN/MmfYaFqEKqjdnqNeUImn+3vQ85YOi4HEFmY4i1PiI/
+	JxkNNq07ixlXAA+qhxKKwDEaUgJWe+qTJ0vAlJQgHwrwECaiDkTLmFKSL5VUyg7iwHDAU8/zmtf
+	7dN+ogyw9ONjTrpbj3PyIVQcyzrgaf1RkQhUxtDpfCg==
+X-Gm-Gg: ASbGnct2mmM+C5rQQOzAyLHiGxIqO8dziEjFT64gt+Mj9DAjfwsN+T1Qiw/cVo8NUO5
+	Y2heJ9wnVbjC1ioZ4JHaLbFM1xHOt6WJ80UwSR0dm9MnA+XQEkzcFJqXrifk+3tzmQXtE92ZGC5
+	xsqpn6Dv6lp02gWQOIyvpToxsfCPHkEhYm0d7GBtpWdV1Pi0v5Ox/3c5xUM4CPSn74l13pAXpcB
+	M2QsW3Awijl9L8PXKOxDfaYj9zXroX/+kTtsijG0v+N+sZFvDEVApGjV/Zk1oEpVquNchDFDOCy
+	73Vxg1lNDoWOMd7r6k3B8dYQ70YqudUXwwmVqDhsTDcmIaCNs79TCDdFpgIu41nM7Ecxa1lhYfa
+	TYdy1TgXDTJs6lVe1mBr9
+X-Google-Smtp-Source: 
+ AGHT+IGLd5eAHQMzXdwWWCe8hqNhcdQcFJde2/C9TzeXkKo2BvbzThOskOfHASOfPpOQbo/hOaE0ekdx1am4miMHB20=
+X-Received: by 2002:a05:690c:46c1:b0:784:a183:86f7 with SMTP id
+ 00721157ae682-784a1838a8dmr185976507b3.55.1761341878322; Fri, 24 Oct 2025
+ 14:37:58 -0700 (PDT)
+MIME-Version: 1.0
+References: <47725276-0b96-2731-4861-af69472bf9f9@nohats.ca>
+ <CABcZeBMvXoHvuZJfR0a0gHqS9bXqRwVPT5VUN4xpAMXEjVGZSQ@mail.gmail.com>
+ <907fef63-8ec2-4956-8c4d-787e9ff085c9@betaapp.fastmail.com>
+ <CABcZeBN2gpTNVQZm+G6YT98VStkPyPcnHvdQc=Unzg6cGcFPYw@mail.gmail.com>
+ <CAMjbhoXBtBhvswgbxWNLG0V-8iSf4qPtbE2YOGfhAaE+NV_Lqw@mail.gmail.com>
+ <GVXPR07MB96787F7DE114F3B422B32543891CA@GVXPR07MB9678.eurprd07.prod.outlook.com>
+ <CABcZeBNoOyzt=n1cpE=v6u4J2DXO5fQgVDP8Fs4PY4LY6MM_wQ@mail.gmail.com>
+ <ecb276ef-fb40-4e2d-bc39-a41fce8e4c42@betaapp.fastmail.com>
+ <CABcZeBM6yn856kjqQU8du8RPTefRPRqLEVM_vpYYDa2mhss7_g@mail.gmail.com>
+ <34c264d8-9fe7-4a3f-9f4a-240a147340ad@betaapp.fastmail.com>
+ <CABcZeBO3jqr8GupFyBmO0x8mpzN0BZYsWrSQKWa4dFKDAN6h6g@mail.gmail.com>
+ <C5796E94-4E93-44FE-A68F-D207B78E73E3@sn3rd.com>
+ <e5355ebe-7d5a-c7d1-109f-b6ef4a448527@nohats.ca>
+In-Reply-To: <e5355ebe-7d5a-c7d1-109f-b6ef4a448527@nohats.ca>
+From: Eric Rescorla <ekr@rtfm.com>
+Date: Fri, 24 Oct 2025 14:37:21 -0700
+X-Gm-Features: AS18NWCc4fo2am_Z1NOb2Bg1Gkb8ftiDxW0qDD_l1lRMULWeAB7kuwX51Jo80Sc
+Message-ID: 
+ <CABcZeBOXLEm=4pgPuwJVyGBT185a+tKDq9wmi5UgzjR0t76UTA@mail.gmail.com>
+To: Paul Wouters <paul@nohats.ca>
+Content-Type: multipart/alternative; boundary="000000000000fc54b30641ee5c9a"
+Message-ID-Hash: PCYW4JA6CSGD4O2ENRJM3RWWT7ZSO3CJ
+X-Message-ID-Hash: PCYW4JA6CSGD4O2ENRJM3RWWT7ZSO3CJ
+X-MailFrom: ekr@rtfm.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+CC: TLS List <tls@ietf.org>
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Re=3A_KeyShareEntry_MUST_be_generated_independently_-_wa?=
+ =?utf-8?q?s_Re=3A_Mohamed_Boucadair=27s_No_Objection_on_draft-ietf-tls-hybr?=
+ =?utf-8?q?id-design-15=3A_=28with_COMMENT=29_=28fwd=29?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/nj_70BwnuNh6-Ssc_8kYT5IhJUU>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+--000000000000fc54b30641ee5c9a
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Oct 24, 2025 at 10:52=E2=80=AFAM Paul Wouters <paul@nohats.ca> wrot=
+e:
+
+> On Fri, 24 Oct 2025, Sean Turner wrote:
+>
+> > Subject: [TLS] Re: KeyShareEntry MUST be generated independently - was
+> Re:
+> >     Mohamed Boucadair's No Objection on draft-ietf-tls-hybrid-design-15=
+:
+> (with
+> >      COMMENT) (fwd)
+> >
+> > Hi! It appears that the emerging consensus here is to make no changes a=
+s
+> a result of this comment.  Mostly this is because it appears that the MUS=
+T
+> will be ignored.
+> >  If you disagree with this, please indicate why by 30 October 2025.
+>
+> I think reading it context does help to frame the issue properly for
+> evaluation:
+>
+>
+> https://datatracker.ietf.org/doc/html/draft-ietf-tls-hybrid-design-15#sec=
+tion-3.2
+>
+>
+> A note I have though is as the start of that paragraph states:
+>
+>         [TLS13] requires that ``The key_exchange values for each
+> KeyShareEntry
+>         MUST be generated independently.'' In the context of this documen=
+t,
+>         since the same algorithm may appear in multiple named groups, thi=
+s
+>         document relaxes the above requirement to allow the same
+> key_exchange
+>         value for the same algorithm to be reused in multiple KeyShareEnt=
+ry
+>         records sent in within the same ClientHello.
+>
+> The question is if this "relaxing of a [TLS13] requirement" means this
+> draft Updates: [TLS13]. I think it can be argued that it only updates
+> the requirement for hybrids, and so one does not need to know this
+> "relaxing requirement" in other cases, so an Updates: clause is not
+> needed. But if new drafts specifying hybrids come out, it might not
+> be obvious to people this is the case unless those drafts mention this
+> ssue specifically via a normative reference to this draft. So that is
+> an argument to argue in favour of an Updates: clause.
+>
+
+> The document currently does not have an Updates: clause for this.
+>
+
+We all agree that this is overriding the text in 8446, right?
+
+I don't think "Updates" is really clear enough to know whether we need the
+header or not (this is one reason I'm not a fan of the tags in the first
+place). With that said, as I observed the other day, RFC 8446-bis is
+actually ahead of this draft in the pipeline, so I think if we are going
+to continue to allow this practice, we *should* modify 8446-bis accordingly
+to permit it.
+
+-Ekr
+
+--000000000000fc54b30641ee5c9a
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><br></div><br><div class=3D"gmail_quote g=
+mail_quote_container"><div dir=3D"ltr" class=3D"gmail_attr">On Fri, Oct 24,=
+ 2025 at 10:52=E2=80=AFAM Paul Wouters &lt;<a href=3D"mailto:paul@nohats.ca=
+">paul@nohats.ca</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" =
+style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);pa=
+dding-left:1ex">On Fri, 24 Oct 2025, Sean Turner wrote:<br>
+<br>
+&gt; Subject: [TLS] Re: KeyShareEntry MUST be generated independently - was=
+ Re:<br>
+&gt;=C2=A0 =C2=A0 =C2=A0Mohamed Boucadair&#39;s No Objection on draft-ietf-=
+tls-hybrid-design-15: (with<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 COMMENT) (fwd)<br>
+&gt; <br>
+&gt; Hi! It appears that the emerging consensus here is to make no changes =
+as a result of this comment.=C2=A0 Mostly this is because it appears that t=
+he MUST will be ignored.<br>
+&gt; =C2=A0If you disagree with this, please indicate why by 30 October 202=
+5.<br>
+<br>
+I think reading it context does help to frame the issue properly for<br>
+evaluation:<br>
+<br>
+<a href=3D"https://datatracker.ietf.org/doc/html/draft-ietf-tls-hybrid-desi=
+gn-15#section-3.2" rel=3D"noreferrer" target=3D"_blank">https://datatracker=
+.ietf.org/doc/html/draft-ietf-tls-hybrid-design-15#section-3.2</a><br>
+<br>
+<br>
+A note I have though is as the start of that paragraph states:<br>
+<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 [TLS13] requires that ``The key_exchange values=
+ for each KeyShareEntry<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 MUST be generated independently.&#39;&#39; In t=
+he context of this document,<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 since the same algorithm may appear in multiple=
+ named groups, this<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 document relaxes the above requirement to allow=
+ the same key_exchange<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 value for the same algorithm to be reused in mu=
+ltiple KeyShareEntry<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 records sent in within the same ClientHello.<br=
+>
+<br>
+The question is if this &quot;relaxing of a [TLS13] requirement&quot; means=
+ this<br>
+draft Updates: [TLS13]. I think it can be argued that it only updates<br>
+the requirement for hybrids, and so one does not need to know this<br>
+&quot;relaxing requirement&quot; in other cases, so an Updates: clause is n=
+ot<br>
+needed. But if new drafts specifying hybrids come out, it might not<br>
+be obvious to people this is the case unless those drafts mention this<br>
+ssue specifically via a normative reference to this draft. So that is<br>
+an argument to argue in favour of an Updates: clause.<br></blockquote><bloc=
+kquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:=
+1px solid rgb(204,204,204);padding-left:1ex"><br>
+The document currently does not have an Updates: clause for this.<br></bloc=
+kquote><div><br></div>We all agree that this is overriding the text in 8446=
+, right?</div><div class=3D"gmail_quote gmail_quote_container"><br></div><d=
+iv class=3D"gmail_quote gmail_quote_container">I don&#39;t think &quot;Upda=
+tes&quot; is really clear enough to know whether we need the</div><div clas=
+s=3D"gmail_quote gmail_quote_container">header or not (this is one reason I=
+&#39;m not a fan of the tags in the first</div><div class=3D"gmail_quote gm=
+ail_quote_container">place). With that said, as I observed the other day, R=
+FC 8446-bis is</div><div class=3D"gmail_quote gmail_quote_container">actual=
+ly ahead of this draft in the pipeline, so I think if we are going</div><di=
+v class=3D"gmail_quote gmail_quote_container">to continue to allow this pra=
+ctice, we *should* modify 8446-bis accordingly</div><div class=3D"gmail_quo=
+te gmail_quote_container">to permit it.</div><div class=3D"gmail_quote gmai=
+l_quote_container"><br></div><div class=3D"gmail_quote gmail_quote_containe=
+r">-Ekr</div><div class=3D"gmail_quote gmail_quote_container"><br></div></d=
+iv>
+
+--000000000000fc54b30641ee5c9a--
+

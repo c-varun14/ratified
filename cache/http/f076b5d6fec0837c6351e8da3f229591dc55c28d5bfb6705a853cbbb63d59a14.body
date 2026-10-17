@@ -1,0 +1,120 @@
+Return-Path: <lists@drh-consultancy.co.uk>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 3336913158F
+ for <tls@ietfa.amsl.com>; Tue, 25 Apr 2017 07:59:24 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.609
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.609 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, RCVD_IN_DNSWL_LOW=-0.7, RCVD_IN_MSPIKE_H3=-0.01,
+ RCVD_IN_MSPIKE_WL=-0.01, T_HK_NAME_DR=0.01, URIBL_BLOCKED=0.001]
+ autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id BfCNyyOncecH for <tls@ietfa.amsl.com>;
+ Tue, 25 Apr 2017 07:59:22 -0700 (PDT)
+Received: from claranet-outbound-smtp01.uk.clara.net
+ (claranet-outbound-smtp01.uk.clara.net [195.8.89.34])
+ by ietfa.amsl.com (Postfix) with ESMTP id DBF811294CD
+ for <tls@ietf.org>; Tue, 25 Apr 2017 07:59:20 -0700 (PDT)
+Received: from host86-133-145-70.range86-133.btcentralplus.com
+ ([86.133.145.70]:44911 helo=[192.168.1.64])
+ by relay01.mail.eu.clara.net (relay.clara.net [81.171.239.31]:10465)
+ with esmtpa (authdaemon_plain:drh) id 1d31vq-0004gA-4H 
+ (return-path <lists@drh-consultancy.co.uk>); Tue, 25 Apr 2017 14:59:13 +0000
+To: Benjamin Kaduk <bkaduk@akamai.com>, tls@ietf.org
+References: <E521BA5F-4563-44D2-B186-B11B7B214A15@mobileiron.com>
+ <20170208211738.GB17727@LK-Perkele-V2.elisa-laajakaista.fi>
+ <53320524-0da9-2b59-c348-e1d585572c03@drh-consultancy.co.uk>
+ <a5e04ee0-b1d3-abff-fb1f-b397f9f8b7d2@drh-consultancy.co.uk>
+ <05dc96c4-900b-6237-e008-ae8364fffe65@akamai.com>
+From: Dr Stephen Henson <lists@drh-consultancy.co.uk>
+Message-ID: <926e3b6b-5f0c-e00a-5ba3-9a2cfcdc4e8f@drh-consultancy.co.uk>
+Date: Tue, 25 Apr 2017 15:59:07 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.8.0
+MIME-Version: 1.0
+In-Reply-To: <05dc96c4-900b-6237-e008-ae8364fffe65@akamai.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/HXgr2Fs85lz4F8SXK2k0k9PcMEI>
+Subject: Re: [TLS] TLS RSA-PSS and various versions of TLS
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Tue, 25 Apr 2017 14:59:24 -0000
+
+On 25/04/2017 15:36, Benjamin Kaduk wrote:
+> On 04/25/2017 07:08 AM, Dr Stephen Henson wrote:
+>> On 18/02/2017 02:31, Dr Stephen Henson wrote:
+>>> Does this apply to RSASSA-PSS (RSA-PSS signing only) keys in end entity
+>>> certificates too?
+>>>
+>>> For example could a TLS 1.2 server legally present a certificate containing an
+>>> RSASSA-PSS key for an appropriate ciphersuite? Similarly could a client present
+>>> a certificate contain an RSASSA-PSS key?
+>>>
+>> I can't recall getting a definitive answer to this. IMHO we should make the
+>> requirements clear in the spec otherwise we could get interop issues.
+>>
+>> Based on the opinions stated in this thread that would be:
+>>
+>> 1. When PSS signatures appear certificates, MGF digest and signing digest MUST
+>> match and the salt length must equal the digest length.
+> 
+> We have (in section 4.2.3, Signature Algorithms):
+> 
+>    RSASSA-PSS algorithms  Indicates a signature algorithm using RSASSA-
+>       PSS [RFC3447 <https://tools.ietf.org/html/rfc3447>] with mask generation function 1.  The digest used in
+>       the mask generation function and the digest being signed are both
+>       the corresponding hash algorithm as defined in [SHS <https://tools.ietf.org/html/draft-ietf-tls-tls13-19#ref-SHS>].  When used
+>       in signed TLS handshake messages, the length of the salt MUST be
+>       equal to the length of the digest output.  This codepoint is also
+>       defined for use with TLS 1.2.
+> 
+> 
+> Is the concern that this is insufficiently clearly indicated as placing requirements on signatures of certificates as opposed to signatures of TLS data structures?
+> 
+
+Yes that's my concern. Supporting PSS signatures on certificates is a mandatory
+requirement and I think we should be very clear about the parameters we permit.
+
+The above paragraph says nothing about salt length limitations on signatures on
+certificates. We could have a situation where one implementation enforces the
+salt length to be equal to the digest length (and rejects everything else) and
+another will allow any valid length.
+
+> 
+> 
+>> 2. Indicate that the PSS only (id-RSASSA-PSS) and RSA (rsaEncryption) keys MUST
+>> be supported both as server keys and CA keys in certificates.
+> 
+> Similarly to (1), I believe that it is possible to read the existing (draft-19)
+> text as making these requirements already, so is the concern that the text needs
+> to be more clear?
+> 
+
+Yes. id-RSASSA-PSS isn't mentioned anywhere in the spec. If we require
+implementations to support this I think we should be explicit about it.
+
+We might want to refer to RFC5756/RFC4055 which document the syntax.
+
+Steve.
+-- 
+Dr Stephen N. Henson.
+Core developer of the   OpenSSL project: http://www.openssl.org/
+Freelance consultant see: http://www.drh-consultancy.co.uk/
+Email: shenson@drh-consultancy.co.uk, PGP key: via homepage.
+

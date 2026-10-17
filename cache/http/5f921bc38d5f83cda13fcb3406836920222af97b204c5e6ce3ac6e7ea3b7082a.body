@@ -1,0 +1,229 @@
+Return-Path: <davidben@google.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 2818F12DA01
+ for <tls@ietfa.amsl.com>; Wed,  7 Mar 2018 09:33:23 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.459
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.459 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ DKIM_VALID_AU=-0.1, HEADER_FROM_DIFFERENT_DOMAINS=0.25,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_LOW=-0.7, SPF_PASS=-0.001,
+ T_RP_MATCHES_RCVD=-0.01, URIBL_BLOCKED=0.001]
+ autolearn=unavailable autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=chromium.org
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id zt6NVSIYvm6B for <tls@ietfa.amsl.com>;
+ Wed,  7 Mar 2018 09:33:21 -0800 (PST)
+Received: from mail-qk0-x232.google.com (mail-qk0-x232.google.com
+ [IPv6:2607:f8b0:400d:c09::232])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id C32711200C1
+ for <tls@ietf.org>; Wed,  7 Mar 2018 09:33:18 -0800 (PST)
+Received: by mail-qk0-x232.google.com with SMTP id z197so3599265qkb.6
+ for <tls@ietf.org>; Wed, 07 Mar 2018 09:33:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=G+qfmrovPzN+z8ApD11Zb5imejt84HHMmzzz3g9fVXA=;
+ b=lQVK6x9l8bijdQCQwytISbfAvoJ3umCm2mUgSUWg0fChjCZ9AwxG+c4kfJXQMU6G02
+ H12YTbUGersbOKhAHYa7iDoxyRCCxwprdNcP4rg1zuQJ0ZPgnI2G98RSSdyTJmcFPFsx
+ 9EuHf78fHa3eOSO+G9Ujje/vXG6Rq3jBNbBmo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=G+qfmrovPzN+z8ApD11Zb5imejt84HHMmzzz3g9fVXA=;
+ b=B1SE0MMgkXQF+wupUxopqda/W9ls1NZvxAcZl2LJ1g3mbrWxw87P4Nv2xuH9FAPJui
+ hcLG0eegbqaF8iLinNWZ2MBEQJWoqm+lWVXIelKLdglkRsrAktTuCOH1eT2+/aqtLNNa
+ /+qb/r+hyrGir01DBnjPKMkfc4mbe5tqlQAV2EjBhRxR5+0loU5ZcJMD0Uf5ApHxfJTi
+ s37Uv5fiSCHCT7pRrg3DgwNIv7uW6T0Cmkq170ktWABUo6AHq9nCDWDN/wdyu94Iwh49
+ OxEJ3H/wVUmtTzzGE0tHuftZaGkx9AikDjtxay9dZyxNfCaAQCWOqBfBXyUoKZ2zfE8U
+ t8Gw==
+X-Gm-Message-State: AElRT7EvvUOuMI2mN0HxnM/9c5n4vVMnS4CmICOJ5evOaOxyg+M/BG2c
+ NTk6IVGLczLNIlsrVFBW4XltcniHyjbslG/7mdif+iE=
+X-Google-Smtp-Source: AG47ELsj3VJfhgMwI396PtbdqAQkOKAcMOvutve6H2qhxQmTAu3Y0fGBSBGSJqIkfWumIicd4aIt9gez6MKyDxOyEzk=
+X-Received: by 10.55.107.70 with SMTP id g67mr34438573qkc.105.1520443997657;
+ Wed, 07 Mar 2018 09:33:17 -0800 (PST)
+MIME-Version: 1.0
+References: <152004960327.8290.4628820807186314931@ietfa.amsl.com>
+ <CAAF6GDcBFHhe8oWJqF-LVUfYdR7HRW_Gk9c0KgxNRKoQzauvpQ@mail.gmail.com>
+ <CABcZeBNgwHR0=bG7bY78g-71Ky3shvL+qMQUEhbejKRXzUHuYg@mail.gmail.com>
+In-Reply-To: <CABcZeBNgwHR0=bG7bY78g-71Ky3shvL+qMQUEhbejKRXzUHuYg@mail.gmail.com>
+From: David Benjamin <davidben@chromium.org>
+Date: Wed, 07 Mar 2018 17:33:07 +0000
+Message-ID: <CAF8qwaDYn64zm634vPRiW-0sgm4nRscv80J1pJtmCUL0g+UM3Q@mail.gmail.com>
+To: Eric Rescorla <ekr@rtfm.com>
+Cc: =?UTF-8?Q?Colm_MacC=C3=A1rthaigh?= <colm@allcosts.net>, 
+ General Area Review Team <gen-art@ietf.org>, Dale Worley <worley@ariadne.com>, 
+ IETF discussion list <ietf@ietf.org>, draft-ietf-tls-tls13.all@ietf.org, 
+ "<tls@ietf.org>" <tls@ietf.org>
+Content-Type: multipart/alternative; boundary="001a114873f26257de0566d5f440"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/N-0l8Ee-FoJu1Q764mfkJhHlwIc>
+Subject: Re: [TLS] Genart last call review of draft-ietf-tls-tls13-24
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Wed, 07 Mar 2018 17:33:24 -0000
+
+--001a114873f26257de0566d5f440
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
++1. If anything, the existing "buggy implementation" alert codes should get
+folded together. (But I don't think it's worth making that change at this
+stage either.) E.g. decode_error vs illegal_parameter vs
+unexpected_message are rather useless distinctions and trying to get them
+"right" adds complexity. Even with the granularity is it is, TLS's alert
+codes needlessly expose benign differences in implementation strategy.
+Adding even finer granularity would make all this worse.
+
+My experience is also that this sort of thing would not actually help much.
+
+On Tue, Mar 6, 2018 at 11:05 PM Eric Rescorla <ekr@rtfm.com> wrote:
+
+> Without taking a position on the security matter: this has been part of
+> the TLS design for 20+ years, and therefore has had multiple LCs and WG a=
+nd
+> IETF consensus, so it would take a pretty strong set of arguments to chan=
+ge
+> now. I've debugged a lot of TLS interop issues, and as a practical matter=
+,
+> I don't think this would help that much to justify making a change.
+> -Ekr
+>
+>
+> On Tue, Mar 6, 2018 at 2:35 PM, Colm MacC=C3=A1rthaigh <colm@allcosts.net=
+>
+> wrote:
+>
+>>
+>>
+>> On Fri, Mar 2, 2018 at 8:00 PM, Dale Worley <worley@ariadne.com> wrote:
+>>
+>>> - There are about 28 error codes but nearly 150 places where the text
+>>>   require the connection to be aborted with an error -- and hence,
+>>>   nearly 150 distinct constraints that can be violated.  There are 19
+>>>   alone for "illegal_parameter".  I would like to see an "alert
+>>>   extension value" which assigns a distinct "minor" code to each
+>>>   statement in the text that requires an error response (with
+>>>   implementations being allowed to be a bit sloppy in providing the
+>>>   correct minor code).
+>>>
+>>
+>> Your review is incredibly deep, comprehensive and I learned a lot from
+>> it. I want to pick out just one small piece, but don't mean that to
+>> diminish how thorough it was!
+>>
+>> On the specific suggestion of having more granular error codes, I think
+>> this is a dangerous direction to take lightly; there's at least one
+>> instance where granular TLS alert messages have directly led to security
+>> issues by acting as oracles that aided the attacker.
+>>
+>> There's a general conjecture that the more information that is provided
+>> to attackers, the more easily they can leverage into a compromise.
+>> Personally I believe that conjecture, and would actually prefer to see
+>> fewer signals, ideally as few as one big error code. There is a trade-of=
+f
+>> against debugability, but I've only seen a handful of people have the
+>> skills to debug low level TLS issues and it doesn't seem worth the risk.
+>> Others disagree, which is valid, but it's at least an area of reasonable
+>> contention.
+>>
+>> --
+>> Colm
+>>
+>
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+>
+
+--001a114873f26257de0566d5f440
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">+1. If anything, the existing &quot;buggy implementation&q=
+uot; alert codes should get folded together. (But I don&#39;t think it&#39;=
+s worth making that change at this stage either.) E.g. decode_error vs ille=
+gal_parameter vs unexpected_message=C2=A0are rather useless distinctions an=
+d trying to get them &quot;right&quot; adds complexity. Even with the granu=
+larity is it is, TLS&#39;s alert codes needlessly expose benign differences=
+ in implementation strategy. Adding even finer granularity would make all t=
+his worse.<div><br></div><div>My experience is also that this sort of thing=
+ would not actually help much.</div><div dir=3D"ltr"><div><div><div><br><di=
+v class=3D"gmail_quote"><div dir=3D"ltr">On Tue, Mar 6, 2018 at 11:05 PM Er=
+ic Rescorla &lt;<a href=3D"mailto:ekr@rtfm.com" target=3D"_blank">ekr@rtfm.=
+com</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"marg=
+in:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex"><div dir=3D"ltr"=
+>Without taking a position on the security matter: this has been part of th=
+e TLS design for 20+ years, and therefore has had multiple LCs and WG and I=
+ETF consensus, so it would take a pretty strong set of arguments to change =
+now. I&#39;ve debugged a lot of TLS interop issues, and as a practical matt=
+er, I don&#39;t think this would help that much to justify making a change.=
+<div><div>-Ekr</div><div><br></div></div></div><div class=3D"gmail_extra"><=
+br><div class=3D"gmail_quote">On Tue, Mar 6, 2018 at 2:35 PM, Colm MacC=C3=
+=A1rthaigh <span dir=3D"ltr">&lt;<a href=3D"mailto:colm@allcosts.net" targe=
+t=3D"_blank">colm@allcosts.net</a>&gt;</span> wrote:<br><blockquote class=
+=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padd=
+ing-left:1ex"><div dir=3D"ltr"><br><div class=3D"gmail_extra"><br><div clas=
+s=3D"gmail_quote"><span>On Fri, Mar 2, 2018 at 8:00 PM, Dale Worley <span d=
+ir=3D"ltr">&lt;<a href=3D"mailto:worley@ariadne.com" target=3D"_blank">worl=
+ey@ariadne.com</a>&gt;</span> wrote:<br><blockquote class=3D"gmail_quote" s=
+tyle=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex">- Th=
+ere are about 28 error codes but nearly 150 places where the text<br>
+=C2=A0 require the connection to be aborted with an error -- and hence,<br>
+=C2=A0 nearly 150 distinct constraints that can be violated.=C2=A0 There ar=
+e 19<br>
+=C2=A0 alone for &quot;illegal_parameter&quot;.=C2=A0 I would like to see a=
+n &quot;alert<br>
+=C2=A0 extension value&quot; which assigns a distinct &quot;minor&quot; cod=
+e to each<br>
+=C2=A0 statement in the text that requires an error response (with<br>
+=C2=A0 implementations being allowed to be a bit sloppy in providing the<br=
+>
+=C2=A0 correct minor code).<br></blockquote><div><br></div></span><div>Your=
+ review is incredibly deep, comprehensive and I learned a lot from it. I wa=
+nt to pick out just one small piece, but don&#39;t mean that to diminish ho=
+w thorough it was!</div><div><br></div><div>On the specific suggestion of h=
+aving more granular error codes, I think this is a dangerous direction to t=
+ake lightly; there&#39;s at least one instance where granular TLS alert mes=
+sages have directly led to security issues by acting as oracles that aided =
+the attacker.=C2=A0</div><div><br></div><div>There&#39;s a general conjectu=
+re that the more information that is provided to attackers, the more easily=
+ they can leverage into a compromise. Personally I believe that conjecture,=
+ and would actually prefer to see fewer signals, ideally as few as one big =
+error code. There is a trade-off against debugability, but I&#39;ve only se=
+en a handful of people have the skills to debug low level TLS issues and it=
+ doesn&#39;t seem worth the risk. Others disagree, which is valid, but it&#=
+39;s at least an area of reasonable contention. =C2=A0</div></div><span cla=
+ss=3D"m_-3577827528306137902m_-6841678990604225416HOEnZb"><font color=3D"#8=
+88888"><div><br></div>-- <br><div class=3D"m_-3577827528306137902m_-6841678=
+990604225416m_-6165950854328938141m_-3959784719233718033gmail_signature" da=
+ta-smartmail=3D"gmail_signature">Colm</div>
+</font></span></div></div>
+</blockquote></div><br></div>
+_______________________________________________<br>
+TLS mailing list<br>
+<a href=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.org</a><br>
+<a href=3D"https://www.ietf.org/mailman/listinfo/tls" rel=3D"noreferrer" ta=
+rget=3D"_blank">https://www.ietf.org/mailman/listinfo/tls</a><br>
+</blockquote></div></div></div></div></div></div>
+
+--001a114873f26257de0566d5f440--
+

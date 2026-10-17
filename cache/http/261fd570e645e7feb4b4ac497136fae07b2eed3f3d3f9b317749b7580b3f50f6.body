@@ -1,0 +1,137 @@
+Return-Path: <hkario@redhat.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 582E9130DE9
+ for <tls@ietfa.amsl.com>; Wed,  8 Aug 2018 04:13:38 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -4.201
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.201 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, RCVD_IN_DNSWL_MED=-2.3, SPF_PASS=-0.001]
+ autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id QMtU06QaLcpL for <tls@ietfa.amsl.com>;
+ Wed,  8 Aug 2018 04:13:36 -0700 (PDT)
+Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 0F4F7128C65
+ for <tls@ietf.org>; Wed,  8 Aug 2018 04:13:35 -0700 (PDT)
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.4])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mx1.redhat.com (Postfix) with ESMTPS id 6218840241CB;
+ Wed,  8 Aug 2018 11:13:34 +0000 (UTC)
+Received: from pintsize.usersys.redhat.com (unknown [10.43.21.250])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id BB07B2027047;
+ Wed,  8 Aug 2018 11:13:33 +0000 (UTC)
+From: Hubert Kario <hkario@redhat.com>
+To: tls@ietf.org
+Date: Wed, 08 Aug 2018 13:13:32 +0200
+Message-ID: <2192054.D06t4ic3VH@pintsize.usersys.redhat.com>
+In-Reply-To: <60fd3847-ce85-3b59-e9e2-4902582ed058@openssl.org>
+References: <60fd3847-ce85-3b59-e9e2-4902582ed058@openssl.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="nextPart2269617.Gph7zP9vfk";
+ micalg="pgp-sha512"; protocol="application/pgp-signature"
+X-Scanned-By: MIMEDefang 2.78 on 10.11.54.4
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16
+ (mx1.redhat.com [10.11.55.7]); Wed, 08 Aug 2018 11:13:34 +0000 (UTC)
+X-Greylist: inspected by milter-greylist-4.5.16 (mx1.redhat.com [10.11.55.7]); 
+ Wed, 08 Aug 2018 11:13:34 +0000 (UTC) for IP:'10.11.54.4'
+ DOMAIN:'int-mx04.intmail.prod.int.rdu2.redhat.com'
+ HELO:'smtp.corp.redhat.com' FROM:'hkario@redhat.com' RCPT:''
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/_OJxbVygaDquRCjhXM_HvSj5mG0>
+Subject: Re: [TLS] Alerts after early_data
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.27
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Wed, 08 Aug 2018 11:13:38 -0000
+
+--nextPart2269617.Gph7zP9vfk
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
+
+On Tuesday, 7 August 2018 10:35:40 CEST Matt Caswell wrote:
+> If a client has sent early_data and later encounters an error before it
+> has sent the end of early data message, should the alert be sent in
+> plaintext, or encrypted using the client_early_traffic secret? The error
+> could occur before or after the client knows whether the server has
+> accepted its early_data.
+
+I'd say that if the alert is in relation to early_data, it should be encryp=
+ted=20
+with client_early_traffic keys (internal_error, user_canceled), if it is in=
+=20
+relation to ServerHello, it should be in plaintext, and when it is in relat=
+ion=20
+to EncryptedExtensions, Certificate, ..., or Finished message, it may be=20
+either in plaintext or encrypted with client_handshake_traffic_secret
+
+(of course, plaintext alerts are allowed only until the first record encryp=
+ted=20
+with handshake_traffic_secret keys)
+
+logic being, that the purpose of the alert is to tell the other side why th=
+e=20
+connection is being broken, no use of doing that if the other side (or even=
+ an=20
+admin using the server's SSLKEYLOGFILE) won't be able to read that message
+
+
+
+that being said, very strict reading of the draft-28 would indicate that=20
+alerts shouldn't be encrypted at all with the client_early_traffic keys:
+
+   0-RTT messages sent in the first flight have the same (encrypted)
+   content types as messages of the same type sent in other flights
+   (handshake and application_data) but are protected under different
+   keys.
+
+(the "alert" type is not listed)
+https://tools.ietf.org/html/draft-ietf-tls-tls13-28#page-58
+=2D-=20
+Regards,
+Hubert Kario
+Senior Quality Engineer, QE BaseOS Security team
+Web: www.cz.redhat.com
+Red Hat Czech s.r.o., Purky=C5=88ova 115, 612 00  Brno, Czech Republic
+--nextPart2269617.Gph7zP9vfk
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEYeeuxEU+3unL/K+dkqjRuAHS9fUFAltq0FwACgkQkqjRuAHS
+9fWdig/+MIX2ssgKFqRGnH6R17fFTr3qejD3DcGP1mmf+dGc8Fd/NzvwcGG36pYJ
+RYOKJSDNRLSvbeyC7rb9ON53wg1TM6IZJMFKYsijsD31SeENtnlexeZOc7qA+eMv
+/PUPABQYeaCzCAVWguuS801S5oSQC/pdun2vMwSOId53lDt32DQSFSZ9ijXQjqlY
+aoVGF9kIWDowhjHXmctIUShPMcodyMDXVVOvXirzQRRA3dsEGoIVY8ze1arD1BSi
+PqSTahQYdleK+4h6tzwZxj01V0L36jQVrWBjnyxhoRVkn5qWZ+g37HbqqyzJZM9U
+Wh8XRz9Vjw0Zn4OFrkjBRv6RLmSI7Jvv5vUqSgkvQWyZhOkC/uzGhrYCNQt1+yua
+fmK6BoX8D+ksgj7HnrSOISL5PFs1zTXD4uREw/Vz58D83lfr5lFMESoeBDxa0st0
+F5jzR1PeYteAtnr+yewmVkc5LBNzP038aOgokoKIqU7HGga49I7j3h4QwbwB6gF2
+4QBQH1ldMm1fhxkSyYG0s7Njd4nw+8N+vNhQ3IBRFQeN5VXLAsIJb7Ws5n8crGp2
+jrBtKEjragIoNjDcggMAmehOhxUBm+vZoR3RsdnBxkxFGIj04YHZJtYPib+zTwVw
+eN5JRQrZLNjqQu66eWefk2mDKEompjgwqTvgO7f5kjpAVGp+1Jw=
+=AYAp
+-----END PGP SIGNATURE-----
+
+--nextPart2269617.Gph7zP9vfk--
+
+
+

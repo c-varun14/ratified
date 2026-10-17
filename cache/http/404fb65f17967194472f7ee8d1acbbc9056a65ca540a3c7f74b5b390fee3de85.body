@@ -1,0 +1,145 @@
+Return-Path: <pgut001@cs.auckland.ac.nz>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id E0AA912783A
+ for <tls@ietfa.amsl.com>; Mon,  9 Apr 2018 02:50:20 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.91
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.91 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ T_RP_MATCHES_RCVD=-0.01] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=auckland.ac.nz
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id Sypi0dMi2gLV for <tls@ietfa.amsl.com>;
+ Mon,  9 Apr 2018 02:50:18 -0700 (PDT)
+Received: from mx4-int.auckland.ac.nz (mx4-int.auckland.ac.nz
+ [130.216.125.246])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id E732B124207
+ for <tls@ietf.org>; Mon,  9 Apr 2018 02:50:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=auckland.ac.nz; i=@auckland.ac.nz; q=dns/txt; s=mail;
+ t=1523267418; x=1554803418;
+ h=from:to:cc:subject:date:message-id:references:
+ in-reply-to:content-transfer-encoding:mime-version;
+ bh=VKAuNMD8HjKZsejHsGvRBeKsA0smRt793AonLSit33I=;
+ b=lbuD2lQWIaX+S6GGpv8X6UMrYPqeKzdP9D1JqySA8/Ot+1JcTjyaJYJG
+ 0c3SLzJuBwIZlcY1IZrzIEkjEtyoityEnB5+ttZBKSMuIXxHoNAyVBo8L
+ s5bDD2O0pwm+SzlKb0zY7yp9Y6RtJwI0UbFlzX2fZeJUAbV4WJChRkPKE
+ Wju4g5lqx4Sc7iA3PxolOZjVPyi256q5JAYCw82WFBm1nIWDcFNpD04th
+ cYUl6jgMiICoKbiVrvQMuLOcC1OFOdhV/lJO5hIfuhtwmcNqnxeU/Tzpu
+ pGYf9sMLqiHdrrIKYk4IVi6r59rnq4nNJETu44jBu5VdeX/jjMu0YQum/ Q==;
+X-IronPort-AV: E=Sophos;i="5.48,426,1517828400"; 
+   d="scan'208";a="6827670"
+X-Ironport-HAT: MAIL-SERVERS - $RELAYED
+X-Ironport-Source: 10.6.2.2 - Outgoing - Outgoing
+Received: from exchangemx.uoa.auckland.ac.nz (HELO
+ uxcn13-ogg-a.UoA.auckland.ac.nz) ([10.6.2.2])
+ by mx4-int.auckland.ac.nz with ESMTP/TLS/AES256-SHA; 09 Apr 2018 21:50:13 +1200
+Received: from uxcn13-ogg-d.UoA.auckland.ac.nz (10.6.2.5) by
+ uxcn13-ogg-a.UoA.auckland.ac.nz (10.6.2.2) with Microsoft SMTP Server (TLS)
+ id 15.0.1263.5; Mon, 9 Apr 2018 21:50:13 +1200
+Received: from uxcn13-ogg-d.UoA.auckland.ac.nz ([10.6.2.25]) by
+ uxcn13-ogg-d.UoA.auckland.ac.nz ([10.6.2.25]) with mapi id 15.00.1263.000;
+ Mon, 9 Apr 2018 21:50:12 +1200
+From: Peter Gutmann <pgut001@cs.auckland.ac.nz>
+To: Ion Larranaga Azcue <ilarra@s21sec.com>
+CC: "tls@ietf.org" <tls@ietf.org>
+Thread-Topic: [TLS] Genart last call review of draft-ietf-tls-tls13-24
+Thread-Index: AQHTyXh+/Lp+FYBJG0WUfSNMD3DC66PzGXCC///K/YCAACmygIAAV/MAgAA7NYCAAnAVG4ABXLyAgADNrH8=
+Date: Mon, 9 Apr 2018 09:50:11 +0000
+Message-ID: <1523267357971.79887@cs.auckland.ac.nz>
+References: <1522377304060.20682@cs.auckland.ac.nz>
+ <r470Ps-10133i-7B3DEB3D7CF1410DB2E2FF250A811BB1@Williams-MacBook-Pro.local>
+ <CABcZeBMFrnSUddraBps-b=CujitVfaQuqBFHD9WCAcCKg9M7Tw@mail.gmail.com>
+ <CDC57F65-C88C-43BB-B4DB-77AEE9B437EF@gmail.com>
+ <1522462562850.29528@cs.auckland.ac.nz>
+ <2C1F7A14-45B0-49DE-98B1-897223F7A1B0@akamai.com>
+ <1522559738688.99197@cs.auckland.ac.nz>
+ <7EBF2F91-6FEA-4705-BB1A-3FB5D7E33949@akamai.com>
+ <2DA08233-1EC4-4371-943B-E41BF5D8DA8C@dukhovni.org>
+ <109337BE-3299-46B5-A2F8-9583107AB537@akamai.com>
+ <1523025589.2651530.1328912616.6FC37C86@webmail.messagingengine.com>
+ <1523044476527.20197@s21sec.com>,
+ <1523057191.3844723.1329421696.7A2BAE27@webmail.messagingengine.com>
+ <1523147980074.75304@cs.auckland.ac.nz>,
+ <9112d613326d4fe8b397fdd61580ea59@LXDOMEXC01.ssidom.com>
+In-Reply-To: <9112d613326d4fe8b397fdd61580ea59@LXDOMEXC01.ssidom.com>
+Accept-Language: en-NZ, en-GB, en-US
+Content-Language: en-NZ
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [130.216.158.4]
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/dLVYOv9crHx_y_fz3afoiWmm5Ss>
+Subject: Re: [TLS] Genart last call review of draft-ietf-tls-tls13-24
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Mon, 09 Apr 2018 09:50:21 -0000
+
+Ion Larranaga Azcue <ilarra@s21sec.com> writes:=0A=
+=0A=
+>I don't think it's necessary going to that degree of detail. For your=0A=
+>specific first example, alert the alert "bad_certificate" is enough=0A=
+=0A=
+We already have error codes at about that level.  They're not enough to deb=
+ug=0A=
+any problems (I mean, "bad certificate" is only marginally better than the=
+=0A=
+canonical Ken Thompson Unix error message in which a giant "?" lights up in=
+=0A=
+front of you, "the experienced TLS developer will usually know what's wrong=
+"),=0A=
+thus the need for free-form text messages that tell you what the actual=0A=
+problem is.=0A=
+=0A=
+>The problem I see with it is that it's hard for applications to automatica=
+lly=0A=
+>parse it,=0A=
+=0A=
+Applications don't need to parse it, it's an optional, opt-in=0A=
+debugging/diagnostic facility to help developers sort out why a handshake i=
+s=0A=
+failing, not something that an application is meant to process.=0A=
+=0A=
+>I would first start trying to define an extended error reporting protocol=
+=0A=
+>using only numeric codes=0A=
+=0A=
+Please, go ahead and do so.  For that we'll probably need to start a new li=
+st=0A=
+to allow everyone to debate at length which error codes are needed and what=
+=0A=
+they should represent.  tls-error-bikeshedding@ietf.org seems to be a good=
+=0A=
+candidate name.=0A=
+=0A=
+Either that or say it's a UTF-8 string with free-form text, and we'll assum=
+e=0A=
+developers can somehow manage to figure the rest out themselves, as they ha=
+ve=0A=
+for pretty much every other situation in which free-form text error message=
+s=0A=
+are used.=0A=
+=0A=
+Peter.=0A=
+

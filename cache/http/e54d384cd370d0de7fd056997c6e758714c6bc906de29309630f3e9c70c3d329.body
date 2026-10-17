@@ -1,0 +1,281 @@
+Return-Path: <stephen.farrell@cs.tcd.ie>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 08C1BC1D6FC6
+	for <tls@ietfa.amsl.com>; Wed, 24 Jul 2024 13:22:47 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.009
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.009 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+	DKIM_VALID_AU=-0.1, RCVD_IN_MSPIKE_H2=-0.001,
+	RCVD_IN_ZEN_BLOCKED_OPENDNS=0.001, SPF_PASS=-0.001,
+	T_SCC_BODY_TEXT_LINE=-0.01, URIBL_DBL_BLOCKED_OPENDNS=0.001,
+	URIBL_ZEN_BLOCKED_OPENDNS=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+	header.d=cs.tcd.ie
+Received: from mail.ietf.org ([50.223.129.194])
+	by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id VtbH9YW5Pb6A for <tls@ietfa.amsl.com>;
+	Wed, 24 Jul 2024 13:22:42 -0700 (PDT)
+Received: from DU2PR03CU002.outbound.protection.outlook.com
+ (mail-northeuropeazon11022135.outbound.protection.outlook.com
+ [52.101.66.135])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ietfa.amsl.com (Postfix) with ESMTPS id 9A1A0C1D5317
+	for <tls@ietf.org>; Wed, 24 Jul 2024 13:22:42 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=HnR+yfwKmZlAdlXfHMBMVvVu9ZbfEy40zNUordNKrZjXKjRegyyuGP8sSFsS9c08N7TjTO8VpaSdkbY9xdMraICdOZbPtmnBW7bptgMTsYT8tIzN+GM3bUsd+fWP6QkBka58aW9fItEd5ydfBVT6uwucDsKZMOeKY/Qe81/STK6ix28Ivb2KnVGBPXdZWXPL/PVwC4b72egZD+1Q1NoL34K9s89wmqwYTg8eGq0G/A4s+qfQVyRkhb+6o+epswDjK7PQSkwazUY+3doz0mcakRpV1DG7HVaHMNBNWHQpTiCkWDfOGoPdUb0EVkqWoWe3biARshgEH7eNTi8yJ7MdFw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dxmiWLa3Z9A0aiPtonJO5jxwNjf5KUQDroVmNqUjRi4=;
+ b=lXxMC9c3MisrzWn+OHC+tAjVxhZOI0pe9wKsKUD5HcxXg2wgJcIo7i2R39HDup+kLQpeB4X6fR2+7g/CQRX6iHMnYe8c/juO8cFAJAHuYivooz/4vdHBFfQZ15wuIU4SAmj/ShwGyPaARtZWM8BhnjZ5LzNR1fnE7ds+GPGa6CL1tAbBWerQrZVlrc8uiyHKeaw8ftxgh9ywBE7JasDaaejjiaArKwzUBypqJSprrFH1m+HZ2a+GZjwCU5iwzs069+Wh/7rYzqqsfsAmcRGz0iCYV3yDeqbvFU2Zncp1eTgirh5d5mNXYBBSTA+oY1EhPTddIl4+rMEFP59ZXyTQmw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cs.tcd.ie; dmarc=pass action=none header.from=cs.tcd.ie;
+ dkim=pass header.d=cs.tcd.ie; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cs.tcd.ie;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dxmiWLa3Z9A0aiPtonJO5jxwNjf5KUQDroVmNqUjRi4=;
+ b=r3kRwsUelrxQUjSI03w6Uv1IhIq7/kvb7iW9sDSEynH11tPGsqIHBPnkE9dAIRO6HxVqflljmqZmdIAs2eHR0m5fE3EOfC75/4ZsjCABxmhWIEcfjGlDhpDJYt9W5vzuy9lZVKTKGI1lZWs7S42QKApXORN4TegVpWcPgdj6HSK2oktyiEsF0e0GYJsa/jwz1jLGmd7laftoBzU2e3cmnyT64a2Sjn4jSyXtfiB8GqPWWUeECty4hmOLMQhJJ3cNQzr8eRvYbG8JFkd3G1ePlswIlAGMu9mi8QPnGbBFjLMo5KABXeyvqdfRT6SE82Qbav4xhNobW2WeSq2X00ntFg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=cs.tcd.ie;
+Received: from DB8PR02MB5946.eurprd02.prod.outlook.com (2603:10a6:10:11c::16)
+ by DB9PR02MB7292.eurprd02.prod.outlook.com (2603:10a6:10:24f::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7784.20; Wed, 24 Jul
+ 2024 20:22:39 +0000
+Received: from DB8PR02MB5946.eurprd02.prod.outlook.com
+ ([fe80::e0d3:772e:a68d:d54a]) by DB8PR02MB5946.eurprd02.prod.outlook.com
+ ([fe80::e0d3:772e:a68d:d54a%6]) with mapi id 15.20.7784.013; Wed, 24 Jul 2024
+ 20:22:39 +0000
+Message-ID: <d5100c34-0663-4717-bb40-7d1192ee8a69@cs.tcd.ie>
+Date: Wed, 24 Jul 2024 21:22:35 +0100
+User-Agent: Mozilla Thunderbird
+To: Sean Turner <sean@sn3rd.com>, TLS List <tls@ietf.org>
+References: <2543C9B1-9352-43AA-B248-A92F10309B15@sn3rd.com>
+Content-Language: en-US
+From: Stephen Farrell <stephen.farrell@cs.tcd.ie>
+Autocrypt: addr=stephen.farrell@cs.tcd.ie; keydata=
+ xjMEY9GzphYJKwYBBAHaRw8BAQdAo6JvjmSbxHdQWPZdvciQYsHhM1NxQBU398Mmimoy4p7N
+ M1N0ZXBoZW4gRmFycmVsbCAoMjU1MTkpIDxzdGVwaGVuLmZhcnJlbGxAY3MudGNkLmllPsKQ
+ BBMWCAA4FiEEMG54R8tZDyZFrDOn5Njp+ZeoM90FAmPRs6YCGwMFCwkIBwIGFQoJCAsCBBYC
+ AwECHgECF4AACgkQ5Njp+ZeoM93bogEA25ElRyX0wwg+kGEN1AoL60MoZfvQZ/VtmXY6IC5j
+ +csBAIBpkL5ySuzJK2zLNZn9qQGht8IaUcA7cvDcLvS2uHUEzjgEY9GzphIKKwYBBAGXVQEF
+ AQEHQILCPWOwW36e8D3pY8GmvvtItIT+A5uV80ist+WokVsQAwEIB8J4BBgWCAAgFiEEMG54
+ R8tZDyZFrDOn5Njp+ZeoM90FAmPRs6YCGwwACgkQ5Njp+ZeoM92bcAEA8R+8cpqRUIS+SoAN
+ iO05xE6O/wEx8/e88BqzAYki3SoBAOQdwiPX+MQrAxkWD8xxOsdMOAtxYKpkD1n8aPJUw6QJ
+In-Reply-To: <2543C9B1-9352-43AA-B248-A92F10309B15@sn3rd.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------InGEeyhWphx6lx0HCH03O1xy"
+X-ClientProxiedBy: YT4PR01CA0276.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:109::13) To DB8PR02MB5946.eurprd02.prod.outlook.com
+ (2603:10a6:10:11c::16)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DB8PR02MB5946:EE_|DB9PR02MB7292:EE_
+X-MS-Office365-Filtering-Correlation-Id: 07660fcd-4016-4c0e-b442-08dcac1e5d48
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-TCD-Routed-via-EOP: Routed via EOP
+X-TCD-ROUTED: Passed-Transport-Routing-Rules
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: 
+	BCL:0;ARA:13230040|366016|376014|4022899009|1800799024|220923002;
+X-Microsoft-Antispam-Message-Info: 
+	=?utf-8?B?MkNTTXZMZXFRcHFIMlBQRWxlcm5UY3BwblZMbFp1UXB4QnZWanpIMU10Z01o?=
+ =?utf-8?B?YlBXUDIzbE5sSkVneDloS2pXZHJpZTZxOXJtMCsvRzVHSm9zSjFHRGRBNGRN?=
+ =?utf-8?B?blNBbjN2UitZTkp0YVdaTjcrRGlCM2pnQXN4eEUwTXpIeDU4SG9sZjVLT1E3?=
+ =?utf-8?B?VGJjdkI3OU1kaDlWbnNNdzdiMUYrV3poS3JRdmVqbDBlODlNdHZtUVRVVTVv?=
+ =?utf-8?B?RjlHWkV2WVlGWUZHMEd3bjk4YzRJMmo4ellSbU9vYUdLNXcvSWd1ZFlkYjVm?=
+ =?utf-8?B?aDFRbi9jUFIrUXBKYUdWWDRUKzAvNzBSVGVINytpVUxvZjFVYWtDcCtkc1pE?=
+ =?utf-8?B?V1VqSWxsK3N6eDY5ZjdLSU8rYnNhWmhpK21zdVhWaThoenBWWXZXUkRWdXlR?=
+ =?utf-8?B?QzdKN2xkRVJrSjdNdUI0c1h6T21xODRMaGR4RThqb3VMV0NVM28xWElUT2R2?=
+ =?utf-8?B?Ym5MSFVqY2dtSUFtdFNkR2IxYm5yNjNZaDd3Tm5qMHpQMzBHNTVaUHFFcVY2?=
+ =?utf-8?B?ZEgyRW9Ha2RxYnFMWXlCemcyWmNzMW52eVZ6bEpjOVlYTk14ZEFkbWNRNjhZ?=
+ =?utf-8?B?V0x6aFg4MlMzWi8rQWMzTlpNVXUwR3E0WXFnUG9Bdmw1Q3BqN3g0RFlpdTly?=
+ =?utf-8?B?OHJPeWprdmxjc2xaVFUwc0dyRUptTUJERDZyVnpzSEN3U1FEOW0yUzRTU2hJ?=
+ =?utf-8?B?MUVPT1hyZll3bGRRUVl2dC91eHN6ZjRRSkFjbkNrU3RzaXhkNWZ5aTdxVTcr?=
+ =?utf-8?B?emtsaVVUSnNFREl0djUyUjU0MGc4aXlWbEVWdFRxSEwxVU1aMXNibmFrYVJt?=
+ =?utf-8?B?RXVJLzJqSGxLSnhSTHpWbmRjOVZTZE1qM0k5cHBPdENGM25xSXNMeVpJTnkr?=
+ =?utf-8?B?RVE3TEtWNlZDQ2o0RElLU2xPQkR3OXF0dVczaTlkUUhCdGhuVit5ZEhudXgy?=
+ =?utf-8?B?Wm1wRSt0bThyTkRhbDhFUnVHYWhpTEZ2VS9UR3dpMXpNQWRoOWlGQTNzdisw?=
+ =?utf-8?B?VTBpaFVEUEtRZ3hBZGlvLzRXZE91M0krR3MrMFdYc0pGR1k4K1lHVWFmS09R?=
+ =?utf-8?B?cDZuOXRMTnA2WTVCL3VMa1dVTUpVQSsrRXR3cy9oaUdzV2gxRThuMGh0Y3ZW?=
+ =?utf-8?B?VC9VWlVMRXRZZUVjbHRnYWJHeXAxaGZ4NnJnM0I0MFA5RURBMVFuY3owalRI?=
+ =?utf-8?B?a0hUZytzWHA0S0JZaWpmQ0FQcktxNHRJSzYxN3FmUS92TW5KZXZHOHo5L2dx?=
+ =?utf-8?B?aVBkS0lxYjY5dWh0Nk1OQjNtdTRNTkVWa2xNZVZ6N2w3T1JVZ2k1VFZES1lV?=
+ =?utf-8?B?eUsySlh1TXhkVFp1NlVhZ2htaU85dWpvWVRsMW5XQVBvRk5sQ1lzZ1dMZ29U?=
+ =?utf-8?B?UEFlUUFuSWFEYXNyWVdIMWt4SjlZSzBVZC8yQlp3aWhGWldjK0JJY3dMeDVa?=
+ =?utf-8?B?THdDNXBEUkh3TkdwaHIzWFAxQ0Z1aFNubWZtempIYzBoalgvdFpHMmlLa1lo?=
+ =?utf-8?B?Uit2VEQwME8vM3BxT3lsZExDei9NMzNZcUMveWlMM0t2TGIyVXlrWngwVVhn?=
+ =?utf-8?B?UEI1cTBGNXk0SWdSTDNaMlZ2NlU3dEpVREVWSDNQbnNtQTg4VDFqaWEwWlBK?=
+ =?utf-8?B?cE0zQzVFSnV6SGpTSDlzSnc0RkZBdUx5ZkpHTTRSMW96ek5iSzlHOWkzLzZw?=
+ =?utf-8?B?NmVnUERWSzN4b2Z5MFM5TWgwT2tSTWtWSHQ2cWVUVXBnc0lyR2gxRzZ4Nm0w?=
+ =?utf-8?B?elR6SWp6NGpVOGtlZy9xUCtHR2xJSXFDY2pyVjVSWWVUdmxPMkhoRHB0dzlh?=
+ =?utf-8?B?U1pmMyszM05sQmVXYVd6dHJYSk56aFlJNnUzOUNoUTFlRE1ZcTVSYWZFaVhk?=
+ =?utf-8?B?b2t2MG1uejg1TTZkSERRSkdMbzBrOWQ5Ui9MODZ2T3cxclE9PQ==?=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR02MB5946.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(4022899009)(1800799024)(220923002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?MWExVXcwcTZLRnpWSU9vNW96VitiWk5iNml4M0lCRk1aVytFQTFEQ0k3T0tJ?=
+ =?utf-8?B?eVhLZ3NuWDFPejhRQnk4Wkt5OEJPMUplUzRXS2dJaHJtNFBBYTVaKzF1UEJ5?=
+ =?utf-8?B?NjRQWUhGLzZrNjd6RkhSSE0zTEV3NEkvZU5hcGtMcDVpUkx4WitHaVBrMG8w?=
+ =?utf-8?B?N3ZHaFUvT1kxeGFJby9PZ0RndzJ4ODBOdkY3U1Z4czNJOHZtRU1FSzFNNEYz?=
+ =?utf-8?B?RjY5VFZMcWlxcmwrZlZES2Z0SmRDMHJKZHY2QnNRYjhrNUFpQ054ejI3TWlr?=
+ =?utf-8?B?clBSVFVBMXFJcHFqU0psb2prNGp1VTNLc2FxU3BObVBKVysxS2l3NFl6OUNo?=
+ =?utf-8?B?dHE0SGIyd2VqZkZodHlvNmxkOS92cURiK1R0Q0dhM2ZXUHdqM2tnNlVCeEo1?=
+ =?utf-8?B?MC9TTjhzdmxsWWFLdmd2eG1Ncmlsa1dheHBOT1hRQS85TkVoNTgwT1FSTDQ4?=
+ =?utf-8?B?R1RQbHJiemxMN3k1cFRDcitUeDIwOThXM2hydU5tMXlJOGdZV0Z3TE1UUE9O?=
+ =?utf-8?B?dGxxejVkdDg4ZjdvdDA0aDNZTDNhaDBINHN3TW05ZDFLNVlLRFNGWm5XNTU1?=
+ =?utf-8?B?V09TU2dmMURKclJNZ0E2cWZLUjJwZnlLNTN0c2pMMFdHV08xUnV2WnJ3TENP?=
+ =?utf-8?B?b3hkcmlqeVhnd0lTNkkvQUlJWXVhRk5GcHNENDFNNlhONXhPUStUajFRMEIx?=
+ =?utf-8?B?MjlTcnB1dloyTjFMVkwrQVhnMlVUUjl0M09YeFRhcGJkaHp1cW03ZEdLdXNl?=
+ =?utf-8?B?YnpQVk9FTVJIV3VrM1UwZExCV0ZkUEF1ay9WMjFBMHlIditLbTRWYUxsZ0tD?=
+ =?utf-8?B?NE4zbTRkQUl3M3lJRHhzZ3RrRGFaMUJSU252NHAyWGRCVTc2WHRqWWF5MENq?=
+ =?utf-8?B?eDZnNEdaSkgwdnRJazR1dWpTTnpqbjIvMkhzbXlFaCtYVERram9idzJ4NU5n?=
+ =?utf-8?B?dEswcGFOcSt6N1drSVM4WE1JdUdUWHNwWDhENjVHcXZqNHRvU2NzNlMyUjFk?=
+ =?utf-8?B?WUNPeXMydm1NaUZxTG1UcVE3WjFiTmRiSzMyaTZpR3ZpV3JOR1diTmUxMHBi?=
+ =?utf-8?B?T2ttSUxXTnBIVTVZdFBON1dXdDI4NXBNY3pVaFM0S2NDenpSUnNnbFFBWXBi?=
+ =?utf-8?B?cjIxQndic0prSWtBTUF0ZjdNNStxZHRFMkRvVXdPTi90clA3R3JZeS9kZ0lj?=
+ =?utf-8?B?WmdXb0M4NUlBbkl5RUtzL01FclJhSFlvK0N0OHZ1YXptN3JzSE9kTWE4N1Rr?=
+ =?utf-8?B?MGdiQW1xRG1zc3pRY1JCenREWmdnUjk3Qit3bytTdGg5b3IzTFUzN0ZJczFh?=
+ =?utf-8?B?KzRpa2lMRzJUbG5zbnVXQXNwZXV4TUc2YitJdUNuQmsvSFZlWnRzQi9XaUpW?=
+ =?utf-8?B?amQxZE9uTWtpME9DS2diRUgvN1llODRYVzVPRWlGRUtCSGxGREtDZjN2VGZk?=
+ =?utf-8?B?SUFjVGx5RzBTTjA3VWp6eEJjUTlEeDVKcHpjeVMxajFDQlVKZFFQRmp3UUVM?=
+ =?utf-8?B?cHJPU0sxMkp1S2lWcDlXV0x2TUNxdGttRlRBRzRNSDhPUTVrdjR5VHhBNk1t?=
+ =?utf-8?B?Vk9kbkpyK3VseExCSlUwczl4WEZ6WU5EdkJlSnBMLzZXTVFhMXk5S1JpNHRs?=
+ =?utf-8?B?algrNFB2RE9Yc3V6SDhKdUhSZmE4US9yVmNNNlJ3RWxsOFRseUswYUFPekl3?=
+ =?utf-8?B?RVZRNFBvRURFSWVaYUpRaXN3bTN3ekt5TndRUEpPV3pMMGZXMTQwaUljOEJt?=
+ =?utf-8?B?SWNlZElOYjNkMDM4aEUrS0t5cGRiU2JqK0Yrdnd5RTFkaUpNdUlBb3h2Snkr?=
+ =?utf-8?B?QXpSMXNKS0ViVXJ3YUcxNmZvcmRVb3lKK0syV3JXMllkaTdlK0JmRldVN2RI?=
+ =?utf-8?B?L1RGemVvMjRBOHk1MEloTTRZK1VQS1FYNTVLdEt6eVpwcTlDbUpmQ2ZaQ2U3?=
+ =?utf-8?B?NVZ5Nmc2Uit5bU5wMC9iTGhtSmJmTTZzR0RJVlpiMWFLUTdjK2xGcklEaWhq?=
+ =?utf-8?B?UFNBWndoRUV5anU5UUJmMVhJdmtLKzkzNlUzd1dOWldvU0pxdVJHRHZiUWFF?=
+ =?utf-8?B?VkIwd3EzU3VybGJneEFESEFVamtURWtuTlM0OENUazYzS2dHTjJROTRHVFd4?=
+ =?utf-8?B?cHJtaFBGRlhiYTJqU3VITVNTMkhkMkFYSWZRUXF5bHdpcS9uV01lL0FKZ0Rw?=
+ =?utf-8?Q?3RKLPQlqvY+q4av+3Wf4VkJUCNg5zoxkPuXVYIDxhWsb?=
+X-OriginatorOrg: cs.tcd.ie
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ 07660fcd-4016-4c0e-b442-08dcac1e5d48
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR02MB5946.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jul 2024 20:22:39.5605
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: d595be8d-b306-45f4-8064-9e5b82fbe52b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 
+ SzYjx8l+F6mqTjAqULOuOHq1t7yUf1i3sWumVjm0WHIfPADyO4gZn5cjg8Pn+E1o
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR02MB7292
+Message-ID-Hash: GLSFPNL4KICUX5NZOXWAS4THY7YLSEHE
+X-Message-ID-Hash: GLSFPNL4KICUX5NZOXWAS4THY7YLSEHE
+X-MailFrom: stephen.farrell@cs.tcd.ie
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+X-Mailman-Version: 3.3.9rc4
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5DRe=3A_tls=40ietf120=3A_WG_I-D_status?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/4qkRdkg6kNXV6IlNa5Oehd-yoDQ>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+--------------InGEeyhWphx6lx0HCH03O1xy
+Content-Type: multipart/mixed; boundary="------------VJYYcGOZjClXgyaU8N8QyJvh";
+ protected-headers="v1"
+From: Stephen Farrell <stephen.farrell@cs.tcd.ie>
+To: Sean Turner <sean@sn3rd.com>, TLS List <tls@ietf.org>
+Message-ID: <d5100c34-0663-4717-bb40-7d1192ee8a69@cs.tcd.ie>
+Subject: Re: [TLS]tls@ietf120: WG I-D status
+References: <2543C9B1-9352-43AA-B248-A92F10309B15@sn3rd.com>
+In-Reply-To: <2543C9B1-9352-43AA-B248-A92F10309B15@sn3rd.com>
+
+--------------VJYYcGOZjClXgyaU8N8QyJvh
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+
+
+Hiya,
+
+What's the status/plan for draft-ietf-tls-esni-18?
+
+Thanks,
+S.
+
+On 24/07/2024 20:57, Sean Turner wrote:
+> [External Email] This email originated outside of Trinity College Dublin. Do not click links or open attachments unless you recognise the sender and know the content is safe.
+> 
+> Hi! We often review the WG I-Ds’ status during the chairs’ slides. I’d like to try an experiment to save us more time for the session by sending the update via email; it’s also in the chairs’ slides. If any I-D authors disagree with this very brief summary please let us know.  The list is sorted based on datatracker order.
+> 
+> - draft-ietf-tls-svcb-ech-03: Needs a -04 to address WGLC comments from Rich Salz and Chris Patton.
+> 
+> - draft-ietf-tls-8773bis-02: Refer to Formal Analysis Triage Team (FATT) discussion in meeting.
+> 
+> - draft-ietf-tls-wkech-05: See Stephen’s slides for IETF 120.
+> 
+> - draft-ietf-tls-deprecate-obsolete-kex-04: Joe needs to do some minor word tweaking before moving it forward.
+> 
+> - draft-ietf-tls-key-share-prediction-00: It’s new, needs WG review.
+> 
+> - draft-ietf-tls-tls13-pkcs1-01: Through WGLC, will enter FATT process once 8773bis is resolved; technically behind -rrc.
+> 
+> - draft-ietf-tls-rfc8447bis-09: Awaiting WGLC; Deirdre to run.
+> 
+> - draft-ietf-tls-keylogfile-02: With RFC Editor.
+> 
+> - draft-ietf-tls-ctls-10: Stalled, but Hannes said he will have more time late summer.
+> 
+> - draft-ietf-tls-hybrid-design-10: See Deirdre’s slides for IETF 120.
+> 
+> - draft-ietf-tls-tls12-frozen-00: See Rich’s slides for IETF 120.
+> 
+> - draft-ietf-tls-dtls-rrc-11: Through WGLC, will enter FATT process once 8773bis is resolved.
+> 
+> - draft-davidben-tls-key-share-prediction-01: WG review needed.
+> 
+> - draft-ietf-tls-cert-abridge-01: Needs WG review.
+> 
+> - draft-ietf-tls-tlsflags-13: Awaiting implementations; would move if draft-jhoyla-req-mtls-flag was adopted.
+> 
+> - draft-ietf-tls-rfc8446bis-10: See Sean’s slides for IETF 120.
+> 
+> Cheers,
+> spt
+> _______________________________________________
+> TLS mailing list -- tls@ietf.org
+> To unsubscribe send an email to tls-leave@ietf.org
+
+
+--------------VJYYcGOZjClXgyaU8N8QyJvh--
+
+--------------InGEeyhWphx6lx0HCH03O1xy
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+wnsEABYIACMWIQQwbnhHy1kPJkWsM6fk2On5l6gz3QUCZqFijAUDAAAAAAAKCRDk2On5l6gz3Xlx
+APwPGjNyhY5e0nj5ICq4Zqi79G5iDIcaWJhZvRu0sH0wPQEAwx66Wnb76DQPVijvkmQi3yrUpl4O
+oJ5bWP+nCii37w0=
+=rUYz
+-----END PGP SIGNATURE-----
+
+--------------InGEeyhWphx6lx0HCH03O1xy--
+

@@ -1,0 +1,250 @@
+From nobody Fri Jan 29 08:59:56 2021
+Return-Path: <jovergar@microsoft.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id D3FBB3A1199;
+ Fri, 29 Jan 2021 08:59:48 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.35
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.35 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIMWL_WL_HIGH=-0.25, DKIM_SIGNED=0.1,
+ DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1,
+ RCVD_IN_MSPIKE_H2=-0.001, SPF_HELO_NONE=0.001, SPF_PASS=-0.001,
+ URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=microsoft.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id V8Medio-FI94; Fri, 29 Jan 2021 08:59:47 -0800 (PST)
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com
+ (mail-dm6nam08on2107.outbound.protection.outlook.com [40.107.102.107])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 35F793A11A7;
+ Fri, 29 Jan 2021 08:59:47 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lngokNsDFdxEh6i/sYBS4fPHD9mQTaucpM7ghXh4mJSHKn/8cLytnVXFwq2qT1CMtVJ2PvL4XmZhSStSY7dhP6t0MKLMD6CJhswW/zS8RK0BLwN4228AFE8t8PnyGtmYA78fnD+Y5Qocurj8GxJmPOIOm/fpGFNasm9Kd1lx7dxApn/fCJqrtnazw+D8S0odC8qhbbwixuiNPX0AMSLQBgc5UuJoLVk6z5am46KTfJjp2bNVfk8ymOavNy0vJLHH3dFMW0ab7rlmsPIBARTOCO0vROWD+DD1i1Taa566Jf8ovJ8+mlSSqOPeY2BIyloQale6TK0l2yW6xyevclMx7Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SiaOBW/toBcrIVjUlu8MkcfQRZauighKzR81jeXQKbg=;
+ b=BSBW5evpWJi6CPNHIwyXW4ejz1nfuodbcg6ABCwjycHCMJPaF3zJKjsHPJztY5o6+/yOHQm1ZfzeJcBKzI8sMYTr/q38Ft6iSnFf/Cwk+GORr3aHtwWthdqOpBlCFO8OclD5LQW3pq9y7ECmCF2PqaKzCVNkzmwx/OrBAGlOylCMe+Ax2gtezYWEy6rDnPNsZbhqK8ZPAlFPcf0FCr4ZuZo6zhtxAoYiuCAE/3kXQfKyUufgVnQijQPsr3sTkvDlW3IZkLo/xqNrz/iQ718JQUz4hp7Y7vEhEbuzYOiZlFpTa8GT5WlZ6nowFTmSUxhjQ16KTsqB1YDroW8DwCBIPQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SiaOBW/toBcrIVjUlu8MkcfQRZauighKzR81jeXQKbg=;
+ b=Xgxz4jMgZg83PZfhpUNxCEfcYnnXa6Zd2z8uUYGjC++zeHJ1Wm83ca5Ke9nEqemt85rC8exU2UJRrZpv+pPWumwE0+R7XLguB5q6/8YqYkm7Xd3/HaJ/Q5gnBC+gfxjJ1kMkW0vCigCDXd4qErZcafn3DGsn2J/ek3zXg2Cf+OU=
+Received: from (2603:10b6:302:10::31) by
+ MWHPR21MB0752.namprd21.prod.outlook.com (2603:10b6:300:76::14) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3825.4; Fri, 29 Jan 2021 16:59:44 +0000
+Received: from MW2PR2101MB0923.namprd21.prod.outlook.com
+ ([fe80::70e4:503d:86f9:e543]) by MW2PR2101MB0923.namprd21.prod.outlook.com
+ ([fe80::70e4:503d:86f9:e543%7]) with mapi id 15.20.3825.006; Fri, 29 Jan 2021
+ 16:59:44 +0000
+From: Jorge Vergara <jovergar@microsoft.com>
+To: Alan DeKok <aland@deployingradius.com>, John Mattsson
+ <john.mattsson@ericsson.com>
+CC: Martin Thomson <mt@lowentropy.net>, Benjamin Kaduk <kaduk@mit.edu>, Roman
+ Danyliw <rdd@cert.org>, "<tls@ietf.org>" <tls@ietf.org>, EMU WG
+ <emu@ietf.org>
+Thread-Topic: [TLS] [Emu] Fwd: Benjamin Kaduk's Discuss on
+ draft-ietf-emu-eap-tls13-13: (with DISCUSS and COMMENT)
+Thread-Index: AQHW9kAd8D/aMW6nIkGmknAol9bmDao+02ww
+Date: Fri, 29 Jan 2021 16:59:44 +0000
+Message-ID: <MW2PR2101MB09231A7C7422617CB8CB8257D1B99@MW2PR2101MB0923.namprd21.prod.outlook.com>
+References: <160815821055.25925.15897627611548078426@ietfa.amsl.com>
+ <20201216223842.GR64351@kduck.mit.edu>
+ <0f2b05db-5c98-43d4-aae3-cf620814bacc@www.fastmail.com>
+ <A4BBA31B-8754-4D8C-B0F1-D1C6C859F6AE@deployingradius.com>
+ <CAOgPGoBvBzhA0q4gFqpFSm2HkAs6NoyLc6RVZYLtTYsNd02i8A@mail.gmail.com>
+ <e669002f-caff-1e6e-e28b-d09157eb0c07@ericsson.com>
+ <6241F0B6-C722-449E-AC3A-183DE330E7B5@deployingradius.com>
+ <9ddd1593-3131-f5cc-d0db-74bf3db697bf@ericsson.com>
+ <3CB58153-8CCA-4B1E-B530-BA67A6035310@deployingradius.com>
+ <CAOgPGoA3U+XpZMY7J+KGovNx6MtAdEzRaGW33xVJdQNWSi4LVg@mail.gmail.com>
+ <770e6a49-52fc-4e8b-91af-48f85e581fbb@www.fastmail.com>
+ <CAOgPGoBGOMXH-kMhQSujWxnACdmBL845u0ouE0fUYc4rWtUrZg@mail.gmail.com>
+ <ca4c526e-79a0-4fa7-abda-2b626795f068@www.fastmail.com>
+ <3409F71E-4CE4-46BB-8079-BFBE9BE83C9A@deployingradius.com>
+ <66157321-55DC-4831-8EF2-D75934D9024C@deployingradius.com>
+ <MW2PR2101MB0923A68A9D7560D14D7A8C89D1BA9@MW2PR2101MB0923.namprd21.prod.outlook.com>
+ <B2C94459-5C07-4091-9575-3DCB461B75F7@ericsson.com>
+ <0864FF17-FF7F-4DF3-ACBD-568F27224221@deployingradius.com>
+In-Reply-To: <0864FF17-FF7F-4DF3-ACBD-568F27224221@deployingradius.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=8b3e3790-3682-499f-99a5-748be3a381a9;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-01-29T16:58:27Z; 
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: deployingradius.com; dkim=none (message not signed)
+ header.d=none;deployingradius.com; dmarc=none action=none
+ header.from=microsoft.com;
+x-originating-ip: [2001:4898:80e8:7:29be:695b:f2fc:1b71]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: fc37568b-ab05-48ab-9eb7-08d8c47746fa
+x-ms-traffictypediagnostic: MWHPR21MB0752:
+x-microsoft-antispam-prvs: <MWHPR21MB0752C714B8C7A38B85546A1CD1B99@MWHPR21MB0752.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: hbzE9686EJbWKsV8vXhN8HOku7Q5Xl+SZNPpOMRIaNILIHnbkIcu3JjfZgyDOKnOZp5GcVT2jszTFqQ31TTqqPB3MBMwm17MhCovOxQsLCnKt9ELoNJqdV7DVG6UsrVrJY/ByXcvX5lL7jmMKtSWCiebttqqhAmKP357DfniNYvricThKgVFgmOAE0QF7Pwc+lW2xGHZxO5Sp0XyuRCRwWRKEqN5nTpdtedKYvt9mDJ+yAQhrfk2lagl5XERN1wTNRgKRz0mRf4epJIPjpsCNJqo3EzEn1Kjax3+H0awoF/7O9Hi80FuV4H5vNt9yXJYY/u7vVGX+aT+FjNSpCBpcg7ToU4s0gJ9xxYpAxqRaNU2eMzc3M7TjQPoG1FJaW97zk7Lsuqt3AxrTSOGCbnY/okEZOm1zNdX4R+RgMN1sYgWxHxp31gCceI+qWpSWQmnPnTLL7391u74EQlJU23lvj6qMGmYoBB7O6hL1VQ8IYK2oWC3F/bZ9Jo/9115lrg9Q1sVrFmkw2qpgmW8T/RaRQ==
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:; 
+ IPV:NLI; SFV:NSPM;
+ H:MW2PR2101MB0923.namprd21.prod.outlook.com; PTR:; CAT:NONE; 
+ SFS:(4636009)(136003)(39860400002)(346002)(366004)(376002)(396003)(55016002)(10290500003)(5660300002)(83380400001)(64756008)(8676002)(66476007)(478600001)(82960400001)(53546011)(82950400001)(8936002)(2906002)(6506007)(9686003)(71200400001)(110136005)(8990500004)(186003)(52536014)(54906003)(7696005)(86362001)(4326008)(33656002)(66946007)(316002)(66556008)(66446008)(76116006);
+ DIR:OUT; SFP:1102; 
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?AD04cB6xNTYz65xs31j9JnfWxNG/pFBx10svRzs6sXanVe31nSOaomRXk5zK?=
+ =?us-ascii?Q?sQo//z1TRW5kBfjEsZ9isHNjV0e6O7EQ6QeL6r/IEWz7s9VNndLz71h31Y5G?=
+ =?us-ascii?Q?M+GgwBy+qf7z8NXsUlK0JfB59ExswfA6GXZRL5++tmy7sQ0e76gucsBtpLNO?=
+ =?us-ascii?Q?s0MLPxHNN+g7gEpdcfjiTi/ya2MS6eC+Ga4xlfkqLladWU5ZQtMwMTd2jTuG?=
+ =?us-ascii?Q?Zr3+/4N74I1/i2dAsQHRyc7HTrTJ0nRkrmvvunkDrUK07FOBIFImtGP0QP3W?=
+ =?us-ascii?Q?Y/NvW5uonVLg7AgWz3I22Nj8qNbGqLR3tQIUKLpTU/mQ27iKiENrx21GQVDi?=
+ =?us-ascii?Q?YiZUPh1lWAhT4JUoUMFU5npmOS8jlZbr8U5YBTdIgecma2FwWheduryHIkgY?=
+ =?us-ascii?Q?5kYJEgVqxvQUOIOPdJLq+T1Z2eeJnq+VCUK0yAob9qvUnGF3YuiTwB3pIMvI?=
+ =?us-ascii?Q?gvXzlmvii0B1I8wV6G8kjtBCIBMSLD1n/Bjp2Gp122qexILbU5opfrs4M3n3?=
+ =?us-ascii?Q?fLncTsiWXuzWFyi8KsgomKp+ZJL8JGI2N5InrhluFds0QU3zYVOzowo3NXxT?=
+ =?us-ascii?Q?heA8zWh6nRpTP7+0VOq7QMvFfGqAX8pWrDaLv2n0LLl1kwWfkuzTH9U/zPch?=
+ =?us-ascii?Q?cEGdQN90iZbfVbUlITbEnmr/9rUZmQ5Ica2yX1JLz6YWotwq2Vh3kuJRIYr/?=
+ =?us-ascii?Q?GJ48tjd7vKKAsBm4sqo19PMDckU1cn2mfm4GgFVnLNHkmE4Vy6XpBFG2IlvO?=
+ =?us-ascii?Q?3tLE+NaSPgSbUXC6PqUTriw36tolTRoCR/pfVtxC3BpRw3SaDRM6SvDIYdhg?=
+ =?us-ascii?Q?cTr5pkE6vkSaY4AebSidzIwgUT2jBfgBwpo3D5O4Ec1yNxc2NsXEP9tu/6h2?=
+ =?us-ascii?Q?ZfcV//jldw42bgHhWodcZTjk/FEUnJgqzX/NsQ+juLXDATl3Qge7uGYWdsu/?=
+ =?us-ascii?Q?BYbrtFgQA29b8EAmRstt512+uXF4UjDXN2ipwZKl3fQVoXCst2CxidkLsCB9?=
+ =?us-ascii?Q?Kkt68gdv6kjT8KvT5TL1PTqT6G1nSYlVYbtYhomrNbNVBUS6hlp5BrRW6h6b?=
+ =?us-ascii?Q?XodnbaSoQSIKvvSwToYMBhDIEp/iWjmpJ5KZHLpOhBkWFBtDAxaIaATMH9MR?=
+ =?us-ascii?Q?fhc9Ze0EWiOwWVcT/WfOs34zfrJcK7n8RLMNzX24eVj10pLpm4lKljgKzYu5?=
+ =?us-ascii?Q?VZMWKJHKrpVmtx1lH0A7x7XSazSEz6jgcHjRF9QK0Vwk4T9JsySRrnAwCycB?=
+ =?us-ascii?Q?fknDTyGBoyBGfzUZJJn7FDflVucujB5WG+ZCsHugZchUEIvE6+IKus+RZuiR?=
+ =?us-ascii?Q?zL5cy7DzGUSHiStJn7JInDTMaWwjaEmTIIiCUygT9tBkJ07cte2RcBU+Uimd?=
+ =?us-ascii?Q?/SYnw7M=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW2PR2101MB0923.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fc37568b-ab05-48ab-9eb7-08d8c47746fa
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jan 2021 16:59:44.3427 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: alOMBfNWL5yjKgOG9nHWza1wakCU72+xw50p0h72dfjF3OJh+ZT8M6Wjva+uHBGu6aFtMlMzCgLwoeVN9N14eA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR21MB0752
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/Bc4CEf23rO9tiv5FocjwvyoILIQ>
+Subject: Re: [TLS] [Emu] Fwd: Benjamin Kaduk's Discuss on
+ draft-ietf-emu-eap-tls13-13: (with DISCUSS and COMMENT)
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Fri, 29 Jan 2021 16:59:54 -0000
+
+> We need to get agreement on how to proceed here asap. I would like implem=
+entors and security AD to agree on the way forward before submitting -14. F=
+our ways forward:
+>=20
+> A. Add (1) and (2)
+> B. Only add (1)
+> C. Only add (2)
+> D. Do not add (1) or (2)
+
+My preference is D.
+
+> Do we need to have a telephone meeting to discuss these things? We cannot=
+ have a formal interim meeting as that formally takes weeks to setup. This =
+can also not wait until the next IETF. As soon as we agree on a way forward=
+ we can update and submit a new version within 24 h.
+
+Totally open to this.
+
+Jorge Vergara
+
+-----Original Message-----
+From: Alan DeKok <aland@deployingradius.com>=20
+Sent: Friday, January 29, 2021 5:10 AM
+To: John Mattsson <john.mattsson@ericsson.com>
+Cc: Jorge Vergara <jovergar@microsoft.com>; Martin Thomson <mt@lowentropy.n=
+et>; Benjamin Kaduk <kaduk@mit.edu>; Roman Danyliw <rdd@cert.org>; <tls@iet=
+f.org> <tls@ietf.org>; EMU WG <emu@ietf.org>
+Subject: Re: [TLS] [Emu] Fwd: Benjamin Kaduk's Discuss on draft-ietf-emu-ea=
+p-tls13-13: (with DISCUSS and COMMENT)
+
+On Jan 29, 2021, at 5:31 AM, John Mattsson <john.mattsson@ericsson.com> wro=
+te:
+>=20
+> I can live with any version, the important thing is that interoperable im=
+plementations get shipped ASAP. This is important also for 3GPP as EAP-TLS =
+1.3 is mandatory to support in 3GPP Rel-16 if EAP-TLS is supported.
+
+  Then our choices are:
+
+a) draft-13 in February.  There are multiple interoperable implementations,=
+ including Microsoft, FreeRADIUS, and hostap / wpa_supplicant.
+
+b) ??? in 2021.
+
+> The close_notity changes are not only positive as it sometimes introduce =
+an additional roundtrip. The Commitment message can according to specificat=
+ion be sent with the server Finish even if some/most/all implementation doe=
+s not seem to allow this. If the commitment message cannot be send with Fin=
+ished in practice there is no difference in latency. Still a bit sad how po=
+orly TLS 1.3 and EAP interacts.
+
+  The TLS implementations largely assume that TLS is being used (a) over TC=
+P, and (b) to exchange application data.  These assumptions *severely* limi=
+t the choices available for implementors of EAP-TLS.
+
+  We can verify these assumptions by simply noting that many TLS implementa=
+tions include native support for TLS over TCP.  While there have been asser=
+tions that TLS libraries also implement EAP, those assertions seem to be fi=
+rmly outside of the bounds of reality.
+
+> We need to get agreement on how to proceed here asap. I would like implem=
+entors and security AD to agree on the way forward before submitting -14. F=
+our ways forward:
+>=20
+> A. Add (1) and (2)
+> B. Only add (1)
+> C. Only add (2)
+> D. Do not add (1) or (2)
+
+  My strong preference is (D).
+
+> I assume implementors (Alan, Jorge) are fine with all other changes since=
+ -13.
+
+  Yes,
+
+> Do we need to have a telephone meeting to discuss these things? We cannot=
+ have a formal interim meeting as that formally takes weeks to setup. This =
+can also not wait until the next IETF. As soon as we agree on a way forward=
+ we can update and submit a new version within 24 h.
+
+  TBH, implementors have already had multiple informal discussions and call=
+s.  One more wouldn't make much difference.
+
+  Alan DeKok
+

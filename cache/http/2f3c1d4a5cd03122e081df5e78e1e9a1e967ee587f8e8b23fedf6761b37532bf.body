@@ -1,0 +1,148 @@
+Return-Path: <ietf-dane@dukhovni.org>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (ietfa.amsl.com [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id A60091B2C8D
+ for <tls@ietfa.amsl.com>; Sun, 19 Jul 2015 14:03:59 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.6
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.6 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, RCVD_IN_DNSWL_LOW=-0.7] autolearn=ham
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 0cagp0eeimLB for <tls@ietfa.amsl.com>;
+ Sun, 19 Jul 2015 14:03:57 -0700 (PDT)
+Received: from mournblade.imrryr.org (mournblade.imrryr.org [38.117.134.19])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 93B0B1B2C7A
+ for <tls@ietf.org>; Sun, 19 Jul 2015 14:03:57 -0700 (PDT)
+Received: by mournblade.imrryr.org (Postfix, from userid 1034)
+ id 9C03D284B6C; Sun, 19 Jul 2015 21:03:56 +0000 (UTC)
+Date: Sun, 19 Jul 2015 21:03:56 +0000
+From: Viktor Dukhovni <ietf-dane@dukhovni.org>
+To: tls@ietf.org
+Message-ID: <20150719210356.GQ28047@mournblade.imrryr.org>
+References: <201507180037.56413.davemgarrett@gmail.com>
+ <CAFewVt72efH+9qYzCSBh1heM7N9Ki-6VrVxbAc0=4UcSf5XbVg@mail.gmail.com>
+ <201507181428.40766.davemgarrett@gmail.com>
+ <20150719125016.GA17542@LK-Perkele-VII>
+ <CABcZeBMDujpLqQBtsWG+vutVM8V3g69Ys0_teZ4or=dU-uRwNQ@mail.gmail.com>
+ <20150719171657.GL28047@mournblade.imrryr.org>
+ <CAFewVt7qc6pE_NNdO16FOAhohD=YCmiX1VmSYgpHzbjqtxJevw@mail.gmail.com>
+ <CABcZeBPT2RZe1nR5hZCxSgO+GoHoYAPpmuV7FucZrX6TyRB-qQ@mail.gmail.com>
+ <CAFewVt7tuJBpKggc2MND4m_LxLHb+iGupOAVAKRJBRPZMDVo3g@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFewVt7tuJBpKggc2MND4m_LxLHb+iGupOAVAKRJBRPZMDVo3g@mail.gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
+Archived-At: <http://mailarchive.ietf.org/arch/msg/tls/aJRN602OvWKLMdc3ryzB_ZeWeQk>
+Subject: Re: [TLS] TLS 1.3 - method to request uncached shared secrets
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.15
+Precedence: list
+Reply-To: tls@ietf.org
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Sun, 19 Jul 2015 21:03:59 -0000
+
+On Sun, Jul 19, 2015 at 04:40:15PM -0400, Brian Smith wrote:
+
+> Here's the part that is not is still not
+> clear to me: Is the SessionTicket extension still to be used or not?
+
+While we now have
+
+   https://tools.ietf.org/html/draft-ietf-tls-tls13-07#section-6.2.4
+
+       In TLS 1.2 and below, this functionality was provided by "session
+       resumption" and "session tickets" [RFC5077].  Both mechanisms are
+       obsoleted in TLS 1.3.
+
+at the same time we also have:
+
+   https://tools.ietf.org/html/draft-ietf-tls-tls13-07#section-6.3.11
+
+       After the server has received the client Finished message, it MAY
+       send a NewSessionTicket message.  This message MUST be sent before
+       the server sends any application data traffic, and is encrypted under
+       the application traffic key.  This message creates a pre-shared key
+       (PSK) binding between the resumption master secret and the ticket
+       label.  The client MAY use this PSK for future handshakes by
+       including it in the pre_shared_key extension in its ClientHello
+       (Section 6.3.1.5.4) and supplying a suitable PSK cipher suite.
+
+	 struct {
+	     uint32 ticket_lifetime_hint;
+	     opaque ticket<0..2^16-1>;
+	 } NewSessionTicket;
+
+       ticket_lifetime_hint
+	  Indicates the lifetime in seconds as a 32-bit unsigned integer in
+	  network byte order.  A value of zero is reserved to indicate that
+	  the lifetime of the ticket is unspecified.
+
+       ticket
+	  The value of the ticket to be used as the PSK identifier.
+
+and
+
+   https://tools.ietf.org/html/draft-ietf-tls-tls13-07#section-6.3.1.5.4
+
+       The pre_shared_key extension is used to indicate the identity of the
+       pre-shared key to be used with a given handshake in association with
+       a PSK or (EC)DHE-PSK cipher suite (see [RFC4279] for background).
+
+         opaque psk_identity<0..2^16-1>;
+
+	     struct {
+	       select (Role) {
+		 case client:
+		   psk_identity identities<0..2^16-1>;
+
+		 case server:
+		   psk_identity identity;
+
+	     } PreSharedKeyExtension;
+
+       identifier
+	  An opaque label for the pre-shared key.
+
+So indeed it is no longer possible for the client to signal the
+ability/desire to resume sessions, and servers will generate session
+tickets absent any indication that the client intends to use them.
+
+This does not impose a space penalty on the server, but some CPU
+and bandwidth may be wasted on clients that don't or can't resume.
+
+> It seems not, AFAICT. If the SessionTicket extension were to be used, then
+> everything would work perfectly as Viktor suggested in his message: the
+> absense of the SessionTicket extension in the ClientHello would be the way
+> that a client can indicate that it doesn't want the session to be cached.
+
+In the current 1.3 draft, there is indeed no client signal.
+
+> It seems weird that the server can supply a lifetime hint but the client
+> can't, especially in cases like WebRTC where there is no functional
+> difference between the two. But, that's a smaller issue than the lack of
+> an indication that resumption machinery isn't wanted at all.
+
+The client lifetime is not that useful with session tickets anyway,
+whether the client caches at all, could be, but it is not clear
+that the resulting "inefficiency" needs to be fixed.  The fix would
+be for the client to send an empty extension of some sort to signal
+its desire to elicit a session ticket.
+
+-- 
+	Viktor.
+

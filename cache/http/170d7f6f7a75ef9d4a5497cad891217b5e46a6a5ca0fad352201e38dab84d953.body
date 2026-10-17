@@ -1,0 +1,345 @@
+Return-Path: <davidben@google.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 3D0631200CE
+ for <tls@ietfa.amsl.com>; Fri, 27 Sep 2019 12:06:38 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -9.398
+X-Spam-Level: 
+X-Spam-Status: No, score=-9.398 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIMWL_WL_HIGH=-0.001, DKIM_SIGNED=0.1,
+ DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1,
+ HEADER_FROM_DIFFERENT_DOMAINS=0.001, HTML_MESSAGE=0.001,
+ HTTPS_HTTP_MISMATCH=0.1, RCVD_IN_DNSWL_NONE=-0.0001,
+ SPF_HELO_NONE=0.001, SPF_PASS=-0.001, URIBL_BLOCKED=0.001,
+ USER_IN_DEF_SPF_WL=-7.5] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=chromium.org
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 44q7LPolT5DR for <tls@ietfa.amsl.com>;
+ Fri, 27 Sep 2019 12:06:35 -0700 (PDT)
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com
+ [IPv6:2607:f8b0:4864:20::635])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 99562120013
+ for <tls@ietf.org>; Fri, 27 Sep 2019 12:06:35 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id q24so1435009plr.13
+ for <tls@ietf.org>; Fri, 27 Sep 2019 12:06:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=AbNWNmz5sVhrsWxSMP9QEn9xHUcJ/ToySg5umUborvM=;
+ b=R69bzR/1kNgc0q9lnUzw47/eLQnTNOtYwnrfRpk2RrLqZd5h0+/qB6S8oNKtAezVzr
+ EVpBk0Pn1NZi5QZf416x0cMeNLi6U8VNrhAsASIDksY0S01+FopqLpgkJe6JxefuMsTG
+ T/Il28+DxRtLPvw/DqKDugEN5XOxZC2ju22Qo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=AbNWNmz5sVhrsWxSMP9QEn9xHUcJ/ToySg5umUborvM=;
+ b=lE3K1AKuAzz0XTvxp3sRYaRk5UoOBrJ5E9r0YAgc2LdaIW20H2wdMGEByoNIwg5v3z
+ gV0zIaPLODWcwuAnZPCS/SOClgwDHasNbW7cTI+rTBEFdqSJJHcc0yOgwzsB7/aR/5fI
+ eHHilW1vX9ASiTPmQlGL8usHVeKE9BFodL5pYACWrUs4HFvsIWytCMmZwlms68Bsp3Mx
+ lDVo8CdxMHrsxtPa1uh5T+vp+FC8NH0eAERldDF6xZ6a6cyKo9m8v4JXraaWNxZ0dzCh
+ ewYkWzacQoaUw8EUyDAFNPf8wSvvcD3NJZyiM98WeQ7MYJZxrc6PTQUihBkrPt878kgH
+ fdSg==
+X-Gm-Message-State: APjAAAWIk7jzjWLgK0iWtX/Wdnx0DyyJfcnKibjDig226I1dwA6mKqDG
+ 6JZFvhNtOEEniadrJ67mFBYhBycJDFX0zVZsTCtb
+X-Google-Smtp-Source: APXvYqyFgjXWiGEEpO6Y0VgTOBVXfYK8QPqbzVcl5H3F0E8ODlTSxhhlkDgMHqVlNKpfU5j5bIC1IPXW73XT80qimeo=
+X-Received: by 2002:a17:902:b482:: with SMTP id
+ y2mr6351400plr.334.1569611194460; 
+ Fri, 27 Sep 2019 12:06:34 -0700 (PDT)
+MIME-Version: 1.0
+References: <BF5F63A6-105B-47C6-8B65-29A290A16E76@akamai.com>
+ <8B2B78CF-F312-4F7A-8EB1-A712F309A754@gmail.com>
+ <CADZyTknH0ivQc-xW-di1XKC7w-9A5TCF8vhLLCrR9jQbcqY5dw@mail.gmail.com>
+ <d4b01c69-6047-467b-8538-9780f6872fe1@www.fastmail.com>
+ <80881fa1-97df-56c9-10c5-f9e754b6cdb6@cs.tcd.ie>
+ <d865244a-9ce8-4d95-b62c-ba52fa198126@www.fastmail.com>
+ <5DFB0BE5-0782-42F6-88B4-7F6F076790F1@akamai.com>
+ <CABcZeBOk=S0M5fbuyV8CjhY55pA_f69J6mD_=mzU7DCbMj_qUg@mail.gmail.com>
+ <B4AE9453-845A-483A-832C-0712764EAE40@akamai.com>
+In-Reply-To: <B4AE9453-845A-483A-832C-0712764EAE40@akamai.com>
+From: David Benjamin <davidben@chromium.org>
+Date: Fri, 27 Sep 2019 15:06:18 -0400
+Message-ID: <CAF8qwaAHQFVXS0sWQidWOKn0N90ieV6eMy4cP+J4BWq6u-1h3g@mail.gmail.com>
+To: "Salz, Rich" <rsalz@akamai.com>
+Cc: Eric Rescorla <ekr@rtfm.com>, "tls@ietf.org" <tls@ietf.org>
+Content-Type: multipart/alternative; boundary="000000000000aef31a05938d9531"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/Sz7IuhpQZbuL5KK-aQ8ffXF3E8k>
+Subject: Re: [TLS] Lessons learned from TLS 1.0 and TLS 1.1 deprecation
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Fri, 27 Sep 2019 19:06:38 -0000
+
+--000000000000aef31a05938d9531
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+I don't think the statement should be included at all. Were these documents
+more of a WHATWG-style "living standard" model, it might make sense, but
+IETF documents involve much more deliberation, take longer to update, and
+are broader in scope. We should be careful about making statements about
+upper bounds. Lower bounds are much safer. See also older TLS MTI ciphers,
+which didn't age well:
+https://tools.ietf.org/html/rfc5246#section-9
+https://tools.ietf.org/html/rfc4346#section-9
+https://tools.ietf.org/html/rfc2246#page-48
+
+Even describing today's real-world deployment, the situation is more
+nuanced than that statement implies. It's true that TLS 1.2 is unlikely to
+go away anytime soon. But it has also been largely superseded by TLS 1.3.
+If we design a new TLS-related feature, say certificate compression, some
+new exporters, new encryption algorithm, etc., we will likely only target
+TLS 1.3. There is little point in TLS 1.2 features which would require code
+change to adopt because any 1.2-only deployment that can perform a code
+change may as well use that code change to first switch to 1.3.
+
+Even a statement like that has its caveats. For instance, there are some
+use cases around client certificates where code changes in some components
+are easy (TLS stack) and others are not (PKCS#1-v1.5-only signing
+component). But over time, as dependencies clear (perhaps that signing
+components finally get updated, or folks adopt
+https://tools.ietf.org/html/draft-davidben-tls13-pkcs1-00), these caveats
+will shift.
+
+The situation also varies by the kind of deployment. For a typical HTTPS
+deployment on the web, the statement about code changes is I think quite
+solid. A small closed ecosystem could go further and migrate off TLS 1.2
+today. Or if you are making a brand new application with no connection to
+existing TLS 1.2 deployments, it would be quite reasonable to set TLS 1.3
+as your baseline.
+
+Thus I think the document should not try to describe this situation. The
+deprecation states of TLS 1.0 and 1.1 have thoroughly solidified enough
+that we're now deprecating them, hence the document. TLS 1.2's relationship
+to TLS 1.3 is still actively evolving (RFC5246 has only been obsolete for a
+year) and quite uneven. I don't think there is value in trying to pin
+something down yet, beyond what we've already done, RFC8446
+obsoleting RFC5246.
+
+On Fri, Sep 27, 2019 at 1:24 PM Salz, Rich <rsalz@akamai.com> wrote:
+
+> I could even accept with =E2=80=9C, unfortunately=E2=80=9D :)
+>
+>
+>
+>
+>
+>
+>
+> *From: *Eric Rescorla <ekr@rtfm.com>
+> *Date: *Friday, September 27, 2019 at 1:11 PM
+> *To: *Rich Salz <rsalz@akamai.com>
+> *Cc: *Martin Thomson <mt@lowentropy.net>, Stephen Farrell <
+> stephen.farrell@cs.tcd.ie>, "tls@ietf.org" <tls@ietf.org>
+> *Subject: *Re: [TLS] Lessons learned from TLS 1.0 and TLS 1.1 deprecation
+>
+>
+>
+> Perhaps we could rewrite this text so that it reflects that we think this
+> is non-ideal.?
+>
+>
+>
+>
+>
+>
+>
+> On Fri, Sep 27, 2019 at 9:16 AM Salz, Rich <rsalz@akamai.com> wrote:
+>
+>
+>
+> On 9/26/19, 11:51 PM, "Martin Thomson" <mt@lowentropy.net> wrote:
+>
+>     On Fri, Sep 27, 2019, at 10:52, Stephen Farrell wrote:
+>     > >> """The expectation is that TLSv1.2 will continue to be used for
+>     > >> many years alongside TLSv1.3."""
+>     >
+>     > So is your proposed change to only remove that sentence?
+>
+>     > wonder if that change really amounts to a worthwhile thing.
+>
+> >    I do.  Or I wouldn't have written the email.  Do you think that this
+> is a valuable statement?  I think that it says that the IETF lacks
+> confidence in the suitability of TLS 1.3 as a replacement for TLS 1.2.
+>
+> It is a statement of real-world deployment.  I am against removing it.
+>
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+> <https://urldefense.proofpoint.com/v2/url?u=3Dhttps-3A__www.ietf.org_mail=
+man_listinfo_tls&d=3DDwMFaQ&c=3D96ZbZZcaMF4w0F4jpN6LZg&r=3D4LM0GbR0h9Fvx86F=
+tsKI-w&m=3DavjlNHHNBfovgxnF47PW747tAzpi2N7ARGWwftm4c8E&s=3DXdJ1ZBOBiFnJzrTs=
+053x7X1ZFr2OXIQ1aWaqCL3Q_mY&e=3D>
+>
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+>
+
+--000000000000aef31a05938d9531
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">I don&#39;t think the statement should be included at all.=
+ Were these documents more of a WHATWG-style &quot;living standard&quot; mo=
+del, it might make sense, but IETF documents involve much more deliberation=
+, take longer to update, and are broader in scope. We should be careful abo=
+ut making statements about upper bounds. Lower bounds are much safer. See a=
+lso older TLS MTI ciphers, which didn&#39;t age well:<div><a href=3D"https:=
+//tools.ietf.org/html/rfc5246#section-9" target=3D"_blank">https://tools.ie=
+tf.org/html/rfc5246#section-9</a><br></div><div><a href=3D"https://tools.ie=
+tf.org/html/rfc4346#section-9" target=3D"_blank">https://tools.ietf.org/htm=
+l/rfc4346#section-9</a><br></div><div><a href=3D"https://tools.ietf.org/htm=
+l/rfc2246#page-48" target=3D"_blank">https://tools.ietf.org/html/rfc2246#pa=
+ge-48</a><br></div><div><br></div><div>Even describing today&#39;s real-wor=
+ld deployment, the situation is more nuanced than that statement implies. I=
+t&#39;s true that TLS 1.2 is unlikely to go away anytime soon. But it has a=
+lso been largely superseded by TLS 1.3. If we design a new TLS-related feat=
+ure, say certificate compression, some new exporters, new encryption algori=
+thm, etc., we will likely only=C2=A0target TLS 1.3. There is little point i=
+n TLS 1.2 features which would require code change to adopt because any 1.2=
+-only deployment that can perform a code change may as well use that code c=
+hange to first switch to 1.3.</div><div><br></div><div>Even a statement lik=
+e that has its caveats. For instance, there are some use cases around clien=
+t certificates where code changes in some components are easy (TLS stack) a=
+nd others are not (PKCS#1-v1.5-only signing component). But over time, as d=
+ependencies clear (perhaps that signing components finally get updated, or =
+folks adopt <a href=3D"https://tools.ietf.org/html/draft-davidben-tls13-pkc=
+s1-00" target=3D"_blank">https://tools.ietf.org/html/draft-davidben-tls13-p=
+kcs1-00</a>), these caveats will shift.</div><div><br></div><div>The situat=
+ion also varies=C2=A0by the kind of deployment. For a typical HTTPS deploym=
+ent on the web, the statement about code changes is I think quite solid. A =
+small closed ecosystem could go further and migrate off TLS 1.2 today. Or i=
+f you are making a brand new application with no connection to existing TLS=
+ 1.2 deployments, it would be quite reasonable to set TLS 1.3 as your basel=
+ine.</div><div><br></div><div>Thus I think the document should not try to d=
+escribe this situation. The deprecation states of TLS 1.0 and 1.1 have thor=
+oughly solidified enough that we&#39;re now deprecating them, hence the doc=
+ument. TLS 1.2&#39;s relationship to TLS 1.3 is still actively evolving (RF=
+C5246 has only been obsolete for a year) and quite uneven. I don&#39;t thin=
+k there is value in trying to pin something down yet, beyond what we&#39;ve=
+ already done, RFC8446 obsoleting=C2=A0RFC5246.</div></div><br><div class=
+=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Fri, Sep 27, 2019=
+ at 1:24 PM Salz, Rich &lt;<a href=3D"mailto:rsalz@akamai.com" target=3D"_b=
+lank">rsalz@akamai.com</a>&gt; wrote:<br></div><blockquote class=3D"gmail_q=
+uote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,2=
+04);padding-left:1ex">
+
+
+
+
+
+<div lang=3D"EN-US">
+<div>
+<p class=3D"MsoNormal">I could even accept with =E2=80=9C, unfortunately=E2=
+=80=9D :)<u></u><u></u></p>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+<div style=3D"border-right:none;border-bottom:none;border-left:none;border-=
+top:1pt solid rgb(181,196,223);padding:3pt 0in 0in">
+<p class=3D"MsoNormal"><b><span style=3D"font-size:12pt;color:black">From: =
+</span></b><span style=3D"font-size:12pt;color:black">Eric Rescorla &lt;<a =
+href=3D"mailto:ekr@rtfm.com" target=3D"_blank">ekr@rtfm.com</a>&gt;<br>
+<b>Date: </b>Friday, September 27, 2019 at 1:11 PM<br>
+<b>To: </b>Rich Salz &lt;<a href=3D"mailto:rsalz@akamai.com" target=3D"_bla=
+nk">rsalz@akamai.com</a>&gt;<br>
+<b>Cc: </b>Martin Thomson &lt;<a href=3D"mailto:mt@lowentropy.net" target=
+=3D"_blank">mt@lowentropy.net</a>&gt;, Stephen Farrell &lt;<a href=3D"mailt=
+o:stephen.farrell@cs.tcd.ie" target=3D"_blank">stephen.farrell@cs.tcd.ie</a=
+>&gt;, &quot;<a href=3D"mailto:tls@ietf.org" target=3D"_blank">tls@ietf.org=
+</a>&quot; &lt;<a href=3D"mailto:tls@ietf.org" target=3D"_blank">tls@ietf.o=
+rg</a>&gt;<br>
+<b>Subject: </b>Re: [TLS] Lessons learned from TLS 1.0 and TLS 1.1 deprecat=
+ion<u></u><u></u></span></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+<div>
+<div>
+<p class=3D"MsoNormal">Perhaps we could rewrite this text so that it reflec=
+ts that we think this is non-ideal.?<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+</div>
+</div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+<div>
+<div>
+<p class=3D"MsoNormal">On Fri, Sep 27, 2019 at 9:16 AM Salz, Rich &lt;<a hr=
+ef=3D"mailto:rsalz@akamai.com" target=3D"_blank">rsalz@akamai.com</a>&gt; w=
+rote:<u></u><u></u></p>
+</div>
+<blockquote style=3D"border-top:none;border-right:none;border-bottom:none;b=
+order-left:1pt solid rgb(204,204,204);padding:0in 0in 0in 6pt;margin-left:4=
+.8pt;margin-right:0in">
+<p class=3D"MsoNormal"><br>
+<br>
+On 9/26/19, 11:51 PM, &quot;Martin Thomson&quot; &lt;<a href=3D"mailto:mt@l=
+owentropy.net" target=3D"_blank">mt@lowentropy.net</a>&gt; wrote:<br>
+<br>
+=C2=A0 =C2=A0 On Fri, Sep 27, 2019, at 10:52, Stephen Farrell wrote:<br>
+=C2=A0 =C2=A0 &gt; &gt;&gt; &quot;&quot;&quot;The expectation is that TLSv1=
+.2 will continue to be used for<br>
+=C2=A0 =C2=A0 &gt; &gt;&gt; many years alongside TLSv1.3.&quot;&quot;&quot;=
+<br>
+=C2=A0 =C2=A0 &gt; <br>
+=C2=A0 =C2=A0 &gt; So is your proposed change to only remove that sentence?=
+<br>
+<br>
+=C2=A0 =C2=A0 &gt; wonder if that change really amounts to a worthwhile thi=
+ng.<br>
+<br>
+&gt;=C2=A0 =C2=A0 I do.=C2=A0 Or I wouldn&#39;t have written the email.=C2=
+=A0 Do you think that this is a valuable statement?=C2=A0 I think that it s=
+ays that the IETF lacks confidence in the suitability of TLS 1.3 as a repla=
+cement for TLS 1.2.<br>
+<br>
+It is a statement of real-world deployment.=C2=A0 I am against removing it.=
+<br>
+<br>
+_______________________________________________<br>
+TLS mailing list<br>
+<a href=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.org</a><br>
+<a href=3D"https://urldefense.proofpoint.com/v2/url?u=3Dhttps-3A__www.ietf.=
+org_mailman_listinfo_tls&amp;d=3DDwMFaQ&amp;c=3D96ZbZZcaMF4w0F4jpN6LZg&amp;=
+r=3D4LM0GbR0h9Fvx86FtsKI-w&amp;m=3DavjlNHHNBfovgxnF47PW747tAzpi2N7ARGWwftm4=
+c8E&amp;s=3DXdJ1ZBOBiFnJzrTs053x7X1ZFr2OXIQ1aWaqCL3Q_mY&amp;e=3D" target=3D=
+"_blank">https://www.ietf.org/mailman/listinfo/tls</a><u></u><u></u></p>
+</blockquote>
+</div>
+</div>
+</div>
+
+_______________________________________________<br>
+TLS mailing list<br>
+<a href=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.org</a><br>
+<a href=3D"https://www.ietf.org/mailman/listinfo/tls" rel=3D"noreferrer" ta=
+rget=3D"_blank">https://www.ietf.org/mailman/listinfo/tls</a><br>
+</blockquote></div>
+
+--000000000000aef31a05938d9531--
+

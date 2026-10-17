@@ -1,0 +1,592 @@
+Return-Path: <ekr@rtfm.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 4AF53120724
+ for <tls@ietfa.amsl.com>; Tue, 23 May 2017 16:41:11 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.599
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.599 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_LOW=-0.7]
+ autolearn=unavailable autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=rtfm-com.20150623.gappssmtp.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id tORhdIpjkbXy for <tls@ietfa.amsl.com>;
+ Tue, 23 May 2017 16:41:08 -0700 (PDT)
+Received: from mail-yw0-x230.google.com (mail-yw0-x230.google.com
+ [IPv6:2607:f8b0:4002:c05::230])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id F0E10128616
+ for <tls@ietf.org>; Tue, 23 May 2017 16:41:07 -0700 (PDT)
+Received: by mail-yw0-x230.google.com with SMTP id l74so82015175ywe.2
+ for <tls@ietf.org>; Tue, 23 May 2017 16:41:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=rtfm-com.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+ :cc; bh=UeyMvDHrDVXz7Y64VZ4RDIzRv5cU2mq5PzpamncNZOU=;
+ b=02zzkFWwx0r6zTxm5zIXw8WmjZOpQr6wS7P68ZTHsoI7svPSzj94ttMR6yyC9RGsM3
+ nreul3cSlMfMnDH/RGtjx29leY4Ef1kc0VI5JHJ+FHEfJu/vqXzItvMvCldhpHFhURaM
+ v9llIz7noaDSOqWCXEY7Mj3RzL11XaSLAmKrXrlCZz9SEsamPYpR5OjCeXyPdYN+NHso
+ yvc6Z6JmqJrm3eJ9psHvEU04SoVP6g5emSxUzQ+Hv1P4sJaNawerTUpOMy/o2MM4utfF
+ nEb/lE/6eqz7pLFQHHDyEabgRTTP74rC3hh4aHIcYuyQ+C3w7EEr/YrbS5WGf4GRzIU6
+ n/dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+ :message-id:subject:to:cc;
+ bh=UeyMvDHrDVXz7Y64VZ4RDIzRv5cU2mq5PzpamncNZOU=;
+ b=AEKAKk5HaVivMCiQlmO/b7u8FnslwGVxOwRRy4R6BfD6QZelID3m8gye7BGSeAcine
+ dMV1ti8VT2PeD6sxVrw7r7I01IRu6ZpWFBwwySf+jXKRcR9GXMPvMadn/8or8S1OfqVo
+ 5xBFZfFoxMx0+JdXCU1GSYePOOhVZ6ae3BMCQ4Bij9E0pd8DyR5tKQUxUC0SgJmFps6i
+ yRNHIrwmAE+OgpYuFM8ldGnnMpEoMnE12ZJHm8NUNteT+nqLiXQZ6N7z5KD1aW2ZMfrg
+ JMQCXd/0CqcTiPvUfq9AwTLGtgJRoG2rGQnNNZomC+6ETEQPAU70MzvlrSX+pcrSmnec
+ 9X4Q==
+X-Gm-Message-State: AODbwcBsbetPBTwvbtmRDkProPdbkkk/U9eMDN02Q7FQmq0Pf8U9adfX
+ DSI0sf+kmuOi1iFcrkC0+xdC7Ocf7O8q
+X-Received: by 10.13.212.1 with SMTP id w1mr23972122ywd.24.1495582867248; Tue,
+ 23 May 2017 16:41:07 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 10.129.131.150 with HTTP; Tue, 23 May 2017 16:40:26 -0700 (PDT)
+In-Reply-To: <CADZyTknOk=skkKXFtrvVWuKVU_PLV3tecaeo9kdLe77a9YxkNQ@mail.gmail.com>
+References: <149550551972.4974.3201248950751611020.idtracker@ietfa.amsl.com>
+ <CADZyTknOk=skkKXFtrvVWuKVU_PLV3tecaeo9kdLe77a9YxkNQ@mail.gmail.com>
+From: Eric Rescorla <ekr@rtfm.com>
+Date: Wed, 24 May 2017 07:40:26 +0800
+Message-ID: <CABcZeBM-4_xqBOum3vCd2Sb5327CYpU08kxadqYwW+qh0W3eJw@mail.gmail.com>
+To: Daniel Migault <daniel.migault@ericsson.com>
+Cc: The IESG <iesg@ietf.org>, draft-ietf-tls-ecdhe-psk-aead@ietf.org, 
+ Joseph Salowey <joe@salowey.net>, tls-chairs <tls-chairs@ietf.org>,
+ tls <tls@ietf.org>
+Content-Type: multipart/alternative; boundary="001a114fb0f688f0cb055039859c"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/qHOvUviReoT7rz_nnzokAi03ACs>
+Subject: Re: [TLS] Eric Rescorla's Discuss on
+ draft-ietf-tls-ecdhe-psk-aead-04: (with DISCUSS and COMMENT)
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Tue, 23 May 2017 23:41:11 -0000
+
+--001a114fb0f688f0cb055039859c
+Content-Type: text/plain; charset="UTF-8"
+
+On Wed, May 24, 2017 at 6:00 AM, Daniel Migault <daniel.migault@ericsson.com
+> wrote:
+
+> Hi Eric,
+>
+> Thank you for your reviews. Please see my responses inline. If you agree
+> with the text I will update the draft.
+>
+> Yours,
+> Daniel
+>
+> On Mon, May 22, 2017 at 10:11 PM, Eric Rescorla <ekr@rtfm.com> wrote:
+>
+>> Eric Rescorla has entered the following ballot position for
+>> draft-ietf-tls-ecdhe-psk-aead-04: Discuss
+>>
+>> When responding, please keep the subject line intact and reply to all
+>> email addresses included in the To and CC lines. (Feel free to cut this
+>> introductory paragraph, however.)
+>>
+>>
+>> Please refer to https://www.ietf.org/iesg/statement/discuss-criteria.html
+>> for more information about IESG DISCUSS and COMMENT positions.
+>>
+>>
+>> The document, along with other ballot positions, can be found here:
+>> https://datatracker.ietf.org/doc/draft-ietf-tls-ecdhe-psk-aead/
+>>
+>>
+>>
+>> ----------------------------------------------------------------------
+>> DISCUSS:
+>> ----------------------------------------------------------------------
+>>
+>> The following text appears to have been added in -04
+>>
+>>    A server receiving a ClientHello and a client_version indicating
+>>    (3,1) "TLS 1.0" or (3,2) "TLS 1.1" and any of the cipher suites from
+>>    this document in ClientHello.cipher_suites can safely assume that
+>> the
+>>    client supports TLS 1.2 and is willing to use it.  The server MUST
+>>    NOT negotiate these cipher suites with TLS protocol versions earlier
+>>    than TLS 1.2.  Not requiring clients to indicate their support for
+>>    TLS 1.2 cipher suites exclusively through ClientHello.client_hello
+>>    improves the interoperability in the installed base and use of TLS
+>>    1.2 AEAD cipher suites without upsetting the installed base of
+>>    version-intolerant TLS servers, results in more TLS handshakes
+>>    succeeding and obviates fallback mechanisms.
+>>
+>> This is a major technical change from -03, which, AFAIK, prohibited
+>> the server from negotiating these algorithms with TLS 1.1 and below
+>> and maintained the usual TLS version 1.2 negotiation rules.
+>>
+>> This is a very material technical change. I don't consider it wise,
+>> but in any case it would absolutely need WG consensus, which I
+>> don't believe that it has given the recent introduction.
+>>
+>
+> I agree that the text is a technical change, and that it may not be
+> appropriated to do so now. The reason I included it was that it was conform
+> to the previous text, but I agree that implicit assumption of version 1.2
+> may need some additional discussion especially regarding RFC5246 Appendix
+> E. Unless you prefer further discussion I assume the text below address
+> your concern.
+>
+> <t>The cipher suites defined in this document MUST NOT be negotiated for
+> any version of (D)TLS other than TLS 1.2. Clients MUST NOT offer one of
+> these cipher suites with a (D)TLS version that differs from TLS 1.2.
+> Servers MUST NOT select one of these cipher suites with a TLS version that
+> differs from TLS 1.2. A client MUST treat the selection of these cipher
+> suites in combination with a version of TLS as an error and generate a
+> fatal 'illegal_parameter' TLS alert. </t>
+>
+
+Yes, this seems fine
+
+
+The discussion of dictionary attacks here seems inferior to that
+>> in 4279. In particular, you only need to actively attack one
+>> connection to capture the data you need for a brute force attack
+>> despite the text there referring to trying "different keys".
+>> Please correct that.
+>>
+>> I believe the text below address your concern:
+>
+> OLD:
+> <t>Use of Pre-Shared Keys of limited entropy may allow an active
+> attacker attempts to connect to the server and try different keys.
+> For example, limited entropy may be provided by using a short PSK in which
+> case an attacker may perform a brute-force attack. Another example
+> includes the use of a PSK  chosen by a human which thus may be exposed to
+> dictionary attacks.</t>
+>
+> NEW:
+> <t>Pre-Shared Keys security relies on its associated entropy, and it is
+> RECOMMENDED to follow <xref target="4086"/> to ensure the PSK has enough
+> entropy. Possible reasons for low entropy includes PSK chosen by humans or
+> PSK of small length as well as using random generators with limited
+> entropy. </t>
+>
+> <t>PSK of limited entropy may allow an attacker to test different PSK
+> values against a valid output such as master secret or any output derived
+> from it. In this document, the master secret is generated using the PSK as
+> well as the ECDHE shared secret. The use of ECDHE limits the possibilities
+> of passive eavesdropping attackers, as the ECDHE shared secret is not
+> expected to be derived from the observed ECDH parameters. As a result,
+> passive eavesdropping is unlikely to happen, and the collection of all
+> necessary material relies on an active attack.
+> An active attacker may collect the necessary material by setting a TLS
+> session as a client with the legitimate server. One PSK is tested for each
+> session, and a match occurs when key exchange succeeds. On the other hand,
+> an active attacker may also consider gathering the necessary information
+> for offline computation. One way consists in getting a legitimate client to
+> establish a connection with the attacker. It is also assumed that the
+> client will accept the ECDH parameters authenticated by the attacker's
+> private key and finally returns the Finished message authenticating the
+> exchange. The attacker will be then in possession of all the necessary
+> information to perform a brute force attack.</t>
+>
+
+Is there a reason to not just point directly to the 4279 security
+considerations?
+
+-
+
+>
+>
+>>
+>> ----------------------------------------------------------------------
+>> COMMENT:
+>> ----------------------------------------------------------------------
+>>
+>> The citations to TLS 1.3 still seem pretty muddled. I think you
+>> should just stop referencing and discussing 1.3.
+>>
+>
+> My understanding of your comment is that mentioning TLS 1.3 to further
+> insisting that the code point are not valid for TLS 1.3 is confusing. I
+> propose to:
+>
+> Explicitly mention the TLS version in the title:
+>
+> OLD title:
+> ECDHE_PSK with AES-GCM and AES-CCM Cipher Suites for Transport Layer
+> Security (TLS)
+>
+> NEW title:
+> ECDHE_PSK with AES-GCM and AES-CCM Cipher Suites for Transport Layer
+> Security (TLS)
+>
+> OLD Introduction:
+>
+>     The cipher
+>    suites are defined for version 1.2 of the Transport Layer Security
+>    (TLS) [RFC5246 <https://tools.ietf.org/html/rfc5246>] protocol, version 1.2 of the Datagram Transport Layer
+>    Security (DTLS) protocol [RFC6347 <https://tools.ietf.org/html/rfc6347>], as well as version 1.3 of TLS
+>    [I-D.ietf-tls-tls13 <https://tools.ietf.org/html/draft-ietf-tls-ecdhe-psk-aead-04#ref-I-D.ietf-tls-tls13>].
+>
+> NEW introduction
+>
+> The cipher
+>    suites are defined for version 1.2 of the Transport Layer Security
+>    (TLS) [RFC5246 <https://tools.ietf.org/html/rfc5246>] protocol, version 1.2 of the Datagram Transport Layer
+>    Security (DTLS) protocol [RFC6347 <https://tools.ietf.org/html/rfc6347>].
+>
+>
+> I suggest to keep the following text of the introduction:
+>
+>
+> AEAD algorithms that combine encryption and integrity protection are
+>    strongly recommended for (D)TLS [RFC7525 <https://tools.ietf.org/html/rfc7525>] and non-AEAD algorithms are
+>    forbidden to use in TLS 1.3 [I-D.ietf-tls-tls13 <https://tools.ietf.org/html/draft-ietf-tls-ecdhe-psk-aead-04#ref-I-D.ietf-tls-tls13>].  The AEAD
+>    algorithms considered in this document are AES-GCM and AES-CCM.  The
+>    use of AES-GCM in TLS is defined in [RFC5288 <https://tools.ietf.org/html/rfc5288>] and the use of AES-CCM
+>    is defined in [RFC6655 <https://tools.ietf.org/html/rfc6655>].
+>
+>
+Yes, this seems fine.
+
+
+
+> I suggest to keep the following text of the Applicable versions sections,
+> as I believe the section discusses the cipher suites against all existing
+> TLS versions. In addition, it also justifies somewhat that we only defined
+> cipher suites that are compatible with TLS1.3.
+>
+>    TLS version 1.3 and later negotiate these features in a different
+>    manner.  Unlike TLS 1.2, TLS 1.3 separates authentication and cipher
+>    suite negotiation [I-D.ietf-tls-tls13 <https://tools.ietf.org/html/draft-ietf-tls-ecdhe-psk-aead-04#ref-I-D.ietf-tls-tls13>] Section 1.2 <https://tools.ietf.org/html/draft-ietf-tls-ecdhe-psk-aead-04#section-1.2>.  TLS 1.3 supports
+>    PSK with ECDHE key exchange and the cipher suites
+>    TLS_AES_128_GCM_SHA256, TLS_AES_256_GCM_SHA384,
+>    TLS_AES_128_CCM_8_SHA256 and TLS_AES_128_CCM_SHA256 are part of the
+>    specification.  As a result, TLS 1.3 and higher versions, negotiate
+>    and support these cipher suites in a different way.
+>
+>
+OK.
+
+
+> I suggest to remove the reference to TLS1.3 in the security considerations
+>
+> OLD
+>
+>  The security considerations in TLS 1.2 [RFC5246 <https://tools.ietf.org/html/rfc5246>], DTLS 1.2 [RFC6347 <https://tools.ietf.org/html/rfc6347>],
+>    TLS 1.3 [I-D.ietf-tls-tls13 <https://tools.ietf.org/html/draft-ietf-tls-ecdhe-psk-aead-04#ref-I-D.ietf-tls-tls13>], ECDHE_PSK [RFC5489 <https://tools.ietf.org/html/rfc5489>], AES-GCM [RFC5288 <https://tools.ietf.org/html/rfc5288>],
+>    and AES-CCM [RFC6655 <https://tools.ietf.org/html/rfc6655>] apply to this document as well.
+>
+> NEW
+>
+>  The security considerations in TLS 1.2 [RFC5246 <https://tools.ietf.org/html/rfc5246>], DTLS 1.2 [RFC6347 <https://tools.ietf.org/html/rfc6347>],
+>  ECDHE_PSK [RFC5489 <https://tools.ietf.org/html/rfc5489>], AES-GCM [RFC5288 <https://tools.ietf.org/html/rfc5288>],and AES-CCM [RFC6655 <https://tools.ietf.org/html/rfc6655>] apply
+>  to this document as well.
+>
+>
+>> S 2.
+>> I'm not sure that the discussion of the PRF is helpful here in
+>> mandating the non-use of these cipher suites with TLS 1.1 and
+>> below.
+>>
+>
+> I find the text useful as it gives an idea why even introducing AEAD in
+> TLS version lower than 1.2 is a bad idea, so I would prefer to keep it. The
+> text has been changed to
+>
+> OLD:
+> As such TLS 1.0 and TLS 1.1 should not be used with ECDHE_PSK.
+>
+> NEW:
+> As such,  all ECDHE_PSK
+> ciphers, including those defined outside this document, SHOULD NOT be
+> negotiated in TLS versions prior to 1.2.
+>
+
+I don't think you should be levying a new normative requirement like this
+for other ciphers
+i this document
+
+-Ek
+r
+
+--001a114fb0f688f0cb055039859c
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><br><div class=3D"gmail_extra"><br><div class=3D"gmail_quo=
+te">On Wed, May 24, 2017 at 6:00 AM, Daniel Migault <span dir=3D"ltr">&lt;<=
+a href=3D"mailto:daniel.migault@ericsson.com" target=3D"_blank">daniel.miga=
+ult@ericsson.com</a>&gt;</span> wrote:<br><blockquote class=3D"gmail_quote"=
+ style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex"><d=
+iv dir=3D"ltr"><div><div><div>Hi Eric, <br><br></div>Thank you for your rev=
+iews. Please see my responses inline. If you agree with the text I will upd=
+ate the draft.<br><br></div>Yours, <br></div>Daniel<br><div><div><div><div>=
+<div class=3D"gmail_extra"><br><div class=3D"gmail_quote"><div><div class=
+=3D"m_4429336679413947623h5">On Mon, May 22, 2017 at 10:11 PM, Eric Rescorl=
+a <span dir=3D"ltr">&lt;<a href=3D"mailto:ekr@rtfm.com" target=3D"_blank">e=
+kr@rtfm.com</a>&gt;</span> wrote:<br><blockquote class=3D"gmail_quote" styl=
+e=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);paddin=
+g-left:1ex">Eric Rescorla has entered the following ballot position for<br>
+draft-ietf-tls-ecdhe-psk-aead-<wbr>04: Discuss<br>
+<br>
+When responding, please keep the subject line intact and reply to all<br>
+email addresses included in the To and CC lines. (Feel free to cut this<br>
+introductory paragraph, however.)<br>
+<br>
+<br>
+Please refer to <a href=3D"https://www.ietf.org/iesg/statement/discuss-crit=
+eria.html" rel=3D"noreferrer" target=3D"_blank">https://www.ietf.org/iesg/s=
+tat<wbr>ement/discuss-criteria.html</a><br>
+for more information about IESG DISCUSS and COMMENT positions.<br>
+<br>
+<br>
+The document, along with other ballot positions, can be found here:<br>
+<a href=3D"https://datatracker.ietf.org/doc/draft-ietf-tls-ecdhe-psk-aead/"=
+ rel=3D"noreferrer" target=3D"_blank">https://datatracker.ietf.org/d<wbr>oc=
+/draft-ietf-tls-ecdhe-psk-ae<wbr>ad/</a><br>
+<br>
+<br>
+<br>
+------------------------------<wbr>------------------------------<wbr>-----=
+-----<br>
+DISCUSS:<br>
+------------------------------<wbr>------------------------------<wbr>-----=
+-----<br>
+<br>
+The following text appears to have been added in -04<br>
+<br>
+=C2=A0 =C2=A0A server receiving a ClientHello and a client_version indicati=
+ng<br>
+=C2=A0 =C2=A0(3,1) &quot;TLS 1.0&quot; or (3,2) &quot;TLS 1.1&quot; and any=
+ of the cipher suites from<br>
+=C2=A0 =C2=A0this document in ClientHello.cipher_suites can safely assume t=
+hat<br>
+the<br>
+=C2=A0 =C2=A0client supports TLS 1.2 and is willing to use it.=C2=A0 The se=
+rver MUST<br>
+=C2=A0 =C2=A0NOT negotiate these cipher suites with TLS protocol versions e=
+arlier<br>
+=C2=A0 =C2=A0than TLS 1.2.=C2=A0 Not requiring clients to indicate their su=
+pport for<br>
+=C2=A0 =C2=A0TLS 1.2 cipher suites exclusively through ClientHello.client_h=
+ello<br>
+=C2=A0 =C2=A0improves the interoperability in the installed base and use of=
+ TLS<br>
+=C2=A0 =C2=A01.2 AEAD cipher suites without upsetting the installed base of=
+<br>
+=C2=A0 =C2=A0version-intolerant TLS servers, results in more TLS handshakes=
+<br>
+=C2=A0 =C2=A0succeeding and obviates fallback mechanisms.<br>
+<br>
+This is a major technical change from -03, which, AFAIK, prohibited<br>
+the server from negotiating these algorithms with TLS 1.1 and below<br>
+and maintained the usual TLS version 1.2 negotiation rules.<br>
+<br>
+This is a very material technical change. I don&#39;t consider it wise,<br>
+but in any case it would absolutely need WG consensus, which I<br>
+don&#39;t believe that it has given the recent introduction.<br></blockquot=
+e><div><br></div></div></div><div>I agree that the text is a technical chan=
+ge, and that it may not be appropriated to do so now. The reason I included=
+ it was that it was conform to the previous text, but I agree that implicit=
+ assumption of version 1.2 may need some additional discussion especially r=
+egarding RFC5246 Appendix E. Unless you prefer further discussion I assume =
+the text below address your concern. =C2=A0 <br><br>&lt;t&gt;The cipher sui=
+tes defined in this document MUST NOT be negotiated for any version of (D)T=
+LS other than TLS 1.2. Clients MUST NOT offer one of these cipher suites wi=
+th a (D)TLS version that differs from TLS 1.2. Servers MUST NOT select one =
+of these cipher suites with a TLS version that differs from TLS 1.2. A clie=
+nt MUST treat the selection of these cipher suites in combination with a ve=
+rsion of TLS as an error and generate a fatal &#39;illegal_parameter&#39; T=
+LS alert. &lt;/t&gt; <br></div></div></div></div></div></div></div></div></=
+blockquote><div><br></div><div>Yes, this seems fine</div><div><br></div><di=
+v><br></div><blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;bo=
+rder-left:1px #ccc solid;padding-left:1ex"><div dir=3D"ltr"><div><div><div>=
+<div><div class=3D"gmail_extra"><div class=3D"gmail_quote"><span><blockquot=
+e class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px s=
+olid rgb(204,204,204);padding-left:1ex">
+The discussion of dictionary attacks here seems inferior to that<br>
+in 4279. In particular, you only need to actively attack one<br>
+connection to capture the data you need for a brute force attack<br>
+despite the text there referring to trying &quot;different keys&quot;.<br>
+Please correct that.<br>
+<br></blockquote></span><div>I believe the text below address your concern:=
+<br><br>OLD:<br>&lt;t&gt;Use of Pre-Shared Keys of limited entropy may allo=
+w an active<br>attacker attempts to connect to the server and try different=
+ keys.<br>For example, limited entropy may be provided by using a short PSK=
+ in which<br>case an attacker may perform a brute-force attack. Another exa=
+mple<br>includes the use of a PSK=C2=A0 chosen by a human which thus may be=
+ exposed to<br>dictionary attacks.&lt;/t&gt;<br><br>NEW:<br>&lt;t&gt;Pre-Sh=
+ared Keys security relies on its associated entropy, and it is RECOMMENDED =
+to follow &lt;xref target=3D&quot;4086&quot;/&gt; to ensure the PSK has eno=
+ugh entropy. Possible reasons for low entropy includes PSK chosen by humans=
+ or PSK of small length as well as using random generators with limited ent=
+ropy. &lt;/t&gt;<br><br>&lt;t&gt;PSK of limited entropy may allow an attack=
+er to test different PSK values against a valid output such as master secre=
+t or any output derived from it. In this document, the master secret is gen=
+erated using the PSK as well as the ECDHE shared secret. The use of ECDHE l=
+imits the possibilities of passive eavesdropping attackers, as the ECDHE sh=
+ared secret is not expected to be derived from the observed ECDH parameters=
+. As a result, passive eavesdropping is unlikely to happen, and the collect=
+ion of all necessary material relies on an active attack. <br>An active att=
+acker may collect the necessary material by setting a TLS session as a clie=
+nt with the legitimate server. One PSK is tested for each session, and a ma=
+tch occurs when key exchange succeeds. On the other hand, an active attacke=
+r may also consider gathering the necessary information for offline computa=
+tion. One way consists in getting a legitimate client to establish a connec=
+tion with the attacker. It is also assumed that the client will accept the =
+ECDH parameters authenticated by the attacker&#39;s private key and finally=
+ returns the Finished message authenticating the exchange. The attacker wil=
+l be then in possession of all the necessary information to perform a brute=
+ force attack.&lt;/t&gt;=C2=A0=C2=A0 <br></div></div></div></div></div></di=
+v></div></div></blockquote><div><br></div><div>Is there a reason to not jus=
+t point directly to the 4279 security considerations?</div><div><br></div><=
+div>-</div><blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;bor=
+der-left:1px #ccc solid;padding-left:1ex"><div dir=3D"ltr"><div><div><div><=
+div><div class=3D"gmail_extra"><div class=3D"gmail_quote"><div>=C2=A0 <br><=
+/div><span><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.=
+8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">
+<br>
+------------------------------<wbr>------------------------------<wbr>-----=
+-----<br>
+COMMENT:<br>
+------------------------------<wbr>------------------------------<wbr>-----=
+-----<br>
+<br>
+The citations to TLS 1.3 still seem pretty muddled. I think you<br>
+should just stop referencing and discussing 1.3.<br></blockquote><div><br><=
+/div></span><div>My understanding of your comment is that mentioning TLS 1.=
+3 to further insisting that the code point are not valid for TLS 1.3 is con=
+fusing. I propose to:<br><br></div><div>Explicitly mention the TLS version =
+in the title:<br><br></div><div>OLD title:<br>ECDHE_PSK with AES-GCM and AE=
+S-CCM Cipher Suites for Transport Layer Security (TLS)<br><br></div><div>NE=
+W title:<br>ECDHE_PSK with AES-GCM and AES-CCM Cipher Suites for Transport =
+Layer Security (TLS)<br></div><div><pre><span class=3D"m_442933667941394762=
+3m_-101311485245468505m_-6500030207053047939gmail-h1"></span><span class=3D=
+"m_4429336679413947623m_-101311485245468505m_-6500030207053047939gmail-h1">=
+</span></pre>OLD Introduction:<br><pre class=3D"m_4429336679413947623m_-101=
+311485245468505m_-6500030207053047939gmail-newpage">    The cipher
+   suites are defined for version 1.2 of the Transport Layer Security
+   (TLS) [<a href=3D"https://tools.ietf.org/html/rfc5246" title=3D"&quot;Th=
+e Transport Layer Security (TLS) Protocol Version 1.2&quot;" target=3D"_bla=
+nk">RFC5246</a>] protocol, version 1.2 of the Datagram Transport Layer
+   Security (DTLS) protocol [<a href=3D"https://tools.ietf.org/html/rfc6347=
+" title=3D"&quot;Datagram Transport Layer Security Version 1.2&quot;" targe=
+t=3D"_blank">RFC6347</a>], as well as version 1.3 of TLS
+   [<a href=3D"https://tools.ietf.org/html/draft-ietf-tls-ecdhe-psk-aead-04=
+#ref-I-D.ietf-tls-tls13" target=3D"_blank">I-D.ietf-tls-tls13</a>].</pre>NE=
+W introduction<br><br><pre class=3D"m_4429336679413947623m_-101311485245468=
+505m_-6500030207053047939gmail-newpage">The cipher
+   suites are defined for version 1.2 of the Transport Layer Security
+   (TLS) [<a href=3D"https://tools.ietf.org/html/rfc5246" title=3D"&quot;Th=
+e Transport Layer Security (TLS) Protocol Version 1.2&quot;" target=3D"_bla=
+nk">RFC5246</a>] protocol, version 1.2 of the Datagram Transport Layer
+   Security (DTLS) protocol [<a href=3D"https://tools.ietf.org/html/rfc6347=
+" title=3D"&quot;Datagram Transport Layer Security Version 1.2&quot;" targe=
+t=3D"_blank">RFC6347</a>]. <br><br><br>I suggest to keep the following text=
+ of the introduction:<br></pre></div><div><br><pre class=3D"m_4429336679413=
+947623m_-101311485245468505m_-6500030207053047939gmail-newpage">AEAD algori=
+thms that combine encryption and integrity protection are
+   strongly recommended for (D)TLS [<a href=3D"https://tools.ietf.org/html/=
+rfc7525" title=3D"&quot;Recommendations for Secure Use of Transport Layer S=
+ecurity (TLS) and Datagram Transport Layer Security (DTLS)&quot;" target=3D=
+"_blank">RFC7525</a>] and non-AEAD algorithms are
+   forbidden to use in TLS 1.3 [<a href=3D"https://tools.ietf.org/html/draf=
+t-ietf-tls-ecdhe-psk-aead-04#ref-I-D.ietf-tls-tls13" target=3D"_blank">I-D.=
+ietf-tls-tls13</a>].  The AEAD
+   algorithms considered in this document are AES-GCM and AES-CCM.  The
+   use of AES-GCM in TLS is defined in [<a href=3D"https://tools.ietf.org/h=
+tml/rfc5288" title=3D"&quot;AES Galois Counter Mode (GCM) Cipher Suites for=
+ TLS&quot;" target=3D"_blank">RFC5288</a>] and the use of AES-CCM
+   is defined in [<a href=3D"https://tools.ietf.org/html/rfc6655" title=3D"=
+&quot;AES-CCM Cipher Suites for Transport Layer Security (TLS)&quot;" targe=
+t=3D"_blank">RFC6655</a>].</pre></div></div></div></div></div></div></div><=
+/div></blockquote><div><br></div><div>Yes, this seems fine.</div><div><br><=
+/div><div>=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"margin:0px=
+ 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><di=
+v dir=3D"ltr"><div class=3D"gmail_extra"><div class=3D"gmail_quote"><div>I =
+suggest to keep the following text of the Applicable versions sections, as =
+I believe the section discusses the cipher suites against all existing TLS =
+versions. In addition, it also justifies somewhat that we only defined ciph=
+er suites that are compatible with TLS1.3.=C2=A0 <br><pre class=3D"m_442933=
+6679413947623m_-101311485245468505m_-6500030207053047939gmail-newpage">   T=
+LS version 1.3 and later negotiate these features in a different
+   manner.  Unlike TLS 1.2, TLS 1.3 separates authentication and cipher
+   suite negotiation [<a href=3D"https://tools.ietf.org/html/draft-ietf-tls=
+-ecdhe-psk-aead-04#ref-I-D.ietf-tls-tls13" target=3D"_blank">I-D.ietf-tls-t=
+ls13</a>] <a href=3D"https://tools.ietf.org/html/draft-ietf-tls-ecdhe-psk-a=
+ead-04#section-1.2" target=3D"_blank">Section 1.2</a>.  TLS 1.3 supports
+   PSK with ECDHE key exchange and the cipher suites
+   TLS_AES_128_GCM_SHA256, TLS_AES_256_GCM_SHA384,
+   TLS_AES_128_CCM_8_SHA256 and TLS_AES_128_CCM_SHA256 are part of the
+   specification.  As a result, TLS 1.3 and higher versions, negotiate
+   and support these cipher suites in a different way.</pre></div></div></d=
+iv></div></blockquote><div><br></div><div>OK.</div><div>=C2=A0</div><blockq=
+uote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1p=
+x solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr"><div class=3D"g=
+mail_extra"><div class=3D"gmail_quote"><div>I suggest to remove the referen=
+ce to TLS1.3 in the security considerations<br><br></div>OLD<br><pre class=
+=3D"m_4429336679413947623m_-101311485245468505m_-6500030207053047939gmail-n=
+ewpage"> The security considerations in TLS 1.2 [<a href=3D"https://tools.i=
+etf.org/html/rfc5246" title=3D"&quot;The Transport Layer Security (TLS) Pro=
+tocol Version 1.2&quot;" target=3D"_blank">RFC5246</a>], DTLS 1.2 [<a href=
+=3D"https://tools.ietf.org/html/rfc6347" title=3D"&quot;Datagram Transport =
+Layer Security Version 1.2&quot;" target=3D"_blank">RFC6347</a>],
+   TLS 1.3 [<a href=3D"https://tools.ietf.org/html/draft-ietf-tls-ecdhe-psk=
+-aead-04#ref-I-D.ietf-tls-tls13" target=3D"_blank">I-D.ietf-tls-tls13</a>],=
+ ECDHE_PSK [<a href=3D"https://tools.ietf.org/html/rfc5489" title=3D"&quot;=
+ECDHE_PSK Cipher Suites for Transport Layer Security (TLS)&quot;" target=3D=
+"_blank">RFC5489</a>], AES-GCM [<a href=3D"https://tools.ietf.org/html/rfc5=
+288" title=3D"&quot;AES Galois Counter Mode (GCM) Cipher Suites for TLS&quo=
+t;" target=3D"_blank">RFC5288</a>],
+   and AES-CCM [<a href=3D"https://tools.ietf.org/html/rfc6655" title=3D"&q=
+uot;AES-CCM Cipher Suites for Transport Layer Security (TLS)&quot;" target=
+=3D"_blank">RFC6655</a>] apply to this document as well.<br><br></pre></div=
+><div class=3D"gmail_quote">NEW <br></div><div class=3D"gmail_quote"><div><=
+pre class=3D"m_4429336679413947623m_-101311485245468505m_-65000302070530479=
+39gmail-newpage"> The security considerations in TLS 1.2 [<a href=3D"https:=
+//tools.ietf.org/html/rfc5246" title=3D"&quot;The Transport Layer Security =
+(TLS) Protocol Version 1.2&quot;" target=3D"_blank">RFC5246</a>], DTLS 1.2 =
+[<a href=3D"https://tools.ietf.org/html/rfc6347" title=3D"&quot;Datagram Tr=
+ansport Layer Security Version 1.2&quot;" target=3D"_blank">RFC6347</a>],<b=
+r> ECDHE_PSK [<a href=3D"https://tools.ietf.org/html/rfc5489" title=3D"&quo=
+t;ECDHE_PSK Cipher Suites for Transport Layer Security (TLS)&quot;" target=
+=3D"_blank">RFC5489</a>], AES-GCM [<a href=3D"https://tools.ietf.org/html/r=
+fc5288" title=3D"&quot;AES Galois Counter Mode (GCM) Cipher Suites for TLS&=
+quot;" target=3D"_blank">RFC5288</a>],and AES-CCM [<a href=3D"https://tools=
+.ietf.org/html/rfc6655" title=3D"&quot;AES-CCM Cipher Suites for Transport =
+Layer Security (TLS)&quot;" target=3D"_blank">RFC6655</a>] apply <br> to th=
+is document as well.</pre></div><span><blockquote class=3D"gmail_quote" sty=
+le=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);paddi=
+ng-left:1ex">
+<br>
+S 2.<br>
+I&#39;m not sure that the discussion of the PRF is helpful here in<br>
+mandating the non-use of these cipher suites with TLS 1.1 and<br>
+below.<br></blockquote><div><br></div></span><div>I find the text useful as=
+ it gives an idea why even introducing AEAD in TLS version lower than 1.2 i=
+s a bad idea, so I would prefer to keep it. The text has been changed to <b=
+r><br></div><div>OLD:<br>As such TLS 1.0 and TLS 1.1 should not be used wit=
+h ECDHE_PSK.</div><div><br>NEW:<br></div></div>As such,=C2=A0 all ECDHE_PSK=
+<br>ciphers, including those defined outside this document, SHOULD NOT be<b=
+r>negotiated in TLS versions prior to 1.2.<br></div></div></blockquote><div=
+><br></div><div>I don&#39;t think you should be levying a new normative req=
+uirement like this for other ciphers</div><div>i this document</div><div><b=
+r></div><div>-Ek</div><div>r</div></div><br></div></div>
+
+--001a114fb0f688f0cb055039859c--
+

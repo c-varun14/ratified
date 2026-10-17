@@ -1,0 +1,100 @@
+Return-Path: <ilariliusvaara@welho.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 68FAB12EC3C
+ for <tls@ietfa.amsl.com>; Fri, 19 May 2017 03:18:28 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.901
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.901 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, RCVD_IN_DNSWL_NONE=-0.0001,
+ RP_MATCHES_RCVD=-0.001] autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id lWOfKQ6d7437 for <tls@ietfa.amsl.com>;
+ Fri, 19 May 2017 03:18:26 -0700 (PDT)
+Received: from welho-filter3.welho.com (welho-filter3.welho.com [83.102.41.25])
+ by ietfa.amsl.com (Postfix) with ESMTP id AC5A01294B9
+ for <tls@ietf.org>; Fri, 19 May 2017 03:12:42 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+ by welho-filter3.welho.com (Postfix) with ESMTP id 1908523324;
+ Fri, 19 May 2017 13:12:41 +0300 (EEST)
+X-Virus-Scanned: Debian amavisd-new at pp.htv.fi
+Received: from welho-smtp2.welho.com ([IPv6:::ffff:83.102.41.85])
+ by localhost (welho-filter3.welho.com [::ffff:83.102.41.25]) (amavisd-new,
+ port 10024)
+ with ESMTP id tZ82IByIhS_B; Fri, 19 May 2017 13:12:40 +0300 (EEST)
+Received: from LK-Perkele-V2 (87-92-51-204.bb.dnainternet.fi [87.92.51.204])
+ (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by welho-smtp2.welho.com (Postfix) with ESMTPSA id 126C927B;
+ Fri, 19 May 2017 13:12:40 +0300 (EEST)
+Date: Fri, 19 May 2017 13:12:39 +0300
+From: Ilari Liusvaara <ilariliusvaara@welho.com>
+To: Sankalp Bagaria <sankalp.nitt@gmail.com>
+Cc: tls@ietf.org
+Message-ID: <20170519101239.GB30080@LK-Perkele-V2.elisa-laajakaista.fi>
+References: <CAPZZOTgizE2n06V9wEtARFCXB7FP_eikW-K1k67bZG11kNhSAw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAPZZOTgizE2n06V9wEtARFCXB7FP_eikW-K1k67bZG11kNhSAw@mail.gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
+Sender: ilariliusvaara@welho.com
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/4oq0ZIDNRvRJcgfG9gsxK9NlOxE>
+Subject: Re: [TLS] AD Review of draft-ietf-tls-tls13
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Fri, 19 May 2017 10:18:28 -0000
+
+On Fri, May 19, 2017 at 03:04:49PM +0530, Sankalp Bagaria wrote:
+> Hi,
+> 
+> I would like to mention that TLS can be used with non-X.509 certificates
+> also.
+> In particular, it can be used with ITS ETSI and IEEE certificates.
+> https://datatracker.ietf.org/doc/html/draft-serhrouchni-tls-certieee1609
+> 
+> So, in my opinion, TLS should be very loosely or not at all coupled with
+> RFC 5280.
+
+Just commenting on that draft, I don't see anything that would specify
+how the certificate message itself is formatted in TLS 1.2 if those
+types are used (I presume the same as the usual TLS 1.2 X.509
+certificate message[1][2]). If the formatting is the same as X.509 one,
+mapping that to TLS 1.3 will be straightforward. If it is not the same,
+then the mapping to TLS 1.3 has to be explicitly defined.
+
+
+The reason formatting for TLS 1.2 is significant is that for TLS 1.2, it
+looks like each certificate type defines its own format (and none of the
+three formats so fare is the same). Also, avoid putting in any non-
+certificate fields, as that causes major problems with TLS 1.3 (as seen
+with OpenPGP type[3]).
+
+
+
+[1] This is list (24-bit length) of non-empty octet strings (24 bit
+length).
+
+[2] That the message formatting is the same does not imply that the
+octets string contents is in any way the same.
+
+[3] Also, RPK had its own format in TLS 1.2, but TLS 1.3 specification
+explicitly gives RPK type a new format.
+
+
+-Ilari
+

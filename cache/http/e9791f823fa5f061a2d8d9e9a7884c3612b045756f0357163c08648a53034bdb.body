@@ -1,0 +1,2578 @@
+From nobody Tue May 11 21:52:37 2021
+Return-Path: <mglt.ietf@gmail.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 2E1C53A24F8
+ for <tls@ietfa.amsl.com>; Tue, 11 May 2021 13:14:13 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.097
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.097 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, FREEMAIL_FROM=0.001,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_NONE=-0.0001, SPF_HELO_NONE=0.001,
+ SPF_PASS=-0.001, URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=gmail.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id FIjGe3gmX2Sn for <tls@ietfa.amsl.com>;
+ Tue, 11 May 2021 13:14:03 -0700 (PDT)
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com
+ [IPv6:2607:f8b0:4864:20::830])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 2C2C63A24F5
+ for <tls@ietf.org>; Tue, 11 May 2021 13:14:02 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id t7so15637564qtn.3
+ for <tls@ietf.org>; Tue, 11 May 2021 13:14:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025; 
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=SicTSbolOjgS3hvI3q3wAw309+oUZc8UwNL0u3weGOU=;
+ b=EeL+rEvI0kEZnPE1FjbMHXBrTDBgHcLXXiozpoFwtWk/tQ2IgRwZdkTpRDIOjUFW2n
+ xDNAky+EzmaFdh+kkdBGkPuejHgYZn6coX3vU7iUw4c5mmdxio6/LntvPu7Dy4o0+9qG
+ Od88qgiHnp+lrmVmZbTS+rpZlglGhpP+osr5nCSpGTOBgKJmte2/b7MlTY331XwOiWPx
+ UpnMsXomjkaA3UgrYAJiKVxXXbjFQ+NZW1sso8dbMyf7ynpCl9tbB2Tpo28dG+9tvZSq
+ w7E04qcApYgJHfk4m1/Yl+i69/8b47ol1g+3h2fqESfvPasOiClw5b4ZQcDyaRmGD+2N
+ ux+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=SicTSbolOjgS3hvI3q3wAw309+oUZc8UwNL0u3weGOU=;
+ b=O/Wji/J3Rx4RCy5mqshuoeWsp0asMd/NJxF8fi97zsKcgJvObWyPT/F6oYbugViDWd
+ 2zphVHMI9620+xebeLKxg04LyvzAMBbY5TpKnxMpMqrXS4q5/d8m9RaFo6GTJmErzSYC
+ fE/4zdKDM80Js1oxQV4Arc5Dis1e5ffoHd17UBGT/jwTzeC52tSe6eX9Nf7cvym0SuuO
+ SZ23hLeitDZGjORXS/EuooA8xFUeo/BxYizWiqo9XD6qddrORLbHCkQFJzh2ETn/1Snz
+ WXfrUwsJKuJFApZV19dDfe+PCgP0jJMhQhTwKY4HFKD68Qrt+j5Au58aSM+yPhi2TICg
+ p0dA==
+X-Gm-Message-State: AOAM530uNEGg7A3IOBZxLzqsvg1U5eiSeCx57FBS62JhR+JM5R5C8Hvc
+ biDsXPl1dvSkoRrv+p3Eh1lcyxlvCjZrKCN/RUM=
+X-Google-Smtp-Source: ABdhPJyCGqbJWuW5PpBbiy3aegekH/iOpdnA/YLC+rXhNztnFCK+K2waSAagCFsEr8loWg9bU3CJn+wxu/d0IsmGX5A=
+X-Received: by 2002:ac8:4641:: with SMTP id f1mr29715564qto.107.1620764041250; 
+ Tue, 11 May 2021 13:14:01 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAOgPGoB3LDZ2uMJkMyDxMbbWy6yScYuURVB7GqTiwVS0f2UkTw@mail.gmail.com>
+ <31B75BDB-8E67-40C5-AF70-4EAA9BC2E065@akamai.com>
+ <MW3PR15MB37855738A57E0192BBE7796CE36E0@MW3PR15MB3785.namprd15.prod.outlook.com>
+ <CAFDDyk-fWZUbLyd8MJecwdrpjyvPAwKC4TPczsSZBuhoS=P0Xw@mail.gmail.com>
+ <CADZyTkk76z9YD9xBD8zTJqe9nQ2vSaY=scYqCfeQM5Z6FtVX6w@mail.gmail.com>
+ <D4DFF2E8-953F-4858-B14E-D19358EE0293@sn3rd.com>
+In-Reply-To: <D4DFF2E8-953F-4858-B14E-D19358EE0293@sn3rd.com>
+From: Daniel Migault <mglt.ietf@gmail.com>
+Date: Tue, 11 May 2021 16:13:49 -0400
+Message-ID: <CADZyTk=x_hbQAjY7pB2Rie7ez-PiQHmDxaJWvqqLs_a9ekSOnw@mail.gmail.com>
+To: Sean Turner <sean@sn3rd.com>
+Cc: Nick Sullivan <nick=40cloudflare.com@dmarc.ietf.org>,
+ TLS List <tls@ietf.org>
+Content-Type: multipart/alternative; boundary="000000000000f18e2e05c21388d2"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/5MNKpaA6DIOiCuYGcX6WigIzrvw>
+X-Mailman-Approved-At: Tue, 11 May 2021 21:52:35 -0700
+Subject: Re: [TLS] 2nd WGLC for Delegated Credentials for TLS
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Tue, 11 May 2021 20:14:13 -0000
+
+--000000000000f18e2e05c21388d2
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Hi Sean,
+
+Thanks for the follow-up. I refreshed my memory as much as I could.  Please
+see my responses in line.
+
+Yours,
+Daniel
+
+On Tue, May 4, 2021 at 1:44 PM Sean Turner <sean@sn3rd.com> wrote:
+
+> Hopefully, I haven=E2=80=99t added too much time to the process but I stu=
+ck my
+> beak in to see if I could propose some text to move this along. Apologies
+> in advance: this is a long email. Once we settle on the text, I can submi=
+t
+> PRs.
+>
+> spt
+>
+> > On Sep 14, 2020, at 11:11, Daniel Migault <mglt.ietf@gmail.com> wrote:
+> >
+> >  Hi Nick,
+> >
+> > Thanks for the response and I apologize for my delayed response. Howeve=
+r
+> I still have two major concerns regarding the current proposed text:
+> >
+> > Mentioning keyless as the only solution complementary to DC still seems
+> to me technically inaccurate. With KeylessSSL, the key server  receives a
+> hash based on randoms and ECDH parameters. The hash used in TLS 1.3 is
+> different than in TLS 1.2 - when hashes are involved in the signature
+> scheme - so Keyless would not work in this case - at least as far as I
+> understand - and significant changes are need to make it work in TLS 1.3.
+> > It seems to me technically more accurate to mention the effort performe=
+d
+> on TLS 1.3 with draft-mglt-lurk-tls13 that is working in a TLS 1.3 contex=
+t.
+> On the other hand, not mentioning it seems to me misleading. I also think
+> it is misleading to not mention an effort that addresses the signing orac=
+le
+> security vulnerabilities associated to keylessSSL, leading to the
+> impression that such attacks are inherent to the key server architecture =
+-
+> with a dedicated section 7.6. I understand, though, that
+> draft-mglt-lurk-tls13 is not a commercial product and still an ongoing
+> effort.
+> > So far - unless I am missing them - I have not seen any technical
+> justification for not mentioning that justify the single mention of
+> keylessSSL and temptative of (non technical) procedural explanations do n=
+ot
+> seem valid ( see in line ).
+>
+> This is addressed later in the email.
+>
+> > Another concern I have - at least my understanding of it - is that DC i=
+s
+> subject to downgrade attacks. Typically the TLS operator chooses the
+> signature used by the DC to authenticate the server and this signature
+> scheme can be weaker than the signature scheme provided by the CA. This
+> prevents a content owner to enforce a (strong) level of authentication an=
+d
+> - in the future - the use of deprecated/weak signature schemes. The threa=
+t
+> model here is on the content owner perspective to ensure its website is
+> strongly authenticated. The fact that the client can remove weak signatur=
+e
+> schemes does not seem sufficient as nothing seems to force the client to
+> only use strong authentication with SignatureSchemeList potentially
+> appearing in clear. The threat model you seem to refer to is the client t=
+o
+> choose a strong authentication, but I think that is a bit different.
+>
+> This is addressed later in the email.
+>
+> > Please see my additional comments inline.
+> >
+> > Yours,
+> > Daniel
+> >
+> >
+> > On Wed, Aug 19, 2020 at 10:31 PM Nick Sullivan <nick=3D
+> 40cloudflare.com@dmarc.ietf.org> wrote:
+> > Daniel,
+> >
+> > Thank you for your thorough review. We've attempted to address these
+> comments in the latest version on Github and are preparing to submit a -1=
+0.
+> Answers inline below for these comments.
+> >
+> > Hannes, thank you for your comment as well.
+> >
+> > The changes are tracked here:
+> > https://github.com/tlswg/tls-subcerts/pull/80
+> >
+> > On Mon, Jun 29, 2020 at 5:48 PM Daniel Migault <daniel.migault=3D
+> 40ericsson.com@dmarc.ietf.org> wrote:
+> > Hi,
+> >
+> > The draft has a number of nits and errors. Among others:
+> >
+> > The related work section mentions KEYLESS and subcert being
+> complementary that is KEYLESS can perform the operations associated to th=
+e
+> DC and/or those associated to the cert key. I do not think that is correc=
+t.
+> KEYLESS does not support TLS 1.3 while DC only works with TLS 1.3. The LU=
+RK
+> extension for TLS 1.3 [draft-mglt-lurk-tls13] should be mentioned instead=
+.
+> As LURK was mentioned during the adoption period and until version 05 tha=
+t
+> should not cause any issues.
+> >
+> > Technologies only available for TLS 1.2 may be mentioned in the related
+> work section.  [draft-mglt-lurk-tls12] should be mentioned similarly to
+> KEYLESS as it addresses the security concerns of KEYLESS.
+> >
+> > There are other places where the extensions is mentioned together with
+> TLS 1.2 that needs to be updated.
+> >
+> > I also think that test vectors would be good as well as a link to a
+> formal verification publication (if available).
+> >
+> > Please see all my comments inline, I hope they help.
+> >
+> > Yours,
+> > Daniel
+> >
+> > ----
+> >
+> >                      Delegated Credentials for TLS
+> >                        draft-ietf-tls-subcerts-09
+> >
+> > [...]
+> >
+> > 1.  Introduction
+> >
+> >    Typically, a TLS server uses a certificate provided by some entity
+> >    other than the operator of the server (a "Certification Authority" o=
+r
+> >    CA) [RFC8446] [RFC5280].  This organizational separation makes the
+> >    TLS server operator dependent on the CA for some aspects of its
+> >    operations, for example:
+> >
+> >    *  Whenever the server operator wants to deploy a new certificate, i=
+t
+> >       has to interact with the CA...
+> >
+> >    *  The server operator can only use TLS signature schemes for which
+> >       the CA will issue credentials.
+> >
+> >    These dependencies cause problems in practice.  Server operators
+> >    often deploy TLS termination services in locations such as remote
+> >    data centers or Content Delivery Networks (CDNs) where it may be
+> >    difficult to detect key compromises...  Short-lived certificates may
+> be
+> >    used to limit the exposure of keys in these cases.
+> >
+> > <mglt>
+> > I believe it would be clearer to
+> > summarize the problem and link it to the
+> > use case. I would propose something
+> > around:
+> >
+> > These dependencies cause problems in
+> > practice, the management of key exposure
+> > necessarily requires an interaction with
+> > the CA.
+> >
+> > Typically server operators....
+> > </mglt>
+> >
+> > I tried to move the sentences around but wasn't able to get something
+> more satisfactory. It's currently structured as:
+> >
+> > Reality of deployment
+> > Problem: dependencies
+> > Flaws in existing solutions
+> > Proposed solution (this)
+> >
+> > <mglt>
+> > My reading of the structure of the introduction is:
+> > Reality of deployment: Typically ...RFC5280
+> > Problem: dependencies: This organizational separation ...   These
+> dependencies cause problems in practice. At that point it is unclear why
+> the dependencies cause problem in practise. This is later developed in th=
+e
+> use case.  I think a liaison is missing to indicate the remaining of the
+> text will explain why we came to that conclusion.
+> > Use case
+> > Flaws in existing solutions
+> > Proposed solution (this)
+> >
+> > </mglt>
+>
+> I am hoping that the following changes address your concern. I think this
+> is just editorial, but I am misunderstanding, please propose some new tex=
+t.
+>
+> OLD:
+>
+> This organizational separation makes the
+> TLS server operator dependent on the CA for some aspects of its
+> operations, for example:
+>
+> *  Whenever the server operator wants to deploy a new certificate, it
+>    has to interact with the CA.
+>
+> *  The server operator can only use TLS signature schemes for which
+>    the CA will issue credentials.
+>
+> These dependencies cause problems in practice.  Server operators =E2=80=
+=A6
+>
+> NEW:
+>
+> This organizational separation causes problems in practice because
+>  it makes the TLS server operator dependent on the CA for some aspects
+> of its operations, for example:
+>
+> *  Whenever the server operator wants to deploy a new certificate, it
+>    has to interact with the CA.
+>
+> *  The server operator can only use TLS signature schemes for which
+>    the CA will issue credentials.
+>
+> Server operators ...
+>
+> <mglt>
+I think I would rather take the structure:
+1 - Use case
+2 - Problem description
+3 - Solution
+
+I am fine with whatever fits best to you.
+
+Server operators
+   often deploy TLS termination services in locations such as remote
+   data centers or Content Delivery Networks (CDNs) where it may be
+   difficult to detect key compromises.  Short-lived certificates may be
+   used to limit the exposure of keys in these cases.
+
+   However, short-lived certificates need to be renewed more frequently
+   than long-lived certificates.  If an external CA is unable to issue a
+   certificate in time to replace a deployed certificate, the server
+   would no longer be able to present a valid certificate to clients.
+   With short-lived certificates, there is a smaller window of time to
+   renew a certificates and therefore a higher risk that an outage at a
+   CA will negatively affect the uptime of the service.
+
+
+Typically, a TLS server uses a certificate provided by some entity
+   other than the operator of the server (a "Certification Authority" or
+   CA) [RFC8446 <https://datatracker.ietf.org/doc/html/rfc8446>]
+[RFC5280 <https://datatracker.ietf.org/doc/html/rfc5280>].  This
+organizational separation makes the
+   TLS server operator dependent on the CA for some aspects of its
+   operations, for example:
+
+   *  Whenever the server operator wants to deploy a new certificate, it
+      has to interact with the CA.
+
+   *  The server operator can only use TLS signature schemes for which
+      the CA will issue credentials.
+
+ To reduce the dependency on external CAs, this document proposes a
+   limited delegation mechanism that allows a TLS peer to issue its own
+   credentials within the scope of a certificate issued by an external
+   CA.  These credentials only enable the recipient of the delegation to
+   speak for names that the CA has authorized.  Furthermore, this
+   mechanism allows the server to use modern signature algorithms such
+   as Ed25519 [RFC8032
+<https://datatracker.ietf.org/doc/html/rfc8032>] even if their CA does
+not support them.
+
+   We will refer to the certificate issued by the CA as a "certificate",
+   or "delegation certificate", and the one issued by the operator as a
+   "delegated credential" or "DC".
+
+
+
+</mglt>
+
+> >    However, short-lived certificates need to be renewed more frequently
+> >    than long-lived certificates.  If an external CA is unable to issue =
+a
+> >    certificate in time to replace a deployed certificate, the server
+> >    would no longer be able to present a valid certificate to clients.
+> >    With short-lived certificates, there is a smaller window of time to
+> >    renew a certificates and therefore a higher risk that an outage at a
+> >    CA will negatively affect the uptime of the service.
+> >
+> >    To reduce the dependency on external CAs, this document proposes a
+> >    limited delegation mechanism that allows a TLS peer to issue its own
+> >    credentials within the scope of a certificate issued by an external
+> >    CA.  These credentials only enable the recipient of the delegation t=
+o
+> >    speak for names that the CA has authorized.  For clarity, we will
+> >    refer to the certificate issued by the CA as a "certificate", or
+> >    "delegation certificate", and the one issued by the operator as a
+> >    "delegated credential" or "DC".
+> >
+> > <mglt>
+> > From the text it is unclear why the
+> > signature scheme appears to be a
+> > constraint as well how it does not opens
+> > to some sort of downgrade attacks if
+> > left to the operator.
+> > </mglt>
+> >
+> > The second bullet was left unaddressed, so I added some text here.
+> Downgrades are not a current concern in TLS 1.3 since weak signature
+> algorithms have been removed and clients advertise signature algorithm
+> support and can remove weak algorithms should they arise.
+> > <mglt>
+> > It is unclear to me if some text has been added to the draft or not, bu=
+t
+> looking at [1] I do not see additional text, so I interpret the sentence =
+as
+> the text is limited to the email only and is not reflected in the documen=
+t.
+> >
+> > It is not correct that this is not a current concern with TLS 1.3 as th=
+e
+> operator could still today use a weaker signature algorithm.  In the
+> future, as crypto evolves, it is likely that some signature algorithm wil=
+l
+> become weak one day. If I understand correctly your text, you envision th=
+at
+> the up-to-date client will remove the weak crypto while the server will
+> continue to serve legacy clients with weak crypto. If that is the case,
+> this seems to me an issue as the operator does not provides any guarantee
+> the security level is equivalent to the one enforced by the CA.
+> >
+> > The text below I believe highlights the problem. names that the CA has
+> authorized is not enough and the delegation should include an agreement o=
+f
+> the signature algorithm. While the text indicates that the use of
+> alternative signature algorithms may be an advantage, it may also be an
+> inconvenience or potentially a threat.
+> >
+> > """
+> > These credentials only enable the recipient of the delegation to speak
+> for names that the CA has authorized. Furthermore, this mechanism allows
+> the server to use modern signature algorithms such as Ed25519 {{?RFC8032}=
+}
+> even if their CA does not support them.
+> > """
+> >
+> >
+> > [1]
+> https://github.com/tlswg/tls-subcerts/commit/55724377daa26574f50718002278=
+fe0aa5a06977
+> > </mglt>
+>
+> I think this is a two part answer. 1st there is some text in s1 of -10
+> that addresses some of this, but on the bigger question of downgrade
+> attacks ...
+>
+> My understanding is that a plain downgrade attack is not possible in TLS
+> 1.3 because the entire handshake is signed. I think you are suggesting th=
+at
+> both client and server should have a mechanism to disable weak signature
+> schemes and that the draft is only presenting the option for clients to
+> disable them? I want to point out that there is a mechanism for both
+> servers and the party in possession of the private key  to discontinue th=
+e
+> use of insecure signature schemes:
+>
+> a) Servers can choose to not send a DC if no appropriate signature scheme=
+s
+> are provided by the client
+>
+> b) Key holders can choose not to sign DCs that correspond to weak
+> signature schemes, forcing the server to have to fall back to a regular
+> handshake
+>
+> I know we are in s1 right now, but how about we make the following change
+> in s4.1.1:
+>
+> Proposal text change:
+>
+>  If the extension is present, the server MAY send a delegated
+>  credential; if the extension is not present, the server MUST NOT send
+>  a delegated credential.  The server MUST ignore the extension unless
+>  TLS 1.3 or a later version is negotiated.
+>
+> to
+>
+>   If the extension is present, the server MAY send a delegated
+>   credential; if the extension is not present, the server MUST NOT send
+>   a delegated credential.  An example of when a server could choose not
+>   to send a delegated credential is when the SignatureSchemes listed
+>   only contain signature schemes for which a corresponding delegated
+>   credential does not exist, or if the SignatureSchemes advertised are no=
+t
+>   considered secure enough for the connection. The server MUST ignore
+>   the extension unless TLS 1.3 or a later version is negotiated.
+>
+> <mglt>
+I think my concern has been clarified by Ilari. It was resolved by your b).
+I am fine with both text.
+</mglt>
+
+> > 3.  Solution Overview
+> >
+> > [...]
+> >
+> > 3.1.  Rationale
+> >
+> >    Delegated credentials present a better alternative than other
+> >    delegation mechanisms like proxy certificates [RFC3820] for several
+> >    reasons:
+> >
+> >    *  There is no change needed to certificate validation at the PKI
+> >       layer.
+> >
+> >    *  X.509 semantics are very rich.  This can cause unintended
+> >       consequences if a service owner creates a proxy certificate where
+> >       the properties differ from the leaf certificate.  For this reason=
+,
+> >       delegated credentials have very restricted semantics that should
+> >       not conflict with X.509 semantics.
+> >
+> >    *  Proxy certificates rely on the certificate path building process
+> >       to establish a binding between the proxy certificate and the
+> >       server certificate.  Since the certificate path building process
+> >       is not cryptographically protected, it is possible that a proxy
+> >       certificate could be bound to another certificate with the same
+> >       public key, with different X..509 parameters.  Delegated
+> >       credentials, which rely on a cryptographic binding between the
+> >       entire certificate and the delegated credential, cannot.
+> >
+> >    *  Each delegated credential is bound to a specific signature
+> >       algorithm that may be used to sign the TLS handshake ([RFC8446]
+> >
+> >
+> >
+> >
+> > Barnes, et al.          Expires 28 December 2020                [Page 6=
+]
+> >
+> > Internet-Draft        Delegated Credentials for TLS            June 202=
+0
+> >
+> >
+> >       section 4.2.3).  This prevents them from being used with other,
+> >       perhaps unintended signature algorithms.
+> >
+> > <mglt>
+> > It is not clear to me why there is a
+> > "may be used". I suppose it concerns the
+> > use of the DC not the algorithm but that
+> > was confusing.
+> >
+> > I also believe that the specific
+> > signature algorithm to sign the
+> > delegated credential could be part of
+> > the rational.
+> > </mglt>
+> >
+> > The sentence was re-structured a bit. I don't understand the second
+> comment, since the signature algorithm to sign the DC is constricted by t=
+he
+> EE cert's key type. The only ambiguity there is for RSA, which we address=
+ed
+> by allowing only PSS.
+> >
+> > <mglt>
+> > There is a typo. "for use use".
+>
+> Yep this one slipped by again. This is the text I would propose:
+>
+> OLD:
+>
+> Each delegated credential is bound to a specific signature
+> algorithm for use use in the TLS handshake ([RFC8446] section
+> 4.2.3).
+>
+> NEW:
+>
+> Each delegated credential is bound to a specific signature
+> algorithm for use in the TLS handshake ([RFC8446] section
+> 4.2.3).
+>
+> > The second comment was about providing rationale for the choice of the
+> signature associated with the DC, that is the one used for the
+> authentication which can be different from the one of the EE cert.
+> >
+> > </mglt>
+>
+> I think you=E2=80=99re asking to add a sentence to the end of the first b=
+ullet
+> that highlights the signature algorithms can be different? If so, would
+> this work:
+>
+> OLD:
+>
+> Each delegated credential is bound to a specific signature
+> algorithm for use in the TLS handshake ([RFC8446] section
+> 4.2.3). This prevents them from being used with other,
+> perhaps unintended signature algorithms.
+>
+> NEW:
+>
+> Each delegated credential is bound to a specific signature
+> algorithm for use in the TLS handshake ([RFC8446] section
+> 4.2.3). This prevents them from being used with other,
+> perhaps unintended signature algorithms. The signature
+> algorithm bound to the delegated credential and the one in
+> the servers certificate can be different.
+>
+> <mglt>
+works for me.
+</mglt>
+
+> > 3.2.  Related Work
+> >
+> >    Many of the use cases for delegated credentials can also be addresse=
+d
+> >    using purely server-side mechanisms that do not require changes to
+> >    client behavior (e.g., a PKCS#11 interface or a remote signing
+> >    mechanism [KEYLESS]).  These mechanisms, however, incur per-
+> >    transaction latency, since the front-end server has to interact with
+> >    a back-end server that holds a private key.  The mechanism proposed
+> >    in this document allows the delegation to be done off-line, with no
+> >    per-transaction latency.  The figure below compares the message flow=
+s
+> >    for these two mechanisms with TLS 1...3 [RFC8446].
+> >
+> >    Remote key signing:
+> >
+> >    Client            Front-End            Back-End
+> >      |----ClientHello--->|                    |
+> >      |<---ServerHello----|                    |
+> >      |<---Certificate----|                    |
+> >      |                   |<---remote sign---->|
+> >      |<---CertVerify-----|                    |
+> >      |        ....        |                    |
+> >
+> >
+> >    Delegated credentials:
+> >
+> >    Client            Front-End            Back-End
+> >      |                   |<--DC distribution->|
+> >      |----ClientHello--->|                    |
+> >      |<---ServerHello----|                    |
+> >      |<---Certificate----|                    |
+> >      |<---CertVerify-----|                    |
+> >      |        ....        |                    |
+> >
+> >    These two mechanisms can be complementary.  A server could use
+> >    credentials for clients that support them, while using [KEYLESS] to
+> >    support legacy clients.
+> >
+> > <mglt>
+> > I believe that this sentence does not
+> > show any complementary as subcert and
+> > KEYLESS are targeting different version
+> > of TLS, so they can hardly be
+> > complementary.  However (and luckily)
+> > LURK provides an extension for TLS 1.3
+> > [draft-mglt-lurk-tls13] which enable a
+> > complementary use of these mechanisms
+> > these mechanisms. I believe that would
+> > be good to indicate the reason they
+> > complement each other which is that LURK
+> > protects the credentials for its
+> > operations. These operations could be
+> > performed in the scope of subcert or TLS
+> > 1.3.
+> >
+> > Note also that in a related section it
+> > also worth mentioning that credentials
+> > may be managed in different ways and
+> > KEYLESS represents an valuable way to
+> > protect and manage these credentials in
+> > TLS 1.2. However, KEYLESS is known to
+> > presents some vulnerabilities (PFS,
+> > signing oracle) so the protection
+> > remains limited while the LURK extension
+> > for TLS 1.2 [draft-mglt-lurk-tls12]
+> > addressed these issues and as a result
+> > should provide a better protection.
+> > </mglt>
+> >
+> > Joe had some comments on this as well.
+> > <mglt> This sentence is cryptic.
+> > I think - but I might be wrongly interpreting it - your intention is to
+> vaguely insinuate that Joe, as co-chair already responded to that comment
+> and somehow agree that the use of KEYLESS was justified and sufficient. I
+> think the email you are referring to is [1] in which Joe questioned the
+> status of  draft-mglt-lurk-tls13 and Keylessl. This was followed by a
+> response from me and Joe's response in [2] follows indicating that
+> mentioning a technology that only works for TLS 1.2 is misleading.
+> >
+> > [1]
+> https://mailarchive.ietf.org/arch/msg/tls/c6wYAInaB-fXsMWZMW25ass5oVI/
+> > [2]
+> https://mailarchive.ietf.org/arch/msg/tls/5RADtQkaNS2H9DDF2ILt23Jkhjg/
+> >
+> > </mglt>
+> >
+> > This section is meant to illustrate that it is possible to create a
+> fallback with a remote oracle
+> > <mglt>
+> > I am not contesting the intention, but the proposed solution does not
+> seem work and there is little we can do about it. The current text seems
+> technically inaccurate and seems to carry the message fallback solution c=
+an
+> only be provided by a proprietary commercial product. This could give the
+> impression of the IETF being instrumented for some sort of marketing
+> campaign.
+> >
+> > Again I am not asking to remove Keyless, I am asking to list other
+> efforts draft-mglt-lurk-tls12 and draft-mglt-lurk-tls13 as well.
+> >
+> > """
+> > so a reference to a paper seemed more apt than an active draft (which
+> would be challenging to reference in an RFC).
+> > """
+> > It is unclear to me how the "illustrating a possible solution that is
+> not applicable here" becomes the clauses of  "paper is more apt than a
+> draft". I might be missing something, so maybe you could clarify.
+> > I am reading this as having an informational reference for individual
+> drafts draft-mglt-lurk-tls12 and draft-mglt-lurk-tls13 would be
+> challenging. That is unclear to me what is the ground of this statement b=
+ut
+> maybe you can clarify this. At least, I cannot find any evidence of it in
+> [1], I have not seen this raised on the mailing list.  In addition, RFC84=
+46
+> typically mentions RFCs, drafts, academic papers, slide presentations,
+> emails,...   draft-ietf-tls-esni also provides draft as an informational
+> reference as well.
+> >
+> > [1]
+> https://ietf.org/about/groups/iesg/statements/normative-informative-refer=
+ences/
+> > </mglt>
+> >
+> > Implementations can differ here, this section is not meant to be
+> instructive.
+>
+> Maybe this is an unfortunate name for the reference. The =E2=80=9CKEYLESS=
+=E2=80=9D
+> reference is generically about TLS Handshake Proxying not about
+> Cloudflare=E2=80=99s KEYLESS SSL. The LURK paper (
+> https://eprint.iacr.org/2020/1366.pdf) did address some additional
+> security considerations, and its important to highlight those. Let=E2=80=
+=99s make
+> two changes in this section:
+>
+> OLD:
+>
+> (e.g., a PKCS#11 interface or a remote signing mechanism [KEYLESS])
+>
+> NEW:
+>
+> (e.g., a PKCS#11 interface or a remote signing mechanism such as [REF1] o=
+r
+> [REF2])
+>
+>
+> [REF1] Sullivan, N. and D. Stebila, "An Analysis of TLS Handshake
+> Proxying", IEEE TrustCom/BigDataSE/ISPA 2015, 2015.
+>
+> [REF2] Boureanu, I., Migault, D., Preda, S., Alamedine, H.A., Mishra, S.
+> Fieau, F., and M. Mannan, "LURK: Server-Controlled TLS Delegation=E2=80=
+=9D, IEEE
+> TrustCom 2020, https://eprint.iacr.org/2020/1366.pdf, 2020.
+>
+> and
+>
+> <mglt>
+The text does not address my concern and will recap my perspective of the
+discussion.
+
+My initial comment was that the reference [KEYLESS] points to a solution
+that does not work with TLS 1.3 and currently the only effort compatible
+with TLS 1.3 is draft-mglt-lurk-tls13. I expect this reference to be
+mentioned and I do not see it in the text proposed text.
+
+If the intention with [KEYLESS] is to mention TLS Handshake Proxying
+techniques, then I argued that other mechanisms be mentioned and among
+others draft-mglt-lurk-tls12 and draft-mglt-lurk-tls13 that address
+different versions of TLS. This was my second concern and I do not see any
+of these references being mentioned.
+
+The way I understand your response is that the paper pointed out by
+[KEYLESS] is not Cloudflare's commercial product but instead a generic TLS
+Handshake proxying and that you propose to add a reference to an academic
+paper that discusses the LURK extension for TLS 1.2.
+
+I appreciate that other solutions - and in this case LURK, are being
+considered. I am wondering however why draft-mglt-lurk-tls12 is being
+replaced by an academic reference [REF2] and why draft-mglt-lurk-tls13 has
+been omitted. It seems that we are trying to avoid any reference of the
+work that is happening at the IETF. Is there anything I am missing ?
+
+My suggestion for the text
+
+OLD:
+
+(e.g., a PKCS#11 interface or a remote signing mechanism [KEYLESS])
+
+NEW:
+
+(e.g., a PKCS#11 interface or a remote signing mechanism such as
+[draft-mglt-lurk-tls13] or [draft-mglt-lurk-tls12] ([LURK-TLS12]) or
+[KEYLESS])
+
+with
+
+[KEYLESS] Sullivan, N. and D. Stebila, "An Analysis of TLS Handshake
+Proxying", IEEE TrustCom/BigDataSE/ISPA 2015, 2015.
+[LURK-TLS12] Boureanu, I., Migault, D., Preda, S., Alamedine, H.A., Mishra,
+S. Fieau, F., and M. Mannan, "LURK: Server-Controlled TLS Delegation=E2=80=
+=9D, IEEE
+TrustCom 2020, https://eprint.iacr.org/2020/1366.pdf, 2020.
+[draft-mglt-lurk-tls12] IETF draft
+[draft-mglt-lurk-tls13] IETF draft
+
+It is unclear to me what is generic about the paper pointed by [KEYLESS] or
+[REF1]. In any case, for clarification, the paper clearly refers to
+Cloudflare commercial products as opposed to a generic mechanism, and this
+will remain whatever label will be used as a reference. Typically,
+* Cloudflare co-authors the paper appears 12 times in the 8 page paper.
+* The contribution section mentions:
+"""
+Our work focuses specifically on the TLS handshake proxying system
+implemented by CloudFlare in their Keyless SSL product [6], [7]
+"""
+* The methodology mentions says:
+
+"""
+We tested TLS key proxying using CloudFlare=E2=80=99s implementation, which=
+ was
+implemented with the following three parts:
+"""
+
+"""
+The different scenarios were set up through CloudFlare=E2=80=99s control pa=
+nel. In
+the direct handshake handshake scenario, the site is set up with no reverse
+proxy. In the scenario where the key is held by the edge server, the same
+certificate that was used on the origin is uploaded to CloudFlare and the
+reverse proxy is enabled for the site.
+"""
+
+* Cloudflare appears in at least references
+  *
+https://github.com/cloudflare/cfssl/blob/jacob/scan-pki/scan/tls_handshake.=
+go#L154
+  * CloudFlare Inc., =E2=80=9CCloudFlare Keyless SSL,=E2=80=9D Sep. 2014,
+https://www.cloudflare.com/keyless-ssl.
+  * N. Sullivan, =E2=80=9CKeyless SSL: The nitty gritty technical details,=
+=E2=80=9D Sep.
+2014,
+https://blog.cloudflare.com/keyless-ssl-the-nitty-gritty-technical-details/=
+.
+
+>  OLD:
+>
+> A server could use delegated credentials for clients that support them,
+> while using [KEYLESS] to support legacy clients.
+>
+> NEW:
+>
+> A server could use delegated credentials for clients that support them,
+> while using a remote signing mechanism to support legacy clients.
+>
+> <mglt>
+works for me.
+</mglt>
+
+> > The private key for a delegated credential
+> >    can be used in place of a certificate private key, so it is importan=
+t
+> >    that the Front-End and Back-End are parties that have a trusted
+> >    relationship.
+> >
+> >
+> >    Use of short-lived certificates with automated certificate issuance,
+> >    e.g., with Automated Certificate Managment Environment (ACME)
+> > <mglt>
+> > Management
+> > </mglt>
+> >
+> > Fixed, thanks!
+> >
+> >    [RFC8555], reduces the risk of key compromise, but has several
+> >    limitations.  Specifically, it introduces an operationally-critical
+> >    dependency on an external party.  It also limits the types of
+> >
+> >
+> >
+> > Barnes, et al.          Expires 28 December 2020                [Page 7=
+]
+> >
+> > Internet-Draft        Delegated Credentials for TLS            June 202=
+0
+> >
+> >
+> >    algorithms supported for TLS authentication to those the CA is
+> >    willing to issue a certificate for.  Nonetheless, existing automated
+> >    issuance APIs like ACME may be useful for provisioning delegated
+> >    credentials.
+> >
+> > 4.  Delegated Credentials
+> >
+> >    While X.509 forbids end-entity certificates from being used as
+> >    issuers for other certificates, it is valid to use them to issue
+> >    other signed objects as long as the certificate contains the
+> >    digitalSignature KeyUsage ([RFC5280] section 4.2.1.3).  We define a
+> >    new signed object format that would encode only the semantics that
+> >    are needed for this application.  The credential has the following
+> >    structure:
+> >
+> >       struct {
+> >         uint32 valid_time;
+> >         SignatureScheme expected_cert_verify_algorithm;
+> >         opaque ASN1_subjectPublicKeyInfo<1..2^24-1>;
+> >       } Credential;
+> >
+> >    valid_time:  Time in seconds relative to the beginning of the
+> >       delegation certificate's notBefore value after which the delegate=
+d
+> >       credential is no longer valid.  This MUST NOT exceed 7 days.
+> > <mglt>
+> > I believe the behavior of the "verifying
+> > peer" should also be specified maybe
+> > with a reference.
+> >
+> > </mglt>
+> >
+> > This is valid and echoes Hannes's comment later in this thread. I've
+> updated the text here to refer directly to the relying peer's behavior. T=
+he
+> issuance requirement of 7 days is defined in section 3 and the behavior i=
+s
+> now defined in 4.1.3.
+> >
+> >
+> >    expected_cert_verify_algorithm:  The signature algorithm of the
+> >       credential key pair, where the type SignatureScheme is as defined
+> >       in [RFC8446].  This is expected to be the same as
+> >       CertificateVerify.algorithm sent by the server.  Only signature
+> >       algorithms allowed for use in CertificateVerify messages are
+> >       allowed.  When using RSA, the public key MUST NOT use the
+> >       rsaEncryption OID, as a result, the following algorithms are not
+> >       allowed for use with delegated credentials: rsa_pss_rsae_sha256,
+> >       rsa_pss_rsae_sha384, rsa_pss_rsae_sha512.
+> >
+> > <mglt>
+> > It is unclear whether the
+> > expected_cert_verify_algorithm and
+> > CertificateVerify.algorithm needs to be
+> > checked and what needs to be done in
+> > case of mismatch (with the RSA caveat).
+> > I believe that should be clarified.
+> >
+> > </mglt>
+>
+> Can we remedy this with a reference like the one in the previous bullet
+> (i.e., refer to s4.1):
+>
+> OLD:
+>
+> This is expected to be the same as the sender=E2=80=99s
+> CertificateVerify.algorithm.
+>
+> NEW:
+>
+> This is expected to be the same as the sender=E2=80=99s
+> CertificateVerify.algorithm (as described in Section 4.1).
+>
+> <mglt>
+works for me
+</mglt>
+
+> > This bullet 3 in section 4.1.3.
+> >
+> >
+> >    ASN1_subjectPublicKeyInfo:  The credential's public key, a DER-
+> >       encoded [X.690] SubjectPublicKeyInfo as defined in [RFC5280].
+> >
+> >    The delegated credential has the following structure:
+> >
+> >       struct {
+> >         Credential cred;
+> >         SignatureScheme algorithm;
+> >         opaque signature<0...2^16-1>;
+> >       } DelegatedCredential;
+> >
+> >    algorithm:  The signature algorithm used to verify
+> >       DelegatedCredential.signature.
+> >
+> > <mglt>
+> > I am wondering if any checks should be
+> > performed with the
+> > CertificateVerify.algorithm or if any
+> > algorithm would be acceptable. Unless I
+> > am missing something it seems a weak
+> > algorithm can be used - assuming the
+> > registry contains such weak algorithms.
+> > </mglt>
+> >
+> > Echoing my answer above, only signature algorithms listed in
+> SignatureSchemeList are permitted, so the peer is able to disable weak
+> algorithms at will.
+> > <mglt>
+> > Echoing my response above. It is unclear to me whether that provides
+> sufficient guarantees to the server that may be operated with weaker
+> security.
+> > </mglt>
+> >
+> > Barnes, et al.          Expires 28 December 2020                [Page 8=
+]
+> >
+> > Internet-Draft        Delegated Credentials for TLS            June 202=
+0
+> >
+> >
+> >    signature:  The delegation, a signature that binds the credential to
+> >       the end-entity certificate's public key as specified below.  The
+> >       signature scheme is specified by DelegatedCredential.algorithm.
+> >
+> > [...]
+> >
+> > 4.1.1.  Server Authentication
+> >
+> >    A client which supports this specification SHALL send a
+> >    "delegated_credential" extension in its ClientHello.  The body of th=
+e
+> >    extension consists of a SignatureSchemeList:
+> >
+> >
+> >
+> >
+> >
+> > Barnes, et al.          Expires 28 December 2020                [Page 9=
+]
+> >
+> > Internet-Draft        Delegated Credentials for TLS            June 202=
+0
+> >
+> >
+> >       struct {
+> >         SignatureScheme supported_signature_algorithm<2..2^16-2>;
+> >       } SignatureSchemeList;
+> >
+> >    If the client receives a delegated credential without indicating
+> >    support, then the client MUST abort with an "unexpected_message"
+> >    alert.
+> >
+> >    If the extension is present, the server MAY send a delegated
+> >    credential; if the extension is not present, the server MUST NOT sen=
+d
+> >    a delegated credential.  The server MUST ignore the extension unless
+> >    TLS 1.3 or a later version is negotiated.
+>
+> This is where I would put the text discussed earlier in s1, i.e., replace
+> the above paragraph with:
+>
+> NEW:
+>
+>   If the extension is present, the server MAY send a delegated
+>   credential; if the extension is not present, the server MUST NOT send
+>   a delegated credential.  An example of when a server could choose not
+>   to send a delegated credential is when the SignatureSchemes listed
+>   only contain signature schemes for which a corresponding delegated
+>   credential does not exist, or if the SignatureSchemes advertised are no=
+t
+>   considered secure enough for the connection. The server MUST ignore
+>   the extension unless TLS 1.3 or a later version is negotiated.
+>
+> <mglt>
+seems clearer.
+</mglt>
+
+> >    The server MUST send the delegated credential as an extension in the
+> >    CertificateEntry of its end-entity certificate; the client SHOULD
+> >    ignore delegated credentials sent as extensions to any other
+> >    certificate.
+> >
+> >    The expected_cert_verify_algorithm field MUST be of a type advertise=
+d
+> >    by the client in the SignatureSchemeList and is considered invalid
+> >    otherwise.  Clients that receive invalid delegated credentials MUST
+> >    terminate the connection with an "illegal_parameter" alert.
+> >
+> > <mglt>
+> > I am wondering what would prevent any
+> > downgrade attacks if the
+> > SignatureSchemeList and
+> > signature_algorithms have two different
+> > sets of lists. My current understanding
+> > is that these extensions are handled
+> > independently, but I might be missing
+> > something.
+> >
+> > I am wondering if that would be
+> > appropriated to specify the signature of
+> > the CertificateVerify depending on the
+> > presence of the delegated credential - I
+> > mean the key used to generate it.
+> >
+> > </mglt>
+> >
+> > The signature_algorithms SignatureSchemeList is used to match the
+> signature by the certificate, the delegated_credential SignatureSchemeLis=
+t
+> is used to match the expected_cert_verify_algorithm. Given both a
+> certificate and all possible DCs, the peer could select the weakest
+> signature of the union of both sets (if they're different). However, this
+> doesn't permit a downgrade attack if the validating peer doesn't advertis=
+e
+> a weak algorithm.
+> >
+> >
+> >
+> > [...]
+> >
+> > 4.1.3.  Validating a Delegated Credential
+> >
+> >    On receiving a delegated credential and a certificate chain, the pee=
+r
+> >    validates the certificate chain and matches the end-entity
+> >    certificate to the peer's expected identity.  It also takes the
+> >    following steps:
+> >
+> >    1.  Verify that the current time is within the validity interval of
+> >        the credential.  This is done by asserting that the current time
+> >        is no more than the delegation certificate's notBefore value plu=
+s
+> >        DelegatedCredential.cred.valid_time.
+> >
+> >    2.  Verify that the credential's remaining validity time is no more
+> >        than the maximum validity period.  This is done by asserting tha=
+t
+> >        the current time is no more than the delegation certificate's
+> >        notBefore value plus DelegatedCredential.cred.valid_time plus th=
+e
+> >        maximum validity period.
+> >
+> >    3.  Verify that expected_cert_verify_algorithm matches the scheme
+> >        indicated in the peer's CertificateVerify message and that the
+> >        algorithm is allowed for use with delegated credentials.
+> >
+> > <mglt>
+> > I am wondering if a reference to specify
+> > what allowed would not be needed unless
+> > it means advertised in the extension.
+> >
+> > </mglt>
+>
+> Are you asking about how you know which algorithms are allowed for use
+> with delegated credentials? From earlier in the draft:
+>
+> Only signature algorithms allowed
+> for use in CertificateVerify messages are allowed.
+>
+> RSA is out and I am hoping that there are very few =E2=80=9Cvanity=E2=80=
+=9D signature
+> algorithms that risk of someone implementing DCs with signature schemes
+> that are banned by the spec is low. I guess we could inform the DEs, but
+> one of them is an author of this I-D.
+>
+> <mglt>
+I suspect earlier clarifications addressed this.
+</mglt>
+
+
+> >    4.  Verify that the end-entity certificate satisfies the conditions
+> >        in Section 4.2.
+> >
+> >    5.  Use the public key in the peer's end-entity certificate to verif=
+y
+> >        the signature of the credential using the algorithm indicated by
+> >        DelegatedCredential.algorithm.
+> >
+> >    If one or more of these checks fail, then the delegated credential i=
+s
+> >    deemed invalid.  Clients and servers that receive invalid delegated
+> >    credentials MUST terminate the connection with an "illegal_parameter=
+"
+> >    alert.  If successful, the participant receiving the Certificate
+> >    message uses the public key in the credential to verify the signatur=
+e
+> >    in the peer's CertificateVerify message.
+> >
+> > [...]
+> >
+> > 7.  Security Considerations
+> >
+> > [...]
+> >
+> > 7.6.  The Impact of Signature Forgery Attacks
+>
+> (I moved you comment up one paragraph)
+>
+> > <mglt>
+> > I do not see the relevance to TLS 1.3.
+> > </mglt>
+> >
+> > In a key reuse scenario (same key, multiple servers) where one of the
+> servers permits a signing oracle, TLS 1.3 signatures can be actively
+> forged.
+> > <mglt>
+> > It is still unclear to how relevant it is to TLS 1.3, I believe the
+> causes for these vulnerabilities are: the introduction of a signing oracl=
+e
+> - in which case the vulnerability is clearly introduced by the coexistenc=
+e
+> of a TLS 1.2 and TLS 1.3 with DC enabled server.
+> >
+> > Given your comment, my understanding of what the text is trying to say
+> is then:
+> > * introducing a signing oracle enables an attacker to forge DC
+> signatures.
+> > * such signing oracles can be introduced by:
+> >   *  a back end solution - keyless for TLS 1.2 for example or any other
+> signing oracle mechanisms for TLS 1.3.
+> >   * the cohabitation of TLS 1.2 with RSA kex and TLS 1.3 as experience
+> shows ....
+> >
+> > But this is not exactly how I am reading it and the text might be
+> clearer in my opinion.
+> > </mglt>
+> >
+>
+>
+> I am hoping that adding an introductory paragraph provides some additiona=
+l
+> framing necessary to get over the hurdle as to why this paragraph talks
+> about TLS 1.2 when this extension only applies to TLS 1.3:
+>
+>   Delegated credentials are only used in TLS 1.3 connections, but the
+>   certificate used sign a delegated credential may be used in other
+> contexts
+>   such as TLS 1.2. Using a certificate in multiple contexts opens up a
+>   potential cross-protocol attack against delegated credentials in TLS 1.=
+3.
+
+<mglt>
+thanks that it way clearer.
+</mglt>
+
+> >    When TLS 1.2 servers support RSA key exchange, they may be vulnerabl=
+e
+> >    to attacks that allow forging an RSA signature over an arbitrary
+> >    message [BLEI].  TLS 1.2 [RFC5246] (Section 7.4.7.1.) describes a
+> >    mitigation strategy requiring careful implementation of timing
+> >    resistant countermeasures for preventing these attacks.  Experience
+> >    shows that in practice, server implementations may fail to fully sto=
+p
+> >    these attacks due to the complexity of this mitigation [ROBOT].  For
+> >    TLS 1.2 servers that support RSA key exchange using a DC-enabled end=
+-
+> >    entity certificate, a hypothetical signature forgery attack would
+> >    allow forging a signature over a delegated credential.  The forged
+> >    credential could then be used by the attacker as the equivalent of a
+> >    man-in-the-middle certificate, valid for 7 days.
+> >
+> >    Server operators should therefore minimize the risk of using DC-
+> >    enabled end-entity certificates where a signature forgery oracle may
+> >    be present.  If possible, server operators may choose to use DC-
+> >    enabled certificates only for signing credentials, and not for
+> >    serving non-DC TLS traffic.  Furthermore, server operators may use
+> >    elliptic curve certificates for DC-enabled traffic, while using RSA
+> >    certificates without the DelegationUsage certificate extension for
+> >    non-DC traffic; this completely prevents such attacks.
+> >
+> >    Note that if a signature can be forged over an arbitrary credential,
+> >    the attacker can choose any value for the valid_time field.  Repeate=
+d
+> >    signature forgeries therefore allow the attacker to create multiple
+> >    delegated credentials that can cover the entire validity period of
+> >    the certificate.  Temporary exposure of the key or a signing oracle
+> >    may allow the attacker to impersonate a server for the lifetime of
+> >    the certificate.
+> >
+> >
+> > From: TLS <tls-bounces@ietf.org> on behalf of Salz, Rich <rsalz=3D
+> 40akamai.com@dmarc.ietf.org>
+> > Sent: Monday, June 29, 2020 12:00 PM
+> > To: Joseph Salowey <joe@salowey.net>; <tls@ietf.org> <tls@ietf.org>
+> > Subject: Re: [TLS] 2nd WGLC for Delegated Credentials for TLS
+> >
+> > I=E2=80=99d still like to see test vectors.
+>
+> I know Nick is working on this.
+
+
+
+--=20
+Daniel Migault
+Ericsson
+
+--000000000000f18e2e05c21388d2
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">Hi Sean,=C2=A0<div><br></div><div>Thanks for the follow-up=
+. I refreshed=C2=A0my memory as much as I could.=C2=A0 Please see my respon=
+ses in line.=C2=A0</div><div><br></div><div>Yours,=C2=A0<br>Daniel<br><br><=
+div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Tue, May=
+ 4, 2021 at 1:44 PM Sean Turner &lt;<a href=3D"mailto:sean@sn3rd.com">sean@=
+sn3rd.com</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=
+=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex">Hopefull=
+y, I haven=E2=80=99t added too much time to the process but I stuck my beak=
+ in to see if I could propose some text to move this along. Apologies in ad=
+vance: this is a long email. Once we settle on the text, I can submit PRs.<=
+br>
+<br>
+spt<br>
+<br>
+&gt; On Sep 14, 2020, at 11:11, Daniel Migault &lt;<a href=3D"mailto:mglt.i=
+etf@gmail.com" target=3D"_blank">mglt.ietf@gmail.com</a>&gt; wrote:<br>
+&gt; <br>
+&gt;=C2=A0 Hi Nick, <br>
+&gt; <br>
+&gt; Thanks for the response and I apologize for my delayed response. Howev=
+er I still have two major concerns regarding the current proposed text:<br>
+&gt; <br>
+&gt; Mentioning keyless as the only solution complementary to DC still seem=
+s to me technically inaccurate. With KeylessSSL, the key server=C2=A0 recei=
+ves a hash based on randoms and ECDH parameters. The hash used in TLS 1.3 i=
+s different than in TLS 1.2 - when hashes are involved in the signature sch=
+eme - so Keyless would not work in this case - at least as far as I underst=
+and - and significant changes are need to make it work in TLS 1.3.<br>
+&gt; It seems to me technically more accurate to mention the effort perform=
+ed on TLS 1.3 with draft-mglt-lurk-tls13 that is working in a TLS 1.3 conte=
+xt. On the other hand, not mentioning it seems to me misleading. I also thi=
+nk it is misleading to not mention an effort that addresses the signing ora=
+cle security vulnerabilities associated to keylessSSL, leading to the impre=
+ssion that such attacks are inherent to the key server architecture - with =
+a dedicated section 7.6. I understand, though, that=C2=A0 draft-mglt-lurk-t=
+ls13 is not a commercial product and still an ongoing effort. <br>
+&gt; So far - unless I am missing them - I have not seen any technical just=
+ification for not mentioning that justify the single mention of keylessSSL =
+and temptative of (non technical) procedural explanations do not seem valid=
+ ( see in line ).=C2=A0 <br>
+<br>
+This is addressed later in the email.<br>
+<br>
+&gt; Another concern I have - at least my understanding of it - is that DC =
+is subject to downgrade attacks. Typically the TLS operator chooses the sig=
+nature used by the DC to authenticate the server and this signature scheme =
+can be weaker than the signature scheme provided by the CA. This prevents a=
+ content owner to enforce a (strong) level of authentication and - in the f=
+uture - the use of deprecated/weak signature schemes. The threat model here=
+ is on the content owner perspective to ensure its website is strongly auth=
+enticated. The fact that the client can remove weak signature schemes does =
+not seem sufficient as nothing seems to force the client to only use strong=
+ authentication with SignatureSchemeList potentially appearing in clear. Th=
+e threat model you seem to refer to is the client to choose a strong authen=
+tication, but I think that is a bit different. <br>
+<br>
+This is addressed later in the email.<br>
+<br>
+&gt; Please see my additional comments inline.<br>
+&gt; <br>
+&gt; Yours, <br>
+&gt; Daniel<br>
+&gt; <br>
+&gt; <br>
+&gt; On Wed, Aug 19, 2020 at 10:31 PM Nick Sullivan &lt;nick=3D<a href=3D"m=
+ailto:40cloudflare.com@dmarc.ietf.org" target=3D"_blank">40cloudflare.com@d=
+marc.ietf.org</a>&gt; wrote:<br>
+&gt; Daniel,<br>
+&gt; <br>
+&gt; Thank you for your thorough review. We&#39;ve attempted to address the=
+se comments in the latest version on Github and are preparing to submit a -=
+10. Answers inline below for these comments.<br>
+&gt; <br>
+&gt; Hannes, thank you for your comment as well.<br>
+&gt; <br>
+&gt; The changes are tracked here:<br>
+&gt; <a href=3D"https://github.com/tlswg/tls-subcerts/pull/80" rel=3D"noref=
+errer" target=3D"_blank">https://github.com/tlswg/tls-subcerts/pull/80</a><=
+br>
+&gt; <br>
+&gt; On Mon, Jun 29, 2020 at 5:48 PM Daniel Migault &lt;daniel.migault=3D<a=
+ href=3D"mailto:40ericsson.com@dmarc.ietf.org" target=3D"_blank">40ericsson=
+.com@dmarc.ietf.org</a>&gt; wrote:<br>
+&gt; Hi, <br>
+&gt; <br>
+&gt; The draft has a number of nits and errors. Among others: <br>
+&gt; <br>
+&gt; The related work section mentions KEYLESS and subcert being complement=
+ary that is KEYLESS can perform the operations associated to the DC and/or =
+those associated to the cert key. I do not think that is correct. KEYLESS d=
+oes not support TLS 1.3 while DC only works with TLS 1.3. The LURK extensio=
+n for TLS 1.3 [draft-mglt-lurk-tls13] should be mentioned instead. As LURK =
+was mentioned during the adoption period and until version 05 that should n=
+ot cause any issues. <br>
+&gt; <br>
+&gt; Technologies only available for TLS 1.2 may be mentioned in the relate=
+d work section.=C2=A0 [draft-mglt-lurk-tls12] should be mentioned similarly=
+ to KEYLESS as it addresses the security concerns of KEYLESS. <br>
+&gt; <br>
+&gt; There are other places where the extensions is mentioned together with=
+ TLS 1.2 that needs to be updated.=C2=A0 <br>
+&gt; <br>
+&gt; I also think that test vectors would be good as well as a link to a fo=
+rmal verification publication (if available).<br>
+&gt; <br>
+&gt; Please see all my comments inline, I hope they help.<br>
+&gt; <br>
+&gt; Yours, <br>
+&gt; Daniel<br>
+&gt; <br>
+&gt; ----<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 Delegated Credentials for TLS<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 draft-ietf-tls-subcerts-09<br>
+&gt; <br>
+&gt; [...]<br>
+&gt; <br>
+&gt; 1.=C2=A0 Introduction<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 Typically, a TLS server uses a certificate provided by so=
+me entity<br>
+&gt;=C2=A0 =C2=A0 other than the operator of the server (a &quot;Certificat=
+ion Authority&quot; or<br>
+&gt;=C2=A0 =C2=A0 CA) [RFC8446] [RFC5280].=C2=A0 This organizational separa=
+tion makes the<br>
+&gt;=C2=A0 =C2=A0 TLS server operator dependent on the CA for some aspects =
+of its<br>
+&gt;=C2=A0 =C2=A0 operations, for example:<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 *=C2=A0 Whenever the server operator wants to deploy a ne=
+w certificate, it<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0has to interact with the CA...<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 *=C2=A0 The server operator can only use TLS signature sc=
+hemes for which<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0the CA will issue credentials.<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 These dependencies cause problems in practice.=C2=A0 Serv=
+er operators<br>
+&gt;=C2=A0 =C2=A0 often deploy TLS termination services in locations such a=
+s remote<br>
+&gt;=C2=A0 =C2=A0 data centers or Content Delivery Networks (CDNs) where it=
+ may be<br>
+&gt;=C2=A0 =C2=A0 difficult to detect key compromises...=C2=A0 Short-lived =
+certificates may be<br>
+&gt;=C2=A0 =C2=A0 used to limit the exposure of keys in these cases.<br>
+&gt; <br>
+&gt; &lt;mglt&gt;<br>
+&gt; I believe it would be clearer to<br>
+&gt; summarize the problem and link it to the<br>
+&gt; use case. I would propose something<br>
+&gt; around:<br>
+&gt; <br>
+&gt; These dependencies cause problems in<br>
+&gt; practice, the management of key exposure<br>
+&gt; necessarily requires an interaction with<br>
+&gt; the CA. <br>
+&gt; <br>
+&gt; Typically server operators....<br>
+&gt; &lt;/mglt&gt;<br>
+&gt; <br>
+&gt; I tried to move the sentences around but wasn&#39;t able to get someth=
+ing more satisfactory. It&#39;s currently structured as:<br>
+&gt; <br>
+&gt; Reality of deployment<br>
+&gt; Problem: dependencies<br>
+&gt; Flaws in existing solutions<br>
+&gt; Proposed solution (this) <br>
+&gt; <br>
+&gt; &lt;mglt&gt;<br>
+&gt; My reading of the structure of the introduction is:<br>
+&gt; Reality of deployment: Typically ...RFC5280<br>
+&gt; Problem: dependencies: This organizational separation ...=C2=A0 =C2=A0=
+These dependencies cause problems in practice. At that point it is unclear =
+why the dependencies cause problem in practise. This is later developed in =
+the use case.=C2=A0 I think a liaison is missing to indicate the remaining =
+of the text will explain why we came to that conclusion. <br>
+&gt; Use case<br>
+&gt; Flaws in existing solutions<br>
+&gt; Proposed solution (this) <br>
+&gt; <br>
+&gt; &lt;/mglt&gt; <br>
+<br>
+I am hoping that the following changes address your concern. I think this i=
+s just editorial, but I am misunderstanding, please propose some new text.<=
+br>
+<br>
+OLD:<br>
+<br>
+This organizational separation makes the<br>
+TLS server operator dependent on the CA for some aspects of its<br>
+operations, for example:<br>
+<br>
+*=C2=A0 Whenever the server operator wants to deploy a new certificate, it<=
+br>
+=C2=A0 =C2=A0has to interact with the CA.<br>
+<br>
+*=C2=A0 The server operator can only use TLS signature schemes for which<br=
+>
+=C2=A0 =C2=A0the CA will issue credentials.<br>
+<br>
+These dependencies cause problems in practice.=C2=A0 Server operators =E2=
+=80=A6<br>
+<br>
+NEW:<br>
+<br>
+This organizational separation causes problems in practice because<br>
+=C2=A0it makes the TLS server operator dependent on the CA for some aspects=
+<br>
+of its operations, for example:<br>
+<br>
+*=C2=A0 Whenever the server operator wants to deploy a new certificate, it<=
+br>
+=C2=A0 =C2=A0has to interact with the CA.<br>
+<br>
+*=C2=A0 The server operator can only use TLS signature schemes for which<br=
+>
+=C2=A0 =C2=A0the CA will issue credentials.<br>
+<br>
+Server operators ...<br>
+<br></blockquote><div>&lt;mglt&gt;</div><div>I think I would rather take th=
+e structure:</div><div>1 - Use case</div><div>2 - Problem description</div>=
+<div>3 - Solution</div><div><br></div><div>I am fine with whatever fits bes=
+t to you.=C2=A0</div><div><br></div><div><pre class=3D"gmail-newpage" style=
+=3D"font-size:13.3333px;margin-top:0px;margin-bottom:0px;break-before:page;=
+color:rgb(0,0,0)">Server operators
+   often deploy TLS termination services in locations such as remote
+   data centers or Content Delivery Networks (CDNs) where it may be
+   difficult to detect key compromises.  Short-lived certificates may be
+   used to limit the exposure of keys in these cases.
+
+   However, short-lived certificates need to be renewed more frequently
+   than long-lived certificates.  If an external CA is unable to issue a
+   certificate in time to replace a deployed certificate, the server
+   would no longer be able to present a valid certificate to clients.
+   With short-lived certificates, there is a smaller window of time to
+   renew a certificates and therefore a higher risk that an outage at a
+   CA will negatively affect the uptime of the service.</pre><pre class=3D"=
+gmail-newpage" style=3D"font-size:13.3333px;margin-top:0px;margin-bottom:0p=
+x;break-before:page;color:rgb(0,0,0)"><br></pre><pre class=3D"gmail-newpage=
+" style=3D"font-size:13.3333px;margin-top:0px;margin-bottom:0px;break-befor=
+e:page;color:rgb(0,0,0)"><pre class=3D"gmail-newpage" style=3D"font-size:13=
+.3333px;margin-top:0px;margin-bottom:0px;break-before:page">Typically, a TL=
+S server uses a certificate provided by some entity
+   other than the operator of the server (a &quot;Certification Authority&q=
+uot; or
+   CA) [<a href=3D"https://datatracker.ietf.org/doc/html/rfc8446" title=3D"=
+&quot;The Transport Layer Security (TLS) Protocol Version 1.3&quot;">RFC844=
+6</a>] [<a href=3D"https://datatracker.ietf.org/doc/html/rfc5280" title=3D"=
+&quot;Internet X.509 Public Key Infrastructure Certificate and Certificate =
+Revocation List (CRL) Profile&quot;">RFC5280</a>].  This organizational sep=
+aration makes the
+   TLS server operator dependent on the CA for some aspects of its
+   operations, for example:
+
+   *  Whenever the server operator wants to deploy a new certificate, it
+      has to interact with the CA.
+
+   *  The server operator can only use TLS signature schemes for which
+      the CA will issue credentials.</pre><pre class=3D"gmail-newpage" styl=
+e=3D"font-size:13.3333px;margin-top:0px;margin-bottom:0px;break-before:page=
+"><pre class=3D"gmail-newpage" style=3D"font-size:13.3333px;margin-top:0px;=
+margin-bottom:0px;break-before:page"> To reduce the dependency on external =
+CAs, this document proposes a
+   limited delegation mechanism that allows a TLS peer to issue its own
+   credentials within the scope of a certificate issued by an external
+   CA.  These credentials only enable the recipient of the delegation to
+   speak for names that the CA has authorized.  Furthermore, this
+   mechanism allows the server to use modern signature algorithms such
+   as Ed25519 [<a href=3D"https://datatracker.ietf.org/doc/html/rfc8032" ti=
+tle=3D"&quot;Edwards-Curve Digital Signature Algorithm (EdDSA)&quot;">RFC80=
+32</a>] even if their CA does not support them.
+
+   We will refer to the certificate issued by the CA as a &quot;certificate=
+&quot;,
+   or &quot;delegation certificate&quot;, and the one issued by the operato=
+r as a
+   &quot;delegated credential&quot; or &quot;DC&quot;.
+</pre><br class=3D"gmail-Apple-interchange-newline"></pre><pre class=3D"gma=
+il-newpage" style=3D"font-size:13.3333px;margin-top:0px;margin-bottom:0px;b=
+reak-before:page"><br></pre></pre></div><div>&lt;/mglt&gt;=C2=A0</div><bloc=
+kquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #cc=
+c solid;padding-left:1ex">
+&gt;=C2=A0 =C2=A0 However, short-lived certificates need to be renewed more=
+ frequently<br>
+&gt;=C2=A0 =C2=A0 than long-lived certificates.=C2=A0 If an external CA is =
+unable to issue a<br>
+&gt;=C2=A0 =C2=A0 certificate in time to replace a deployed certificate, th=
+e server<br>
+&gt;=C2=A0 =C2=A0 would no longer be able to present a valid certificate to=
+ clients.<br>
+&gt;=C2=A0 =C2=A0 With short-lived certificates, there is a smaller window =
+of time to<br>
+&gt;=C2=A0 =C2=A0 renew a certificates and therefore a higher risk that an =
+outage at a<br>
+&gt;=C2=A0 =C2=A0 CA will negatively affect the uptime of the service.<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 To reduce the dependency on external CAs, this document p=
+roposes a<br>
+&gt;=C2=A0 =C2=A0 limited delegation mechanism that allows a TLS peer to is=
+sue its own<br>
+&gt;=C2=A0 =C2=A0 credentials within the scope of a certificate issued by a=
+n external<br>
+&gt;=C2=A0 =C2=A0 CA.=C2=A0 These credentials only enable the recipient of =
+the delegation to<br>
+&gt;=C2=A0 =C2=A0 speak for names that the CA has authorized.=C2=A0 For cla=
+rity, we will<br>
+&gt;=C2=A0 =C2=A0 refer to the certificate issued by the CA as a &quot;cert=
+ificate&quot;, or<br>
+&gt;=C2=A0 =C2=A0 &quot;delegation certificate&quot;, and the one issued by=
+ the operator as a<br>
+&gt;=C2=A0 =C2=A0 &quot;delegated credential&quot; or &quot;DC&quot;.<br>
+&gt; <br>
+&gt; &lt;mglt&gt;<br>
+&gt; From the text it is unclear why the<br>
+&gt; signature scheme appears to be a<br>
+&gt; constraint as well how it does not opens<br>
+&gt; to some sort of downgrade attacks if<br>
+&gt; left to the operator.=C2=A0 <br>
+&gt; &lt;/mglt&gt;<br>
+&gt; <br>
+&gt; The second bullet was left unaddressed, so I added some text here. Dow=
+ngrades are not a current concern in TLS 1.3 since weak signature algorithm=
+s have been removed and clients advertise signature algorithm support and c=
+an remove weak algorithms should they arise. <br>
+&gt; &lt;mglt&gt;<br>
+&gt; It is unclear to me if some text has been added to the draft or not, b=
+ut looking at [1] I do not see additional text, so I interpret the sentence=
+ as the text is limited to the email only and is not reflected in the docum=
+ent. <br>
+&gt; <br>
+&gt; It is not correct that this is not a current concern with TLS 1.3 as t=
+he operator could still today use a weaker signature algorithm.=C2=A0 In th=
+e future, as crypto evolves, it is likely that some signature algorithm wil=
+l become weak one day. If I understand correctly your text, you envision th=
+at the up-to-date client will remove the weak crypto while the server will =
+continue to serve legacy clients with weak crypto. If that is the case, thi=
+s seems to me an issue as the operator does not provides any guarantee the =
+security level is equivalent to the one enforced by the CA.=C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 <br>
+&gt; <br>
+&gt; The text below I believe highlights the problem. names that the CA has=
+ authorized is not enough and the delegation should include an agreement of=
+ the signature algorithm. While the text indicates that the use of alternat=
+ive signature algorithms may be an advantage, it may also be an inconvenien=
+ce or potentially a threat. <br>
+&gt; <br>
+&gt; &quot;&quot;&quot;<br>
+&gt; These credentials only enable the recipient of the delegation to speak=
+ for names that the CA has authorized. Furthermore, this mechanism allows t=
+he server to use modern signature algorithms such as Ed25519 {{?RFC8032}} e=
+ven if their CA does not support them.<br>
+&gt; &quot;&quot;&quot;<br>
+&gt; <br>
+&gt; <br>
+&gt; [1] <a href=3D"https://github.com/tlswg/tls-subcerts/commit/55724377da=
+a26574f50718002278fe0aa5a06977" rel=3D"noreferrer" target=3D"_blank">https:=
+//github.com/tlswg/tls-subcerts/commit/55724377daa26574f50718002278fe0aa5a0=
+6977</a><br>
+&gt; &lt;/mglt&gt; <br>
+<br>
+I think this is a two part answer. 1st there is some text in s1 of -10 that=
+ addresses some of this, but on the bigger question of downgrade attacks ..=
+.<br>
+<br>
+My understanding is that a plain downgrade attack is not possible in TLS 1.=
+3 because the entire handshake is signed. I think you are suggesting that b=
+oth client and server should have a mechanism to disable weak signature sch=
+emes and that the draft is only presenting the option for clients to disabl=
+e them? I want to point out that there is a mechanism for both servers and =
+the party in possession of the private key=C2=A0 to discontinue the use of =
+insecure signature schemes:<br>
+<br>
+a) Servers can choose to not send a DC if no appropriate signature schemes =
+are provided by the client<br>
+<br>
+b) Key holders can choose not to sign DCs that correspond to weak signature=
+ schemes, forcing the server to have to fall back to a regular handshake<br=
+>
+<br>
+I know we are in s1 right now, but how about we make the following change i=
+n s4.1.1:<br>
+<br>
+Proposal text change:<br>
+<br>
+=C2=A0If the extension is present, the server MAY send a delegated<br>
+=C2=A0credential; if the extension is not present, the server MUST NOT send=
+<br>
+=C2=A0a delegated credential.=C2=A0 The server MUST ignore the extension un=
+less<br>
+=C2=A0TLS 1.3 or a later version is negotiated.<br>
+<br>
+to<br>
+<br>
+=C2=A0 If the extension is present, the server MAY send a delegated<br>
+=C2=A0 credential; if the extension is not present, the server MUST NOT sen=
+d<br>
+=C2=A0 a delegated credential.=C2=A0 An example of when a server could choo=
+se not<br>
+=C2=A0 to send a delegated credential is when the SignatureSchemes listed<b=
+r>
+=C2=A0 only contain signature schemes for which a corresponding delegated<b=
+r>
+=C2=A0 credential does not exist, or if the SignatureSchemes advertised are=
+ not<br>
+=C2=A0 considered secure enough for the connection. The server MUST ignore<=
+br>
+=C2=A0 the extension unless TLS 1.3 or a later version is negotiated.<br>
+<br></blockquote><div>&lt;mglt&gt;</div><div>I think my concern has been cl=
+arified by Ilari. It was resolved by your b). I am fine with both text.</di=
+v><div>&lt;/mglt&gt;=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"=
+margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex">
+&gt; 3.=C2=A0 Solution Overview<br>
+&gt; <br>
+&gt; [...]<br>
+&gt; <br>
+&gt; 3.1.=C2=A0 Rationale<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 Delegated credentials present a better alternative than o=
+ther<br>
+&gt;=C2=A0 =C2=A0 delegation mechanisms like proxy certificates [RFC3820] f=
+or several<br>
+&gt;=C2=A0 =C2=A0 reasons:<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 *=C2=A0 There is no change needed to certificate validati=
+on at the PKI<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0layer.<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 *=C2=A0 X.509 semantics are very rich.=C2=A0 This can cau=
+se unintended<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0consequences if a service owner creates a pr=
+oxy certificate where<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0the properties differ from the leaf certific=
+ate.=C2=A0 For this reason,<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0delegated credentials have very restricted s=
+emantics that should<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0not conflict with X.509 semantics.<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 *=C2=A0 Proxy certificates rely on the certificate path b=
+uilding process<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0to establish a binding between the proxy cer=
+tificate and the<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0server certificate.=C2=A0 Since the certific=
+ate path building process<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0is not cryptographically protected, it is po=
+ssible that a proxy<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0certificate could be bound to another certif=
+icate with the same<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0public key, with different X..509 parameters=
+.=C2=A0 Delegated<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0credentials, which rely on a cryptographic b=
+inding between the<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0entire certificate and the delegated credent=
+ial, cannot.<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 *=C2=A0 Each delegated credential is bound to a specific =
+signature<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0algorithm that may be used to sign the TLS h=
+andshake ([RFC8446]<br>
+&gt; <br>
+&gt; <br>
+&gt; <br>
+&gt; <br>
+&gt; Barnes, et al.=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Expires 28 December 2=
+020=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 [Page 6]<br>
+&gt; <br>
+&gt; Internet-Draft=C2=A0 =C2=A0 =C2=A0 =C2=A0 Delegated Credentials for TL=
+S=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 June 2020<br>
+&gt; <br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0section 4.2.3).=C2=A0 This prevents them fro=
+m being used with other,<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0perhaps unintended signature algorithms.<br>
+&gt; <br>
+&gt; &lt;mglt&gt;<br>
+&gt; It is not clear to me why there is a<br>
+&gt; &quot;may be used&quot;. I suppose it concerns the<br>
+&gt; use of the DC not the algorithm but that<br>
+&gt; was confusing. <br>
+&gt; <br>
+&gt; I also believe that the specific<br>
+&gt; signature algorithm to sign the<br>
+&gt; delegated credential could be part of<br>
+&gt; the rational.=C2=A0 <br>
+&gt; &lt;/mglt&gt;<br>
+&gt; <br>
+&gt; The sentence was re-structured a bit. I don&#39;t understand the secon=
+d comment, since the signature algorithm to sign the DC is constricted by t=
+he EE cert&#39;s key type. The only ambiguity there is for RSA, which we ad=
+dressed by allowing only PSS.=C2=A0 <br>
+&gt; <br>
+&gt; &lt;mglt&gt;<br>
+&gt; There is a typo. &quot;for use use&quot;.<br>
+<br>
+Yep this one slipped by again. This is the text I would propose:<br>
+<br>
+OLD:<br>
+<br>
+Each delegated credential is bound to a specific signature<br>
+algorithm for use use in the TLS handshake ([RFC8446] section<br>
+4.2.3).<br>
+<br>
+NEW:<br>
+<br>
+Each delegated credential is bound to a specific signature<br>
+algorithm for use in the TLS handshake ([RFC8446] section<br>
+4.2.3).<br>
+<br>
+&gt; The second comment was about providing rationale for the choice of the=
+ signature associated with the DC, that is the one used for the authenticat=
+ion which can be different from the one of the EE cert.<br>
+&gt; <br>
+&gt; &lt;/mglt&gt; <br>
+<br>
+I think you=E2=80=99re asking to add a sentence to the end of the first bul=
+let that highlights the signature algorithms can be different? If so, would=
+ this work:<br>
+<br>
+OLD:<br>
+<br>
+Each delegated credential is bound to a specific signature<br>
+algorithm for use in the TLS handshake ([RFC8446] section<br>
+4.2.3). This prevents them from being used with other,<br>
+perhaps unintended signature algorithms.<br>
+<br>
+NEW:<br>
+<br>
+Each delegated credential is bound to a specific signature<br>
+algorithm for use in the TLS handshake ([RFC8446] section<br>
+4.2.3). This prevents them from being used with other,<br>
+perhaps unintended signature algorithms. The signature<br>
+algorithm bound to the delegated credential and the one in<br>
+the servers certificate can be different.<br>
+<br></blockquote><div>&lt;mglt&gt;</div><div>works for me.</div><div>&lt;/m=
+glt&gt;=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 =
+.8ex;border-left:1px #ccc solid;padding-left:1ex">
+&gt; 3.2.=C2=A0 Related Work<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 Many of the use cases for delegated credentials can also =
+be addressed<br>
+&gt;=C2=A0 =C2=A0 using purely server-side mechanisms that do not require c=
+hanges to<br>
+&gt;=C2=A0 =C2=A0 client behavior (e.g., a PKCS#11 interface or a remote si=
+gning<br>
+&gt;=C2=A0 =C2=A0 mechanism [KEYLESS]).=C2=A0 These mechanisms, however, in=
+cur per-<br>
+&gt;=C2=A0 =C2=A0 transaction latency, since the front-end server has to in=
+teract with<br>
+&gt;=C2=A0 =C2=A0 a back-end server that holds a private key.=C2=A0 The mec=
+hanism proposed<br>
+&gt;=C2=A0 =C2=A0 in this document allows the delegation to be done off-lin=
+e, with no<br>
+&gt;=C2=A0 =C2=A0 per-transaction latency.=C2=A0 The figure below compares =
+the message flows<br>
+&gt;=C2=A0 =C2=A0 for these two mechanisms with TLS 1...3 [RFC8446].<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 Remote key signing:<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 Client=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Front-End=
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Back-End<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 |----ClientHello---&gt;|=C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 |<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 |&lt;---ServerHello----|=C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 |<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 |&lt;---Certificate----|=C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 |<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 |=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0|&lt;---remote sign----&gt;|<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 |&lt;---CertVerify-----|=C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 |<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 |=C2=A0 =C2=A0 =C2=A0 =C2=A0 ....=C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 |=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 |<br>
+&gt; <br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 Delegated credentials:<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 Client=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Front-End=
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Back-End<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 |=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0|&lt;--DC distribution-&gt;|<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 |----ClientHello---&gt;|=C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 |<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 |&lt;---ServerHello----|=C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 |<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 |&lt;---Certificate----|=C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 |<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 |&lt;---CertVerify-----|=C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 |<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 |=C2=A0 =C2=A0 =C2=A0 =C2=A0 ....=C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 |=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 |<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 These two mechanisms can be complementary.=C2=A0 A server=
+ could use<br>
+&gt;=C2=A0 =C2=A0 credentials for clients that support them, while using [K=
+EYLESS] to<br>
+&gt;=C2=A0 =C2=A0 support legacy clients. <br>
+&gt; <br>
+&gt; &lt;mglt&gt;<br>
+&gt; I believe that this sentence does not<br>
+&gt; show any complementary as subcert and<br>
+&gt; KEYLESS are targeting different version<br>
+&gt; of TLS, so they can hardly be<br>
+&gt; complementary.=C2=A0 However (and luckily)<br>
+&gt; LURK provides an extension for TLS 1.3<br>
+&gt; [draft-mglt-lurk-tls13] which enable a<br>
+&gt; complementary use of these mechanisms<br>
+&gt; these mechanisms. I believe that would<br>
+&gt; be good to indicate the reason they<br>
+&gt; complement each other which is that LURK<br>
+&gt; protects the credentials for its<br>
+&gt; operations. These operations could be<br>
+&gt; performed in the scope of subcert or TLS<br>
+&gt; 1.3.<br>
+&gt; <br>
+&gt; Note also that in a related section it<br>
+&gt; also worth mentioning that credentials<br>
+&gt; may be managed in different ways and<br>
+&gt; KEYLESS represents an valuable way to<br>
+&gt; protect and manage these credentials in<br>
+&gt; TLS 1.2. However, KEYLESS is known to<br>
+&gt; presents some vulnerabilities (PFS,<br>
+&gt; signing oracle) so the protection<br>
+&gt; remains limited while the LURK extension<br>
+&gt; for TLS 1.2 [draft-mglt-lurk-tls12]<br>
+&gt; addressed these issues and as a result<br>
+&gt; should provide a better protection.<br>
+&gt; &lt;/mglt&gt;<br>
+&gt; <br>
+&gt; Joe had some comments on this as well. <br>
+&gt; &lt;mglt&gt; This sentence is cryptic. <br>
+&gt; I think - but I might be wrongly interpreting it - your intention is t=
+o vaguely insinuate that Joe, as co-chair already responded to that comment=
+ and somehow agree that the use of KEYLESS was justified and sufficient. I =
+think the email you are referring to is [1] in which Joe questioned the sta=
+tus of=C2=A0 draft-mglt-lurk-tls13 and Keylessl. This was followed by a res=
+ponse from me and Joe&#39;s response in [2] follows indicating that mention=
+ing a technology that only works for TLS 1.2 is misleading.=C2=A0 =C2=A0 =
+=C2=A0 <br>
+&gt; <br>
+&gt; [1] <a href=3D"https://mailarchive.ietf.org/arch/msg/tls/c6wYAInaB-fXs=
+MWZMW25ass5oVI/" rel=3D"noreferrer" target=3D"_blank">https://mailarchive.i=
+etf.org/arch/msg/tls/c6wYAInaB-fXsMWZMW25ass5oVI/</a><br>
+&gt; [2] <a href=3D"https://mailarchive.ietf.org/arch/msg/tls/5RADtQkaNS2H9=
+DDF2ILt23Jkhjg/" rel=3D"noreferrer" target=3D"_blank">https://mailarchive.i=
+etf.org/arch/msg/tls/5RADtQkaNS2H9DDF2ILt23Jkhjg/</a><br>
+&gt;=C2=A0 <br>
+&gt; &lt;/mglt&gt;<br>
+&gt; <br>
+&gt; This section is meant to illustrate that it is possible to create a fa=
+llback with a remote oracle <br>
+&gt; &lt;mglt&gt;<br>
+&gt; I am not contesting the intention, but the proposed solution does not =
+seem work and there is little we can do about it. The current text seems te=
+chnically inaccurate and seems to carry the message fallback solution can o=
+nly be provided by a proprietary commercial product. This could give the im=
+pression of the IETF being instrumented for some sort of marketing campaign=
+. <br>
+&gt; <br>
+&gt; Again I am not asking to remove Keyless, I am asking to list other eff=
+orts draft-mglt-lurk-tls12 and draft-mglt-lurk-tls13 as well. <br>
+&gt; <br>
+&gt; &quot;&quot;&quot;<br>
+&gt; so a reference to a paper seemed more apt than an active draft (which =
+would be challenging to reference in an RFC).<br>
+&gt; &quot;&quot;&quot;<br>
+&gt; It is unclear to me how the &quot;illustrating a possible solution tha=
+t is not applicable here&quot; becomes the clauses of=C2=A0 &quot;paper is =
+more apt than a draft&quot;. I might be missing something, so maybe you cou=
+ld clarify.<br>
+&gt; I am reading this as having an informational reference for individual =
+drafts draft-mglt-lurk-tls12 and draft-mglt-lurk-tls13 would be challenging=
+. That is unclear to me what is the ground of this statement but maybe you =
+can clarify this. At least, I cannot find any evidence of it in [1], I have=
+ not seen this raised on the mailing list.=C2=A0 In addition, RFC8446 typic=
+ally mentions RFCs, drafts, academic papers, slide presentations, emails,..=
+.=C2=A0 =C2=A0draft-ietf-tls-esni also provides draft as an informational r=
+eference as well. <br>
+&gt; <br>
+&gt; [1] <a href=3D"https://ietf.org/about/groups/iesg/statements/normative=
+-informative-references/" rel=3D"noreferrer" target=3D"_blank">https://ietf=
+.org/about/groups/iesg/statements/normative-informative-references/</a><br>
+&gt; &lt;/mglt&gt;<br>
+&gt;=C2=A0 <br>
+&gt; Implementations can differ here, this section is not meant to be instr=
+uctive.<br>
+<br>
+Maybe this is an unfortunate name for the reference. The =E2=80=9CKEYLESS=
+=E2=80=9D reference is generically about TLS Handshake Proxying not about C=
+loudflare=E2=80=99s KEYLESS SSL. The LURK paper (<a href=3D"https://eprint.=
+iacr.org/2020/1366.pdf" rel=3D"noreferrer" target=3D"_blank">https://eprint=
+.iacr.org/2020/1366.pdf</a>) did address some additional security considera=
+tions, and its important to highlight those. Let=E2=80=99s make two changes=
+ in this section:<br>
+<br>
+OLD:<br>
+<br>
+(e.g., a PKCS#11 interface or a remote signing mechanism [KEYLESS]) <br>
+<br>
+NEW:<br>
+<br>
+(e.g., a PKCS#11 interface or a remote signing mechanism such as [REF1] or =
+[REF2])<br>
+<br>
+<br>
+[REF1] Sullivan, N. and D. Stebila, &quot;An Analysis of TLS Handshake Prox=
+ying&quot;, IEEE TrustCom/BigDataSE/ISPA 2015, 2015.<br>
+<br>
+[REF2] Boureanu, I., Migault, D., Preda, S., Alamedine, H.A., Mishra, S. Fi=
+eau, F., and M. Mannan, &quot;LURK: Server-Controlled TLS Delegation=E2=80=
+=9D, IEEE TrustCom 2020, <a href=3D"https://eprint.iacr.org/2020/1366.pdf" =
+rel=3D"noreferrer" target=3D"_blank">https://eprint.iacr.org/2020/1366.pdf<=
+/a>, 2020.<br>
+<br>
+and<br>
+<br></blockquote><div>&lt;mglt&gt;</div><div>The text does not address my c=
+oncern and will recap my perspective of the discussion.</div><br>My initial=
+ comment was that the reference [KEYLESS] points to a solution that does no=
+t work with TLS 1.3 and currently the only effort compatible with TLS 1.3 i=
+s draft-mglt-lurk-tls13. I expect this reference to be mentioned and I do n=
+ot see it in the text proposed text. <br><br>If the intention with [KEYLESS=
+] is to mention TLS Handshake Proxying techniques, then I argued that other=
+ mechanisms be mentioned and among others draft-mglt-lurk-tls12 and draft-m=
+glt-lurk-tls13 that address different versions of TLS. This was my second c=
+oncern and I do not see any of these references being mentioned. <br><br>Th=
+e way I understand your response is that the paper pointed out by [KEYLESS]=
+ is not Cloudflare&#39;s commercial product but instead a generic TLS Hands=
+hake proxying and that you propose to add a reference to an academic paper =
+that discusses the LURK extension for TLS 1.2. <br><br>I appreciate that ot=
+her solutions - and in this case LURK, are being considered. I am wondering=
+ however why draft-mglt-lurk-tls12 is being replaced by an academic referen=
+ce [REF2] and why draft-mglt-lurk-tls13 has been omitted. It seems that we =
+are trying to avoid any reference of the work that is happening at the IETF=
+. Is there anything I am missing ?<br><br>My suggestion for the text <br><b=
+r>OLD:<br><br>(e.g., a PKCS#11 interface or a remote signing mechanism [KEY=
+LESS]) <br><br>NEW:<br><br>(e.g., a PKCS#11 interface or a remote signing m=
+echanism such as [draft-mglt-lurk-tls13] or [draft-mglt-lurk-tls12] ([LURK-=
+TLS12]) or [KEYLESS])<br><br>with <br><br>[KEYLESS] Sullivan, N. and D. Ste=
+bila, &quot;An Analysis of TLS Handshake Proxying&quot;, IEEE TrustCom/BigD=
+ataSE/ISPA 2015, 2015.<br>[LURK-TLS12] Boureanu, I., Migault, D., Preda, S.=
+, Alamedine, H.A., Mishra, S. Fieau, F., and M. Mannan, &quot;LURK: Server-=
+Controlled TLS Delegation=E2=80=9D, IEEE TrustCom 2020, <a href=3D"https://=
+eprint.iacr.org/2020/1366.pdf">https://eprint.iacr.org/2020/1366.pdf</a>, 2=
+020.<br>[draft-mglt-lurk-tls12] IETF draft<br>[draft-mglt-lurk-tls13] IETF =
+draft<br><br>It is unclear to me what is generic about the paper pointed by=
+ [KEYLESS] or [REF1]. In any case, for clarification, the paper clearly ref=
+ers to Cloudflare commercial products as opposed to a generic mechanism, an=
+d this will remain whatever label will be used as a reference. Typically, <=
+br>* Cloudflare co-authors the paper appears 12 times in the 8 page paper.<=
+br>* The contribution section mentions:<br>&quot;&quot;&quot;<br>Our work f=
+ocuses specifically on the TLS handshake proxying system implemented by Clo=
+udFlare in their Keyless SSL product [6], [7]<br>&quot;&quot;&quot;<br>* Th=
+e methodology mentions says:<br><br>&quot;&quot;&quot;<br>We tested TLS key=
+ proxying using CloudFlare=E2=80=99s implementation, which was implemented =
+with the following three parts:<br>&quot;&quot;&quot;<br><br>&quot;&quot;&q=
+uot;<br>The different scenarios were set up through CloudFlare=E2=80=99s co=
+ntrol panel. In the direct handshake handshake scenario, the site is set up=
+ with no reverse proxy. In the scenario where the key is held by the edge s=
+erver, the same certificate that was used on the origin is uploaded to Clou=
+dFlare and the reverse proxy is enabled for the site.<br>&quot;&quot;&quot;=
+<br><br>* Cloudflare appears in at least references<br>=C2=A0 * <a href=3D"=
+https://github.com/cloudflare/cfssl/blob/jacob/scan-pki/scan/tls_handshake.=
+go#L154">https://github.com/cloudflare/cfssl/blob/jacob/scan-pki/scan/tls_h=
+andshake.go#L154</a><br>=C2=A0 * CloudFlare Inc., =E2=80=9CCloudFlare Keyle=
+ss SSL,=E2=80=9D Sep. 2014, <a href=3D"https://www.cloudflare.com/keyless-s=
+sl">https://www.cloudflare.com/keyless-ssl</a>.<br>=C2=A0 * N. Sullivan, =
+=E2=80=9CKeyless SSL: The nitty gritty technical details,=E2=80=9D Sep. 201=
+4, <a href=3D"https://blog.cloudflare.com/keyless-ssl-the-nitty-gritty-tech=
+nical-details/">https://blog.cloudflare.com/keyless-ssl-the-nitty-gritty-te=
+chnical-details/</a>.<br><blockquote class=3D"gmail_quote" style=3D"margin:=
+0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex">=C2=A0OLD:<br>
+<br>
+A server could use delegated credentials for clients that support them, whi=
+le using [KEYLESS] to support legacy clients.<br>
+<br>
+NEW:<br>
+<br>
+A server could use delegated credentials for clients that support them, whi=
+le using a remote signing mechanism to support legacy clients.<br>
+<br></blockquote><div>&lt;mglt&gt;</div><div>works for me.</div><div>&lt;/m=
+glt&gt;=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 =
+.8ex;border-left:1px #ccc solid;padding-left:1ex">
+&gt; The private key for a delegated credential<br>
+&gt;=C2=A0 =C2=A0 can be used in place of a certificate private key, so it =
+is important<br>
+&gt;=C2=A0 =C2=A0 that the Front-End and Back-End are parties that have a t=
+rusted<br>
+&gt;=C2=A0 =C2=A0 relationship.<br>
+&gt; <br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 Use of short-lived certificates with automated certificat=
+e issuance,<br>
+&gt;=C2=A0 =C2=A0 e.g., with Automated Certificate Managment Environment (A=
+CME)<br>
+&gt; &lt;mglt&gt;<br>
+&gt; Management <br>
+&gt; &lt;/mglt&gt;<br>
+&gt; <br>
+&gt; Fixed, thanks!<br>
+&gt;=C2=A0 <br>
+&gt;=C2=A0 =C2=A0 [RFC8555], reduces the risk of key compromise, but has se=
+veral<br>
+&gt;=C2=A0 =C2=A0 limitations.=C2=A0 Specifically, it introduces an operati=
+onally-critical<br>
+&gt;=C2=A0 =C2=A0 dependency on an external party.=C2=A0 It also limits the=
+ types of<br>
+&gt; <br>
+&gt; <br>
+&gt; <br>
+&gt; Barnes, et al.=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Expires 28 December 2=
+020=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 [Page 7]<br>
+&gt; <br>
+&gt; Internet-Draft=C2=A0 =C2=A0 =C2=A0 =C2=A0 Delegated Credentials for TL=
+S=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 June 2020<br>
+&gt; <br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 algorithms supported for TLS authentication to those the =
+CA is<br>
+&gt;=C2=A0 =C2=A0 willing to issue a certificate for.=C2=A0 Nonetheless, ex=
+isting automated<br>
+&gt;=C2=A0 =C2=A0 issuance APIs like ACME may be useful for provisioning de=
+legated<br>
+&gt;=C2=A0 =C2=A0 credentials.<br>
+&gt; <br>
+&gt; 4.=C2=A0 Delegated Credentials<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 While X.509 forbids end-entity certificates from being us=
+ed as<br>
+&gt;=C2=A0 =C2=A0 issuers for other certificates, it is valid to use them t=
+o issue<br>
+&gt;=C2=A0 =C2=A0 other signed objects as long as the certificate contains =
+the<br>
+&gt;=C2=A0 =C2=A0 digitalSignature KeyUsage ([RFC5280] section 4.2.1.3).=C2=
+=A0 We define a<br>
+&gt;=C2=A0 =C2=A0 new signed object format that would encode only the seman=
+tics that<br>
+&gt;=C2=A0 =C2=A0 are needed for this application.=C2=A0 The credential has=
+ the following<br>
+&gt;=C2=A0 =C2=A0 structure:<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0struct {<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0uint32 valid_time;<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0SignatureScheme expected_cert_verify_=
+algorithm;<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0opaque ASN1_subjectPublicKeyInfo&lt;1=
+..2^24-1&gt;;<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0} Credential;<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 valid_time:=C2=A0 Time in seconds relative to the beginni=
+ng of the<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0delegation certificate&#39;s notBefore value=
+ after which the delegated<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0credential is no longer valid.=C2=A0 This MU=
+ST NOT exceed 7 days.<br>
+&gt; &lt;mglt&gt;<br>
+&gt; I believe the behavior of the &quot;verifying<br>
+&gt; peer&quot; should also be specified maybe<br>
+&gt; with a reference.<br>
+&gt; <br>
+&gt; &lt;/mglt&gt;<br>
+&gt; <br>
+&gt; This is valid and echoes Hannes&#39;s comment later in this thread. I&=
+#39;ve updated the text here to refer directly to the relying peer&#39;s be=
+havior. The issuance requirement of 7 days is defined in section 3 and the =
+behavior is now defined in 4.1.3.<br>
+&gt;=C2=A0 <br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 expected_cert_verify_algorithm:=C2=A0 The signature algor=
+ithm of the<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0credential key pair, where the type Signatur=
+eScheme is as defined<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0in [RFC8446].=C2=A0 This is expected to be t=
+he same as<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0CertificateVerify.algorithm sent by the serv=
+er.=C2=A0 Only signature<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0algorithms allowed for use in CertificateVer=
+ify messages are<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0allowed.=C2=A0 When using RSA, the public ke=
+y MUST NOT use the<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0rsaEncryption OID, as a result, the followin=
+g algorithms are not<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0allowed for use with delegated credentials: =
+rsa_pss_rsae_sha256,<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0rsa_pss_rsae_sha384, rsa_pss_rsae_sha512.<br=
+>
+&gt; <br>
+&gt; &lt;mglt&gt;<br>
+&gt; It is unclear whether the<br>
+&gt; expected_cert_verify_algorithm and<br>
+&gt; CertificateVerify.algorithm needs to be<br>
+&gt; checked and what needs to be done in<br>
+&gt; case of mismatch (with the RSA caveat).<br>
+&gt; I believe that should be clarified.<br>
+&gt; <br>
+&gt; &lt;/mglt&gt;<br>
+<br>
+Can we remedy this with a reference like the one in the previous bullet (i.=
+e., refer to s4.1):<br>
+<br>
+OLD:<br>
+<br>
+This is expected to be the same as the sender=E2=80=99s<br>
+CertificateVerify.algorithm.<br>
+<br>
+NEW:<br>
+<br>
+This is expected to be the same as the sender=E2=80=99s<br>
+CertificateVerify.algorithm (as described in Section 4.1).<br>
+<br></blockquote><div>&lt;mglt&gt;</div><div>works=C2=A0for me</div><div>&l=
+t;/mglt&gt;=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"margin:0 =
+0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex">
+&gt; This bullet 3 in section 4.1.3.<br>
+&gt;=C2=A0 <br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 ASN1_subjectPublicKeyInfo:=C2=A0 The credential&#39;s pub=
+lic key, a DER-<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0encoded [X.690] SubjectPublicKeyInfo as defi=
+ned in [RFC5280].<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 The delegated credential has the following structure:<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0struct {<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Credential cred;<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0SignatureScheme algorithm;<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0opaque signature&lt;0...2^16-1&gt;;<b=
+r>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0} DelegatedCredential;<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 algorithm:=C2=A0 The signature algorithm used to verify<b=
+r>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0DelegatedCredential.signature.<br>
+&gt; <br>
+&gt; &lt;mglt&gt;<br>
+&gt; I am wondering if any checks should be<br>
+&gt; performed with the<br>
+&gt; CertificateVerify.algorithm or if any<br>
+&gt; algorithm would be acceptable. Unless I<br>
+&gt; am missing something it seems a weak<br>
+&gt; algorithm can be used - assuming the<br>
+&gt; registry contains such weak algorithms.<br>
+&gt; &lt;/mglt&gt;<br>
+&gt; <br>
+&gt; Echoing my answer above, only signature algorithms listed in Signature=
+SchemeList are permitted, so the peer is able to disable weak algorithms at=
+ will.<br>
+&gt; &lt;mglt&gt;<br>
+&gt; Echoing my response above. It is unclear to me whether that provides s=
+ufficient guarantees to the server that may be operated with weaker securit=
+y.=C2=A0 =C2=A0<br>
+&gt; &lt;/mglt&gt; <br>
+&gt; <br>
+&gt; Barnes, et al.=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Expires 28 December 2=
+020=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 [Page 8]<br>
+&gt; <br>
+&gt; Internet-Draft=C2=A0 =C2=A0 =C2=A0 =C2=A0 Delegated Credentials for TL=
+S=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 June 2020<br>
+&gt; <br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 signature:=C2=A0 The delegation, a signature that binds t=
+he credential to<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0the end-entity certificate&#39;s public key =
+as specified below.=C2=A0 The<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0signature scheme is specified by DelegatedCr=
+edential.algorithm.<br>
+&gt; <br>
+&gt; [...]<br>
+&gt; <br>
+&gt; 4.1.1.=C2=A0 Server Authentication<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 A client which supports this specification SHALL send a<b=
+r>
+&gt;=C2=A0 =C2=A0 &quot;delegated_credential&quot; extension in its ClientH=
+ello.=C2=A0 The body of the<br>
+&gt;=C2=A0 =C2=A0 extension consists of a SignatureSchemeList:<br>
+&gt; <br>
+&gt; <br>
+&gt; <br>
+&gt; <br>
+&gt; <br>
+&gt; Barnes, et al.=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Expires 28 December 2=
+020=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 [Page 9]<br>
+&gt; <br>
+&gt; Internet-Draft=C2=A0 =C2=A0 =C2=A0 =C2=A0 Delegated Credentials for TL=
+S=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 June 2020<br>
+&gt; <br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0struct {<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0SignatureScheme supported_signature_a=
+lgorithm&lt;2..2^16-2&gt;;<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0} SignatureSchemeList;<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 If the client receives a delegated credential without ind=
+icating<br>
+&gt;=C2=A0 =C2=A0 support, then the client MUST abort with an &quot;unexpec=
+ted_message&quot;<br>
+&gt;=C2=A0 =C2=A0 alert.<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 If the extension is present, the server MAY send a delega=
+ted<br>
+&gt;=C2=A0 =C2=A0 credential; if the extension is not present, the server M=
+UST NOT send<br>
+&gt;=C2=A0 =C2=A0 a delegated credential.=C2=A0 The server MUST ignore the =
+extension unless<br>
+&gt;=C2=A0 =C2=A0 TLS 1.3 or a later version is negotiated.<br>
+<br>
+This is where I would put the text discussed earlier in s1, i.e., replace t=
+he above paragraph with:<br>
+<br>
+NEW:<br>
+<br>
+=C2=A0 If the extension is present, the server MAY send a delegated<br>
+=C2=A0 credential; if the extension is not present, the server MUST NOT sen=
+d<br>
+=C2=A0 a delegated credential.=C2=A0 An example of when a server could choo=
+se not<br>
+=C2=A0 to send a delegated credential is when the SignatureSchemes listed<b=
+r>
+=C2=A0 only contain signature schemes for which a corresponding delegated<b=
+r>
+=C2=A0 credential does not exist, or if the SignatureSchemes advertised are=
+ not<br>
+=C2=A0 considered secure enough for the connection. The server MUST ignore<=
+br>
+=C2=A0 the extension unless TLS 1.3 or a later version is negotiated.<br>
+<br></blockquote><div>&lt;mglt&gt;</div><div>seems clearer.</div><div>&lt;/=
+mglt&gt;=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"margin:0 0 0=
+ .8ex;border-left:1px #ccc solid;padding-left:1ex">
+&gt;=C2=A0 =C2=A0 The server MUST send the delegated credential as an exten=
+sion in the<br>
+&gt;=C2=A0 =C2=A0 CertificateEntry of its end-entity certificate; the clien=
+t SHOULD<br>
+&gt;=C2=A0 =C2=A0 ignore delegated credentials sent as extensions to any ot=
+her<br>
+&gt;=C2=A0 =C2=A0 certificate.<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 The expected_cert_verify_algorithm field MUST be of a typ=
+e advertised<br>
+&gt;=C2=A0 =C2=A0 by the client in the SignatureSchemeList and is considere=
+d invalid<br>
+&gt;=C2=A0 =C2=A0 otherwise.=C2=A0 Clients that receive invalid delegated c=
+redentials MUST<br>
+&gt;=C2=A0 =C2=A0 terminate the connection with an &quot;illegal_parameter&=
+quot; alert.<br>
+&gt; <br>
+&gt; &lt;mglt&gt;<br>
+&gt; I am wondering what would prevent any<br>
+&gt; downgrade attacks if the<br>
+&gt; SignatureSchemeList and<br>
+&gt; signature_algorithms have two different<br>
+&gt; sets of lists. My current understanding<br>
+&gt; is that these extensions are handled<br>
+&gt; independently, but I might be missing<br>
+&gt; something.<br>
+&gt; <br>
+&gt; I am wondering if that would be<br>
+&gt; appropriated to specify the signature of<br>
+&gt; the CertificateVerify depending on the<br>
+&gt; presence of the delegated credential - I<br>
+&gt; mean the key used to generate it. <br>
+&gt; <br>
+&gt; &lt;/mglt&gt;<br>
+&gt; <br>
+&gt; The signature_algorithms SignatureSchemeList is used to match the sign=
+ature by the certificate, the delegated_credential SignatureSchemeList is u=
+sed to match the expected_cert_verify_algorithm. Given both a certificate a=
+nd all possible DCs, the peer could select the weakest signature of the uni=
+on of both sets (if they&#39;re different). However, this doesn&#39;t permi=
+t a downgrade attack if the validating peer doesn&#39;t advertise a weak al=
+gorithm. <br>
+&gt;=C2=A0 <br>
+&gt;=C2=A0 <br>
+&gt; <br>
+&gt; [...]<br>
+&gt; <br>
+&gt; 4.1.3.=C2=A0 Validating a Delegated Credential<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 On receiving a delegated credential and a certificate cha=
+in, the peer<br>
+&gt;=C2=A0 =C2=A0 validates the certificate chain and matches the end-entit=
+y<br>
+&gt;=C2=A0 =C2=A0 certificate to the peer&#39;s expected identity.=C2=A0 It=
+ also takes the<br>
+&gt;=C2=A0 =C2=A0 following steps:<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 1.=C2=A0 Verify that the current time is within the valid=
+ity interval of<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 the credential.=C2=A0 This is done by asser=
+ting that the current time<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 is no more than the delegation certificate&=
+#39;s notBefore value plus<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 DelegatedCredential.cred.valid_time.<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 2.=C2=A0 Verify that the credential&#39;s remaining valid=
+ity time is no more<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 than the maximum validity period.=C2=A0 Thi=
+s is done by asserting that<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 the current time is no more than the delega=
+tion certificate&#39;s<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 notBefore value plus DelegatedCredential.cr=
+ed.valid_time plus the<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 maximum validity period.<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 3.=C2=A0 Verify that expected_cert_verify_algorithm match=
+es the scheme<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 indicated in the peer&#39;s CertificateVeri=
+fy message and that the<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 algorithm is allowed for use with delegated=
+ credentials.<br>
+&gt; <br>
+&gt; &lt;mglt&gt;<br>
+&gt; I am wondering if a reference to specify<br>
+&gt; what allowed would not be needed unless<br>
+&gt; it means advertised in the extension.=C2=A0 <br>
+&gt; <br>
+&gt; &lt;/mglt&gt;<br>
+<br>
+Are you asking about how you know which algorithms are allowed for use with=
+ delegated credentials? From earlier in the draft:<br>
+<br>
+Only signature algorithms allowed<br>
+for use in CertificateVerify messages are allowed.<br>
+<br>
+RSA is out and I am hoping that there are very few =E2=80=9Cvanity=E2=80=9D=
+ signature algorithms that risk of someone implementing DCs with signature =
+schemes that are banned by the spec is low. I guess we could inform the DEs=
+, but one of them is an author of this I-D.<br>
+<br></blockquote><div>&lt;mglt&gt;</div><div>I suspect earlier clarificatio=
+ns addressed this.=C2=A0</div><div>&lt;/mglt&gt;</div><div>=C2=A0</div><blo=
+ckquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #c=
+cc solid;padding-left:1ex">
+&gt;=C2=A0 =C2=A0 4.=C2=A0 Verify that the end-entity certificate satisfies=
+ the conditions<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 in Section 4.2.<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 5.=C2=A0 Use the public key in the peer&#39;s end-entity =
+certificate to verify<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 the signature of the credential using the a=
+lgorithm indicated by<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 DelegatedCredential.algorithm.<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 If one or more of these checks fail, then the delegated c=
+redential is<br>
+&gt;=C2=A0 =C2=A0 deemed invalid.=C2=A0 Clients and servers that receive in=
+valid delegated<br>
+&gt;=C2=A0 =C2=A0 credentials MUST terminate the connection with an &quot;i=
+llegal_parameter&quot;<br>
+&gt;=C2=A0 =C2=A0 alert.=C2=A0 If successful, the participant receiving the=
+ Certificate<br>
+&gt;=C2=A0 =C2=A0 message uses the public key in the credential to verify t=
+he signature<br>
+&gt;=C2=A0 =C2=A0 in the peer&#39;s CertificateVerify message.<br>
+&gt; <br>
+&gt; [...]<br>
+&gt; <br>
+&gt; 7.=C2=A0 Security Considerations<br>
+&gt; <br>
+&gt; [...]<br>
+&gt; <br>
+&gt; 7.6.=C2=A0 The Impact of Signature Forgery Attacks<br>
+<br>
+(I moved you comment up one paragraph)<br>
+<br>
+&gt; &lt;mglt&gt;<br>
+&gt; I do not see the relevance to TLS 1.3. <br>
+&gt; &lt;/mglt&gt;<br>
+&gt; <br>
+&gt; In a key reuse scenario (same key, multiple servers) where one of the =
+servers permits a signing oracle, TLS 1.3 signatures can be actively forged=
+. <br>
+&gt; &lt;mglt&gt;<br>
+&gt; It is still unclear to how relevant it is to TLS 1.3, I believe the ca=
+uses for these vulnerabilities are: the introduction of a signing oracle - =
+in which case the vulnerability is clearly introduced by the coexistence of=
+ a TLS 1.2 and TLS 1.3 with DC enabled server. <br>
+&gt;=C2=A0 =C2=A0 <br>
+&gt; Given your comment, my understanding of what the text is trying to say=
+ is then:<br>
+&gt; * introducing a signing oracle enables an attacker to forge DC signatu=
+res.<br>
+&gt; * such signing oracles can be introduced by:<br>
+&gt;=C2=A0 =C2=A0*=C2=A0 a back end solution - keyless for TLS 1.2 for exam=
+ple or any other signing oracle mechanisms for TLS 1.3.=C2=A0 =C2=A0<br>
+&gt;=C2=A0 =C2=A0* the cohabitation of TLS 1.2 with RSA kex and TLS 1.3 as =
+experience shows ....<br>
+&gt; <br>
+&gt; But this is not exactly how I am reading it and the text might be clea=
+rer in my opinion. <br>
+&gt; &lt;/mglt&gt; <br>
+&gt; <br>
+<br>
+<br>
+I am hoping that adding an introductory paragraph provides some additional =
+framing necessary to get over the hurdle as to why this paragraph talks abo=
+ut TLS 1.2 when this extension only applies to TLS 1.3:<br>
+<br>
+=C2=A0 Delegated credentials are only used in TLS 1.3 connections, but the<=
+br>
+=C2=A0 certificate used sign a delegated credential may be used in other co=
+ntexts<br>
+=C2=A0 such as TLS 1.2. Using a certificate in multiple contexts opens up a=
+<br>
+=C2=A0 potential cross-protocol attack against delegated credentials in TLS=
+ 1.3.</blockquote><div>&lt;mglt&gt;</div><div>thanks that it way=C2=A0clear=
+er.</div><div>&lt;/mglt&gt;=C2=A0</div><blockquote class=3D"gmail_quote" st=
+yle=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex">
+&gt;=C2=A0 =C2=A0 When TLS 1.2 servers support RSA key exchange, they may b=
+e vulnerable<br>
+&gt;=C2=A0 =C2=A0 to attacks that allow forging an RSA signature over an ar=
+bitrary<br>
+&gt;=C2=A0 =C2=A0 message [BLEI].=C2=A0 TLS 1.2 [RFC5246] (Section 7.4.7.1.=
+) describes a<br>
+&gt;=C2=A0 =C2=A0 mitigation strategy requiring careful implementation of t=
+iming<br>
+&gt;=C2=A0 =C2=A0 resistant countermeasures for preventing these attacks.=
+=C2=A0 Experience<br>
+&gt;=C2=A0 =C2=A0 shows that in practice, server implementations may fail t=
+o fully stop<br>
+&gt;=C2=A0 =C2=A0 these attacks due to the complexity of this mitigation [R=
+OBOT].=C2=A0 For<br>
+&gt;=C2=A0 =C2=A0 TLS 1.2 servers that support RSA key exchange using a DC-=
+enabled end-<br>
+&gt;=C2=A0 =C2=A0 entity certificate, a hypothetical signature forgery atta=
+ck would<br>
+&gt;=C2=A0 =C2=A0 allow forging a signature over a delegated credential.=C2=
+=A0 The forged<br>
+&gt;=C2=A0 =C2=A0 credential could then be used by the attacker as the equi=
+valent of a<br>
+&gt;=C2=A0 =C2=A0 man-in-the-middle certificate, valid for 7 days.<br>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 Server operators should therefore minimize the risk of us=
+ing DC-<br>
+&gt;=C2=A0 =C2=A0 enabled end-entity certificates where a signature forgery=
+ oracle may<br>
+&gt;=C2=A0 =C2=A0 be present.=C2=A0 If possible, server operators may choos=
+e to use DC-<br>
+&gt;=C2=A0 =C2=A0 enabled certificates only for signing credentials, and no=
+t for<br>
+&gt;=C2=A0 =C2=A0 serving non-DC TLS traffic.=C2=A0 Furthermore, server ope=
+rators may use<br>
+&gt;=C2=A0 =C2=A0 elliptic curve certificates for DC-enabled traffic, while=
+ using RSA<br>
+&gt;=C2=A0 =C2=A0 certificates without the DelegationUsage certificate exte=
+nsion for<br>
+&gt;=C2=A0 =C2=A0 non-DC traffic; this completely prevents such attacks.<br=
+>
+&gt; <br>
+&gt;=C2=A0 =C2=A0 Note that if a signature can be forged over an arbitrary =
+credential,<br>
+&gt;=C2=A0 =C2=A0 the attacker can choose any value for the valid_time fiel=
+d.=C2=A0 Repeated<br>
+&gt;=C2=A0 =C2=A0 signature forgeries therefore allow the attacker to creat=
+e multiple<br>
+&gt;=C2=A0 =C2=A0 delegated credentials that can cover the entire validity =
+period of<br>
+&gt;=C2=A0 =C2=A0 the certificate.=C2=A0 Temporary exposure of the key or a=
+ signing oracle<br>
+&gt;=C2=A0 =C2=A0 may allow the attacker to impersonate a server for the li=
+fetime of<br>
+&gt;=C2=A0 =C2=A0 the certificate.<br>
+&gt; <br>
+&gt; <br>
+&gt; From: TLS &lt;<a href=3D"mailto:tls-bounces@ietf.org" target=3D"_blank=
+">tls-bounces@ietf.org</a>&gt; on behalf of Salz, Rich &lt;rsalz=3D<a href=
+=3D"mailto:40akamai.com@dmarc.ietf.org" target=3D"_blank">40akamai.com@dmar=
+c.ietf.org</a>&gt;<br>
+&gt; Sent: Monday, June 29, 2020 12:00 PM<br>
+&gt; To: Joseph Salowey &lt;<a href=3D"mailto:joe@salowey.net" target=3D"_b=
+lank">joe@salowey.net</a>&gt;; &lt;<a href=3D"mailto:tls@ietf.org" target=
+=3D"_blank">tls@ietf.org</a>&gt; &lt;<a href=3D"mailto:tls@ietf.org" target=
+=3D"_blank">tls@ietf.org</a>&gt;<br>
+&gt; Subject: Re: [TLS] 2nd WGLC for Delegated Credentials for TLS<br>
+&gt;=C2=A0 <br>
+&gt; I=E2=80=99d still like to see test vectors.<br>
+<br>
+I know Nick is working on this.</blockquote></div><br clear=3D"all"><div><b=
+r></div>-- <br><div dir=3D"ltr" class=3D"gmail_signature" data-smartmail=3D=
+"gmail_signature"><div dir=3D"ltr"><div>Daniel Migault<br></div><div>Ericss=
+on</div></div></div></div></div>
+
+--000000000000f18e2e05c21388d2--
+
