@@ -17,7 +17,7 @@ from __future__ import annotations
 import re
 
 from .ingest import LIST as DEFAULT_WG
-from .tools import DEFAULT_DRAFT, NO_ANSWER
+from .tools import DEFAULT_DRAFT, NO_ANSWER, NOT_UNDERSTOOD
 
 DRAFT_RE = re.compile(r"(draft-[a-z0-9-]+)")
 NUMBER_RE = re.compile(r"(?:section|§)\s*(\d+(?:\.\d+)*)", re.I)
@@ -145,10 +145,10 @@ def route_ex(question: str) -> tuple[str, dict, bool]:
         message = extract_message(question)
         if message:
             return "precedent", {"message_id": message}, False
-        return "aggregate_unresolved", {"draft": draft}, True
+        return NOT_UNDERSTOOD, {}, True
     if any(word in text for word in SYNC_WORDS):
         return "sync", {"days": 1}, False
-    return "aggregate_unresolved", {"draft": draft}, True
+    return NOT_UNDERSTOOD, {}, True
 
 
 def route(question: str) -> tuple[str, dict]:

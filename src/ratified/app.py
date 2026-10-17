@@ -24,9 +24,11 @@ EXAMPLES = [
 ]
 
 STATS_Q = """
-MATCH (m:Message) WITH count(m) AS messages, min(m.date) AS first, max(m.date) AS last
-MATCH (n) WITH messages, first, last, count(n) AS nodes
-MATCH ()-[e]->() RETURN messages, first, last, nodes, count(e) AS edges
+MATCH (m:Message)
+WITH count(m) AS messages, sum(CASE WHEN m.has_body THEN 1 ELSE 0 END) AS with_text,
+     min(m.date) AS first, max(m.date) AS last
+MATCH (n) WITH messages, with_text, first, last, count(n) AS nodes
+MATCH ()-[e]->() RETURN messages, with_text, first, last, nodes, count(e) AS edges
 """
 
 
@@ -36,6 +38,13 @@ def corpus_stats() -> dict | None:
     except Exception:  # noqa: BLE001
         return None
     return found[0] if found and found[0]["nodes"] else None
+
+
+def clause_index() -> list[dict]:
+    try:
+        return tools.discussed_clauses(connect())
+    except Exception:  # noqa: BLE001
+        return []
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -50,6 +59,7 @@ def index(request: Request):
             "scenario": SCENARIO,
             "examples": EXAMPLES,
             "stats": corpus_stats(),
+            "clauses": clause_index(),
         },
     )
 

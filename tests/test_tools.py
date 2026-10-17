@@ -34,6 +34,11 @@ def test_why_clause_traces_discussion_people_and_a_draft_question(graph, sample_
     assert result["explanation"].startswith("Connected, not caused")
 
 
+def test_discussed_clauses_lists_only_traceable_clauses(graph, sample_dataset):
+    ingest.ingest(graph, sample_dataset)
+    assert tools.discussed_clauses(graph) == [{"number": "5.4", "title": "Record Padding", "messages": 1, "people": 1}]
+
+
 def test_why_clause_resolves_a_heading(graph, sample_dataset):
     ingest.ingest(graph, sample_dataset)
     assert tools.why_clause(graph, heading="Record Padding")["sid"] == "rfc8446#5.4"
@@ -141,7 +146,15 @@ def test_routing_maps_questions_to_the_catalogue():
     assert routing.route("what happened to section 5.4") == ("what_happened_to", {"number": "5.4"})
     assert routing.route("is the graph up to date")[0] == "sync"
     assert routing.route("trace the precedent for message abcdefghijklmnop")[0] == "precedent"
-    assert routing.route("anything at all")[0] == "aggregate_unresolved"
+    assert routing.route("anything at all") == ("not_understood", {})
+    assert routing.route("why is the sky blue") == ("not_understood", {})
+
+
+def test_not_understood_says_what_can_be_asked():
+    result = tools.run(None, "not_understood")
+    assert result["outcome"] == "unknown"
+    assert result["answer"] is None
+    assert any("why a section of RFC 8446" in note for note in result["notes"])
     assert routing.route("who argued about draft-ietf-tls-tls13-28")[1] == {"draft": "draft-ietf-tls-tls13"}
 
 

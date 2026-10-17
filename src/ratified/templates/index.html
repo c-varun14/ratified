@@ -72,6 +72,9 @@
     .examples { display: flex; flex-wrap: wrap; gap: .4rem; margin: -.4rem 0 1.2rem; }
     .examples button { font-size: .8rem; padding: .25rem .6rem; border-radius: 999px; border: 1px solid currentColor; background: none; color: inherit; opacity: .8; }
     .examples button:hover { opacity: 1; }
+    details.clause-index { margin: 1.4rem 0; }
+    details.clause-index summary { cursor: pointer; font-weight: 600; margin-bottom: .7rem; }
+    details.clause-index .examples { margin: 0; }
     details.catalogue-box { margin: 0 0 1.4rem; font-size: .85rem; }
     details.catalogue-box summary { cursor: pointer; opacity: .75; }
     .asked { font-size: .9rem; opacity: .75; margin: 0 0 .5rem; }
@@ -95,7 +98,7 @@
   <header>
     <h1>Ratified</h1>
     <p class="lede">Every team argues in chat and forgets who decided what. Ratified is a company brain for an organisation where every argument is public, the IETF's TLS working group, so every answer can be checked against the record.</p>
-    {% if stats %}<p class="stats">FalkorDB graph: {{ "{:,}".format(stats.nodes) }} nodes · {{ "{:,}".format(stats.edges) }} edges · {{ "{:,}".format(stats.messages) }} list messages ({{ stats.first[:4] }}–{{ stats.last[:4] }}), drafts, revisions and RFC sections · every claim links to its public source</p>{% endif %}
+    {% if stats %}<p class="stats">FalkorDB graph: {{ "{:,}".format(stats.nodes) }} nodes · {{ "{:,}".format(stats.edges) }} edges · {{ "{:,}".format(stats.messages) }} list messages ({{ stats.first[:4] }}–{{ stats.last[:4] }}), {{ "{:,}".format(stats.with_text) }} with their text · drafts, revisions and RFC sections · every claim links to its public source</p>{% endif %}
   </header>
 
   <section class="scenario">
@@ -117,6 +120,15 @@
   <section id="card">
     {% if card %}{% include "_card.html" %}{% endif %}
   </section>
+
+  {% if clauses %}
+  <details class="clause-index"{% if not card %} open{% endif %}>
+    <summary>{{ clauses | length }} clauses of RFC 8446 have a traced discussion. Pick any one to ask why it reads the way it does.</summary>
+    <div class="examples">
+      {% for clause in clauses %}<button type="button" hx-post="/ask" hx-vals='{"question": {{ ("Why does section " ~ clause.number ~ " read the way it does, and who do I ask?") | tojson }}}' hx-target="#card" hx-swap="innerHTML" onclick="window.scrollTo({top: document.getElementById('card').offsetTop - 16, behavior: 'smooth'})">§{{ clause.number }} {{ clause.title }} <span class="sub">· {{ clause.messages }} msg, {{ clause.people }} people</span></button>{% endfor %}
+    </div>
+  </details>
+  {% endif %}
 
   <details class="catalogue-box">
     <summary>The fixed tool catalogue: questions route to one of these, each a hand-written Cypher query. No model writes Cypher or citations.</summary>

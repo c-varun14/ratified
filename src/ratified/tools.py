@@ -352,6 +352,23 @@ MATCH (a:AreaDirector)-[:AD_FOR]->(w:Wg {id:$wg}) RETURN a.name AS name, 'area d
 """
 
 
+DISCUSSED_CLAUSES_Q = """
+MATCH (d:Draft {id:$draft})-[:HAS_REVISION]->(:DraftRevision)-[:BECAME]->(:RFC)-[:HAS_SECTION]->(s:Section)
+MATCH (m:Message)-[:CITES]->(s)
+MATCH (m)-[:DISCUSSED]->(:DraftRevision)-[al:ALIGNS_SECTION]->(s)
+WHERE al.changed = true
+OPTIONAL MATCH (p:Person)-[:AUTHORED]->(m)
+RETURN s.number AS number, s.title AS title,
+       count(DISTINCT m) AS messages, count(DISTINCT coalesce(p.name, m.from)) AS people
+ORDER BY messages DESC, number
+"""
+
+
+def discussed_clauses(graph, draft: str = DEFAULT_DRAFT) -> list[dict]:
+    """Every shipped clause that why_clause can trace to a discussion, busiest first."""
+    return rows(graph, DISCUSSED_CLAUSES_Q, {"draft": draft})
+
+
 def _short_rev(revision: str) -> str:
     return "-" + revision.rpartition("-")[2]
 
@@ -831,6 +848,15 @@ def count_thread_messages(graph, thread_or_draft: str = ""):
 
 
 NO_ANSWER = "no_answer"
+NOT_UNDERSTOOD = "not_understood"
+
+ANSWERABLE = [
+    "why a section of RFC 8446 reads the way it does, and who to ask (e.g. \"why does section 4.2.11 read the way it does?\")",
+    "which clauses of draft-ietf-tls-tls13 were discussed while still changing and never resolved",
+    "who chairs the TLS working group",
+    "the latest revision of draft-ietf-tls-tls13, how many revisions it had, or the revisions between two numbers",
+    "which RFC a draft became, or the section number of a quoted heading",
+]
 
 
 def no_answer(scope: str = "that record"):
@@ -847,6 +873,19 @@ def no_answer(scope: str = "that record"):
         notes=[f"the graph holds one WG's drafts, RFCs and mailing-list threads — no {scope} artefact is loaded"],
     )
     result["explanation"] = "This is the graph saying: the question names a record it was not built to hold."
+    result["answer"] = None
+    return result
+
+
+def not_understood():
+    """The router matched no question shape, so nothing is guessed: say what can be asked instead."""
+    result = card(
+        NOT_UNDERSTOOD,
+        "That question doesn't map to anything in the graph",
+        [],
+        notes=[f"you can ask: {item}" for item in ANSWERABLE],
+    )
+    result["explanation"] = "No question shape matched, so no query ran and nothing was guessed."
     result["answer"] = None
     return result
 
@@ -1017,4 +1056,6 @@ TOOLS = {
 def run(graph, tool: str, **kwargs):
     if tool == NO_ANSWER:
         return no_answer(**kwargs)
+    if tool == NOT_UNDERSTOOD:
+        return not_understood()
     return TOOLS[tool](graph, **kwargs)
