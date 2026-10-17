@@ -22,16 +22,27 @@ from .tools import DEFAULT_DRAFT, NO_ANSWER, NOT_UNDERSTOOD
 DRAFT_RE = re.compile(r"(draft-[a-z0-9-]+)")
 NUMBER_RE = re.compile(r"(?:section|§)\s*(\d+(?:\.\d+)*)", re.I)
 MESSAGE_RE = re.compile(r"([A-Za-z0-9][A-Za-z0-9_-]{13,})")
-HEADING_RE = re.compile(r"['\"“”‘’]([^'\"“”‘’]{2,})['\"“”‘’]")
+HEADING_RE = re.compile(r"(?<![A-Za-z])['\"“”‘’]([^'\"“”‘’]{2,})['\"“”‘’](?![A-Za-z])")
 THREAD_RE = re.compile(r"\b([a-z][a-z0-9-]*:\d+)\b", re.I)
 REV_RANGE_RE = re.compile(
-    r"(?:revision[s]?\s*)?#?-?(\d{1,4})\s*(?:to|through|–|—|-)\s*#?-?(\d{1,4})\b", re.I
+    r"(?:revision[s]?\s*)?(?<![A-Za-z0-9])#?-?(\d{1,4})\s*(?:to|through|and|–|—|-)\s*#?-?(\d{1,4})\b", re.I
 )
 
-HERO_WORDS = ("unresolved", "never resolved", "argued against", "aggregate", "objection", "settle")
+HERO_WORDS = (
+    "unresolved", "never resolved", "argued against", "aggregate", "objection", "settle",
+    "left open", "never closed", "never formally closed",
+)
 SYNC_WORDS = ("sync", "up to date", "fresh", "how current")
 PRECEDENT_WORDS = ("precedent", "trace", "why")
-WHY_WORDS = ("why", "who do i ask", "who should i ask", "who to ask", "reasoning")
+WHY_WORDS = (
+    "why", "how come", "reason", "story behind", "backstory", "where did", "wording", "worded",
+    "phrased", "written", "reads", "read the way", "who do i ask", "who should i ask", "who to ask",
+    "who should i talk", "who should i ping", "reasoning",
+)
+REVISION_WORDS = ("revision", "revised")
+BECAME_WORDS = ("become", "became", "turn into", "turned into", "ended up as")
+CHAIR_WORDS = ("chair", "who runs", "who leads", "leading the", "steering", "in charge of")
+WHO_DISCUSSED_WORDS = ("took part", "participated", "whose messages", "who posted", "who discussed", "who talked")
 SECTION_WORDS = ("what happened", "clause", "section", "changed", "§")
 LATEST_WORDS = ("latest", "newest", "most recent")
 COUNT_WORDS = ("how many", "count", "number of")
@@ -99,7 +110,7 @@ def route_ex(question: str) -> tuple[str, dict, bool]:
     if heading and ("heading" in text or "titled" in text):
         return "section_by_heading", {"draft": draft, "heading": heading}, False
 
-    if "revision" in text:
+    if any(word in text for word in REVISION_WORDS):
         lo, hi = extract_revision_range(question)
         count_intent = any(word in text for word in COUNT_WORDS) or "total" in text
         if count_intent:
@@ -113,12 +124,12 @@ def route_ex(question: str) -> tuple[str, dict, bool]:
     if any(word in text for word in OUT_OF_SCOPE_WORDS):
         return NO_ANSWER, {"scope": _out_of_scope(text)}, False
 
-    if "become" in text or "became" in text:
+    if any(word in text for word in BECAME_WORDS):
         if any(word in text for word in COUNT_WORDS):
             return "count_became", {"draft": draft}, False
         return "became_rfc", {"draft": draft}, False
 
-    if "chair" in text:
+    if any(word in text for word in CHAIR_WORDS):
         return "chairs", {"wg": DEFAULT_WG}, False
 
     thread = extract_thread(question)
@@ -139,7 +150,7 @@ def route_ex(question: str) -> tuple[str, dict, bool]:
         return "what_happened_to", {"number": number}, False
     if any(word in text for word in HERO_WORDS):
         return "aggregate_unresolved", {"draft": draft}, False
-    if "argu" in text and ("who" in text or "people" in text):
+    if ("argu" in text and ("who" in text or "people" in text)) or any(word in text for word in WHO_DISCUSSED_WORDS):
         return "who_argued", {"draft": draft}, False
     if any(word in text for word in PRECEDENT_WORDS):
         message = extract_message(question)

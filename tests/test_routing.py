@@ -117,6 +117,29 @@ def test_why_questions_route_to_why_clause():
     )
 
 
+def test_a_contraction_is_not_read_as_a_quoted_heading():
+    assert routing.route("what's the story behind 'Key Share' reading the way it does?") == (
+        "why_clause",
+        {"heading": "Key Share", "draft": "draft-ietf-tls-tls13"},
+    )
+
+
+def test_casual_phrasings_reach_their_shapes():
+    assert routing.route("how come RFC 8446 section 4.2.11 ended up worded the way it is?")[0] == "why_clause"
+    assert routing.route("who's leading the tls working group right now?")[0] == "chairs"
+    assert routing.route("how many times was draft-ietf-tls-tls13 revised in total?")[1] == {
+        "draft": "draft-ietf-tls-tls13",
+        "count": True,
+    }
+    assert routing.route("which draft-ietf-tls-tls13 revisions sit between -20 and -25?")[1] == {
+        "draft": "draft-ietf-tls-tls13",
+        "lo": 20,
+        "hi": 25,
+    }
+    assert routing.route("which RFC did draft-ietf-tls-tls13 turn into?")[0] == "became_rfc"
+    assert routing.route("who took part in the discussion of draft-ietf-tls-tls13?")[0] == "who_argued"
+
+
 def test_why_without_a_clause_keeps_the_old_routes():
     assert routing.route("Which RFC 8446 section numbered 9.4 covers protocol invariants?")[0] == "what_happened_to"
     assert routing.route("why 4BwmDeAqZ1ccHKkEk1R9tqdXTW8")[0] == "precedent"
