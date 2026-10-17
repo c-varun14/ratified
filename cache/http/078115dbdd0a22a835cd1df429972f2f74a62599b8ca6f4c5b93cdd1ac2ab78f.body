@@ -1,0 +1,221 @@
+From nobody Mon Sep 21 03:35:47 2020
+Return-Path: <Hannes.Tschofenig@arm.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 8466A3A0C16
+ for <tls@ietfa.amsl.com>; Mon, 21 Sep 2020 03:35:45 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.9
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ RCVD_IN_MSPIKE_H2=-0.001, SPF_PASS=-0.001, UNPARSEABLE_RELAY=0.001,
+ URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=armh.onmicrosoft.com header.b=8HvD9uRW;
+ dkim=pass (1024-bit key) header.d=armh.onmicrosoft.com
+ header.b=8HvD9uRW
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id oQmO6IUQlUqA for <tls@ietfa.amsl.com>;
+ Mon, 21 Sep 2020 03:35:43 -0700 (PDT)
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com
+ (mail-am6eur05on2062.outbound.protection.outlook.com [40.107.22.62])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 5DF003A0C10
+ for <tls@ietf.org>; Mon, 21 Sep 2020 03:35:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com; 
+ s=selector2-armh-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6IrkJIFYpRQoX+J6i4PgzAPWzJcxlu0Tn+Fc9qTOdak=;
+ b=8HvD9uRWqJ00HHtyY7C2Yio7Ij7w3cqodtVdHq8Y3PuEQySYYcbcjyKRkENFl3THJ9KNGJn4ZpDN3b4QrxIGHWf8VDX8bu7lLsZmJ/tk9TR0YqA+L2WCSN/1rSpAKVbPTzhVF6Z3htjD9yLguMmThnmnZQIUsPXWPCi0T+E/g78=
+Received: from DB6PR0202CA0029.eurprd02.prod.outlook.com (2603:10a6:4:a5::15)
+ by AM6PR08MB4310.eurprd08.prod.outlook.com (2603:10a6:20b:b8::13)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.14; Mon, 21 Sep
+ 2020 10:35:40 +0000
+Received: from DB5EUR03FT007.eop-EUR03.prod.protection.outlook.com
+ (2603:10a6:4:a5:cafe::b9) by DB6PR0202CA0029.outlook.office365.com
+ (2603:10a6:4:a5::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.13 via Frontend
+ Transport; Mon, 21 Sep 2020 10:35:40 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 63.35.35.123)
+ smtp.mailfrom=arm.com; ietf.org; dkim=pass (signature was verified)
+ header.d=armh.onmicrosoft.com;ietf.org; dmarc=bestguesspass action=none
+ header.from=arm.com;
+Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
+ 63.35.35.123 as permitted sender) receiver=protection.outlook.com;
+ client-ip=63.35.35.123; helo=64aa7808-outbound-1.mta.getcheckrecipient.com;
+Received: from 64aa7808-outbound-1.mta.getcheckrecipient.com (63.35.35.123) by
+ DB5EUR03FT007.mail.protection.outlook.com (10.152.20.148) with
+ Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3391.15 via Frontend Transport; Mon, 21 Sep 2020 10:35:40 +0000
+Received: ("Tessian outbound bac899b43a54:v64");
+ Mon, 21 Sep 2020 10:35:40 +0000
+X-CR-MTA-TID: 64aa7808
+Received: from 0e22c633438a.1
+ by 64aa7808-outbound-1.mta.getcheckrecipient.com id
+ 62D0FDF7-0772-40AE-B582-258831A1A936.1; 
+ Mon, 21 Sep 2020 10:35:35 +0000
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com
+ by 64aa7808-outbound-1.mta.getcheckrecipient.com with ESMTPS id 0e22c633438a.1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384);
+ Mon, 21 Sep 2020 10:35:35 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fZmcCToe+tKE9bDKe53q3qi1+ESplHaMo1NCl4LgufatHWB0G2hKxQjQKrGCvp5MhSeGzE27rSrgShMerCt1ART5mXC1wJM49mlw7/I1wKjy15+AXKLJTHRNzemZAg3ddLXkuzmLjyLN7HeBu5/tBdxly92+TQVlr7Sn0ji05H9Io4/etzGI/2FjKWnk50aY5TxRnaeu0Hv64ODVa7FszF6Qkm8PYptNY3tcSIKXcBh5hcMGkm9+9D62IeiWC6Z9bLfsq3o+iXJRF0d/UjP8UqnRDEO0RNyFxrvNf1Phhs8M9qG0yRnf9Wa/piFScSacQ8T5SBFgngDsY4jOqGXrZg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6IrkJIFYpRQoX+J6i4PgzAPWzJcxlu0Tn+Fc9qTOdak=;
+ b=TA86HLeZQBtQRZ3y5jrsNaNG+75BnKpNRs4LQ4ju1HeXEM9XBOlD47n3k7vYy5TteB7sVOKyN+BYIusMvHk3W+JB9/U1YXy303m7LgItwfh0FqRBAUYBw43EMdVfG07bXtaxTL16uVQcBd3zrSLsJklAgYH4IlFOWGOe4ZMa8yS9nFpBgKW1u8VF0nH6bp8gX4N3Y/4TY0hkLanpr8nNTuAP9GzFBBCAepCnEGBG5YA/w2ZEOv65WScT+G0RhgMESO5O7hv40M2EZ+517O1qY1pEVH0+6wE0FhXhuVrKIiRhl5ujFKJzrYsqeUERQ04J6kMZXeuF95Ezfuak+CHf3g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
+ header.d=arm.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com; 
+ s=selector2-armh-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6IrkJIFYpRQoX+J6i4PgzAPWzJcxlu0Tn+Fc9qTOdak=;
+ b=8HvD9uRWqJ00HHtyY7C2Yio7Ij7w3cqodtVdHq8Y3PuEQySYYcbcjyKRkENFl3THJ9KNGJn4ZpDN3b4QrxIGHWf8VDX8bu7lLsZmJ/tk9TR0YqA+L2WCSN/1rSpAKVbPTzhVF6Z3htjD9yLguMmThnmnZQIUsPXWPCi0T+E/g78=
+Received: from AM0PR08MB3716.eurprd08.prod.outlook.com (2603:10a6:208:106::13)
+ by AM0PR08MB5522.eurprd08.prod.outlook.com (2603:10a6:208:18c::8)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.17; Mon, 21 Sep
+ 2020 10:35:34 +0000
+Received: from AM0PR08MB3716.eurprd08.prod.outlook.com
+ ([fe80::900e:c64d:a006:4860]) by AM0PR08MB3716.eurprd08.prod.outlook.com
+ ([fe80::900e:c64d:a006:4860%6]) with mapi id 15.20.3391.026; Mon, 21 Sep 2020
+ 10:35:34 +0000
+From: Hannes Tschofenig <Hannes.Tschofenig@arm.com>
+To: Pascal Urien <pascal.urien@gmail.com>
+CC: Filippo Valsorda <filippo@ml.filippo.io>, "tls@ietf.org" <tls@ietf.org>
+Thread-Topic: [TLS] The future of external PSK in TLS 1.3
+Thread-Index: AQHWjng9Pwzr8fTsOkSjvpJZy/djPKlv2BqIgABG0ACAArYqkIAABVSAgAAN+cA=
+Date: Mon, 21 Sep 2020 10:35:34 +0000
+Message-ID: <AM0PR08MB3716D1CD8D13C68C91ADE322FA3A0@AM0PR08MB3716.eurprd08.prod.outlook.com>
+References: <77039F11-188E-4408-8B39-57B908DDCB80@ericsson.com>
+ <1600516093048.75181@cs.auckland.ac.nz>
+ <2f2ecb30-bef5-414a-8ff7-d707d773c7ea@www.fastmail.com>
+ <AM0PR08MB3716AAADBE7D2A6F3E29664BFA3A0@AM0PR08MB3716.eurprd08.prod.outlook.com>
+ <CAEQGKXQdVO_SAVT1kciiH1EgQqenaYDeXnFD9gfa3BKTNFBjig@mail.gmail.com>
+In-Reply-To: <CAEQGKXQdVO_SAVT1kciiH1EgQqenaYDeXnFD9gfa3BKTNFBjig@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ts-tracking-id: 7617CC518748F04D820447EE0A292C2E.0
+x-checkrecipientchecked: true
+Authentication-Results-Original: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=arm.com;
+x-originating-ip: [80.92.122.149]
+x-ms-publictraffictype: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 36fcfb9f-cad4-4fb7-b81f-08d85e1a15f1
+x-ms-traffictypediagnostic: AM0PR08MB5522:|AM6PR08MB4310:
+X-Microsoft-Antispam-PRVS: <AM6PR08MB43102B546234F3B2432028B6FA3A0@AM6PR08MB4310.eurprd08.prod.outlook.com>
+x-checkrecipientrouted: true
+nodisclaimer: true
+x-ms-oob-tlc-oobclassifiers: OLM:9508;OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam-Untrusted: BCL:0;
+X-Microsoft-Antispam-Message-Info-Original: bXnc3c8ZJfGSvX/DkuQA57zdHD29yesgOvGmP3YTHjulB5JBczS5yi1xd9eVh2dJrN0NBC0DGEhujkqSgtyD8XPTSQTjEKEvJupTx66LRKe5n50aQZBz/2Ddf0+ojx7rjrIQjjkkNDyaimL3xyyvI8Ein3dzWGxa/zFXAE5g8KINdaGdhQUI/rp1J3KK16NmVW8akUAttVxD5yhkYz61Fi2jqyQbnzyPWIDf/xXPNYLc+aYUEo1Kbv2K1pE4RzgKZdn1aaldBzu27g5sovHbYZtt1vItqUX3kxae6UFcJzrLKoD2W3X0VobPi28SH65o4XXwGckLmoAI69+RQoMs20d/7pDzUng4P7AOMpA1kBN5kBFVNP8wFwbIJsom5q/H9N/3tsCei05oEvZAIPG4Zom8XYCtZveI4gcjhbN9ptZ4r7aFoiXUyTwiVWIP4e3ztj5VYfPBj7bFWnGWe1oEDw==
+X-Forefront-Antispam-Report-Untrusted: CIP:255.255.255.255; CTRY:; LANG:en;
+ SCL:1; SRV:; IPV:NLI; SFV:NSPM; H:AM0PR08MB3716.eurprd08.prod.outlook.com;
+ PTR:; CAT:NONE;
+ SFS:(4636009)(346002)(376002)(136003)(396003)(366004)(39860400002)(71200400001)(33656002)(5660300002)(54906003)(7696005)(52536014)(316002)(8676002)(966005)(6916009)(478600001)(55016002)(66476007)(66946007)(66574015)(66446008)(4326008)(66556008)(64756008)(2906002)(26005)(86362001)(186003)(76116006)(9686003)(83380400001)(6506007)(8936002)(53546011);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata: SeqlBnRqydP6PF4A/35xM5THggnKTdX55v1etotqGOw6xxuAv+tWT4Hyh4X/f6n+puRKn72H8dNwnfvSB+v899jVObidF0aUx7x6hnEwZHVknytTPmuYqIYiv2PXKrLK+39IXAVJJn8bUSTERVdJ55aFOqjpNs/XQYCJ/qMGL8UtsZ/nHy0e4YJmVO4YoIwJC5tA00Z6SUbmtRFekwELm3M1IELRC11F03hKAUsYVDRydd/zHfLrELOaAfNUDOdET4GmXr6CJFCUxoB2pdV9OjEVqRAnIYZ/i9BBcnBfKDvn3QTy0cMjZRu4F7Aocdh4jJVoy8Rz2A3mkP9cPrS3Va5zV4+sxQYhJe3hjiSmzHUeZc6XBxN0/6NwmM9BFJqf/VhsC/V8kpddsAgvyt2jX8Rg/g4vNc81N9tTtJjy0Gb3soQvNv+xOsi0BxRsNXaLDmNwVXbmNHl8ZxQQGlapgvJHadsOVKfJt4KPhOpFRMWg/YjlQAsujcw4opvd6OVDzyMxlJIhtPyUXQq2Iw+LlSJ4p+kaDN32Kk2dIQq7OGGkOpe3FDLHAmXrX1uq4pb0XdW9HgQYJHm4S0QSCcdDVtq9wmWfxbiyTIc0GKg54MaBNIQeG01rWs2xYlewbSDEPoA2E510zxpsWaIQMbw7rg==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR08MB5522
+Original-Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=arm.com;
+X-EOPAttributedMessage: 0
+X-MS-Exchange-Transport-CrossTenantHeadersStripped: DB5EUR03FT007.eop-EUR03.prod.protection.outlook.com
+X-MS-Office365-Filtering-Correlation-Id-Prvs: 720910f9-c43f-4a29-29e7-08d85e1a127c
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: RiaayTYxzvPGCvKeLGa9HVufQeuLmVAwnbdE7V1GUXfXzi3MNV3Inu0IdrCwzSKYG2jajCSVeWU5LOX1m6dUvrxuM6E66zoIR22Br8wR9GHyvG+a4Mr4dYq2ND0SmJQGnksU6L0pG/WJ6vgk+HFmDSJLJ7QOMLCiJUIueMz5wPhd2Occ/dfDxiJV4kDnhrDScVr4GAEzq12+lU189FKPG0yFIU7GbDaZDo96M+rV/Q0xP7juj2fzZY2RbpPA407iceEKkSEkfy0oZQQaU6OkH4wUhZOS8Za/mnatwU6P6sIXOzlSfuo2KkuVJ/JtCjsAPVFT5mHHWNqgaSX77iZ2db7AeeJHjJ2jLOnsEU7XygHqFgBtww2U7JtG1GwQf0ucZzqFTcaa1ZcFJqLyKp1NYDVMsTxN4UcNFcK8QzCU/syA0GA+uhMUUzIBmLt5UIdO8q4ZCBPJMXV+R7PDm+sk1+YEmcSZ97U//4lXc3V9BYE=
+X-Forefront-Antispam-Report: CIP:63.35.35.123; CTRY:IE; LANG:en; SCL:1; SRV:; 
+ IPV:CAL; SFV:NSPM;
+ H:64aa7808-outbound-1.mta.getcheckrecipient.com; 
+ PTR:ec2-63-35-35-123.eu-west-1.compute.amazonaws.com; CAT:NONE;
+ SFS:(4636009)(136003)(346002)(376002)(396003)(39860400002)(46966005)(6506007)(53546011)(52536014)(7696005)(316002)(82740400003)(55016002)(66574015)(86362001)(9686003)(2906002)(81166007)(356005)(47076004)(4326008)(70586007)(33656002)(8936002)(70206006)(966005)(54906003)(26005)(83380400001)(336012)(186003)(5660300002)(8676002)(82310400003)(6862004)(478600001);
+ DIR:OUT; SFP:1101; 
+X-OriginatorOrg: arm.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Sep 2020 10:35:40.3188 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 36fcfb9f-cad4-4fb7-b81f-08d85e1a15f1
+X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d; Ip=[63.35.35.123]; 
+ Helo=[64aa7808-outbound-1.mta.getcheckrecipient.com]
+X-MS-Exchange-CrossTenant-AuthSource: DB5EUR03FT007.eop-EUR03.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR08MB4310
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/LhTz3DUdusFnGJNHOaOeF7fRo_k>
+Subject: Re: [TLS] The future of external PSK in TLS 1.3
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Mon, 21 Sep 2020 10:35:46 -0000
+
+SGkgUGFzY2FsLA0KDQpUaGFua3MgZm9yIHRoZSBwb2ludGVyIHRvIHRoZSBkcmFmdC4NCg0KU2lu
+Y2UgSSBhbSBzdXJ2ZXlpbmcgaW1wbGVtZW50YXRpb25zIGZvciB0aGUgdXBkYXRlIG9mIFJGQyA3
+OTI1IChzZWUgaHR0cHM6Ly9kYXRhdHJhY2tlci5pZXRmLm9yZy9kb2MvZHJhZnQtaWV0Zi11dGEt
+dGxzMTMtaW90LXByb2ZpbGUvKSBJIHdhcyB3b25kZXJpbmcgd2hldGhlciB0aGVyZSBpcyBhbiBp
+bXBsZW1lbnRhdGlvbiBvZiB0aGlzIGFwcHJvYWNoLg0KDQpDaWFvDQpIYW5uZXMNCg0KDQpGcm9t
+OiBQYXNjYWwgVXJpZW4gPHBhc2NhbC51cmllbkBnbWFpbC5jb20+DQpTZW50OiBNb25kYXksIFNl
+cHRlbWJlciAyMSwgMjAyMCAxMTo0NCBBTQ0KVG86IEhhbm5lcyBUc2Nob2ZlbmlnIDxIYW5uZXMu
+VHNjaG9mZW5pZ0Bhcm0uY29tPg0KQ2M6IEZpbGlwcG8gVmFsc29yZGEgPGZpbGlwcG9AbWwuZmls
+aXBwby5pbz47IHRsc0BpZXRmLm9yZw0KU3ViamVjdDogUmU6IFtUTFNdIFRoZSBmdXR1cmUgb2Yg
+ZXh0ZXJuYWwgUFNLIGluIFRMUyAxLjMNCg0KSGkgQWxsDQoNCkhlcmUgaXMgYW4gZXhhbXBsZSBv
+ZiBQU0srRUNESEUgZm9yIElvVA0KDQpodHRwczovL3Rvb2xzLmlldGYub3JnL2h0bWwvZHJhZnQt
+dXJpZW4tdGxzLXNlLTAwICB1c2VzIFRMUzEuMyBzZXJ2ZXIgIFBTSytFQ0RIRSBmb3Igc2VjdXJl
+IGVsZW1lbnRzDQoNClRoZSBzZWN1cml0eSBsZXZlbCBpbiB0aGVzZSBkZXZpY2VzIGlzIGFzIGhp
+Z2ggYXMgRUFMNSsNCg0KVGhlIGNvbXB1dGluZyB0aW1lIGlzIGFib3V0IDEuNHMgZm9yIGEgUFNL
+K0VDREhFIHNlc3Npb24gKEFFUy0xMjgtQ0NNLCArIHNlY3AyNTZyMSkNCg0KVGhlIHJlYWwgY3Jp
+dGljYWwgcmVzb3VyY2UgaXMgdGhlIHJlcXVpcmVkIFJBTSBzaXplLCBsZXNzIHRoYW4gMUtCIGlu
+IG91ciBleHBlcmltZW50cw0KDQpUaGUgc2VjdXJlIGVsZW1lbnQgIG9ubHkgbmVlZHMgYSBjbGFz
+c2ljYWwgVENQL0lQIGludGVyZmFjZSAoaS5lLiBzb2NrZXRzIGxpa2UpDQoNClRydXN0ZWQgUFNL
+IHNob3VsZCBhdm9pZCBzZWxmaWUgYXR0YWNrcw0KDQpQYXNjYWwNCg0KDQoNCkxlIGx1bi4gMjEg
+c2VwdC4gMjAyMCDDoCAxMToyOSwgSGFubmVzIFRzY2hvZmVuaWcgPG1haWx0bzpIYW5uZXMuVHNj
+aG9mZW5pZ0Bhcm0uY29tPiBhIMOpY3JpdCA6DQpIaSBGaWxpcHBvLA0KDQrigKIgSW5kZWVkLCBp
+ZiB0aGUgU0NBREEgaW5kdXN0cnkgaGFzIGEgcGFydGljdWxhciBuZWVkLCB0aGV5IHNob3VsZCBw
+cm9maWxlIFRMUyBmb3IgdXNlIGluIHRoYXQgaW5kdXN0cnksIGFuZCBub3QgcmVxdWlyZSB3ZSBj
+aGFuZ2UgdGhlIHJlY29tbWVuZGF0aW9uIGZvciB0aGUgb3BlbiBJbnRlcm5ldC4NCg0KV2UgaGF2
+ZSBhbiBJb1QgcHJvZmlsZSBmb3IgVExTIGFuZCBpdCB0YWxrcyBhYm91dCB0aGUgdXNlIG9mIFBT
+Sywgc2VlIGh0dHBzOi8vdG9vbHMuaWV0Zi5vcmcvaHRtbC9yZmM3OTI1DQoNCk9uIHRoZSDigJxv
+cGVuIEludGVybmV04oCdIChwcm9iYWJseSByZWZlcnJpbmcgdG8gdGhlIFdlYiB1c2FnZSkgeW91
+IGFyZSBub3QgZ29pbmcgdG8gdXNlIFBTS3MgaW4gVExTLiBUaGVyZSBpcyBhIHNlcGFyYXRlIFJG
+QyB0aGF0IHByb3ZpZGVzIHJlY29tbWVuZGF0aW9ucyBmb3IgdGhhdCBlbnZpcm9ubW5lbnQsIHNl
+ZSBSRkMgNzUyLiBUaGF0IFJGQyBpcyBjdXJyZW50bHkgYmVpbmcgcmV2aXNlZCwgc2VlIGh0dHBz
+Oi8vZGF0YXRyYWNrZXIuaWV0Zi5vcmcvZG9jL2RyYWZ0LXNoZWZmZXItdXRhLXJmYzc1MjViaXMv
+DQoNCkNpYW8NCkhhbm5lcw0KDQpJTVBPUlRBTlQgTk9USUNFOiBUaGUgY29udGVudHMgb2YgdGhp
+cyBlbWFpbCBhbmQgYW55IGF0dGFjaG1lbnRzIGFyZSBjb25maWRlbnRpYWwgYW5kIG1heSBhbHNv
+IGJlIHByaXZpbGVnZWQuIElmIHlvdSBhcmUgbm90IHRoZSBpbnRlbmRlZCByZWNpcGllbnQsIHBs
+ZWFzZSBub3RpZnkgdGhlIHNlbmRlciBpbW1lZGlhdGVseSBhbmQgZG8gbm90IGRpc2Nsb3NlIHRo
+ZSBjb250ZW50cyB0byBhbnkgb3RoZXIgcGVyc29uLCB1c2UgaXQgZm9yIGFueSBwdXJwb3NlLCBv
+ciBzdG9yZSBvciBjb3B5IHRoZSBpbmZvcm1hdGlvbiBpbiBhbnkgbWVkaXVtLiBUaGFuayB5b3Uu
+DQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0KVExTIG1h
+aWxpbmcgbGlzdA0KbWFpbHRvOlRMU0BpZXRmLm9yZw0KaHR0cHM6Ly93d3cuaWV0Zi5vcmcvbWFp
+bG1hbi9saXN0aW5mby90bHMNCklNUE9SVEFOVCBOT1RJQ0U6IFRoZSBjb250ZW50cyBvZiB0aGlz
+IGVtYWlsIGFuZCBhbnkgYXR0YWNobWVudHMgYXJlIGNvbmZpZGVudGlhbCBhbmQgbWF5IGFsc28g
+YmUgcHJpdmlsZWdlZC4gSWYgeW91IGFyZSBub3QgdGhlIGludGVuZGVkIHJlY2lwaWVudCwgcGxl
+YXNlIG5vdGlmeSB0aGUgc2VuZGVyIGltbWVkaWF0ZWx5IGFuZCBkbyBub3QgZGlzY2xvc2UgdGhl
+IGNvbnRlbnRzIHRvIGFueSBvdGhlciBwZXJzb24sIHVzZSBpdCBmb3IgYW55IHB1cnBvc2UsIG9y
+IHN0b3JlIG9yIGNvcHkgdGhlIGluZm9ybWF0aW9uIGluIGFueSBtZWRpdW0uIFRoYW5rIHlvdS4N
+Cg==
+

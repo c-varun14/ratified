@@ -1,0 +1,226 @@
+From nobody Mon May  1 07:10:40 2023
+Return-Path: <sean@sn3rd.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 8EC2DC1524DC
+ for <tls@ietfa.amsl.com>; Mon,  1 May 2023 07:10:39 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.096
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.096 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, RCVD_IN_DNSWL_NONE=-0.0001,
+ RCVD_IN_ZEN_BLOCKED_OPENDNS=0.001, SPF_HELO_NONE=0.001,
+ SPF_PASS=-0.001, URIBL_BLOCKED=0.001, URIBL_DBL_BLOCKED_OPENDNS=0.001,
+ URIBL_ZEN_BLOCKED_OPENDNS=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=sn3rd.com
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 7ZIVGkSSVBdJ for <tls@ietfa.amsl.com>;
+ Mon,  1 May 2023 07:10:35 -0700 (PDT)
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com
+ [IPv6:2607:f8b0:4864:20::f2b])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id A7C47C13AE30
+ for <TLS@ietf.org>; Mon,  1 May 2023 07:10:35 -0700 (PDT)
+Received: by mail-qv1-xf2b.google.com with SMTP id
+ 6a1803df08f44-61946c27e58so8283726d6.0
+ for <TLS@ietf.org>; Mon, 01 May 2023 07:10:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sn3rd.com; s=google; t=1682950234; x=1685542234;
+ h=to:references:message-id:content-transfer-encoding:cc:date
+ :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=zfdNoy3l2eeZQ/Rvkog01Pq7ZADEmrdRozy3fCD08ag=;
+ b=XEbiwWyJkVk8jbquwQuCKL3SvB8Bi1EyPKiQXGRxY/So5hVxnOb+KksKyrG5eFVukj
+ Sg64PYWxg6WYjr9/fqe27qiO+KzlO1BqXV7eutKjgYqIErh2jGzJy9nPZ4K02hlnzP/a
+ eH2EZbWTluwGHKQDR1m1oXQs0R5CzhOmtiTPk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20221208; t=1682950234; x=1685542234;
+ h=to:references:message-id:content-transfer-encoding:cc:date
+ :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=zfdNoy3l2eeZQ/Rvkog01Pq7ZADEmrdRozy3fCD08ag=;
+ b=XNsyqS9fCGO8r8TdxIpQdTDv4d3UrI2lIIHUamr5YZZDL/OGfUJW3Pezpy2At7Ii0h
+ 0q2YG/zN82eV7/KYkudW+L/92crw6hmUy1CxwQc8HPMuuEb54auSf1+rbWZmUkmpOWb+
+ mWdF7gr2LEpyPsEPerAgNzO58L58hkJEGnJ6zZ5/0lKfxPRllC0Gns4Mp4m3Udmt6RHu
+ wz2/4HX2cOZ1hPHVi5AJJgd6n0gSUvtV/PYCn4n+WfhCO/kyxCka0LhpFUxLrTjMISPA
+ VKGDmTkTrsiK9utNXmUiXW5V/KV5QaAxqfxqR74XpyiZwul5moa9eDWlaPWE+sJ0CTG+
+ MZCQ==
+X-Gm-Message-State: AC+VfDyxOcyQzOQtn5v0hA6B4PdKPoHljXhSkM3iNdUpQTZ/jURA0/kQ
+ mntf5tHEZb+bxWtKaBM1lTjT0A==
+X-Google-Smtp-Source: ACHHUZ7smNJQmXPpcIwbeE/RPPpPbkcm2PAN7UeBRdkdL+vK4xZvr2cx2urgtb86/WQs0PmKGuTV0A==
+X-Received: by 2002:a05:6214:21aa:b0:600:5dbc:c31a with SMTP id
+ t10-20020a05621421aa00b006005dbcc31amr40035qvc.7.1682950234240; 
+ Mon, 01 May 2023 07:10:34 -0700 (PDT)
+Received: from smtpclient.apple (pool-68-238-162-47.washdc.fios.verizon.net.
+ [68.238.162.47]) by smtp.gmail.com with ESMTPSA id
+ h13-20020a0cf20d000000b00618fb8baed5sm1843793qvk.84.2023.05.01.07.10.33
+ (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+ Mon, 01 May 2023 07:10:33 -0700 (PDT)
+Content-Type: text/plain;
+	charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.15\))
+From: Sean Turner <sean@sn3rd.com>
+In-Reply-To: <14A93D24-3193-4C12-99D6-17247CC7C8AD@akamai.com>
+Date: Mon, 1 May 2023 10:10:32 -0400
+Cc: TLS List <TLS@ietf.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <7F54C7FB-5B3A-4037-A448-395CB1B4C0D7@sn3rd.com>
+References: <E7A22BA0-4EDD-4B0D-B5D1-6FA7AF466398@heapingbits.net>
+ <5CBA62B3-CFD0-4062-B66D-AFA6F887128B@sn3rd.com>
+ <14A93D24-3193-4C12-99D6-17247CC7C8AD@akamai.com>
+To: Rich Salz <rsalz@akamai.com>
+X-Mailer: Apple Mail (2.3654.120.0.1.15)
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/6PRYOTy6sE0s8Zui_DhG9nrogEM>
+Subject: Re: [TLS] WGLC for draft-ietf-tls-rfc8446bis and
+ draft-ietf-tls-rfc8447bis
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Mon, 01 May 2023 14:10:39 -0000
+
+
+
+> On Apr 11, 2023, at 12:50, Salz, Rich <rsalz@akamai.com> wrote:
+>=20
+> I am commenting on 8447bis. This document is just about ready to move =
+forward, but two fixes are needed.
+>=20
+> Why there are Notes still in the doc (e.g., near end of section 6 it =
+says about weaker elliptic curves) and think those should be resolved, =
+one way or another, before advancing out of the WG.
+
+There were still notes in s5 and s6 to draw attention to cipher suite =
+listing in light of I-D.ietf-tls-deprecate-obsolete-kex and I guess now =
+John=E2=80=99s I-D too.  Joe and I will circle with those authors to =
+make sure we have the appropriate coverage.
+
+> Sec 7 adds a note that says the experts "will highly encourage =
+registrants to provide a link" while Sec 13 says experts "ensure the =
+specification is publicly available."  So is that SHOULD or MUST?  (And =
+s/highly/strongly/ IMO)
+
+I can get behind s/highly/strongly:
+https://github.com/tlswg/rfc8447bis/pull/39
+
+This tweak was introduced as a result of discussions in Philly (IETF115) =
+to address David Schinazi=E2=80=99s comment at the mic. If I remember =
+correctly, the discussion was that there=E2=80=99s not really a concern =
+about exhausting the registry space because it=E2=80=99s a =E2=80=9Cstring=
+" registry, but we still wanted the DEs to make sure the structure is =
+followed, i.e., "EXPORTER:=E2=80=9D is included. So =E2=80=A6 in some =
+respects I think of it as a SHOULD, but then that does clash with s13.
+
+I guess the question is as DE, is the guidance going to lead to =
+problems?
+
+> A nit, this line appears multiple times:
+>       Setting a "Recommended" column value to Y or D requires =
+Standards
+> There should probably be quotes around the letters Y and D, for =
+consistency with other text.
+
+I hope I got =E2=80=98em all here:
+https://github.com/tlswg/rfc8447bis/pull/38
+
+Cheers,
+
+> A post IETF 116 bump to make sure folks get their reviews in. If you =
+look at the diffs from RFC 8446 you can see not that much has changed. =
+We will also take =E2=80=9CI read it and it looks good=E2=80=9D =
+response.=20
+>=20
+>=20
+> Cheers,
+> spt
+>=20
+>=20
+>> On Mar 28, 2023, at 21:00, Christopher Wood <caw@heapingbits.net =
+<mailto:caw@heapingbits.net>> wrote:
+>>=20
+>> As mentioned during yesterday's meeting, this email starts the =
+working group last call for "The Transport Layer Security (TLS) Protocol =
+Version 1.3" and "IANA Registry Updates for TLS and DTLS=E2=80=9D I-Ds, =
+located here:
+>>=20
+>> - =
+https://urldefense.com/v3/__https://datatracker.ietf.org/doc/draft-ietf-tl=
+s-rfc8446bis__;!!GjvTz_vk!Ulz2iHrqiHDTnXaSY0-d3Vo3dX-wtwR6OtahB_aLeEKhAfPj=
+4rRfFY4jViJ3R9YUrgSyiMh7$ =
+<https://urldefense.com/v3/__https://datatracker.ietf.org/doc/draft-ietf-t=
+ls-rfc8446bis__;!!GjvTz_vk!Ulz2iHrqiHDTnXaSY0-d3Vo3dX-wtwR6OtahB_aLeEKhAfP=
+j4rRfFY4jViJ3R9YUrgSyiMh7$>=20
+>> - =
+https://urldefense.com/v3/__https://datatracker.ietf.org/doc/draft-ietf-tl=
+s-rfc8447bis__;!!GjvTz_vk!Ulz2iHrqiHDTnXaSY0-d3Vo3dX-wtwR6OtahB_aLeEKhAfPj=
+4rRfFY4jViJ3R9YUrjrMdAm2$ =
+<https://urldefense.com/v3/__https://datatracker.ietf.org/doc/draft-ietf-t=
+ls-rfc8447bis__;!!GjvTz_vk!Ulz2iHrqiHDTnXaSY0-d3Vo3dX-wtwR6OtahB_aLeEKhAfP=
+j4rRfFY4jViJ3R9YUrjrMdAm2$>=20
+>>=20
+>> The WG Last Call will end on April 18, 2023.
+>>=20
+>> Please review the documents and submit issues or pull requests via =
+the GitHub repositories, which can be found at:
+>>=20
+>> - =
+https://urldefense.com/v3/__https://github.com/tlswg/tls13-spec__;!!GjvTz_=
+vk!Ulz2iHrqiHDTnXaSY0-d3Vo3dX-wtwR6OtahB_aLeEKhAfPj4rRfFY4jViJ3R9YUrj6Gs5p=
+8$ =
+<https://urldefense.com/v3/__https://github.com/tlswg/tls13-spec__;!!GjvTz=
+_vk!Ulz2iHrqiHDTnXaSY0-d3Vo3dX-wtwR6OtahB_aLeEKhAfPj4rRfFY4jViJ3R9YUrj6Gs5=
+p8$>=20
+>> - =
+https://urldefense.com/v3/__https://github.com/tlswg/rfc8447bis__;!!GjvTz_=
+vk!Ulz2iHrqiHDTnXaSY0-d3Vo3dX-wtwR6OtahB_aLeEKhAfPj4rRfFY4jViJ3R9YUrpamqVl=
+6$ =
+<https://urldefense.com/v3/__https://github.com/tlswg/rfc8447bis__;!!GjvTz=
+_vk!Ulz2iHrqiHDTnXaSY0-d3Vo3dX-wtwR6OtahB_aLeEKhAfPj4rRfFY4jViJ3R9YUrpamqV=
+l6$>=20
+>>=20
+>> Alternatively, you can also send your comments to tls@ietf.org =
+<mailto:tls@ietf.org>.
+>>=20
+>> Thanks,
+>> Chris
+>> _______________________________________________
+>> TLS mailing list
+>> TLS@ietf.org <mailto:TLS@ietf.org>
+>> =
+https://urldefense.com/v3/__https://www.ietf.org/mailman/listinfo/tls__;!!=
+GjvTz_vk!Ulz2iHrqiHDTnXaSY0-d3Vo3dX-wtwR6OtahB_aLeEKhAfPj4rRfFY4jViJ3R9YUr=
+jkidxUX$ =
+<https://urldefense.com/v3/__https://www.ietf.org/mailman/listinfo/tls__;!=
+!GjvTz_vk!Ulz2iHrqiHDTnXaSY0-d3Vo3dX-wtwR6OtahB_aLeEKhAfPj4rRfFY4jViJ3R9YU=
+rjkidxUX$>=20
+>=20
+>=20
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org <mailto:TLS@ietf.org>
+> =
+https://urldefense.com/v3/__https://www.ietf.org/mailman/listinfo/tls__;!!=
+GjvTz_vk!Ulz2iHrqiHDTnXaSY0-d3Vo3dX-wtwR6OtahB_aLeEKhAfPj4rRfFY4jViJ3R9YUr=
+jkidxUX$ =
+<https://urldefense.com/v3/__https://www.ietf.org/mailman/listinfo/tls__;!=
+!GjvTz_vk!Ulz2iHrqiHDTnXaSY0-d3Vo3dX-wtwR6OtahB_aLeEKhAfPj4rRfFY4jViJ3R9YU=
+rjkidxUX$>=20
+>=20
+>=20
+>=20
+

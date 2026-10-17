@@ -1,0 +1,137 @@
+Return-Path: <kaduk@mit.edu>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 66357120111
+ for <tls@ietfa.amsl.com>; Fri, 18 Oct 2019 16:55:36 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -4.199
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.199 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, RCVD_IN_DNSWL_MED=-2.3, SPF_HELO_NONE=0.001,
+ SPF_PASS=-0.001, URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 3WimqODuL9X3 for <tls@ietfa.amsl.com>;
+ Fri, 18 Oct 2019 16:55:34 -0700 (PDT)
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 4DE141200DE
+ for <tls@ietf.org>; Fri, 18 Oct 2019 16:55:34 -0700 (PDT)
+Received: from kduck.mit.edu ([24.16.140.251]) (authenticated bits=56)
+ (User authenticated as kaduk@ATHENA.MIT.EDU)
+ by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x9INtMYX010517
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Fri, 18 Oct 2019 19:55:25 -0400
+Date: Fri, 18 Oct 2019 16:55:21 -0700
+From: Benjamin Kaduk <kaduk@mit.edu>
+To: RFC Errata System <rfc-editor@rfc-editor.org>
+Cc: ekr@rtfm.com, rdd@cert.org, caw@heapingbits.net, joe@salowey.net,
+ sean+ietf@sn3rd.com, lperrin@bellaliant.net, tls@ietf.org
+Message-ID: <20191018235521.GO43312@kduck.mit.edu>
+References: <20191012042149.A9B79B801A8@rfc-editor.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191012042149.A9B79B801A8@rfc-editor.org>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/rIA-EntFOgw4ay1ANl-WgmQsTqQ>
+Subject: Re: [TLS] [Technical Errata Reported] RFC8446 (5874)
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Fri, 18 Oct 2019 23:55:36 -0000
+
+On Fri, Oct 11, 2019 at 09:21:49PM -0700, RFC Errata System wrote:
+> The following errata report has been submitted for RFC8446,
+> "The Transport Layer Security (TLS) Protocol Version 1.3".
+> 
+> --------------------------------------
+> You may review the report below and at:
+> https://www.rfc-editor.org/errata/eid5874
+> 
+> --------------------------------------
+> Type: Technical
+> Reported by: Mr Laurie Perrin <lperrin@bellaliant.net>
+> 
+> Section: 5.1
+> 
+> Original Text
+> -------------
+> ...
+> 
+>    Application Data messages contain data that is opaque to TLS.
+>    Application Data messages are always protected.  Zero-length
+>    fragments of Application Data MAY be sent, as they are potentially
+>    useful as a traffic analysis countermeasure.  Application Data
+>    fragments MAY be split across multiple records or coalesced into a
+>    single record.
+> 
+> Corrected Text
+> --------------
+> ...
+> 
+>    Application Data messages contain data that is opaque to TLS.
+>    Application Data messages are always protected.  Zero-length
+>    fragments of Application Data (i.e. those encapsulating an
+>    TLSInnerPlaintext record having a content field of length zero)
+>    MAY be sent, as they are potentially useful as a traffic analysis
+>    countermeasure. Application Data fragments MAY be split across
+>    multiple records or coalesced into a single record.
+
+I think at most this could be Editorial/Hold For Document Update, though
+the added phrasing can probably be wordsmithed a bit more, perhaps "(i.e.,
+TLSInnerPlaintext records of type application_data with zero-length
+content)".
+
+> Notes
+> -----
+> In the interest of clarity, it may be prudent to specify the type of record for
+> which a fragment of length zero is being considered - it cannot be that of the
+> TLSCiphertext itself, for "Application Data messages are always protected,"
+> therefore I infer this relates to the TLSInnerPlaintext content field (of
+> length "TLSPlaintext.length") - i.e. to the TLSPlaintext fragment.
+
+As an implementor I think it's hard to be confused, but maybe others feel
+otherwise.
+
+-Ben
+
+> Note: This comment also applies to previous versions of the TLS specification,
+> in particular with the introduction of the respective text concerning zero-length
+> fragments in RFC 5246. In TLS 1.2, this would be the GenericXXCipher content
+> field of length "TLSCompressed.length" - i.e. to the TLSCompressed fragment.
+> 
+> Note: The implications of zero-length records must be considered with respect to
+> potential vectors for denial of service.
+> 
+> Instructions:
+> -------------
+> This erratum is currently posted as "Reported". If necessary, please
+> use "Reply All" to discuss whether it should be verified or
+> rejected. When a decision is reached, the verifying party  
+> can log in to change the status and edit the report, if necessary. 
+> 
+> --------------------------------------
+> RFC8446 (draft-ietf-tls-tls13-28)
+> --------------------------------------
+> Title               : The Transport Layer Security (TLS) Protocol Version 1.3
+> Publication Date    : August 2018
+> Author(s)           : E. Rescorla
+> Category            : PROPOSED STANDARD
+> Source              : Transport Layer Security
+> Area                : Security
+> Stream              : IETF
+> Verifying Party     : IESG
+

@@ -1,0 +1,207 @@
+Return-Path: <hkario@redhat.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 6C9CE127735;
+ Fri, 16 Mar 2018 04:36:57 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -4.201
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.201 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, RCVD_IN_DNSWL_MED=-2.3, SPF_PASS=-0.001,
+ T_RP_MATCHES_RCVD=-0.01, T_SPF_HELO_PERMERROR=0.01]
+ autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 2GXqqWLZbRzC; Fri, 16 Mar 2018 04:36:55 -0700 (PDT)
+Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id C4C5312783A;
+ Fri, 16 Mar 2018 04:36:55 -0700 (PDT)
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.5])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mx1.redhat.com (Postfix) with ESMTPS id DE405401CC41;
+ Fri, 16 Mar 2018 11:36:54 +0000 (UTC)
+Received: from pintsize.usersys.redhat.com (unknown [10.43.21.223])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 7A064C1FE0;
+ Fri, 16 Mar 2018 11:36:53 +0000 (UTC)
+From: Hubert Kario <hkario@redhat.com>
+To: Benjamin Kaduk <kaduk@mit.edu>
+Cc: Ilari Liusvaara <ilariliusvaara@welho.com>, TLS WG <tls@ietf.org>,
+ iesg@ietf.org
+Date: Fri, 16 Mar 2018 12:36:47 +0100
+Message-ID: <1599222.i0yvkzIY5B@pintsize.usersys.redhat.com>
+In-Reply-To: <20180315215147.GP55987@kduck.kaduk.org>
+References: <6112806.hxzZ6NivhB@pintsize.usersys.redhat.com>
+ <1937539.vLgMNW4b7C@pintsize.usersys.redhat.com>
+ <20180315215147.GP55987@kduck.kaduk.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="nextPart1864330.xGWef1eTLO";
+ micalg="pgp-sha512"; protocol="application/pgp-signature"
+X-Scanned-By: MIMEDefang 2.79 on 10.11.54.5
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16
+ (mx1.redhat.com [10.11.55.5]); Fri, 16 Mar 2018 11:36:54 +0000 (UTC)
+X-Greylist: inspected by milter-greylist-4.5.16 (mx1.redhat.com [10.11.55.5]); 
+ Fri, 16 Mar 2018 11:36:54 +0000 (UTC) for IP:'10.11.54.5'
+ DOMAIN:'int-mx05.intmail.prod.int.rdu2.redhat.com'
+ HELO:'smtp.corp.redhat.com' FROM:'hkario@redhat.com' RCPT:''
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/iuhsOeDxmQ9V8J5pntCg9164L4M>
+Subject: Re: [TLS] draft-ietf-tls-tls13-26 is vulnerable to externally set
+ PSK identity enumeration
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Fri, 16 Mar 2018 11:36:57 -0000
+
+--nextPart1864330.xGWef1eTLO
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
+
+On Thursday, 15 March 2018 22:51:49 CET Benjamin Kaduk wrote:
+> On Thu, Mar 15, 2018 at 12:25:38PM +0100, Hubert Kario wrote:
+> > On Wednesday, 14 March 2018 21:13:29 CET Benjamin Kaduk wrote:
+> > > On Wed, Mar 14, 2018 at 12:46:25PM +0100, Hubert Kario wrote:
+> > > > On Wednesday, 14 March 2018 03:02:10 CET Benjamin Kaduk wrote:
+> > > > > It seems like we get ourselves in trouble by allowing multiple
+> > > > > external PSKs to be present.  If we allowed at most one external
+> > > > > PSK in a given ClientHello, then aborting the handshake on binder
+> > > > > failure would be the correct choice, as discovering a valid ident=
+ity
+> > > > > would require discovering a valid key/password as well.
+> > > >=20
+> > > > but identity/binder may be invalid only because the server was
+> > > > restarted
+> > > > and generated a new in-memory key; we don't want to abort connection
+> > > > in
+> > > > such
+> > >=20
+> > > For an external PSK?  That hardly sounds like "external" to me...
+> >=20
+> > not my fault that what we called just "PSK"s in TLS 1.2 is now "external
+> > PSKs" in TLS 1.3... I wanted to be unambiguous, so please, can we discu=
+ss
+> > the issue, not semiotics?
+>=20
+> Sure!  (I still don't see how an ephemeral in-server key would be
+> used as/with an external PSK.)
+
+aah, that's were the confusion is, I was talking ("only because the server =
+was=20
+restarted") about resumption PSKs, I didn't think you were proposing ("then=
+=20
+aborting the handshake on binder failure would be the correct choice") that=
+=20
+behaviour only for external PSKs =E2=80=94 you can't differentiate resumpti=
+on PSKs=20
+based on being able to verify the identify (assuming it's a RFC 5077-style=
+=20
+ticket) because you can't be sure you have all the keys to verify them
+(not to mention that the tickets could have been established by a TLS=20
+implementation that was used on this server yesterday or the identity can b=
+e a=20
+database lookup key, session_id style)
+
+so there's no reliable way to say that, yes, this identity is or is not a=20
+resumption ticket, if I can't decrypt it
+
+> > > > situation, continuing to a regular handshake is necessary then for
+> > > > good
+> > > > user experience (and likely, even security, given the history of TLS
+> > > > version fallbacks)
+> > > >=20
+> > > > > Disallowing multiple external PSKs would make migration scenarios=
+ a
+> > > > > little more annoying, but perhaps not fatally so.
+> > > >=20
+> > > > not only migration, but session resumption and regular PSK at the s=
+ame
+> > > > time
+> > > > too - for session resumption you may not do DH, while for initial
+> > > > handshake
+> > > > with PSK you may want to to gain PFS...
+> > > >=20
+> > > > so as tempting as the removal of multiple PSKs from ClientHello is,
+> > > > I'm
+> > > > afraid the fallout is far too large to do it
+> > >=20
+> > > I did not say removal of multiple PSKs, rather removal of multiple
+> > > *external* PSKs.
+> >=20
+> > we do not have a reliable mechanism of differentiating between external
+> > and
+> > resumption PSKs while parsing Client Hello
+>=20
+> Well, a valid external PSK (identity) the server will of course
+> recognize, and we have a SHOULD-level requirement that the
+> obfuscated_ticket_age is zero for external PSKs.  I haven't gotten
+> to think through whether there is still potential for information
+> leakage about external PSK identities, but it seems like there would
+> not be, provided that the server prefers resumption to external-PSK
+> full handshakes.
+
+SHOULD means we can't depend on it =E2=80=94 it's not reliable
+
+if we say that resumption PSKs MUST have zero age and resumption ticket MUS=
+T=20
+NOT be zero (even if that means fudging the time a bit), then yes, there wo=
+uld=20
+be a way to differentiate them
+
+that doesn't help against attackers that have one valid identity and want t=
+o=20
+find out other identities configured on the server though
+
+I'd really prefer we exhaust other possibilities before sacrificing support=
+=20
+for multiple external PSK. With TLS 1.2 we had ticket_hint to guide PSK=20
+selection, now we're left with just server IP or hostname.
+(I do admit that requiring one external PSK, having way to identify them wi=
+th=20
+no false positives and negatives, and ignoring it completely in case of bin=
+der=20
+verification failure does look solid)
+=2D-=20
+Regards,
+Hubert Kario
+Senior Quality Engineer, QE BaseOS Security team
+Web: www.cz.redhat.com
+Red Hat Czech s.r.o., Purky=C5=88ova 115, 612 00  Brno, Czech Republic
+--nextPart1864330.xGWef1eTLO
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEYeeuxEU+3unL/K+dkqjRuAHS9fUFAlqrrE8ACgkQkqjRuAHS
+9fWDlA//ZZmfHFOtwe/jsvKAUhLMEdelABuqrtw3UC/4ApXIWUY6ycxj8qJAgCj9
+YT3FzgtBuZAlofuOK5qBkMoWkwf/i0RwVojcylypt+3t24WhOo55hKdyj9xTUxZL
+sBXA4efKOE+LYhaLsZrIzrymLM46BFJQrJwEdCOZOxnU15df54/E9HHKJXohDfWB
+wD6bSExMDRCHxx3cIVfdbLcbcLlWAA1DgOPSDX5X7tmlK7xYwVZ+C0fk53nBbC9Y
+JHbA/0dz42vtDpoKx174j2Ge4dXozcD4yVYOv++XbLS3rDzsJZsI+X1xfz/NooYz
+H4ow9N5ZP6/nh0aIQmAGGUCS2JvwdyciYYhvPxGuPIzGIsZUhUdgDngdP6pRZ9yO
+MU9Ew+F+4yJ6Ly3BfMvgrlIlmpU1TPb3WZJvyikpP7gX0CjM37nwx/zc3kzWbrYe
+aUDYgtztKiEvViE+YiN61ZZRc+upv+8OaE4twSkeBrmpKBkoygxmjOj0Xe28jefH
+WJaPiNitaaBVSMJRDfb6pipjHO5Ls+R2ZrYMkGUc/YW0/ELGhg6SRnSE1pMyiZcR
+KGVT57rXWm+p+C/M0zguu8rI5hDuoMpyfirgzIC8dSi8kvphx+K+NiHznf5nu4tX
+cLPA+9AcCH5G09Q+LqxAVybNCMF17r9qFlKZlO7MnU5iN7tYJCo=
+=TTCn
+-----END PGP SIGNATURE-----
+
+--nextPart1864330.xGWef1eTLO--
+
+
+

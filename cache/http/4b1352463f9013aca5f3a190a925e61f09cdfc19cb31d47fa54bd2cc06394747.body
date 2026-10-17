@@ -1,0 +1,243 @@
+Return-Path: <davidben@google.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 85C50C1C637B
+	for <tls@ietfa.amsl.com>; Thu, 17 Oct 2024 13:19:35 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -9.404
+X-Spam-Level: 
+X-Spam-Status: No, score=-9.404 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIMWL_WL_HIGH=-0.148, DKIM_SIGNED=0.1,
+	DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1,
+	HEADER_FROM_DIFFERENT_DOMAINS=0.25, HTML_MESSAGE=0.001,
+	RCVD_IN_DNSWL_NONE=-0.0001, RCVD_IN_ZEN_BLOCKED_OPENDNS=0.001,
+	SPF_HELO_NONE=0.001, SPF_PASS=-0.001, T_SCC_BODY_TEXT_LINE=-0.01,
+	URIBL_DBL_BLOCKED_OPENDNS=0.001, URIBL_ZEN_BLOCKED_OPENDNS=0.001,
+	USER_IN_DEF_SPF_WL=-7.5] autolearn=unavailable autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+	header.d=chromium.org
+Received: from mail.ietf.org ([50.223.129.194])
+	by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id fH5pMOyFraE8 for <tls@ietfa.amsl.com>;
+	Thu, 17 Oct 2024 13:19:30 -0700 (PDT)
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com
+ [IPv6:2a00:1450:4864:20::62e])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by ietfa.amsl.com (Postfix) with ESMTPS id 716A4C1CAE6B
+	for <tls@ietf.org>; Thu, 17 Oct 2024 13:19:30 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id
+ a640c23a62f3a-a9a1b71d7ffso198069466b.1
+        for <tls@ietf.org>; Thu, 17 Oct 2024 13:19:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1729196368; x=1729801168; darn=ietf.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=gHM6mPH6ZWPl2gEEQ1RT3PNvsOHjzGWp9ApjBkfAiMA=;
+        b=I/FVgNBqYStwIk/xa1T2Rph0beu0gSsDNInLv1fbvFz0P8m4/yBqjPAk13SMRgbAWc
+         93wkb/BK8Kf600JFG0HxVTwbu4YviysKHfHDNZa9B2K6pOpq2rVBOHA1XGYCRqcHAsIM
+         8XYqYc5JtfdaIXewKq/x5fMRMRBq9FqfiyL8Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729196368; x=1729801168;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gHM6mPH6ZWPl2gEEQ1RT3PNvsOHjzGWp9ApjBkfAiMA=;
+        b=OcqhyXR4an590mx0VeO9m4CmC1LML+b0OPBpJsfqGVEpiwlg0fLgkelfpMPVPE9BEw
+         3OUKhkjRO2g/ZEzo8rZE4r6iZ6Uc/HX+A1gj0q5VK7uhyZ8i8O5IB+bvjqI/Q3A4ZGLs
+         FOfV/6hyDdLi2dakB0U3m9Ys3mCC8QpFN3+8CWAaGikAXpGUZ/4OciSSOzFS91MBLbyc
+         xRs1HW/Miqq79W6xfITuJRZscxplz9pXN1DXVyPbglOuP4t9o44FNJxJhbeCCYfZ83Yg
+         O1AG28QdI5/vcTYvhlnxzfB357mHKWhH/rKHtp8Ejf5GhhnbCRiBIf0FhEHMcq6AtUEC
+         V6xw==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCUgneqTsp1PbvkAVfZ8cquViJ+DP5E0SqHSaz0MmpvURWwo9c9GR98CEG21LhIHKCNm9jE=@ietf.org
+X-Gm-Message-State: AOJu0YzkFkOXN/if+/OcFejbDgMA20n5jpTpLNKQ6ugGh9wUFaBx9/gF
+	PQDk86rLApB4ZaTklvFPqN3JhAYMBLsEcwCymfOvU0+i7EKLsLF9Gq1UOGN6YSYGcXCqx9N6/qi
+	NRYBK6v6YBZqbcODz5gMPH8osqEPe85kiWkk=
+X-Google-Smtp-Source: 
+ AGHT+IG5PobsHPiIQ+aGa3ewwWlnBcbk0KklvGXMbLn9/QVJU0NbdmD47cPYhzwfxBqfyu5/KLC6BojuCmAhzwKSnGg=
+X-Received: by 2002:a17:907:97c1:b0:a9a:3dc0:8911 with SMTP id
+ a640c23a62f3a-a9a69a7621amr3628466b.16.1729196367833; Thu, 17 Oct 2024
+ 13:19:27 -0700 (PDT)
+MIME-Version: 1.0
+References: <20241017191936.788711BC14D@rfcpa.rfc-editor.org>
+In-Reply-To: <20241017191936.788711BC14D@rfcpa.rfc-editor.org>
+From: David Benjamin <davidben@chromium.org>
+Date: Thu, 17 Oct 2024 13:19:14 -0700
+Message-ID: 
+ <CAF8qwaBjtw_jbdue=aN2K_aNUjdAV1E--=XxQrQXccNLfG1SzQ@mail.gmail.com>
+To: RFC Errata System <rfc-editor@rfc-editor.org>
+Content-Type: multipart/alternative; boundary="0000000000004119340624b1e7f4"
+Message-ID-Hash: HUAM3GZDPINSIYOYLMJOFHU6N4GZMVUP
+X-Message-ID-Hash: HUAM3GZDPINSIYOYLMJOFHU6N4GZMVUP
+X-MailFrom: davidben@google.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+CC: Paul Wouters <paul.wouters@aiven.io>, IESG <iesg@ietf.org>,
+ "<tls@ietf.org>" <tls@ietf.org>
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Re=3A_=5BErrata_Held_for_Document_Update=5D_RFC8446_=286?=
+	=?utf-8?q?147=29?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/V1bBvbjjYmIDXsA_KE3NtKO8wiA>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+--0000000000004119340624b1e7f4
+Content-Type: text/plain; charset="UTF-8"
+
+I don't think this erratum is correct. This is due to some weird allowance
+in PSK acceptance. You are allowed to use the PSK with a different cipher
+suite if the hash portion matches. But early data requires an exact match
+on top of it.
+
+On Thu, Oct 17, 2024, 12:21 RFC Errata System <rfc-editor@rfc-editor.org>
+wrote:
+
+> The following errata report has been held for document update
+> for RFC8446, "The Transport Layer Security (TLS) Protocol Version 1.3".
+>
+> --------------------------------------
+> You may review the report below and at:
+> https://www.rfc-editor.org/errata/eid6147
+>
+> --------------------------------------
+> Status: Held for Document Update
+> Type: Editorial
+>
+> Reported by: Ben Smyth <research@bensmyth.com>
+> Date Reported: 2020-04-29
+> Held by: Paul Wouters (IESG)
+>
+> Section: 4.2.10.
+>
+> Original Text
+> -------------
+> In order to accept early data, the server MUST have accepted a PSK
+> cipher suite....In addition, it MUST verify that the
+> following values are the same as those associated with the
+> selected PSK:
+>
+> ...
+>
+> -  The selected cipher suite
+>
+> Corrected Text
+> --------------
+>
+>
+> Notes
+> -----
+> Accepting the "PSK cipher suite" surely implies the PSK is associated with
+> the cipher suite, hence,
+> "The selected cipher suite" can be dropped.
+>
+> Paul Wouters(SEC AD): The text was changed a little to solve this issue
+>
+> --------------------------------------
+> RFC8446 (draft-ietf-tls-tls13-28)
+> --------------------------------------
+> Title               : The Transport Layer Security (TLS) Protocol Version
+> 1.3
+> Publication Date    : August 2018
+> Author(s)           : E. Rescorla
+> Category            : PROPOSED STANDARD
+> Source              : Transport Layer Security
+> Stream              : IETF
+> Verifying Party     : IESG
+>
+> _______________________________________________
+> TLS mailing list -- tls@ietf.org
+> To unsubscribe send an email to tls-leave@ietf.org
+>
+
+--0000000000004119340624b1e7f4
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"auto"><div>I don&#39;t think this erratum is correct. This is d=
+ue to some weird allowance in PSK acceptance. You are allowed to use the PS=
+K with a different cipher suite if the hash portion matches. But early data=
+ requires an exact match on top of it.<br><br><div class=3D"gmail_quote"><d=
+iv dir=3D"ltr" class=3D"gmail_attr">On Thu, Oct 17, 2024, 12:21 RFC Errata =
+System &lt;<a href=3D"mailto:rfc-editor@rfc-editor.org">rfc-editor@rfc-edit=
+or.org</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"m=
+argin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex">The following=
+ errata report has been held for document update <br>
+for RFC8446, &quot;The Transport Layer Security (TLS) Protocol Version 1.3&=
+quot;. <br>
+<br>
+--------------------------------------<br>
+You may review the report below and at:<br>
+<a href=3D"https://www.rfc-editor.org/errata/eid6147" rel=3D"noreferrer nor=
+eferrer" target=3D"_blank">https://www.rfc-editor.org/errata/eid6147</a><br=
+>
+<br>
+--------------------------------------<br>
+Status: Held for Document Update<br>
+Type: Editorial<br>
+<br>
+Reported by: Ben Smyth &lt;<a href=3D"mailto:research@bensmyth.com" target=
+=3D"_blank" rel=3D"noreferrer">research@bensmyth.com</a>&gt;<br>
+Date Reported: 2020-04-29<br>
+Held by: Paul Wouters (IESG)<br>
+<br>
+Section: 4.2.10.<br>
+<br>
+Original Text<br>
+-------------<br>
+In order to accept early data, the server MUST have accepted a PSK<br>
+cipher suite....In addition, it MUST verify that the<br>
+following values are the same as those associated with the<br>
+selected PSK:<br>
+<br>
+...<br>
+<br>
+-=C2=A0 The selected cipher suite<br>
+<br>
+Corrected Text<br>
+--------------<br>
+<br>
+<br>
+Notes<br>
+-----<br>
+Accepting the &quot;PSK cipher suite&quot; surely implies the PSK is associ=
+ated with the cipher suite, hence, <br>
+&quot;The selected cipher suite&quot; can be dropped.<br>
+<br>
+Paul Wouters(SEC AD): The text was changed a little to solve this issue<br>
+<br>
+--------------------------------------<br>
+RFC8446 (draft-ietf-tls-tls13-28)<br>
+--------------------------------------<br>
+Title=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0: The Transport=
+ Layer Security (TLS) Protocol Version 1.3<br>
+Publication Date=C2=A0 =C2=A0 : August 2018<br>
+Author(s)=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0: E. Rescorla<br>
+Category=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 : PROPOSED STANDARD<br>
+Source=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 : Transport Layer Se=
+curity<br>
+Stream=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 : IETF<br>
+Verifying Party=C2=A0 =C2=A0 =C2=A0: IESG<br>
+<br>
+_______________________________________________<br>
+TLS mailing list -- <a href=3D"mailto:tls@ietf.org" target=3D"_blank" rel=
+=3D"noreferrer">tls@ietf.org</a><br>
+To unsubscribe send an email to <a href=3D"mailto:tls-leave@ietf.org" targe=
+t=3D"_blank" rel=3D"noreferrer">tls-leave@ietf.org</a><br>
+</blockquote></div></div></div>
+
+--0000000000004119340624b1e7f4--
+

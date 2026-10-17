@@ -1,0 +1,118 @@
+Return-Path: <frodo@baggins.org>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id D7953131B7A
+ for <tls@ietfa.amsl.com>; Wed,  5 Jul 2017 01:40:27 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.099
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.099 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, RCVD_IN_DNSWL_LOW=-0.7, RCVD_IN_SORBS_SPAM=0.5,
+ URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 7QbCVnojFU9R for <tls@ietfa.amsl.com>;
+ Wed,  5 Jul 2017 01:40:25 -0700 (PDT)
+Received: from mx496502.smtp-engine.com (mx496502.smtp-engine.com
+ [IPv6:2001:8d8:968:7d00::19:7e53])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 2AAAA131B8D
+ for <tls@ietf.org>; Wed,  5 Jul 2017 01:40:21 -0700 (PDT)
+Received: from mail-io0-f178.google.com (mail-io0-f178.google.com
+ [209.85.223.178])
+ by mx496502.smtp-engine.com (Postfix) with ESMTPSA id 3BDA75C3
+ for <tls@ietf.org>; Wed,  5 Jul 2017 09:40:15 +0100 (BST)
+Received: by mail-io0-f178.google.com with SMTP id h64so81979251iod.0
+ for <tls@ietf.org>; Wed, 05 Jul 2017 01:40:15 -0700 (PDT)
+X-Gm-Message-State: AIVw111aR0XEi+iH2kb+ievZb+AMFCA8KwYkS+cpkQI6KnC/8rlbDLZu
+ fxKSjulbNXK0s4dBUAU33AU7k1zFHQ==
+X-Received: by 10.107.166.129 with SMTP id p123mr19811446ioe.15.1499244014317; 
+ Wed, 05 Jul 2017 01:40:14 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 10.79.33.66 with HTTP; Wed, 5 Jul 2017 01:40:13 -0700 (PDT)
+In-Reply-To: <20170704105050.zqclbfje2rvly5dm@LK-Perkele-VII>
+References: <CABcZeBN7vJXZJadNzPR5RbWwZpgM+NgjW7FvuJW+Q5cNUu6_FQ@mail.gmail.com>
+ <CAMoSCWYPwvb6xn40EEKn_g-AD4ZKsUeAbvEScd7P248M7Troow@mail.gmail.com>
+ <20170704105050.zqclbfje2rvly5dm@LK-Perkele-VII>
+From: Matt Caswell <frodo@baggins.org>
+Date: Wed, 5 Jul 2017 09:40:13 +0100
+X-Gmail-Original-Message-ID: <CAMoSCWa6p_hPhA54tR7CSHsQLbBgwv31R5t5gXCFizXy4u23yg@mail.gmail.com>
+Message-ID: <CAMoSCWa6p_hPhA54tR7CSHsQLbBgwv31R5t5gXCFizXy4u23yg@mail.gmail.com>
+To: "tls@ietf.org" <tls@ietf.org>
+Content-Type: text/plain; charset="UTF-8"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/jDijEUDM7TnL9e4bqGFBD7uTPI4>
+Subject: Re: [TLS] draft-ietf-tls-tls13-21 posted
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Wed, 05 Jul 2017 08:40:28 -0000
+
+On 4 July 2017 at 11:50, Ilari Liusvaara <ilariliusvaara@welho.com> wrote:
+> On Tue, Jul 04, 2017 at 11:25:35AM +0100, Matt Caswell wrote:
+>> On 4 July 2017 at 01:01, Eric Rescorla <ekr@rtfm.com> wrote:
+>> > - Modifying the key derivation for PSKs so that each session ticket
+>> >   is associated with a distinct PSK.
+>>
+>> Draft-21 says this about the ticket nonce:
+>>
+>>           opaque ticket_nonce<1..255>;
+>> ...
+>>    ticket_nonce  A unique per-ticket value.
+>>
+>>
+>> Within what context is "uniqueness" required? I am assuming that
+>> uniqueness within the context of a single TLS connection is all that
+>> is needed?
+>
+> Yes, It has to be unique within a connection.
+>
+>> The nonce can be anything between 1 and 255 bytes long. There is no
+>> guidance on a suitable length, so I am assuming I can choose anything
+>> I like as long as the uniqueness constraint is met. OpenSSL
+>> (currently) only ever issues a single ticket per TLS connection so is
+>> a single 0 byte sufficient?
+>
+> Yes, if you only have one ticket per connection, then any legal fixed
+> value is acceptable.
+
+Thanks. Another slightly confusing thing about the way this is
+currently specified:
+
+The spec says:
+
+   The PSK associated with the ticket is computed as:
+
+       HKDF-Expand-Label(resumption_master_secret,
+                        "resumption", ticket_nonce, Hash.length)
+
+Where HKDF-Expand-Label is defined as:
+
+       HKDF-Expand-Label(Secret, Label, HashValue, Length) =
+            HKDF-Expand(Secret, HkdfLabel, Length)
+...
+        Note that in some cases a zero- length HashValue (indicated by
+"") is passed to HKDF-Expand-Label.
+
+Note that the third parameter here is explicitly expected to be either
+a hash or "" (i.e. zero length). But in the ticket_nonce case this is
+NOT a hash value. AFAICT this is the only time in the spec that
+something other than a hash or "" is used for this parameter. I'm
+assuming this is intentional and we are supposed to pass the nonce
+through "as is" (i.e. there is no implicit requirement to hash it
+first). Probably the definition of HKDF-Expand-Label needs to be
+updated to allow for this usage.
+
+Matt
+

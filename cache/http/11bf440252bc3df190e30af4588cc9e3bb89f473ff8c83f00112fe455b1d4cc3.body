@@ -1,0 +1,258 @@
+Return-Path: <sfluhrer@cisco.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 8552112008B
+ for <tls@ietfa.amsl.com>; Fri, 21 Feb 2020 13:24:45 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -14.498
+X-Spam-Level: 
+X-Spam-Status: No, score=-14.498 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ DKIM_VALID_AU=-0.1, RCVD_IN_DNSWL_HI=-5, RCVD_IN_MSPIKE_H3=0.001,
+ RCVD_IN_MSPIKE_WL=0.001, SPF_PASS=-0.001, URIBL_BLOCKED=0.001,
+ USER_IN_DEF_DKIM_WL=-7.5] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=cisco.com header.b=NVlXyay+;
+ dkim=pass (1024-bit key)
+ header.d=cisco.onmicrosoft.com header.b=R9VhQGoX
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id sR289UyrvXq7 for <tls@ietfa.amsl.com>;
+ Fri, 21 Feb 2020 13:24:43 -0800 (PST)
+Received: from rcdn-iport-7.cisco.com (rcdn-iport-7.cisco.com [173.37.86.78])
+ (using TLSv1.2 with cipher DHE-RSA-SEED-SHA (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id EE98C12008A
+ for <tls@ietf.org>; Fri, 21 Feb 2020 13:24:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=cisco.com; i=@cisco.com; l=4793; q=dns/txt; s=iport;
+ t=1582320282; x=1583529882;
+ h=from:to:cc:subject:date:message-id:references:
+ in-reply-to:content-transfer-encoding:mime-version;
+ bh=3FzO4XqpIcA0/cMGKK3N3VphtazRLHNvJqlw/q1Q+O4=;
+ b=NVlXyay+REpJWBMMJNm11Tk+6gaJe0z2HlBoNpLW364qdFIvb0gem5iW
+ I2NiGD2XQvlj/DN+5zIwaQE3aNvbkofo3aE9USRVUjQ49HC3pbgh50GrE
+ LE7ku716GLWy/VYfzsXRQswtS+pmtV67K6L6SbqBPQr/8f1aBVU4rjUfH s=;
+IronPort-PHdr: =?us-ascii?q?9a23=3A3PEqZB00EtsrHs4gsmDT+zVfbzU7u7jyIg8e44?=
+ =?us-ascii?q?YmjLQLaKm44pD+JxKGt+51ggrPWoPWo7JfhuzavrqoeFRI4I3J8RVgOIdJSw?=
+ =?us-ascii?q?dDjMwXmwI6B8vQEkP/Mf7wYjYSF8VZX1gj9Ha+YgBY?=
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0CuAADUSVBe/5JdJa1mGgEBAQEBAQE?=
+ =?us-ascii?q?BAQMBAQEBEQEBAQICAQEBAYF7gVRQBYFEIAQLKgqHUAOKcYJfmBSCUgNUCQE?=
+ =?us-ascii?q?BAQwBAS0CBAEBhEACggwkOBMCAw0BAQUBAQECAQUEbYU3DIVmAQEBAQIBEig?=
+ =?us-ascii?q?GAQElCwcBBAcEAgEIEQQBAQEeEDIdCAIEAQ0FCBqFTwMOIAGjUwKBOYhSEII?=
+ =?us-ascii?q?ngn8BAQWFKhiCDAmBOIwkGoFBP4ERR4JMPoEEAYMuGoNBgiyvJHYKgjyXAIJ?=
+ =?us-ascii?q?JiBuQSo5wm0cCBAIEBQIOAQEFgWkigVhwFYMnUBgNjh2Dc4pVdIEpizAtgQQ?=
+ =?us-ascii?q?BgQ8BAQ?=
+X-IronPort-AV: E=Sophos;i="5.70,469,1574121600"; d="scan'208";a="721030023"
+Received: from rcdn-core-10.cisco.com ([173.37.93.146])
+ by rcdn-iport-7.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA;
+ 21 Feb 2020 21:24:41 +0000
+Received: from XCH-RCD-004.cisco.com (xch-rcd-004.cisco.com [173.37.102.14])
+ by rcdn-core-10.cisco.com (8.15.2/8.15.2) with ESMTPS id 01LLOfel023955
+ (version=TLSv1.2 cipher=AES256-SHA bits=256 verify=FAIL);
+ Fri, 21 Feb 2020 21:24:41 GMT
+Received: from xhs-rtp-001.cisco.com (64.101.210.228) by XCH-RCD-004.cisco.com
+ (173.37.102.14) with Microsoft SMTP Server (TLS) id 15.0.1473.3;
+ Fri, 21 Feb 2020 15:24:40 -0600
+Received: from xhs-aln-001.cisco.com (173.37.135.118) by xhs-rtp-001.cisco.com
+ (64.101.210.228) with Microsoft SMTP Server (TLS) id 15.0.1473.3;
+ Fri, 21 Feb 2020 16:24:39 -0500
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (173.37.151.57)
+ by xhs-aln-001.cisco.com (173.37.135.118) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Fri, 21 Feb 2020 15:24:39 -0600
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NTrzjUCUbhAHFtd3N3nuGnZ2/05HXSZmMSsNj78CitmNk2EBpvFLqsBZ+wYsp1JiZ5nOIoR95TxThYYujONKHmsvJCU6OXz44G0AQHtC4uby/NHwCImH2/riRrC2wfIR7sjVUFDcQ6+ckKPWw6iaiFIbKpNePOD801K+6Q8koLgFZj4yz1T04gddfcaWYss9RlnIfzpenH3fjPCNVLzmKS/IriYD4kPKyjWLc18mY+M389BEskMQu9HhHDU8cydFCHuLjpUIeUTy2mMtA/Cx7bwOAJTmrCnrHSnHVjBPxfiSIqH3/gWxiZsgW7MvLP0Mds64parYHtYA7rg940tFLg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nHaqk9dsTVHg5MhzKDk9Vj1rruunbLRQCU1xX6L1axo=;
+ b=Xi+P0WiQrwUkpJXUEh//HXQ6dK/sJJaBaXbkOE5A3XA2Bqkl7xzm27EDgCjGGIbOZciT1ktr96dCmBqztTByEtgseM4Kbl9gOrh9sRn5S3j808Xb0uUgZs0Lb4kmeHvYn1cJOBpPvVl18EZKRo1x5LogTHjeeGxyZutFh0V0AmgGmsZA/vGdawbbwvove56AtdCWMUp+0yA8sqpfL15jTtQCvmii1DavJ3K8GHIx5NN123OSSviyIN4P8vsn/cAg3M6RG4Ls2jeM4O0qFF0Mr+QlcosDbqheQL9FvRHGEYasx5UskysmTCHnygYrK+q00V2x1/W2JusBKoe/FQ4A0g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cisco.com; dmarc=pass action=none header.from=cisco.com;
+ dkim=pass header.d=cisco.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cisco.onmicrosoft.com; 
+ s=selector2-cisco-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nHaqk9dsTVHg5MhzKDk9Vj1rruunbLRQCU1xX6L1axo=;
+ b=R9VhQGoXewijBcEpIn4DsaQhxP5mJ14zRCcLg7lIJ0qItb6EovTNlpcBY9aMWva9+OlfsVPu/fqGdIfhJ9bY+vXzECFqyXY59k1w/UU8nm8wQHnIDzklb6K20OVNhechFjZBl+BNBomxjnsdStaurIZqV7dj7ZKM1z8t+y6Dsic=
+Received: from MN2PR11MB3936.namprd11.prod.outlook.com (10.255.180.15) by
+ MN2PR11MB3966.namprd11.prod.outlook.com (10.255.180.29) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2750.17; Fri, 21 Feb 2020 21:24:38 +0000
+Received: from MN2PR11MB3936.namprd11.prod.outlook.com
+ ([fe80::71a0:2f72:8146:9d8]) by MN2PR11MB3936.namprd11.prod.outlook.com
+ ([fe80::71a0:2f72:8146:9d8%6]) with mapi id 15.20.2729.033; Fri, 21 Feb 2020
+ 21:24:38 +0000
+From: "Scott Fluhrer (sfluhrer)" <sfluhrer@cisco.com>
+To: Russ Housley <housley@vigilsec.com>, Martin Thomson <mt@lowentropy.net>
+CC: IETF TLS <tls@ietf.org>
+Thread-Topic: [TLS] Requesting working group adoption of
+ draft-stebila-tls-hybrid-design
+Thread-Index: AQHV6O1CZfCw/3vKLUaife0PGSB7GKgmDcdQ
+Date: Fri, 21 Feb 2020 21:24:38 +0000
+Message-ID: <MN2PR11MB39364F6D4E91AF466AECD6A3C1120@MN2PR11MB3936.namprd11.prod.outlook.com>
+References: <CAFBh+SRAJAbviyrcQM2PjztumAH565i4-ui28OQ-pCJE9nePJg@mail.gmail.com>
+ <284685f0-8b19-4870-aef6-573809827091@www.fastmail.com>
+ <D4DBD81C-6555-4EBD-AA77-49905CB88B22@icloud.com>
+ <b91df74c-cec7-44a3-9224-6240553af223@www.fastmail.com>
+ <4ADAE043-22A5-4926-B09E-B167D189B660@vigilsec.com>
+In-Reply-To: <4ADAE043-22A5-4926-B09E-B167D189B660@vigilsec.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=sfluhrer@cisco.com; 
+x-originating-ip: [173.38.117.68]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 6a7bf3ad-6766-4f17-3f3e-08d7b71474f8
+x-ms-traffictypediagnostic: MN2PR11MB3966:
+x-microsoft-antispam-prvs: <MN2PR11MB39667BC3074DEEF5424CFDB5C1120@MN2PR11MB3966.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-forefront-prvs: 0320B28BE1
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10009020)(4636009)(346002)(39860400002)(136003)(396003)(376002)(366004)(199004)(189003)(8676002)(110136005)(66946007)(26005)(4326008)(2906002)(76116006)(81166006)(81156014)(5660300002)(66556008)(66446008)(71200400001)(33656002)(64756008)(66476007)(316002)(8936002)(7696005)(53546011)(6506007)(478600001)(9686003)(55016002)(52536014)(86362001)(186003);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:MN2PR11MB3966;
+ H:MN2PR11MB3936.namprd11.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; A:1; MX:1; 
+received-spf: None (protection.outlook.com: cisco.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: EOhMjtIcwb/mRyWWyd38Ag1nOSuHe57lNx5on1rZehMCRIXw24c3CPgl77GkDzxvex6M7EeBCEydldnauA2Y6DjFBQ0UlLq6sgEgkincthPt5zVRgbG+2Y/rmYZEIk9DoQWllcrfUDdb19Byq/Cddxf06JeyJ7Pn0o0T0deGq/Vl11SNfpvBntTOCg8G26EClkFvvRyRBb/g7lL22wgII/9onOfkGgH0ro08219DEW2FbgIVg8qt5hl50UOWXufC+qebdhOE17SLZ46wTYiA5IIMtcw32fiwZAVudtP49lMBqEJaMy5IqW1+MPjkxIwsK4g75UROGplsUTvr5vs6Un2lBLyap9OS/7R/v3bj4wYt/HnNkHFOJzlU78Ar6h5uMAhSI7Ou9dua70EbcmsaLxQLy1NFX4BVd3MZ0dbN8vWAN/nxFKoFrHXvHeW8iOru
+x-ms-exchange-antispam-messagedata: IUfL7z34CGcf6epz1BmkRB2jx/JFiagFB75VK0aZH+IROVvVNIJZm6bCzpnBWfAvMULO/yV7yU1hgs+Kvp7XbThcMx5p+UBsg+8A9TOekjhNA4jMfy/TGQMu6Mi79M/NmvbWEQwHwFGrtJRb5UOHkw==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6a7bf3ad-6766-4f17-3f3e-08d7b71474f8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Feb 2020 21:24:38.4820 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 5ae1af62-9505-4097-a69a-c1553ef7840e
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: eeuLBbu07tb7wHz9EPTFQb2uyhyZDH82in4/5l/bpsTDWRzXnNquye4g3L5pFMTt+S43Hzb4znp9CYXDfLQvKw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB3966
+X-OriginatorOrg: cisco.com
+X-Outbound-SMTP-Client: 173.37.102.14, xch-rcd-004.cisco.com
+X-Outbound-Node: rcdn-core-10.cisco.com
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/PhnInsfslTvwDipD_WRFux-a5o4>
+Subject: Re: [TLS] Requesting working group adoption of
+ draft-stebila-tls-hybrid-design
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Fri, 21 Feb 2020 21:24:46 -0000
+
+> -----Original Message-----
+> From: TLS <tls-bounces@ietf.org> On Behalf Of Russ Housley
+> Sent: Friday, February 21, 2020 2:29 PM
+> To: Martin Thomson <mt@lowentropy.net>
+> Cc: IETF TLS <tls@ietf.org>
+> Subject: Re: [TLS] Requesting working group adoption of draft-stebila-tls=
+-
+> hybrid-design
+>=20
+>=20
+>=20
+> > On Feb 12, 2020, at 6:22 PM, Martin Thomson <mt@lowentropy.net>
+> wrote:
+> >
+> > On Thu, Feb 13, 2020, at 10:01, Carrick Bartle wrote:
+> >> I'm brand new to the IETF, so please forgive me if I'm totally off
+> >> base here, but my understanding is that Informational RFCs are
+> >> explicitly not recommendations (let alone mandates)?
+> >
+> > This would of course be information, but my comment was about phrasing.
+> This document comes off as being quite prescriptive, where it doesn't rea=
+lly
+> need to be.  Absent actual algorithms, it's just a set of guidelines.  Th=
+at's
+> reflected in its Informational status, but it would be better if the verb=
+iage
+> also reflected that more clearly.
+> >
+> > To address Stephen's comment at the same time: I think that we can
+> publish an RFC on this before the competition completes if it is just a
+> framework.  That might in fact make standardizing the one true composite
+> scheme easier.
+>=20
+> I do not agree.  I do not think the WG should adopt this draft.
+>=20
+> The CFRG has stated a position that the IETF should wait for the NIST
+> standardization process to be complete.
+
+I disagree with Russ's statement that what the CFRG has stated actually app=
+lies to this draft.  This draft does not specify what postquantum algorithm=
+s should be used (which is what the CFRG is talking about).  What it tries =
+to address is "once we have an approved algorithm, how do we integrate it i=
+nto TLS".  Surely it would be better to get that preliminary work out of th=
+e way first, rather than waiting for the NIST process to conclude, and then=
+ start spending the time working on the integration process.
+
+> There are at least two approaches
+> to mixing symmetric keying material into the TLS 1.3 key schedule for
+> information that needs to be protected for the next few decades.  (The tw=
+o
+> that I know about are draft-ietf-tls-tls13-cert-with-extern-psk and draft=
+-
+> vanrein-tls-kdh.) These approaches make existing key establishment
+> techniques secure even if a quantum computer gets developed as long as
+> the symmetric key is not disclosed.  In my opinion, those techniques will=
+ hold
+> us until the NIST standardization process finishes.
+
+Symmetric keys solve the problem, but are usable only in scenarios where yo=
+u have a pre-existing relationship between the client and the server.  It d=
+oesn't work in a more general "web-surfing" type scenario.
+
+>=20
+> I do not understand the goal of mixing (EC)DH with one of candidate
+> algorithms.  We do not know enough about the candidate algorithms in the
+> NIST process.  If the goal is to add quantum resistance, we do not have
+> enough information to pick well.
+
+And, again, the draft does not attempt to pick one.
+
+>  If the goal is to learn about mixing in
+> general, then I question the project altogether.  Once the NIST
+> standardization process is complete, we can simply use the selected
+> algorithm without mixing.
+
+I can see someone disagreeing.  Whatever postquantum algorithm NIST selects=
+, it will be a relatively recent one (and hence one that hasn't gone throug=
+h as much cryptographical scrutiny as one would like) [1].  And, given that=
+ slapping on an ECDH exchange is relatively cheap (both in computation and =
+especially in bandwidth), I can see someone wanting to put it in there as a=
+ safety measure, in case that the postquantum algorithm turns out to have a=
+ weakness to classical computers.
+
+In any case, even if we ignore mixing, there are questions that need to be =
+considered for a postquantum algorithm (which doesn't behave precisely like=
+ DH).  For example, to what extent should we insist that fresh key shared b=
+e used each time?  Should we require the key exchange mechanism to have "CC=
+A" security (which DH does, as long as you perform the proper validation te=
+sts), or is "CPA" security sufficient?  Should we attempt to support key ex=
+changes with huge (e.g. a Megabyte) public keys?
+
+Those questions can be considered even before we learn which postquantum al=
+gorithms we will eventually use.
+
+
+[1]: Exception: McEliece has been around a long time, and has picked up eno=
+ugh scrutiny for us to trust it.  However, it's also the one with Megabyte =
+keys, and even if we were to support it, it's likely to be only rarely used=
+; the issue will still remain with whatever other postquantum key exchange =
+we also support
+

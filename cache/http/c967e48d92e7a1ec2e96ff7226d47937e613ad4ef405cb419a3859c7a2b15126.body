@@ -1,0 +1,110 @@
+Return-Path: <dkg@fifthhorseman.net>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 86233132444
+ for <tls@ietfa.amsl.com>; Fri, 11 Aug 2017 15:14:38 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.9
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9] autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id Cxh5ZYaAJ0Zc for <tls@ietfa.amsl.com>;
+ Fri, 11 Aug 2017 15:14:36 -0700 (PDT)
+Received: from che.mayfirst.org (che.mayfirst.org [162.247.75.118])
+ by ietfa.amsl.com (Postfix) with ESMTP id 2DF6E1321AC
+ for <tls@ietf.org>; Fri, 11 Aug 2017 15:14:36 -0700 (PDT)
+Received: from fifthhorseman.net (unknown [38.109.115.130])
+ by che.mayfirst.org (Postfix) with ESMTPSA id 99B48F99F;
+ Fri, 11 Aug 2017 18:14:34 -0400 (EDT)
+Received: by fifthhorseman.net (Postfix, from userid 1000)
+ id 1F8CA20745; Fri, 11 Aug 2017 14:45:18 -0400 (EDT)
+From: Daniel Kahn Gillmor <dkg@fifthhorseman.net>
+To: Nikos Mavrogiannopoulos <nmav@redhat.com>, "Short\,
+ Todd" <tshort@akamai.com>
+Cc: "tls\@ietf.org" <tls@ietf.org>
+In-Reply-To: <CADh2w8QexuvQtXyOsj3WkiPf+2YjH8yFhR7Wj3Ek+b=U3Bb3Fg@mail.gmail.com>
+References: <1502460670.3202.8.camel@redhat.com>
+ <075C47B6-A601-441F-B881-A7F78648B5F1@akamai.com>
+ <CADh2w8QexuvQtXyOsj3WkiPf+2YjH8yFhR7Wj3Ek+b=U3Bb3Fg@mail.gmail.com>
+Date: Fri, 11 Aug 2017 14:45:15 -0400
+Message-ID: <87shgyndtw.fsf@fifthhorseman.net>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="=-=-=";
+ micalg=pgp-sha512; protocol="application/pgp-signature"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/52Q6LuaTYwVk2yEie0oYofNj_Gc>
+Subject: Re: [TLS] draft-ietf-tls-tls13-21: TLS 1.3 record padding removal
+ leaks padding size
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Fri, 11 Aug 2017 22:14:38 -0000
+
+--=-=-=
+Content-Type: text/plain
+
+On Fri 2017-08-11 18:43:15 +0200, Nikos Mavrogiannopoulos wrote:
+> I don't argue with this but this is not the approach TLS 1.3 took. It
+> provides a generic padding mechanism to be used across application
+> protocols.
+
+The design approach that TLS 1.3 took was to provide a mechanism for
+padding at the TLS layer, not to prescribe padding at the application
+layer.  You actually probably need both to defend against traffic
+analysis in the big picture.
+
+Thoughtful, well-designed application-layer padding is likely to be
+better than generic TLS-layer padding.  But not all applications can
+actually accomodate padding (and it's not clear that folks have done the
+thoughtful work even on those applications which *can* accomodate
+padding).
+
+TLS offers a generic mechanism to support the cases where the
+application can't do padding, or where the implementer has no control
+over (or insight into) the application itself.  It'll probably leak in
+the way you describe, but it'll probably also be better than cleartext.
+
+Furthermore, there are TLS messages that are not application data at
+all -- so those parts *have* to be padded at the TLS layer, as the
+application cannot directly affect their size.
+
+A robust and safe padding approach needs to take into account all layers
+of the stack at once and coordinate between them.  Without the padding
+mechanism in TLS, it wouldn't be possible to coordinate across the whole
+stack.
+
+     --dkg
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEOCdgUepHf6PklTkyFJitxsGSMjcFAlmN+zsACgkQFJitxsGS
+MjfZURAAldiHJEMc/j4M0p5p3Blw1hX1/WCeKCAagRAy6zFhOlclRYHeKTvwdkh4
+Z9rnne3rssQdAAM+GuWnonUZrgMu0KqN4B8vMmcXVUdWuHDZt7ld8d7MEgorWz6+
+X0e7A++oPzwpgdxHnNRUq/wDe+0haLZWsvhYrBTQ1orkAFDkwDpaAeeDL25g4orD
+7Ejf48SwKNGuT2cE8RmyRs8Wd1VM1nmMpXJH0mGgodHCOxQDZka5wDmZok7pflBm
+3ZToincqR/UNFy2guKoFmR7MVZgNXexSblF+E+7kGOLoanQTexPPhb4p1VcY2aq5
+NSD3qDmnpC7I6QTnE2yO8n2WUjpUqb9KLKYkQF1pJB3+l72WKQ1/9HMjKDFQHAmx
++czDs0ca8IRYu1d1E2f0Kbou4BtznFQ65z47s/x7Pv5IFzH0jG6sxxws3oqctOta
+ZxE64J2YdZkM8Te4f+4Hsz+gi6Ah+BhflmbVlyAPypCFYVkpMQiLIeW+VOYyqbsk
+oRnKBDwOArGyGbcYCGI5/ghzLo9LttJd9DIcCspWSGPAfgbev02NjlDrnSJLfwM0
+p84PtPMlCmDiFObou0gSYadpKNNV9Lz+MCdUotw/A2Yh4BnHvCFmvwQhicyMDauS
+SrQ0f/IL5tH+L4m1D1txCYKtV1Ot9ptnf2W5E0Zv7+xxYiUzVsY=
+=Uz8u
+-----END PGP SIGNATURE-----
+--=-=-=--
+

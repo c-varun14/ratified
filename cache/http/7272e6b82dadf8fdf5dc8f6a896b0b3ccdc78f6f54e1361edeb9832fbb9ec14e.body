@@ -1,0 +1,268 @@
+Return-Path: <ekr@rtfm.com>
+X-Original-To: tls@mail2.ietf.org
+Delivered-To: tls@mail2.ietf.org
+Received: from localhost (localhost [127.0.0.1])
+	by mail2.ietf.org (Postfix) with ESMTP id 7B6FD7A8BC79
+	for <tls@mail2.ietf.org>; Wed, 22 Oct 2025 13:32:34 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at ietf.org
+X-Spam-Flag: NO
+X-Spam-Score: -1.897
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.897 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+	HTML_MESSAGE=0.001, RCVD_IN_DNSWL_NONE=-0.0001, SPF_HELO_NONE=0.001,
+	SPF_NONE=0.001] autolearn=unavailable autolearn_force=no
+Authentication-Results: mail2.ietf.org (amavisd-new); dkim=pass (2048-bit key)
+	header.d=rtfm-com.20230601.gappssmtp.com
+Received: from mail2.ietf.org ([166.84.6.31])
+	by localhost (mail2.ietf.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id C1B70cU3G7O8 for <tls@mail2.ietf.org>;
+	Wed, 22 Oct 2025 13:32:32 -0700 (PDT)
+Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com
+ [IPv6:2607:f8b0:4864:20::1129])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail2.ietf.org (Postfix) with ESMTPS id AD4D87A8BC56
+	for <tls@ietf.org>; Wed, 22 Oct 2025 13:32:32 -0700 (PDT)
+Received: by mail-yw1-x1129.google.com with SMTP id
+ 00721157ae682-78378cb66d6so66967b3.2
+        for <tls@ietf.org>; Wed, 22 Oct 2025 13:32:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rtfm-com.20230601.gappssmtp.com; s=20230601; t=1761165152;
+ x=1761769952; darn=ietf.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=RQ4v6+gI88PGYNNOGyq0wmuoo+9RAdjJDSVn/cfhtwI=;
+        b=W1wDk8n4sS8utgvrPCL773urJA9HWGv193/5O1z0uhenz4X1uYi7n0GBDbcNyk0XzR
+         5lzQQlF+39DlRhXR0MvQnin2q9FNOZAypXHqjfAN3CUbg1D+ww/kcwpImoFNaMahbI/7
+         odeM6P95+8WQnxhLMJjVW6PPoRIEyEZ4r/CSNPn1ZPHSZFLZA3BComKGJgJIvzdErwgC
+         Z7OHxAB6SS4oTq+W6B4u/dGjscDwirBUn9vPbu9HwnVoP8yeEhthep4zCALvKziudCje
+         l5uz0UjvV1rVmxkXmyN1a+iJUZ6f7R7RHDNijZ/qpQWiPnBuZ9NkT84nMMwJXkkjUUtt
+         bL8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761165152; x=1761769952;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RQ4v6+gI88PGYNNOGyq0wmuoo+9RAdjJDSVn/cfhtwI=;
+        b=Mi0XTSkaX/HYJk2E9CTF6KGUxPVLsaVO7goGtJP0HvzX+AQKtAxRTAB896uGB7zg72
+         ojmgJ9ppXWlaXs26Z28Yk8vql2uTQIvXOlShYCAEEt8i9co/fm9iiExnVHtSvyp+wwys
+         xjYvPX2Wwtn5+boTuV6+M2WVfaJBPrdlV7j3x4MxpPm1ZMG2AN/UkRXDOat2K6r8vBtT
+         99o3b37NBhNvsMDLUm8mTAzVBOiMicTCBbVceJb8ciYjmAA5oX22S8jzv0rJ5tAIIgtH
+         TjDkt5bMGxNYn81T15lfNLyCaTZ5kQVyzA+wFz5RGdckKkUQDrvYx3KmiGFzFwo3Fh27
+         jf8Q==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCVWfdJZdELb0LFsLa/OKDFcWxLffkpYi1n/vkJIKdd0aYjMTqh8vhQWt77wSEv7C/WZZx0=@ietf.org
+X-Gm-Message-State: AOJu0Ywca4+dYC81Nv1AMB10oONGpbnIGrhLW7gmkmUMOnzzX7+86gxL
+	4L80vZWu3rIqqJGPoxXU1K0FeraOs517RlhFHHB9lZOPM1EFkE3kZZOxkv+n88ZV5qs69VMWYnG
+	aJhn5/+oN9UHLhLm3tNfHS8qRUT92P7YJpYpMu89nsA==
+X-Gm-Gg: ASbGncsN2x0CFnIBevD2l/MmKDkrQTBdDY4FSY2XTdHFuhdz1aSuh8abAUFn5W+ZRKV
+	tS0qHB3pmCx+a17UYlEbaOE3+Ux21l87Jp4nrJ1+x4tGPEVqcmQF8O85eOkI2oGvcvhDAm96gw0
+	dXDvOW6iux3F1TckZCEIKbqPaXNQXEsuL8DGDg9EDpSIcM2HtjVAR6tHeD4KtJidIVPMGZEXCUM
+	hrj48I2YqwxTOwrxbbn+j7RaArWYf86TGjPhdrBbE+GAmVOItbHlb3P8ZTNIzUbt9pMeUiZYKjH
+	rdINHxfMGN8w9auJJIqZ6RIKjh2U1lsIw9zUkaP0wZNhiCBTO5GhWQXXlYb9+viLtP95q5cqHpZ
+	tkpMi2zBqHA==
+X-Google-Smtp-Source: 
+ AGHT+IELoMLH2bMDnCnWHoedlLv87un9Jds79m5W8rWShywINiWw5m/aCicM8ECUl9OJthnYZkK7b0Gp/zi2jFhBVP8=
+X-Received: by 2002:a05:690c:62ca:b0:784:8bcd:4065 with SMTP id
+ 00721157ae682-7848bcd4204mr144102307b3.21.1761165152101; Wed, 22 Oct 2025
+ 13:32:32 -0700 (PDT)
+MIME-Version: 1.0
+References: 
+ <176108091895.920.5169054491170028093@dt-datatracker-675c8fd764-bsflw>
+ <CAF8qwaBd9f++xgOpHY=aeSREKOt+8Hae=TiO48DVs8=sXKiHQQ@mail.gmail.com>
+In-Reply-To: 
+ <CAF8qwaBd9f++xgOpHY=aeSREKOt+8Hae=TiO48DVs8=sXKiHQQ@mail.gmail.com>
+From: Eric Rescorla <ekr@rtfm.com>
+Date: Wed, 22 Oct 2025 13:31:56 -0700
+X-Gm-Features: AS18NWBoFnINM8g6Ah8r5SXSb9Y43QlAzX_bCATg0L8Cfmsohvvn6p0FAO9fc8w
+Message-ID: 
+ <CABcZeBP7xn7JucjdnQKt2dOO0PVx6r3S9fYYqx9GpxpRSpurhw@mail.gmail.com>
+To: David Benjamin <davidben=40google.com@dmarc.ietf.org>
+Content-Type: multipart/alternative; boundary="0000000000004836840641c537c7"
+Message-ID-Hash: EBQTYEILCFP4ZM5C477TESLJ4CFKJOR4
+X-Message-ID-Hash: EBQTYEILCFP4ZM5C477TESLJ4CFKJOR4
+X-MailFrom: ekr@rtfm.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+CC: The IESG <iesg@ietf.org>, draft-ietf-tls-tls13-pkcs1@ietf.org,
+ tls-chairs@ietf.org, tls@ietf.org
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Re=3A_Mike_Bishop=27s_No_Objection_on_draft-ietf-tls-tls?=
+ =?utf-8?q?13-pkcs1-06=3A_=28with_COMMENT=29?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/XoBQ6TFF-843_x6D2epViIDYk08>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+--0000000000004836840641c537c7
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Oct 22, 2025 at 1:24=E2=80=AFPM David Benjamin <davidben=3D
+40google.com@dmarc.ietf.org> wrote:
+
+> Ah, nice catch! That's unfortunate.... do we need to mark the document as
+> updating 8446 with an update to just disregard that sentence?
+>
+
+ 8446bis is ahead of 8446 in the pipeline so maybe we just remove the line
+in 8446bis.
+
+-Ekr
+
+
+
+
+>
+> On Tue, Oct 21, 2025 at 5:08=E2=80=AFPM Mike Bishop via Datatracker <
+> noreply@ietf.org> wrote:
+>
+>> Mike Bishop has entered the following ballot position for
+>> draft-ietf-tls-tls13-pkcs1-06: No Objection
+>>
+>> When responding, please keep the subject line intact and reply to all
+>> email addresses included in the To and CC lines. (Feel free to cut this
+>> introductory paragraph, however.)
+>>
+>>
+>> Please refer to
+>> https://www.ietf.org/about/groups/iesg/statements/handling-ballot-positi=
+ons/
+>> for more information about how to handle DISCUSS and COMMENT positions.
+>>
+>>
+>> The document, along with other ballot positions, can be found here:
+>> https://datatracker.ietf.org/doc/draft-ietf-tls-tls13-pkcs1/
+>>
+>>
+>>
+>> ----------------------------------------------------------------------
+>> COMMENT:
+>> ----------------------------------------------------------------------
+>>
+>> I've previously reviewed this document, and the changes are minor. It
+>> looks
+>> like a solid solution for these devices. I believe "N" is an appropriate
+>> value
+>> since that indicates the value "either has not been through the IETF
+>> consensus
+>> process, has limited applicability, or is intended only for specific use
+>> cases"
+>> -- this document clearly describes why, despite having IETF consensus, i=
+t
+>> falls
+>> into the latter two buckets.
+>>
+>> However, it does seem clear that this document modifies restrictions in
+>> RFC8446(bis). While it defines new codepoints with differing behavior fo=
+r
+>> the
+>> SignatureScheme enum and thus isn't changing the definition of those
+>> codepoints, it is modifying the requirement in CertificateVerify handlin=
+g
+>> that
+>> `RSA signatures MUST use an RSASSA-PSS algorithm, regardless of whether
+>> RSASSA-PKCS1-v1_5 algorithms appear in "signature_algorithms".`
+>>
+>>
+>>
+>> _______________________________________________
+> TLS mailing list -- tls@ietf.org
+> To unsubscribe send an email to tls-leave@ietf.org
+>
+
+--0000000000004836840641c537c7
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><br></div><br><div class=
+=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Wed, Oct 22, 2025=
+ at 1:24=E2=80=AFPM David Benjamin &lt;davidben=3D<a href=3D"mailto:40googl=
+e.com@dmarc.ietf.org" target=3D"_blank">40google.com@dmarc.ietf.org</a>&gt;=
+ wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px =
+0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=
+=3D"ltr">Ah, nice catch! That&#39;s unfortunate.... d<span style=3D"color:r=
+gb(0,0,0);font-size:13.3333px">o we need to mark the document as updating 8=
+446 with an update to just disregard that sentence?</span></div></blockquot=
+e><div><br></div><div>=C2=A08446bis is ahead of 8446 in the pipeline so may=
+be we just remove the line in 8446bis.</div><div><br></div><div>-Ekr</div><=
+div>=C2=A0</div><div><br></div><div>=C2=A0</div><blockquote class=3D"gmail_=
+quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,=
+204);padding-left:1ex"><br><div class=3D"gmail_quote"><div dir=3D"ltr" clas=
+s=3D"gmail_attr">On Tue, Oct 21, 2025 at 5:08=E2=80=AFPM Mike Bishop via Da=
+tatracker &lt;<a href=3D"mailto:noreply@ietf.org" target=3D"_blank">noreply=
+@ietf.org</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=
+=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding=
+-left:1ex">Mike Bishop has entered the following ballot position for<br>
+draft-ietf-tls-tls13-pkcs1-06: No Objection<br>
+<br>
+When responding, please keep the subject line intact and reply to all<br>
+email addresses included in the To and CC lines. (Feel free to cut this<br>
+introductory paragraph, however.)<br>
+<br>
+<br>
+Please refer to <a href=3D"https://www.ietf.org/about/groups/iesg/statement=
+s/handling-ballot-positions/" rel=3D"noreferrer" target=3D"_blank">https://=
+www.ietf.org/about/groups/iesg/statements/handling-ballot-positions/</a> <b=
+r>
+for more information about how to handle DISCUSS and COMMENT positions.<br>
+<br>
+<br>
+The document, along with other ballot positions, can be found here:<br>
+<a href=3D"https://datatracker.ietf.org/doc/draft-ietf-tls-tls13-pkcs1/" re=
+l=3D"noreferrer" target=3D"_blank">https://datatracker.ietf.org/doc/draft-i=
+etf-tls-tls13-pkcs1/</a><br>
+<br>
+<br>
+<br>
+----------------------------------------------------------------------<br>
+COMMENT:<br>
+----------------------------------------------------------------------<br>
+<br>
+I&#39;ve previously reviewed this document, and the changes are minor. It l=
+ooks<br>
+like a solid solution for these devices. I believe &quot;N&quot; is an appr=
+opriate value<br>
+since that indicates the value &quot;either has not been through the IETF c=
+onsensus<br>
+process, has limited applicability, or is intended only for specific use ca=
+ses&quot;<br>
+-- this document clearly describes why, despite having IETF consensus, it f=
+alls<br>
+into the latter two buckets.<br>
+<br>
+However, it does seem clear that this document modifies restrictions in<br>
+RFC8446(bis). While it defines new codepoints with differing behavior for t=
+he<br>
+SignatureScheme enum and thus isn&#39;t changing the definition of those<br=
+>
+codepoints, it is modifying the requirement in CertificateVerify handling t=
+hat<br>
+`RSA signatures MUST use an RSASSA-PSS algorithm, regardless of whether<br>
+RSASSA-PKCS1-v1_5 algorithms appear in &quot;signature_algorithms&quot;.`<b=
+r>
+<br>
+<br>
+<br>
+</blockquote></div>
+_______________________________________________<br>
+TLS mailing list -- <a href=3D"mailto:tls@ietf.org" target=3D"_blank">tls@i=
+etf.org</a><br>
+To unsubscribe send an email to <a href=3D"mailto:tls-leave@ietf.org" targe=
+t=3D"_blank">tls-leave@ietf.org</a><br>
+</blockquote></div></div>
+</div>
+
+--0000000000004836840641c537c7--
+

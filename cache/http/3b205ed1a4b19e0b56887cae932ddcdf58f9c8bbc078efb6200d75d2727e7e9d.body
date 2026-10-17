@@ -1,0 +1,483 @@
+From nobody Mon Sep 21 22:21:58 2020
+Return-Path: <achimkraus@gmx.net>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 336F43A139E
+ for <tls@ietfa.amsl.com>; Mon, 21 Sep 2020 22:21:56 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.1
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.1 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, FREEMAIL_FROM=0.001,
+ NICE_REPLY_A=-0.001, RCVD_IN_MSPIKE_H2=-0.001, SPF_HELO_NONE=0.001,
+ SPF_PASS=-0.001, URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=gmx.net
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id mvbxgfyqfrQU for <tls@ietfa.amsl.com>;
+ Mon, 21 Sep 2020 22:21:54 -0700 (PDT)
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 020953A13D7
+ for <tls@ietf.org>; Mon, 21 Sep 2020 22:21:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+ s=badeba3b8450; t=1600752106;
+ bh=NX8OrConzFfMi2Hhxlv1CPo48ym9SuF+hpCdSwDjrAc=;
+ h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+ b=T+3oRJcxGZtoX/8XDJPNAU1sEuZ5TDdTVt2pqPOdZ1pmLk7WF5H2qlhUU9sem35nF
+ U8reP4dJj0scv9zxr6kGJEBuBBrSMEnYFPKWNbMhAUIItUgakZAcEdluC4BY57iflA
+ v/Upla8YdUW39afJBEqk5P1sPPJTvtyRV3orqNEc=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.178.45] ([88.64.89.22]) by mail.gmx.com (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1M8hV5-1kOjU308av-004j3F; Tue, 22
+ Sep 2020 07:21:46 +0200
+To: Pascal Urien <pascal.urien@gmail.com>
+Cc: Hannes Tschofenig <Hannes.Tschofenig@arm.com>, tls@ietf.org
+References: <77039F11-188E-4408-8B39-57B908DDCB80@ericsson.com>
+ <1600516093048.75181@cs.auckland.ac.nz>
+ <2f2ecb30-bef5-414a-8ff7-d707d773c7ea@www.fastmail.com>
+ <AM0PR08MB3716AAADBE7D2A6F3E29664BFA3A0@AM0PR08MB3716.eurprd08.prod.outlook.com>
+ <CAEQGKXQdVO_SAVT1kciiH1EgQqenaYDeXnFD9gfa3BKTNFBjig@mail.gmail.com>
+ <AM0PR08MB3716D1CD8D13C68C91ADE322FA3A0@AM0PR08MB3716.eurprd08.prod.outlook.com>
+ <CAEQGKXS-HyESGOU9iiYCXKdJk-wMkDnO4eYK2iVs21E3gtVOPQ@mail.gmail.com>
+ <AM0PR08MB3716239A095ED0F7D6072CE4FA3A0@AM0PR08MB3716.eurprd08.prod.outlook.com>
+ <CAEQGKXQ9aNOYtRT8ZUbWT81wjYeqZzQOx_McSefTedG6Lpbr_A@mail.gmail.com>
+ <CAEQGKXSA6SgGqxUbwik3twesNC+zFm+ek3f+5rjbAQBm_bz0Zg@mail.gmail.com>
+ <89e3b32e-82d6-3a44-7b48-1cc8d0c12496@gmx.net>
+ <CAEQGKXRvJtLHAbGJ-ViuHGV1tYQANV9sCR0dz1AoGRg3Jcc4Gw@mail.gmail.com>
+From: Achim Kraus <achimkraus@gmx.net>
+Message-ID: <9d1b4f3c-5a90-375c-b6e4-67767cd50020@gmx.net>
+Date: Tue, 22 Sep 2020 07:21:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <CAEQGKXRvJtLHAbGJ-ViuHGV1tYQANV9sCR0dz1AoGRg3Jcc4Gw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: de-AT-frami
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:GKYwou0WJJmKnaco/ztafe/P1q54zh7GuKGM0fYWjZsAHJft7do
+ CRPCtKpYJxfy/fNf0Hv1Ni/pxtShLimRsNvq0BcEdTXTKc/bPhY2+ffFF2PsGjFFU88DiXI
+ AyNBbp7npl88CqxqyqU/c/pT+pbqvx2gGW3ikD2q3BDtSXPChgfh2unyJz+ZoU5put4+1HD
+ S8bEm9NzpnNXQQUkq05Ug==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:9mbFt0WfJE8=:6IBz6CqqgOq8vMz2+5uA8d
+ bLx6P5Yyix8UukveCYEVnXaqlj/0WOm89nf0THnjM06qDDZCow82oPqSlqcJDzJQhWPCWtb62
+ BL19o24GTpneJWOWFlara1zFa8+9loqm5qG7lXbkmsqypsjK2muxUE7NuZM4EIaqzMed5//Ab
+ PPQL4d4x9o9Z1ikQLjRv5zd4+WdqWg++j1ezwsIFb5vTY+0SpOxsMMIW+SUJNeu4Quddzwiwv
+ K5Q2AHnazsjcan6O//j07ObxwBBPsYpvxBThbB9I9DajS1lYmQlS7UOELrrASy7qFQy5o36KH
+ H169vaffCDK04b5CSBPyh5Nk8FDBGioXwAOI4TJJ1kOqxMh5iJdjS8BevmJZ3iyJdIAmH7DKO
+ RNeViLN1o0pxB8wlBM0r03xLNUfWZGOh8GN2rHpKC7WaFIARTau1Wn/Y12jBmYTXkMAacIdkZ
+ fzsn6HxdwJWokZG9KOaSqh7SjYwfYT98+rwp4D0nRfJsY7Ci345uP7q4nk8DjPMKYW1alo6W3
+ 5OXClmzRznz/UhqQIaMAw3WJRAdqWXGotwhQn+X3y5Bxifdm9T7LhgfIiTp0hF8huxvQRn1F4
+ UfzC7ZRqoOSHChmY04cR6BgTrtSUP5+n4Vfxu6azJKr/0+06vXZrrls6pTuJbga8v4fWN0i6V
+ 9pn7f7XK4eloyEj/Gym3Bfk7o+jWnVuEUAfriY7ypsTGzVatyPBVqws0x2zOkDokKr2ATfGx3
+ 8T04IW+zrHVBzcPuKPQK25OKtpbQ9L0AMUFZMOaOk0JxLljqSGP+c0jp2fbmZsgVHmLjbpe2t
+ hL/eHVxgyIWZTlBfvJ98G+OD+AGANBBCKBn2wrr9dediJ6HK+1d5uFhQZRmnMFlselk5xwqSv
+ Swff7nV3i5YaKEGRgrSJ/4MZEvhFn4Z/z8YBUVxPTpqk/85H9lXqCvnsUQiGIaukTgyS7KZsA
+ tqZhdEdwo31ROCvasbr5eAKhldX+zagBYPTrR/qPdJzhGWG0Zo2PHWx9vvoaXUtBlOaH4Sa1c
+ jhu9pMmvD8BizJ608s5EAxEDkPTnH2nJl7iHA+yU7ciwUscAbkb+zrNhVAocwsTRxyv5OTcWL
+ q60051ytma9GCIt9ncncHmz1cfu6IFUGshWivDnoBLFmxYzwZVyQPtAoTVTHBieoyVvBZhASH
+ Ii+/84T58UIPTbfxHrB1z46c0E3GRzbj+dWcoq52wYXQRA/nKfiyg0dbRS61cZJDRA85tp+wF
+ aoC98F0my/WUKBIs/Z3KZ1akBOEwbebQ2uqHRlg==
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/TCZIm4tUz71Kc1a5Z65kH2RegiM>
+Subject: Re: [TLS] The future of external PSK in TLS 1.3
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Tue, 22 Sep 2020 05:21:56 -0000
+
+Hi Pascal,
+
+ > But what about heath devices, autonomous cars, nuclear plants,
+ > blockchain transfers ?. Maybe, they are not in the IoT scope...
+
+Agreed. Therefore I wrote
+
+ >> Isn't it always a question of what to protect in which environment?
+
+Maybe, one column with recommended (Y/N/<blank>), is not enough.
+
+##############################
+Note
+
+     If an item is not marked as "Recommended", it does not
+     necessarily mean that it is flawed; rather, it indicates that
+     the item either has not been through the IETF consensus process,
+     has limited applicability, or is intended only for specific use
+     cases
+##############################
+
+best regards
+Achim
+
+Am 21.09.20 um 22:57 schrieb Pascal Urien:
+> Hi Achim
+>
+> Your local network "light bulb" is likely not a big issue
+>
+> But what about heath devices, autonomous cars, nuclear plants,
+> blockchain transfers ?. Maybe, they=C2=A0are not in the IoT scope...
+>
+> Best Regards
+>
+> Pascal
+>
+>
+> Le=C2=A0lun. 21 sept. 2020 =C3=A0=C2=A019:57, Achim Kraus <achimkraus@gm=
+x.net
+> <mailto:achimkraus@gmx.net>> a =C3=A9crit=C2=A0:
+>
+>     Hi Pascal,
+>
+>     that using these ISO 7816 card is fast and save, doesn't say too muc=
+h
+>     about the use-case without that card, or? For sure, there are
+>     micro-controller, which are also equipped with hw-ecc or hw-rsa. And
+>     there are more secure-devices protecting credentials. But there are =
+also
+>     still ones without.
+>     I'm not sure, if I want spend too much money in my local network "li=
+ght
+>     bulb". Isn't it always a question of what to protect in which
+>     environment?
+>
+>     best regards
+>     Achim
+>
+>     Am 21.09.20 um 14:53 schrieb Pascal Urien:
+>      > tls-se memory footprint is
+>      > flash =E3=80=8A 40KB
+>      > ram=C2=A0 =C2=A0=E3=80=8A 1KB
+>      >
+>      > time to open a tls session 1.4 seconds
+>      >
+>      >
+>      > Le lun. 21 sept. 2020 =C3=A0 14:47, Pascal Urien
+>     <pascal.urien@gmail.com <mailto:pascal.urien@gmail.com>
+>      > <mailto:pascal.urien@gmail.com <mailto:pascal.urien@gmail.com>>>
+>     a =C3=A9crit=C2=A0:
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0hi Hannes
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0no openssl or wolfssl are used as client in or=
+der to check
+>      >=C2=A0 =C2=A0 =C2=A0interoperability with tls-se server
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0tls-se is of course a specific impl=C3=A9menta=
+tion for tls13 server in
+>      >=C2=A0 =C2=A0 =C2=A0javacard..it is written in java but an =C3=B4t=
+er impl=C3=A9mentation is
+>      >=C2=A0 =C2=A0 =C2=A0written in c for constraint notes. as written =
+in the draft tls-se
+>      >=C2=A0 =C2=A0 =C2=A0implementation has three software blocks: cryp=
+to lib, tls state
+>      >=C2=A0 =C2=A0 =C2=A0machine, and tls lib
+>      >
+>      >
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0Le lun. 21 sept. 2020 =C3=A0 14:36, Hannes Tsc=
+hofenig
+>      >=C2=A0 =C2=A0 =C2=A0<Hannes.Tschofenig@arm.com <mailto:Hannes.Tsch=
+ofenig@arm.com>
+>     <mailto:Hannes.Tschofenig@arm.com
+>     <mailto:Hannes.Tschofenig@arm.com>>> a =C3=A9crit=C2=A0:
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Hi Pascal, ____
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0__ __
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0are you saying that the stack on=
+ the secure element uses
+>     WolfSSL
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0or OpenSSL? I am sure that WolfS=
+SL works well but for
+>     code size
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0reasons I doubt OpenSSL is possi=
+ble. Can you confirm? ____
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0__ __
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0In case of WolfSSL, you have mul=
+tiple options for
+>     credentials,
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0including plain PSK, PSK-ECDHE, =
+raw public keys, and
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0certificates as I noted in my ma=
+il to the UTA list: ____
+>      >
+>      >
+>     https://mailarchive.ietf.org/arch/msg/uta/RJ4wU77D6f7qslfwrc16jkrPTe=
+w/____
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0__ __
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Ciao____
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Hannes____
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0__ __
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0*From:* Pascal Urien <pascal.uri=
+en@gmail.com
+>     <mailto:pascal.urien@gmail.com>
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0<mailto:pascal.urien@gmail.com
+>     <mailto:pascal.urien@gmail.com>>>
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0*Sent:* Monday, September 21, 20=
+20 2:01 PM
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0*To:* Hannes Tschofenig <Hannes.=
+Tschofenig@arm.com
+>     <mailto:Hannes.Tschofenig@arm.com>
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0<mailto:Hannes.Tschofenig@arm.co=
+m
+>     <mailto:Hannes.Tschofenig@arm.com>>>
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0*Cc:* Filippo Valsorda <filippo@=
+ml.filippo.io
+>     <mailto:filippo@ml.filippo.io>
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0<mailto:filippo@ml.filippo.io
+>     <mailto:filippo@ml.filippo.io>>>; tls@ietf.org <mailto:tls@ietf.org>
+>     <mailto:tls@ietf.org <mailto:tls@ietf.org>>
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0*Subject:* Re: [TLS] The future =
+of external PSK in TLS
+>     1.3____
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0__ __
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Hi Hannes____
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0__ __
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Yes it has been tested with seve=
+ral=C2=A0 3.04 Javacards
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0commercially available____
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0__ __
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0In the draft
+>     https://tools.ietf.org/html/draft-urien-tls-se-00
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Section 5-ISO 7816 Use Ca=
+se, the exchanges are done
+>     with the
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0existing implementation____
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0__ __
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0TLS-SE TLS1.3 PSK+ECDH server wo=
+rks with ESP8266 or
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Arduino+Ethernet boards ____
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0__ __
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0For client software=C2=A0we use =
+OPENSSL or WolfSSL____
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0__ __
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Pascal____
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0__ __
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0__ __
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0__ __
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0__ __
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Le=C2=A0lun. 21 sept. 2020 =C3=
+=A0=C2=A012:35, Hannes Tschofenig
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0<Hannes.Tschofenig@arm.com
+>     <mailto:Hannes.Tschofenig@arm.com> <mailto:Hannes.Tschofenig@arm.com
+>     <mailto:Hannes.Tschofenig@arm.com>>> a
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=C3=A9crit=C2=A0:____
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Hi Pascal,
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Thanks for the poi=
+nter to the draft.
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Since I am surveyi=
+ng implementations for the update
+>     of RFC
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A07925 (see
+>      > https://datatracker.ietf.org/doc/draft-ietf-uta-tls13-iot-profile=
+/)
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0I was wondering wh=
+ether there is an implementation of
+>     this
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0approach.
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Ciao
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Hannes
+>      >
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0From: Pascal Urien=
+ <pascal.urien@gmail.com
+>     <mailto:pascal.urien@gmail.com>
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0<mailto:pascal.uri=
+en@gmail.com
+>     <mailto:pascal.urien@gmail.com>>>
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Sent: Monday, Sept=
+ember 21, 2020 11:44 AM
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0To: Hannes Tschofe=
+nig <Hannes.Tschofenig@arm.com
+>     <mailto:Hannes.Tschofenig@arm.com>
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0<mailto:Hannes.Tsc=
+hofenig@arm.com
+>     <mailto:Hannes.Tschofenig@arm.com>>>
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Cc: Filippo Valsor=
+da <filippo@ml.filippo.io
+>     <mailto:filippo@ml.filippo.io>
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0<mailto:filippo@ml=
+.filippo.io
+>     <mailto:filippo@ml.filippo.io>>>; tls@ietf.org <mailto:tls@ietf.org>
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0<mailto:tls@ietf.o=
+rg <mailto:tls@ietf.org>>
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Subject: Re: [TLS]=
+ The future of external PSK in TLS 1.3
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Hi All
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Here is an example=
+ of PSK+ECDHE for IoT
+>      >
+>      > https://tools.ietf.org/html/draft-urien-tls-se-00=C2=A0 uses
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0TLS1.3 server=C2=
+=A0 PSK+ECDHE for secure elements
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0The security level=
+ in these devices is as high as EAL5+
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0The computing time=
+ is about 1.4s for a PSK+ECDHE session
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0(AES-128-CCM, + se=
+cp256r1)
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0The real critical =
+resource is the required RAM size, less
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0than 1KB in our ex=
+periments
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0The secure element=
+=C2=A0 only needs a classical TCP/IP
+>     interface
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0(i.e. sockets like=
+)
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Trusted PSK should=
+ avoid selfie attacks
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Pascal
+>      >
+>      >
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Le lun. 21 sept. 2=
+020 =C3=A0 11:29, Hannes Tschofenig
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0<mailto:Hannes.Tsc=
+hofenig@arm.com
+>     <mailto:Hannes.Tschofenig@arm.com>
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0<mailto:Hannes.Tsc=
+hofenig@arm.com
+>     <mailto:Hannes.Tschofenig@arm.com>>> a =C3=A9crit :
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Hi Filippo,
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=E2=80=A2 Indeed, =
+if the SCADA industry has a particular
+>     need, they
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0should profile TLS=
+ for use in that industry, and not
+>     require
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0we change the reco=
+mmendation for the open Internet.
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0We have an IoT pro=
+file for TLS and it talks about the
+>     use of
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0PSK, see https://t=
+ools.ietf.org/html/rfc7925
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0On the =E2=80=9Cop=
+en Internet=E2=80=9D (probably referring to the Web
+>     usage)
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0you are not going =
+to use PSKs in TLS. There is a separate
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0RFC that provides =
+recommendations for that
+>     environmnent, see
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0RFC 752. That RFC =
+is currently being revised, see
+>      > https://datatracker.ietf.org/doc/draft-sheffer-uta-rfc7525bis/
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Ciao
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Hannes
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0IMPORTANT NOTICE: =
+The contents of this email and any
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0attachments are co=
+nfidential and may also be
+>     privileged. If
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0you are not the in=
+tended recipient, please notify the
+>     sender
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0immediately and do=
+ not disclose the contents to any other
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0person, use it for=
+ any purpose, or store or copy the
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0information in any=
+ medium. Thank you.
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0__________________=
+_____________________________
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0TLS mailing list
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0mailto:TLS@ietf.or=
+g <mailto:TLS@ietf.org>
+>     <mailto:TLS@ietf.org <mailto:TLS@ietf.org>>
+>      > https://www.ietf.org/mailman/listinfo/tls
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0IMPORTANT NOTICE: =
+The contents of this email and any
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0attachments are co=
+nfidential and may also be
+>     privileged. If
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0you are not the in=
+tended recipient, please notify the
+>     sender
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0immediately and do=
+ not disclose the contents to any other
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0person, use it for=
+ any purpose, or store or copy the
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0information in any=
+ medium. Thank you.____
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0IMPORTANT NOTICE: The contents o=
+f this email and any
+>     attachments
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0are confidential and may also be=
+ privileged. If you are
+>     not the
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0intended recipient, please notif=
+y the sender immediately
+>     and do
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0not disclose the contents to any=
+ other person, use it for any
+>      >=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0purpose, or store or copy the in=
+formation in any medium.
+>     Thank you.
+>      >
+>      >
+>      > _______________________________________________
+>      > TLS mailing list
+>      > TLS@ietf.org <mailto:TLS@ietf.org>
+>      > https://www.ietf.org/mailman/listinfo/tls
+>      >
+>
+

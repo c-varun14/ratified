@@ -1,0 +1,582 @@
+Return-Path: <davidben@google.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 0C393C1D5C49
+	for <tls@ietfa.amsl.com>; Mon,  2 Dec 2024 11:06:32 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -9.402
+X-Spam-Level: 
+X-Spam-Status: No, score=-9.402 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIMWL_WL_HIGH=-0.148, DKIM_SIGNED=0.1,
+	DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1,
+	HEADER_FROM_DIFFERENT_DOMAINS=0.25, HTML_MESSAGE=0.001,
+	RCVD_IN_DNSWL_BLOCKED=0.001, RCVD_IN_ZEN_BLOCKED_OPENDNS=0.001,
+	SPF_HELO_NONE=0.001, SPF_PASS=-0.001, T_SCC_BODY_TEXT_LINE=-0.01,
+	URIBL_BLOCKED=0.001, URIBL_DBL_BLOCKED_OPENDNS=0.001,
+	URIBL_ZEN_BLOCKED_OPENDNS=0.001, USER_IN_DEF_SPF_WL=-7.5]
+	autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+	header.d=chromium.org
+Received: from mail.ietf.org ([50.223.129.194])
+	by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id rWeSu9FhnorX for <tls@ietfa.amsl.com>;
+	Mon,  2 Dec 2024 11:06:28 -0800 (PST)
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com
+ [IPv6:2a00:1450:4864:20::52a])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by ietfa.amsl.com (Postfix) with ESMTPS id D7648C1516EB
+	for <tls@ietf.org>; Mon,  2 Dec 2024 11:06:27 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id
+ 4fb4d7f45d1cf-5d0cfb9fecaso3501262a12.2
+        for <tls@ietf.org>; Mon, 02 Dec 2024 11:06:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1733166386; x=1733771186; darn=ietf.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=XL2PXBcMjAZF4OiivhDHnLquUnbILn3ZuKwA5e8S4IU=;
+        b=m3CWytK8SbXXxwgoKvQNNYTvUBWqIeisqi3hNAzkHoWnQlJSzsH7czXMEmToWJW9o0
+         jTrj6E6fhx18oBZtMtK12UCUKEZ1BoOW5RdhFCqjCpatjs94NHjslE5Z3tzyQqCK/7TC
+         nPCFhOQBd/zDokVivhavzF69vDQl2Vyp0TTlU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733166386; x=1733771186;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XL2PXBcMjAZF4OiivhDHnLquUnbILn3ZuKwA5e8S4IU=;
+        b=dMbkpkoF+j+z7Wnia2qyJiWw7l/8MGqKyrekYVUqTx/sNSyUTa5kqJ8ZMHr1Wp37Qf
+         1Hk0rsPvDcS8FSorR/b3Nmfk9ugDG9RLwI5U+DDjz4NLjylIjQuKOwWe0PP3Ak/lrEjU
+         EMSf8kFudFeTVZVA6jvmuOxLvPBsFO7CL/TNDdWwF5EKpYTd58ZcYoeuqOb+xuQAFX2g
+         ZmbrwSffMiq/WMYmQSDHsItaMLroyIuImoQRW9C2dMjq11ueRdZFaPiJJ692wTmTffEh
+         OuZGECDkqsoojzJfj/oSsvjvFksvPO1XNaKLUNt3lq3teiQV9ML4FzYYmSltJRvj2BWT
+         gCxw==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCU4MXmAFlGddPguM8S3Ap4PsfgCpSBO7pQb2dkCyCZ4O0WwAUjkYnIMCGxDMXfKbUePwdc=@ietf.org
+X-Gm-Message-State: AOJu0YxJ5Cr6CKWkaFYHwsWoXztfNp5s4ZyLaZjKmnl33aHLxBVgpBzI
+	49HEaK27DxE5sePbeKMoLjYB4yglYgTH+h+37ZFJJix42tn7VRbhGKSyW+hC2FJK2Eksxb+mpIi
+	vdNiUgZ0Bg7zGbGCCiKDICvifuworewly8xk=
+X-Gm-Gg: ASbGncv2QcBmnkB+CNbDP5pXvcH1osM02JNCD9A3eX8mkToX4HK7LTXUDtXJjXnaHLR
+	VNpqz9eT3EujDaMHEO/iLqBBq9uuaKQ==
+X-Google-Smtp-Source: 
+ AGHT+IEXDxBAmlHZEt24kGTp7z55vhMJzRgprCueUQWyCDQFeZwXdiLl9X0bHfqm2BISUbUf/wGeEsaZOPFZslpwPOk=
+X-Received: by 2002:a17:906:3096:b0:aa5:4cdf:4a29 with SMTP id
+ a640c23a62f3a-aa580f337a0mr2063142266b.31.1733166385950; Mon, 02 Dec 2024
+ 11:06:25 -0800 (PST)
+MIME-Version: 1.0
+References: 
+ <GVXPR07MB967839231BEA47291C4C9D8189B8A@GVXPR07MB9678.eurprd07.prod.outlook.com>
+ <GVXPR07MB9678C7EBDFB4D194D49047C989BCA@GVXPR07MB9678.eurprd07.prod.outlook.com>
+ <GVXPR07MB967813D3D89B1A4CB2B4FA7E89BCA@GVXPR07MB9678.eurprd07.prod.outlook.com>
+ <CABcZeBORGgBg20KjAG4m2BQqQPzP6iMusudY+WNWdxAUW9kJBA@mail.gmail.com>
+ <4665f0f9-5403-43db-8601-b7abc5d5c480@betaapp.fastmail.com>
+ <GVXPR07MB9678B9DFEE6DDF993E4DC54C899EA@GVXPR07MB9678.eurprd07.prod.outlook.com>
+In-Reply-To: 
+ <GVXPR07MB9678B9DFEE6DDF993E4DC54C899EA@GVXPR07MB9678.eurprd07.prod.outlook.com>
+From: David Benjamin <davidben@chromium.org>
+Date: Mon, 2 Dec 2024 14:06:09 -0500
+Message-ID: 
+ <CAF8qwaBdCFh+S4XSf+tCQPh=V9yymjWez+CErrAquFs7unPFig@mail.gmail.com>
+To: John Mattsson <john.mattsson=40ericsson.com@dmarc.ietf.org>
+Content-Type: multipart/alternative; boundary="000000000000c6119806284e3ec5"
+Message-ID-Hash: IFEJXKEKNJKDEWJGTWLHAXCZCZ4GZAKL
+X-Message-ID-Hash: IFEJXKEKNJKDEWJGTWLHAXCZCZ4GZAKL
+X-MailFrom: davidben@google.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+CC: "tls@ietf.org" <tls@ietf.org>
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Re=3A_DTLS_1=2E3_replay_protection_of_post-handshake_mes?=
+	=?utf-8?q?sages=3F?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/vhcx4oLw8PnTmotOn-bqKHu2-zs>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+--000000000000c6119806284e3ec5
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Sorry to revive an old thread. I saw John reference this in another thread
+and wanted to understand what the issue is.
+
+I don't think there is actually a problem here, unless I'm missing
+something. Even without replay protection at the record layer,
+post-handshake messages still have sequence numbers, processed according to
+this text:
+
+> DTLS implementations maintain (at least notionally) a next_receive_seq
+counter. This counter is initially set to zero. When a handshake message is
+received, if its message_seq value matches next_receive_seq,
+next_receive_seq is incremented and the message is processed. If the
+sequence number is less than next_receive_seq, the message MUST be
+discarded. If the sequence number is greater than next_receive_seq, the
+implementation SHOULD queue the message but MAY discard it. (This is a
+simple space/bandwidth trade-off).
+
+https://www.rfc-editor.org/rfc/rfc9147.html#section-5.2-7
+
+If you believe this text applies to the entire handshake message
+apparatus[*], that includes post-handshake messages. That means that
+post-handshake messages are processed in order and at most once. If you get
+a replay of a message, the second time your next_receive_seq will have
+moved on and you'll simply interpret it as a retransmission of an older
+message. The attacker can induce you to send another ACK, but not actually
+re-process the message.
+
+David
+
+[*] A priori, there's no reason to believe it doesn't. It doesn't say it's
+limited to handshake messages before Finished. Of course, by that logic,
+other passages in RFC 9147 that cannot possibly apply post-handshake also
+apply post-handshake, so it's a bit of a mess. Still, when we go to fix
+those problems in rfc9147bis, I think we should keep this one in force. If
+post-handshake messages can be processed out of order, you get a whole
+boatload of complications.
+https://mailarchive.ietf.org/arch/msg/tls/_ku3-YDcroNmG_QKZsYTtqYzC0M/
+discusses some of the ways that that would go wrong, and I'm sure there are
+others.
+
+On Thu, Dec 28, 2023 at 7:47=E2=80=AFAM John Mattsson <john.mattsson=3D
+40ericsson.com@dmarc.ietf.org> wrote:
+
+> On Wed, Nov 29, 2023, at 11:21, Eric Rescorla wrote:
+> > I agree that it would be good to require replay protection at this
+> > time. Perhaps we should just publish a short RFC requiring it.
+>
+> I think that is a good idea and I would be happy to help with such an RFC=
+.
+> Either one mandating DTLS replay protection or one mandating replay
+> protection at some layer.
+>
+> I think it would maybe make most sense to mandate DTLS replay protection.
+> Applications wanting to turn off DTLS replay protection should be require=
+d
+> to register an extension.
+>
+>
+>
+> I made a PR to RFC8446bis that shortly describes that 0-RTT replay can be
+> used for server tracking.
+>
+> https://github.com/tlswg/tls13-spec/pull/1334/files
+>
+>
+>
+> Cheers,
+>
+> John Preu=C3=9F Mattsson
+>
+>
+>
+> *From: *Martin Thomson <mt@lowentropy.net>
+> *Date: *Wednesday, 29 November 2023 at 06:02
+> *To: *Eric Rescorla <ekr@rtfm.com>, John Mattsson <
+> john.mattsson@ericsson.com>
+> *Cc: *tls@ietf.org <tls@ietf.org>
+> *Subject: *Re: [TLS] DTLS 1.3 replay protection of post-handshake
+> messages?
+>
+> One thing that I observed when we were doing QUIC was that the canonical
+> reference for how to do this sort of anti-replay is a section that is
+> buried deep in an IPsec RFC.  Perhaps that short RFC is an opportunity to
+> also document the process in a way that can be a reference to other
+> documents.  (That's a slightly longer RFC, but still fairly short; Sectio=
+n
+> 3.4.3 of RFC 4303 is just two pages in the old measure.)
+>
+> On Wed, Nov 29, 2023, at 11:21, Eric Rescorla wrote:
+> > I agree that it would be good to require replay protection at this
+> > time. Perhaps we should just publish a short RFC requiring it.
+> >
+> > -Ekr
+> >
+> >
+> > On Tue, Nov 28, 2023 at 3:00=E2=80=AFPM John Mattsson
+> > <john.mattsson=3D40ericsson.com@dmarc.ietf.org> wrote:
+> >> Hi,____
+> >> __ __
+> >> Lack of replay also enables tracking of client and server. If the
+> client or server is a device moving together with a person this enables
+> tracking of the person.____
+> >> __ __
+> >> An attacker can store a message from one location and then replay it t=
+o
+> the client or server in another location. If the client or server accept
+> the replayed message, the attacker knows that the device in the two
+> locations are one and the same. It is best practice to assume that an
+> attacker can always detect if a message was accepted. If the client or
+> server send a response to the replayed message (like a replayed client
+> authentication request) this is trivial.____
+> >> __ __
+> >> This is different from the attack described in Section C.4 =E2=80=9CCl=
+ient and
+> Server Tracking Prevention=E2=80=9D of RFC8446bis, which describes the cl=
+ient
+> reusing a ticket. A network attacker mounting a replay attack are describ=
+ed
+> in Section 8 of RFC8446bis. I think a sentence or two should be added to
+> Section C.4 to describe that a network attacker mounting a replay attack
+> can be used for server tracking and that the mitigations in Section 8
+> help.____
+> >> https://datatracker.ietf.org/doc/draft-ietf-tls-rfc8446bis/____
+> >> __ __
+> >> Cheers,____
+> >> John Preu=C3=9F Mattsson____
+> >> __ __
+> >> *From: *TLS <tls-bounces@ietf.org> on behalf of John Mattsson
+> <john.mattsson=3D40ericsson.com@dmarc.ietf.org>
+> >> *Date: *Tuesday, 28 November 2023 at 09:30
+> >> *To: *TLS@ietf.org <tls@ietf.org>
+> >> *Subject: *Re: [TLS] DTLS 1.3 replay protection of post-handshake
+> messages?____
+> >> Hi,____
+> >>  ____
+> >> Reading RFC 9147 (DTLS 1.3) I cannot find any other interpretation tha=
+n
+> that replay protection may be disabled for all records. This is not a
+> problem for the initial lock-step handshake, alerts, KeyUpdate, and ACKs.
+> It seems to be a major problem for NewSessionTicket, NewConnectionId,
+> RequestConnectionId, and Post-handshake client authentication as the lack
+> of replay protection might significantly affect availability. It seems to
+> me that DTLS 1.3 forgot to update replay protection based on the new
+> post-handshake messages. Let me know if I miss something.____
+> >>  ____
+> >> It is a bit surprising that DTLS 1.3 published in 2022 allows the
+> application to turn off replay protection at all. This very far from
+> current best practice for security protocols. There are very good reasons
+> why Datagram QUIC mandates replay protection and why TLS 1.3 has several
+> pages discussing security considerations for 0-RTT data, which lacks repl=
+ay
+> protection. In general, turning off replay protection (even just for
+> application data) might lead to loss of confidentiality, integrity, and
+> availability, i.e., the whole CIA triad.____
+> >>  ____
+> >> Applications cannot be expected to understand the severe consequences
+> of not having replay protection or understand how to fix it on the
+> application layer. I also don't see any need for turning off replay
+> protection except RFC 6083 which is a bit of a special case, and which
+> turned out to have replay issues.____
+> >>
+> https://datatracker.ietf.org/meeting/115/materials/slides-115-tsvwg-sctp-=
+auth-security-issues-00____
+> >>  ____
+> >> I would strongly recommend all DTLS 1.3 libraries to completely remove
+> the option to disable replay protection.____
+> >>  ____
+> >> An easy fix for the post-handshake messages is to "clarify" that repla=
+y
+> protection must not be turned off for anything else than application data=
+.
+> I you agree I can submit an =E2=80=9Cerratum=E2=80=9D for RFC 9147. But t=
+his does not solve
+> the general issue that turning off replay protection would be a major
+> security problem in almost all applications. ____
+> >>  ____
+> >> Cheers,____
+> >> John Preu=C3=9F Mattsson____
+> >>  ____
+> >> *From: *TLS <tls-bounces@ietf.org> on behalf of John Mattsson
+> <john.mattsson=3D40ericsson.com@dmarc.ietf.org>
+> >> *Date: *Friday, 24 November 2023 at 14:50
+> >> *To: *TLS@ietf.org <tls@ietf.org>
+> >> *Subject: *[TLS] DTLS 1.3 replay protection of post-handshake
+> messages?____
+> >> Hi,____
+> >>  ____
+> >> How does replay protection of Post-handshake messages work in DTLS 1.3
+> if the per-record replay-protection mechanism is turned off?____
+> >>  ____
+> >> 1. Is the post-handshake messages replay protected in some other way,
+> which I miss?____
+> >>  ____
+> >> 2. Should RFC 9147 state that the per-record replay-protection
+> mechanism can only be turned off for application data? (I could not find
+> anything in RFC 9147 stating something like this).____
+> >>  ____
+> >> (things like post-handshake authentication need replay protection in
+> some way)____
+> >>  ____
+> >> Cheers,____
+> >> John Preu=C3=9F Mattsson____
+> >> _______________________________________________
+> >> TLS mailing list
+> >> TLS@ietf.org
+> >> https://www.ietf.org/mailman/listinfo/tls
+> > _______________________________________________
+> > TLS mailing list
+> > TLS@ietf.org
+> > https://www.ietf.org/mailman/listinfo/tls
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+>
+
+--000000000000c6119806284e3ec5
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">Sorry to revive an old thread. I saw John reference this i=
+n another thread and wanted to understand what the issue is.<div><br></div>=
+<div>I don&#39;t think there is actually a problem here, unless I&#39;m mis=
+sing something. Even without replay protection at the record layer, post-ha=
+ndshake messages still have=C2=A0sequence=C2=A0numbers, processed according=
+ to this text:</div><div><br></div><div>&gt;=C2=A0DTLS implementations main=
+tain (at least notionally) a next_receive_seq counter. This counter is init=
+ially set to zero. When a handshake message is received, if its message_seq=
+ value matches next_receive_seq, next_receive_seq is incremented and the me=
+ssage is processed. If the sequence number is less than next_receive_seq, t=
+he message MUST be discarded. If the sequence number is greater than next_r=
+eceive_seq, the implementation SHOULD queue the message but MAY discard it.=
+ (This is a simple space/bandwidth trade-off).</div><div><br></div><div><a =
+href=3D"https://www.rfc-editor.org/rfc/rfc9147.html#section-5.2-7">https://=
+www.rfc-editor.org/rfc/rfc9147.html#section-5.2-7</a></div><div><br></div><=
+div>If you believe this text applies to the entire handshake message appara=
+tus[*], that includes post-handshake messages. That means that post-handsha=
+ke messages are processed in order and at most once. If you get a replay of=
+ a message, the second time your next_receive_seq will have moved on and yo=
+u&#39;ll simply interpret it as a retransmission of an older message. The a=
+ttacker can induce you to send another ACK, but not actually re-process the=
+ message.</div><div><br></div><div>David</div><div><br></div><div>[*] A pri=
+ori, there&#39;s no reason to believe it doesn&#39;t. It doesn&#39;t say it=
+&#39;s limited to handshake messages before Finished. Of course, by that lo=
+gic, other passages in RFC 9147 that cannot possibly apply post-handshake a=
+lso apply post-handshake, so it&#39;s a bit of a mess. Still, when we go to=
+ fix those problems in rfc9147bis, I think we should keep this one in force=
+. If post-handshake messages can be processed out of order, you get a whole=
+ boatload of complications. <a href=3D"https://mailarchive.ietf.org/arch/ms=
+g/tls/_ku3-YDcroNmG_QKZsYTtqYzC0M/">https://mailarchive.ietf.org/arch/msg/t=
+ls/_ku3-YDcroNmG_QKZsYTtqYzC0M/</a> discusses some of the ways that that wo=
+uld go wrong, and I&#39;m sure there are others.</div></div><br><div class=
+=3D"gmail_quote gmail_quote_container"><div dir=3D"ltr" class=3D"gmail_attr=
+">On Thu, Dec 28, 2023 at 7:47=E2=80=AFAM John Mattsson &lt;john.mattsson=
+=3D<a href=3D"mailto:40ericsson.com@dmarc.ietf.org">40ericsson.com@dmarc.ie=
+tf.org</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"m=
+argin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left=
+:1ex"><div class=3D"msg-7990875239120601168">
+
+
+
+
+
+<div lang=3D"en-SE" style=3D"overflow-wrap: break-word;">
+<div class=3D"m_-7990875239120601168WordSection1">
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt">On Wed, Nov 29, 2023,=
+ at 11:21, Eric Rescorla wrote:<br>
+&gt; I agree that it would be good to require replay protection at this <br=
+>
+&gt; time. Perhaps we should just publish a short RFC requiring it.<br>
+<br>
+</span><span style=3D"font-size:11pt"><u></u><u></u></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"font-size:11pt">I thin=
+k that is a good idea and I would be happy to help with such an RFC. Either=
+ one mandating DTLS replay protection or one mandating replay protection at=
+ some layer.<br>
+<br>
+I think it would maybe make most sense to mandate DTLS replay protection. A=
+pplications wanting to turn off DTLS replay protection should be required t=
+o register an extension.<u></u><u></u></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"font-size:11pt"><u></u=
+>=C2=A0<u></u></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"font-size:11pt">I made=
+ a PR to RFC8446bis that shortly describes that 0-RTT replay can be used fo=
+r server tracking.<u></u><u></u></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"font-size:11pt"><a hre=
+f=3D"https://github.com/tlswg/tls13-spec/pull/1334/files" target=3D"_blank"=
+>https://github.com/tlswg/tls13-spec/pull/1334/files</a><u></u><u></u></spa=
+n></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"font-size:11pt"><u></u=
+>=C2=A0<u></u></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"font-size:11pt">Cheers=
+,<u></u><u></u></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"font-size:11pt">John P=
+reu=C3=9F Mattsson<u></u><u></u></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"font-size:11pt"><u></u=
+>=C2=A0<u></u></span></p>
+<div id=3D"m_-7990875239120601168mail-editor-reference-message-container">
+<div>
+<div style=3D"border-right:none;border-bottom:none;border-left:none;border-=
+top:1pt solid rgb(181,196,223);padding:3pt 0cm 0cm">
+<p class=3D"MsoNormal" style=3D"margin-bottom:12pt"><b><span style=3D"font-=
+size:12pt;font-family:Aptos,sans-serif;color:black">From:
+</span></b><span style=3D"font-size:12pt;font-family:Aptos,sans-serif;color=
+:black">Martin Thomson &lt;<a href=3D"mailto:mt@lowentropy.net" target=3D"_=
+blank">mt@lowentropy.net</a>&gt;<br>
+<b>Date: </b>Wednesday, 29 November 2023 at 06:02<br>
+<b>To: </b>Eric Rescorla &lt;<a href=3D"mailto:ekr@rtfm.com" target=3D"_bla=
+nk">ekr@rtfm.com</a>&gt;, John Mattsson &lt;<a href=3D"mailto:john.mattsson=
+@ericsson.com" target=3D"_blank">john.mattsson@ericsson.com</a>&gt;<br>
+<b>Cc: </b><a href=3D"mailto:tls@ietf.org" target=3D"_blank">tls@ietf.org</=
+a> &lt;<a href=3D"mailto:tls@ietf.org" target=3D"_blank">tls@ietf.org</a>&g=
+t;<br>
+<b>Subject: </b>Re: [TLS] DTLS 1.3 replay protection of post-handshake mess=
+ages?<u></u><u></u></span></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><span style=3D"font-size:11pt">One thing that I obse=
+rved when we were doing QUIC was that the canonical reference for how to do=
+ this sort of anti-replay is a section that is buried deep in an IPsec RFC.=
+=C2=A0 Perhaps that short RFC is an opportunity
+ to also document the process in a way that can be a reference to other doc=
+uments.=C2=A0 (That&#39;s a slightly longer RFC, but still fairly short; Se=
+ction 3.4.3 of RFC 4303 is just two pages in the old measure.)<br>
+<br>
+On Wed, Nov 29, 2023, at 11:21, Eric Rescorla wrote:<br>
+&gt; I agree that it would be good to require replay protection at this <br=
+>
+&gt; time. Perhaps we should just publish a short RFC requiring it.<br>
+&gt;<br>
+&gt; -Ekr<br>
+&gt;<br>
+&gt;<br>
+&gt; On Tue, Nov 28, 2023 at 3:00=E2=80=AFPM John Mattsson <br>
+&gt; &lt;john.mattsson=3D<a href=3D"mailto:40ericsson.com@dmarc.ietf.org" t=
+arget=3D"_blank">40ericsson.com@dmarc.ietf.org</a>&gt; wrote:<br>
+&gt;&gt; Hi,____<br>
+&gt;&gt; __ __<br>
+&gt;&gt; Lack of replay also enables tracking of client and server. If the =
+client or server is a device moving together with a person this enables tra=
+cking of the person.____<br>
+&gt;&gt; __ __<br>
+&gt;&gt; An attacker can store a message from one location and then replay =
+it to the client or server in another location. If the client or server acc=
+ept the replayed message, the attacker knows that the device in the two loc=
+ations are one and the same. It is best
+ practice to assume that an attacker can always detect if a message was acc=
+epted. If the client or server send a response to the replayed message (lik=
+e a replayed client authentication request) this is trivial.____<br>
+&gt;&gt; __ __<br>
+&gt;&gt; This is different from the attack described in Section C.4 =E2=80=
+=9CClient and Server Tracking Prevention=E2=80=9D of RFC8446bis, which desc=
+ribes the client reusing a ticket. A network attacker mounting a replay att=
+ack are described in Section 8 of RFC8446bis. I think a
+ sentence or two should be added to Section C.4 to describe that a network =
+attacker mounting a replay attack can be used for server tracking and that =
+the mitigations in Section 8 help.____<br>
+&gt;&gt; <a href=3D"https://datatracker.ietf.org/doc/draft-ietf-tls-rfc8446=
+bis/____" target=3D"_blank">https://datatracker.ietf.org/doc/draft-ietf-tls=
+-rfc8446bis/____</a><br>
+&gt;&gt; __ __<br>
+&gt;&gt; Cheers,____<br>
+&gt;&gt; John Preu=C3=9F Mattsson____<br>
+&gt;&gt; __ __<br>
+&gt;&gt; *From: *TLS &lt;<a href=3D"mailto:tls-bounces@ietf.org" target=3D"=
+_blank">tls-bounces@ietf.org</a>&gt; on behalf of John Mattsson &lt;john.ma=
+ttsson=3D<a href=3D"mailto:40ericsson.com@dmarc.ietf.org" target=3D"_blank"=
+>40ericsson.com@dmarc.ietf.org</a>&gt;<br>
+&gt;&gt; *Date: *Tuesday, 28 November 2023 at 09:30<br>
+&gt;&gt; *To: *<a href=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.o=
+rg</a> &lt;<a href=3D"mailto:tls@ietf.org" target=3D"_blank">tls@ietf.org</=
+a>&gt;<br>
+&gt;&gt; *Subject: *Re: [TLS] DTLS 1.3 replay protection of post-handshake =
+messages?____<br>
+&gt;&gt; Hi,____<br>
+&gt;&gt;=C2=A0 ____<br>
+&gt;&gt; Reading RFC 9147 (DTLS 1.3) I cannot find any other interpretation=
+ than that replay protection may be disabled for all records. This is not a=
+ problem for the initial lock-step handshake, alerts, KeyUpdate, and ACKs. =
+It seems to be a major problem for NewSessionTicket,
+ NewConnectionId, RequestConnectionId, and Post-handshake client authentica=
+tion as the lack of replay protection might significantly affect availabili=
+ty. It seems to me that DTLS 1.3 forgot to update replay protection based o=
+n the new post-handshake messages.
+ Let me know if I miss something.____<br>
+&gt;&gt;=C2=A0 ____<br>
+&gt;&gt; It is a bit surprising that DTLS 1.3 published in 2022 allows the =
+application to turn off replay protection at all. This very far from curren=
+t best practice for security protocols. There are very good reasons why Dat=
+agram QUIC mandates replay protection
+ and why TLS 1.3 has several pages discussing security considerations for 0=
+-RTT data, which lacks replay protection. In general, turning off replay pr=
+otection (even just for application data) might lead to loss of confidentia=
+lity, integrity, and availability,
+ i.e., the whole CIA triad.____<br>
+&gt;&gt;=C2=A0 ____<br>
+&gt;&gt; Applications cannot be expected to understand the severe consequen=
+ces of not having replay protection or understand how to fix it on the appl=
+ication layer. I also don&#39;t see any need for turning off replay protect=
+ion except RFC 6083 which is a bit of a special
+ case, and which turned out to have replay issues.____<br>
+&gt;&gt; <a href=3D"https://datatracker.ietf.org/meeting/115/materials/slid=
+es-115-tsvwg-sctp-auth-security-issues-00____" target=3D"_blank">
+https://datatracker.ietf.org/meeting/115/materials/slides-115-tsvwg-sctp-au=
+th-security-issues-00____</a><br>
+&gt;&gt;=C2=A0 ____<br>
+&gt;&gt; I would strongly recommend all DTLS 1.3 libraries to completely re=
+move the option to disable replay protection.____<br>
+&gt;&gt;=C2=A0 ____<br>
+&gt;&gt; An easy fix for the post-handshake messages is to &quot;clarify&qu=
+ot; that replay protection must not be turned off for anything else than ap=
+plication data. I you agree I can submit an =E2=80=9Cerratum=E2=80=9D for R=
+FC 9147. But this does not solve the general issue that turning
+ off replay protection would be a major security problem in almost all appl=
+ications. ____<br>
+&gt;&gt;=C2=A0 ____<br>
+&gt;&gt; Cheers,____<br>
+&gt;&gt; John Preu=C3=9F Mattsson____<br>
+&gt;&gt;=C2=A0 ____<br>
+&gt;&gt; *From: *TLS &lt;<a href=3D"mailto:tls-bounces@ietf.org" target=3D"=
+_blank">tls-bounces@ietf.org</a>&gt; on behalf of John Mattsson &lt;john.ma=
+ttsson=3D<a href=3D"mailto:40ericsson.com@dmarc.ietf.org" target=3D"_blank"=
+>40ericsson.com@dmarc.ietf.org</a>&gt;<br>
+&gt;&gt; *Date: *Friday, 24 November 2023 at 14:50<br>
+&gt;&gt; *To: *<a href=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.o=
+rg</a> &lt;<a href=3D"mailto:tls@ietf.org" target=3D"_blank">tls@ietf.org</=
+a>&gt;<br>
+&gt;&gt; *Subject: *[TLS] DTLS 1.3 replay protection of post-handshake mess=
+ages?____<br>
+&gt;&gt; Hi,____<br>
+&gt;&gt;=C2=A0 ____<br>
+&gt;&gt; How does replay protection of Post-handshake messages work in DTLS=
+ 1.3 if the per-record replay-protection mechanism is turned off?____<br>
+&gt;&gt;=C2=A0 ____<br>
+&gt;&gt; 1. Is the post-handshake messages replay protected in some other w=
+ay, which I miss?____<br>
+&gt;&gt;=C2=A0 ____<br>
+&gt;&gt; 2. Should RFC 9147 state that the per-record replay-protection mec=
+hanism can only be turned off for application data? (I could not find anyth=
+ing in RFC 9147 stating something like this).____<br>
+&gt;&gt;=C2=A0 ____<br>
+&gt;&gt; (things like post-handshake authentication need replay protection =
+in some way)____<br>
+&gt;&gt;=C2=A0 ____<br>
+&gt;&gt; Cheers,____<br>
+&gt;&gt; John Preu=C3=9F Mattsson____<br>
+&gt;&gt; _______________________________________________<br>
+&gt;&gt; TLS mailing list<br>
+&gt;&gt; <a href=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.org</a>=
+<br>
+&gt;&gt; <a href=3D"https://www.ietf.org/mailman/listinfo/tls" target=3D"_b=
+lank">https://www.ietf.org/mailman/listinfo/tls</a><br>
+&gt; _______________________________________________<br>
+&gt; TLS mailing list<br>
+&gt; <a href=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.org</a><br>
+&gt; <a href=3D"https://www.ietf.org/mailman/listinfo/tls" target=3D"_blank=
+">https://www.ietf.org/mailman/listinfo/tls</a><u></u><u></u></span></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+_______________________________________________<br>
+TLS mailing list<br>
+<a href=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.org</a><br>
+<a href=3D"https://www.ietf.org/mailman/listinfo/tls" rel=3D"noreferrer" ta=
+rget=3D"_blank">https://www.ietf.org/mailman/listinfo/tls</a><br>
+</div></blockquote></div>
+
+--000000000000c6119806284e3ec5--
+

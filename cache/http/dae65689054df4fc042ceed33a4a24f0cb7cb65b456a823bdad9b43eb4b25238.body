@@ -1,0 +1,245 @@
+Return-Path: <tshort@akamai.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 85BEB132125
+ for <tls@ietfa.amsl.com>; Fri, 11 Aug 2017 08:17:34 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2
+X-Spam-Level: 
+X-Spam-Status: No, score=-2 tagged_above=-999 required=5 tests=[BAYES_00=-1.9, 
+ DKIM_SIGNED=0.1, DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1,
+ HTML_MESSAGE=0.001, SPF_PASS=-0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=akamai.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id ikMW_CydK8YW for <tls@ietfa.amsl.com>;
+ Fri, 11 Aug 2017 08:17:32 -0700 (PDT)
+Received: from mx0b-00190b01.pphosted.com (mx0b-00190b01.pphosted.com
+ [IPv6:2620:100:9005:57f::1])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id D5A4A1321A3
+ for <tls@ietf.org>; Fri, 11 Aug 2017 08:17:31 -0700 (PDT)
+Received: from pps.filterd (m0050102.ppops.net [127.0.0.1])
+ by m0050102.ppops.net-00190b01. (8.16.0.21/8.16.0.21) with SMTP id
+ v7BFHQBa029703; Fri, 11 Aug 2017 16:17:29 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com;
+ h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ mime-version; s=jan2016.eng;
+ bh=a8q9dJQzI/SweFrVPMzt0BU4jam6XAYqaDpZLiYev6A=;
+ b=bsrL0FPY7nXiCsS61XzEhJwGggFP2eGlxjkwL5tRXlhitCrxMij+HoyKgH/RWMNUU00B
+ W0txjEv0Lw+PbmQAgtVAzA4Yhs2TzvDfBzK/KC2XOYMeT4CewtHXammEeu2OvTlhK50t
+ 2p06AZVD6UEeNG1w7I/oWqnI0FEjFIKXtacZc/mBrNvCDdJBOUzwao1nz/WkOSZ+hr8T
+ 1nzs6PTKFgH59fP+Fru4HxBsLAbYB5/LL9XEqPhnAXpGhBmY2ZPzss4y/3tSiIpM3lCU
+ +LtWUMZAg9bcXyuuwVgZUto/LO0/o5PwI4vl4wNugCymzsrVIq3OKMNNTrG+hUyAYP5J ZQ== 
+Received: from prod-mail-ppoint2 (prod-mail-ppoint2.akamai.com [184.51.33.19])
+ by m0050102.ppops.net-00190b01. with ESMTP id 2c8548qd2k-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Fri, 11 Aug 2017 16:17:29 +0100
+Received: from pps.filterd (prod-mail-ppoint2.akamai.com [127.0.0.1])
+ by prod-mail-ppoint2.akamai.com (8.16.0.17/8.16.0.17) with SMTP id
+ v7BFFkKu021876; Fri, 11 Aug 2017 11:17:28 -0400
+Received: from email.msg.corp.akamai.com ([172.27.123.33])
+ by prod-mail-ppoint2.akamai.com with ESMTP id 2c59bv8p1t-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+ Fri, 11 Aug 2017 11:17:28 -0400
+Received: from USMA1EX-DAG1MB5.msg.corp.akamai.com (172.27.123.105) by
+ usma1ex-dag1mb3.msg.corp.akamai.com (172.27.123.103) with Microsoft SMTP
+ Server (TLS) id 15.0.1263.5; Fri, 11 Aug 2017 11:17:27 -0400
+Received: from USMA1EX-DAG1MB5.msg.corp.akamai.com ([172.27.123.105]) by
+ usma1ex-dag1mb5.msg.corp.akamai.com ([172.27.123.105]) with mapi id
+ 15.00.1263.000; Fri, 11 Aug 2017 11:17:27 -0400
+From: "Short, Todd" <tshort@akamai.com>
+To: Nikos Mavrogiannopoulos <nmav@redhat.com>
+CC: "tls@ietf.org" <tls@ietf.org>
+Thread-Topic: [TLS] draft-ietf-tls-tls13-21: TLS 1.3 record padding removal
+ leaks padding size
+Thread-Index: AQHTEqu4UDB35x1gLEG+JKMOxcPabqJ/h5iA
+Date: Fri, 11 Aug 2017 15:17:27 +0000
+Message-ID: <075C47B6-A601-441F-B881-A7F78648B5F1@akamai.com>
+References: <1502460670.3202.8.camel@redhat.com>
+In-Reply-To: <1502460670.3202.8.camel@redhat.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [172.19.32.244]
+Content-Type: multipart/alternative;
+ boundary="_000_075C47B6A601441FB881A7F78648B5F1akamaicom_"
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10432:, ,
+ definitions=2017-08-11_07:, , signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0
+ suspectscore=0
+ malwarescore=0 phishscore=0 adultscore=0 bulkscore=0 classifier=spam
+ adjust=0 reason=mlx scancount=1 engine=8.0.1-1706020000
+ definitions=main-1708110244
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10432:, ,
+ definitions=2017-08-11_07:, , signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
+ priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 impostorscore=0 adultscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.0.1-1706020000 definitions=main-1708110244
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/CXNBR1bocY4lq9Lkzz1TsI_nF2o>
+Subject: Re: [TLS] draft-ietf-tls-tls13-21: TLS 1.3 record padding removal
+ leaks padding size
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Fri, 11 Aug 2017 15:17:34 -0000
+
+--_000_075C47B6A601441FB881A7F78648B5F1akamaicom_
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+
+VGhlIGFwcGxpY2F0aW9uIGNhbiBzb2x2ZSB0aGlzIGJ5IGhhdmluZyBpdHMgb3duIHBhZGRpbmcu
+IElmIGl04oCZcyBnb2luZyB0byBmb3JjZSBhbGwgbWVzc2FnZXMgdG8gYmUgcGFkZGVkIG91dCB0
+byAxMDI0IGJ5dGVzIGJ5IFRMUywgd2h5IG5vdCBqdXN0IG1ha2UgdGhhdCBwYXJ0IG9mIHRoZSBh
+cHBsaWNhdGlvbiBwcm90b2NvbD8gSXRzIG5vdCBhcyB0aG91Z2ggaXTigJlzIHRyeWluZyB0byBz
+YXZlIGJ5dGVzIGhlcmUuDQotLQ0KLVRvZGQgU2hvcnQNCi8vIHRzaG9ydEBha2FtYWkuY29tPG1h
+aWx0bzp0c2hvcnRAYWthbWFpLmNvbT4NCi8vICJPbmUgaWYgYnkgbGFuZCwgdHdvIGlmIGJ5IHNl
+YSwgdGhyZWUgaWYgYnkgdGhlIEludGVybmV0LiINCg0KT24gQXVnIDExLCAyMDE3LCBhdCAxMDox
+MSBBTSwgTmlrb3MgTWF2cm9naWFubm9wb3Vsb3MgPG5tYXZAcmVkaGF0LmNvbTxtYWlsdG86bm1h
+dkByZWRoYXQuY29tPj4gd3JvdGU6DQoNCkltYWdpbmUgdGhlIGZvbGxvd2luZyBzY2VuYXJpbywg
+d2hlcmUgdGhlIHNlcnZlciBhbmQgY2xpZW50IGhhdmUgdGhpcw0KcmVwZWF0ZWQgY29tbXVuaWNh
+dGlvbiBOIHRpbWVzIHBlciBkYXk6DQoNCmNsaWVudCAgICAgc2VydmVyDQogICAtLVgtLT4NCiAg
+IDwtLVktLQ0KDQoNCnRoZSBjbGllbnQgcHV0cyBpbiBYIGEgbWVzc2FnZSBBIG9mIDEgYnl0ZSBv
+ciBCIG9mIDEwMjQgYnl0ZXMsIGFuZCBwYWRzDQppdCB0byB0aGUgbWF4aW11bSBzaXplIG9mIFRM
+UyByZWNvcmQuIFRoZSBzZXJ2ZXIgcmVwbGllcyB3aXRoIHRoZQ0KbWVzc2FnZSAib2siIChzYW1l
+IGV2ZXJ5IHRpbWUpLCBwYWRkZWQgdG8gdGhlIG1heGltdW0gc2l6ZSBqdXN0IGFmdGVyDQppdCBy
+ZWFkcyBYLg0KDQpIb3dldmVyLCBUTFMgMS4zIGRldGVjdHMgdGhlIG1lc3NhZ2Ugc2l6ZSBieSBp
+dGVyYXRpbmcgdGhyb3VnaCBhbGwgdGhlDQpwYWRkaW5nIGJ5dGVzLCBhbmQgdGh1cyB0aGVyZSBp
+cyBhIHRpbWluZyBsZWFrIG9ic2VydmVkIGJ5IHRoZSB0aW1lDQpkaWZmZXJlbmNlIGJldHdlZW4g
+cmVjZWl2aW5nIFggYW5kIHNlbmRpbmcgWS4gVGh1cyBhcyBhbiBhZHZlcnNhcnkgSQ0KY291bGQg
+dGFrZSBlbm91Z2ggbWVhc3VyZW1lbnRzIGFuZCBiZSBhYmxlIHRvIGRpc3Rpbmd1aXNoIGJldHdl
+ZW4gWA0KaGF2aW5nIHRoZSB2YWx1ZSBBIG9yIEIuDQoNCldoaWxlIEknZCBleHBlY3QgdGhlc2Ug
+aXRlcmF0aW9ucyB0byBiZSB1bm1lYXN1cmFibGUgaW4gZGVza3RvcCBvcg0Kc2VydmVyIGhhcmR3
+YXJlLCBJIGFtIG5vdCBzdXJlIGFib3V0IHRoZSBzaXR1YXRpb24gaW4gbG93LWVuZCBJb1QNCmhh
+cmR3YXJlLiBJcyB0aGUgZGVzaWduIGNob2ljZSBmb3IgaGF2aW5nIHRoZSBwYWRkaW5nIHJlbW92
+YWwgZGVwZW5kaW5nDQpvbiBwYWRkaW5nIGxlbmd0aCBpbnRlbnRpb25hbD8NCg0KVGhlcmUgaXMg
+bWVudGlvbmluZyBvZiBwb3NzaWJsZSB0aW1pbmcgY2hhbm5lbHMgaW46DQpodHRwczovL3Rvb2xz
+LmlldGYub3JnL2h0bWwvZHJhZnQtaWV0Zi10bHMtdGxzMTMtMjEjYXBwZW5kaXgtRS4zDQpIb3dl
+dmVyIEkgZG9uJ3QgcXVpdGUgdW5kZXJzdGFuZCBob3cgaXMgdGhpcyBzZWN0aW9uIGludGVuZGVk
+IHRvIGJlDQpyZWFkLiBUaGUgc2VudGVuY2UgZm9yIGV4YW1wbGU6ICJCZWNhdXNlIHRoZSBwYWRk
+aW5nIGlzIGVuY3J5cHRlZA0KYWxvbmdzaWRlIHRoZSBhY3R1YWwgY29udGVudCwgYW4gYXR0YWNr
+ZXIgY2Fubm90IGRpcmVjdGx5IGRldGVybWluZSB0aGUNCmxlbmd0aCBvZiB0aGUgcGFkZGluZywg
+YnV0IG1heSBiZSBhYmxlIHRvIG1lYXN1cmUgaXQgaW5kaXJlY3RseSBieSB0aGUNCnVzZSBvZiB0
+aW1pbmcgY2hhbm5lbHMgZXhwb3NlZCBkdXJpbmcgcmVjb3JkIHByb2Nlc3NpbmciLCB3aGF0IGlz
+IGl0cw0KaW50ZW50aW9uPyBJcyBpdCB0byBhY2tub3dsZWRnZSB0aGUgYWJvdmUgdGltaW5nIGxl
+YWs/DQoNClllcywgSSBwcmVzdW1lIHNvLg0KDQoNCg0KU2hvdWxkbid0IGluc3RlYWQgYmUgZ3Vp
+ZGFuY2UgaW4gc2VjdGlvbiAnSW1wbGVtZW50YXRpb24gUGl0ZmFsbHMnIG9uDQpob3cgdG8gcmVt
+b3ZlIHBhZGRpbmcgaW4gYSB3YXkgdGhhdCB0aGVyZSBhcmUgbm8gdGltaW5nIGxlYWtzPyAodGhl
+DQp0aW1pbmcgbGVhayBoZXJlIGlzIG5vdCBpbiBjcnlwdG8gYWxnb3JpdGhtcywgYnV0IFRMUyBp
+dHNlbGYpLiBJZGVhbGx5DQpUTFMgMS4zIGl0c2VsZiBzaG91bGRuJ3QgdXNlIGRhdGEtc2l6ZSBk
+ZXBlbmRpbmcgY2FsY3VsYXRpb25zIGl0c2VsZg0Kc3VjaCBhcyB0aGUgb25lIGRlc2NyaWJlZCBo
+ZXJlLg0KDQpyZWdhcmRzLA0KTmlrb3MNCg0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18NClRMUyBtYWlsaW5nIGxpc3QNClRMU0BpZXRmLm9yZzxtYWlsdG86
+VExTQGlldGYub3JnPg0KaHR0cHM6Ly93d3cuaWV0Zi5vcmcvbWFpbG1hbi9saXN0aW5mby90bHMN
+Cg0K
+
+--_000_075C47B6A601441FB881A7F78648B5F1akamaicom_
+Content-Type: text/html; charset="utf-8"
+Content-ID: <CFA3C7D79412E644BFC0416C82EAEA86@akamai.com>
+Content-Transfer-Encoding: base64
+
+PGh0bWw+DQo8aGVhZD4NCjxtZXRhIGh0dHAtZXF1aXY9IkNvbnRlbnQtVHlwZSIgY29udGVudD0i
+dGV4dC9odG1sOyBjaGFyc2V0PXV0Zi04Ij4NCjwvaGVhZD4NCjxib2R5IHN0eWxlPSJ3b3JkLXdy
+YXA6IGJyZWFrLXdvcmQ7IC13ZWJraXQtbmJzcC1tb2RlOiBzcGFjZTsgLXdlYmtpdC1saW5lLWJy
+ZWFrOiBhZnRlci13aGl0ZS1zcGFjZTsiIGNsYXNzPSIiPg0KVGhlIGFwcGxpY2F0aW9uIGNhbiBz
+b2x2ZSB0aGlzIGJ5IGhhdmluZyBpdHMgb3duIHBhZGRpbmcuIElmIGl04oCZcyBnb2luZyB0byBm
+b3JjZSBhbGwgbWVzc2FnZXMgdG8gYmUgcGFkZGVkIG91dCB0byAxMDI0IGJ5dGVzIGJ5IFRMUywg
+d2h5IG5vdCBqdXN0IG1ha2UgdGhhdCBwYXJ0IG9mIHRoZSBhcHBsaWNhdGlvbiBwcm90b2NvbD8g
+SXRzIG5vdCBhcyB0aG91Z2ggaXTigJlzIHRyeWluZyB0byBzYXZlIGJ5dGVzIGhlcmUuPGJyIGNs
+YXNzPSIiPg0KPGRpdiBjbGFzcz0iIj4NCjxkaXYgc3R5bGU9ImNvbG9yOiByZ2IoMCwgMCwgMCk7
+IGxldHRlci1zcGFjaW5nOiBub3JtYWw7IG9ycGhhbnM6IGF1dG87IHRleHQtYWxpZ246IHN0YXJ0
+OyB0ZXh0LWluZGVudDogMHB4OyB0ZXh0LXRyYW5zZm9ybTogbm9uZTsgd2hpdGUtc3BhY2U6IG5v
+cm1hbDsgd2lkb3dzOiBhdXRvOyB3b3JkLXNwYWNpbmc6IDBweDsgLXdlYmtpdC10ZXh0LXN0cm9r
+ZS13aWR0aDogMHB4OyB3b3JkLXdyYXA6IGJyZWFrLXdvcmQ7IC13ZWJraXQtbmJzcC1tb2RlOiBz
+cGFjZTsgLXdlYmtpdC1saW5lLWJyZWFrOiBhZnRlci13aGl0ZS1zcGFjZTsiIGNsYXNzPSIiPg0K
+PGRpdiBzdHlsZT0iY29sb3I6IHJnYigwLCAwLCAwKTsgbGV0dGVyLXNwYWNpbmc6IG5vcm1hbDsg
+b3JwaGFuczogYXV0bzsgdGV4dC1hbGlnbjogc3RhcnQ7IHRleHQtaW5kZW50OiAwcHg7IHRleHQt
+dHJhbnNmb3JtOiBub25lOyB3aGl0ZS1zcGFjZTogbm9ybWFsOyB3aWRvd3M6IGF1dG87IHdvcmQt
+c3BhY2luZzogMHB4OyAtd2Via2l0LXRleHQtc3Ryb2tlLXdpZHRoOiAwcHg7IHdvcmQtd3JhcDog
+YnJlYWstd29yZDsgLXdlYmtpdC1uYnNwLW1vZGU6IHNwYWNlOyAtd2Via2l0LWxpbmUtYnJlYWs6
+IGFmdGVyLXdoaXRlLXNwYWNlOyIgY2xhc3M9IiI+DQo8ZGl2IGNsYXNzPSIiPi0tPC9kaXY+DQo8
+ZGl2IGNsYXNzPSIiPi1Ub2RkIFNob3J0PC9kaXY+DQo8ZGl2IGNsYXNzPSIiPi8vIDxhIGhyZWY9
+Im1haWx0bzp0c2hvcnRAYWthbWFpLmNvbSIgY2xhc3M9IiI+dHNob3J0QGFrYW1haS5jb208L2E+
+PC9kaXY+DQo8ZGl2IGNsYXNzPSIiPi8vICZxdW90O09uZSBpZiBieSBsYW5kLCB0d28gaWYgYnkg
+c2VhLCB0aHJlZSBpZiBieSB0aGUgSW50ZXJuZXQuJnF1b3Q7PC9kaXY+DQo8L2Rpdj4NCjwvZGl2
+Pg0KPC9kaXY+DQo8YnIgY2xhc3M9IiI+DQo8ZGl2Pg0KPGJsb2NrcXVvdGUgdHlwZT0iY2l0ZSIg
+Y2xhc3M9IiI+DQo8ZGl2IGNsYXNzPSIiPk9uIEF1ZyAxMSwgMjAxNywgYXQgMTA6MTEgQU0sIE5p
+a29zIE1hdnJvZ2lhbm5vcG91bG9zICZsdDs8YSBocmVmPSJtYWlsdG86bm1hdkByZWRoYXQuY29t
+IiBjbGFzcz0iIj5ubWF2QHJlZGhhdC5jb208L2E+Jmd0OyB3cm90ZTo8L2Rpdj4NCjxiciBjbGFz
+cz0iQXBwbGUtaW50ZXJjaGFuZ2UtbmV3bGluZSI+DQo8ZGl2IGNsYXNzPSIiPg0KPGRpdiBjbGFz
+cz0iIj5JbWFnaW5lIHRoZSBmb2xsb3dpbmcgc2NlbmFyaW8sIHdoZXJlIHRoZSBzZXJ2ZXIgYW5k
+IGNsaWVudCBoYXZlIHRoaXM8YnIgY2xhc3M9IiI+DQpyZXBlYXRlZCBjb21tdW5pY2F0aW9uIE4g
+dGltZXMgcGVyIGRheTo8YnIgY2xhc3M9IiI+DQo8YnIgY2xhc3M9IiI+DQpjbGllbnQgJm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7c2VydmVyPGJyIGNsYXNzPSIiPg0KJm5ic3A7Jm5ic3A7Jm5ic3A7
+LS1YLS0mZ3Q7PGJyIGNsYXNzPSIiPg0KJm5ic3A7Jm5ic3A7Jm5ic3A7Jmx0Oy0tWS0tPGJyIGNs
+YXNzPSIiPg0KPGJyIGNsYXNzPSIiPg0KPGJyIGNsYXNzPSIiPg0KdGhlIGNsaWVudCBwdXRzIGlu
+IFggYSBtZXNzYWdlIEEgb2YgMSBieXRlIG9yIEIgb2YgMTAyNCBieXRlcywgYW5kIHBhZHM8YnIg
+Y2xhc3M9IiI+DQppdCB0byB0aGUgbWF4aW11bSBzaXplIG9mIFRMUyByZWNvcmQuIFRoZSBzZXJ2
+ZXIgcmVwbGllcyB3aXRoIHRoZSA8YnIgY2xhc3M9IiI+DQptZXNzYWdlICZxdW90O29rJnF1b3Q7
+IChzYW1lIGV2ZXJ5IHRpbWUpLCBwYWRkZWQgdG8gdGhlIG1heGltdW0gc2l6ZSBqdXN0IGFmdGVy
+PGJyIGNsYXNzPSIiPg0KaXQgcmVhZHMgWC48YnIgY2xhc3M9IiI+DQo8YnIgY2xhc3M9IiI+DQpI
+b3dldmVyLCBUTFMgMS4zIGRldGVjdHMgdGhlIG1lc3NhZ2Ugc2l6ZSBieSBpdGVyYXRpbmcgdGhy
+b3VnaCBhbGwgdGhlPGJyIGNsYXNzPSIiPg0KcGFkZGluZyBieXRlcywgYW5kIHRodXMgdGhlcmUg
+aXMgYSB0aW1pbmcgbGVhayBvYnNlcnZlZCBieSB0aGUgdGltZTxiciBjbGFzcz0iIj4NCmRpZmZl
+cmVuY2UgYmV0d2VlbiByZWNlaXZpbmcgWCBhbmQgc2VuZGluZyBZLiBUaHVzIGFzIGFuIGFkdmVy
+c2FyeSBJPGJyIGNsYXNzPSIiPg0KY291bGQgdGFrZSBlbm91Z2ggbWVhc3VyZW1lbnRzIGFuZCBi
+ZSBhYmxlIHRvIGRpc3Rpbmd1aXNoIGJldHdlZW4gWDxiciBjbGFzcz0iIj4NCmhhdmluZyB0aGUg
+dmFsdWUgQSBvciBCLjxiciBjbGFzcz0iIj4NCjxiciBjbGFzcz0iIj4NCldoaWxlIEknZCBleHBl
+Y3QgdGhlc2UgaXRlcmF0aW9ucyB0byBiZSB1bm1lYXN1cmFibGUgaW4gZGVza3RvcCBvcjxiciBj
+bGFzcz0iIj4NCnNlcnZlciBoYXJkd2FyZSwgSSBhbSBub3Qgc3VyZSBhYm91dCB0aGUgc2l0dWF0
+aW9uIGluIGxvdy1lbmQgSW9UPGJyIGNsYXNzPSIiPg0KaGFyZHdhcmUuIElzIHRoZSBkZXNpZ24g
+Y2hvaWNlIGZvciBoYXZpbmcgdGhlIHBhZGRpbmcgcmVtb3ZhbCBkZXBlbmRpbmc8YnIgY2xhc3M9
+IiI+DQpvbiBwYWRkaW5nIGxlbmd0aCBpbnRlbnRpb25hbD88YnIgY2xhc3M9IiI+DQo8YnIgY2xh
+c3M9IiI+DQpUaGVyZSBpcyBtZW50aW9uaW5nIG9mIHBvc3NpYmxlIHRpbWluZyBjaGFubmVscyBp
+bjo8YnIgY2xhc3M9IiI+DQo8YSBocmVmPSJodHRwczovL3Rvb2xzLmlldGYub3JnL2h0bWwvZHJh
+ZnQtaWV0Zi10bHMtdGxzMTMtMjEjYXBwZW5kaXgtRS4zIiBjbGFzcz0iIj5odHRwczovL3Rvb2xz
+LmlldGYub3JnL2h0bWwvZHJhZnQtaWV0Zi10bHMtdGxzMTMtMjEjYXBwZW5kaXgtRS4zPC9hPjxi
+ciBjbGFzcz0iIj4NCkhvd2V2ZXIgSSBkb24ndCBxdWl0ZSB1bmRlcnN0YW5kIGhvdyBpcyB0aGlz
+IHNlY3Rpb24gaW50ZW5kZWQgdG8gYmU8YnIgY2xhc3M9IiI+DQpyZWFkLiBUaGUgc2VudGVuY2Ug
+Zm9yIGV4YW1wbGU6ICZxdW90O0JlY2F1c2UgdGhlIHBhZGRpbmcgaXMgZW5jcnlwdGVkPGJyIGNs
+YXNzPSIiPg0KYWxvbmdzaWRlIHRoZSBhY3R1YWwgY29udGVudCwgYW4gYXR0YWNrZXIgY2Fubm90
+IGRpcmVjdGx5IGRldGVybWluZSB0aGU8YnIgY2xhc3M9IiI+DQpsZW5ndGggb2YgdGhlIHBhZGRp
+bmcsIGJ1dCBtYXkgYmUgYWJsZSB0byBtZWFzdXJlIGl0IGluZGlyZWN0bHkgYnkgdGhlPGJyIGNs
+YXNzPSIiPg0KdXNlIG9mIHRpbWluZyBjaGFubmVscyBleHBvc2VkIGR1cmluZyByZWNvcmQgcHJv
+Y2Vzc2luZyZxdW90Oywgd2hhdCBpcyBpdHM8YnIgY2xhc3M9IiI+DQppbnRlbnRpb24/IElzIGl0
+IHRvIGFja25vd2xlZGdlIHRoZSBhYm92ZSB0aW1pbmcgbGVhaz88YnIgY2xhc3M9IiI+DQo8L2Rp
+dj4NCjwvZGl2Pg0KPC9ibG9ja3F1b3RlPg0KPGRpdj48YnIgY2xhc3M9IiI+DQo8L2Rpdj4NCjxk
+aXY+WWVzLCBJIHByZXN1bWUgc28uPC9kaXY+DQo8ZGl2PjxiciBjbGFzcz0iIj4NCjwvZGl2Pg0K
+PGJyIGNsYXNzPSIiPg0KPGJsb2NrcXVvdGUgdHlwZT0iY2l0ZSIgY2xhc3M9IiI+DQo8ZGl2IGNs
+YXNzPSIiPg0KPGRpdiBjbGFzcz0iIj48YnIgY2xhc3M9IiI+DQpTaG91bGRuJ3QgaW5zdGVhZCBi
+ZSBndWlkYW5jZSBpbiBzZWN0aW9uICdJbXBsZW1lbnRhdGlvbiBQaXRmYWxscycgb248YnIgY2xh
+c3M9IiI+DQpob3cgdG8gcmVtb3ZlIHBhZGRpbmcgaW4gYSB3YXkgdGhhdCB0aGVyZSBhcmUgbm8g
+dGltaW5nIGxlYWtzPyAodGhlPGJyIGNsYXNzPSIiPg0KdGltaW5nIGxlYWsgaGVyZSBpcyBub3Qg
+aW4gY3J5cHRvIGFsZ29yaXRobXMsIGJ1dCBUTFMgaXRzZWxmKS4gSWRlYWxseTxiciBjbGFzcz0i
+Ij4NClRMUyAxLjMgaXRzZWxmIHNob3VsZG4ndCB1c2UgZGF0YS1zaXplIGRlcGVuZGluZyBjYWxj
+dWxhdGlvbnMgaXRzZWxmPGJyIGNsYXNzPSIiPg0Kc3VjaCBhcyB0aGUgb25lIGRlc2NyaWJlZCBo
+ZXJlLiA8YnIgY2xhc3M9IiI+DQo8YnIgY2xhc3M9IiI+DQpyZWdhcmRzLDxiciBjbGFzcz0iIj4N
+Ck5pa29zPGJyIGNsYXNzPSIiPg0KPGJyIGNsYXNzPSIiPg0KX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX188YnIgY2xhc3M9IiI+DQpUTFMgbWFpbGluZyBsaXN0
+PGJyIGNsYXNzPSIiPg0KPGEgaHJlZj0ibWFpbHRvOlRMU0BpZXRmLm9yZyIgY2xhc3M9IiI+VExT
+QGlldGYub3JnPC9hPjxiciBjbGFzcz0iIj4NCmh0dHBzOi8vd3d3LmlldGYub3JnL21haWxtYW4v
+bGlzdGluZm8vdGxzPGJyIGNsYXNzPSIiPg0KPC9kaXY+DQo8L2Rpdj4NCjwvYmxvY2txdW90ZT4N
+CjwvZGl2Pg0KPGJyIGNsYXNzPSIiPg0KPC9ib2R5Pg0KPC9odG1sPg0K
+
+--_000_075C47B6A601441FB881A7F78648B5F1akamaicom_--
+

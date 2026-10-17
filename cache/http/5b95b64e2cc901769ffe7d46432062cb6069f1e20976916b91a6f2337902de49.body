@@ -1,0 +1,161 @@
+Return-Path: <hkario@redhat.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 80DB6120130
+ for <tls@ietfa.amsl.com>; Fri, 13 Dec 2019 04:17:06 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -4.291
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.291 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIMWL_WL_HIGH=-0.001, DKIM_SIGNED=0.1,
+ DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1, RCVD_IN_DNSWL_MED=-2.3,
+ SPF_HELO_NONE=0.001, SPF_PASS=-0.001, T_FILL_THIS_FORM_SHORT=0.01]
+ autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=redhat.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id WvbPSU-t9qnu for <tls@ietfa.amsl.com>;
+ Fri, 13 Dec 2019 04:17:04 -0800 (PST)
+Received: from us-smtp-1.mimecast.com (us-smtp-delivery-1.mimecast.com
+ [207.211.31.120])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 2E56612004A
+ for <tls@ietf.org>; Fri, 13 Dec 2019 04:17:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1576239422;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=S73lZC8qqvDFBjCSAl6G6iwSPxFoLlWKXIu/fBafkFk=;
+ b=T72lz1qUJvsv7g2C05Ghja4u9vjo5+BRywW/JZMVJW3SoJoORuDvMccnanRUux7FtNsW4p
+ VJBZzp3K02qXjbNGYPK7M6w1y5kBHg8YcGyhd9M1WeizMlRl0JfLnpVpn+TWPz9y3N7nIo
+ AQT7nWE4iet2jVZVLVtj5KY5XSvqhxc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-103-nfBS1iMBNZmmrrsgruBo0g-1; Fri, 13 Dec 2019 07:16:58 -0500
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com
+ [10.5.11.23])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B72A3100550E;
+ Fri, 13 Dec 2019 12:16:56 +0000 (UTC)
+Received: from localhost (unknown [10.43.21.11])
+ by smtp.corp.redhat.com (Postfix) with ESMTPS id 0F31D19C4F;
+ Fri, 13 Dec 2019 12:16:55 +0000 (UTC)
+From: Hubert Kario <hkario@redhat.com>
+To: Nick Harper <nharper@google.com>
+Cc: David Benjamin <davidben@chromium.org>,
+ <tls@ietf.org>
+Date: Fri, 13 Dec 2019 13:16:54 +0100
+MIME-Version: 1.0
+Message-ID: <335a929b-a760-4768-b9fc-3649b3df2414@redhat.com>
+In-Reply-To: <CACdeXiJ618GOaZD3M29gNGDX147jnnx-MRnct9KnuYpVL8e=+g@mail.gmail.com>
+References: <843cc437-4c6d-43ce-b634-527a287c4e27@www.fastmail.com>
+ <c4bab542-f1fd-4c80-89b8-1b7a3ef883a7@www.fastmail.com>
+ <CAMfhd9W_+1i=Q48GKAxT=TtHm+fKxUKUepqCtfJ7xQ6LgM4h_w@mail.gmail.com>
+ <CAEMoRCshwo1vsb+bYbJLpOCMWGcJ15sz8COXeXbxmX-KDbY8Mw@mail.gmail.com>
+ <20191207102017.GA1754124@LK-Perkele-VII>
+ <8f54acb3-61df-4617-b2c6-53b8c9021575@redhat.com>
+ <20191211142155.GA1879660@LK-Perkele-VII>
+ <CAF8qwaAHXGWwAswv8XfhjhN3fi7XtVSngLJY8sekYgX+u=wXVA@mail.gmail.com>
+ <054bd0ed-6afe-4500-9339-16f414aa8840@redhat.com>
+ <CAF8qwaChxmQw8K6YbEUkkxTQ6UnXfuowzoZZUOoje9Cw5p1dEQ@mail.gmail.com>
+ <aa89b581-cdb1-4251-b849-6eda45f525be@redhat.com>
+ <CACdeXiJ618GOaZD3M29gNGDX147jnnx-MRnct9KnuYpVL8e=+g@mail.gmail.com>
+Organization: Red Hat
+User-Agent: Trojita/0.7; Qt/5.12.5; xcb; Linux; Fedora release 30 (Thirty)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-MC-Unique: nfBS1iMBNZmmrrsgruBo0g-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/QVpysQ-6DbY2PdWlR7k5SPy6t1M>
+Subject: Re: [TLS] Adoption call for draft-davidben-tls13-pkcs1
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Fri, 13 Dec 2019 12:17:07 -0000
+
+On Thursday, 12 December 2019 21:55:42 CET, Nick Harper wrote:
+> On Thu, Dec 12, 2019 at 8:27 AM Hubert Kario <hkario@redhat.com> wrote:
+>
+>> On Thursday, 12 December 2019 16:50:45 CET, David Benjamin wrote:
+>>> On Thu, Dec 12, 2019 at 6:51 AM Hubert Kario <hkario@redhat.com> wrote:
+>>>  ...
+>>=20
+>> so because Google decided one thing, everybody has to bow down to it?
+>>=20
+>> and, sorry, but I consider the privacy angle a red herring,=20
+>> nobody is doing
+>> proper AppData padding, so the connections leak privacy information in T=
+LS
+>> 1.3
+>> like a sieve too
+>>=20
+>
+> Privacy isn't a red herring.
+
+it is in discussion about signature mechanisms supported by legacy hardware
+
+> There's a big difference between leaking
+> ciphertext lengths vs leaking the user's name, email address, and other P=
+II
+> present in a client cert when the client cert is sent in the clear.
+
+which can be workarounded by doing client authentication in renegotiation
+handshake, the feature is there in the protocol, it's not IETF fault that
+some people decided to remove support for it
+
+>>>> ...
+>>> An HTTP/2 client speaks as soon as the handshake completes=20
+>>> and does not ...
+>>> know
+>>> whether the server is going to do this.
+>>=20
+>> if privacy was so important why nobody worked on it with HTTP/2? It's no=
+t
+>> like
+>> much has changed in the last 4 years on that front.
+>>=20
+>
+> HTTP/2 couldn't fix the issue with TLS 1.2 client certs being sent in the
+> clear,
+
+again, renegotiation
+
+> but that problem was solved in TLS 1.3. Many of the problems not
+> solved by H2 are being worked on in QUIC. It takes time to develop and
+> deploy these protocols.
+
+and which part of QUIC addresses length hiding? Because either privacy is
+important, and it should be addressed by it, or mentioning privacy here is=
+=20
+a red
+herring.
+
+> Don't let perfect be the enemy of good.
+
+no, it's not a question of "perfect" or "good", it's a question of putting
+legacy stuff in modern protocol or keeping it in legacy protocol, where its
+use is obvious and easy to audit.
+--=20
+Regards,
+Hubert Kario
+Senior Quality Engineer, QE BaseOS Security team
+Web: www.cz.redhat.com
+Red Hat Czech s.r.o., Purky=C5=88ova 115, 612 00  Brno, Czech Republic
+

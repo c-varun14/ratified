@@ -1,0 +1,269 @@
+From nobody Wed Mar 29 06:34:51 2023
+Return-Path: <hkario@redhat.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 3C3A8C13AE4A
+ for <tls@ietfa.amsl.com>; Wed, 29 Mar 2023 06:34:50 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.096
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.096 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIMWL_WL_HIGH=-0.001, DKIM_SIGNED=0.1,
+ DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1,
+ RCVD_IN_DNSWL_NONE=-0.0001, RCVD_IN_MSPIKE_H2=-0.001,
+ RCVD_IN_ZEN_BLOCKED_OPENDNS=0.001, SPF_HELO_NONE=0.001,
+ SPF_NONE=0.001, URIBL_BLOCKED=0.001, URIBL_DBL_BLOCKED_OPENDNS=0.001,
+ URIBL_ZEN_BLOCKED_OPENDNS=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=redhat.com
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 0M5r0Y9sPE7k for <tls@ietfa.amsl.com>;
+ Wed, 29 Mar 2023 06:34:45 -0700 (PDT)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 1F83CC13AE49
+ for <tls@ietf.org>; Wed, 29 Mar 2023 06:34:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1680096879;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=77yqA6jiH3AzfrYL5tVYX+4bQbb1evLfIW78LMDesHU=;
+ b=Pyy9uwWGa1wKbe0/ADyCp2nKujHLaGcWq6POVicgZ4JFwPeWs7NPVc2nAdDjSzGWbQXnia
+ dxZrdJlCSIfMmnrcObyfZU7cpAWRr6JyuHXZkqaR9xgUMAvjLiSsyrdh3V6N2JoEgGUOxA
+ iLACIcm3TqPuCUrCFzGEWTfz4o1Q4ss=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-53--Keyr4kZOByLHNTndFzOOQ-1; Wed, 29 Mar 2023 09:34:37 -0400
+X-MC-Unique: -Keyr4kZOByLHNTndFzOOQ-1
+Received: by mail-qt1-f198.google.com with SMTP id
+ v7-20020a05622a188700b003e0e27bbc2eso10240066qtc.8
+ for <tls@ietf.org>; Wed, 29 Mar 2023 06:34:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112; t=1680096877;
+ h=content-transfer-encoding:user-agent:organization:references
+ :in-reply-to:message-id:mime-version:date:subject:cc:to:from
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=qiNvvh+C4JgFdl8/uYkkAFj+4EVIes8O+guaqQ3dvDE=;
+ b=I03acqbL81dcqom58GHAp1bnfAIy8h4ucO4OJBckCSlAzuTWxhcMjMiiHzU3Px2e2+
+ Mto4ICTBpqA5SrmN4ZwcA6mgOScO3iSCmDFlJR/srrINo6VHeBJoiOnuCRCDSNC9EsO8
+ X1X73II4afuzWyIsl+weZIg7d94EK/YGrD3YaReOxII6w+vvUyICj3WcpWBotZ38viu/
+ O4fG3Vu3dRZqD+F9prTWW4kOiDAMMpYluFPn0XTBfWOpC3WvJgW7V/BvMgdkNRvwSzk3
+ fwwQH2HNijG3qhLolOfe9WPjoMx6ezjM96Snf8UQKgGvW6Mr+8Cu2h6GJRZpkQDHQyHh
+ +qJQ==
+X-Gm-Message-State: AO0yUKU9xAMDneJkT9OhurLqWpHjV8qgYcoEJMT5HmpEY5hLG7sDoH3t
+ W2ZmJPDRKwHfZVaSfYju3ysUFp+wPIAQ0fVCp19HwO34vC6V1por6co9qaAAzQl4v33sbAXgDen
+ LD2A=
+X-Received: by 2002:a05:622a:3d1:b0:3e3:8ebe:ce2d with SMTP id
+ k17-20020a05622a03d100b003e38ebece2dmr28631599qtx.68.1680096876864; 
+ Wed, 29 Mar 2023 06:34:36 -0700 (PDT)
+X-Google-Smtp-Source: AK7set+61XI2tkLRA0OkJQkYijFrkJHtdTZ5DvAw5KaeNXxxh3sxavsYcXsKYaV/IdgMeridR0Emrg==
+X-Received: by 2002:a05:622a:3d1:b0:3e3:8ebe:ce2d with SMTP id
+ k17-20020a05622a03d100b003e38ebece2dmr28631569qtx.68.1680096876516; 
+ Wed, 29 Mar 2023 06:34:36 -0700 (PDT)
+Received: from localhost (ip-94-112-137-58.bb.vodafone.cz. [94.112.137.58])
+ by smtp.gmail.com with ESMTPSA id
+ q17-20020a05620a2a5100b007485ba3d794sm3583524qkp.105.2023.03.29.06.34.35
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 29 Mar 2023 06:34:36 -0700 (PDT)
+From: Hubert Kario <hkario@redhat.com>
+To: "Kampanakis, Panos" <kpanos@amazon.com>
+Cc: "<tls@ietf.org>" <tls@ietf.org>, Devon O'Brien <asymmetric@google.com>,
+ David Benjamin <davidben@chromium.org>
+Date: Wed, 29 Mar 2023 15:34:33 +0200
+MIME-Version: 1.0
+Message-ID: <839f2848-2e05-4ba6-8120-6819938a7ffb@redhat.com>
+In-Reply-To: <24da25b217fe4e398cf08a53655c1ccb@amazon.com>
+References: <24da25b217fe4e398cf08a53655c1ccb@amazon.com>
+Organization: Red Hat
+User-Agent: Trojita/0.7-git; Qt/5.15.7; xcb; Linux;
+ Fedora release 36 (Thirty Six)
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/ALhnujHvNuuGIl6cOgLm_gJbA6g>
+Subject: Re: [TLS] Merkle Tree Certificates
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Wed, 29 Mar 2023 13:34:50 -0000
+
+On Thursday, 23 March 2023 03:00:53 CET, Kampanakis, Panos wrote:
+> Hi Hubert,=20
+>
+> I totally agree on your points about time-to-first-byte vs=20
+> time-to-last-byte. We (some of my previous work too) have been=20
+> focusing on time-to-first byte which makes some of these=20
+> handshakes look bad for the tails of the 80-95th percentiles.=20
+> But in reality, the time-to-last-byte or=20
+> time-to-some-byte-that-makes-the-user-think-there-is-progress=20
+> would be the more accurate measurement to assess these=20
+> connections.
+>
+>> Neither cached data nor Merkle tree certificates reduce round-trips
+>
+> Why is that? Assuming Dilithium WebPKI and excluding CDNs, QUIC=20
+> sees 2 extra round-trips (amplification, initcwnd) and TLS sees=20
+> 1 (initcwnd). Trimming down the "auth data" will at least get=20
+> rid of the initcwnd extra round-trip. I think the Merkle tree=20
+> cert approach fits in the default QUIC amplification window too=20
+> so it would get rid of that round-trip in QUIC as well. =20
+
+I meant it on TLS level. Sure, on TCP level the less data you need to send
+the less problem you have with congestion window. But even there, I don't=
+=20
+see
+insurmountable problems with it; even with 3 Dilithium certs, with 2 SCTs
+each, we're talking about 22kB of data; that's half of what cloudflare
+found to be an inflection point for extra data:
+https://blog.cloudflare.com/sizing-up-post-quantum-signatures/
+
+So I'm very unconvinced that for good general web browsing experience
+Merkle Tree Certs will be qualitatively better than cached info.
+
+> -----Original Message-----
+> From: Hubert Kario <hkario@redhat.com>=20
+> Sent: Wednesday, March 22, 2023 8:46 AM
+> To: David Benjamin <davidben@chromium.org>
+> Cc: Kampanakis, Panos <kpanos@amazon.com>; <tls@ietf.org>=20
+> <tls@ietf.org>; Devon O'Brien <asymmetric@google.com>
+> Subject: RE: [EXTERNAL][TLS] Merkle Tree Certificates
+>
+> CAUTION: This email originated from outside of the=20
+> organization. Do not click links or open attachments unless you=20
+> can confirm the sender and know the content is safe.
+>
+>
+>
+> On Tuesday, 21 March 2023 17:06:54 CET, David Benjamin wrote:
+>> On Tue, Mar 21, 2023 at 8:01=E2=80=AFAM Hubert Kario <hkario@redhat.com>=
+ wrote:
+>>=20
+>>> On Monday, 20 March 2023 19:54:24 CET, David Benjamin wrote: ...
+>>=20
+>> I'm not seeing where this quote comes from. I said it had analogous
+>> properties to resumption, not that it was a privacy problem in=20
+>> the absolute.
+>
+> I meant it as a summary not as a quote.
+>
+>> The privacy properties of resumption and cached info on the situation. I=
+f
+>> you were okay correlating the two connections, both are okay in this
+>> regard. If not, then no. rfc8446bis discusses this:
+>> https://tlswg.org/tls13-spec/draft-ietf-tls-rfc8446bis.html#appendix-C.4
+>>=20
+>> In browsers, the correlation boundaries (across *all* state, not just TL=
+S)
+>> were once browsing-profile-wide, but they're shifting to this notion of
+>> "site". I won't bore the list with the web's security model, but roughly
+>> the domain part of the top-level (not the same as destination!) URL. See
+>> the links above for details.
+>>=20
+>> That equally impacts resumption and any hypothetical deployment of cache=
+d
+>> info. So, yes, within those same bounds, a browser could deploy cached
+>> info. Whether it's useful depends on whether there are many cases where
+>> resumption wouldn't work, but cached info would. (E.g. because resumptio=
+n
+>> has different security properties than cached info.)
+>
+> The big difference is that tickets generally should be valid only for
+> a day or two, while cached info, just like cookies, can be valid for many
+> months if not years.
+>
+> Now, a privacy focused user may decide to clear the cookies and cached
+> info daily, while others may prefer the slightly improved performance
+> on first visit after a week or month break.
+>
+>>=20
+>>> It also completely ignores the encrypted client hello
+>>>=20
+>>=20
+>> ECH helps with outside observers correlating your connections, but it
+>> doesn't do anything about the server correlating connections. In the
+>> context of correlation boundaries within a web browser, we care about th=
+e
+>> latter too.
+>
+> How's that different from cookies? Which don't correlate, but
+> cryptographically
+> prove previous visit?
+>
+>>> ...
+>> I don't think that's quite the right dichotomy. There are=20
+>> plenty of reasons
+>> to optimize for the first connection, time to first bytes, etc. Indeed,
+>> this WG did just that with False Start and TLS 1.3 itself.=20
+>> (Prior to those,
+>> TLS 1.2 was 2-RTT for the first connection and 1-RTT for resumption.) ..=
+.
+>
+> In my opinion time to first byte is a metric that's popular because it's
+> easy
+> to measure, not because it's representative. Feel free to point me to
+> double blind studies with representative sample sizes showing otherwise.
+>
+> Yes, reducing round-trips is important as latency of connection is not
+> correlated with bandwidth available. But when a simple page is a megabyte
+> of
+> data, and anything non trivial is multiple megabytes, looking at when the
+> first
+> byte arrives it is completely missing the bigger picture.
+>
+> Especially when users are trained to not interact with the page until it
+> fully
+> loads (2018 Hawaii missile alert joke explanation):
+> https://gfycat.com/queasygrandiriomotecat
+>
+> Neither cached data nor Merkle tree certificates reduce round-trips
+>
+>> I suspect a caching for a few hours would not justify cached info becaus=
+e
+>> you may as well use resumption at that point.
+>>=20
+>>> In comparison, this design doesn't depend on this sort of ...
+>>=20
+>> True, we could preload cached info for a global list of common
+>> certificates. I'm personally much more interested in mechanisms that
+>> benefit popular and unpopular pages alike.
+>
+> Unpopular pages are much more likely to deploy a solution that doesn't
+> require
+> a parallel CA infrastructure and a cryptographer on staff.
+>
+> --
+> Regards,
+> Hubert Kario
+> Principal Quality Engineer, RHEL Crypto team
+> Web: www.cz.redhat.com
+> Red Hat Czech s.r.o., Purky=C5=88ova 99/71, 612 45, Brno, Czech Republic
+>
+>
+>
+
+--=20
+Regards,
+Hubert Kario
+Principal Quality Engineer, RHEL Crypto team
+Web: www.cz.redhat.com
+Red Hat Czech s.r.o., Purky=C5=88ova 99/71, 612 45, Brno, Czech Republic
+

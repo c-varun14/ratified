@@ -1,0 +1,381 @@
+Return-Path: <ekr@rtfm.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id D07A512ECA6
+ for <tls@ietfa.amsl.com>; Thu,  1 Mar 2018 11:01:38 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.598
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.598 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_LOW=-0.7, URIBL_BLOCKED=0.001]
+ autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=rtfm-com.20150623.gappssmtp.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id bGB0IHdjYswf for <tls@ietfa.amsl.com>;
+ Thu,  1 Mar 2018 11:01:36 -0800 (PST)
+Received: from mail-qk0-x236.google.com (mail-qk0-x236.google.com
+ [IPv6:2607:f8b0:400d:c09::236])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 0DC0512EB58
+ for <tls@ietf.org>; Thu,  1 Mar 2018 11:01:36 -0800 (PST)
+Received: by mail-qk0-x236.google.com with SMTP id l206so8943974qke.1
+ for <tls@ietf.org>; Thu, 01 Mar 2018 11:01:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=rtfm-com.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+ :cc; bh=M1DzbQR0byBzInpBKY+buCiCY0dMv712iTZ3gbDNtDQ=;
+ b=HGT+lV24kVybQ1TdIzlJeck5F60JsAsc5MLgX7rSD0lm4Ml6Je2n3XL7wUHDXEUqiW
+ YIxsVOUQOvKATVc2krl7r2ZSClcwihQmOdBzv/tgYiINfp3CeLxbmv4yFVlDMv1o9xtg
+ obxeH86M1kyGlTBEdN9B9DPwZkEnxlaIeL3fP/ngX3tikfmbT3LpDKkf1M/55Fbxk0l4
+ 9bO56/nAOHMFQDOh2w+V6GayJIRJnritHzwiyjvjji9cPe/1+E6jTk6RMerkBeWbQAHQ
+ y7ViNpA+OmuRjw+rId72f3un8AiEZFxFylBE2XuWp/Yptquk6Q8qIH0nI/CFQuK1A6SD
+ y0jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+ :message-id:subject:to:cc;
+ bh=M1DzbQR0byBzInpBKY+buCiCY0dMv712iTZ3gbDNtDQ=;
+ b=qgVHm0voE6hgel/6AtynhsPOjrfCPqg63FEqRSA8Je5PVfy28IFB6PFkN8P/zF6y6q
+ o131Vd2hggS7b867HuYIne7sFr5xi9/nBl+eWX6zgU3t+w/uw//gQe5OKgu/G/o+nM4t
+ XKtVhlx8ER14IknEweD03RZgF20gHZ2O3OV7BaGTIiara87V8QfpdAykhsb3GuJMz1sX
+ PlKXQrEZtedsz2Zwy/e/mHWKOGeGMaEul/UdqHOvoeJhnrtPUJJ1xKsWcdxgDXXfEgwU
+ Mxcr7oyPPdQjAYhXBdyDE/7dpdiYX4kjskz61nmyE+CO24h+N3eTTWLhtLAzqRUaTvoK
+ zXvw==
+X-Gm-Message-State: AElRT7GqVYild3HipFv0x/W2vH3qrxSnhX8FGSx2u0wTQ9ja/vkcS3MK
+ e3hSoKtSRVFlpG0A+16J9HudMo6Ztvjn419019O01A==
+X-Google-Smtp-Source: AG47ELscjrmfxx9G4NoUL0agLwJ0gTzXjoaa9GGHMM0UiWOTCimqVL5IXJ7H3xgrF1Ix9oQ1c/wO1l1WQvelMATuVrU=
+X-Received: by 10.55.9.135 with SMTP id 129mr4041570qkj.221.1519930895052;
+ Thu, 01 Mar 2018 11:01:35 -0800 (PST)
+MIME-Version: 1.0
+Received: by 10.200.37.176 with HTTP; Thu, 1 Mar 2018 11:00:54 -0800 (PST)
+In-Reply-To: <CAF8qwaCz1L=S9WWUVx0T41RtEscw2H7kGfLvqUq3FJcvTAc_Pw@mail.gmail.com>
+References: <9233569e-fc21-e6dd-b84c-6a98e29a4f02@nist.gov>
+ <CAF8qwaCz1L=S9WWUVx0T41RtEscw2H7kGfLvqUq3FJcvTAc_Pw@mail.gmail.com>
+From: Eric Rescorla <ekr@rtfm.com>
+Date: Thu, 1 Mar 2018 11:00:54 -0800
+Message-ID: <CABcZeBPnh=kE5NwumPEmbg94-imagrewuuvw03u2=BYwZQdEbA@mail.gmail.com>
+To: David Benjamin <davidben@chromium.org>
+Cc: "David A. Cooper" <david.cooper@nist.gov>, "tls@ietf.org" <tls@ietf.org>
+Content-Type: multipart/alternative; boundary="001a11487b8c1563d505665e7d95"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/qdSbffCGj3YmGLD9uEkiJq3KdPw>
+Subject: Re: [TLS] draft-ietf-tls-tls13-24 supported_versions complexity
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Thu, 01 Mar 2018 19:01:39 -0000
+
+--001a11487b8c1563d505665e7d95
+Content-Type: text/plain; charset="UTF-8"
+
+On Thu, Mar 1, 2018 at 10:42 AM, David Benjamin <davidben@chromium.org>
+wrote:
+
+> FWIW, this was BoringSSL's interpretation as well. We don't consider
+> supported_versions an acceptable TLS 1.2 (or earlier) ServerHello
+> extension. I generally agree that we shouldn't add new unnecessary
+> combinations.
+>
+
+So, I think the key point here is that if you receive SH with SH < TLS
+1.3,then you should abort, not ignore it.
+
+-Ekr
+
+(TBH, I don't even consider the ability to advertise TLS 1.3 and TLS 1.1 on
+> the client side to be an especially valuable feature, but I suppose that
+> falls out naturally enough.)
+>
+> David
+>
+>
+> On Thu, Mar 1, 2018 at 10:49 AM David A. Cooper <david.cooper@nist.gov>
+> wrote:
+>
+>>
+>>
+>> I believe you are misinterpreting the text, but agree that it could be
+>> made more clear.
+>>
+>> Suppose that the ClientHello includes a supported_versions extensions
+>> that contains two values, TLS 1.4 and TLS 1.0, and the server supports
+>> TLS 1.3 and below. My interpretation of the current draft is that the
+>> server MUST use the supported_versions extension to determine the
+>> client's preference, but then once deciding to use TLS 1.0 for the
+>> connection sends a normal TLS 1.0 ServerHello, with version field set to
+>> 0x0300 and no supported_versions extension. Note that Section 4.2.1 says
+>> that
+>>
+>>       A server which negotiates TLS 1.3 MUST respond by sending a
+>>       "supported_versions" extension containing the selected version
+>>       value (0x0304).
+>>
+>> It says nothing about a server that negotiates an earlier version.
+>>
+>> If my understanding is correct, then I believe the text in Section 4.1.3
+>> could be made more clear. Draft -21 said that the version field of
+>> ServerHello "contains the version of TLS negotiated for this
+>> connection." (this is similar to what RFC 5246 said). The current draft
+>> says:
+>>
+>>        In TLS 1.3, the TLS server indicates its version using the
+>>        "supported_versions" extension (Section 4.2.1), and the
+>>        legacy_version field MUST be set to 0x0303, which is the
+>>        version number for TLS 1.2.
+>>
+>> To be consistent with RFC 5246 and earlier, it seems like the text
+>> should say something like:
+>>
+>>        For a TLS 1.3 ServerHello the TLS server indicates its version
+>>        using the "supported_versions" extension (Section 4.2.1), and
+>>        the legacy_version field MUST be set to 0x0303, which is the
+>>        version number for TLS 1.2. For a TLS 1.2 and earlier ServerHello
+>>        the legacy_version field contains the version of TLS negotiated
+>>        for this connection.
+>>
+>> On Thu, Mar 1, 2018 at 5:24 AM, Nikos Mavrogiannopoulos
+>> <nmav@redhat.com> wrote:
+>>
+>> > The TLS draft after version -21 requires TLS1.3 servers to negotiate
+>> > pre-TLS1.3 versions with a new, mechanism. The document states:
+>> >
+>> >    "If this extension is present, servers MUST ignore the
+>> >    ClientHello.legacy_version value and MUST use only the
+>> >    "supported_versions" extension to determine client preferences."
+>> >
+>> > ...
+>> >
+>> >    "Note that this mechanism makes it possible to negotiate a
+>> >    version prior to TLS 1.2 if one side supports a sparse range."
+>> >
+>> >
+>> > At this point, a server receiving a supported_versions extension which
+>> > contains the single value 'TLS 1.0' has to follow the draft's
+>> > recommendations and do:
+>> >
+>> >   1. It MUST set the ServerHello.legacy_version field to 0x0303
+>> >      (TLS 1.2).
+>> >   2. On the serverHello extensions include a supported_versions
+>> >      extension and advertise TLS1.0
+>> >
+>> > That modifies the way TLS 1.1  or TLS 1.0 are negotiated, possibly
+>> > introducing new issues with middle-boxes which see TLS1.2 in the
+>> > ServerHello but TLS1.0 anywhere else. That is also a quite impossible
+>> > code path (why would an implementation negotiate TLS1.0 using a TLS1.3
+>> > mechanism?). It is however anticipated to be used for that purpose as
+>> > this draft mentions:
+>> >
+>> >    "Servers should be prepared to receive ClientHellos that include
+>> >     this extension but do not include 0x0304 in the list of versions."
+>> >
+>> > Irrespective to any middle-box issues, I believe impossible code paths
+>> > allowed by the protocol are more likely to cause problems than solve
+>> > any, because they are often not tested, and provide attackers with
+>> > additional tools to manipulate implementations.
+>> >
+>> > My recommendation to address that would to either ignore that extension
+>> > if pre-TLS1.2 is negotiated, or revert to -21 draft behavior for pre-
+>> > TLS1.3 protocol negotiation. That is, the server MUST not send the
+>> > supported_versions extension if a pre-TLS1.3 protocol is to be
+>> > negotiated. The first case ensures that there is a single way to
+>> > negotiate TLS1.x, where x<3, and the second that the clientHello
+>> > extension is only used informatively.
+>> >
+>> > regards,
+>> > Nikos
+>>
+>> _______________________________________________
+>> TLS mailing list
+>> TLS@ietf.org
+>> https://www.ietf.org/mailman/listinfo/tls
+>>
+>
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+>
+>
+
+--001a11487b8c1563d505665e7d95
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div class=3D"gmail_extra"><div class=3D"gmail_quote">On T=
+hu, Mar 1, 2018 at 10:42 AM, David Benjamin <span dir=3D"ltr">&lt;<a href=
+=3D"mailto:davidben@chromium.org" target=3D"_blank">davidben@chromium.org</=
+a>&gt;</span> wrote:<br><blockquote class=3D"gmail_quote" style=3D"margin:0=
+ 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex"><div dir=3D"ltr">FWI=
+W, this was BoringSSL&#39;s interpretation as well. We don&#39;t consider s=
+upported_versions an acceptable TLS 1.2 (or earlier) ServerHello extension.=
+ I generally agree that we shouldn&#39;t add new unnecessary combinations.<=
+/div></blockquote><div><br></div><div>So, I think the key point here is tha=
+t if you receive SH with SH &lt; TLS 1.3,then you should abort, not ignore =
+it.</div><div><br></div><div>-Ekr</div><div><br></div><blockquote class=3D"=
+gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-=
+left:1ex"><div dir=3D"ltr"><div>(TBH, I don&#39;t even consider the ability=
+ to advertise TLS 1.3 and TLS 1.1 on the client side to be an especially va=
+luable feature, but I suppose that falls out naturally enough.)</div><span =
+class=3D"HOEnZb"><font color=3D"#888888"><div><br></div></font></span><div>=
+<span class=3D"HOEnZb"><font color=3D"#888888">David</font></span><div><div=
+ class=3D"h5"><br><br><div class=3D"gmail_quote"><div dir=3D"ltr">On Thu, M=
+ar 1, 2018 at 10:49 AM David A. Cooper &lt;<a href=3D"mailto:david.cooper@n=
+ist.gov" target=3D"_blank">david.cooper@nist.gov</a>&gt; wrote:<br></div><b=
+lockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1px =
+#ccc solid;padding-left:1ex"><br>
+<br>
+I believe you are misinterpreting the text, but agree that it could be<br>
+made more clear.<br>
+<br>
+Suppose that the ClientHello includes a supported_versions extensions<br>
+that contains two values, TLS 1.4 and TLS 1.0, and the server supports<br>
+TLS 1.3 and below. My interpretation of the current draft is that the<br>
+server MUST use the supported_versions extension to determine the<br>
+client&#39;s preference, but then once deciding to use TLS 1.0 for the<br>
+connection sends a normal TLS 1.0 ServerHello, with version field set to<br=
+>
+0x0300 and no supported_versions extension. Note that Section 4.2.1 says<br=
+>
+that<br>
+<br>
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 A server which negotiates TLS 1.3 MUST respo=
+nd by sending a<br>
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 &quot;supported_versions&quot; extension con=
+taining the selected version<br>
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 value (0x0304).<br>
+<br>
+It says nothing about a server that negotiates an earlier version.<br>
+<br>
+If my understanding is correct, then I believe the text in Section 4.1.3<br=
+>
+could be made more clear. Draft -21 said that the version field of<br>
+ServerHello &quot;contains the version of TLS negotiated for this<br>
+connection.&quot; (this is similar to what RFC 5246 said). The current draf=
+t<br>
+says:<br>
+<br>
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 In TLS 1.3, the TLS server indicates i=
+ts version using the<br>
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 &quot;supported_versions&quot; extensi=
+on (Section 4.2.1), and the<br>
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 legacy_version field MUST be set to 0x=
+0303, which is the<br>
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 version number for TLS 1.2.<br>
+<br>
+To be consistent with RFC 5246 and earlier, it seems like the text<br>
+should say something like:<br>
+<br>
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 For a TLS 1.3 ServerHello the TLS serv=
+er indicates its version<br>
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 using the &quot;supported_versions&quo=
+t; extension (Section 4.2.1), and<br>
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 the legacy_version field MUST be set t=
+o 0x0303, which is the<br>
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 version number for TLS 1.2. For a TLS =
+1.2 and earlier ServerHello<br>
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 the legacy_version field contains the =
+version of TLS negotiated<br>
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 for this connection.<br>
+<br>
+On Thu, Mar 1, 2018 at 5:24 AM, Nikos Mavrogiannopoulos<br>
+&lt;<a href=3D"mailto:nmav@redhat.com" target=3D"_blank">nmav@redhat.com</a=
+>&gt; wrote:<br>
+<br>
+&gt; The TLS draft after version -21 requires TLS1.3 servers to negotiate<b=
+r>
+&gt; pre-TLS1.3 versions with a new, mechanism. The document states:<br>
+&gt;<br>
+&gt; =C2=A0=C2=A0 &quot;If this extension is present, servers MUST ignore t=
+he<br>
+&gt; =C2=A0=C2=A0 ClientHello.legacy_version value and MUST use only the<br=
+>
+&gt; =C2=A0=C2=A0 &quot;supported_versions&quot; extension to determine cli=
+ent preferences.&quot;<br>
+&gt;<br>
+&gt; ...<br>
+&gt;<br>
+&gt; =C2=A0=C2=A0 &quot;Note that this mechanism makes it possible to negot=
+iate a<br>
+&gt; =C2=A0=C2=A0 version prior to TLS 1.2 if one side supports a sparse ra=
+nge.&quot;<br>
+&gt;<br>
+&gt;<br>
+&gt; At this point, a server receiving a supported_versions extension which=
+<br>
+&gt; contains the single value &#39;TLS 1.0&#39; has to follow the draft&#3=
+9;s<br>
+&gt; recommendations and do:<br>
+&gt;<br>
+&gt; =C2=A0 1. It MUST set the ServerHello.legacy_version field to 0x0303<b=
+r>
+&gt; =C2=A0=C2=A0=C2=A0=C2=A0 (TLS 1.2).<br>
+&gt; =C2=A0 2. On the serverHello extensions include a supported_versions<b=
+r>
+&gt; =C2=A0=C2=A0=C2=A0=C2=A0 extension and advertise TLS1.0<br>
+&gt;<br>
+&gt; That modifies the way TLS 1.1=C2=A0 or TLS 1.0 are negotiated, possibl=
+y<br>
+&gt; introducing new issues with middle-boxes which see TLS1.2 in the<br>
+&gt; ServerHello but TLS1.0 anywhere else. That is also a quite impossible<=
+br>
+&gt; code path (why would an implementation negotiate TLS1.0 using a TLS1.3=
+<br>
+&gt; mechanism?). It is however anticipated to be used for that purpose as<=
+br>
+&gt; this draft mentions:<br>
+&gt;<br>
+&gt; =C2=A0=C2=A0 &quot;Servers should be prepared to receive ClientHellos =
+that include<br>
+&gt; =C2=A0=C2=A0=C2=A0 this extension but do not include 0x0304 in the lis=
+t of versions.&quot;<br>
+&gt;<br>
+&gt; Irrespective to any middle-box issues, I believe impossible code paths=
+<br>
+&gt; allowed by the protocol are more likely to cause problems than solve<b=
+r>
+&gt; any, because they are often not tested, and provide attackers with<br>
+&gt; additional tools to manipulate implementations.<br>
+&gt;<br>
+&gt; My recommendation to address that would to either ignore that extensio=
+n<br>
+&gt; if pre-TLS1.2 is negotiated, or revert to -21 draft behavior for pre-<=
+br>
+&gt; TLS1.3 protocol negotiation. That is, the server MUST not send the<br>
+&gt; supported_versions extension if a pre-TLS1.3 protocol is to be<br>
+&gt; negotiated. The first case ensures that there is a single way to<br>
+&gt; negotiate TLS1.x, where x&lt;3, and the second that the clientHello<br=
+>
+&gt; extension is only used informatively.<br>
+&gt;<br>
+&gt; regards,<br>
+&gt; Nikos<br>
+<br>
+______________________________<wbr>_________________<br>
+TLS mailing list<br>
+<a href=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.org</a><br>
+<a href=3D"https://www.ietf.org/mailman/listinfo/tls" rel=3D"noreferrer" ta=
+rget=3D"_blank">https://www.ietf.org/mailman/<wbr>listinfo/tls</a><br>
+</blockquote></div></div></div></div></div>
+<br>______________________________<wbr>_________________<br>
+TLS mailing list<br>
+<a href=3D"mailto:TLS@ietf.org">TLS@ietf.org</a><br>
+<a href=3D"https://www.ietf.org/mailman/listinfo/tls" rel=3D"noreferrer" ta=
+rget=3D"_blank">https://www.ietf.org/mailman/<wbr>listinfo/tls</a><br>
+<br></blockquote></div><br></div></div>
+
+--001a11487b8c1563d505665e7d95--
+

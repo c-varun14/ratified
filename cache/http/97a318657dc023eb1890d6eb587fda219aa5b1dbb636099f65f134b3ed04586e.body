@@ -1,0 +1,114 @@
+Return-Path: <nmav@redhat.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id D01C5132659
+ for <tls@ietfa.amsl.com>; Fri, 11 Aug 2017 07:11:16 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -4.701
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.701 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, RCVD_IN_DNSWL_NONE=-0.0001,
+ RCVD_IN_MSPIKE_H2=-2.8, SPF_PASS=-0.001]
+ autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id Es-7DA_6Bafl for <tls@ietfa.amsl.com>;
+ Fri, 11 Aug 2017 07:11:14 -0700 (PDT)
+Received: from mail-wr0-f178.google.com (mail-wr0-f178.google.com
+ [209.85.128.178])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 7D26A132651
+ for <tls@ietf.org>; Fri, 11 Aug 2017 07:11:14 -0700 (PDT)
+Received: by mail-wr0-f178.google.com with SMTP id 33so13853516wrz.4
+ for <tls@ietf.org>; Fri, 11 Aug 2017 07:11:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:message-id:subject:from:to:date:mime-version
+ :content-transfer-encoding;
+ bh=Zxq0S5oXaWVgGDJ/r11eFbQNVji7XtZCB4tdkVzMrmE=;
+ b=TGATreT9GvwlFB1Qmhu2Gz6E6Pn/3m6r1ddYpY79E8waklPFnBBufjmUy98A70iE//
+ bpCw+9VKlDbFKoTriZmlCtBFADnWuYFay13CL8fyuEmhpw1PEvJgpMi+ArHmfc24GCr1
+ ZUUWkIJ15A1xjmBdLmUu3IOnAa16xMl/vp0TqRGl3yhBJgOFgwtHzWSi8iGGENKhBMFY
+ Qe0TtaO4Gwxi7oX/2ZLc9HmoeUBSJIkAg37UpTH1lq9LI7Ca3CCxyEAVQ6pJU4GJsagk
+ oMnpA5Wo/0lNqOHlMOUV2sgFjhArOZoVZ2bZgOUVnP48QUC3H+aHdX+qEfUWTpyo865A
+ eL4g==
+X-Gm-Message-State: AHYfb5ggM8FWqRkEOUjNN5L0A2O5AvigyIaWL8PnNSiZIOecci9AWyfq
+ admmRRMYZK/qCU9UmHf7Tw==
+X-Received: by 10.223.172.21 with SMTP id v21mr10547331wrc.153.1502460672251; 
+ Fri, 11 Aug 2017 07:11:12 -0700 (PDT)
+Received: from dhcp-10-40-1-102.brq.redhat.com (nat-pool-brq-t.redhat.com.
+ [213.175.37.10])
+ by smtp.gmail.com with ESMTPSA id e21sm936439wme.17.2017.08.11.07.11.11
+ for <tls@ietf.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+ Fri, 11 Aug 2017 07:11:11 -0700 (PDT)
+Message-ID: <1502460670.3202.8.camel@redhat.com>
+From: Nikos Mavrogiannopoulos <nmav@redhat.com>
+To: tls@ietf.org
+Date: Fri, 11 Aug 2017 16:11:10 +0200
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.24.4 (3.24.4-1.fc26) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/otmUa4vDrXNIJAGb3m2P7ZfeqF0>
+Subject: [TLS] draft-ietf-tls-tls13-21: TLS 1.3 record padding removal leaks
+ padding size
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Fri, 11 Aug 2017 14:11:17 -0000
+
+Imagine the following scenario, where the server and client have this
+repeated communication N times per day:
+
+client     server
+    --X-->
+    <--Y--
+
+
+the client puts in X a message A of 1 byte or B of 1024 bytes, and pads
+it to the maximum size of TLS record. The server replies with the 
+message "ok" (same every time), padded to the maximum size just after
+it reads X.
+
+However, TLS 1.3 detects the message size by iterating through all the
+padding bytes, and thus there is a timing leak observed by the time
+difference between receiving X and sending Y. Thus as an adversary I
+could take enough measurements and be able to distinguish between X
+having the value A or B.
+
+While I'd expect these iterations to be unmeasurable in desktop or
+server hardware, I am not sure about the situation in low-end IoT
+hardware. Is the design choice for having the padding removal depending
+on padding length intentional?
+
+There is mentioning of possible timing channels in:
+https://tools.ietf.org/html/draft-ietf-tls-tls13-21#appendix-E.3
+However I don't quite understand how is this section intended to be
+read. The sentence for example: "Because the padding is encrypted
+alongside the actual content, an attacker cannot directly determine the
+length of the padding, but may be able to measure it indirectly by the
+use of timing channels exposed during record processing", what is its
+intention? Is it to acknowledge the above timing leak?
+
+Shouldn't instead be guidance in section 'Implementation Pitfalls' on
+how to remove padding in a way that there are no timing leaks? (the
+timing leak here is not in crypto algorithms, but TLS itself). Ideally
+TLS 1.3 itself shouldn't use data-size depending calculations itself
+such as the one described here. 
+
+regards,
+Nikos
+

@@ -1,0 +1,1993 @@
+From nobody Sat Nov 14 18:07:31 2020
+Return-Path: <ekr@rtfm.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 218973A0E7B
+ for <tls@ietfa.amsl.com>; Sat, 14 Nov 2020 18:07:30 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.896
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.896 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ HTML_MESSAGE=0.001, SPF_HELO_NONE=0.001, SPF_NONE=0.001,
+ URIBL_BLOCKED=0.001] autolearn=unavailable autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=rtfm-com.20150623.gappssmtp.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id HcK6ISn0ragy for <tls@ietfa.amsl.com>;
+ Sat, 14 Nov 2020 18:07:23 -0800 (PST)
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com
+ [IPv6:2a00:1450:4864:20::229])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 5CA9D3A0E7C
+ for <tls@ietf.org>; Sat, 14 Nov 2020 18:07:22 -0800 (PST)
+Received: by mail-lj1-x229.google.com with SMTP id 142so1940015ljj.10
+ for <tls@ietf.org>; Sat, 14 Nov 2020 18:07:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=rtfm-com.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=NEWVkAKTxqzn+V3W4Trvm0MeuiZGGhBVTJkKWnNgV88=;
+ b=M2dMYdnOo5linFt6UPkqww/IGofXOg3NvYd2XKGRZ8NplPqNJ519mmY03Xf0NfkOGo
+ fLLBmDS4wunwQ244Elic6X5NniAwJw1i0Xt519NN56+6PlP6iNzeuyTXffLteh6Dz6h9
+ 8m2fPH7NRHNrZmBFd5Z8fbyKFVKtZEuyeSoA/CbuV4HI19cwr2k3L7SfZgseb+lvPrl9
+ P3QvjqL5UBr3/dxXYKHYw4nmi38nkiFklzuVZA3F0xhCJDon+AIEjXHWEBitYgfJQCm5
+ TpkRG/LUDXIPgyX+0aFBbOw1TH8TnKBDyxXOMjCMz9CfPt+sJ5ubYoeswtVpSZ8wi76H
+ AyVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=NEWVkAKTxqzn+V3W4Trvm0MeuiZGGhBVTJkKWnNgV88=;
+ b=NEmsJQyu8RnmrnXJujsMlEiqajjgefaAIgRKI3wo/l73eE+3JSiGBzZ4QxUN2XA9B2
+ d4w+3DOdjyblGhqCfrn5ddP90w8n76M4Qz4mXoAds0F5JYfD8t1+Qk/c3B7CM5LmH07E
+ gwz2JwDqNSg/6QDs4TcP4uKkf2X4nA4gxv4lEpGbIPcw0HNF7SRk0LD5z0Sz4s0KAirJ
+ yisdDGGvjxAQP43MSr1w3rW4H/d+FrnR/19bC86xOhmUKNsKv+2I/r6+usi4pdOBLxe2
+ jWTW/954K1eJ0k+g5zzsjQGHTO6ixbww5omZbqgY1WLU3ukyVJzDbZaxo25Mz+P3xugW
+ c7qg==
+X-Gm-Message-State: AOAM532iV+hP6ntTtR3YiOzHx4KEdDBcX0ddPmdpDIsg2PVPxk4f4WNU
+ PC9zZe1X6BMsjxrAQkeLb/ngYQ9VjDnDIiWSGJwMPA==
+X-Google-Smtp-Source: ABdhPJyNuyBgg9doJspeENWB/vzMawzZ/5v6fCRiz6mZDaqE+shLmQti3vBOIi5rQ+6YK8IHwzVnIcJJs54q3TO5zuY=
+X-Received: by 2002:a2e:9614:: with SMTP id v20mr3897861ljh.13.1605406040033; 
+ Sat, 14 Nov 2020 18:07:20 -0800 (PST)
+MIME-Version: 1.0
+References: <20201113235134.GW39170@kduck.mit.edu>
+In-Reply-To: <20201113235134.GW39170@kduck.mit.edu>
+From: Eric Rescorla <ekr@rtfm.com>
+Date: Sat, 14 Nov 2020 18:06:43 -0800
+Message-ID: <CABcZeBPBr0KxN1Jk8yyygXBU6PrwutWctAZhGqzoZXLGXzTHcA@mail.gmail.com>
+To: Benjamin Kaduk <kaduk@mit.edu>
+Cc: draft-ietf-tls-dtls13.all@ietf.org, "<tls@ietf.org>" <tls@ietf.org>
+Content-Type: multipart/alternative; boundary="000000000000bccc3105b41bb8f0"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/NDD-Z5vT-WWzpUkgCBK7EqDqUaU>
+Subject: Re: [TLS] AD Evaluation of draft-ietf-tls-dtls13-39
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Sun, 15 Nov 2020 02:07:30 -0000
+
+--000000000000bccc3105b41bb8f0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Ben,
+
+Thanks for your comments. I will get on these ASAP.
+
+-Ekr
+
+
+On Fri, Nov 13, 2020 at 3:52 PM Benjamin Kaduk <kaduk@mit.edu> wrote:
+
+> Hi all,
+>
+> Sorry this took longer than planned to get to -- running my pubreq queue =
+in
+> order took longer than expected.
+>
+> I made a pull request with editorial/nit-level stuff at
+> https://github.com/tlswg/dtls13-spec/pull/160 (though some editorial
+> issues remain mentioned here where there is a lot of flexibility in how
+> to resolve them).
+>
+> I think there are probably some DTLS-specific "implementation pitfalls"
+> that might merit a section akin to RFC 8446's Appendix C.3.
+>
+> I also mention in the per-section comments a few places where we should
+> say a bit more about how we diverge from RFC 8446, and a few places
+> where being more explicit about separate read and write epochs would be
+> helpful.
+>
+> Section 1
+>
+>    1.2 (see Appendix D of [TLS13] for details).  While backwards
+>    compatibility with DTLS 1.0 is possible the use of DTLS 1.0 is not
+>    recommended as explained in Section 3.1.2 of RFC 7525 [RFC7525].
+>
+> I guess we might want to reference draft-ietf-tls-oldversions-deprecate
+> by the time we hit the RFC Editor's queue.
+>
+> Section 2
+>
+>    -  connection: A transport-layer connection between two endpoints.
+>
+> Can there even be a datagram "connection"?
+>
+> Regardless, we should define "association" since we use that as well.
+>
+>    -  handshake: An initial negotiation between client and server that
+>       establishes the parameters of their transactions.
+>
+> This is the only place in the document where we use the word
+> "transaction", which makes me suspect that it is not the best word
+> choice.
+>
+>    -  session: An association between a client and a server resulting
+>       from a handshake.
+>
+> This seems technically true, but could be confusing if we want to have
+> an analogy DTLS Session:TLS Session::DTLS Association:TLS Connection.
+> (Per the previous comments, I am not 100% sure that we are trying to
+> have that anaolgy, though.)
+>
+> Section 3.4
+>
+>    DTLS optionally supports record replay detection.  The technique used
+>    is the same as in IPsec AH/ESP, by maintaining a bitmap window of
+>
+> Do we want a reference for the IPsec usage?  (We do reference
+> https://tools.ietf.org/html/rfc4303#section-3.4.3 from =C2=A74.5.1 when w=
+e
+> talk about the mechanics of the replay window.)
+>
+>    Applications may conceivably detect duplicate packets and accordingly
+>    modify their data transmission strategy.
+>
+> The text here doesn't give me a clear impression of whether the
+> application is supposed to use the DTLS sequence numbers for this
+> detection, or their own (application layer) information.  (I didn't
+> think that most DTLS implementations exposed an API to give the
+> application the record sequence number.)
+>
+> Section 4
+>
+>            ProtocolVersion legacy_record_version;
+>
+> We should probably say what value(s) are allowed here, akin to the RFC
+> 8446 "MUST be set to 0x0303 for all records [...] other than an initial
+> ClientHello".
+>
+>    Fixed Bits:  The three high bits of the first byte of the
+>       DTLSCiphertext header are set to 001.
+>
+> Do we want to say something about why we have fixed bits and all and how
+> the values were chosen (perhaps a reference to RFC 7983)?
+>
+>    If a connection ID is negotiated, then it MUST be contained in all
+>    datagrams.  Sending implementations MUST NOT mix records from
+>    multiple DTLS associations in the same datagram.  If the second or
+>    later record has a connection ID which does not correspond to the
+>    same association used for previous records, the rest of the datagram
+>    MUST be discarded.
+>
+> I'm failing to come up with a reason why you would directly want to use
+> CIDs (for the same association) for records in a single datagram; should
+> we recommend using a single CID value per datagram explicitly?
+>
+>    The entire header value shown in Figure 4 (but prior to record number
+>    encryption) is used as as the additional data value for the AEAD
+>
+> Maybe forward-reference =C2=A74.2.3 for the record-number encryption?
+>
+>    The entire header value shown in Figure 4 (but prior to record number
+>    encryption) is used as as the additional data value for the AEAD
+>    function.  For instance, if the minimal variant is used, the AAD is 2
+>    octets long.  Note that this design is different from the additional
+>    data calculation for DTLS 1.2 and for DTLS 1.2 with Connection ID.
+>
+> In light of the ongoing discussion for the DTLS 1.2 connection ID, I
+> just want to walk through a few points here and confirm that we are in
+> good shape.
+>
+> - (D)TLS 1.3 always requires AEAD ciphers
+> - AEAD ciphers implicitly authenticate the AAD length
+> - the connection ID is the only implicitly variable-length field in the
+>   record header/AAD (the size of the sequence number and length fields
+>   is indicated by bits in the first byte)
+> - in light of the above three points, the length of the connection ID is
+>   also implicitly authenticated by the AEAD
+> - the AAD explicitly flags whether or not a CID is present at all
+> - the AEAD implicitly authenticates the length of the ciphertext, so it
+>   is okay to omit the length from the AAD when the L bit is 0.
+>
+> Section 4.1
+>
+>    -  If the first byte is alert(21), handshake(22), or ack(proposed,
+>       26), the record MUST be interpreted as a DTLSPlaintext record.
+>
+>    -  If the first byte is any other value, then receivers MUST check to
+>       see if the leading bits of the first byte are 001.  If so, the
+>       implementation MUST process the record as DTLSCiphertext; the true
+>       content type will be inside the protected portion.
+>
+>    -  Otherwise, the record MUST be rejected as if it had failed
+>       deprotection, as described in Section 4.5.2.
+>
+> I can imagine a reading of this last point that says that something that
+> implements DTLS 1.3 MUST treat a tls12_cid ContentType as an error ...
+> even if that software also supports DTLS 1.2.  I could imagine a
+> phrasing like "not a valid DTLS 1.3 record" that would not have this
+> property, but I am not sure whether that is the right approach.
+> In particular, when CIDs are in use, we do not necessarily have any
+> external context to indicate whether we should be expecting DTLS 1.3 or
+> DTLS 1.2 (or either) on a given listening socket.
+> (I guess a mixed 1.2+1.3 implementation would also get Application Data,
+> but 5-tuple would in theory be a distinguisher for when to accept that.)
+>
+> Section 4.2.3
+>
+>    In DTLS 1.3, when records are encrypted, record sequence numbers are
+>    also encrypted.  The basic pattern is that the underlying encryption
+>    algorithm used with the AEAD algorithm is used to generate a mask
+>    which is then XORed with the sequence number.
+>
+> I have mixed feelings about breaking through the AEAD abstraction to
+> assume that there is an "underlying encryption algorithm" to use.
+> Furthermore, we currently only cover AES and ChaCha20, though the
+> ciphersuites registry lists TLS 1.3 ciphers with SM4 as block cipher, as
+> well as MAC-only ciphersuites.  (Presumably the lack of sequence number
+> encryption is considered a feature for MAC-only ciphersuites.)  We may
+> even want to limit our specification of sequence number encryption to
+> specific named ciphersuite codepoints, instead of having the vague
+> attempt at applying to future AES-using or ChaCha20-using ciphers.
+>
+> It seems that we are in effect imposing a new requirement for a TLS 1.3
+> cipher to get listed with DTLS-OK=3DY, namely, that it has a mechanism fo=
+r
+> generating a mask for encrypting sequence numbers.  I think we should
+> make this new requirement more explicit, e.g., with an update to the
+> IANA registry.  It would also be useful if we could give guidance to
+> future ciphersuite authors for how one could do this in general, though
+> that would probably not be normative guidance.
+>
+>    When the AEAD is based on ChaCha20, then the mask is generated by
+>    treating the first 4 bytes of the ciphertext as the block counter and
+>    the next 12 bytes as the nonce, passing them to the ChaCha20 block
+>    function (Section 2.3 of [CHACHA]):
+>
+> I note that this is effectively random nonce selection since we treat
+> the encryption function as a PRF.  The sn_key is only regenerated when th=
+e
+> traffic keys are refreshed, so we may have higher risk of nonce-reuse
+> here than for the "real" packet encryption since the sequential nonce
+> values used for packet encryption have a lower collision probability
+> (though the value of what would be exposed on nonce reuse for sequence
+> number encryption is lower).  That said, we are only using the cipher
+> portion and do not have an AEAD tag, to the really nasty consequences of
+> nonce reuse are not in scope.  Nonetheless, perhaps updating the
+> guidance on how often to rekey is in order (or at least running the
+> numbers).
+>
+>    The encrypted sequence number is computed by XORing the leading bytes
+>    of the Mask with the sequence number.  Decryption is accomplished by
+>    the same process.
+>
+> (This is fine.  There is maybe some aesthetic complaint about "sometimes
+> bit 0 of the Mask aplies to bit 32 of the sequence number and sometimes
+> it applies to bit 40 of the sequence number" but I am pretty sure it
+> doesn't matter.)
+>
+> Section 4.4
+>
+>    If PMTU estimates are available from the underlying transport
+>    protocol, they should be made available to upper layer protocols.  In
+>    particular:
+>
+> I feel like we should be saying something about subtracting the length
+> of the DTLSCiphertext header (form in use).
+>
+>    Note that DTLS does not defend against spoofed ICMP messages;
+>    implementations SHOULD ignore any such messages that indicate PMTUs
+>    below the IPv4 and IPv6 minimums of 576 and 1280 bytes respectively
+>
+> I want to say there is a standard reference for this but am failing to
+> come up with the RFC number right now.
+>
+>    The DTLS record layer SHOULD allow the upper layer protocol to
+>    discover the amount of record expansion expected by the DTLS
+>    processing.
+>
+> This might be better closer to the "If PMTU estimates are available"
+> paragraph.
+>
+>    If there is a transport protocol indication (either via ICMP or via a
+>    refusal to send the datagram as in Section 14 of [RFC4340]), then the
+>    DTLS record layer MUST inform the upper layer protocol of the error.
+>
+> indication of what?
+>
+>    -  If the DTLS record layer informs the DTLS handshake layer that a
+>       message is too big, it SHOULD immediately attempt to fragment it,
+>       using any existing information about the PMTU.
+>
+> (editorial) too many "it"s here referring to different things.
+>
+> Section 4.5.1
+>
+> We need to have an anti-replay window per epoch; the text here should
+> mention that explicitly (we currently just have text talking about
+> "record counter for a session MUST be initialized to zero when that
+> session is established", but a session is at a broader scope than
+> epoch).
+>
+>    serve as a timing channel for the record number.  Note that
+>    decompressing the records number is still a potential timing channel
+>    for the record number, though a less powerful one than whether it was
+>    deprotected.
+>
+> Just to confirm: we're using "decompress" here for the process of going
+> from 8-or-16-bit sequence number to 48-bit sequence number?
+>
+> Section 4.5.3
+>
+> As mentioned above, we might mention any reduced limits due to
+> sequence-number protection (e.g., with ChaCha20) here, if they exist.
+>
+>    For AEAD_AES_128_GCM, AEAD_AES_256_GCM, and AEAD_CHACHA20_POLY1305,
+>    the limit on the number of records that fail authentication is 2^36.
+>    Note that the analysis in [AEBounds] supports a higher limit for the
+>    AEAD_AES_128_GCM and AEAD_AES_256_GCM, but this specification
+>    recommends a lower limit.  For AEAD_AES_128_CCM, the limit on the
+>    number of records that fail authentication is 2^23.5; see Appendix B.
+>
+> We might get asked to provide references for the AEADs (so, RFCs 5116
+> and 6655) here and in the following paragraph.
+>
+> Section 5.1
+>
+>    message, as well as the cookie extension, is defined in TLS 1.3.  The
+>    HelloRetryRequest message contains a stateless cookie generated using
+>    the technique of [RFC2522].  The client MUST retransmit the
+>
+> I note that RFC 2522 recommends using a cryptographic hash such as MD5,
+> which is probably not the exact advice we want to be giving.
+>
+>    ClientHello with the cookie added as an extension.  The server then
+>
+> Does "MUST retransmit" imply that the other HRR functionality (such as
+> group negotiation) cannot be used?  (I note that a bit further on we say
+> "MUST create a new ClientHello ... [following] Section 4.1.2 of
+> [TLS13]", which seems to be enough of a normative requirement that the
+> "MUST" may not be needed here.)
+>
+>    The cookie extension is defined in Section 4.2.2 of [TLS13].  When
+>
+> Do we want to add any discussion of what is stored in the cookie (other
+> than the RFC 2522-like address+ports and the ClientHello1 hash that
+> [TLS13] mentions), as mentioned in the thread at
+> https://mailarchive.ietf.org/arch/msg/tls/QbteFvnk1H2K9OjfHGosuG9e9Rk/ ?
+> I am somewhat amenable to the stance that it's more appropriately done
+> in 8446bis.
+>
+>    that the exchange is performed, however.  In addition, the server MAY
+>    choose not to do a cookie exchange when a session is resumed or, more
+>    generically, when the DTLS handshake uses a PSK-based key exchange.
+>
+> We could potentially say something about associating the IP address
+> information with the session/PSK (presumably alongside discussion of
+> connection IDs and mobility).
+>
+> Section 5.2
+>
+>    Note: In DTLS 1.2 the message_seq was reset to zero in case of a
+>    rehandshake (i.e., renegotiation).  On the surface, a rehandshake in
+>    DTLS 1.2 shares similarities with a post-handshake message exchange
+>    in DTLS 1.3.  However, in DTLS 1.3 the message_seq is not reset to
+>    allow distinguishing a retransmission from a previously sent post-
+>    handshake message from a newly sent post-handshake message.
+>
+> Just to confirm: this means we are limited to 2**16 handshake messages
+> per association (including NST and post-handshake auth)?
+>
+> Section 5.3
+>
+> [Discussing ServerHello here for want of a better location.]
+>
+> We specify a ClientHello.legacy_version =3D {254,253}, but we seem to be
+> inheriting the unmodified TLS 1.3 ServerHello, complete with
+> ServerHello.legacy_version =3D 0x0303.  That seems problematic, since the
+> legacy DTLS 1.2 ServerHello would use the expected {254,253} like the
+> ClientHello.
+>
+> Similarly, we should probably specify whether the sentinel
+> downgrade-protection Random values are used as-is from TLS 1.3, or if we
+> have new ones for DTLS.
+> [end ServerHello topics]
+>
+>                                                                   In
+>       DTLS 1.3, the client indicates its version preferences in the
+>       "supported_versions" extension (see Section 4.2.1 of [TLS13]) and
+>       the legacy_version field MUST be set to {254, 253}, which was the
+>       version number for DTLS 1.2.  The version fields for DTLS 1.0 and
+>       DTLS 1.2 are 0xfeff and 0xfefd (to match the wire versions) but
+>       the version field for DTLS 1.3 is 0x0304.
+>
+> It seems like reusing 0x0304 will make implementations more complex for
+> little gain -- it's common to want to, e.g., compare (D)TLS versions to
+> see which are greater.  OpenSSL does that with macros like:
+>
+> /*
+>  * DTLS version numbers are strange because they're inverted. Except for
+>  * DTLS1_BAD_VER, which should be considered "lower" than the rest.
+>  */
+> # define dtls_ver_ordinal(v1) (((v1) =3D=3D DTLS1_BAD_VER) ? 0xff00 : (v1=
+))
+> # define DTLS_VERSION_GT(v1, v2) (dtls_ver_ordinal(v1) <
+> dtls_ver_ordinal(v2))
+> # define DTLS_VERSION_GE(v1, v2) (dtls_ver_ordinal(v1) <=3D
+> dtls_ver_ordinal(v2))
+> # define DTLS_VERSION_LT(v1, v2) (dtls_ver_ordinal(v1) >
+> dtls_ver_ordinal(v2))
+> # define DTLS_VERSION_LE(v1, v2) (dtls_ver_ordinal(v1) >=3D
+> dtls_ver_ordinal(v2))
+>
+> which would have to grow another case of indirection to handle this,
+> whereas making TLS1_3_VERSION and DTLS1_3_VERSION have the same
+> numerical value doesn't seem to help the code at all.
+>
+>    cipher_suites:  Same as for TLS 1.3.
+>
+> Is it too banal to say that only cipher suites with DTLS-OK=3DY are
+> permitted [to be used]?
+>
+> Section 5.4
+>
+>    When a DTLS implementation receives a handshake message fragment, it
+>    MUST buffer it until it has the entire handshake message.  DTLS
+>    implementations MUST be able to handle overlapping fragment ranges.
+>    This allows senders to retransmit handshake messages with smaller
+>    fragment sizes if the PMTU estimate changes.
+>
+> Lots to say here:
+>
+> - "MUST buffer fragments" conflicts with an earlier "MAY discard if
+> message_seq is greater than next_receive_seq".
+>
+> - "MUST buffer" has DoS considerations.
+>
+> - does "handle overlapping fragment ranges" include verifying that the
+>   overlapping content is identical?  If not, do we say anything about
+>   which one to use?
+>
+> Section 5.5
+>
+>    the deletion attacks that EndOfEarlyData prevents in TLS.  Servers
+>    SHOULD aggressively age out the epoch 1 keys upon receiving the first
+>    epoch 2 record and SHOULD NOT accept epoch 1 data after the first
+>
+> I'm not disagreeing with the sentiment, but it seems like following the
+> "SHOULD age out" recommendation could lead to a stall of application
+> data if the flight with client's Finished has to get retransmitted or
+> throttled by congestion control.
+>
+> Section 5.6
+>
+> Numbering the flights like this with absolute identifiers could be quite
+> useful, but the current formulation leaves a bit to be desired, since we
+> don't have much consistency in numbering across the various scenarios.
+> If we are going to have to fall back to "client's second flight" to
+> refer to the given scenario in question, then perhaps it is not worth
+> giving different numbers to client vs server flight.
+>
+>      Figure 6: Message flights for a full DTLS Handshake (with cookie
+>                                  exchange)
+>
+> I'd consider (but possibly not actually end up) noting that flights 2
+> and 3 are skipped when the cookie exchange is not needed.
+>
+> It's also a bit surprising to see pre_shared_key as an
+> important/noteworthy extension in the sample full (i.e., non-resumption)
+> handshake alongside key_share.
+>
+>            Figure 8: Message flights for the Zero-RTT handshake
+>
+> Why do we include psk_key_exchange_modes for the zero-RTT example but
+> not the other ones?  I don't think it's particularly more notable for
+> 0-RTT than other handshakes.
+>
+>    Note: The application data sent by the client is not included in the
+>    timeout and retransmission calculation.
+>
+> This note also appears a little out of place here, since we don't
+> really get into timeout and retransmission until the next section
+>
+> Section 5.7.1
+>
+> The state machine says "receive record, send ACK"; does that hold for
+> all records?  (I guess maybe it does, for all records that do not
+> complete a flight.)
+>
+>    In the PREPARING state, the implementation does whatever computations
+>    are necessary to prepare the next flight of messages.  It then
+>    buffers them up for transmission (emptying the buffer first) and
+>    enters the SENDING state.
+>
+> What is meant by "emptying the buffer first"?  Surely I need to keep the
+> messages I am sending buffered in case I have to retransmit them, and if
+> I am in PREPARING I have to have fnished sending my previous flight (if
+> any) first...
+>
+>    There are four ways to exit the WAITING state:
+>
+>    1.  The retransmit timer expires: the implementation transitions to
+>        the SENDING state, where it retransmits the flight, resets the
+>        retransmit timer, and returns to the WAITING state.
+>
+> Should there be a fifth way, involving failing the handshake by hitting
+> a retransmission cap?
+>
+>    4.  The implementation receives some or all next flight of messages:
+>        if this is the final flight of messages, the implementation
+>        transitions to FINISHED.  If the implementation needs to send a
+>        new flight, it transitions to the PREPARING state.  Partial reads
+>        (whether partial messages or only some of the messages in the
+>        flight) may also trigger the implementation to send an ACK, as
+>        described in Section 7.1.
+>
+> I don't understand the "some or" part; shouldn't the state machine need
+> a complete next flight in order to transition states?
+>
+>    In addition, for at least twice the default MSL defined for
+>    [RFC0793], when in the FINISHED state, the server MUST respond to
+>    retransmission of the client's second flight with a retransmit of its
+>    ACK.
+>
+> "second flight" does not seem to allow for all the various possibilities
+> for handshake structure we have, with HRR, resumption, etc.
+>
+>    the first side's Finished message.  Implementations MUST either
+>    discard or buffer all application data records for the new epoch
+>    until they have received the Finished message for that epoch.
+>
+> On my first read I equated "that epoch" with "the new epoch", which
+> doesn't make sense.  Perhaps "received the Finished message for the
+> current epoch" or even just "for epoch 3", since the post-handshake auth
+> Finished messages are not limited to one per epoch?
+>
+> Section 5.7.2
+>
+>    many instances of a DTLS time out early and retransmit too quickly on
+>    a congested link.  Implementations SHOULD use an initial timer value
+>    of 100 msec (the minimum defined in RFC 6298 [RFC6298]) and double
+>    the value at each retransmission, up to no less than the RFC 6298
+>    maximum of 60 seconds.  Application specific profiles, such as those
+>
+> The wording here is a bit amusing, as "up to no less than the ...
+> maximum" is facially nonsensical, but the RFC 6298 setting is in fact
+> the floor for the implementation-defined maximum.  I don't have a clever
+> wording suggestion, though.
+>
+>    sensitive applications.  Because DTLS only uses retransmission for
+>    handshake and not dataflow, the effect on congestion should be
+>    minimal.
+>
+> Perhaps a cautionary note about large certificate chains is in order,
+> though?
+>
+>    Implementations SHOULD retain the current timer value until a
+>    transmission without loss occurs, at which time the value may be
+>
+> Does "transmission without loss" mean a full flight?  I'm not seeing a
+> way to read this that lets us continue to transmit with a given value of
+> the timer, as opposed to resetting it to the initial value or having to
+> back off due to loss.
+>
+>    reset to the initial value.  After a long period of idleness, no less
+>    than 10 times the current timer value, implementations may reset the
+>    timer to the initial value.
+>
+> Should this be a 2119 MAY?
+>
+> Section 5.10
+>
+> Do we want to say anything about the (non-)utility of "close_notify"
+> given that we don't deal with in-order or reliable transport?
+> Or that a DTLS implementation just drops packets instead of sending
+> "bad_record_mac"?
+>
+> Section 5.11
+>
+>    Note: it is not always possible to distinguish which association a
+>    given record is from.  For instance, if the client performs a
+>    handshake, abandons the connection, and then immediately starts a new
+>    handshake, it may not be possible to tell which connection a given
+>    protected record is for.  In these cases, trial decryption MAY be
+>    necessary, though implementations could use CIDs.
+>
+> This doesn't seem like a normative MAY but rather a statement of fact.
+>
+> Section 6
+>
+> Figure 11 seems to show that the initial ServerHello has message_seq=3D1,
+> but =C2=A75.2 says that "[t]he first message each side transmits in each
+> association always has message_seq =3D 0".  Which one is it?  (A change
+> here would affect all the server's messages except the final ACK.)
+>
+> Also in Figure 11, the client has to send an empty ACK because Record 1
+> could only be ACK'd in epoch 2, but the client doesn't have the epoch 2
+> keys yet.  We should at least forward-reference =C2=A77.1 and acknowledge
+> (pun intended) that the empty ACK is correct in this case even if we
+> don't go into the details of why it is correct yet.
+>
+> Section 6.1
+>
+>    Using these reserved epoch values a receiver knows what cipher state
+>    has been used to encrypt and integrity protect a message.
+>    Implementations that receive a payload with an epoch value for which
+>    no corresponding cipher state can be determined MUST generate a
+>    "unexpected_message" alert.  For example, if a client incorrectly
+>    uses epoch value 5 when sending early application data in a 0-RTT
+>    exchange.  A server will not be able to compute the appropriate keys
+>    and will therefore have to respond with an alert.
+>
+> Why would such erroneous epoch=3D5 usage fall into "unexpected_message"
+> territory as opposed to the normal silent discard of records that fail
+> deprotection (per =C2=A74.5.2)?
+>
+> Figure 12 has "[HelloRetryRequest]" in brackets, but HRR is not
+> protected under the application traffic keys.  IMO it would be
+> appropriate to just list "HelloRetryRequest" (without a previous
+> "ServerHello") since we have a disclaimer at the top of the document
+> that we are pretending it is a separate message for purposes of
+> documentation.
+>
+> I think it would also be useful to actually show the KeyUpdate
+> message(s) in Figure 12, especially since we admit asymmetric KeyUpdate.
+> Discussion of separately tracking send and receive epoch would also be
+> appropriate...
+>
+> Section 7
+>
+>    During the handshake, ACKs only cover the current outstanding flight
+>    (this is possible because DTLS is generally a lockstep protocol).
+>    Thus, an ACK from the server would not cover both the ClientHello and
+>    the client's Certificate.  Implementations can accomplish this by
+>    clearing their ACK list upon receiving the start of the next flight.
+>
+> I wonder if it is helpful to mention here that ACK is not needed if the
+> endpoint can proceed to start sending the next flight (since sending
+> messages in the next flight implicitly ACKs the entire previous flight).
+>
+>    Implementations SHOULD simply use the highest current sending epoch,
+>    which will generally be the highest available.  After the handshake,
+>
+> Will there generally be parity between send and receive epochs?  I am
+> not sure that such parity would be needed for largely asymmetric traffic
+> flows.
+>
+> Section 7.1
+>
+>    1.  Handshake flights other than the client's final flight
+>
+> >From context this means "initial handshake flights" but we don't really
+> have a specific definition that "handshake flight" excludes
+> post-handshake messages.  Perhaps it's worth a few more words to
+> clarify.
+>
+>    through the responding flight.  A notable example for this is the
+>    case of post-handshake client authentication in constrained
+>    environments, where generating the CertificateVerify message can take
+>    considerable time on the client.  All other flights MUST be ACKed.
+>
+> (non-post-handshake client authentication would also take the same
+> amount of time, right?)
+>
+> Section 7.3
+>
+>    retransmission in previous versions of DTLS.  For instance in the
+>    flow shown in Figure 11 if the client does not send the ACK message
+>    when it received and processed record 1 indicating loss of record 0,
+>    the entire flight would be retransmitted.  When DTLS 1.3 is used in
+>
+> I don't think that the client can "process" record 1 per se, since the
+> contents are encrypted in the handshake keys and the client doesn't have
+> the ServerHello yet.  So shouldn't this just be "when it received record
+> 1"?
+>
+>    The use of the ACK for the second case is mandatory for the proper
+>    functioning of the protocol.  For instance, the ACK message sent by
+>    the client in Figure 12, acknowledges receipt and processing of
+>    record 2 (containing the NewSessionTicket message) and if it is not
+>
+> The records in Figure 12 are not labeled (anymore?).
+>
+>    sent the server will continue retransmission of the NewSessionTicket
+>    indefinitely.
+>
+> s/indefinitely/until its retransmission cap is reached/?
+>
+> Section 8
+>
+> Discussion of asymmetric KeyUpdate and the need to separately track send
+> and receive epoch would be welcome here.
+>
+> Section 9
+>
+> Some discussion of what types of events might trigger a peer to start
+> using "spare" CIDs (and, presumably, stop using the old ones) could be
+> helpful.
+>
+> There's no reason we might want to put Extensions in either
+> NewConnectionId or RequestConnectionId, right?
+>
+>        opaque ConnectionId<0..2^8-1>;
+>
+> Are we keeping with draft-ietf-tls-dtls-connection-id and forbidding
+> zero-length connection IDs?  If so, that should be indicated in the
+> presentation language.
+>
+>    Endpoints SHOULD respond to RequestConnectionId by sending a
+>    NewConnectionId with usage "cid_spare" containing num_cid CIDs soon
+>    as possible.  Endpoints MUST NOT send a RequestConnectionId message
+>    when an existing request is still unfulfilled; this implies that
+>    endpoints needs to request new CIDs well in advance.  An endpoint MAY
+>    ignore requests, which it considers excessive (though they MUST be
+>    acknowledged as usual).
+>
+> This seems like it sets up a deadlock scenario.  Consider peers A and B;
+> A sends RequestConnectionId with num_cids=3D200 and B considers this
+> request excessive, so ACKs it but sends no NewConnectionId in response.
+> A is prohibited from sending another RequestConnection Id to indicate
+> that it really needs new CIDs, since the requested 200 have not arrived
+> yet; thus, B could end up not sending any NewConnectionIds even though A
+> is essentially blocking on getting them.  Unless "unfulfilled" is
+> supposed to mean "not ACKed"?
+>
+> Section 11
+>
+> It is probably worth giving a few reminders about cookie
+> generation/requirements and cookie (non-)reuse.  RFC 2522 has some
+> useful considerations, but we don't currently incoroprate them by
+> reference.  Concrete recommendations for cookie key rotation intervals
+> might even be in order.
+>
+> Section 5.7.3 has a discussion about the need for distinct state
+> machines to be running concurrently, and interplay between the handshake
+> layer and the record layer state machine that is needed in order to
+> dispatch records across state machines.  Getting this right seems
+> security relevant, so a reminder in this section might be in order.
+>
+> TLS 1.3 places fairly stringent requirements on non-replayability of
+> 0-RTT data; this would typically be done at the session ticket or
+> ClientHello level.  DTLS has optional per-record replay protection.  As
+> far as I can tell, the two are orthogonal; that is, there is no
+> inherent need to use DTLS replay protection with 0-RTT data (but there
+> is still need to prevent replay of ClientHellos, and thus the sets of
+> data that follow them).  It may be worth reiterating that the two
+> mechanisms play different roles, and the one cannot replace the other.
+>
+> If there is a large amount of skew between the send and receive epochs,
+> the implementation will have to decide whether to keep around
+> application traffic secrets or generate the various traffic keys and
+> discart the oldest traffic secrets.
+>
+>    With the exception of order protection and non-replayability, the
+>    security guarantees for DTLS 1.3 are the same as TLS 1.3.  While TLS
+>    always provides order protection and non-replayability, DTLS does not
+>    provide order protection and may not provide replay protection.
+>
+> We might also mention non-reliability of application data here (though
+> that is to large extent a property of the underlying transport).
+>
+>    If implementations process out-of-epoch records as recommended in
+>    Section 8, then this creates a denial of service risk since an
+>    adversary could inject records with fake epoch values, forcing the
+>    recipient to compute the next-generation application_traffic_secret
+>    using the HKDF-Expand-Label construct to only find out that the
+>    message was does not pass the AEAD cipher processing.  [...]
+>
+> I think this text is stale, since we no longer do implicit key update on
+> seeing a new epoch -- we require explicit KeyUpdate+ACK before the new
+> keys are used.  An implementation can still process records under an old
+> epoch, of course, but those keys would generally already be around and
+> not require additional computation to produce.
+>
+>    The security and privacy properties of the CID for DTLS 1.3 builds on
+>    top of what is described in [I-D.ietf-tls-dtls-connection-id].  There
+>    are, however, several improvements:
+>    [...]
+>    -  With multi-homing, an adversary is able to correlate the
+>       communication interaction over the two paths, which adds further
+>       privacy concerns.  In order to prevent this, implementations
+>
+> (editorial) What is described here is not an "improvement"; this is a
+> description of the issue that we provide an improvement in relation to.
+> Reordering this bullet point to have the benefit/improvement be in the
+> first sentence would improve parallelism of writing structure.  Perhaps
+> "the ability to use multiple CIDs allows for improved privacy properties
+> in multi-homed scenarios.  When only a single CID in use on multiple
+> paths from such a host, an adversary is able to correlate [...]"?
+>
+>    -  Switching CID based on certain events, or even regularly, helps
+>       against tracking by on-path adversaries but the sequence numbers
+>       can still allow linkability.  For this reason this specification
+>       defines an algorithm for encrypting sequence numbers, see
+>
+> (editorial) similarly, this could become "the mechanism for encrypting
+> sequence numbers (Section 4.2.3) prevents trivial tracking by on-path
+> adversaries that attempt to correlate the pattern of sequence numbers
+> received on different paths; such tracking could occur even when
+> different CIDs are used on each path, in the absence of sequence number
+> encryption".
+>
+>       encrypted.  This may improve correlation of packets from a single
+>       connection across different network paths.
+>
+> I feel like the small width of the epoch field mitigates this somewhat
+> (though not fully).
+>
+> Section 12.  Changes to DTLS 1.2
+>
+> This section is about changes *since* DTLS 1.2 (and I propose some
+> wording tweaks in my editorial PR).  But I think we should also consider
+> whether we do need a section on "changes to DTLS 1.2", or rather
+> "changes affecting DTLS 1.2 implementations, along the lines of
+> https://tools.ietf.org/html/rfc8446#section-1.3 ("Updates Affecting TLS
+> 1.2").
+>
+> Section 13
+>
+> [I made some comments earlier that are expected to lead to new text in
+> the IANA Considerations.]
+>
+>    IANA is requested to allocate a new value in the "TLS ContentType"
+>    registry for the ACK message, defined in Section 7, with content type
+>    26.  The value for the "DTLS-OK" column is "Y".  IANA is requested to
+>    reserve the content type range 32-63 so that content types in this
+>    range are not allocated.
+>
+> With 0-25 already allocated or "requires coordination" and 64-255 at
+> "requires coordination", this leaves us with like 6 more content types.
+> We go through them slowly, so I'm not particularly concerned; just
+> pointing it out.
+>
+> Section 14.2
+>
+> We say "contains a stateless cookie generated using the technique of
+> [RFC2522]" which seems to require usage/understanding of RFC 2522, thus
+> promoting it to normative.  (That seems silly, so I recommend rewording
+> rather than recategorizing the reference.)
+>
+> Appendix A
+>
+>    %%## Record Layer %%## Handshake Protocol %%## ACKs %%## Connection
+>    ID Management
+>
+> We seem to be missing the magic "%%%" markers in the markdown source
+> that allow this automation to work.  But we also seem to be wrapping at
+> least some of the figures in "~~~" and I don't know how those interact,
+> so I didn't try to fix this myself.
+>
+> Thanks,
+>
+> Ben
+>
+
+--000000000000bccc3105b41bb8f0
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div>Ben,</div><div><br></div><div>Thanks for your comment=
+s. I will get on these ASAP.<br></div><div><br></div><div>-Ekr</div><div><b=
+r></div></div><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmai=
+l_attr">On Fri, Nov 13, 2020 at 3:52 PM Benjamin Kaduk &lt;<a href=3D"mailt=
+o:kaduk@mit.edu">kaduk@mit.edu</a>&gt; wrote:<br></div><blockquote class=3D=
+"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(2=
+04,204,204);padding-left:1ex">Hi all,<br>
+<br>
+Sorry this took longer than planned to get to -- running my pubreq queue in=
+<br>
+order took longer than expected.<br>
+<br>
+I made a pull request with editorial/nit-level stuff at<br>
+<a href=3D"https://github.com/tlswg/dtls13-spec/pull/160" rel=3D"noreferrer=
+" target=3D"_blank">https://github.com/tlswg/dtls13-spec/pull/160</a> (thou=
+gh some editorial<br>
+issues remain mentioned here where there is a lot of flexibility in how<br>
+to resolve them).<br>
+<br>
+I think there are probably some DTLS-specific &quot;implementation pitfalls=
+&quot;<br>
+that might merit a section akin to RFC 8446&#39;s Appendix C.3.<br>
+<br>
+I also mention in the per-section comments a few places where we should<br>
+say a bit more about how we diverge from RFC 8446, and a few places<br>
+where being more explicit about separate read and write epochs would be<br>
+helpful.<br>
+<br>
+Section 1<br>
+<br>
+=C2=A0 =C2=A01.2 (see Appendix D of [TLS13] for details).=C2=A0 While backw=
+ards<br>
+=C2=A0 =C2=A0compatibility with DTLS 1.0 is possible the use of DTLS 1.0 is=
+ not<br>
+=C2=A0 =C2=A0recommended as explained in Section 3.1.2 of RFC 7525 [RFC7525=
+].<br>
+<br>
+I guess we might want to reference draft-ietf-tls-oldversions-deprecate<br>
+by the time we hit the RFC Editor&#39;s queue.<br>
+<br>
+Section 2<br>
+<br>
+=C2=A0 =C2=A0-=C2=A0 connection: A transport-layer connection between two e=
+ndpoints.<br>
+<br>
+Can there even be a datagram &quot;connection&quot;?<br>
+<br>
+Regardless, we should define &quot;association&quot; since we use that as w=
+ell.<br>
+<br>
+=C2=A0 =C2=A0-=C2=A0 handshake: An initial negotiation between client and s=
+erver that<br>
+=C2=A0 =C2=A0 =C2=A0 establishes the parameters of their transactions.<br>
+<br>
+This is the only place in the document where we use the word<br>
+&quot;transaction&quot;, which makes me suspect that it is not the best wor=
+d<br>
+choice.<br>
+<br>
+=C2=A0 =C2=A0-=C2=A0 session: An association between a client and a server =
+resulting<br>
+=C2=A0 =C2=A0 =C2=A0 from a handshake.<br>
+<br>
+This seems technically true, but could be confusing if we want to have<br>
+an analogy DTLS Session:TLS Session::DTLS Association:TLS Connection.<br>
+(Per the previous comments, I am not 100% sure that we are trying to<br>
+have that anaolgy, though.)<br>
+<br>
+Section 3.4<br>
+<br>
+=C2=A0 =C2=A0DTLS optionally supports record replay detection.=C2=A0 The te=
+chnique used<br>
+=C2=A0 =C2=A0is the same as in IPsec AH/ESP, by maintaining a bitmap window=
+ of<br>
+<br>
+Do we want a reference for the IPsec usage?=C2=A0 (We do reference<br>
+<a href=3D"https://tools.ietf.org/html/rfc4303#section-3.4.3" rel=3D"norefe=
+rrer" target=3D"_blank">https://tools.ietf.org/html/rfc4303#section-3.4.3</=
+a> from =C2=A74.5.1 when we<br>
+talk about the mechanics of the replay window.)<br>
+<br>
+=C2=A0 =C2=A0Applications may conceivably detect duplicate packets and acco=
+rdingly<br>
+=C2=A0 =C2=A0modify their data transmission strategy.<br>
+<br>
+The text here doesn&#39;t give me a clear impression of whether the<br>
+application is supposed to use the DTLS sequence numbers for this<br>
+detection, or their own (application layer) information.=C2=A0 (I didn&#39;=
+t<br>
+think that most DTLS implementations exposed an API to give the<br>
+application the record sequence number.)<br>
+<br>
+Section 4<br>
+<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0ProtocolVersion legacy_record_vers=
+ion;<br>
+<br>
+We should probably say what value(s) are allowed here, akin to the RFC<br>
+8446 &quot;MUST be set to 0x0303 for all records [...] other than an initia=
+l<br>
+ClientHello&quot;.<br>
+<br>
+=C2=A0 =C2=A0Fixed Bits:=C2=A0 The three high bits of the first byte of the=
+<br>
+=C2=A0 =C2=A0 =C2=A0 DTLSCiphertext header are set to 001.<br>
+<br>
+Do we want to say something about why we have fixed bits and all and how<br=
+>
+the values were chosen (perhaps a reference to RFC 7983)?<br>
+<br>
+=C2=A0 =C2=A0If a connection ID is negotiated, then it MUST be contained in=
+ all<br>
+=C2=A0 =C2=A0datagrams.=C2=A0 Sending implementations MUST NOT mix records =
+from<br>
+=C2=A0 =C2=A0multiple DTLS associations in the same datagram.=C2=A0 If the =
+second or<br>
+=C2=A0 =C2=A0later record has a connection ID which does not correspond to =
+the<br>
+=C2=A0 =C2=A0same association used for previous records, the rest of the da=
+tagram<br>
+=C2=A0 =C2=A0MUST be discarded.<br>
+<br>
+I&#39;m failing to come up with a reason why you would directly want to use=
+<br>
+CIDs (for the same association) for records in a single datagram; should<br=
+>
+we recommend using a single CID value per datagram explicitly?<br>
+<br>
+=C2=A0 =C2=A0The entire header value shown in Figure 4 (but prior to record=
+ number<br>
+=C2=A0 =C2=A0encryption) is used as as the additional data value for the AE=
+AD<br>
+<br>
+Maybe forward-reference =C2=A74.2.3 for the record-number encryption?<br>
+<br>
+=C2=A0 =C2=A0The entire header value shown in Figure 4 (but prior to record=
+ number<br>
+=C2=A0 =C2=A0encryption) is used as as the additional data value for the AE=
+AD<br>
+=C2=A0 =C2=A0function.=C2=A0 For instance, if the minimal variant is used, =
+the AAD is 2<br>
+=C2=A0 =C2=A0octets long.=C2=A0 Note that this design is different from the=
+ additional<br>
+=C2=A0 =C2=A0data calculation for DTLS 1.2 and for DTLS 1.2 with Connection=
+ ID.<br>
+<br>
+In light of the ongoing discussion for the DTLS 1.2 connection ID, I<br>
+just want to walk through a few points here and confirm that we are in<br>
+good shape.<br>
+<br>
+- (D)TLS 1.3 always requires AEAD ciphers<br>
+- AEAD ciphers implicitly authenticate the AAD length<br>
+- the connection ID is the only implicitly variable-length field in the<br>
+=C2=A0 record header/AAD (the size of the sequence number and length fields=
+<br>
+=C2=A0 is indicated by bits in the first byte)<br>
+- in light of the above three points, the length of the connection ID is<br=
+>
+=C2=A0 also implicitly authenticated by the AEAD<br>
+- the AAD explicitly flags whether or not a CID is present at all<br>
+- the AEAD implicitly authenticates the length of the ciphertext, so it<br>
+=C2=A0 is okay to omit the length from the AAD when the L bit is 0.<br>
+<br>
+Section 4.1<br>
+<br>
+=C2=A0 =C2=A0-=C2=A0 If the first byte is alert(21), handshake(22), or ack(=
+proposed,<br>
+=C2=A0 =C2=A0 =C2=A0 26), the record MUST be interpreted as a DTLSPlaintext=
+ record.<br>
+<br>
+=C2=A0 =C2=A0-=C2=A0 If the first byte is any other value, then receivers M=
+UST check to<br>
+=C2=A0 =C2=A0 =C2=A0 see if the leading bits of the first byte are 001.=C2=
+=A0 If so, the<br>
+=C2=A0 =C2=A0 =C2=A0 implementation MUST process the record as DTLSCipherte=
+xt; the true<br>
+=C2=A0 =C2=A0 =C2=A0 content type will be inside the protected portion.<br>
+<br>
+=C2=A0 =C2=A0-=C2=A0 Otherwise, the record MUST be rejected as if it had fa=
+iled<br>
+=C2=A0 =C2=A0 =C2=A0 deprotection, as described in Section 4.5.2.<br>
+<br>
+I can imagine a reading of this last point that says that something that<br=
+>
+implements DTLS 1.3 MUST treat a tls12_cid ContentType as an error ...<br>
+even if that software also supports DTLS 1.2.=C2=A0 I could imagine a<br>
+phrasing like &quot;not a valid DTLS 1.3 record&quot; that would not have t=
+his<br>
+property, but I am not sure whether that is the right approach.<br>
+In particular, when CIDs are in use, we do not necessarily have any<br>
+external context to indicate whether we should be expecting DTLS 1.3 or<br>
+DTLS 1.2 (or either) on a given listening socket.<br>
+(I guess a mixed 1.2+1.3 implementation would also get Application Data,<br=
+>
+but 5-tuple would in theory be a distinguisher for when to accept that.)<br=
+>
+<br>
+Section 4.2.3<br>
+<br>
+=C2=A0 =C2=A0In DTLS 1.3, when records are encrypted, record sequence numbe=
+rs are<br>
+=C2=A0 =C2=A0also encrypted.=C2=A0 The basic pattern is that the underlying=
+ encryption<br>
+=C2=A0 =C2=A0algorithm used with the AEAD algorithm is used to generate a m=
+ask<br>
+=C2=A0 =C2=A0which is then XORed with the sequence number.<br>
+<br>
+I have mixed feelings about breaking through the AEAD abstraction to<br>
+assume that there is an &quot;underlying encryption algorithm&quot; to use.=
+<br>
+Furthermore, we currently only cover AES and ChaCha20, though the<br>
+ciphersuites registry lists TLS 1.3 ciphers with SM4 as block cipher, as<br=
+>
+well as MAC-only ciphersuites.=C2=A0 (Presumably the lack of sequence numbe=
+r<br>
+encryption is considered a feature for MAC-only ciphersuites.)=C2=A0 We may=
+<br>
+even want to limit our specification of sequence number encryption to<br>
+specific named ciphersuite codepoints, instead of having the vague<br>
+attempt at applying to future AES-using or ChaCha20-using ciphers.<br>
+<br>
+It seems that we are in effect imposing a new requirement for a TLS 1.3<br>
+cipher to get listed with DTLS-OK=3DY, namely, that it has a mechanism for<=
+br>
+generating a mask for encrypting sequence numbers.=C2=A0 I think we should<=
+br>
+make this new requirement more explicit, e.g., with an update to the<br>
+IANA registry.=C2=A0 It would also be useful if we could give guidance to<b=
+r>
+future ciphersuite authors for how one could do this in general, though<br>
+that would probably not be normative guidance.<br>
+<br>
+=C2=A0 =C2=A0When the AEAD is based on ChaCha20, then the mask is generated=
+ by<br>
+=C2=A0 =C2=A0treating the first 4 bytes of the ciphertext as the block coun=
+ter and<br>
+=C2=A0 =C2=A0the next 12 bytes as the nonce, passing them to the ChaCha20 b=
+lock<br>
+=C2=A0 =C2=A0function (Section 2.3 of [CHACHA]):<br>
+<br>
+I note that this is effectively random nonce selection since we treat<br>
+the encryption function as a PRF.=C2=A0 The sn_key is only regenerated when=
+ the<br>
+traffic keys are refreshed, so we may have higher risk of nonce-reuse<br>
+here than for the &quot;real&quot; packet encryption since the sequential n=
+once<br>
+values used for packet encryption have a lower collision probability<br>
+(though the value of what would be exposed on nonce reuse for sequence<br>
+number encryption is lower).=C2=A0 That said, we are only using the cipher<=
+br>
+portion and do not have an AEAD tag, to the really nasty consequences of<br=
+>
+nonce reuse are not in scope.=C2=A0 Nonetheless, perhaps updating the<br>
+guidance on how often to rekey is in order (or at least running the<br>
+numbers).<br>
+<br>
+=C2=A0 =C2=A0The encrypted sequence number is computed by XORing the leadin=
+g bytes<br>
+=C2=A0 =C2=A0of the Mask with the sequence number.=C2=A0 Decryption is acco=
+mplished by<br>
+=C2=A0 =C2=A0the same process.<br>
+<br>
+(This is fine.=C2=A0 There is maybe some aesthetic complaint about &quot;so=
+metimes<br>
+bit 0 of the Mask aplies to bit 32 of the sequence number and sometimes<br>
+it applies to bit 40 of the sequence number&quot; but I am pretty sure it<b=
+r>
+doesn&#39;t matter.)<br>
+<br>
+Section 4.4<br>
+<br>
+=C2=A0 =C2=A0If PMTU estimates are available from the underlying transport<=
+br>
+=C2=A0 =C2=A0protocol, they should be made available to upper layer protoco=
+ls.=C2=A0 In<br>
+=C2=A0 =C2=A0particular:<br>
+<br>
+I feel like we should be saying something about subtracting the length<br>
+of the DTLSCiphertext header (form in use).<br>
+<br>
+=C2=A0 =C2=A0Note that DTLS does not defend against spoofed ICMP messages;<=
+br>
+=C2=A0 =C2=A0implementations SHOULD ignore any such messages that indicate =
+PMTUs<br>
+=C2=A0 =C2=A0below the IPv4 and IPv6 minimums of 576 and 1280 bytes respect=
+ively<br>
+<br>
+I want to say there is a standard reference for this but am failing to<br>
+come up with the RFC number right now.<br>
+<br>
+=C2=A0 =C2=A0The DTLS record layer SHOULD allow the upper layer protocol to=
+<br>
+=C2=A0 =C2=A0discover the amount of record expansion expected by the DTLS<b=
+r>
+=C2=A0 =C2=A0processing.<br>
+<br>
+This might be better closer to the &quot;If PMTU estimates are available&qu=
+ot;<br>
+paragraph.<br>
+<br>
+=C2=A0 =C2=A0If there is a transport protocol indication (either via ICMP o=
+r via a<br>
+=C2=A0 =C2=A0refusal to send the datagram as in Section 14 of [RFC4340]), t=
+hen the<br>
+=C2=A0 =C2=A0DTLS record layer MUST inform the upper layer protocol of the =
+error.<br>
+<br>
+indication of what?<br>
+<br>
+=C2=A0 =C2=A0-=C2=A0 If the DTLS record layer informs the DTLS handshake la=
+yer that a<br>
+=C2=A0 =C2=A0 =C2=A0 message is too big, it SHOULD immediately attempt to f=
+ragment it,<br>
+=C2=A0 =C2=A0 =C2=A0 using any existing information about the PMTU.<br>
+<br>
+(editorial) too many &quot;it&quot;s here referring to different things.<br=
+>
+<br>
+Section 4.5.1<br>
+<br>
+We need to have an anti-replay window per epoch; the text here should<br>
+mention that explicitly (we currently just have text talking about<br>
+&quot;record counter for a session MUST be initialized to zero when that<br=
+>
+session is established&quot;, but a session is at a broader scope than<br>
+epoch).<br>
+<br>
+=C2=A0 =C2=A0serve as a timing channel for the record number.=C2=A0 Note th=
+at<br>
+=C2=A0 =C2=A0decompressing the records number is still a potential timing c=
+hannel<br>
+=C2=A0 =C2=A0for the record number, though a less powerful one than whether=
+ it was<br>
+=C2=A0 =C2=A0deprotected.<br>
+<br>
+Just to confirm: we&#39;re using &quot;decompress&quot; here for the proces=
+s of going<br>
+from 8-or-16-bit sequence number to 48-bit sequence number?<br>
+<br>
+Section 4.5.3<br>
+<br>
+As mentioned above, we might mention any reduced limits due to<br>
+sequence-number protection (e.g., with ChaCha20) here, if they exist.<br>
+<br>
+=C2=A0 =C2=A0For AEAD_AES_128_GCM, AEAD_AES_256_GCM, and AEAD_CHACHA20_POLY=
+1305,<br>
+=C2=A0 =C2=A0the limit on the number of records that fail authentication is=
+ 2^36.<br>
+=C2=A0 =C2=A0Note that the analysis in [AEBounds] supports a higher limit f=
+or the<br>
+=C2=A0 =C2=A0AEAD_AES_128_GCM and AEAD_AES_256_GCM, but this specification<=
+br>
+=C2=A0 =C2=A0recommends a lower limit.=C2=A0 For AEAD_AES_128_CCM, the limi=
+t on the<br>
+=C2=A0 =C2=A0number of records that fail authentication is 2^23.5; see Appe=
+ndix B.<br>
+<br>
+We might get asked to provide references for the AEADs (so, RFCs 5116<br>
+and 6655) here and in the following paragraph.<br>
+<br>
+Section 5.1<br>
+<br>
+=C2=A0 =C2=A0message, as well as the cookie extension, is defined in TLS 1.=
+3.=C2=A0 The<br>
+=C2=A0 =C2=A0HelloRetryRequest message contains a stateless cookie generate=
+d using<br>
+=C2=A0 =C2=A0the technique of [RFC2522].=C2=A0 The client MUST retransmit t=
+he<br>
+<br>
+I note that RFC 2522 recommends using a cryptographic hash such as MD5,<br>
+which is probably not the exact advice we want to be giving.<br>
+<br>
+=C2=A0 =C2=A0ClientHello with the cookie added as an extension.=C2=A0 The s=
+erver then<br>
+<br>
+Does &quot;MUST retransmit&quot; imply that the other HRR functionality (su=
+ch as<br>
+group negotiation) cannot be used?=C2=A0 (I note that a bit further on we s=
+ay<br>
+&quot;MUST create a new ClientHello ... [following] Section 4.1.2 of<br>
+[TLS13]&quot;, which seems to be enough of a normative requirement that the=
+<br>
+&quot;MUST&quot; may not be needed here.)<br>
+<br>
+=C2=A0 =C2=A0The cookie extension is defined in Section 4.2.2 of [TLS13].=
+=C2=A0 When<br>
+<br>
+Do we want to add any discussion of what is stored in the cookie (other<br>
+than the RFC 2522-like address+ports and the ClientHello1 hash that<br>
+[TLS13] mentions), as mentioned in the thread at<br>
+<a href=3D"https://mailarchive.ietf.org/arch/msg/tls/QbteFvnk1H2K9OjfHGosuG=
+9e9Rk/" rel=3D"noreferrer" target=3D"_blank">https://mailarchive.ietf.org/a=
+rch/msg/tls/QbteFvnk1H2K9OjfHGosuG9e9Rk/</a> ?<br>
+I am somewhat amenable to the stance that it&#39;s more appropriately done<=
+br>
+in 8446bis.<br>
+<br>
+=C2=A0 =C2=A0that the exchange is performed, however.=C2=A0 In addition, th=
+e server MAY<br>
+=C2=A0 =C2=A0choose not to do a cookie exchange when a session is resumed o=
+r, more<br>
+=C2=A0 =C2=A0generically, when the DTLS handshake uses a PSK-based key exch=
+ange.<br>
+<br>
+We could potentially say something about associating the IP address<br>
+information with the session/PSK (presumably alongside discussion of<br>
+connection IDs and mobility).<br>
+<br>
+Section 5.2<br>
+<br>
+=C2=A0 =C2=A0Note: In DTLS 1.2 the message_seq was reset to zero in case of=
+ a<br>
+=C2=A0 =C2=A0rehandshake (i.e., renegotiation).=C2=A0 On the surface, a reh=
+andshake in<br>
+=C2=A0 =C2=A0DTLS 1.2 shares similarities with a post-handshake message exc=
+hange<br>
+=C2=A0 =C2=A0in DTLS 1.3.=C2=A0 However, in DTLS 1.3 the message_seq is not=
+ reset to<br>
+=C2=A0 =C2=A0allow distinguishing a retransmission from a previously sent p=
+ost-<br>
+=C2=A0 =C2=A0handshake message from a newly sent post-handshake message.<br=
+>
+<br>
+Just to confirm: this means we are limited to 2**16 handshake messages<br>
+per association (including NST and post-handshake auth)?<br>
+<br>
+Section 5.3<br>
+<br>
+[Discussing ServerHello here for want of a better location.]<br>
+<br>
+We specify a ClientHello.legacy_version =3D {254,253}, but we seem to be<br=
+>
+inheriting the unmodified TLS 1.3 ServerHello, complete with<br>
+ServerHello.legacy_version =3D 0x0303.=C2=A0 That seems problematic, since =
+the<br>
+legacy DTLS 1.2 ServerHello would use the expected {254,253} like the<br>
+ClientHello.<br>
+<br>
+Similarly, we should probably specify whether the sentinel<br>
+downgrade-protection Random values are used as-is from TLS 1.3, or if we<br=
+>
+have new ones for DTLS.<br>
+[end ServerHello topics]<br>
+<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 In<br>
+=C2=A0 =C2=A0 =C2=A0 DTLS 1.3, the client indicates its version preferences=
+ in the<br>
+=C2=A0 =C2=A0 =C2=A0 &quot;supported_versions&quot; extension (see Section =
+4.2.1 of [TLS13]) and<br>
+=C2=A0 =C2=A0 =C2=A0 the legacy_version field MUST be set to {254, 253}, wh=
+ich was the<br>
+=C2=A0 =C2=A0 =C2=A0 version number for DTLS 1.2.=C2=A0 The version fields =
+for DTLS 1.0 and<br>
+=C2=A0 =C2=A0 =C2=A0 DTLS 1.2 are 0xfeff and 0xfefd (to match the wire vers=
+ions) but<br>
+=C2=A0 =C2=A0 =C2=A0 the version field for DTLS 1.3 is 0x0304.<br>
+<br>
+It seems like reusing 0x0304 will make implementations more complex for<br>
+little gain -- it&#39;s common to want to, e.g., compare (D)TLS versions to=
+<br>
+see which are greater.=C2=A0 OpenSSL does that with macros like:<br>
+<br>
+/*<br>
+=C2=A0* DTLS version numbers are strange because they&#39;re inverted. Exce=
+pt for<br>
+=C2=A0* DTLS1_BAD_VER, which should be considered &quot;lower&quot; than th=
+e rest.<br>
+=C2=A0*/<br>
+# define dtls_ver_ordinal(v1) (((v1) =3D=3D DTLS1_BAD_VER) ? 0xff00 : (v1))=
+<br>
+# define DTLS_VERSION_GT(v1, v2) (dtls_ver_ordinal(v1) &lt; dtls_ver_ordina=
+l(v2))<br>
+# define DTLS_VERSION_GE(v1, v2) (dtls_ver_ordinal(v1) &lt;=3D dtls_ver_ord=
+inal(v2))<br>
+# define DTLS_VERSION_LT(v1, v2) (dtls_ver_ordinal(v1) &gt; dtls_ver_ordina=
+l(v2))<br>
+# define DTLS_VERSION_LE(v1, v2) (dtls_ver_ordinal(v1) &gt;=3D dtls_ver_ord=
+inal(v2))<br>
+<br>
+which would have to grow another case of indirection to handle this,<br>
+whereas making TLS1_3_VERSION and DTLS1_3_VERSION have the same<br>
+numerical value doesn&#39;t seem to help the code at all.<br>
+<br>
+=C2=A0 =C2=A0cipher_suites:=C2=A0 Same as for TLS 1.3.<br>
+<br>
+Is it too banal to say that only cipher suites with DTLS-OK=3DY are<br>
+permitted [to be used]?<br>
+<br>
+Section 5.4<br>
+<br>
+=C2=A0 =C2=A0When a DTLS implementation receives a handshake message fragme=
+nt, it<br>
+=C2=A0 =C2=A0MUST buffer it until it has the entire handshake message.=C2=
+=A0 DTLS<br>
+=C2=A0 =C2=A0implementations MUST be able to handle overlapping fragment ra=
+nges.<br>
+=C2=A0 =C2=A0This allows senders to retransmit handshake messages with smal=
+ler<br>
+=C2=A0 =C2=A0fragment sizes if the PMTU estimate changes.<br>
+<br>
+Lots to say here:<br>
+<br>
+- &quot;MUST buffer fragments&quot; conflicts with an earlier &quot;MAY dis=
+card if<br>
+message_seq is greater than next_receive_seq&quot;.<br>
+<br>
+- &quot;MUST buffer&quot; has DoS considerations.<br>
+<br>
+- does &quot;handle overlapping fragment ranges&quot; include verifying tha=
+t the<br>
+=C2=A0 overlapping content is identical?=C2=A0 If not, do we say anything a=
+bout<br>
+=C2=A0 which one to use?<br>
+<br>
+Section 5.5<br>
+<br>
+=C2=A0 =C2=A0the deletion attacks that EndOfEarlyData prevents in TLS.=C2=
+=A0 Servers<br>
+=C2=A0 =C2=A0SHOULD aggressively age out the epoch 1 keys upon receiving th=
+e first<br>
+=C2=A0 =C2=A0epoch 2 record and SHOULD NOT accept epoch 1 data after the fi=
+rst<br>
+<br>
+I&#39;m not disagreeing with the sentiment, but it seems like following the=
+<br>
+&quot;SHOULD age out&quot; recommendation could lead to a stall of applicat=
+ion<br>
+data if the flight with client&#39;s Finished has to get retransmitted or<b=
+r>
+throttled by congestion control.<br>
+<br>
+Section 5.6<br>
+<br>
+Numbering the flights like this with absolute identifiers could be quite<br=
+>
+useful, but the current formulation leaves a bit to be desired, since we<br=
+>
+don&#39;t have much consistency in numbering across the various scenarios.<=
+br>
+If we are going to have to fall back to &quot;client&#39;s second flight&qu=
+ot; to<br>
+refer to the given scenario in question, then perhaps it is not worth<br>
+giving different numbers to client vs server flight.<br>
+<br>
+=C2=A0 =C2=A0 =C2=A0Figure 6: Message flights for a full DTLS Handshake (wi=
+th cookie<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0exchange)<br>
+<br>
+I&#39;d consider (but possibly not actually end up) noting that flights 2<b=
+r>
+and 3 are skipped when the cookie exchange is not needed.<br>
+<br>
+It&#39;s also a bit surprising to see pre_shared_key as an<br>
+important/noteworthy extension in the sample full (i.e., non-resumption)<br=
+>
+handshake alongside key_share.<br>
+<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Figure 8: Message flights for the =
+Zero-RTT handshake<br>
+<br>
+Why do we include psk_key_exchange_modes for the zero-RTT example but<br>
+not the other ones?=C2=A0 I don&#39;t think it&#39;s particularly more nota=
+ble for<br>
+0-RTT than other handshakes.<br>
+<br>
+=C2=A0 =C2=A0Note: The application data sent by the client is not included =
+in the<br>
+=C2=A0 =C2=A0timeout and retransmission calculation.<br>
+<br>
+This note also appears a little out of place here, since we don&#39;t<br>
+really get into timeout and retransmission until the next section<br>
+<br>
+Section 5.7.1<br>
+<br>
+The state machine says &quot;receive record, send ACK&quot;; does that hold=
+ for<br>
+all records?=C2=A0 (I guess maybe it does, for all records that do not<br>
+complete a flight.)<br>
+<br>
+=C2=A0 =C2=A0In the PREPARING state, the implementation does whatever compu=
+tations<br>
+=C2=A0 =C2=A0are necessary to prepare the next flight of messages.=C2=A0 It=
+ then<br>
+=C2=A0 =C2=A0buffers them up for transmission (emptying the buffer first) a=
+nd<br>
+=C2=A0 =C2=A0enters the SENDING state.<br>
+<br>
+What is meant by &quot;emptying the buffer first&quot;?=C2=A0 Surely I need=
+ to keep the<br>
+messages I am sending buffered in case I have to retransmit them, and if<br=
+>
+I am in PREPARING I have to have fnished sending my previous flight (if<br>
+any) first...<br>
+<br>
+=C2=A0 =C2=A0There are four ways to exit the WAITING state:<br>
+<br>
+=C2=A0 =C2=A01.=C2=A0 The retransmit timer expires: the implementation tran=
+sitions to<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0the SENDING state, where it retransmits the flig=
+ht, resets the<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0retransmit timer, and returns to the WAITING sta=
+te.<br>
+<br>
+Should there be a fifth way, involving failing the handshake by hitting<br>
+a retransmission cap?<br>
+<br>
+=C2=A0 =C2=A04.=C2=A0 The implementation receives some or all next flight o=
+f messages:<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0if this is the final flight of messages, the imp=
+lementation<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0transitions to FINISHED.=C2=A0 If the implementa=
+tion needs to send a<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0new flight, it transitions to the PREPARING stat=
+e.=C2=A0 Partial reads<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0(whether partial messages or only some of the me=
+ssages in the<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0flight) may also trigger the implementation to s=
+end an ACK, as<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0described in Section 7.1.<br>
+<br>
+I don&#39;t understand the &quot;some or&quot; part; shouldn&#39;t the stat=
+e machine need<br>
+a complete next flight in order to transition states?<br>
+<br>
+=C2=A0 =C2=A0In addition, for at least twice the default MSL defined for<br=
+>
+=C2=A0 =C2=A0[RFC0793], when in the FINISHED state, the server MUST respond=
+ to<br>
+=C2=A0 =C2=A0retransmission of the client&#39;s second flight with a retran=
+smit of its<br>
+=C2=A0 =C2=A0ACK.<br>
+<br>
+&quot;second flight&quot; does not seem to allow for all the various possib=
+ilities<br>
+for handshake structure we have, with HRR, resumption, etc.<br>
+<br>
+=C2=A0 =C2=A0the first side&#39;s Finished message.=C2=A0 Implementations M=
+UST either<br>
+=C2=A0 =C2=A0discard or buffer all application data records for the new epo=
+ch<br>
+=C2=A0 =C2=A0until they have received the Finished message for that epoch.<=
+br>
+<br>
+On my first read I equated &quot;that epoch&quot; with &quot;the new epoch&=
+quot;, which<br>
+doesn&#39;t make sense.=C2=A0 Perhaps &quot;received the Finished message f=
+or the<br>
+current epoch&quot; or even just &quot;for epoch 3&quot;, since the post-ha=
+ndshake auth<br>
+Finished messages are not limited to one per epoch?<br>
+<br>
+Section 5.7.2<br>
+<br>
+=C2=A0 =C2=A0many instances of a DTLS time out early and retransmit too qui=
+ckly on<br>
+=C2=A0 =C2=A0a congested link.=C2=A0 Implementations SHOULD use an initial =
+timer value<br>
+=C2=A0 =C2=A0of 100 msec (the minimum defined in RFC 6298 [RFC6298]) and do=
+uble<br>
+=C2=A0 =C2=A0the value at each retransmission, up to no less than the RFC 6=
+298<br>
+=C2=A0 =C2=A0maximum of 60 seconds.=C2=A0 Application specific profiles, su=
+ch as those<br>
+<br>
+The wording here is a bit amusing, as &quot;up to no less than the ...<br>
+maximum&quot; is facially nonsensical, but the RFC 6298 setting is in fact<=
+br>
+the floor for the implementation-defined maximum.=C2=A0 I don&#39;t have a =
+clever<br>
+wording suggestion, though.<br>
+<br>
+=C2=A0 =C2=A0sensitive applications.=C2=A0 Because DTLS only uses retransmi=
+ssion for<br>
+=C2=A0 =C2=A0handshake and not dataflow, the effect on congestion should be=
+<br>
+=C2=A0 =C2=A0minimal.<br>
+<br>
+Perhaps a cautionary note about large certificate chains is in order,<br>
+though?<br>
+<br>
+=C2=A0 =C2=A0Implementations SHOULD retain the current timer value until a<=
+br>
+=C2=A0 =C2=A0transmission without loss occurs, at which time the value may =
+be<br>
+<br>
+Does &quot;transmission without loss&quot; mean a full flight?=C2=A0 I&#39;=
+m not seeing a<br>
+way to read this that lets us continue to transmit with a given value of<br=
+>
+the timer, as opposed to resetting it to the initial value or having to<br>
+back off due to loss.<br>
+<br>
+=C2=A0 =C2=A0reset to the initial value.=C2=A0 After a long period of idlen=
+ess, no less<br>
+=C2=A0 =C2=A0than 10 times the current timer value, implementations may res=
+et the<br>
+=C2=A0 =C2=A0timer to the initial value.<br>
+<br>
+Should this be a 2119 MAY?<br>
+<br>
+Section 5.10<br>
+<br>
+Do we want to say anything about the (non-)utility of &quot;close_notify&qu=
+ot;<br>
+given that we don&#39;t deal with in-order or reliable transport?<br>
+Or that a DTLS implementation just drops packets instead of sending<br>
+&quot;bad_record_mac&quot;?<br>
+<br>
+Section 5.11<br>
+<br>
+=C2=A0 =C2=A0Note: it is not always possible to distinguish which associati=
+on a<br>
+=C2=A0 =C2=A0given record is from.=C2=A0 For instance, if the client perfor=
+ms a<br>
+=C2=A0 =C2=A0handshake, abandons the connection, and then immediately start=
+s a new<br>
+=C2=A0 =C2=A0handshake, it may not be possible to tell which connection a g=
+iven<br>
+=C2=A0 =C2=A0protected record is for.=C2=A0 In these cases, trial decryptio=
+n MAY be<br>
+=C2=A0 =C2=A0necessary, though implementations could use CIDs.<br>
+<br>
+This doesn&#39;t seem like a normative MAY but rather a statement of fact.<=
+br>
+<br>
+Section 6<br>
+<br>
+Figure 11 seems to show that the initial ServerHello has message_seq=3D1,<b=
+r>
+but =C2=A75.2 says that &quot;[t]he first message each side transmits in ea=
+ch<br>
+association always has message_seq =3D 0&quot;.=C2=A0 Which one is it?=C2=
+=A0 (A change<br>
+here would affect all the server&#39;s messages except the final ACK.)<br>
+<br>
+Also in Figure 11, the client has to send an empty ACK because Record 1<br>
+could only be ACK&#39;d in epoch 2, but the client doesn&#39;t have the epo=
+ch 2<br>
+keys yet.=C2=A0 We should at least forward-reference =C2=A77.1 and acknowle=
+dge<br>
+(pun intended) that the empty ACK is correct in this case even if we<br>
+don&#39;t go into the details of why it is correct yet.<br>
+<br>
+Section 6.1<br>
+<br>
+=C2=A0 =C2=A0Using these reserved epoch values a receiver knows what cipher=
+ state<br>
+=C2=A0 =C2=A0has been used to encrypt and integrity protect a message.<br>
+=C2=A0 =C2=A0Implementations that receive a payload with an epoch value for=
+ which<br>
+=C2=A0 =C2=A0no corresponding cipher state can be determined MUST generate =
+a<br>
+=C2=A0 =C2=A0&quot;unexpected_message&quot; alert.=C2=A0 For example, if a =
+client incorrectly<br>
+=C2=A0 =C2=A0uses epoch value 5 when sending early application data in a 0-=
+RTT<br>
+=C2=A0 =C2=A0exchange.=C2=A0 A server will not be able to compute the appro=
+priate keys<br>
+=C2=A0 =C2=A0and will therefore have to respond with an alert.<br>
+<br>
+Why would such erroneous epoch=3D5 usage fall into &quot;unexpected_message=
+&quot;<br>
+territory as opposed to the normal silent discard of records that fail<br>
+deprotection (per =C2=A74.5.2)?<br>
+<br>
+Figure 12 has &quot;[HelloRetryRequest]&quot; in brackets, but HRR is not<b=
+r>
+protected under the application traffic keys.=C2=A0 IMO it would be<br>
+appropriate to just list &quot;HelloRetryRequest&quot; (without a previous<=
+br>
+&quot;ServerHello&quot;) since we have a disclaimer at the top of the docum=
+ent<br>
+that we are pretending it is a separate message for purposes of<br>
+documentation.<br>
+<br>
+I think it would also be useful to actually show the KeyUpdate<br>
+message(s) in Figure 12, especially since we admit asymmetric KeyUpdate.<br=
+>
+Discussion of separately tracking send and receive epoch would also be<br>
+appropriate...<br>
+<br>
+Section 7<br>
+<br>
+=C2=A0 =C2=A0During the handshake, ACKs only cover the current outstanding =
+flight<br>
+=C2=A0 =C2=A0(this is possible because DTLS is generally a lockstep protoco=
+l).<br>
+=C2=A0 =C2=A0Thus, an ACK from the server would not cover both the ClientHe=
+llo and<br>
+=C2=A0 =C2=A0the client&#39;s Certificate.=C2=A0 Implementations can accomp=
+lish this by<br>
+=C2=A0 =C2=A0clearing their ACK list upon receiving the start of the next f=
+light.<br>
+<br>
+I wonder if it is helpful to mention here that ACK is not needed if the<br>
+endpoint can proceed to start sending the next flight (since sending<br>
+messages in the next flight implicitly ACKs the entire previous flight).<br=
+>
+<br>
+=C2=A0 =C2=A0Implementations SHOULD simply use the highest current sending =
+epoch,<br>
+=C2=A0 =C2=A0which will generally be the highest available.=C2=A0 After the=
+ handshake,<br>
+<br>
+Will there generally be parity between send and receive epochs?=C2=A0 I am<=
+br>
+not sure that such parity would be needed for largely asymmetric traffic<br=
+>
+flows.<br>
+<br>
+Section 7.1<br>
+<br>
+=C2=A0 =C2=A01.=C2=A0 Handshake flights other than the client&#39;s final f=
+light<br>
+<br>
+&gt;From context this means &quot;initial handshake flights&quot; but we do=
+n&#39;t really<br>
+have a specific definition that &quot;handshake flight&quot; excludes<br>
+post-handshake messages.=C2=A0 Perhaps it&#39;s worth a few more words to<b=
+r>
+clarify.<br>
+<br>
+=C2=A0 =C2=A0through the responding flight.=C2=A0 A notable example for thi=
+s is the<br>
+=C2=A0 =C2=A0case of post-handshake client authentication in constrained<br=
+>
+=C2=A0 =C2=A0environments, where generating the CertificateVerify message c=
+an take<br>
+=C2=A0 =C2=A0considerable time on the client.=C2=A0 All other flights MUST =
+be ACKed.<br>
+<br>
+(non-post-handshake client authentication would also take the same<br>
+amount of time, right?)<br>
+<br>
+Section 7.3<br>
+<br>
+=C2=A0 =C2=A0retransmission in previous versions of DTLS.=C2=A0 For instanc=
+e in the<br>
+=C2=A0 =C2=A0flow shown in Figure 11 if the client does not send the ACK me=
+ssage<br>
+=C2=A0 =C2=A0when it received and processed record 1 indicating loss of rec=
+ord 0,<br>
+=C2=A0 =C2=A0the entire flight would be retransmitted.=C2=A0 When DTLS 1.3 =
+is used in<br>
+<br>
+I don&#39;t think that the client can &quot;process&quot; record 1 per se, =
+since the<br>
+contents are encrypted in the handshake keys and the client doesn&#39;t hav=
+e<br>
+the ServerHello yet.=C2=A0 So shouldn&#39;t this just be &quot;when it rece=
+ived record<br>
+1&quot;?<br>
+<br>
+=C2=A0 =C2=A0The use of the ACK for the second case is mandatory for the pr=
+oper<br>
+=C2=A0 =C2=A0functioning of the protocol.=C2=A0 For instance, the ACK messa=
+ge sent by<br>
+=C2=A0 =C2=A0the client in Figure 12, acknowledges receipt and processing o=
+f<br>
+=C2=A0 =C2=A0record 2 (containing the NewSessionTicket message) and if it i=
+s not<br>
+<br>
+The records in Figure 12 are not labeled (anymore?).<br>
+<br>
+=C2=A0 =C2=A0sent the server will continue retransmission of the NewSession=
+Ticket<br>
+=C2=A0 =C2=A0indefinitely.<br>
+<br>
+s/indefinitely/until its retransmission cap is reached/?<br>
+<br>
+Section 8<br>
+<br>
+Discussion of asymmetric KeyUpdate and the need to separately track send<br=
+>
+and receive epoch would be welcome here.<br>
+<br>
+Section 9<br>
+<br>
+Some discussion of what types of events might trigger a peer to start<br>
+using &quot;spare&quot; CIDs (and, presumably, stop using the old ones) cou=
+ld be<br>
+helpful.<br>
+<br>
+There&#39;s no reason we might want to put Extensions in either<br>
+NewConnectionId or RequestConnectionId, right?<br>
+<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0opaque ConnectionId&lt;0..2^8-1&gt;;<br>
+<br>
+Are we keeping with draft-ietf-tls-dtls-connection-id and forbidding<br>
+zero-length connection IDs?=C2=A0 If so, that should be indicated in the<br=
+>
+presentation language.<br>
+<br>
+=C2=A0 =C2=A0Endpoints SHOULD respond to RequestConnectionId by sending a<b=
+r>
+=C2=A0 =C2=A0NewConnectionId with usage &quot;cid_spare&quot; containing nu=
+m_cid CIDs soon<br>
+=C2=A0 =C2=A0as possible.=C2=A0 Endpoints MUST NOT send a RequestConnection=
+Id message<br>
+=C2=A0 =C2=A0when an existing request is still unfulfilled; this implies th=
+at<br>
+=C2=A0 =C2=A0endpoints needs to request new CIDs well in advance.=C2=A0 An =
+endpoint MAY<br>
+=C2=A0 =C2=A0ignore requests, which it considers excessive (though they MUS=
+T be<br>
+=C2=A0 =C2=A0acknowledged as usual).<br>
+<br>
+This seems like it sets up a deadlock scenario.=C2=A0 Consider peers A and =
+B;<br>
+A sends RequestConnectionId with num_cids=3D200 and B considers this<br>
+request excessive, so ACKs it but sends no NewConnectionId in response.<br>
+A is prohibited from sending another RequestConnection Id to indicate<br>
+that it really needs new CIDs, since the requested 200 have not arrived<br>
+yet; thus, B could end up not sending any NewConnectionIds even though A<br=
+>
+is essentially blocking on getting them.=C2=A0 Unless &quot;unfulfilled&quo=
+t; is<br>
+supposed to mean &quot;not ACKed&quot;?<br>
+<br>
+Section 11<br>
+<br>
+It is probably worth giving a few reminders about cookie<br>
+generation/requirements and cookie (non-)reuse.=C2=A0 RFC 2522 has some<br>
+useful considerations, but we don&#39;t currently incoroprate them by<br>
+reference.=C2=A0 Concrete recommendations for cookie key rotation intervals=
+<br>
+might even be in order.<br>
+<br>
+Section 5.7.3 has a discussion about the need for distinct state<br>
+machines to be running concurrently, and interplay between the handshake<br=
+>
+layer and the record layer state machine that is needed in order to<br>
+dispatch records across state machines.=C2=A0 Getting this right seems<br>
+security relevant, so a reminder in this section might be in order.<br>
+<br>
+TLS 1.3 places fairly stringent requirements on non-replayability of<br>
+0-RTT data; this would typically be done at the session ticket or<br>
+ClientHello level.=C2=A0 DTLS has optional per-record replay protection.=C2=
+=A0 As<br>
+far as I can tell, the two are orthogonal; that is, there is no<br>
+inherent need to use DTLS replay protection with 0-RTT data (but there<br>
+is still need to prevent replay of ClientHellos, and thus the sets of<br>
+data that follow them).=C2=A0 It may be worth reiterating that the two<br>
+mechanisms play different roles, and the one cannot replace the other.<br>
+<br>
+If there is a large amount of skew between the send and receive epochs,<br>
+the implementation will have to decide whether to keep around<br>
+application traffic secrets or generate the various traffic keys and<br>
+discart the oldest traffic secrets.<br>
+<br>
+=C2=A0 =C2=A0With the exception of order protection and non-replayability, =
+the<br>
+=C2=A0 =C2=A0security guarantees for DTLS 1.3 are the same as TLS 1.3.=C2=
+=A0 While TLS<br>
+=C2=A0 =C2=A0always provides order protection and non-replayability, DTLS d=
+oes not<br>
+=C2=A0 =C2=A0provide order protection and may not provide replay protection=
+.<br>
+<br>
+We might also mention non-reliability of application data here (though<br>
+that is to large extent a property of the underlying transport).<br>
+<br>
+=C2=A0 =C2=A0If implementations process out-of-epoch records as recommended=
+ in<br>
+=C2=A0 =C2=A0Section 8, then this creates a denial of service risk since an=
+<br>
+=C2=A0 =C2=A0adversary could inject records with fake epoch values, forcing=
+ the<br>
+=C2=A0 =C2=A0recipient to compute the next-generation application_traffic_s=
+ecret<br>
+=C2=A0 =C2=A0using the HKDF-Expand-Label construct to only find out that th=
+e<br>
+=C2=A0 =C2=A0message was does not pass the AEAD cipher processing.=C2=A0 [.=
+..]<br>
+<br>
+I think this text is stale, since we no longer do implicit key update on<br=
+>
+seeing a new epoch -- we require explicit KeyUpdate+ACK before the new<br>
+keys are used.=C2=A0 An implementation can still process records under an o=
+ld<br>
+epoch, of course, but those keys would generally already be around and<br>
+not require additional computation to produce.<br>
+<br>
+=C2=A0 =C2=A0The security and privacy properties of the CID for DTLS 1.3 bu=
+ilds on<br>
+=C2=A0 =C2=A0top of what is described in [I-D.ietf-tls-dtls-connection-id].=
+=C2=A0 There<br>
+=C2=A0 =C2=A0are, however, several improvements:<br>
+=C2=A0 =C2=A0[...]<br>
+=C2=A0 =C2=A0-=C2=A0 With multi-homing, an adversary is able to correlate t=
+he<br>
+=C2=A0 =C2=A0 =C2=A0 communication interaction over the two paths, which ad=
+ds further<br>
+=C2=A0 =C2=A0 =C2=A0 privacy concerns.=C2=A0 In order to prevent this, impl=
+ementations<br>
+<br>
+(editorial) What is described here is not an &quot;improvement&quot;; this =
+is a<br>
+description of the issue that we provide an improvement in relation to.<br>
+Reordering this bullet point to have the benefit/improvement be in the<br>
+first sentence would improve parallelism of writing structure.=C2=A0 Perhap=
+s<br>
+&quot;the ability to use multiple CIDs allows for improved privacy properti=
+es<br>
+in multi-homed scenarios.=C2=A0 When only a single CID in use on multiple<b=
+r>
+paths from such a host, an adversary is able to correlate [...]&quot;?<br>
+<br>
+=C2=A0 =C2=A0-=C2=A0 Switching CID based on certain events, or even regular=
+ly, helps<br>
+=C2=A0 =C2=A0 =C2=A0 against tracking by on-path adversaries but the sequen=
+ce numbers<br>
+=C2=A0 =C2=A0 =C2=A0 can still allow linkability.=C2=A0 For this reason thi=
+s specification<br>
+=C2=A0 =C2=A0 =C2=A0 defines an algorithm for encrypting sequence numbers, =
+see<br>
+<br>
+(editorial) similarly, this could become &quot;the mechanism for encrypting=
+<br>
+sequence numbers (Section 4.2.3) prevents trivial tracking by on-path<br>
+adversaries that attempt to correlate the pattern of sequence numbers<br>
+received on different paths; such tracking could occur even when<br>
+different CIDs are used on each path, in the absence of sequence number<br>
+encryption&quot;.<br>
+<br>
+=C2=A0 =C2=A0 =C2=A0 encrypted.=C2=A0 This may improve correlation of packe=
+ts from a single<br>
+=C2=A0 =C2=A0 =C2=A0 connection across different network paths.<br>
+<br>
+I feel like the small width of the epoch field mitigates this somewhat<br>
+(though not fully).<br>
+<br>
+Section 12.=C2=A0 Changes to DTLS 1.2<br>
+<br>
+This section is about changes *since* DTLS 1.2 (and I propose some<br>
+wording tweaks in my editorial PR).=C2=A0 But I think we should also consid=
+er<br>
+whether we do need a section on &quot;changes to DTLS 1.2&quot;, or rather<=
+br>
+&quot;changes affecting DTLS 1.2 implementations, along the lines of<br>
+<a href=3D"https://tools.ietf.org/html/rfc8446#section-1.3" rel=3D"noreferr=
+er" target=3D"_blank">https://tools.ietf.org/html/rfc8446#section-1.3</a> (=
+&quot;Updates Affecting TLS<br>
+1.2&quot;).<br>
+<br>
+Section 13<br>
+<br>
+[I made some comments earlier that are expected to lead to new text in<br>
+the IANA Considerations.]<br>
+<br>
+=C2=A0 =C2=A0IANA is requested to allocate a new value in the &quot;TLS Con=
+tentType&quot;<br>
+=C2=A0 =C2=A0registry for the ACK message, defined in Section 7, with conte=
+nt type<br>
+=C2=A0 =C2=A026.=C2=A0 The value for the &quot;DTLS-OK&quot; column is &quo=
+t;Y&quot;.=C2=A0 IANA is requested to<br>
+=C2=A0 =C2=A0reserve the content type range 32-63 so that content types in =
+this<br>
+=C2=A0 =C2=A0range are not allocated.<br>
+<br>
+With 0-25 already allocated or &quot;requires coordination&quot; and 64-255=
+ at<br>
+&quot;requires coordination&quot;, this leaves us with like 6 more content =
+types.<br>
+We go through them slowly, so I&#39;m not particularly concerned; just<br>
+pointing it out.<br>
+<br>
+Section 14.2<br>
+<br>
+We say &quot;contains a stateless cookie generated using the technique of<b=
+r>
+[RFC2522]&quot; which seems to require usage/understanding of RFC 2522, thu=
+s<br>
+promoting it to normative.=C2=A0 (That seems silly, so I recommend rewordin=
+g<br>
+rather than recategorizing the reference.)<br>
+<br>
+Appendix A<br>
+<br>
+=C2=A0 =C2=A0%%## Record Layer %%## Handshake Protocol %%## ACKs %%## Conne=
+ction<br>
+=C2=A0 =C2=A0ID Management<br>
+<br>
+We seem to be missing the magic &quot;%%%&quot; markers in the markdown sou=
+rce<br>
+that allow this automation to work.=C2=A0 But we also seem to be wrapping a=
+t<br>
+least some of the figures in &quot;~~~&quot; and I don&#39;t know how those=
+ interact,<br>
+so I didn&#39;t try to fix this myself.<br>
+<br>
+Thanks,<br>
+<br>
+Ben<br>
+</blockquote></div>
+
+--000000000000bccc3105b41bb8f0--
+

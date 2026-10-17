@@ -1,0 +1,218 @@
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com
+ [IPv6:2a00:1450:4864:20::529])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature ECDSA (prime256v1) server-digest
+ SHA256)
+	(No client certificate requested)
+	by mx.ietf.org (Postfix) with ESMTPS id BB40346
+	for <tls@ietf.org>; Fri, 16 Oct 2026 14:42:10 +0000 (UTC)
+Authentication-Results: mx.ietf.org;
+	dkim=pass header.d=chromium.org header.s=google header.b=S7eRZTpe;
+	arc=pass ("google.com:s=arc-20260327:i=1");
+	spf=pass (mx.ietf.org: domain of davidben@google.com designates
+ 2a00:1450:4864:20::529 as permitted sender)
+ smtp.mailfrom=davidben@google.com;
+	dmarc=pass (policy=none) header.from=chromium.org
+Received: by mail-ed1-x529.google.com with SMTP id
+ 4fb4d7f45d1cf-6b21cf1a580so527498a12.1
+        for <tls@ietf.org>; Fri, 16 Oct 2026 07:42:10 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1792161723; cv=none;
+        d=google.com; s=arc-20260327;
+        b=c251zdgp3DF5Um727mzhCALfjYgh+hegxaNd2Mt053mhhPjFyBI73AqugIBribV3RW
+         HEh5w6drnB6Ck1BWXLE9wOK6/haflAzz37pii1WaTaKTTpr42bWXrtdIh54N3rIgPq8L
+         Aq6OW+WDa9JNHmUwmsB99BkdTgj2FWJNdOkunTREB+cwPofoY5bwwXla2KqeX3mkaikV
+         hFWceEcxX3d2ZXRSGH7skqjMbY9PT6lFFzijXzXHtV4KD+zzy+pE4voJq1O1OVXHu0K8
+         l3uzy/ykvDVtpm8sqPah0D8r3wWcEclhLr9psBP5isJ2/VxwANzWDE3SaxEsRWgEMzAE
+         CB/g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20260327;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=kKHlAdL49/WGSI3hb0JVH6sX5tjcN/HRlWkGcjlpCbc=;
+        fh=Sn7drLV3SJ5A8XaculBKzowpAVsFceMgM3sXIPxtnS0=;
+        b=jeCsz/yGayGlTUPBgu9b4XK84drxV2J2+Pn9FJoL6YtJJ5afounCsn4C8ZRUv7ld3r
+         Ejf40X/mAA6yIATS6gSZQLcIal2H0Gp+kLSVYzr2tA6wV/EQEY+mPPweIUw6wbACyn8k
+         NUS5kSeY1R7+VSJhFzcLebadDU7d5h+q95/eAFZSxyMCPgL6n7aY6emsdWo+2o/l9b7X
+         AvpooBHKd0imC4AymfUM529orZHC7Ae3+q8hgRRBEWF//mojtcyJaIsJxGACezdQinfT
+         aXFCV2mEttniYU5lrTvoSqNzUPwKqbal6KGLk540jfa6sIHWw05njfHKaX3k/LANVj0I
+         1+wQ==;
+        darn=ietf.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1792161723; x=1792766523; darn=ietf.org;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=kKHlAdL49/WGSI3hb0JVH6sX5tjcN/HRlWkGcjlpCbc=;
+        b=S7eRZTpel17GEuzKk6lKw2qM4mffASbP7+5c3VvnG/fR00uf09TyqoLvKJRBzzIMxn
+         YpKYnizbzF2cwpZ4TYd25Z3nSgwpSrxWoQqoR+obPU3PF+ewDrOtOVZhoCcRd1cjSEZm
+         78wJoHDBRaocNxTfcVBW3FlT1kWytJSPWBaQs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1792161723; x=1792766523;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=kKHlAdL49/WGSI3hb0JVH6sX5tjcN/HRlWkGcjlpCbc=;
+        b=aW6NnmUaBVfpdwgs/nQMjnZ1ZPPvgXBp+P+vg7r/IcK199xAB867kLfTUvi+l/lrZc
+         QZYHUWRLXeavr1lQ+55wkIndhn8pv27XcEmtPQJOE8M+FTgg3ZRYy6gJj9ljj/DthfxF
+         VL5fApxPy8TXc9Eu5RYA6EMza98MknykqXDH8QCdM3bJcVBR5uXV6fhmu12pJ1fdLpzm
+         /dFbRnvFoYfYpFKEGhLtQDblii5S/t2GkF2HUJLa8T0gAe/uqMeGLSqqmCP/QNbMhlKf
+         EGjLtNdv0WlnvFihxNz1fGRsO3JMAZeSYCx8OocQuQQllzxAwZXEdG87u21flLtoJ50k
+         W4RQ==
+X-Forwarded-Encrypted: i=1;
+ AKwUvByn8SyelCVl8tS2cmoCz7v4d9ka36ML2RaOM2WY6+b6kg7vNB6IzVMgY5SBvNx0DUjYe40=@ietf.org
+X-Gm-Message-State: AFq9FYI52KhsuGywtWBNpYSFW80VnrR/50JEnjtvXshTz/tFdgF90AwF
+	vgGhy/TPY43OEzVdACLFZ2GMIA8ctoOY/O98IWa6URediO2qjYbUms0Y0GI/iyeX8AZGt4ALQE+
+	fSxA9vvkh/bYpp8KqSrKrrTU4UnfMsgd4RVBfJUs=
+X-Gm-Gg: AYBFou0nYHqSUhm8Q5YdMr2gE1l4hw9bL4tRoHpF8FcNqWoRUjViH/kJ08neN+yhdZq
+	KxqV+ls5d0S6B+glH2hlhwjN4tIpdp0YAbQd0kWPX2eQaToI4aLgcTj04IGZpbc1eojMhGXVbyG
+	/rnaLNldXwnm9gtGIPhMVRos4bNhWOqt50JFzqg2N4wFGiEnwQZUB7QRqSm95qNqak6KnK75R8m
+	yeSdo25q4ziOBAcKVUMtN34xYUWyiwIIg/QsYp6AtOVXcC99egED76LBGYFKqHzHPInrVNEFiGv
+	3RNRPvnDWvWsP5Se2Ar5pJ501hmTcTIIQ4eDPrcw801Hz325ACBqlaKLUh9L+d7dQu8tkxsiMfF
+	nao1V+EEGeHRG+FrrhIc=
+X-Received: by 2002:a05:6402:11d3:b0:6af:dd04:bb21 with SMTP id
+ 4fb4d7f45d1cf-6b17c23e8a9mr18120469a12.15.1792161722396; Fri, 16 Oct 2026
+ 07:42:02 -0700 (PDT)
+MIME-Version: 1.0
+References: <269A5A06-214F-4D10-9A05-3C0D4BC89FC7@sn3rd.com>
+ <CAMjbhoW43bEXMAV2EgrheBznZLJdbxoeL=xqUjrJVGsaWzt+qA@mail.gmail.com>
+In-Reply-To: 
+ <CAMjbhoW43bEXMAV2EgrheBznZLJdbxoeL=xqUjrJVGsaWzt+qA@mail.gmail.com>
+From: David Benjamin <davidben@chromium.org>
+Date: Fri, 16 Oct 2026 10:41:45 -0400
+X-Gm-Features: AclHuK-gSDzB7xR_GBml1Fj6hfzWcYBls4rv0LwmmRkL8NK0-JmrgnxFYE0V5Z4
+Message-ID: 
+ <CAF8qwaCpOK_6Lb15buEyK7a3++2P9-NzY=utJAARCL-Ej0_bDg@mail.gmail.com>
+To: Bas Westerbaan <bas@cloudflare.com>
+Content-Type: multipart/alternative; boundary="000000000000dd0366065df62aa0"
+X-Spamd-Bar: --------------------------
+Message-ID-Hash: XFIX27W2H7FFLMI5KCWIKVBLSKORFPTW
+X-Message-ID-Hash: XFIX27W2H7FFLMI5KCWIKVBLSKORFPTW
+X-MailFrom: davidben@google.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
+ banned-address; header-match-tls.ietf.org-0; header-match-tls.ietf.org-1;
+ header-match-tls.ietf.org-2; header-match-tls.ietf.org-3;
+ header-match-tls.ietf.org-4; header-match-tls.ietf.org-5;
+ header-match-tls.ietf.org-6; header-match-tls.ietf.org-7;
+ header-match-tls.ietf.org-8; header-match-tls.ietf.org-9;
+ header-match-tls.ietf.org-10; header-match-tls.ietf.org-11;
+ header-match-tls.ietf.org-12; emergency; member-moderation;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+CC: TLS List <tls@ietf.org>
+X-Mailman-Version: 3.3.10
+Precedence: list
+Subject: [TLS] Re: Early IANA allocation for draft-ietf-tls-trust-anchor-ids
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/g1D_NULUmNDC0P0DtReq4BDySxg>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+--000000000000dd0366065df62aa0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+I'm a little bit late for the 30 October 2023 deadline, but I support this,
+unsurprisingly. :-)
+
+On Fri, Oct 16, 2026 at 10:32=E2=80=AFAM Bas Westerbaan <bas=3D
+40cloudflare.com@dmarc.ietf.org> wrote:
+
+> Yes, please.
+>
+> On Fri, Oct 16, 2026 at 3:55=E2=80=AFPM Sean Turner <sean@sn3rd.com> wrot=
+e:
+>
+>> Hi! After a request from and discussions with the authors of
+>> draft-ietf-tls-trust-anchor-ids [1], the chairs would like to determine
+>> whether there is consensus to request an early code point assignment; se=
+e
+>> [2] about the early allocation process. The code point in question is fo=
+r
+>> 'trust_anchors' in the TLS ExtensionType Values registry, see Section 12=
+.1
+>> of the I-D. As noted in [3], implementers have been using a value chosen=
+ at
+>> random and it has been stable since the initial draft. Please let the li=
+st
+>> know by 30 October 2023 if you support this early allocation.
+>>
+>> NOTE: A new registry is defined in Section 12.3 of the I-D, but we canno=
+t
+>> ask for early creation of a registry.
+>>
+>> Cheers,
+>> spt (for the chairs)
+>>
+>> [1] https://datatracker.ietf.org/doc/draft-ietf-tls-trust-anchor-ids/
+>> [2] https://datatracker.ietf.org/doc/rfc7120/
+>> [3]
+>> https://mailarchive.ietf.org/arch/msg/tls/vD37D986i5YtFFvfLfkcte_WSxk/
+>> _______________________________________________
+>> TLS mailing list -- tls@ietf.org
+>> To unsubscribe send an email to tls-leave@ietf.org
+>>
+> _______________________________________________
+> TLS mailing list -- tls@ietf.org
+> To unsubscribe send an email to tls-leave@ietf.org
+>
+
+--000000000000dd0366065df62aa0
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">I&#39;m a little bit late for the 30 October 2023 deadline=
+, but I support this, unsurprisingly. :-)</div><br><div class=3D"gmail_quot=
+e gmail_quote_container"><div dir=3D"ltr" class=3D"gmail_attr">On Fri, Oct =
+16, 2026 at 10:32=E2=80=AFAM Bas Westerbaan &lt;bas=3D<a href=3D"mailto:40c=
+loudflare.com@dmarc.ietf.org">40cloudflare.com@dmarc.ietf.org</a>&gt; wrote=
+:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.=
+8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"lt=
+r">Yes, please.</div><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=
+=3D"gmail_attr">On Fri, Oct 16, 2026 at 3:55=E2=80=AFPM Sean Turner &lt;<a =
+href=3D"mailto:sean@sn3rd.com" target=3D"_blank">sean@sn3rd.com</a>&gt; wro=
+te:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px =
+0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">Hi! After a =
+request from and discussions with the authors of draft-ietf-tls-trust-ancho=
+r-ids [1], the chairs would like to determine whether there is consensus to=
+ request an early code point assignment; see [2] about the early allocation=
+ process. The code point in question is for &#39;trust_anchors&#39; in the =
+TLS ExtensionType Values registry, see Section 12.1 of the I-D. As noted in=
+ [3], implementers have been using a value chosen at random and it has been=
+ stable since the initial draft. Please let the list know by 30 October 202=
+3 if you support this early allocation.<br>
+<br>
+NOTE: A new registry is defined in Section 12.3 of the I-D, but we cannot a=
+sk for early creation of a registry.<br>
+<br>
+Cheers,<br>
+spt (for the chairs)<br>
+<br>
+[1] <a href=3D"https://datatracker.ietf.org/doc/draft-ietf-tls-trust-anchor=
+-ids/" rel=3D"noreferrer" target=3D"_blank">https://datatracker.ietf.org/do=
+c/draft-ietf-tls-trust-anchor-ids/</a><br>
+[2] <a href=3D"https://datatracker.ietf.org/doc/rfc7120/" rel=3D"noreferrer=
+" target=3D"_blank">https://datatracker.ietf.org/doc/rfc7120/</a><br>
+[3] <a href=3D"https://mailarchive.ietf.org/arch/msg/tls/vD37D986i5YtFFvfLf=
+kcte_WSxk/" rel=3D"noreferrer" target=3D"_blank">https://mailarchive.ietf.o=
+rg/arch/msg/tls/vD37D986i5YtFFvfLfkcte_WSxk/</a><br>
+_______________________________________________<br>
+TLS mailing list -- <a href=3D"mailto:tls@ietf.org" target=3D"_blank">tls@i=
+etf.org</a><br>
+To unsubscribe send an email to <a href=3D"mailto:tls-leave@ietf.org" targe=
+t=3D"_blank">tls-leave@ietf.org</a><br>
+</blockquote></div>
+_______________________________________________<br>
+TLS mailing list -- <a href=3D"mailto:tls@ietf.org" target=3D"_blank">tls@i=
+etf.org</a><br>
+To unsubscribe send an email to <a href=3D"mailto:tls-leave@ietf.org" targe=
+t=3D"_blank">tls-leave@ietf.org</a><br>
+</blockquote></div>
+
+--000000000000dd0366065df62aa0--

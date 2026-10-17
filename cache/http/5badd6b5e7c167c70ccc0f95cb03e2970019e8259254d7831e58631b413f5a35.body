@@ -1,0 +1,288 @@
+Return-Path: <sean@sn3rd.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 3E262C16943A
+	for <tls@ietfa.amsl.com>; Thu, 19 Dec 2024 13:24:04 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.105
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.105 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+	DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, RCVD_IN_DNSWL_BLOCKED=0.001,
+	RCVD_IN_ZEN_BLOCKED_OPENDNS=0.001, SPF_HELO_NONE=0.001,
+	SPF_PASS=-0.001, T_SCC_BODY_TEXT_LINE=-0.01, URIBL_BLOCKED=0.001,
+	URIBL_DBL_BLOCKED_OPENDNS=0.001, URIBL_ZEN_BLOCKED_OPENDNS=0.001]
+	autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+	header.d=sn3rd.com
+Received: from mail.ietf.org ([50.223.129.194])
+	by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id aDDWiQf0hOpc for <tls@ietfa.amsl.com>;
+	Thu, 19 Dec 2024 13:24:00 -0800 (PST)
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com
+ [IPv6:2607:f8b0:4864:20::f33])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by ietfa.amsl.com (Postfix) with ESMTPS id 195AEC14F6A8
+	for <tls@ietf.org>; Thu, 19 Dec 2024 13:23:59 -0800 (PST)
+Received: by mail-qv1-xf33.google.com with SMTP id
+ 6a1803df08f44-6d884e8341bso9739246d6.0
+        for <tls@ietf.org>; Thu, 19 Dec 2024 13:23:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sn3rd.com; s=google; t=1734643439; x=1735248239; darn=ietf.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XDsH9oZXcTZ6YQEQMY22k0NUMNYs4iNxFwfXDohmNsY=;
+        b=P+4jJffk3F04AewpMcHDj0YEF1ri6M6AkACatfwuKNLWn3WZZW2SQnXxRQYsqZ/d+B
+         8PTTcM0VGEVBe/+tJqVsWRVC2YfhFXwFo9JWeK4XqVGAoBfB69lCua57w0ofUpgN7ddq
+         vjMjTmOuTuGwkGpi28PsErmdKayhoft6V4Be0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734643439; x=1735248239;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XDsH9oZXcTZ6YQEQMY22k0NUMNYs4iNxFwfXDohmNsY=;
+        b=StD0EmjNSDx0wp5r+LTcAXnyjtExIpEEZsNxFFrl9YKe7IlJGc/KAMKoMHuPu2REgF
+         +2k6ydiD9l2qONmk1c9QAWfQNEfxn0fd+if4RAFZxIf6d+d6vjbF6mnYpAJWH0S5dqbO
+         kuUMiXNuhZM2eKBC/6zJmzjTTOJXfokfAnzzHxXwqPBxudn3dCtP/Kc6hp3EVrLWf76Z
+         iLE8ueZgaHt00mJxed7x6CVNVWXKsPETFsbZRttcgDy2Z6tQiXwlb2b3yMaKPaiFXrMK
+         Wt7tzEBKWGf2px1HE/TBQXd23n/tiB2hrVVPJ4izLDxJnDyIXVsgF+Yn5lpOsCCnD6EY
+         xYOg==
+X-Gm-Message-State: AOJu0YysLeOLgHpD3RmlDky3Cm23p4k6DOHdZnpGOfucx7q8mg1r5WH6
+	MkRnTMXg57sC599+GpeQclf70UOW2dtNyL/AvSExVUFDGtPljUVjU0NkD+Vuz1SRJyv+xJvcoxB
+	Ee5M=
+X-Gm-Gg: ASbGnct/h2NlZKg8XAYQvURWLIuvSYMt2YgErXZdYXN3ub5zcBc2f9zU15qlShNzulu
+	RefHyg7q2Ae97Z0he2xc9H5FHV0pK6yFQNeRwaJbiX8hsNDyQs01o15IPQFI91SE+JbUyMZQPIu
+	aHLEtmrRpcdmGxmNCYFIWNVWjteJVUkAILop2OYAszp11pMUDGsNmSuV1J83qZDN7Cyjcj4kX5Y
+	pwg6Z8wDuj3whW9dPT+B3PnV3l5zzTGgBRJkYh72DKSoOJ3+DnzphBE/RzzNxFsYyA6fHiYqgIA
+	e8OCgIg=
+X-Google-Smtp-Source: 
+ AGHT+IHVbpDGYISxyZEIxSAPp5kRoZQhRnmf/hMHkpSMOnjulD9iHsxHZv0GFMK//U1jyNEpjNQGqg==
+X-Received: by 2002:a05:6214:e6f:b0:6d8:9c92:6555 with SMTP id
+ 6a1803df08f44-6dd2334bce0mr6759836d6.29.1734643438762;
+        Thu, 19 Dec 2024 13:23:58 -0800 (PST)
+Received: from smtpclient.apple ([2600:4040:252a:8d00:6da0:3d27:30fe:c845])
+        by smtp.gmail.com with ESMTPSA id
+ 6a1803df08f44-6dd18113284sm10276846d6.38.2024.12.19.13.23.57
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 19 Dec 2024 13:23:58 -0800 (PST)
+Content-Type: text/plain;
+	charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.15\))
+From: Sean Turner <sean@sn3rd.com>
+In-Reply-To: <20241218022915.45545.qmail@cr.yp.to>
+Date: Thu, 19 Dec 2024 16:23:57 -0500
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <BCB59355-14F3-49A9-AD8A-A5D59F7A1190@sn3rd.com>
+References: <20241218022915.45545.qmail@cr.yp.to>
+To: "D. J. Bernstein" <djb@cr.yp.to>
+X-Mailer: Apple Mail (2.3654.120.0.1.15)
+Message-ID-Hash: HKISRRBYPPRYJ7KA555NEZVFFM6JKHXA
+X-Message-ID-Hash: HKISRRBYPPRYJ7KA555NEZVFFM6JKHXA
+X-MailFrom: sean@sn3rd.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+CC: TLS List <tls@ietf.org>
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Re=3A_PQ_Cipher_Suite_I-Ds=3A_adopt_or_not=3F?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/BJjS_Kc2Eh5Wu-nZZ-Lr53eoHWY>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+Daniel,
+
+Hi! Thanks for the question.
+
+tl;dr: We are trying to gather information about what to do WRT running =
+WG adoption calls; no more, no less.
+
+The part of the procedure we are following is, what I would refer to as, =
+the consensus process. We, as the chairs, need to determine whether =
+there is consensus to do a thing or not. In this case, that thing is to =
+run one or more adoption calls.=20
+
+We provided all that background information because some might not =
+remember all of the context so it provides context from them as well as =
+something for those who do remember to check our recollection. The =
+danger with that, obviously, is that our messages get much longer and =
+prone to misinterpretation. Sorry if we added any confusion by providing =
+that detail. Another point we can offer is that no matter how hard we =
+try to get an email just right, there is always somebody who thinks we =
+wrote it wrong or had some better of writing it; we like to joke that =
+when we mess up 400 of our closest friends let us know.
+
+If you are wondering why now, it is because until recently there had =
+been few requests to adopt any of those drafts. In fact, the WG has been =
+shunning cipher suites I-Ds for years; the notable exception is =
+draft-ietf-tls-tls13-pkcs1, and that only got adopted because the WG =
+decided that putting something back into TLS 1.3 that we took out =
+necessitated adoption. We started thinking about and working on the =
+message that started this thread right after IETF 121, but unfortunately =
+it takes time for us to get our acts in gear.
+
+Part of chairing is gathering input, i.e., trying to read the room. =
+Asking if people are generally okay with adoption calls is one of the =
+tools we can use. And frankly by asking it this way, it is also a signal =
+that maybe we should take a bit of a break as we are rapidly entering =
+the Holiday season. Not super efficient I will grant you, but it is =
+pretty darn practical.
+
+As far as people responding one way and others another, all I can say is =
+people are going to respond how they are going to respond.
+
+As far as the omitting one of I-Ds (draft-tls-westerbaan-mldsa) in the =
+I-Ds we referred to, we can only offer: mea culpa.  Luckily though, =
+people are going to respond how they are going to respond and our =
+mistake was corrected.
+
+Hopefully, this response answers your questions.
+
+Cheers,
+Joe and Sean
+
+NOTE: When we do run adoption calls we ask whether there are objections =
+and why. If you object to an I-D being adopted, that is a time to say =
+why.
+
+> On Dec 17, 2024, at 21:29, D. J. Bernstein <djb@cr.yp.to> wrote:
+>=20
+> Can the WG chairs please clarify which procedure from RFC 2026 (or =
+from
+> RFCs updating RFC 2026) is being followed here?
+>=20
+> I have three reasons for asking for clarification. First: The question
+> in the message that began the thread can easily be read in two ways, =
+and
+> the replies are split in the question they're answering. Specifically:
+>=20
+>    * The message asks an adopt-or-not question in the subject line, =
+but
+>      it then says that the chairs _aren't_ asking this question yet
+>      ("not actually do the calls"), and it instead asks a call-or-not
+>      question ("Is the WG consensus to run four separate adoption =
+calls
+>      for the individual I-Ds").
+>=20
+>    * Some of the replies are answering the adopt-or-not question, at
+>      least for some drafts; other replies focus on the call-or-not
+>      question. For example, "I suggest to call for adoption on
+>      [ecdhe-mlkem, mldsa, composite-mldsa, slhdsa]. Personally, I =
+don't
+>      think all of those should be adopted, but I will share that when
+>      there is an adoption calls" is distinguishing the questions and
+>      explicitly not answering the adopt-or-not question. As another
+>      example, "I only support an adoption call for [ecdhe-mlkem]" is
+>      focusing on the call question; it implies opposition to current
+>      adoption for the other drafts, but doesn't necessarily imply
+>      support for adopting ecdhe-mlkem.
+>=20
+> The way that the starting message mushed these questions together
+> strikes me as a recipe for confusion, on top of the confusion caused =
+by
+> trying to handle four documents in a single thread. (Oh, oops, five. =
+No,
+> wait, seven.) I'm one of the people who would like to see both KEMs =
+and
+> signatures moving ahead, but I'd still like to see separate threads =
+for
+> (1) KEM documents, (2) signature documents, and (3) questions about =
+the
+> KEM-signature overlap area (most importantly the need for hybrids). =
+Each
+> procedure that's official enough to be labeled as a chair action =
+should
+> be in its own clearly labeled thread, to simplify tracking of which
+> comments are on which action.
+>=20
+> Second reason for asking for clarification: It's inefficient to =
+stretch
+> WG decisions into many formal stages, such as "have an adoption call =
+or
+> not?" and then "adopt or not?" and then "RFC or not?". Realistically,
+> this inefficiency ends up encouraging votes ("+1" etc.), which is not
+> how IETF is supposed to work. If there isn't clear authorization for =
+the
+> current procedure, then the procedure shouldn't be happening at all.
+> Evaluating this requires clarity regarding what procedure is =
+happening.
+>=20
+> Decision to adopt as a preliminary procedure before decision to issue =
+an
+> RFC is allowed (and I would say encouraged) in BCP 78 and BCP 79, =
+which
+> update RFC 2026. I don't see an IETF decide-to-call-to-adopt =
+procedure.
+>=20
+> Third: I don't understand why the chairs have started a =
+meta-discussion
+> instead of simply calling for adoption of ecdhe-mlkem (and skipping =
+the
+> other eleven TLS PQ drafts). Previous WG discussions already showed
+> controversy regarding
+>=20
+>    (1) whether to do anything with PQ signatures now and
+>=20
+>    (2) whether to do anything with non-hybrid PQ now.
+>=20
+> The only draft at hand that avoids these controversies is ecdhe-mlkem,
+> and there have already been various participants requesting a prompt
+> move forward with ecdhe-mlkem.
+>=20
+> Content-wise, I'd hope that more discussion can settle things in favor
+> of #1 and against #2, but for now I'd expect the WG chairs to be
+> responding to any request to call for adoption of #1 or #2 by saying
+> that there are unresolved objections. So I'm puzzled to see the WG
+> chairs issuing a call-or-not question regarding those. Meanwhile I'm
+> puzzled to see the WG chairs delaying a call for adoption regarding
+> ecdhe-mlkem.
+>=20
+> Clarifying which RFC 2026 procedure the chairs are using would,
+> presumably, also shed light on the criteria being used.
+>=20
+> Maybe I should reiterate that my security concerns and patent concerns
+> regarding Kyber are _not_ a reason to delay deployment of post-quantum
+> crypto---delay is creating its own security problems. Instead we =
+should
+> be
+>=20
+>    (A) upgrading from ECC to ECC+PQ---so that our efforts to stop
+>        quantum attacks don't make the situation worse in case of
+>        further PQ breaks;
+>=20
+>    (B) within the PQ part, providing alternatives that are outside the
+>        Kyber patent minefield; and
+>=20
+>    (C) within the PQ part, providing alternatives that are less likely
+>        to fail in the first place.
+>=20
+> ecdhe-mlkem already follows A. Providing B would bring the document =
+into
+> compliance with BCP 79's "no mandatory-to-implement security =
+technology
+> can be specified in an IETF specification unless it has no known IPR
+> claims against it or a royalty-free license is available to =
+implementers
+> of the specification". C can be handled in a separate document. So =
+these
+> aren't arguments against adopting ecdhe-mlkem.
+>=20
+> ---D. J. Bernstein
+>=20
+> _______________________________________________
+> TLS mailing list -- tls@ietf.org
+> To unsubscribe send an email to tls-leave@ietf.org
+

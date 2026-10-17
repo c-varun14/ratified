@@ -1,0 +1,219 @@
+Return-Path: <tshort@akamai.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 74990131D22
+ for <tls@ietfa.amsl.com>; Fri, 11 Aug 2017 12:22:59 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.7
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.7 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ DKIM_VALID_AU=-0.1, HTML_MESSAGE=0.001, RCVD_IN_DNSWL_LOW=-0.7,
+ SPF_PASS=-0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=akamai.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id vlHOzyJDC8h0 for <tls@ietfa.amsl.com>;
+ Fri, 11 Aug 2017 12:22:49 -0700 (PDT)
+Received: from mx0a-00190b01.pphosted.com (mx0a-00190b01.pphosted.com
+ [67.231.149.131])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id EA2C11321E6
+ for <tls@ietf.org>; Fri, 11 Aug 2017 12:22:41 -0700 (PDT)
+Received: from pps.filterd (m0122333.ppops.net [127.0.0.1])
+ by mx0a-00190b01.pphosted.com (8.16.0.21/8.16.0.21) with SMTP id
+ v7BJMHfj026589; Fri, 11 Aug 2017 20:22:40 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com;
+ h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ mime-version; s=jan2016.eng;
+ bh=T+XtMPgGZah6Z5Q6zAY+j9DSbd49GS//BHPrrRdYG0g=;
+ b=oqa1If+mVuzdH+ocKmNEMEmedwt1W3r3Qf4Rb3BGPPNJCJU2tVDl/CJlS2K+rmwFAo2h
+ b8OMF2iKzfLZ3PQbkoRuZhE/6BF8rbatoXv6BF0hA7J90qMHi9mlqIT8pTSpRD5S7ehj
+ sa34OSdx26zW01jTURoSOyH+LwN9n51pbsLor8P6guO42My5KjnaLKJbUVGWWuM04HJW
+ F0vmYkJvJ+8VgltVrNuCbGlWmc1ZFBnODkm7yOsVrPc1CDC1Nwmrh2Qz939TjKXoCZA6
+ PDVgfsaC2/vGZ0bqClGCfG8cw729nvG3bVprZKjzl4LaQkOJI/PUbavDgUrNoieT82ya 6A== 
+Received: from prod-mail-ppoint2 (prod-mail-ppoint2.akamai.com [184.51.33.19])
+ by mx0a-00190b01.pphosted.com with ESMTP id 2c806yrw2x-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Fri, 11 Aug 2017 20:22:40 +0100
+Received: from pps.filterd (prod-mail-ppoint2.akamai.com [127.0.0.1])
+ by prod-mail-ppoint2.akamai.com (8.16.0.17/8.16.0.17) with SMTP id
+ v7BJLL2S030578; Fri, 11 Aug 2017 15:22:39 -0400
+Received: from email.msg.corp.akamai.com ([172.27.123.30])
+ by prod-mail-ppoint2.akamai.com with ESMTP id 2c59bv9ejt-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+ Fri, 11 Aug 2017 15:22:39 -0400
+Received: from USMA1EX-DAG1MB5.msg.corp.akamai.com (172.27.123.105) by
+ usma1ex-dag1mb2.msg.corp.akamai.com (172.27.123.102) with Microsoft SMTP
+ Server (TLS) id 15.0.1263.5; Fri, 11 Aug 2017 15:22:38 -0400
+Received: from USMA1EX-DAG1MB5.msg.corp.akamai.com ([172.27.123.105]) by
+ usma1ex-dag1mb5.msg.corp.akamai.com ([172.27.123.105]) with mapi id
+ 15.00.1263.000; Fri, 11 Aug 2017 15:22:38 -0400
+From: "Short, Todd" <tshort@akamai.com>
+To: Eric Rescorla <ekr@rtfm.com>
+CC: Nikos Mavrogiannopoulos <nmav@redhat.com>, "tls@ietf.org" <tls@ietf.org>
+Thread-Topic: [TLS] draft-ietf-tls-tls13-21: TLS 1.3 record padding removal
+ leaks padding size
+Thread-Index: AQHTEqu4UDB35x1gLEG+JKMOxcPabqJ/kuoAgAANtICAAAlUAIAAFEWAgAAM5QCAAAD8gA==
+Date: Fri, 11 Aug 2017 19:22:37 +0000
+Message-ID: <28A2F771-AFC4-494D-944E-FD7EF334BAA9@akamai.com>
+References: <1502460670.3202.8.camel@redhat.com>
+ <CABcZeBOmFTrCEmV20XZe9hO5owdv1SsWaWkZHhQFfpNmfou4VQ@mail.gmail.com>
+ <CADh2w8Trp-7WiVCDzQ6OLiHqE_Fw530bp0gZeRKCJiaGkLfb3w@mail.gmail.com>
+ <CABcZeBNpJ5_03VZot_3hj7KHnJ8609HX-MY62n0+HLXoRg-+=Q@mail.gmail.com>
+ <14329E27-DBCC-4A6F-BB4C-7CFAFD7ADF53@akamai.com>
+ <CABcZeBN7KOZW+nUZcUbvv7pOFFqreQuTiAdBqJ1btoUQ52eC5g@mail.gmail.com>
+In-Reply-To: <CABcZeBN7KOZW+nUZcUbvv7pOFFqreQuTiAdBqJ1btoUQ52eC5g@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [172.19.32.244]
+Content-Type: multipart/alternative;
+ boundary="_000_28A2F771AFC4494D944EFD7EF334BAA9akamaicom_"
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10432:, ,
+ definitions=2017-08-11_07:, , signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0
+ suspectscore=0
+ malwarescore=0 phishscore=0 adultscore=0 bulkscore=0 classifier=spam
+ adjust=0 reason=mlx scancount=1 engine=8.0.1-1706020000
+ definitions=main-1708110303
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10432:, ,
+ definitions=2017-08-11_07:, , signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
+ priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 impostorscore=0 adultscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.0.1-1706020000 definitions=main-1708110303
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/J24zJmJBBB1nLqpb8Q8G0Pnj7mg>
+Subject: Re: [TLS] draft-ietf-tls-tls13-21: TLS 1.3 record padding removal
+ leaks padding size
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Fri, 11 Aug 2017 19:22:59 -0000
+
+--_000_28A2F771AFC4494D944EFD7EF334BAA9akamaicom_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+
+On Aug 11, 2017, at 3:19 PM, Eric Rescorla <ekr@rtfm.com<mailto:ekr@rtfm.co=
+m>> wrote:
+On Fri, Aug 11, 2017 at 11:32 AM, Short, Todd <tshort@akamai.com<mailto:tsh=
+ort@akamai.com>> wrote:
+
+Also as pointed out by Andrei Popov, the application needs to tell TLS how =
+much padding to apply, so either way, the application has to deal with dete=
+rmining the padding length. Why not just make it part of the protocol in th=
+e first place?
+
+The consensus was to provide a generic scheme that applications could use, =
+or not.
+
+-Ekr
+
+
+I was referring to the protocol over TLS, not TLS itself, sorry for the con=
+fusion.
+
+--
+-Todd Short
+// tshort@akamai.com<mailto:tshort@akamai.com>
+// "One if by land, two if by sea, three if by the Internet."
+
+
+--_000_28A2F771AFC4494D944EFD7EF334BAA9akamaicom_
+Content-Type: text/html; charset="us-ascii"
+Content-ID: <EFE4D35344D34E42B605DDB76F429E02@akamai.com>
+Content-Transfer-Encoding: quoted-printable
+
+<html>
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dus-ascii"=
+>
+</head>
+<body style=3D"word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-lin=
+e-break: after-white-space;" class=3D"">
+<br class=3D"">
+<div>
+<blockquote type=3D"cite" class=3D"">
+<div class=3D"">On Aug 11, 2017, at 3:19 PM, Eric Rescorla &lt;<a href=3D"m=
+ailto:ekr@rtfm.com" class=3D"">ekr@rtfm.com</a>&gt; wrote:</div>
+<div class=3D"">
+<div dir=3D"ltr" class=3D"">
+<div class=3D"gmail_extra">
+<div class=3D"gmail_quote">On Fri, Aug 11, 2017 at 11:32 AM, Short, Todd <s=
+pan dir=3D"ltr" class=3D"">
+&lt;<a href=3D"mailto:tshort@akamai.com" target=3D"_blank" class=3D"">tshor=
+t@akamai.com</a>&gt;</span> wrote:<br class=3D"">
+<blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
+x #ccc solid;padding-left:1ex">
+<div style=3D"word-wrap:break-word" class=3D"">
+<div class=3D""><br class=3D"">
+</div>
+<div class=3D"">Also as pointed out by Andrei Popov, the application needs =
+to tell TLS how much padding to apply, so either way, the application has t=
+o deal with determining the padding length. Why not just make it part of th=
+e protocol in the first place?</div>
+</div>
+</blockquote>
+<div class=3D""><br class=3D"">
+</div>
+<div class=3D"">The consensus was to provide a generic scheme that applicat=
+ions could use, or not.</div>
+<div class=3D""><br class=3D"">
+</div>
+<div class=3D"">-Ekr</div>
+<div class=3D"">&nbsp;</div>
+</div>
+</div>
+</div>
+</div>
+</blockquote>
+<br class=3D"">
+</div>
+<div>I was referring to the protocol over TLS, not TLS itself, sorry for th=
+e confusion.</div>
+<div class=3D""><br class=3D"webkit-block-placeholder">
+</div>
+<div class=3D"">
+<div style=3D"word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line=
+-break: after-white-space;" class=3D"">
+<div style=3D"word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line=
+-break: after-white-space;" class=3D"">
+<div class=3D"">--</div>
+<div class=3D"">-Todd Short</div>
+<div class=3D"">// <a href=3D"mailto:tshort@akamai.com" class=3D"">tshort@a=
+kamai.com</a></div>
+<div class=3D"">// &quot;One if by land, two if by sea, three if by the Int=
+ernet.&quot;</div>
+</div>
+</div>
+</div>
+<br class=3D"">
+<div>
+<blockquote type=3D"cite" class=3D""></blockquote>
+</div>
+</body>
+</html>
+
+--_000_28A2F771AFC4494D944EFD7EF334BAA9akamaicom_--
+

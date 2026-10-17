@@ -1,0 +1,359 @@
+Return-Path: <msj@nthpermutation.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 92AC8120026
+ for <tls@ietfa.amsl.com>; Mon, 20 May 2019 13:58:04 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.898
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.898 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_NONE=-0.0001, URIBL_BLOCKED=0.001]
+ autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=nthpermutation-com.20150623.gappssmtp.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id htcaeWsDyCU0 for <tls@ietfa.amsl.com>;
+ Mon, 20 May 2019 13:58:01 -0700 (PDT)
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com
+ [IPv6:2607:f8b0:4864:20::82d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 9A070120072
+ for <tls@ietf.org>; Mon, 20 May 2019 13:58:01 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id k24so17990518qtq.7
+ for <tls@ietf.org>; Mon, 20 May 2019 13:58:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=nthpermutation-com.20150623.gappssmtp.com; s=20150623;
+ h=subject:to:references:from:message-id:date:user-agent:mime-version
+ :in-reply-to:content-language;
+ bh=DlF+K+KyODEKlxrKbyiHzZ2b1NlGyGUg07C4GdnmY6Q=;
+ b=IJPKjCPbvv6M/1hufxVb5EUB2y9j2BnqMVggexfeYR8Lo7HQSD5qOKneS8Omz6cv7/
+ B5DErPWMVdViSRGmg0NBNXT1e5WWDUGXQm48qpUserjaVjdTjSdSq910nz4YzZ2J1VuO
+ gAAR1zPlBYEJ20H+NuctwrmroBzdtejbi1GMw1hsawAxe0837QhMciIc7Drvj6J15obi
+ xOWFK2snDEVTQnXVPYLH0mzDKHWuXiFAQGHqNUvsjLuQBW75LGnnUAagm+LbPCISGMhh
+ mFm5huY0kD9efkpTu5iv7Ux6CYt9KStc8aQD+zndHg0e0B5alzzcZyUawm8gensMb8aX
+ RK2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language;
+ bh=DlF+K+KyODEKlxrKbyiHzZ2b1NlGyGUg07C4GdnmY6Q=;
+ b=qLgoM9cqgzfIAf13PgBwpqj4ZMZf65Rw2MOs5GSDfW7LmNoX6M4qyq9kjhH5zV0C4g
+ 8LHY1JWDAEhsZWz57AFjCc7WZxKRcoZC/dtn6gkwZVci3RlbOqkX7Qs4nXJ4jxuIT9M9
+ qMWjuHpMnKviXMMQeh/v41+BLJjazZ0m5TNdAsUtTdNJ9Rtr1waaHuJLokZzde5xhNek
+ 05n1NE0Eku0i8CRg3VTP6m9UQnQLCqfNZDXknbqLhGF955YSDGmbCdDbymtd3tHdsvOj
+ URqEtEIlEcSVFzNLN3QG99uzH1EgpTrrILSrP4N7FJpGgwRBsH9GyG9e10jcqJpCH/2q
+ O87g==
+X-Gm-Message-State: APjAAAXQNd2FIb9SyQLpcGre3dtRz3oDuu8HCzva1VZ0MsWLtcXL5DiH
+ HdKI/Tm6QSdMDgfJ6ZEW2KqwwF08ia0=
+X-Google-Smtp-Source: APXvYqy5Ww0ORmVj1Ccu06Gc8APBVU+3O67vXwD9YYO4sv1bkYp/sNRk2qp5KK7Qdk6YClLt4sr94Q==
+X-Received: by 2002:a0c:9ac8:: with SMTP id k8mr61733998qvf.132.1558385880200; 
+ Mon, 20 May 2019 13:58:00 -0700 (PDT)
+Received: from ?IPv6:2601:152:4400:437c:5d1b:33bc:c6d:abc3?
+ ([2601:152:4400:437c:5d1b:33bc:c6d:abc3])
+ by smtp.gmail.com with ESMTPSA id n190sm8480616qkb.83.2019.05.20.13.57.59
+ for <tls@ietf.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Mon, 20 May 2019 13:57:59 -0700 (PDT)
+To: tls@ietf.org
+References: <CAOgPGoBA8KykyHmLxqSEp51jyXO673Wb==O9KVx+U23k3h1=Tg@mail.gmail.com>
+ <CAOgPGoDArfcX09bXVT58VgsyXspG76Cm9TNaBUmGgaqUB=ULUA@mail.gmail.com>
+ <623BD5EA-1D76-494C-B87D-55FD1156EBD6@vigilsec.com>
+ <71EB9B8A-C410-4A35-A0FE-3E2BE89E7C65@ll.mit.edu>
+From: Michael StJohns <msj@nthpermutation.com>
+Message-ID: <a58e25b3-dda2-007d-23e5-45441bce0d9b@nthpermutation.com>
+Date: Mon, 20 May 2019 16:57:56 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
+MIME-Version: 1.0
+In-Reply-To: <71EB9B8A-C410-4A35-A0FE-3E2BE89E7C65@ll.mit.edu>
+Content-Type: multipart/alternative;
+ boundary="------------3C815B7118BA21657640FFE4"
+Content-Language: en-US
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/2_rLNiLKPqBAMv5ltnO7svCFrYU>
+Subject: Re: [TLS] WGLC for draft-ietf-tls-tls13-cert-with-extern-psk
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Mon, 20 May 2019 20:58:05 -0000
+
+This is a multi-part message in MIME format.
+--------------3C815B7118BA21657640FFE4
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+
+On 5/20/2019 3:41 PM, Blumenthal, Uri - 0553 - MITLL wrote:
+>
+> I reviewed this draft (“browsed through” would be a more honest 
+> statement). I didn’t spot an obvious problem with it.
+>
+> One question that I have after reading it: I understand why one wants 
+> to implement this extension, but I don’t see how the two endpoints 
+> would arrive at that external PSK.
+>
+Sadly - we're back to the 1980's in terms of key management. The obvious 
+answers are a) they meet to exchange keys, b) they're given a key 
+through a KDC, c) they get them in the mail. (and I'm really not kidding 
+about (c))
+
+Mike
+
+
+> *From: *TLS <tls-bounces@ietf.org> on behalf of Russ Housley 
+> <housley@vigilsec.com>
+> *Date: *Monday, May 20, 2019 at 3:21 PM
+> *To: *Joe Salowey <joe@salowey.net>
+> *Cc: *IETF TLS <tls@ietf.org>
+> *Subject: *Re: [TLS] WGLC for draft-ietf-tls-tls13-cert-with-extern-psk
+>
+> TLS 1.3 Extension for Certificate-based Authentication with an 
+> External PSK ensures the US Government has a quantum-resistant option 
+> for TLS in the interim years until post-quantum algorithms emerge from 
+> the NIST process. For this reason, there is an intent to specify this 
+> extension in future procurements.
+>
+> Russ
+>
+>
+>
+>     On May 15, 2019, at 9:20 AM, Joseph Salowey <joe@salowey.net
+>     <mailto:joe@salowey.net>> wrote:
+>
+>     The last call has come and gone without any comment.  Please
+>     indicate if you have reviewed the draft even if you do not have
+>     issues to raise so the chairs can see who has reviewed it.  Also
+>     indicate if you have any plans to implement the draft.
+>
+>     On Tue, Apr 9, 2019 at 8:51 PM Joseph Salowey <joe@salowey.net
+>     <mailto:joe@salowey.net>> wrote:
+>
+>         This is the working group last call for the "TLS 1.3 Extension
+>         for Certificate-based Authentication with an External
+>         Pre-Shared Key” draft available at
+>         https://datatracker.ietf.org/doc/draft-ietf-tls-tls13-cert-with-extern-psk/.
+>         Please review the document and send your comments to the list
+>         by 2359 UTC on 23 April 2019.
+>
+>         Thanks,
+>         Chris, Joe, and Sean
+>
+>
+>
+>
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+
+
+
+--------------3C815B7118BA21657640FFE4
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+  <body text="#000000" bgcolor="#FFFFFF">
+    <div class="moz-cite-prefix">On 5/20/2019 3:41 PM, Blumenthal, Uri -
+      0553 - MITLL wrote:<br>
+    </div>
+    <blockquote type="cite"
+      cite="mid:71EB9B8A-C410-4A35-A0FE-3E2BE89E7C65@ll.mit.edu">
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      <meta name="Generator" content="Microsoft Word 15 (filtered
+        medium)">
+      <style><!--
+/* Font Definitions */
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{mso-style-priority:99;
+	color:purple;
+	text-decoration:underline;}
+p.msonormal0, li.msonormal0, div.msonormal0
+	{mso-style-name:msonormal;
+	mso-margin-top-alt:auto;
+	margin-right:0in;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+span.EmailStyle18
+	{mso-style-type:personal-reply;
+	font-family:"Calibri",sans-serif;
+	color:windowtext;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	font-size:10.0pt;}
+@page WordSection1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.0in 1.0in 1.0in;}
+div.WordSection1
+	{page:WordSection1;}
+--></style>
+      <div class="WordSection1">
+        <p class="MsoNormal"><span style="font-size:12.0pt">I reviewed
+            this draft (“browsed through” would be a more honest
+            statement). I didn’t spot an obvious problem with it.<o:p></o:p></span></p>
+        <p class="MsoNormal"><span style="font-size:12.0pt"><o:p> </o:p></span></p>
+        <p class="MsoNormal"><span style="font-size:12.0pt">One question
+            that I have after reading it: I understand why one wants to
+            implement this extension, but I don’t see how the two
+            endpoints would arrive at that external PSK.
+          </span></p>
+      </div>
+    </blockquote>
+    <p>Sadly - we're back to the 1980's in terms of key management.  
+      The obvious answers are a) they meet to exchange keys, b) they're
+      given a key through a KDC, c) they get them in the mail. (and I'm
+      really not kidding about (c))<br>
+    </p>
+    <p>Mike</p>
+    <p><br>
+    </p>
+    <blockquote type="cite"
+      cite="mid:71EB9B8A-C410-4A35-A0FE-3E2BE89E7C65@ll.mit.edu">
+      <div class="WordSection1">
+        <p class="MsoNormal"><span style="font-size:12.0pt"><o:p></o:p></span></p>
+        <p class="MsoNormal"><span style="font-size:12.0pt"><o:p> </o:p></span></p>
+        <div style="border:none;border-top:solid #B5C4DF
+          1.0pt;padding:3.0pt 0in 0in 0in">
+          <p class="MsoNormal" style="margin-left:.5in"><b><span
+                style="font-size:12.0pt;color:black">From:
+              </span></b><span style="font-size:12.0pt;color:black">TLS
+              <a class="moz-txt-link-rfc2396E" href="mailto:tls-bounces@ietf.org">&lt;tls-bounces@ietf.org&gt;</a> on behalf of Russ Housley
+              <a class="moz-txt-link-rfc2396E" href="mailto:housley@vigilsec.com">&lt;housley@vigilsec.com&gt;</a><br>
+              <b>Date: </b>Monday, May 20, 2019 at 3:21 PM<br>
+              <b>To: </b>Joe Salowey <a class="moz-txt-link-rfc2396E" href="mailto:joe@salowey.net">&lt;joe@salowey.net&gt;</a><br>
+              <b>Cc: </b>IETF TLS <a class="moz-txt-link-rfc2396E" href="mailto:tls@ietf.org">&lt;tls@ietf.org&gt;</a><br>
+              <b>Subject: </b>Re: [TLS] WGLC for
+              draft-ietf-tls-tls13-cert-with-extern-psk<o:p></o:p></span></p>
+        </div>
+        <div>
+          <p class="MsoNormal" style="margin-left:.5in"><o:p> </o:p></p>
+        </div>
+        <div>
+          <p class="MsoNormal" style="margin-left:.5in">TLS 1.3
+            Extension for Certificate-based Authentication with an
+            External PSK ensures the US Government has a
+            quantum-resistant option for TLS in the interim years until
+            post-quantum algorithms emerge from the NIST process. For
+            this reason, there is an intent to specify this extension in
+            future procurements.<o:p></o:p></p>
+        </div>
+        <div>
+          <p class="MsoNormal" style="margin-left:.5in"><o:p> </o:p></p>
+        </div>
+        <div>
+          <p class="MsoNormal" style="margin-left:.5in">Russ<o:p></o:p></p>
+        </div>
+        <div>
+          <p class="MsoNormal" style="margin-left:.5in"><o:p> </o:p></p>
+        </div>
+        <div>
+          <p class="MsoNormal" style="margin-left:.5in"><br>
+            <br>
+            <o:p></o:p></p>
+          <blockquote style="margin-top:5.0pt;margin-bottom:5.0pt">
+            <div>
+              <p class="MsoNormal" style="margin-left:.5in">On May 15,
+                2019, at 9:20 AM, Joseph Salowey &lt;<a
+                  href="mailto:joe@salowey.net" moz-do-not-send="true">joe@salowey.net</a>&gt;
+                wrote:<o:p></o:p></p>
+            </div>
+            <p class="MsoNormal" style="margin-left:.5in"><o:p> </o:p></p>
+            <div>
+              <div>
+                <p class="MsoNormal" style="margin-left:.5in">The last
+                  call has come and gone without any comment.  Please
+                  indicate if you have reviewed the draft even if you do
+                  not have issues to raise so the chairs can see who has
+                  reviewed it.  Also indicate if you have any plans to
+                  implement the draft. <o:p></o:p></p>
+              </div>
+              <p class="MsoNormal" style="margin-left:.5in"><o:p> </o:p></p>
+              <div>
+                <div>
+                  <p class="MsoNormal" style="margin-left:.5in">On Tue,
+                    Apr 9, 2019 at 8:51 PM Joseph Salowey &lt;<a
+                      href="mailto:joe@salowey.net"
+                      moz-do-not-send="true">joe@salowey.net</a>&gt;
+                    wrote:<o:p></o:p></p>
+                </div>
+                <blockquote style="border:none;border-left:solid #CCCCCC
+                  1.0pt;padding:0in 0in 0in
+                  6.0pt;margin-left:4.8pt;margin-right:0in">
+                  <div>
+                    <p class="MsoNormal" style="margin-left:.5in"><span
+                        style="font-family:&quot;Arial&quot;,sans-serif">This
+                        is the working group last call for the "TLS 1.3
+                        Extension for Certificate-based Authentication
+                        with an External Pre-Shared Key” draft available
+                        at <a
+href="https://datatracker.ietf.org/doc/draft-ietf-tls-tls13-cert-with-extern-psk/"
+                          target="_blank" moz-do-not-send="true">https://datatracker.ietf.org/doc/draft-ietf-tls-tls13-cert-with-extern-psk/</a>.
+                        Please review the document and send your
+                        comments to the list by 2359 UTC on 23 April
+                        2019.</span><o:p></o:p></p>
+                    <div>
+                      <p class="MsoNormal" style="margin-left:.5in"><o:p> </o:p></p>
+                    </div>
+                    <div>
+                      <p class="MsoNormal" style="margin-left:.5in"><span
+style="font-family:&quot;Arial&quot;,sans-serif">Thanks,<br>
+                          Chris, Joe, and Sean</span><o:p></o:p></p>
+                    </div>
+                  </div>
+                </blockquote>
+              </div>
+            </div>
+          </blockquote>
+        </div>
+        <p class="MsoNormal" style="margin-left:.5in"><br>
+          <br>
+          <o:p></o:p></p>
+      </div>
+      <br>
+      <fieldset class="mimeAttachmentHeader"></fieldset>
+      <pre class="moz-quote-pre" wrap="">_______________________________________________
+TLS mailing list
+<a class="moz-txt-link-abbreviated" href="mailto:TLS@ietf.org">TLS@ietf.org</a>
+<a class="moz-txt-link-freetext" href="https://www.ietf.org/mailman/listinfo/tls">https://www.ietf.org/mailman/listinfo/tls</a>
+</pre>
+    </blockquote>
+    <p><br>
+    </p>
+  </body>
+</html>
+
+--------------3C815B7118BA21657640FFE4--
+

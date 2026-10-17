@@ -1,0 +1,154 @@
+Return-Path: <hkario@redhat.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id D4AC11321C4
+ for <tls@ietfa.amsl.com>; Tue, 15 Aug 2017 06:32:09 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -6.9
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.9 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, RCVD_IN_DNSWL_HI=-5, SPF_PASS=-0.001,
+ URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id ujK2-46NI1ZF for <tls@ietfa.amsl.com>;
+ Tue, 15 Aug 2017 06:32:07 -0700 (PDT)
+Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 990C41321BE
+ for <tls@ietf.org>; Tue, 15 Aug 2017 06:32:07 -0700 (PDT)
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com
+ [10.5.11.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mx1.redhat.com (Postfix) with ESMTPS id E2660C29B5F1
+ for <tls@ietf.org>; Tue, 15 Aug 2017 13:32:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mx1.redhat.com E2660C29B5F1
+Authentication-Results: ext-mx07.extmail.prod.ext.phx2.redhat.com;
+ dmarc=none (p=none dis=none) header.from=redhat.com
+Authentication-Results: ext-mx07.extmail.prod.ext.phx2.redhat.com;
+ spf=fail smtp.mailfrom=hkario@redhat.com
+Received: from pintsize.usersys.redhat.com (unknown [10.43.21.223])
+ by smtp.corp.redhat.com (Postfix) with ESMTPS id 2B7B161F2D;
+ Tue, 15 Aug 2017 13:32:03 +0000 (UTC)
+From: Hubert Kario <hkario@redhat.com>
+To: tls@ietf.org
+Date: Tue, 15 Aug 2017 15:31:56 +0200
+Message-ID: <1853204.q6hYlzKLln@pintsize.usersys.redhat.com>
+In-Reply-To: <1502460670.3202.8.camel@redhat.com>
+References: <1502460670.3202.8.camel@redhat.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="nextPart3168534.Jfy5HMcmGh";
+ micalg="pgp-sha512"; protocol="application/pgp-signature"
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16
+ (mx1.redhat.com [10.5.110.31]); Tue, 15 Aug 2017 13:32:07 +0000 (UTC)
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/6ScHguxa1KsFtEVIzS2S2QTMCZY>
+Subject: Re: [TLS] draft-ietf-tls-tls13-21: TLS 1.3 record padding removal
+ leaks padding size
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Tue, 15 Aug 2017 13:32:10 -0000
+
+--nextPart3168534.Jfy5HMcmGh
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
+
+I've created a Pull Request that introduces requirement for constant time=20
+processing of padding and an example on how to do it:
+
+https://github.com/tlswg/tls13-spec/pull/1073
+
+On Friday, 11 August 2017 16:11:10 CEST Nikos Mavrogiannopoulos wrote:
+> Imagine the following scenario, where the server and client have this
+> repeated communication N times per day:
+>=20
+> client     server
+>     --X-->
+>     <--Y--
+>=20
+>=20
+> the client puts in X a message A of 1 byte or B of 1024 bytes, and pads
+> it to the maximum size of TLS record. The server replies with the
+> message "ok" (same every time), padded to the maximum size just after
+> it reads X.
+>=20
+> However, TLS 1.3 detects the message size by iterating through all the
+> padding bytes, and thus there is a timing leak observed by the time
+> difference between receiving X and sending Y. Thus as an adversary I
+> could take enough measurements and be able to distinguish between X
+> having the value A or B.
+>=20
+> While I'd expect these iterations to be unmeasurable in desktop or
+> server hardware, I am not sure about the situation in low-end IoT
+> hardware. Is the design choice for having the padding removal depending
+> on padding length intentional?
+>=20
+> There is mentioning of possible timing channels in:
+> https://tools.ietf.org/html/draft-ietf-tls-tls13-21#appendix-E.3
+> However I don't quite understand how is this section intended to be
+> read. The sentence for example: "Because the padding is encrypted
+> alongside the actual content, an attacker cannot directly determine the
+> length of the padding, but may be able to measure it indirectly by the
+> use of timing channels exposed during record processing", what is its
+> intention? Is it to acknowledge the above timing leak?
+>=20
+> Shouldn't instead be guidance in section 'Implementation Pitfalls' on
+> how to remove padding in a way that there are no timing leaks? (the
+> timing leak here is not in crypto algorithms, but TLS itself). Ideally
+> TLS 1.3 itself shouldn't use data-size depending calculations itself
+> such as the one described here.
+>=20
+> regards,
+> Nikos
+>=20
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+
+
+=2D-=20
+Regards,
+Hubert Kario
+Senior Quality Engineer, QE BaseOS Security team
+Web: www.cz.redhat.com
+Red Hat Czech s.r.o., Purky=C5=88ova 115, 612 00  Brno, Czech Republic
+--nextPart3168534.Jfy5HMcmGh
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAABCgAGBQJZkvfMAAoJEJKo0bgB0vX1yBYP/RTFCMVQBXC5rgTEj/9/eeUW
+ozCJcZyezKGXtCytZueZg/NlxfS1kVmYu85rPkjDyauiPmsnJOwTn/v28/FM2V6/
+vcCYWxLzSS835h9vKhEj4zpvzf2jwWvlrF+/0UUHAC0CATSRcaU6oCXs6D17bhJW
+uKhLFAXHt8z182SdmOLOjngnNEy4Os2aIMyVmzlu3AWnDVRqcCl3PMoNx7jVtpnQ
+BL2pYXHdRP1X8pxdSyRMauTLcnG1CQxGf+KZsmMbNkr5hfJmNzOoFpNazkZg5/fY
+8yBKqse13hZUJGbGddbXoxD7iQTf7YHVnPEsAIeSBr1GDxZOaiZzarWPEp2PSFAh
+WL3DLJ0vvN8GAWCLhfy7SqR7x2fNLZj3/Yfifp43RkU2dKXExkp/qea5qXyiXwSl
+SilAkww14fyAYGoPnl2wM4Ilq/5y039Fua7A1tOdkvUzfyilA+1ItOQjRvDsrx9+
+TTkCGFXn80Vn1dDmNduGjFJQBPYhbBIGWVpXC8/fpd8qOcM7slAlQT5PZHYCFX0k
+bR0wmTBoXzykVi3rWk/rrb/9306izqufagc8XXYQQaGugHWKRDLJwKtBWN0rbDJP
+GBN417vuQa/EYwThfx0XvUXVvdA2Cui0IuaYmSjG2a6XMy7awHNG3nFPND4ZNqLp
+yCoIbUHDcabcIhOdqZh/
+=L8eq
+-----END PGP SIGNATURE-----
+
+--nextPart3168534.Jfy5HMcmGh--
+

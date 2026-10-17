@@ -1,0 +1,521 @@
+Return-Path: <ekr@rtfm.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 14FC91323C8
+ for <tls@ietfa.amsl.com>; Fri, 11 Aug 2017 12:19:50 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -0.61
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.61 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ HTML_MESSAGE=0.001, HTTPS_HTTP_MISMATCH=1.989, RCVD_IN_DNSWL_LOW=-0.7]
+ autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=rtfm-com.20150623.gappssmtp.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id xovefu9rvMY7 for <tls@ietfa.amsl.com>;
+ Fri, 11 Aug 2017 12:19:47 -0700 (PDT)
+Received: from mail-yw0-x236.google.com (mail-yw0-x236.google.com
+ [IPv6:2607:f8b0:4002:c05::236])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 8E55A1323A4
+ for <tls@ietf.org>; Fri, 11 Aug 2017 12:19:47 -0700 (PDT)
+Received: by mail-yw0-x236.google.com with SMTP id s143so27869888ywg.1
+ for <tls@ietf.org>; Fri, 11 Aug 2017 12:19:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=rtfm-com.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+ :cc; bh=6kcwH5rPal0rQ5fW+JdUVkSc1q5K1fYWlbqgECMoUSU=;
+ b=TKWBgsyM2dgp4agQBB/Kio9GZC3XGV1W8qoasRJEWxIsQrFj4VYrrfEUcZEmt4Or4E
+ D0gKUjp5kLulgMfEfV8SFfYzV6hH3DA1kZNCSxpZKz4bIwY/LvYYJGvrRdTC47bajJ2v
+ UtCZ1BsZZVTycXzxAn2DTEKAHo3OM/M2r3jkMy6tqJFrACWrCxVkjV5V859if2MFIb/v
+ iWUJPSileWl/oyL/385oPgN9TPPQGTHpkwL4RN3yj+65O6Q1N0DPOaDWDTvvP2wSwLen
+ UhrXu9ecHfyGjR4tn8YHE7S9e5k8hDW52mQpfpD2BpyaTcDsbwaopuybT7rrtUACDxp2
+ DCVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+ :message-id:subject:to:cc;
+ bh=6kcwH5rPal0rQ5fW+JdUVkSc1q5K1fYWlbqgECMoUSU=;
+ b=twCSRZm2uEkRD4OFUFk8PKvHG2vZmsX2R1GeZ2ivNwzjmPQR364jZjSJfVu6I5s0AS
+ dRm+h5qkYCfFAThKudT0QaSiA6XHsm2KJQgOxk5ZYwkSBVg6s5zojLNlyq1XGK/+ROHT
+ dVN4NIOULVwAH1e9KP50aQpJ3D+xtdznTy3xRGTEjHu7x4t7L3rAMewvUaleuwJz7nNy
+ RrgfuUyUJ9ax8vKe2oNaSQ9y8MwJoLmgvN8IEiZft0bCYuFp4j4vddQB+tuDsEd5ChBz
+ jb0oc4z/09EwfH+wuzscYwDjESYsh1OOwz6JeoDVerz7k+VEgzAEB6eAZJK93s2izN6G
+ N8oQ==
+X-Gm-Message-State: AHYfb5h69pA+bjHRcTRm6HXAT6fuevl0EDJojJtF1bHaWBGGlShf8G0M
+ AjHXDlwDuDDLfUPfNMExk3KpatlNV6gD
+X-Received: by 10.37.181.25 with SMTP id p25mr12762096ybj.249.1502479186798;
+ Fri, 11 Aug 2017 12:19:46 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 10.13.218.130 with HTTP; Fri, 11 Aug 2017 12:19:06 -0700 (PDT)
+In-Reply-To: <14329E27-DBCC-4A6F-BB4C-7CFAFD7ADF53@akamai.com>
+References: <1502460670.3202.8.camel@redhat.com>
+ <CABcZeBOmFTrCEmV20XZe9hO5owdv1SsWaWkZHhQFfpNmfou4VQ@mail.gmail.com>
+ <CADh2w8Trp-7WiVCDzQ6OLiHqE_Fw530bp0gZeRKCJiaGkLfb3w@mail.gmail.com>
+ <CABcZeBNpJ5_03VZot_3hj7KHnJ8609HX-MY62n0+HLXoRg-+=Q@mail.gmail.com>
+ <14329E27-DBCC-4A6F-BB4C-7CFAFD7ADF53@akamai.com>
+From: Eric Rescorla <ekr@rtfm.com>
+Date: Fri, 11 Aug 2017 12:19:06 -0700
+Message-ID: <CABcZeBN7KOZW+nUZcUbvv7pOFFqreQuTiAdBqJ1btoUQ52eC5g@mail.gmail.com>
+To: "Short, Todd" <tshort@akamai.com>
+Cc: Nikos Mavrogiannopoulos <nmav@redhat.com>, "tls@ietf.org" <tls@ietf.org>
+Content-Type: multipart/alternative; boundary="f403045e6ed0367b0b05567f32c8"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/a4Lxw97VqrmJ76S5uZFHOf2RKzo>
+Subject: Re: [TLS] draft-ietf-tls-tls13-21: TLS 1.3 record padding removal
+ leaks padding size
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Fri, 11 Aug 2017 19:19:50 -0000
+
+--f403045e6ed0367b0b05567f32c8
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Aug 11, 2017 at 11:32 AM, Short, Todd <tshort@akamai.com> wrote:
+
+> If the plaintext length indicates a message type, then this could lead to
+> the issue the original query posted. In that an observer might know what
+> message type was passed. TLS padding is supposed to prevent this (but it
+> doesn=E2=80=99t necessarily).
+>
+> However, I argue that having TLS do significant padding for a protocol is
+> bad design for that protocol. It=E2=80=99s one thing if it=E2=80=99s a fe=
+w padding bytes,
+> but the example given was 1023 bytes of padding.
+>
+> Also as pointed out by Andrei Popov, the application needs to tell TLS ho=
+w
+> much padding to apply, so either way, the application has to deal with
+> determining the padding length. Why not just make it part of the protocol
+> in the first place?
+>
+
+The consensus was to provide a generic scheme that applications could use,
+or not.
+
+-Ekr
+
+
+>
+> OpenSSL has a callback scheme, and a block-based scheme for determining
+> the amount of padding. Either way, the application is involved.
+>
+> But my final point is that we are ignoring the amount of non-TLS
+> processing that must be done on various message types (before the respons=
+e
+> is sent), and THAT might be even more of a giveaway than the minuscule
+> timing difference due to counting padding in TLS.
+>
+> --
+> -Todd Short
+> // tshort@akamai.com
+> // "One if by land, two if by sea, three if by the Internet."
+>
+> On Aug 11, 2017, at 1:20 PM, Eric Rescorla <ekr@rtfm.com> wrote:
+>
+>
+>
+> On Fri, Aug 11, 2017 at 9:47 AM, Nikos Mavrogiannopoulos <nmav@redhat.com=
+>
+>  wrote:
+>
+>> On Fri, Aug 11, 2017 at 5:57 PM, Eric Rescorla <ekr@rtfm.com> wrote:
+>>
+>>>
+>>> On Fri, Aug 11, 2017 at 7:11 AM, Nikos Mavrogiannopoulos <nmav@
+>>> redhat.com> wrote:
+>>>
+>>>> Imagine the following scenario, where the server and client have this
+>>>> repeated communication N times per day:
+>>>>
+>>>> client     server
+>>>>     --X-->
+>>>>     <--Y--
+>>>>
+>>>>
+>>>> the client puts in X a message A of 1 byte or B of 1024 bytes, and pad=
+s
+>>>> it to the maximum size of TLS record. The server replies with the
+>>>> message "ok" (same every time), padded to the maximum size just after
+>>>> it reads X.
+>>>>
+>>>> However, TLS 1.3 detects the message size by iterating through all the
+>>>> padding bytes, and thus there is a timing leak observed by the time
+>>>> difference between receiving X and sending Y. Thus as an adversary I
+>>>> could take enough measurements and be able to distinguish between X
+>>>> having the value A or B.
+>>>>
+>>>> While I'd expect these iterations to be unmeasurable in desktop or
+>>>> server hardware, I am not sure about the situation in low-end IoT
+>>>> hardware. Is the design choice for having the padding removal dependin=
+g
+>>>> on padding length intentional?
+>>>
+>>>
+>>> Yes, we're aware of this, and it's an intentional design choice. The
+>>> reasoning
+>>> was that once you have the padding removed, you'll need to operate
+>>> on/copy
+>>> the unpadded content somewhere, and that's timing dependent anyway.
+>>>
+>>
+>> That is certainly an incorrect assumption. gnutls for example provides a
+>> zero-copy API, and I guess it is not the only implementation to have tha=
+t.
+>>
+>
+> And then the next thing that will happen is that the application will rea=
+d
+> the data, which is length-dependent. The problem is that the plaintext is
+> variable length.
+>
+>
+> There is mentioning of possible timing channels in:
+>>>> https://tools.ietf.org/html/draft-ietf-tls-tls13-21#appendix-E.3
+>>>> <https://urldefense.proofpoint.com/v2/url?u=3Dhttps-3A__tools.ietf.org=
+_html_draft-2Dietf-2Dtls-2Dtls13-2D21-23appendix-2DE.3&d=3DDwMFaQ&c=3D96ZbZ=
+ZcaMF4w0F4jpN6LZg&r=3DQBEcQsqoUDdk1Q26CzlzNPPUkKYWIh1LYsiHAwmtRik&m=3DXJYxN=
+2Gf0rNXPl3yadis8utHDuyRetUCeYdF-OmwAcQ&s=3DCJUfP5OPl4Uy3Igpm9hvAvuLiJlWdRLx=
+SnagqfNZEZM&e=3D>
+>>>> However I don't quite understand how is this section intended to be
+>>>> read. The sentence for example: "Because the padding is encrypted
+>>>> alongside the actual content, an attacker cannot directly determine th=
+e
+>>>> length of the padding, but may be able to measure it indirectly by the
+>>>> use of timing channels exposed during record processing", what is its
+>>>> intention? Is it to acknowledge the above timing leak?
+>>>>
+>>>
+>>> Yes.
+>>>
+>>
+>> I am not sure if that text is sufficient to cover that issue. It seems a=
+s
+>> if the cbc timing attack is re-introduced here and pushing the fix to
+>> implementers. It may be better no to provide padding functionality with
+>> this "feature", as unfortunately it will be used by applications.
+>>
+>
+> I don't believe that this is analysis is correct. This timing channel onl=
+y
+> applies to the data after message integrity has been established (i.e.,
+> after AEAD processing), which is different from the situation in Lucky 13=
+.
+> It seems like what leaks here is the length of the plaintext, which is al=
+so
+> what would be leaked if we simply did not have padding.
+>
+> -Ekr
+>
+>
+>> regards,
+>> Nikos
+>>
+>>
+> _______________________________________________
+> TLS mailing list
+> TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+>
+>
+>
+
+--f403045e6ed0367b0b05567f32c8
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><br><div class=3D"gmail_extra"><br><div class=3D"gmail_quo=
+te">On Fri, Aug 11, 2017 at 11:32 AM, Short, Todd <span dir=3D"ltr">&lt;<a =
+href=3D"mailto:tshort@akamai.com" target=3D"_blank">tshort@akamai.com</a>&g=
+t;</span> wrote:<br><blockquote class=3D"gmail_quote" style=3D"margin:0 0 0=
+ .8ex;border-left:1px #ccc solid;padding-left:1ex">
+
+
+
+<div style=3D"word-wrap:break-word">
+If the plaintext length indicates a message type, then this could lead to t=
+he issue the original query posted. In that an observer might know what mes=
+sage type was passed. TLS padding is supposed to prevent this (but it doesn=
+=E2=80=99t necessarily).
+<div><br>
+</div>
+<div>However, I argue that having TLS do significant padding for a protocol=
+ is bad design for that protocol. It=E2=80=99s one thing if it=E2=80=99s a =
+few padding bytes, but the example given was 1023 bytes of padding.</div>
+<div><br>
+</div>
+<div>Also as pointed out by Andrei Popov, the application needs to tell TLS=
+ how much padding to apply, so either way, the application has to deal with=
+ determining the padding length. Why not just make it part of the protocol =
+in the first place?</div></div></blockquote><div><br></div><div>The consens=
+us was to provide a generic scheme that applications could use, or not.</di=
+v><div><br></div><div>-Ekr</div><div>=C2=A0</div><blockquote class=3D"gmail=
+_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:=
+1ex"><div style=3D"word-wrap:break-word">
+<div><br>
+</div>
+<div>OpenSSL has a callback scheme, and a block-based scheme for determinin=
+g the amount of padding. Either way, the application is involved.<br>
+<div><br>
+</div>
+<div>But my final point is that we are ignoring the amount of non-TLS proce=
+ssing that must be done on various message types (before the response is se=
+nt), and THAT might be even more of a giveaway than the minuscule timing di=
+fference due to counting
+ padding in TLS.</div>
+<div><span class=3D""><br>
+<div>
+<div style=3D"color:rgb(0,0,0);letter-spacing:normal;text-align:start;text-=
+indent:0px;text-transform:none;white-space:normal;word-spacing:0px;word-wra=
+p:break-word">
+<div style=3D"color:rgb(0,0,0);letter-spacing:normal;text-align:start;text-=
+indent:0px;text-transform:none;white-space:normal;word-spacing:0px;word-wra=
+p:break-word">
+<div>--</div>
+<div>-Todd Short</div>
+<div>// <a href=3D"mailto:tshort@akamai.com" target=3D"_blank">tshort@akama=
+i.com</a></div>
+<div>// &quot;One if by land, two if by sea, three if by the Internet.&quot=
+;</div>
+</div>
+</div>
+</div>
+<br>
+</span><div>
+<blockquote type=3D"cite"><div><div class=3D"h5">
+<div>On Aug 11, 2017, at 1:20 PM, Eric Rescorla &lt;<a href=3D"mailto:ekr@r=
+tfm.com" target=3D"_blank">ekr@rtfm.com</a>&gt; wrote:</div>
+<br class=3D"m_-6328993817093150160Apple-interchange-newline">
+</div></div><div><div><div class=3D"h5">
+<div dir=3D"ltr" style=3D"font-family:Helvetica;font-size:12px;font-style:n=
+ormal;font-variant-caps:normal;font-weight:normal;letter-spacing:normal;tex=
+t-align:start;text-indent:0px;text-transform:none;white-space:normal;word-s=
+pacing:0px">
+<div class=3D"gmail_extra"><br class=3D"m_-6328993817093150160Apple-interch=
+ange-newline">
+<br>
+<div class=3D"gmail_quote">On Fri, Aug 11, 2017 at 9:47 AM, Nikos Mavrogian=
+nopoulos<span class=3D"m_-6328993817093150160Apple-converted-space">=C2=A0<=
+/span><span dir=3D"ltr">&lt;<a href=3D"mailto:nmav@redhat.com" target=3D"_b=
+lank">nmav@<wbr>redhat.com</a>&gt;</span><span class=3D"m_-6328993817093150=
+160Apple-converted-space">=C2=A0</span>wrote:<br>
+<blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-=
+left-width:1px;border-left-color:rgb(204,204,204);border-left-style:solid;p=
+adding-left:1ex">
+<div dir=3D"ltr">
+<div class=3D"gmail_extra">
+<div class=3D"gmail_quote"><span>On Fri, Aug 11, 2017 at 5:57 PM, Eric Resc=
+orla<span class=3D"m_-6328993817093150160Apple-converted-space">=C2=A0</spa=
+n><span dir=3D"ltr">&lt;<a href=3D"mailto:ekr@rtfm.com" target=3D"_blank">e=
+kr@rtfm.com</a>&gt;</span><span class=3D"m_-6328993817093150160Apple-conver=
+ted-space">=C2=A0</span>wrote:<br>
+<blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-=
+left-width:1px;border-left-color:rgb(204,204,204);border-left-style:solid;p=
+adding-left:1ex">
+<div dir=3D"ltr">
+<div class=3D"gmail_extra"><br>
+<div class=3D"gmail_quote"><span>On Fri, Aug 11, 2017 at 7:11 AM, Nikos Mav=
+rogiannopoulos<span class=3D"m_-6328993817093150160Apple-converted-space">=
+=C2=A0</span><span dir=3D"ltr">&lt;<a href=3D"mailto:nmav@redhat.com" targe=
+t=3D"_blank">nmav@<wbr>redhat.com</a>&gt;</span><span class=3D"m_-632899381=
+7093150160Apple-converted-space">=C2=A0</span>wrote:<br>
+<blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-=
+left-width:1px;border-left-color:rgb(204,204,204);border-left-style:solid;p=
+adding-left:1ex">
+Imagine the following scenario, where the server and client have this<br>
+repeated communication N times per day:<br>
+<br>
+client=C2=A0 =C2=A0 =C2=A0server<br>
+=C2=A0 =C2=A0 --X--&gt;<br>
+=C2=A0 =C2=A0 &lt;--Y--<br>
+<br>
+<br>
+the client puts in X a message A of 1 byte or B of 1024 bytes, and pads<br>
+it to the maximum size of TLS record. The server replies with the<br>
+message &quot;ok&quot; (same every time), padded to the maximum size just a=
+fter<br>
+it reads X.<br>
+<br>
+However, TLS 1.3 detects the message size by iterating through all the<br>
+padding bytes, and thus there is a timing leak observed by the time<br>
+difference between receiving X and sending Y. Thus as an adversary I<br>
+could take enough measurements and be able to distinguish between X<br>
+having the value A or B.<br>
+<br>
+While I&#39;d expect these iterations to be unmeasurable in desktop or<br>
+server hardware, I am not sure about the situation in low-end IoT<br>
+hardware. Is the design choice for having the padding removal depending<br>
+on padding length intentional?</blockquote>
+<div><br>
+</div>
+</span>
+<div>Yes, we&#39;re aware of this, and it&#39;s an intentional design choic=
+e. The reasoning</div>
+<div>was that once you have the padding removed, you&#39;ll need to operate=
+ on/copy</div>
+<div>the unpadded content somewhere, and that&#39;s timing dependent anyway=
+.</div>
+</div>
+</div>
+</div>
+</blockquote>
+<div><br>
+</div>
+</span>
+<div>That is certainly an incorrect assumption. gnutls for example provides=
+ a zero-copy API, and I guess it is not the only implementation to have tha=
+t.=C2=A0</div>
+</div>
+</div>
+</div>
+</blockquote>
+<div><br>
+</div>
+<div>And then the next thing that will happen is that the application will =
+read the data, which is length-dependent. The problem is that the plaintext=
+ is variable length.</div>
+<div><br>
+</div>
+<div><br>
+</div>
+<blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-=
+left-width:1px;border-left-color:rgb(204,204,204);border-left-style:solid;p=
+adding-left:1ex">
+<div dir=3D"ltr">
+<div class=3D"gmail_extra">
+<div class=3D"gmail_quote"><span>
+<blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-=
+left-width:1px;border-left-color:rgb(204,204,204);border-left-style:solid;p=
+adding-left:1ex">
+<div dir=3D"ltr">
+<div class=3D"gmail_extra">
+<div class=3D"gmail_quote"><span>
+<blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-=
+left-width:1px;border-left-color:rgb(204,204,204);border-left-style:solid;p=
+adding-left:1ex">
+There is mentioning of possible timing channels in:<br>
+<a href=3D"https://urldefense.proofpoint.com/v2/url?u=3Dhttps-3A__tools.iet=
+f.org_html_draft-2Dietf-2Dtls-2Dtls13-2D21-23appendix-2DE.3&amp;d=3DDwMFaQ&=
+amp;c=3D96ZbZZcaMF4w0F4jpN6LZg&amp;r=3DQBEcQsqoUDdk1Q26CzlzNPPUkKYWIh1LYsiH=
+AwmtRik&amp;m=3DXJYxN2Gf0rNXPl3yadis8utHDuyRetUCeYdF-OmwAcQ&amp;s=3DCJUfP5O=
+Pl4Uy3Igpm9hvAvuLiJlWdRLxSnagqfNZEZM&amp;e=3D" rel=3D"noreferrer" target=3D=
+"_blank">https://tools.ietf.org/html/dr<wbr>aft-ietf-tls-tls13-21#appendix<=
+wbr>-E.3</a><br>
+However I don&#39;t quite understand how is this section intended to be<br>
+read. The sentence for example: &quot;Because the padding is encrypted<br>
+alongside the actual content, an attacker cannot directly determine the<br>
+length of the padding, but may be able to measure it indirectly by the<br>
+use of timing channels exposed during record processing&quot;, what is its<=
+br>
+intention? Is it to acknowledge the above timing leak?<br>
+</blockquote>
+<div><br>
+</div>
+</span>
+<div>Yes.</div>
+</div>
+</div>
+</div>
+</blockquote>
+<div><br>
+</div>
+</span>
+<div>I am not sure if that text is sufficient to cover that issue. It seems=
+ as if the cbc timing attack is re-introduced here and pushing the fix to i=
+mplementers. It may be better no to provide padding functionality with this=
+ &quot;feature&quot;, as unfortunately
+ it will be used by applications.<br>
+</div>
+</div>
+</div>
+</div>
+</blockquote>
+<div><br>
+</div>
+<div>I don&#39;t believe that this is analysis is correct. This timing chan=
+nel only applies to the data after message integrity has been established (=
+i.e., after AEAD processing), which is different from the situation in Luck=
+y 13. It seems like what leaks
+ here is the length of the plaintext, which is also what would be leaked if=
+ we simply did not have padding.</div>
+<div><br>
+</div>
+<div>-Ekr</div>
+<div><br>
+</div>
+<blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-=
+left-width:1px;border-left-color:rgb(204,204,204);border-left-style:solid;p=
+adding-left:1ex">
+<div dir=3D"ltr">
+<div class=3D"gmail_extra">
+<div class=3D"gmail_quote">
+<div></div>
+<div>=C2=A0<br>
+</div>
+<div>regards,<br>
+</div>
+<div>Nikos<br>
+<br>
+</div>
+</div>
+</div>
+</div>
+</blockquote>
+</div>
+<br>
+</div>
+</div>
+</div></div><span class=3D""><span style=3D"font-family:Helvetica;font-size=
+:12px;font-style:normal;font-variant-caps:normal;font-weight:normal;letter-=
+spacing:normal;text-align:start;text-indent:0px;text-transform:none;white-s=
+pace:normal;word-spacing:0px;float:none;display:inline!important">_________=
+_____________________<wbr>_________________</span><br style=3D"font-family:=
+Helvetica;font-size:12px;font-style:normal;font-variant-caps:normal;font-we=
+ight:normal;letter-spacing:normal;text-align:start;text-indent:0px;text-tra=
+nsform:none;white-space:normal;word-spacing:0px">
+<span style=3D"font-family:Helvetica;font-size:12px;font-style:normal;font-=
+variant-caps:normal;font-weight:normal;letter-spacing:normal;text-align:sta=
+rt;text-indent:0px;text-transform:none;white-space:normal;word-spacing:0px;=
+float:none;display:inline!important">TLS
+ mailing list</span><br style=3D"font-family:Helvetica;font-size:12px;font-=
+style:normal;font-variant-caps:normal;font-weight:normal;letter-spacing:nor=
+mal;text-align:start;text-indent:0px;text-transform:none;white-space:normal=
+;word-spacing:0px">
+<a href=3D"mailto:TLS@ietf.org" style=3D"font-family:Helvetica;font-size:12=
+px;font-style:normal;font-variant-caps:normal;font-weight:normal;letter-spa=
+cing:normal;text-align:start;text-indent:0px;text-transform:none;white-spac=
+e:normal;word-spacing:0px" target=3D"_blank">TLS@ietf.org</a><br style=3D"f=
+ont-family:Helvetica;font-size:12px;font-style:normal;font-variant-caps:nor=
+mal;font-weight:normal;letter-spacing:normal;text-align:start;text-indent:0=
+px;text-transform:none;white-space:normal;word-spacing:0px">
+<a href=3D"https://www.ietf.org/mailman/listinfo/tls" style=3D"font-family:=
+Helvetica;font-size:12px;font-style:normal;font-variant-caps:normal;font-we=
+ight:normal;letter-spacing:normal;text-align:start;text-indent:0px;text-tra=
+nsform:none;white-space:normal;word-spacing:0px" target=3D"_blank">https://=
+www.ietf.org/mailman/<wbr>listinfo/tls</a></span></div>
+</blockquote>
+</div>
+<br>
+</div>
+</div>
+</div>
+
+</blockquote></div><br></div></div>
+
+--f403045e6ed0367b0b05567f32c8--
+

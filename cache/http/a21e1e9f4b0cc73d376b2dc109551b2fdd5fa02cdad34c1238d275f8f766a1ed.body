@@ -1,0 +1,186 @@
+From nobody Tue Apr 11 09:50:59 2023
+Return-Path: <rsalz@akamai.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 9244FC14CE2E
+ for <tls@ietfa.amsl.com>; Tue, 11 Apr 2023 09:50:57 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.095
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.095 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIMWL_WL_HIGH=-0.001, DKIM_SIGNED=0.1,
+ DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1,
+ RCVD_IN_ZEN_BLOCKED_OPENDNS=0.001, SPF_HELO_NONE=0.001,
+ SPF_NONE=0.001, URIBL_BLOCKED=0.001, URIBL_DBL_BLOCKED_OPENDNS=0.001,
+ URIBL_ZEN_BLOCKED_OPENDNS=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=akamai.com
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id mQlxnQuxW3HU for <tls@ietfa.amsl.com>;
+ Tue, 11 Apr 2023 09:50:53 -0700 (PDT)
+Received: from mx0b-00190b01.pphosted.com (mx0b-00190b01.pphosted.com
+ [IPv6:2620:100:9005:57f::1])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 8748EC14F747
+ for <TLS@ietf.org>; Tue, 11 Apr 2023 09:50:53 -0700 (PDT)
+Received: from pps.filterd (m0050102.ppops.net [127.0.0.1])
+ by m0050102.ppops.net-00190b01. (8.17.1.19/8.17.1.19) with ESMTP id
+ 33BCGOmx000854; Tue, 11 Apr 2023 17:50:52 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com;
+ h=from : to : subject :
+ date : message-id : references : in-reply-to : content-type : content-id :
+ content-transfer-encoding : mime-version; s=jan2016.eng;
+ bh=+rP2yunOETBVyKkZSEJmnJfFI2oOg3hADFiykE/zAF0=;
+ b=d3AhtZwCYTS/OPX5LyqMHXIwRS93FObZze+qg7tP+3hvkZKUhZgy+noShED3s+I6Gzdw
+ 6zoNmgQki3gNv2NysmGsfFXknoSq1rRwQCX0BDfJQ9HeENv6piHz+ds4mt6dR5iAyw3y
+ 6N3P/6eSNovlu2BTc5f0V2NWqOU+NrKXCEfET3ObiPSYDgKH8giK7TRVSFklHVN7teh7
+ Mn3kOVqO8z202ssBCzi7o3gUwUviU+TNj5CN0xVHJnfaIHNOAJnmEr8cYklLcGZVkNhv
+ AnieMamsQBp449NtC0ONXrbBjvbS+9XCfD6tpBoWkWLlfJz9pmElCrqikNEX5eZQnFtS KQ== 
+Received: from prod-mail-ppoint7
+ (a72-247-45-33.deploy.static.akamaitechnologies.com [72.247.45.33] (may be
+ forged))
+ by m0050102.ppops.net-00190b01. (PPS) with ESMTPS id 3ptwbksd6s-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 11 Apr 2023 17:50:52 +0100
+Received: from pps.filterd (prod-mail-ppoint7.akamai.com [127.0.0.1])
+ by prod-mail-ppoint7.akamai.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 33BDDs4D016058; Tue, 11 Apr 2023 12:50:51 -0400
+Received: from email.msg.corp.akamai.com ([172.27.50.201])
+ by prod-mail-ppoint7.akamai.com (PPS) with ESMTPS id 3pu3kyu6r7-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 11 Apr 2023 12:50:51 -0400
+Received: from ustx2ex-dag4mb4.msg.corp.akamai.com (172.27.50.203) by
+ ustx2ex-dag4mb2.msg.corp.akamai.com (172.27.50.201) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Tue, 11 Apr 2023 09:50:51 -0700
+Received: from ustx2ex-dag4mb4.msg.corp.akamai.com ([172.27.50.203]) by
+ ustx2ex-dag4mb4.msg.corp.akamai.com ([172.27.50.203]) with mapi id
+ 15.02.1118.026; Tue, 11 Apr 2023 09:50:51 -0700
+From: "Salz, Rich" <rsalz@akamai.com>
+To: Sean Turner <sean@sn3rd.com>, TLS List <TLS@ietf.org>
+Thread-Topic: [TLS] WGLC for draft-ietf-tls-rfc8446bis and
+ draft-ietf-tls-rfc8447bis
+Thread-Index: AQHZYdn4PyFdxc7LaUelujw92xbtlK8cctoAgAsBNQA=
+Date: Tue, 11 Apr 2023 16:50:51 +0000
+Message-ID: <14A93D24-3193-4C12-99D6-17247CC7C8AD@akamai.com>
+References: <E7A22BA0-4EDD-4B0D-B5D1-6FA7AF466398@heapingbits.net>
+ <5CBA62B3-CFD0-4062-B66D-AFA6F887128B@sn3rd.com>
+In-Reply-To: <5CBA62B3-CFD0-4062-B66D-AFA6F887128B@sn3rd.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Microsoft-MacOutlook/16.71.23032500
+x-originating-ip: [172.27.118.139]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <45A7066CA04A5B418A4C965D8563AECE@akamai.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-04-11_11,2023-04-11_02,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0
+ phishscore=0 suspectscore=0
+ bulkscore=0 malwarescore=0 mlxlogscore=999 spamscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2303200000
+ definitions=main-2304110154
+X-Proofpoint-ORIG-GUID: XiIG6laH_3bJpCBwW9wdReYNjulogDFH
+X-Proofpoint-GUID: XiIG6laH_3bJpCBwW9wdReYNjulogDFH
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-04-11_11,2023-04-11_02,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0
+ lowpriorityscore=0
+ phishscore=0 priorityscore=1501 bulkscore=0 adultscore=0 clxscore=1015
+ suspectscore=0 mlxlogscore=977 impostorscore=0 malwarescore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2303200000
+ definitions=main-2304110154
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/8qox-oR-xs8AkjEsunGkXYMkKFc>
+Subject: Re: [TLS] WGLC for draft-ietf-tls-rfc8446bis and
+ draft-ietf-tls-rfc8447bis
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Tue, 11 Apr 2023 16:50:57 -0000
+
+SSBhbSBjb21tZW50aW5nIG9uIDg0NDdiaXMuIFRoaXMgZG9jdW1lbnQgaXMganVzdCBhYm91dCBy
+ZWFkeSB0byBtb3ZlIGZvcndhcmQsIGJ1dCB0d28gZml4ZXMgYXJlIG5lZWRlZC4NCg0KV2h5IHRo
+ZXJlIGFyZSBOb3RlcyBzdGlsbCBpbiB0aGUgZG9jIChlLmcuLCBuZWFyIGVuZCBvZiBzZWN0aW9u
+IDYgaXQgc2F5cyBhYm91dCB3ZWFrZXIgZWxsaXB0aWMgY3VydmVzKSBhbmQgdGhpbmsgdGhvc2Ug
+c2hvdWxkIGJlIHJlc29sdmVkLCBvbmUgd2F5IG9yIGFub3RoZXIsIGJlZm9yZSBhZHZhbmNpbmcg
+b3V0IG9mIHRoZSBXRy4NCg0KU2VjIDcgYWRkcyBhIG5vdGUgdGhhdCBzYXlzIHRoZSBleHBlcnRz
+ICJ3aWxsIGhpZ2hseSBlbmNvdXJhZ2UgcmVnaXN0cmFudHMgdG8gcHJvdmlkZSBhIGxpbmsiIHdo
+aWxlIFNlYyAxMyBzYXlzIGV4cGVydHMgImVuc3VyZSB0aGUgc3BlY2lmaWNhdGlvbiBpcyBwdWJs
+aWNseSBhdmFpbGFibGUuIiAgU28gaXMgdGhhdCBTSE9VTEQgb3IgTVVTVD8gIChBbmQgcy9oaWdo
+bHkvc3Ryb25nbHkvIElNTykNCg0KQSBuaXQsIHRoaXMgbGluZSBhcHBlYXJzIG11bHRpcGxlIHRp
+bWVzOg0KICAgICAgIFNldHRpbmcgYSAiUmVjb21tZW5kZWQiIGNvbHVtbiB2YWx1ZSB0byBZIG9y
+IEQgcmVxdWlyZXMgU3RhbmRhcmRzDQpUaGVyZSBzaG91bGQgcHJvYmFibHkgYmUgcXVvdGVzIGFy
+b3VuZCB0aGUgbGV0dGVycyBZIGFuZCBELCBmb3IgY29uc2lzdGVuY3kgd2l0aCBvdGhlciB0ZXh0
+Lg0KDQoNCkEgcG9zdCBJRVRGIDExNiBidW1wIHRvIG1ha2Ugc3VyZSBmb2xrcyBnZXQgdGhlaXIg
+cmV2aWV3cyBpbi4gSWYgeW91IGxvb2sgYXQgdGhlIGRpZmZzIGZyb20gUkZDIDg0NDYgeW91IGNh
+biBzZWUgbm90IHRoYXQgbXVjaCBoYXMgY2hhbmdlZC4gV2Ugd2lsbCBhbHNvIHRha2Ug4oCcSSBy
+ZWFkIGl0IGFuZCBpdCBsb29rcyBnb29k4oCdIHJlc3BvbnNlLiANCg0KDQpDaGVlcnMsDQpzcHQN
+Cg0KDQo+IE9uIE1hciAyOCwgMjAyMywgYXQgMjE6MDAsIENocmlzdG9waGVyIFdvb2QgPGNhd0Bo
+ZWFwaW5nYml0cy5uZXQgPG1haWx0bzpjYXdAaGVhcGluZ2JpdHMubmV0Pj4gd3JvdGU6DQo+IA0K
+PiBBcyBtZW50aW9uZWQgZHVyaW5nIHllc3RlcmRheSdzIG1lZXRpbmcsIHRoaXMgZW1haWwgc3Rh
+cnRzIHRoZSB3b3JraW5nIGdyb3VwIGxhc3QgY2FsbCBmb3IgIlRoZSBUcmFuc3BvcnQgTGF5ZXIg
+U2VjdXJpdHkgKFRMUykgUHJvdG9jb2wgVmVyc2lvbiAxLjMiIGFuZCAiSUFOQSBSZWdpc3RyeSBV
+cGRhdGVzIGZvciBUTFMgYW5kIERUTFPigJ0gSS1EcywgbG9jYXRlZCBoZXJlOg0KPiANCj4gLSBo
+dHRwczovL3VybGRlZmVuc2UuY29tL3YzL19faHR0cHM6Ly9kYXRhdHJhY2tlci5pZXRmLm9yZy9k
+b2MvZHJhZnQtaWV0Zi10bHMtcmZjODQ0NmJpc19fOyEhR2p2VHpfdmshVWx6MmlIcnFpSERUblhh
+U1kwLWQzVm8zZFgtd3R3UjZPdGFoQl9hTGVFS2hBZlBqNHJSZkZZNGpWaUozUjlZVXJnU3lpTWg3
+JCA8aHR0cHM6Ly91cmxkZWZlbnNlLmNvbS92My9fX2h0dHBzOi8vZGF0YXRyYWNrZXIuaWV0Zi5v
+cmcvZG9jL2RyYWZ0LWlldGYtdGxzLXJmYzg0NDZiaXNfXzshIUdqdlR6X3ZrIVVsejJpSHJxaUhE
+VG5YYVNZMC1kM1ZvM2RYLXd0d1I2T3RhaEJfYUxlRUtoQWZQajRyUmZGWTRqVmlKM1I5WVVyZ1N5
+aU1oNyQ+IA0KPiAtIGh0dHBzOi8vdXJsZGVmZW5zZS5jb20vdjMvX19odHRwczovL2RhdGF0cmFj
+a2VyLmlldGYub3JnL2RvYy9kcmFmdC1pZXRmLXRscy1yZmM4NDQ3YmlzX187ISFHanZUel92ayFV
+bHoyaUhycWlIRFRuWGFTWTAtZDNWbzNkWC13dHdSNk90YWhCX2FMZUVLaEFmUGo0clJmRlk0alZp
+SjNSOVlVcmpyTWRBbTIkIDxodHRwczovL3VybGRlZmVuc2UuY29tL3YzL19faHR0cHM6Ly9kYXRh
+dHJhY2tlci5pZXRmLm9yZy9kb2MvZHJhZnQtaWV0Zi10bHMtcmZjODQ0N2Jpc19fOyEhR2p2VHpf
+dmshVWx6MmlIcnFpSERUblhhU1kwLWQzVm8zZFgtd3R3UjZPdGFoQl9hTGVFS2hBZlBqNHJSZkZZ
+NGpWaUozUjlZVXJqck1kQW0yJD4gDQo+IA0KPiBUaGUgV0cgTGFzdCBDYWxsIHdpbGwgZW5kIG9u
+IEFwcmlsIDE4LCAyMDIzLg0KPiANCj4gUGxlYXNlIHJldmlldyB0aGUgZG9jdW1lbnRzIGFuZCBz
+dWJtaXQgaXNzdWVzIG9yIHB1bGwgcmVxdWVzdHMgdmlhIHRoZSBHaXRIdWIgcmVwb3NpdG9yaWVz
+LCB3aGljaCBjYW4gYmUgZm91bmQgYXQ6DQo+IA0KPiAtIGh0dHBzOi8vdXJsZGVmZW5zZS5jb20v
+djMvX19odHRwczovL2dpdGh1Yi5jb20vdGxzd2cvdGxzMTMtc3BlY19fOyEhR2p2VHpfdmshVWx6
+MmlIcnFpSERUblhhU1kwLWQzVm8zZFgtd3R3UjZPdGFoQl9hTGVFS2hBZlBqNHJSZkZZNGpWaUoz
+UjlZVXJqNkdzNXA4JCA8aHR0cHM6Ly91cmxkZWZlbnNlLmNvbS92My9fX2h0dHBzOi8vZ2l0aHVi
+LmNvbS90bHN3Zy90bHMxMy1zcGVjX187ISFHanZUel92ayFVbHoyaUhycWlIRFRuWGFTWTAtZDNW
+bzNkWC13dHdSNk90YWhCX2FMZUVLaEFmUGo0clJmRlk0alZpSjNSOVlVcmo2R3M1cDgkPiANCj4g
+LSBodHRwczovL3VybGRlZmVuc2UuY29tL3YzL19faHR0cHM6Ly9naXRodWIuY29tL3Rsc3dnL3Jm
+Yzg0NDdiaXNfXzshIUdqdlR6X3ZrIVVsejJpSHJxaUhEVG5YYVNZMC1kM1ZvM2RYLXd0d1I2T3Rh
+aEJfYUxlRUtoQWZQajRyUmZGWTRqVmlKM1I5WVVycGFtcVZsNiQgPGh0dHBzOi8vdXJsZGVmZW5z
+ZS5jb20vdjMvX19odHRwczovL2dpdGh1Yi5jb20vdGxzd2cvcmZjODQ0N2Jpc19fOyEhR2p2VHpf
+dmshVWx6MmlIcnFpSERUblhhU1kwLWQzVm8zZFgtd3R3UjZPdGFoQl9hTGVFS2hBZlBqNHJSZkZZ
+NGpWaUozUjlZVXJwYW1xVmw2JD4gDQo+IA0KPiBBbHRlcm5hdGl2ZWx5LCB5b3UgY2FuIGFsc28g
+c2VuZCB5b3VyIGNvbW1lbnRzIHRvIHRsc0BpZXRmLm9yZyA8bWFpbHRvOnRsc0BpZXRmLm9yZz4u
+DQo+IA0KPiBUaGFua3MsDQo+IENocmlzDQo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fDQo+IFRMUyBtYWlsaW5nIGxpc3QNCj4gVExTQGlldGYub3JnIDxt
+YWlsdG86VExTQGlldGYub3JnPg0KPiBodHRwczovL3VybGRlZmVuc2UuY29tL3YzL19faHR0cHM6
+Ly93d3cuaWV0Zi5vcmcvbWFpbG1hbi9saXN0aW5mby90bHNfXzshIUdqdlR6X3ZrIVVsejJpSHJx
+aUhEVG5YYVNZMC1kM1ZvM2RYLXd0d1I2T3RhaEJfYUxlRUtoQWZQajRyUmZGWTRqVmlKM1I5WVVy
+amtpZHhVWCQgPGh0dHBzOi8vdXJsZGVmZW5zZS5jb20vdjMvX19odHRwczovL3d3dy5pZXRmLm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL3Rsc19fOyEhR2p2VHpfdmshVWx6MmlIcnFpSERUblhhU1kwLWQz
+Vm8zZFgtd3R3UjZPdGFoQl9hTGVFS2hBZlBqNHJSZkZZNGpWaUozUjlZVXJqa2lkeFVYJD4gDQoN
+Cg0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NClRMUyBt
+YWlsaW5nIGxpc3QNClRMU0BpZXRmLm9yZyA8bWFpbHRvOlRMU0BpZXRmLm9yZz4NCmh0dHBzOi8v
+dXJsZGVmZW5zZS5jb20vdjMvX19odHRwczovL3d3dy5pZXRmLm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L3Rsc19fOyEhR2p2VHpfdmshVWx6MmlIcnFpSERUblhhU1kwLWQzVm8zZFgtd3R3UjZPdGFoQl9h
+TGVFS2hBZlBqNHJSZkZZNGpWaUozUjlZVXJqa2lkeFVYJCA8aHR0cHM6Ly91cmxkZWZlbnNlLmNv
+bS92My9fX2h0dHBzOi8vd3d3LmlldGYub3JnL21haWxtYW4vbGlzdGluZm8vdGxzX187ISFHanZU
+el92ayFVbHoyaUhycWlIRFRuWGFTWTAtZDNWbzNkWC13dHdSNk90YWhCX2FMZUVLaEFmUGo0clJm
+Rlk0alZpSjNSOVlVcmpraWR4VVgkPiANCg0KDQoNCg==
+

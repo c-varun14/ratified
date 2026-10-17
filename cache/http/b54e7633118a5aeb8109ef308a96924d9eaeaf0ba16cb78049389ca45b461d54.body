@@ -1,0 +1,669 @@
+From do_not_reply@mnot.net  Sun Oct 15 00:38:50 2023
+Return-Path: <do_not_reply@mnot.net>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 12AC2C169539
+ for <tls@ietfa.amsl.com>; Sun, 15 Oct 2023 00:38:50 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.407
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.407 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_INVALID=0.1, DKIM_SIGNED=0.1,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_LOW=-0.7,
+ RCVD_IN_ZEN_BLOCKED_OPENDNS=0.001, SPF_PASS=-0.001,
+ T_SCC_BODY_TEXT_LINE=-0.01, URIBL_DBL_BLOCKED_OPENDNS=0.001,
+ URIBL_ZEN_BLOCKED_OPENDNS=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=fail (2048-bit key)
+ reason="fail (message has been altered)"
+ header.d=mnot.net
+ header.b="Q5JZOqlX"; dkim=fail (2048-bit key)
+ reason="fail (message has been altered)" header.d=messagingengine.com
+ header.b="cze9CSwy"
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 1E86VncO7bgc for <tls@ietfa.amsl.com>;
+ Sun, 15 Oct 2023 00:38:45 -0700 (PDT)
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com
+ [64.147.123.25])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 5E7F8C1519A4
+ for <tls@ietf.org>; Sun, 15 Oct 2023 00:38:44 -0700 (PDT)
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+ by mailout.west.internal (Postfix) with ESMTP id 50C433200975
+ for <tls@ietf.org>; Sun, 15 Oct 2023 03:38:42 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+ by compute7.internal (MEProxy); Sun, 15 Oct 2023 03:38:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mnot.net; h=cc
+ :content-type:content-type:date:from:from:in-reply-to
+ :mime-version:reply-to:sender:subject:subject:to:to; s=fm1; t=
+ 1697355521; x=1697441921; bh=MVunU+nUtCajeVu0F+ylitxeG7gziU5G9Lb
+ +VIM+MN4=; b=Q5JZOqlX7sEhF1QeR1tWZV1/cm/Y7mDTrz6fhciQXWC3P2OlI+M
+ ausXG6wL0w4N3+ZsSUrSsUCXm8G5uSsDh6ox6t7Iriy55cCluiFp80Bk7o1Fg90d
+ JQ35MO/GEFAiPrIOWHIO5rTUPVWKfdYw9tvnTLVpvztyjmVVRXDGd7r6jzIZZIRP
+ BwqOlrJSWEUXFdChULUBSixFUzMidMH9387Ci7RwdOPF+TdnJRCnqmxrhtYmMwnZ
+ JXzSEjobWcBH0hFR9fVvxRqFe+8FsTybmMUTIs8mTuWmJ2Eda2Ley2aAOHaSRONz
+ xKgTgBAvqfHgCxcj7kEi6rbDjqJ0rA1kEgA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-type:content-type:date
+ :feedback-id:feedback-id:from:from:in-reply-to:mime-version
+ :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+ :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1697355521; x=
+ 1697441921; bh=MVunU+nUtCajeVu0F+ylitxeG7gziU5G9Lb+VIM+MN4=; b=c
+ ze9CSwyiQzuEnXQIlfiWrR7YYhht4+ollWVL9aYvqHyksnirMIGl9s4J/uMqj76o
+ +UHZSm4h+MBDyo6+tMrblHLe0qOwoAwaTGcj6TFMLq9jiD+l7p2uWCOeha6lD5VQ
+ UnvpDs3cvjJiFoSINNJihmjK9w/sW9HOdWvuP4S2AzavPTmwqmmAP8FWgWXELizW
+ s606W4dS5EJbDNXYRKBHHkiga3MalTkY05aRq/9PGZQGSigc2FFblidD8HOb0Awc
+ KQnp7OV10S+ekNE6VWinUunsRTyhD1RSs8r841g0XS8PlUYgdN0jQeNLFg8uK6c7
+ xrrIR/bUVgO3zXfVaFq9A==
+X-ME-Sender: <xms:AZcrZbGAxyeAu3lTRqB33dB5c7uVhT8TKNI0VmjfWOGEwSz225RkvQ>
+ <xme:AZcrZYXtspbVW2CeZLAySzwaxL338tI7WEaojgvrXQYdy67xPrRvyXUA-7SHxklDj
+ qavhe3buD1gF_UveQ>
+X-ME-Received: <xmr:AZcrZdL3kC_mYelrAFs-dL7DCCDzLTJ-NrKK9kZ4B_dPW32AoMTvQndqWH2Rb1FwP3n4fi3l2YQVQ31g27v0DlnoCsm6lPkZC_-eSVw6goawj9kXDdDSkKNsBgxRUbC7SurT0PU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrieeigdduudelucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucfpohcuuggrthgvuchfihgvlhguucdlgeelmdenuc
+ fjughrpegtggfhvffusegrtddtredttdejnecuhfhrohhmpeftvghpohhsihhtohhrhicu
+ tegtthhivhhithihucfuuhhmmhgrrhihuceuohhtuceoughopghnohhtpghrvghplhihse
+ hmnhhothdrnhgvtheqnecuggftrfgrthhtvghrnhepkeefvdduteejvdefkeehieevuefg
+ fefhteetveegffekffefteffvdelheduieetnecuffhomhgrihhnpehgihhthhhusgdrtg
+ homhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegu
+ ohgpnhhothgprhgvphhlhiesmhhnohhtrdhnvght
+X-ME-Proxy: <xmx:AZcrZZGc21UaW27AiajVGX9yH01S8m3FijpQwDA0mL_UwqTCoWTcPw>
+ <xmx:AZcrZRW0Gy1UiR5yd-tUaOC7e0Q2dWz5j0jK3EiOgynAkcDyTuBKdQ>
+ <xmx:AZcrZUMn2dJ8_T4JxnySTL9bGPsfscI8_MjnMXUQNoDVFYdkdonm1g>
+ <xmx:AZcrZQBsk-2DaHi5BRl7Tkmyr2K-hXbFk1E-MaTUn72iCIoergKOog>
+Feedback-ID: i1c3946f2:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA for <tls@ietf.org>; 
+ Sun, 15 Oct 2023 03:38:41 -0400 (EDT)
+Content-Type: multipart/alternative;
+ boundary="===============8380838953041365446=="
+MIME-Version: 1.0
+From: Repository Activity Summary Bot <do_not_reply@mnot.net>
+To: tls@ietf.org
+Message-Id: <20231015073845.5E7F8C1519A4@ietfa.amsl.com>
+Date: Sun, 15 Oct 2023 00:38:44 -0700 (PDT)
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/Tlx4nJf7sRLokVR96hEwFc32-6c>
+Subject: [TLS] Weekly github digest (TLS Working Group Drafts)
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Sun, 15 Oct 2023 07:38:50 -0000
+
+--===============8380838953041365446==
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+
+
+
+
+Issues
+------
+* tlswg/draft-ietf-tls-esni (+3/-21/=F0=9F=92=AC28)
+  3 issues created:
+  - Make anonymity set references consistent (reference single definition?)=
+ (by klinvill)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/568=20
+  - Are mandatory ECH extensions deployable? (by sftcd)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/567=20
+  - MUST NOT use retry configs may be too strong (by chris-wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/565=20
+
+  19 issues received 28 new comments:
+  - #567 Are mandatory ECH extensions deployable? (9 by davidben, dennisjac=
+kson, sftcd)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/567=20
+  - #565 Requirements language around retry configs may be too strong (1 by=
+ chris-wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/565=20
+  - #547 "Don't fallback to non-ECH" option (1 by chris-wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/547=20
+  - #545 Server reuse of key share leaks the target domain for a given conn=
+ection (1 by chris-wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/545=20
+  - #544 What does ECH acceptance mean in Split Mode? (1 by chris-wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/544=20
+  - #543 RFC9180 recommended max for info is too short for ECH (1 by chris-=
+wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/543=20
+  - #542 Use of MAY in section 5 needs to be fixed up (1 by chris-wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/542=20
+  - #524 How to retry in ECH is ambiguous (2 by chris-wood, dennisjackson)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/524=20
+  - #520 HRR rejection and ECH contents (1 by chris-wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/520=20
+  - #519 Anonymity set definition should include behavior (1 by chris-wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/519=20
+  - #517 Question on Section 10.2 (1 by chris-wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/517=20
+  - #516 split-mode may be more a three-way thing than a two-way thing (1 b=
+y chris-wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/516=20
+  - #515 Improve guidance for Second ClientHello construction in the event =
+of HRR (1 by chris-wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/515 [editorial]=20
+  - #476 Feature Request: `ECHConfigList.permit_plaintext` (1 by chris-wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/476 [parked]=20
+  - #454 Make the definition of key protocol elements easier to find (1 by =
+chris-wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/454 [editorial]=20
+  - #451 Reserve some code points for GREASE (1 by chris-wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/451 [pre-wglc]=20
+  - #440 Mitigate HRR when possible (1 by chris-wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/440 [parked]=20
+  - #430 Make it easy to reference EncodedClientHelloInner decoding concern=
+s (1 by chris-wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/430 [editorial]=20
+  - #395 Add some more structure to "Offering ECH" (1 by chris-wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/issues/395 [editorial]=20
+
+  21 issues closed:
+  - Lessen possibility of client implementation choices undermining GREASE =
+cover https://github.com/tlswg/draft-ietf-tls-esni/issues/512 [parked]=20
+  - Anonymity set definition should include behavior https://github.com/tls=
+wg/draft-ietf-tls-esni/issues/519=20
+  - What does ECH acceptance mean in Split Mode? https://github.com/tlswg/d=
+raft-ietf-tls-esni/issues/544=20
+  - Split mode correlation attacks https://github.com/tlswg/draft-ietf-tls-=
+esni/issues/513 [editorial]=20
+  - Do ECHConfig extensions use the same ExtensionType enum from TLS? https=
+://github.com/tlswg/draft-ietf-tls-esni/issues/555=20
+  - Move ECH references over to draft-ietf-tls-svcb-ech https://github.com/=
+tlswg/draft-ietf-tls-esni/issues/554=20
+  - Hard to imagine ECH handling in constant time - ponder and document? ht=
+tps://github.com/tlswg/draft-ietf-tls-esni/issues/400 [ready-for-text] [edi=
+torial]=20
+  - Question related to section 10.9.3 (Prevent SNI-Based Denial-of-Service=
+ Attacks) https://github.com/tlswg/draft-ietf-tls-esni/issues/551=20
+  - Add some more structure to "Offering ECH" https://github.com/tlswg/draf=
+t-ietf-tls-esni/issues/395 [editorial]=20
+  - split-mode may be more a three-way thing than a two-way thing https://g=
+ithub.com/tlswg/draft-ietf-tls-esni/issues/516=20
+  - Improve guidance for Second ClientHello construction in the event of HR=
+R https://github.com/tlswg/draft-ietf-tls-esni/issues/515 [editorial]=20
+  - Use of MAY in section 5 needs to be fixed up https://github.com/tlswg/d=
+raft-ietf-tls-esni/issues/542=20
+  - Make the definition of key protocol elements easier to find https://git=
+hub.com/tlswg/draft-ietf-tls-esni/issues/454 [editorial]=20
+  - HRR rejection and ECH contents https://github.com/tlswg/draft-ietf-tls-=
+esni/issues/520=20
+  - Make it easy to reference EncodedClientHelloInner decoding concerns htt=
+ps://github.com/tlswg/draft-ietf-tls-esni/issues/430 [editorial]=20
+  - Question on Section 10.2 https://github.com/tlswg/draft-ietf-tls-esni/i=
+ssues/517=20
+  - Mitigate HRR when possible https://github.com/tlswg/draft-ietf-tls-esni=
+/issues/440 [parked]=20
+  - Feature Request: `ECHConfigList.permit_plaintext` https://github.com/tl=
+swg/draft-ietf-tls-esni/issues/476 [parked]=20
+  - Server reuse of key share leaks the target domain for a given connectio=
+n https://github.com/tlswg/draft-ietf-tls-esni/issues/545=20
+  - "Don't fallback to non-ECH" option https://github.com/tlswg/draft-ietf-=
+tls-esni/issues/547=20
+  - RFC9180 recommended max for info is too short for ECH https://github.co=
+m/tlswg/draft-ietf-tls-esni/issues/543=20
+
+
+
+Pull requests
+-------------
+* tlswg/draft-ietf-tls-esni (+10/-10/=F0=9F=92=AC11)
+  10 pull requests submitted:
+  - Add text describing deployment impacts of no SNI access (by chris-wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/566=20
+  - Clarify attacker capabilities (by chris-wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/564=20
+  - TCP is not the only transport (by chris-wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/563=20
+  - Punt on new transport connection specifics (by chris-wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/562=20
+  - Cross-implementation decisions may be differentiators (by chris-wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/561=20
+  - Note behavior and give an example alongside configurations (by chris-wo=
+od)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/560=20
+  - Note timing side channels (by chris-wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/559=20
+  - Remove alternative designs (by chris-wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/558=20
+  - Create a new ECH config extension registry (by chris-wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/557=20
+  - Cite draft-ietf-tls-svcb-ech for ECH in DNS (by chris-wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/556=20
+
+  5 pull requests received 11 new comments:
+  - #566 Add text describing deployment impacts of no SNI access (3 by chri=
+s-wood, dennisjackson)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/566=20
+  - #564 Clarify attacker capabilities (4 by chris-wood, dennisjackson, kaz=
+uho)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/564=20
+  - #562 Punt on new transport connection specifics (1 by chris-wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/562=20
+  - #561 Cross-implementation decisions may be differentiators (1 by chris-=
+wood)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/561=20
+  - #560 Note behavior and give an example alongside configurations (2 by c=
+hris-wood, klinvill)
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/560=20
+
+  10 pull requests merged:
+  - Cross-implementation decisions may be differentiators
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/561=20
+  - Note behavior and give an example alongside configurations
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/560=20
+  - Clarify attacker capabilities
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/564=20
+  - Add text describing deployment impacts of no SNI access
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/566=20
+  - Remove alternative designs
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/558=20
+  - Create a new ECH config extension registry
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/557=20
+  - Cite draft-ietf-tls-svcb-ech for ECH in DNS
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/556=20
+  - Note timing side channels
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/559=20
+  - TCP is not the only transport
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/563=20
+  - Fix typo retry_configs
+    https://github.com/tlswg/draft-ietf-tls-esni/pull/552=20
+
+
+Repositories tracked by this digest:
+-----------------------------------
+* https://github.com/tlswg/draft-ietf-tls-semistatic-dh
+* https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate
+* https://github.com/tlswg/draft-ietf-tls-esni
+* https://github.com/tlswg/certificate-compression
+* https://github.com/tlswg/draft-ietf-tls-external-psk-importer
+* https://github.com/tlswg/draft-ietf-tls-ticketrequest
+* https://github.com/tlswg/tls13-spec
+* https://github.com/tlswg/tls-flags
+* https://github.com/tlswg/dtls13-spec
+* https://github.com/tlswg/dtls-conn-id
+* https://github.com/tlswg/tls-subcerts
+* https://github.com/tlswg/oldversions-deprecate
+* https://github.com/tlswg/sniencryption
+* https://github.com/tlswg/tls-exported-authenticator
+* https://github.com/tlswg/draft-ietf-tls-ctls
+* https://github.com/tlswg/external-psk-design-team
+
+--===============8380838953041365446==
+Content-Type: text/html; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+
+<!doctype html>
+<html lang=3D"en">
+<head>
+<meta charset=3D"utf-8">
+<title>Weekly github digest (TLS Working Group Drafts)</title>
+<style>
+body { font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;=
+ font-size: 14px; }
+h2 { margin-top: 3em; color: #A52A2A; font-style: italic; font-weight: norm=
+al; }
+h3 { margin-bottom:0; margin-top: 2em; font-size: 1.2em; }
+h1+h2 { margin-top: 1em; }
+a { color: #bb6219; text-decoration: none; }
+li { margin-bottom: .35em; }
+.repos { margin-bottom: 0; margin-top:0; line-height: 1.2; }
+.new { color: red; }
+.label { display: inline;
+	padding: .2em .6em .3em;
+	font-size: 75%;
+	font-weight: 700;
+	line-height: 1;
+	color: #fff;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: baseline;
+	border-radius: .25em;
+}
+details {
+	margin-top: 8em;
+	}
+summary {
+	margin-bottom: 1em;
+	cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+<h1>Sunday October 15, 2023</h1>
+
+
+<h2>Issues</h2>
+
+<h3>tlswg/draft-ietf-tls-esni (+3/-21/=F0=9F=92=AC28)</h3>
+  <p class=3D"new">3 issues created:</p>
+  <ul>
+  <li>#568 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/5=
+68">Make anonymity set references consistent (reference single definition?)=
+</a> (by klinvill) </li>
+ =20
+  <li>#567 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/5=
+67">Are mandatory ECH extensions deployable?</a> (by sftcd) </li>
+ =20
+  <li>#565 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/5=
+65">MUST NOT use retry configs may be too strong</a> (by chris-wood) </li>
+  </ul>
+
+  <p>19 issues received 28 new comments:</p>
+  <ul>
+  <li>#567 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/5=
+67">Are mandatory ECH extensions deployable?</a> (9 by davidben, dennisjack=
+son, sftcd) </li>
+ =20
+  <li>#565 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/5=
+65">Requirements language around retry configs may be too strong</a> (1 by =
+chris-wood) </li>
+ =20
+  <li>#547 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/5=
+47">&quot;Don&#x27;t fallback to non-ECH&quot; option</a> (1 by chris-wood)=
+ </li>
+ =20
+  <li>#545 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/5=
+45">Server reuse of key share leaks the target domain for a given connectio=
+n</a> (1 by chris-wood) </li>
+ =20
+  <li>#544 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/5=
+44">What does ECH acceptance mean in Split Mode?</a> (1 by chris-wood) </li>
+ =20
+  <li>#543 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/5=
+43">RFC9180 recommended max for info is too short for ECH</a> (1 by chris-w=
+ood) </li>
+ =20
+  <li>#542 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/5=
+42">Use of MAY in section 5 needs to be fixed up</a> (1 by chris-wood) </li>
+ =20
+  <li>#524 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/5=
+24">How to retry in ECH is ambiguous</a> (2 by chris-wood, dennisjackson) <=
+/li>
+ =20
+  <li>#520 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/5=
+20">HRR rejection and ECH contents</a> (1 by chris-wood) </li>
+ =20
+  <li>#519 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/5=
+19">Anonymity set definition should include behavior</a> (1 by chris-wood) =
+</li>
+ =20
+  <li>#517 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/5=
+17">Question on Section 10.2</a> (1 by chris-wood) </li>
+ =20
+  <li>#516 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/5=
+16">split-mode may be more a three-way thing than a two-way thing</a> (1 by=
+ chris-wood) </li>
+ =20
+  <li>#515 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/5=
+15">Improve guidance for Second ClientHello construction in the event of HR=
+R</a> (1 by chris-wood) <span class=3D"label" style=3D"background-color: #e=
+99695; color: #000000">editorial</span> </li>
+ =20
+  <li>#476 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/4=
+76">Feature Request: `ECHConfigList.permit_plaintext`</a> (1 by chris-wood)=
+ <span class=3D"label" style=3D"background-color: #FB56EA; color: #000000">=
+parked</span> </li>
+ =20
+  <li>#454 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/4=
+54">Make the definition of key protocol elements easier to find</a> (1 by c=
+hris-wood) <span class=3D"label" style=3D"background-color: #e99695; color:=
+ #000000">editorial</span> </li>
+ =20
+  <li>#451 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/4=
+51">Reserve some code points for GREASE</a> (1 by chris-wood) <span class=
+=3D"label" style=3D"background-color: #d4c5f9; color: #000000">pre-wglc</sp=
+an> </li>
+ =20
+  <li>#440 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/4=
+40">Mitigate HRR when possible</a> (1 by chris-wood) <span class=3D"label" =
+style=3D"background-color: #FB56EA; color: #000000">parked</span> </li>
+ =20
+  <li>#430 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/4=
+30">Make it easy to reference EncodedClientHelloInner decoding concerns</a>=
+ (1 by chris-wood) <span class=3D"label" style=3D"background-color: #e99695=
+; color: #000000">editorial</span> </li>
+ =20
+  <li>#395 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/3=
+95">Add some more structure to &quot;Offering ECH&quot;</a> (1 by chris-woo=
+d) <span class=3D"label" style=3D"background-color: #e99695; color: #000000=
+">editorial</span> </li>
+  </ul>
+
+  <p>21 issues closed:</p>
+  <ul>
+  <li>#512 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/5=
+12">Lessen possibility of client implementation choices undermining GREASE =
+cover</a> <span class=3D"label" style=3D"background-color: #FB56EA; color: =
+#000000">parked</span> </li>
+ =20
+  <li>#519 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/5=
+19">Anonymity set definition should include behavior</a> </li>
+ =20
+  <li>#544 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/5=
+44">What does ECH acceptance mean in Split Mode?</a> </li>
+ =20
+  <li>#513 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/5=
+13">Split mode correlation attacks</a> <span class=3D"label" style=3D"backg=
+round-color: #e99695; color: #000000">editorial</span> </li>
+ =20
+  <li>#555 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/5=
+55">Do ECHConfig extensions use the same ExtensionType enum from TLS?</a> <=
+/li>
+ =20
+  <li>#554 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/5=
+54">Move ECH references over to draft-ietf-tls-svcb-ech</a> </li>
+ =20
+  <li>#400 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/4=
+00">Hard to imagine ECH handling in constant time - ponder and document?</a=
+> <span class=3D"label" style=3D"background-color: #f9d0c4; color: #000000"=
+>ready-for-text</span> <span class=3D"label" style=3D"background-color: #e9=
+9695; color: #000000">editorial</span> </li>
+ =20
+  <li>#551 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/5=
+51">Question related to section 10.9.3 (Prevent SNI-Based Denial-of-Service=
+ Attacks)</a> </li>
+ =20
+  <li>#395 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/3=
+95">Add some more structure to &quot;Offering ECH&quot;</a> <span class=3D"=
+label" style=3D"background-color: #e99695; color: #000000">editorial</span>=
+ </li>
+ =20
+  <li>#516 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/5=
+16">split-mode may be more a three-way thing than a two-way thing</a> </li>
+ =20
+  <li>#515 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/5=
+15">Improve guidance for Second ClientHello construction in the event of HR=
+R</a> <span class=3D"label" style=3D"background-color: #e99695; color: #000=
+000">editorial</span> </li>
+ =20
+  <li>#542 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/5=
+42">Use of MAY in section 5 needs to be fixed up</a> </li>
+ =20
+  <li>#454 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/4=
+54">Make the definition of key protocol elements easier to find</a> <span c=
+lass=3D"label" style=3D"background-color: #e99695; color: #000000">editoria=
+l</span> </li>
+ =20
+  <li>#520 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/5=
+20">HRR rejection and ECH contents</a> </li>
+ =20
+  <li>#430 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/4=
+30">Make it easy to reference EncodedClientHelloInner decoding concerns</a>=
+ <span class=3D"label" style=3D"background-color: #e99695; color: #000000">=
+editorial</span> </li>
+ =20
+  <li>#517 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/5=
+17">Question on Section 10.2</a> </li>
+ =20
+  <li>#440 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/4=
+40">Mitigate HRR when possible</a> <span class=3D"label" style=3D"backgroun=
+d-color: #FB56EA; color: #000000">parked</span> </li>
+ =20
+  <li>#476 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/4=
+76">Feature Request: `ECHConfigList.permit_plaintext`</a> <span class=3D"la=
+bel" style=3D"background-color: #FB56EA; color: #000000">parked</span> </li>
+ =20
+  <li>#545 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/5=
+45">Server reuse of key share leaks the target domain for a given connectio=
+n</a> </li>
+ =20
+  <li>#547 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/5=
+47">&quot;Don&#x27;t fallback to non-ECH&quot; option</a> </li>
+ =20
+  <li>#543 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/issues/5=
+43">RFC9180 recommended max for info is too short for ECH</a> </li>
+  </ul>
+
+
+
+<h2>Pull requests</h2>
+<h3>tlswg/draft-ietf-tls-esni (+10/-10/=F0=9F=92=AC11)</h3>
+  <p class=3D"new">10 pull requests submitted:</p>
+  <ul>
+  <li>#566 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/566=
+">Add text describing deployment impacts of no SNI access</a> (by chris-woo=
+d) </li>
+ =20
+  <li>#564 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/564=
+">Clarify attacker capabilities</a> (by chris-wood) </li>
+ =20
+  <li>#563 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/563=
+">TCP is not the only transport</a> (by chris-wood) </li>
+ =20
+  <li>#562 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/562=
+">Punt on new transport connection specifics</a> (by chris-wood) </li>
+ =20
+  <li>#561 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/561=
+">Cross-implementation decisions may be differentiators</a> (by chris-wood)=
+ </li>
+ =20
+  <li>#560 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/560=
+">Note behavior and give an example alongside configurations</a> (by chris-=
+wood) </li>
+ =20
+  <li>#559 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/559=
+">Note timing side channels</a> (by chris-wood) </li>
+ =20
+  <li>#558 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/558=
+">Remove alternative designs</a> (by chris-wood) </li>
+ =20
+  <li>#557 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/557=
+">Create a new ECH config extension registry</a> (by chris-wood) </li>
+ =20
+  <li>#556 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/556=
+">Cite draft-ietf-tls-svcb-ech for ECH in DNS</a> (by chris-wood) </li>
+  </ul>
+
+  <p>5 pull requests received 11 new comments:</p>
+  <ul>
+  <li>#566 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/566=
+">Add text describing deployment impacts of no SNI access</a> (3 by chris-w=
+ood, dennisjackson) </li>
+ =20
+  <li>#564 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/564=
+">Clarify attacker capabilities</a> (4 by chris-wood, dennisjackson, kazuho=
+) </li>
+ =20
+  <li>#562 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/562=
+">Punt on new transport connection specifics</a> (1 by chris-wood) </li>
+ =20
+  <li>#561 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/561=
+">Cross-implementation decisions may be differentiators</a> (1 by chris-woo=
+d) </li>
+ =20
+  <li>#560 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/560=
+">Note behavior and give an example alongside configurations</a> (2 by chri=
+s-wood, klinvill) </li>
+  </ul>
+
+  <p>10 pull requests merged:</p>
+  <ul>
+  <li>#561 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/561=
+">Cross-implementation decisions may be differentiators</a> </li>
+ =20
+  <li>#560 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/560=
+">Note behavior and give an example alongside configurations</a> </li>
+ =20
+  <li>#564 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/564=
+">Clarify attacker capabilities</a> </li>
+ =20
+  <li>#566 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/566=
+">Add text describing deployment impacts of no SNI access</a> </li>
+ =20
+  <li>#558 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/558=
+">Remove alternative designs</a> </li>
+ =20
+  <li>#557 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/557=
+">Create a new ECH config extension registry</a> </li>
+ =20
+  <li>#556 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/556=
+">Cite draft-ietf-tls-svcb-ech for ECH in DNS</a> </li>
+ =20
+  <li>#559 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/559=
+">Note timing side channels</a> </li>
+ =20
+  <li>#563 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/563=
+">TCP is not the only transport</a> </li>
+ =20
+  <li>#552 <a href=3D"https://github.com/tlswg/draft-ietf-tls-esni/pull/552=
+">Fix typo retry_configs</a> </li>
+  </ul>
+
+
+  <details>
+    <summary>Repositories tracked by this digest:</summary>
+<ul class=3D"repos">
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-semistatic-dh">htt=
+ps://github.com/tlswg/draft-ietf-tls-semistatic-dh</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate=
+">https://github.com/tlswg/draft-ietf-tls-md5-sha1-deprecate</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-esni">https://gith=
+ub.com/tlswg/draft-ietf-tls-esni</a></li>
+  <li><a href=3D"https://github.com/tlswg/certificate-compression">https://=
+github.com/tlswg/certificate-compression</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-external-psk-impor=
+ter">https://github.com/tlswg/draft-ietf-tls-external-psk-importer</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-ticketrequest">htt=
+ps://github.com/tlswg/draft-ietf-tls-ticketrequest</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls13-spec">https://github.com/tl=
+swg/tls13-spec</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-flags">https://github.com/tls=
+wg/tls-flags</a></li>
+  <li><a href=3D"https://github.com/tlswg/dtls13-spec">https://github.com/t=
+lswg/dtls13-spec</a></li>
+  <li><a href=3D"https://github.com/tlswg/dtls-conn-id">https://github.com/=
+tlswg/dtls-conn-id</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-subcerts">https://github.com/=
+tlswg/tls-subcerts</a></li>
+  <li><a href=3D"https://github.com/tlswg/oldversions-deprecate">https://gi=
+thub.com/tlswg/oldversions-deprecate</a></li>
+  <li><a href=3D"https://github.com/tlswg/sniencryption">https://github.com=
+/tlswg/sniencryption</a></li>
+  <li><a href=3D"https://github.com/tlswg/tls-exported-authenticator">https=
+://github.com/tlswg/tls-exported-authenticator</a></li>
+  <li><a href=3D"https://github.com/tlswg/draft-ietf-tls-ctls">https://gith=
+ub.com/tlswg/draft-ietf-tls-ctls</a></li>
+  <li><a href=3D"https://github.com/tlswg/external-psk-design-team">https:/=
+/github.com/tlswg/external-psk-design-team</a></li>
+</ul>
+</details>
+</body>
+</html>
+
+--===============8380838953041365446==--
+

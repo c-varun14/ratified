@@ -1,0 +1,233 @@
+Return-Path: <ekr@rtfm.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 68BE51273B1
+ for <tls@ietfa.amsl.com>; Thu,  1 Mar 2018 05:38:58 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.899
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.899 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_NONE=-0.0001]
+ autolearn=unavailable autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=rtfm-com.20150623.gappssmtp.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id GN3cPPdTZChX for <tls@ietfa.amsl.com>;
+ Thu,  1 Mar 2018 05:38:57 -0800 (PST)
+Received: from mail-qt0-x234.google.com (mail-qt0-x234.google.com
+ [IPv6:2607:f8b0:400d:c0d::234])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 39A6A12785F
+ for <tls@ietf.org>; Thu,  1 Mar 2018 05:38:56 -0800 (PST)
+Received: by mail-qt0-x234.google.com with SMTP id m13so7478187qtg.13
+ for <tls@ietf.org>; Thu, 01 Mar 2018 05:38:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=rtfm-com.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+ :cc; bh=T8H9ICbPybdphVZZTC4eeMjdsp68lc3kxADP5m5AZVI=;
+ b=SiMDm55EOnL+At+jId0Wxeu5VViawPE6U9J8VhzMmWdh+VLIBLKgRltQqW4ilJ6CLD
+ kcTtot46L8m2TKcqR23f7ujZ8+WyBySkG7dANMOL7bcT5eTtFaSehUvH6qI6TOpsD0Kx
+ /h9RLeIzlrb+rfQTrIe3MpWKuLDPngLIdjP0PucSYJWXuNuWSt/6cy0HgSvN8XboJyAK
+ ORT+jvqHvw1dLgAPqKR8FIIPi+6ASAASrrCc7LXSOIn4w+YtBL/N1zi1BqbNOk7dgbMe
+ d/ilpJmVFzhrQWj46HMrpA0X19mxln9yCPn/qobmF6i7qDKRU1TviXb/gxJZ+sAQ5Zz6
+ lLCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+ :message-id:subject:to:cc;
+ bh=T8H9ICbPybdphVZZTC4eeMjdsp68lc3kxADP5m5AZVI=;
+ b=AelU42s/2FQhzmgNXtaG2/lsLdeUbKuqlVX/alyJVEoa/z/v4vOyzmRz61WF3OjHJN
+ txm8C0we+Fe19f4GJ8nzaU6totVSTGye6bdFENBIRTiAKAeott5Xd34Ia1a/NZm4scQH
+ qeth7j6TlfAntqputqD8pWhRqssgvXilPyKCD9e2oaXVzjeDXPWBTtBQknVbGi6gloXx
+ u1JEF44WUblI6aFxterzFrm6xfohdeHKG3P5j9iNiRaqNMHA0yCcXAhJ/KDzoWaGHB11
+ 47g4PPfmK9Q9WV/+W9+YKgH1fL8aC902h4ijgdOuD6KR9O9o37c6+/J8HHZR5E/gCXNX
+ VzYQ==
+X-Gm-Message-State: AElRT7Et4m1EXGXjHEtrQvkA3JGZZW/FX2hB4fJXrYFxHS3udXfstBrZ
+ esAQXLDuh1GSGuRQrfGy3pNlJojVpbhxydxqN+DbXA==
+X-Google-Smtp-Source: AG47ELtiN0c/TxWw+piZckyDsN1CTKqUA6SKaNTds+s7uPAhPdO71YX4mjHsZsOq10jKCOfXGpOdg9oKkeumwMbBfMU=
+X-Received: by 10.200.13.75 with SMTP id r11mr3017655qti.133.1519911535210;
+ Thu, 01 Mar 2018 05:38:55 -0800 (PST)
+MIME-Version: 1.0
+Received: by 10.200.37.176 with HTTP; Thu, 1 Mar 2018 05:38:14 -0800 (PST)
+In-Reply-To: <1519910691.19043.48.camel@redhat.com>
+References: <1519910691.19043.48.camel@redhat.com>
+From: Eric Rescorla <ekr@rtfm.com>
+Date: Thu, 1 Mar 2018 05:38:14 -0800
+Message-ID: <CABcZeBOEOdGXpHYM4NNgYEeh1jO2H9UErKD3ncHGHy6V+eacKw@mail.gmail.com>
+To: Nikos Mavrogiannopoulos <nmav@redhat.com>
+Cc: IETF discussion list <ietf@ietf.org>, draft-ietf-tls-tls13@ietf.org, 
+ "<tls@ietf.org>" <tls@ietf.org>
+Content-Type: multipart/alternative; boundary="089e08229d68258642056659fba8"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/GKKKQLhUUlO7qMtXubJVaT6V-z8>
+Subject: Re: [TLS] draft-ietf-tls-tls13-24 supported_versions complexity
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Thu, 01 Mar 2018 13:38:58 -0000
+
+--089e08229d68258642056659fba8
+Content-Type: text/plain; charset="UTF-8"
+
+On Thu, Mar 1, 2018 at 5:24 AM, Nikos Mavrogiannopoulos <nmav@redhat.com>
+wrote:
+
+> The TLS draft after version -21 requires TLS1.3 servers to negotiate
+> pre-TLS1.3 versions with a new, mechanism. The document states:
+>
+>    "If this extension is present, servers MUST ignore the
+>    ClientHello.legacy_version value and MUST use only the
+>    "supported_versions" extension to determine client preferences."
+>
+> ...
+>
+>    "Note that this mechanism makes it possible to negotiate a
+>    version prior to TLS 1.2 if one side supports a sparse range."
+>
+>
+> At this point, a server receiving a supported_versions extension which
+> contains the single value 'TLS 1.0' has to follow the draft's
+> recommendations and do:
+>
+>   1. It MUST set the ServerHello.legacy_version field to 0x0303
+>      (TLS 1.2).
+>   2. On the serverHello extensions include a supported_versions
+>      extension and advertise TLS1.0
+>
+> That modifies the way TLS 1.1  or TLS 1.0 are negotiated, possibly
+> introducing new issues with middle-boxes which see TLS1.2 in the
+> ServerHello but TLS1.0 anywhere else. That is also a quite impossible
+> code path (why would an implementation negotiate TLS1.0 using a TLS1.3
+> mechanism?).
+
+
+The text you quote explains how this can happen:
+- A supports TLS 1.1 and TLS 1.3 draft X
+- B supports TLS 1.1 and TLS 1.3 draft Y
+
+
+
+> It is however anticipated to be used for that purpose as
+> this draft mentions:
+>
+>    "Servers should be prepared to receive ClientHellos that include
+>     this extension but do not include 0x0304 in the list of versions."
+>
+
+It's been a while, but I believe this text was actually put in to allow for
+the case that clients support TLS 1.3 draft versions but not TLS 1.3 RFC.
+
+
+My recommendation to address that would to either ignore that extension
+> if pre-TLS1.2 is negotiated, or revert to -21 draft behavior for pre-
+> TLS1.3 protocol negotiation. That is, the server MUST not send the
+> supported_versions extension if a pre-TLS1.3 protocol is to be
+> negotiated. The first case ensures that there is a single way to
+> negotiate TLS1.x, where x<3, and the second that the clientHello
+> extension is only used informatively.
+>
+
+I'm not in favor of either of these changes at this time. IMO it's more
+straightforward to have an immediate branch on the presence of the
+extension and then use only that.
+
+-Ekr
+
+
+
+
+> regards,
+> Nikos
+>
+>
+
+--089e08229d68258642056659fba8
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div class=3D"gmail_extra"><div class=3D"gmail_quote">On T=
+hu, Mar 1, 2018 at 5:24 AM, Nikos Mavrogiannopoulos <span dir=3D"ltr">&lt;<=
+a href=3D"mailto:nmav@redhat.com" target=3D"_blank">nmav@redhat.com</a>&gt;=
+</span> wrote:<br><blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .=
+8ex;border-left:1px #ccc solid;padding-left:1ex">The TLS draft after versio=
+n -21 requires TLS1.3 servers to negotiate<br>
+pre-TLS1.3 versions with a new, mechanism. The document states:<br>
+<br>
+=C2=A0 =C2=A0&quot;If this extension is present, servers MUST ignore the<br=
+>
+=C2=A0 =C2=A0ClientHello.legacy_version value and MUST use only the<br>
+=C2=A0 =C2=A0&quot;supported_versions&quot; extension to determine client p=
+references.&quot;<br>
+<br>
+...<br>
+<br>
+=C2=A0 =C2=A0&quot;Note that this mechanism makes it possible to negotiate =
+a<br>
+=C2=A0 =C2=A0version prior to TLS 1.2 if one side supports a sparse range.&=
+quot;<br>
+<br>
+<br>
+At this point, a server receiving a supported_versions extension which<br>
+contains the single value &#39;TLS 1.0&#39; has to follow the draft&#39;s<b=
+r>
+recommendations and do:<br>
+<br>
+=C2=A0 1. It MUST set the ServerHello.legacy_version field to 0x0303<br>
+=C2=A0 =C2=A0 =C2=A0(TLS 1.2).<br>
+=C2=A0 2. On the serverHello extensions include a supported_versions<br>
+=C2=A0 =C2=A0 =C2=A0extension and advertise TLS1.0<br>
+<br>
+That modifies the way TLS 1.1=C2=A0 or TLS 1.0 are negotiated, possibly<br>
+introducing new issues with middle-boxes which see TLS1.2 in the<br>
+ServerHello but TLS1.0 anywhere else. That is also a quite impossible<br>
+code path (why would an implementation negotiate TLS1.0 using a TLS1.3<br>
+mechanism?).</blockquote><div><br></div><div>The text you quote explains ho=
+w this can happen:</div><div>- A supports TLS 1.1 and TLS 1.3 draft X</div>=
+<div>- B supports TLS 1.1 and TLS 1.3 draft Y</div><div><br></div><div>=C2=
+=A0<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;b=
+order-left:1px #ccc solid;padding-left:1ex"> It is however anticipated to b=
+e used for that purpose as<br>
+this draft mentions:<br>
+<br>
+=C2=A0 =C2=A0&quot;Servers should be prepared to receive ClientHellos that =
+include<br>
+=C2=A0 =C2=A0 this extension but do not include 0x0304 in the list of versi=
+ons.&quot;<br></blockquote><div><br></div><div>It&#39;s been a while, but I=
+ believe this text was actually put in to allow for</div><div>the case that=
+ clients support TLS 1.3 draft versions but not TLS 1.3 RFC.</div><div><br>=
+</div><div><br></div><blockquote class=3D"gmail_quote" style=3D"margin:0 0 =
+0 .8ex;border-left:1px #ccc solid;padding-left:1ex">
+My recommendation to address that would to either ignore that extension<br>
+if pre-TLS1.2 is negotiated, or revert to -21 draft behavior for pre-<br>
+TLS1.3 protocol negotiation. That is, the server MUST not send the<br>
+supported_versions extension if a pre-TLS1.3 protocol is to be<br>
+negotiated. The first case ensures that there is a single way to<br>
+negotiate TLS1.x, where x&lt;3, and the second that the clientHello<br>
+extension is only used informatively.<br></blockquote><div><br></div><div>I=
+&#39;m not in favor of either of these changes at this time. IMO it&#39;s m=
+ore</div><div>straightforward to have an immediate branch on the presence o=
+f the</div><div>extension and then use only that.</div><div><br></div><div>=
+-Ekr</div><div>=C2=A0</div><div><br></div><div><br></div><blockquote class=
+=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padd=
+ing-left:1ex">
+<br>
+regards,<br>
+Nikos<br>
+<br>
+</blockquote></div><br></div></div>
+
+--089e08229d68258642056659fba8--
+

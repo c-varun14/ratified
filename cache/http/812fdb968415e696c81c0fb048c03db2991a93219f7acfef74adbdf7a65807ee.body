@@ -1,0 +1,750 @@
+From nobody Mon Sep 28 04:12:42 2020
+Return-Path: <pascal.urien@gmail.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id E29C73A0FD9;
+ Mon, 28 Sep 2020 04:12:39 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.097
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.097 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, FREEMAIL_FROM=0.001,
+ HTML_MESSAGE=0.001, SPF_HELO_NONE=0.001, SPF_PASS=-0.001,
+ URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=gmail.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id J6LGWEIkbMrG; Mon, 28 Sep 2020 04:12:37 -0700 (PDT)
+Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com
+ [IPv6:2607:f8b0:4864:20::932])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id A22F53A0FD5;
+ Mon, 28 Sep 2020 04:12:37 -0700 (PDT)
+Received: by mail-ua1-x932.google.com with SMTP id h15so2043975uab.3;
+ Mon, 28 Sep 2020 04:12:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025; 
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=zXbSFzJiiaHbykE/sHIr5OAzY6O07LP4ICpR7M74nrk=;
+ b=Uqnw8vGruwUqqHNmRuGJ32xiU6yhJw1Bvi7cda54oACe8Vz2hUL13JqAV9j5W44gRa
+ fvrUoWPpmcYgNyHLogQrwFQ93d2SQHULzWFtMLn8syx1ICBhoYzd1JAS8SWsbpU6nhff
+ 4i0iSZ0Q4difiVNypj6MdTuFLsCLS2EuDjpPDPlhFBz2ZB7m7465Mg9SMpckJAIdLDB6
+ yDztISjlDTUGSom8iHVL8OVScmNTH2aQtAdbVlje6b6huriBYwXSxH+tqMwU/EoA5pXS
+ BuZSFwjidgPPF7w+Je8flUHtE71Bhykc2Yeq4wPSSRL7RLNk5OHgUEV/C54L5qGTcSIm
+ NIQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=zXbSFzJiiaHbykE/sHIr5OAzY6O07LP4ICpR7M74nrk=;
+ b=pSMQclKFndoY3Db0ordIi9I9t14tXQRna96yIJInMVeDpHE3vZ39S++u2Utibf8cfJ
+ 7XH3WnegnnI9iiTgC77LBaM+INKaffDlvkCvj1pWV0OU2nMZWcmffFLMjbwc2Is0CJjB
+ LdPbMMnuuvlIVTKpjm7qhxvoYOD4ryAhE+nlLYFc9Y2aWzEToIL+BXA+GhaXiQdo2Kz1
+ FDOIL0TVOU4Y9yTWSXvSBEDlI5IbQWjLf2K2bcmKrE+aMwUp0GCnbx0NaBxLKJwoS9UK
+ BPPlwWcSQ3zQuYPJh3L+Yn3ME56HcbPeFJUiFiT0zOFTmIwwC8iWBov2DlhwNK5JbgeP
+ i1/w==
+X-Gm-Message-State: AOAM531RLBs+DxV8CFSVwD/UBQO/QNt+tB6Vbyow1zw/ZA4o0wnJ0+Uy
+ Kq2ki8FXTLKT4Y3K+nWQxsgrEnj0QuY/1hrDOrJWZO921v9wiA==
+X-Google-Smtp-Source: ABdhPJydpKEhc5UTN8iIsjhng2zTkaQo7NKEcIzdhGvxl4A7Lj3JOCV5dW3G5MoiRWivlx4lfd6IO6PakfLS6SUNYws=
+X-Received: by 2002:a9f:35e3:: with SMTP id u32mr254549uad.99.1601291556528;
+ Mon, 28 Sep 2020 04:12:36 -0700 (PDT)
+MIME-Version: 1.0
+References: <77039F11-188E-4408-8B39-57B908DDCB80@ericsson.com>
+ <1600516093048.75181@cs.auckland.ac.nz>
+ <2f2ecb30-bef5-414a-8ff7-d707d773c7ea@www.fastmail.com>
+ <AM0PR08MB3716AAADBE7D2A6F3E29664BFA3A0@AM0PR08MB3716.eurprd08.prod.outlook.com>
+ <CAEQGKXQdVO_SAVT1kciiH1EgQqenaYDeXnFD9gfa3BKTNFBjig@mail.gmail.com>
+ <AM0PR08MB3716D1CD8D13C68C91ADE322FA3A0@AM0PR08MB3716.eurprd08.prod.outlook.com>
+ <CAEQGKXS-HyESGOU9iiYCXKdJk-wMkDnO4eYK2iVs21E3gtVOPQ@mail.gmail.com>
+ <AM0PR08MB3716239A095ED0F7D6072CE4FA3A0@AM0PR08MB3716.eurprd08.prod.outlook.com>
+ <CAEQGKXQ9aNOYtRT8ZUbWT81wjYeqZzQOx_McSefTedG6Lpbr_A@mail.gmail.com>
+ <CAEQGKXSA6SgGqxUbwik3twesNC+zFm+ek3f+5rjbAQBm_bz0Zg@mail.gmail.com>
+ <AM0PR08MB37164FAB5CF915CF69401A9FFA3A0@AM0PR08MB3716.eurprd08.prod.outlook.com>
+ <CAEQGKXT3SURvBa52w6H1j8cNbfpzLJg6yEg1wTxpM+0ZQGpTYQ@mail.gmail.com>
+ <AM0PR08MB37167874EF77202D6ECE0A23FA3A0@AM0PR08MB3716.eurprd08.prod.outlook.com>
+In-Reply-To: <AM0PR08MB37167874EF77202D6ECE0A23FA3A0@AM0PR08MB3716.eurprd08.prod.outlook.com>
+From: Pascal Urien <pascal.urien@gmail.com>
+Date: Mon, 28 Sep 2020 13:12:23 +0200
+Message-ID: <CAEQGKXQrWw94CahjodXOY-o-E3URcHt9izpzqkJcwDzNqussLw@mail.gmail.com>
+To: Hannes Tschofenig <Hannes.Tschofenig@arm.com>
+Cc: tls@ietf.org, uta@ietf.org
+Content-Type: multipart/alternative; boundary="00000000000068a42f05b05dbe42"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/8Nu8P0UfLq2tAz23FsB1d0xdfdI>
+Subject: Re: [TLS] The future of external PSK in TLS 1.3
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Mon, 28 Sep 2020 11:12:40 -0000
+
+--00000000000068a42f05b05dbe42
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Hi Hannes
+
+The TLS-SE code is now published
+ https://github.com/purien/TLS-SE
+
+It also comprises software tools for testing
+
+This code is a TLS1.3 ECDH-PSK server for a javacard as specified in
+https://tools.ietf.org/html/draft-urien-tls-se-01
+
+It has been tested with several javacard 3.04
+
+This code also implements https://tools.ietf.org/html/draft-urien-tls-im-03
+
+Pascal
+
+
+Le lun. 21 sept. 2020 =C3=A0 17:05, Hannes Tschofenig <Hannes.Tschofenig@ar=
+m.com>
+a =C3=A9crit :
+
+>
+>
+> Ping me when it becomes available or post a link to the UTA mailing list.
+>
+>
+>
+> *From:* Pascal Urien <pascal.urien@gmail.com>
+> *Sent:* Monday, September 21, 2020 4:18 PM
+> *To:* Hannes Tschofenig <Hannes.Tschofenig@arm.com>
+> *Subject:* Re: [TLS] The future of external PSK in TLS 1.3
+>
+>
+>
+> Not at this moment but the code will be pusblished on github
+>
+>
+>
+> Le lun. 21 sept. 2020 =C3=A0 15:30, Hannes Tschofenig <
+> Hannes.Tschofenig@arm.com> a =C3=A9crit :
+>
+> Thanks for the details.
+>
+>
+>
+> Is the code for the tls13 server on the javacard open source?
+>
+>
+>
+> Ciao
+>
+> Hannes
+>
+>
+>
+>
+>
+> *From:* Pascal Urien <pascal.urien@gmail.com>
+> *Sent:* Monday, September 21, 2020 2:54 PM
+> *To:* Hannes Tschofenig <Hannes.Tschofenig@arm.com>
+> *Cc:* Filippo Valsorda <filippo@ml.filippo.io>; tls@ietf.org
+> *Subject:* Re: [TLS] The future of external PSK in TLS 1.3
+>
+>
+>
+> tls-se memory footprint is
+>
+> flash =E3=80=8A 40KB
+>
+> ram   =E3=80=8A 1KB
+>
+>
+>
+> time to open a tls session 1.4 seconds
+>
+>
+>
+>
+>
+> Le lun. 21 sept. 2020 =C3=A0 14:47, Pascal Urien <pascal.urien@gmail.com>=
+ a
+> =C3=A9crit :
+>
+> hi Hannes
+>
+>
+>
+> no openssl or wolfssl are used as client in order to check
+> interoperability with tls-se server
+>
+>
+>
+> tls-se is of course a specific impl=C3=A9mentation for tls13 server in
+> javacard..it is written in java but an =C3=B4ter impl=C3=A9mentation is w=
+ritten in c
+> for constraint notes. as written in the draft tls-se implementation has
+> three software blocks: crypto lib, tls state machine, and tls lib
+>
+>
+>
+>
+>
+>
+>
+> Le lun. 21 sept. 2020 =C3=A0 14:36, Hannes Tschofenig <
+> Hannes.Tschofenig@arm.com> a =C3=A9crit :
+>
+> Hi Pascal,
+>
+>
+>
+> are you saying that the stack on the secure element uses WolfSSL or
+> OpenSSL? I am sure that WolfSSL works well but for code size reasons I
+> doubt OpenSSL is possible. Can you confirm?
+>
+>
+>
+> In case of WolfSSL, you have multiple options for credentials, including
+> plain PSK, PSK-ECDHE, raw public keys, and certificates as I noted in my
+> mail to the UTA list:
+>
+> https://mailarchive.ietf.org/arch/msg/uta/RJ4wU77D6f7qslfwrc16jkrPTew/
+>
+>
+>
+> Ciao
+>
+> Hannes
+>
+>
+>
+> *From:* Pascal Urien <pascal.urien@gmail.com>
+> *Sent:* Monday, September 21, 2020 2:01 PM
+> *To:* Hannes Tschofenig <Hannes.Tschofenig@arm.com>
+> *Cc:* Filippo Valsorda <filippo@ml.filippo.io>; tls@ietf.org
+> *Subject:* Re: [TLS] The future of external PSK in TLS 1.3
+>
+>
+>
+> Hi Hannes
+>
+>
+>
+> Yes it has been tested with several  3.04 Javacards  commercially availab=
+le
+>
+>
+>
+> In the draft https://tools.ietf.org/html/draft-urien-tls-se-00   Section
+> 5-ISO 7816 Use Case, the exchanges are done with the existing implementat=
+ion
+>
+>
+>
+> TLS-SE TLS1.3 PSK+ECDH server works with ESP8266 or Arduino+Ethernet
+> boards
+>
+>
+>
+> For client software we use OPENSSL or WolfSSL
+>
+>
+>
+> Pascal
+>
+>
+>
+>
+>
+>
+>
+>
+>
+> Le lun. 21 sept. 2020 =C3=A0 12:35, Hannes Tschofenig <
+> Hannes.Tschofenig@arm.com> a =C3=A9crit :
+>
+> Hi Pascal,
+>
+> Thanks for the pointer to the draft.
+>
+> Since I am surveying implementations for the update of RFC 7925 (see
+> https://datatracker.ietf.org/doc/draft-ietf-uta-tls13-iot-profile/) I was
+> wondering whether there is an implementation of this approach.
+>
+> Ciao
+> Hannes
+>
+>
+> From: Pascal Urien <pascal.urien@gmail.com>
+> Sent: Monday, September 21, 2020 11:44 AM
+> To: Hannes Tschofenig <Hannes.Tschofenig@arm.com>
+> Cc: Filippo Valsorda <filippo@ml.filippo.io>; tls@ietf.org
+> Subject: Re: [TLS] The future of external PSK in TLS 1.3
+>
+> Hi All
+>
+> Here is an example of PSK+ECDHE for IoT
+>
+> https://tools.ietf.org/html/draft-urien-tls-se-00  uses TLS1.3 server
+> PSK+ECDHE for secure elements
+>
+> The security level in these devices is as high as EAL5+
+>
+> The computing time is about 1.4s for a PSK+ECDHE session (AES-128-CCM, +
+> secp256r1)
+>
+> The real critical resource is the required RAM size, less than 1KB in our
+> experiments
+>
+> The secure element  only needs a classical TCP/IP interface (i.e. sockets
+> like)
+>
+> Trusted PSK should avoid selfie attacks
+>
+> Pascal
+>
+>
+>
+> Le lun. 21 sept. 2020 =C3=A0 11:29, Hannes Tschofenig <mailto:
+> Hannes.Tschofenig@arm.com> a =C3=A9crit :
+> Hi Filippo,
+>
+> =E2=80=A2 Indeed, if the SCADA industry has a particular need, they shoul=
+d profile
+> TLS for use in that industry, and not require we change the recommendatio=
+n
+> for the open Internet.
+>
+> We have an IoT profile for TLS and it talks about the use of PSK, see
+> https://tools.ietf.org/html/rfc7925
+>
+> On the =E2=80=9Copen Internet=E2=80=9D (probably referring to the Web usa=
+ge) you are not
+> going to use PSKs in TLS. There is a separate RFC that provides
+> recommendations for that environmnent, see RFC 752. That RFC is currently
+> being revised, see
+> https://datatracker.ietf.org/doc/draft-sheffer-uta-rfc7525bis/
+>
+> Ciao
+> Hannes
+>
+> IMPORTANT NOTICE: The contents of this email and any attachments are
+> confidential and may also be privileged. If you are not the intended
+> recipient, please notify the sender immediately and do not disclose the
+> contents to any other person, use it for any purpose, or store or copy th=
+e
+> information in any medium. Thank you.
+> _______________________________________________
+> TLS mailing list
+> mailto:TLS@ietf.org
+> https://www.ietf.org/mailman/listinfo/tls
+> IMPORTANT NOTICE: The contents of this email and any attachments are
+> confidential and may also be privileged. If you are not the intended
+> recipient, please notify the sender immediately and do not disclose the
+> contents to any other person, use it for any purpose, or store or copy th=
+e
+> information in any medium. Thank you.
+>
+> IMPORTANT NOTICE: The contents of this email and any attachments are
+> confidential and may also be privileged. If you are not the intended
+> recipient, please notify the sender immediately and do not disclose the
+> contents to any other person, use it for any purpose, or store or copy th=
+e
+> information in any medium. Thank you.
+>
+> IMPORTANT NOTICE: The contents of this email and any attachments are
+> confidential and may also be privileged. If you are not the intended
+> recipient, please notify the sender immediately and do not disclose the
+> contents to any other person, use it for any purpose, or store or copy th=
+e
+> information in any medium. Thank you.
+>
+> IMPORTANT NOTICE: The contents of this email and any attachments are
+> confidential and may also be privileged. If you are not the intended
+> recipient, please notify the sender immediately and do not disclose the
+> contents to any other person, use it for any purpose, or store or copy th=
+e
+> information in any medium. Thank you.
+>
+
+--00000000000068a42f05b05dbe42
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">Hi Hannes<div><br></div><div>The TLS-SE code is now publis=
+hed</div><div>=C2=A0<a href=3D"https://github.com/purien/TLS-SE">https://gi=
+thub.com/purien/TLS-SE</a><br></div><div><br></div><div>It also comprises s=
+oftware tools for testing</div><div><br></div><div>This code is a TLS1.3 EC=
+DH-PSK server for a javacard as specified in=C2=A0<a href=3D"https://tools.=
+ietf.org/html/draft-urien-tls-se-01">https://tools.ietf.org/html/draft-urie=
+n-tls-se-01</a></div><div><br></div><div>It has been tested=C2=A0with sever=
+al javacard 3.04=C2=A0</div><div><br></div><div>This code also implements=
+=C2=A0<a href=3D"https://tools.ietf.org/html/draft-urien-tls-im-03">https:/=
+/tools.ietf.org/html/draft-urien-tls-im-03</a></div><div><br></div><div>Pas=
+cal</div><div><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
+r" class=3D"gmail_attr">Le=C2=A0lun. 21 sept. 2020 =C3=A0=C2=A017:05, Hanne=
+s Tschofenig &lt;<a href=3D"mailto:Hannes.Tschofenig@arm.com">Hannes.Tschof=
+enig@arm.com</a>&gt; a =C3=A9crit=C2=A0:<br></div><blockquote class=3D"gmai=
+l_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,20=
+4,204);padding-left:1ex">
+
+
+
+
+
+<div lang=3D"EN-US">
+<div class=3D"gmail-m_-4416413999195482041WordSection1">
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+<p class=3D"MsoNormal">Ping me when it becomes available or post a link to =
+the UTA mailing list.
+<u></u><u></u></p>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+<div style=3D"border-right:none;border-bottom:none;border-left:none;border-=
+top:1pt solid rgb(225,225,225);padding:3pt 0in 0in">
+<p class=3D"MsoNormal"><b>From:</b> Pascal Urien &lt;<a href=3D"mailto:pasc=
+al.urien@gmail.com" target=3D"_blank">pascal.urien@gmail.com</a>&gt; <br>
+<b>Sent:</b> Monday, September 21, 2020 4:18 PM<br>
+<b>To:</b> Hannes Tschofenig &lt;<a href=3D"mailto:Hannes.Tschofenig@arm.co=
+m" target=3D"_blank">Hannes.Tschofenig@arm.com</a>&gt;<br>
+<b>Subject:</b> Re: [TLS] The future of external PSK in TLS 1.3<u></u><u></=
+u></p>
+</div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+<div>
+<p class=3D"MsoNormal">Not at this moment but the code will be pusblished o=
+n github<u></u><u></u></p>
+</div>
+<p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p>
+<div>
+<div>
+<p class=3D"MsoNormal">Le lun. 21 sept. 2020 =C3=A0 15:30, Hannes Tschofeni=
+g &lt;<a href=3D"mailto:Hannes.Tschofenig@arm.com" target=3D"_blank">Hannes=
+.Tschofenig@arm.com</a>&gt; a =C3=A9crit=C2=A0:<u></u><u></u></p>
+</div>
+<blockquote style=3D"border-top:none;border-right:none;border-bottom:none;b=
+order-left:1pt solid rgb(204,204,204);padding:0in 0in 0in 6pt;margin-left:4=
+.8pt;margin-right:0in">
+<div>
+<div>
+<p class=3D"MsoNormal">Thanks for the details.
+<u></u><u></u></p>
+<p class=3D"MsoNormal">=C2=A0<u></u><u></u></p>
+<p class=3D"MsoNormal">Is the code for the tls13 server on the javacard ope=
+n source?
+<u></u><u></u></p>
+<p class=3D"MsoNormal">=C2=A0<u></u><u></u></p>
+<p class=3D"MsoNormal">Ciao<u></u><u></u></p>
+<p class=3D"MsoNormal">Hannes<u></u><u></u></p>
+<p class=3D"MsoNormal">=C2=A0<u></u><u></u></p>
+<p class=3D"MsoNormal">=C2=A0<u></u><u></u></p>
+<div style=3D"border-right:none;border-bottom:none;border-left:none;border-=
+top:1pt solid rgb(225,225,225);padding:3pt 0in 0in">
+<p class=3D"MsoNormal"><b>From:</b> Pascal Urien &lt;<a href=3D"mailto:pasc=
+al.urien@gmail.com" target=3D"_blank">pascal.urien@gmail.com</a>&gt;
+<br>
+<b>Sent:</b> Monday, September 21, 2020 2:54 PM<br>
+<b>To:</b> Hannes Tschofenig &lt;<a href=3D"mailto:Hannes.Tschofenig@arm.co=
+m" target=3D"_blank">Hannes.Tschofenig@arm.com</a>&gt;<br>
+<b>Cc:</b> Filippo Valsorda &lt;<a href=3D"mailto:filippo@ml.filippo.io" ta=
+rget=3D"_blank">filippo@ml.filippo.io</a>&gt;;
+<a href=3D"mailto:tls@ietf.org" target=3D"_blank">tls@ietf.org</a><br>
+<b>Subject:</b> Re: [TLS] The future of external PSK in TLS 1.3<u></u><u></=
+u></p>
+</div>
+<p class=3D"MsoNormal">=C2=A0<u></u><u></u></p>
+<div>
+<p class=3D"MsoNormal">tls-se memory footprint is<u></u><u></u></p>
+<div>
+<p class=3D"MsoNormal">flash
+<span lang=3D"ZH-CN" style=3D"font-family:DengXian">=E3=80=8A</span> 40KB<u=
+></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">ram=C2=A0 =C2=A0<span lang=3D"ZH-CN" style=3D"font-f=
+amily:DengXian">=E3=80=8A</span> 1KB<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">=C2=A0<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">time to open a tls session 1.4 seconds<u></u><u></u>=
+</p>
+</div>
+<div>
+<p class=3D"MsoNormal">=C2=A0<u></u><u></u></p>
+</div>
+</div>
+<p class=3D"MsoNormal">=C2=A0<u></u><u></u></p>
+<div>
+<div>
+<p class=3D"MsoNormal">Le lun. 21 sept. 2020 =C3=A0 14:47, Pascal Urien &lt=
+;<a href=3D"mailto:pascal.urien@gmail.com" target=3D"_blank">pascal.urien@g=
+mail.com</a>&gt; a =C3=A9crit=C2=A0:<u></u><u></u></p>
+</div>
+<blockquote style=3D"border-top:none;border-right:none;border-bottom:none;b=
+order-left:1pt solid rgb(204,204,204);padding:0in 0in 0in 6pt;margin:5pt 0i=
+n 5pt 4.8pt">
+<div>
+<p class=3D"MsoNormal">hi Hannes<u></u><u></u></p>
+<div>
+<p class=3D"MsoNormal">=C2=A0<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">no openssl or wolfssl are used as client in order to=
+ check interoperability with tls-se server<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">=C2=A0<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">tls-se is of course a specific impl=C3=A9mentation f=
+or tls13 server in javacard..it is written in java but an =C3=B4ter impl=C3=
+=A9mentation is written in c for constraint notes. as written in
+ the draft tls-se implementation has three software blocks: crypto lib, tls=
+ state machine, and tls lib<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">=C2=A0<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">=C2=A0<u></u><u></u></p>
+</div>
+</div>
+<p class=3D"MsoNormal">=C2=A0<u></u><u></u></p>
+<div>
+<div>
+<p class=3D"MsoNormal">Le lun. 21 sept. 2020 =C3=A0 14:36, Hannes Tschofeni=
+g &lt;<a href=3D"mailto:Hannes.Tschofenig@arm.com" target=3D"_blank">Hannes=
+.Tschofenig@arm.com</a>&gt; a =C3=A9crit=C2=A0:<u></u><u></u></p>
+</div>
+<blockquote style=3D"border-top:none;border-right:none;border-bottom:none;b=
+order-left:1pt solid rgb(204,204,204);padding:0in 0in 0in 6pt;margin:5pt 0i=
+n 5pt 4.8pt">
+<div>
+<div>
+<p class=3D"MsoNormal">Hi Pascal,
+<u></u><u></u></p>
+<p class=3D"MsoNormal">=C2=A0<u></u><u></u></p>
+<p class=3D"MsoNormal">are you saying that the stack on the secure element =
+uses WolfSSL or OpenSSL? I am sure that WolfSSL works well but for code siz=
+e reasons I doubt OpenSSL is possible. Can you confirm?
+<u></u><u></u></p>
+<p class=3D"MsoNormal">=C2=A0<u></u><u></u></p>
+<p class=3D"MsoNormal">In case of WolfSSL, you have multiple options for cr=
+edentials, including plain PSK, PSK-ECDHE, raw public keys, and certificate=
+s as I noted in my mail to the UTA list:
+<u></u><u></u></p>
+<p class=3D"MsoNormal"><a href=3D"https://mailarchive.ietf.org/arch/msg/uta=
+/RJ4wU77D6f7qslfwrc16jkrPTew/" target=3D"_blank">https://mailarchive.ietf.o=
+rg/arch/msg/uta/RJ4wU77D6f7qslfwrc16jkrPTew/</a><u></u><u></u></p>
+<p class=3D"MsoNormal">=C2=A0<u></u><u></u></p>
+<p class=3D"MsoNormal">Ciao<u></u><u></u></p>
+<p class=3D"MsoNormal">Hannes<u></u><u></u></p>
+<p class=3D"MsoNormal">=C2=A0<u></u><u></u></p>
+<div style=3D"border-right:none;border-bottom:none;border-left:none;border-=
+top:1pt solid rgb(225,225,225);padding:3pt 0in 0in">
+<p class=3D"MsoNormal"><b>From:</b> Pascal Urien &lt;<a href=3D"mailto:pasc=
+al.urien@gmail.com" target=3D"_blank">pascal.urien@gmail.com</a>&gt;
+<br>
+<b>Sent:</b> Monday, September 21, 2020 2:01 PM<br>
+<b>To:</b> Hannes Tschofenig &lt;<a href=3D"mailto:Hannes.Tschofenig@arm.co=
+m" target=3D"_blank">Hannes.Tschofenig@arm.com</a>&gt;<br>
+<b>Cc:</b> Filippo Valsorda &lt;<a href=3D"mailto:filippo@ml.filippo.io" ta=
+rget=3D"_blank">filippo@ml.filippo.io</a>&gt;;
+<a href=3D"mailto:tls@ietf.org" target=3D"_blank">tls@ietf.org</a><br>
+<b>Subject:</b> Re: [TLS] The future of external PSK in TLS 1.3<u></u><u></=
+u></p>
+</div>
+<p class=3D"MsoNormal">=C2=A0<u></u><u></u></p>
+<div>
+<p class=3D"MsoNormal">Hi Hannes<u></u><u></u></p>
+<div>
+<p class=3D"MsoNormal">=C2=A0<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">Yes it has been tested with several=C2=A0 3.04 Javac=
+ards=C2=A0 commercially available<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">=C2=A0<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">In the draft
+<a href=3D"https://tools.ietf.org/html/draft-urien-tls-se-00" target=3D"_bl=
+ank">https://tools.ietf.org/html/draft-urien-tls-se-00</a>=C2=A0 =C2=A0Sect=
+ion 5-ISO 7816 Use Case, the exchanges are done with the existing implement=
+ation<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">=C2=A0<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">TLS-SE TLS1.3 PSK+ECDH server works with ESP8266 or =
+Arduino+Ethernet boards=C2=A0<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">=C2=A0<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">For client software=C2=A0we use OPENSSL or WolfSSL<u=
+></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">=C2=A0<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">Pascal<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">=C2=A0<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">=C2=A0<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"MsoNormal">=C2=A0<u></u><u></u></p>
+</div>
+</div>
+<p class=3D"MsoNormal">=C2=A0<u></u><u></u></p>
+<div>
+<div>
+<p class=3D"MsoNormal">Le=C2=A0lun. 21 sept. 2020 =C3=A0=C2=A012:35, Hannes=
+ Tschofenig &lt;<a href=3D"mailto:Hannes.Tschofenig@arm.com" target=3D"_bla=
+nk">Hannes.Tschofenig@arm.com</a>&gt; a =C3=A9crit=C2=A0:<u></u><u></u></p>
+</div>
+<blockquote style=3D"border-top:none;border-right:none;border-bottom:none;b=
+order-left:1pt solid rgb(204,204,204);padding:0in 0in 0in 6pt;margin:5pt 0i=
+n 5pt 4.8pt">
+<p class=3D"MsoNormal">Hi Pascal,<br>
+<br>
+Thanks for the pointer to the draft.<br>
+<br>
+Since I am surveying implementations for the update of RFC 7925 (see <a hre=
+f=3D"https://datatracker.ietf.org/doc/draft-ietf-uta-tls13-iot-profile/" ta=
+rget=3D"_blank">
+https://datatracker.ietf.org/doc/draft-ietf-uta-tls13-iot-profile/</a>) I w=
+as wondering whether there is an implementation of this approach.<br>
+<br>
+Ciao<br>
+Hannes<br>
+<br>
+<br>
+From: Pascal Urien &lt;<a href=3D"mailto:pascal.urien@gmail.com" target=3D"=
+_blank">pascal.urien@gmail.com</a>&gt;<br>
+Sent: Monday, September 21, 2020 11:44 AM<br>
+To: Hannes Tschofenig &lt;<a href=3D"mailto:Hannes.Tschofenig@arm.com" targ=
+et=3D"_blank">Hannes.Tschofenig@arm.com</a>&gt;<br>
+Cc: Filippo Valsorda &lt;<a href=3D"mailto:filippo@ml.filippo.io" target=3D=
+"_blank">filippo@ml.filippo.io</a>&gt;;
+<a href=3D"mailto:tls@ietf.org" target=3D"_blank">tls@ietf.org</a><br>
+Subject: Re: [TLS] The future of external PSK in TLS 1.3<br>
+<br>
+Hi All<br>
+<br>
+Here is an example of PSK+ECDHE for IoT<br>
+<br>
+<a href=3D"https://tools.ietf.org/html/draft-urien-tls-se-00" target=3D"_bl=
+ank">https://tools.ietf.org/html/draft-urien-tls-se-00</a>=C2=A0 uses TLS1.=
+3 server=C2=A0 PSK+ECDHE for secure elements<br>
+<br>
+The security level in these devices is as high as EAL5+<br>
+<br>
+The computing time is about 1.4s for a PSK+ECDHE session (AES-128-CCM, + se=
+cp256r1)<br>
+<br>
+The real critical resource is the required RAM size, less than 1KB in our e=
+xperiments<br>
+<br>
+The secure element=C2=A0 only needs a classical TCP/IP interface (i.e. sock=
+ets like)<br>
+<br>
+Trusted PSK should avoid selfie attacks<br>
+<br>
+Pascal<br>
+<br>
+<br>
+<br>
+Le lun. 21 sept. 2020 =C3=A0 11:29, Hannes Tschofenig &lt;mailto:<a href=3D=
+"mailto:Hannes.Tschofenig@arm.com" target=3D"_blank">Hannes.Tschofenig@arm.=
+com</a>&gt; a =C3=A9crit :<br>
+Hi Filippo,<br>
+<br>
+=E2=80=A2 Indeed, if the SCADA industry has a particular need, they should =
+profile TLS for use in that industry, and not require we change the recomme=
+ndation for the open Internet.<br>
+<br>
+We have an IoT profile for TLS and it talks about the use of PSK, see <a hr=
+ef=3D"https://tools.ietf.org/html/rfc7925" target=3D"_blank">
+https://tools.ietf.org/html/rfc7925</a><br>
+<br>
+On the =E2=80=9Copen Internet=E2=80=9D (probably referring to the Web usage=
+) you are not going to use PSKs in TLS. There is a separate RFC that provid=
+es recommendations for that environmnent, see RFC 752. That RFC is currentl=
+y being revised, see
+<a href=3D"https://datatracker.ietf.org/doc/draft-sheffer-uta-rfc7525bis/" =
+target=3D"_blank">
+https://datatracker.ietf.org/doc/draft-sheffer-uta-rfc7525bis/</a><br>
+<br>
+Ciao<br>
+Hannes<br>
+<br>
+IMPORTANT NOTICE: The contents of this email and any attachments are confid=
+ential and may also be privileged. If you are not the intended recipient, p=
+lease notify the sender immediately and do not disclose the contents to any=
+ other person, use it for any purpose,
+ or store or copy the information in any medium. Thank you.<br>
+_______________________________________________<br>
+TLS mailing list<br>
+mailto:<a href=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.org</a><b=
+r>
+<a href=3D"https://www.ietf.org/mailman/listinfo/tls" target=3D"_blank">htt=
+ps://www.ietf.org/mailman/listinfo/tls</a><br>
+IMPORTANT NOTICE: The contents of this email and any attachments are confid=
+ential and may also be privileged. If you are not the intended recipient, p=
+lease notify the sender immediately and do not disclose the contents to any=
+ other person, use it for any purpose,
+ or store or copy the information in any medium. Thank you.<u></u><u></u></=
+p>
+</blockquote>
+</div>
+</div>
+<p class=3D"MsoNormal">IMPORTANT NOTICE: The contents of this email and any=
+ attachments are confidential and may also be privileged. If you are not th=
+e intended recipient, please notify the sender immediately
+ and do not disclose the contents to any other person, use it for any purpo=
+se, or store or copy the information in any medium. Thank you.
+<u></u><u></u></p>
+</div>
+</blockquote>
+</div>
+</blockquote>
+</div>
+</div>
+<p class=3D"MsoNormal">IMPORTANT NOTICE: The contents of this email and any=
+ attachments are confidential and may also be privileged. If you are not th=
+e intended recipient, please notify the sender immediately and do not discl=
+ose the contents to any other person,
+ use it for any purpose, or store or copy the information in any medium. Th=
+ank you.
+<u></u><u></u></p>
+</div>
+</blockquote>
+</div>
+</div>
+IMPORTANT NOTICE: The contents of this email and any attachments are confid=
+ential and may also be privileged. If you are not the intended recipient, p=
+lease notify the sender immediately and do not disclose the contents to any=
+ other person, use it for any purpose,
+ or store or copy the information in any medium. Thank you.
+</div>
+
+</blockquote></div>
+
+--00000000000068a42f05b05dbe42--
+

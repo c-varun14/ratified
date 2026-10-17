@@ -1,0 +1,1229 @@
+Return-Path: <nick@cloudflare.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 141A4120694
+ for <tls@ietfa.amsl.com>; Mon, 29 Apr 2019 14:09:36 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2
+X-Spam-Level: 
+X-Spam-Status: No, score=-2 tagged_above=-999 required=5 tests=[BAYES_00=-1.9, 
+ DKIMWL_WL_HIGH=-0.001, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ DKIM_VALID_AU=-0.1, HTML_MESSAGE=0.001, RCVD_IN_DNSWL_NONE=-0.0001,
+ SPF_PASS=-0.001, URIBL_BLOCKED=0.001]
+ autolearn=unavailable autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=cloudflare.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 0jRtB8ELjBhE for <tls@ietfa.amsl.com>;
+ Mon, 29 Apr 2019 14:09:29 -0700 (PDT)
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
+ [IPv6:2a00:1450:4864:20::336])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 29DF3120145
+ for <tls@ietf.org>; Mon, 29 Apr 2019 14:09:28 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id h11so1062466wmb.5
+ for <tls@ietf.org>; Mon, 29 Apr 2019 14:09:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=cloudflare.com; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=MroX2Ew3lA0Jm6ZTRGl1byJtm3+TrAQnG2nTb9kxUAw=;
+ b=iMoMH1VWceXPlN6OvnqZSJbUsN0GaHlr8N4zxmWAk1V+ZyE2sTKfv4uUHv/WunbOgW
+ gKKCL1acTz406pAW7YOUw+owDj8JHYhuTZz8m+h4HR8jMfYYPf8nD40CBbUBccXh2fai
+ hCAaZ8/qcYHOWZVmGNgr5lJ0beqHkdnCv45LE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=MroX2Ew3lA0Jm6ZTRGl1byJtm3+TrAQnG2nTb9kxUAw=;
+ b=bPJhZo07BqF+dbsWuFj5Y44j1bB5GEK0QC1kSDNxpJlOf2iAZNQhBL8a34ORN4sh3z
+ Mf/FPJ8Y5kTTHFEp+q6bfBLUtpRO8LdJPoJWt2sNRgj70yhwckket0BUPRcECT/uklvl
+ 0VRTKnnlGCfjipQri7Fssd6fpBJI9dN0COylaRSueNv9AQPypkB/R2nz/qUMNSwnzUMt
+ qKpNSVDJOoqccCf3AlRHcXt3Wf/u9AIA0r/ww5oVjHwnhlLdG5DfZIjzK69s43ypot/5
+ vPKtbWGUPeMrOdS6ZQB2EMV1B3psqQTk49/msex98xs60cjDPxYF2TapGRXXuHohRRHw
+ Gxxg==
+X-Gm-Message-State: APjAAAXlBukSszFQ9DfO2AAxI5inqVTSdvde7ZgV9FXrJ/Cufhd7/7Yv
+ XvHLtmUiOxECOp/dbvI783fC9jkmmrs9C3RQgyCisw==
+X-Google-Smtp-Source: APXvYqxV3YpqSiI+20nt7Db0T4HAiVBAx1qh9z7xCMbNubktfIgjfOCY5wkWBkhdlwoZ0IzWcIceqckuYDUmERhpAdY=
+X-Received: by 2002:a7b:cc91:: with SMTP id p17mr648904wma.147.1556572165932; 
+ Mon, 29 Apr 2019 14:09:25 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190423182055.GC49657@kduck.mit.edu>
+In-Reply-To: <20190423182055.GC49657@kduck.mit.edu>
+From: Nick Sullivan <nick@cloudflare.com>
+Date: Mon, 29 Apr 2019 14:09:14 -0700
+Message-ID: <CAFDDyk_ZOpDnYMdT_PfoX0A3bLW7FzHj+gbRwf3vGepJTFEGRw@mail.gmail.com>
+To: Benjamin Kaduk <kaduk@mit.edu>
+Cc: draft-ietf-tls-exported-authenticator.all@ietf.org, 
+ "<tls@ietf.org>" <tls@ietf.org>
+Content-Type: multipart/alternative; boundary="00000000000004bb900587b1b3ca"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/BRJPqWhxiltBCJgxXZzRAfe3rcI>
+Subject: Re: [TLS] AD review of draft-ietf-tls-exported-authenticator-08
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Mon, 29 Apr 2019 21:09:36 -0000
+
+--00000000000004bb900587b1b3ca
+Content-Type: text/plain; charset="UTF-8"
+
+Ben,
+
+Thank you for the thorough review. I've added responses/comments inline and
+a PR to the spec https://github.com/tlswg/tls-exported-authenticator/pull/46.
+Feel free to respond in the PR for specific changes or on this thread for
+structural comments.
+
+On Tue, Apr 23, 2019 at 11:21 AM Benjamin Kaduk <kaduk@mit.edu> wrote:
+>
+> Hi all,
+>
+> I don't think there's anything earth-shattering in here; mostly just
+places
+> where we can tighten things up before it gets to a broader set of
+> reviewers.
+>
+> Thanks!
+>
+> -Ben
+>
+> Abstract, Introduction
+>
+> Maybe s/other party/peer/?
+
+How about:
+
+This document provides a way to authenticate one party of a Transport
+Layer Security (TLS) communication to its peer using a certificate
+
+> Section 1
+>
+>    This document provides a way to authenticate one party of a Transport
+>    Layer Security (TLS) communication to another using a certificate
+>    after the session has been established.  This allows both the client
+>    and server to prove ownership of additional identities at any time
+>    after the handshake has completed.  This proof of authentication can
+>    be exported and transmitted out of band from one party to be
+>    validated by the other party.
+>
+> We need to be careful about what exactly is being proved when, and how it
+> synchronizes (or doesn't) with other events/data.
+> This will be a general theme throughout...
+>
+>    multiple identities -  Endpoints that are authoritative for multiple
+>       identities - but do not have a single certificate that includes
+>       all of the identities - can authenticate with those identities
+>       over a single connection.
+>
+> (The RFC Editor will do two-hyphen em dashes.)
+> I didn't go back and reread the formal analysis that Jonathan sent out,
+> but my recollection was that the semantics around being "jointly
+> authoritative" over multiple identities are quite subtle, and that the
+> wording here may be doing the reader a disservice.
+
+
+Here's a suggested edit:
+can authenticate with those identities over a single connection ->
+can authenticate additional identities over a single connection
+
+Jonathan's analysis showed that the protocol provides "joint
+authentication" between the certificate used in the handshake and one added
+as an EA. It does not provide "joint authentication" between two EAs.
+That's a subtle point, but I think it maps cleanly to this text.
+
+
+>
+>
+>
+>    This document intends to replace much of the functionality of
+>    renegotiation in previous versions of TLS.  It has the advantages
+>    over renegotiation of not requiring additional on-the-wire changes
+>    during a connection.  For simplicity, only TLS 1.2 and later are
+>    supported.
+>
+> Well, renegotiation does many things.  We need to say why we claim that
+> renegotiation was widely used and for what purpose(s), and only then say
+> that we provide an alternative.
+> Also, the wording about "previous versions of TLS" is pretty vague -- is
+> it intended to be "prior to TLS 1.3"?
+
+
+Very good point.
+
+How about:
+  Versions of TLS prior to TLS 1.3 used renegotiation as a way to enable
+  post-handshake client authentication given an existing TLS connection.
+  The mechanism described in this document may be used to replace the
+  post-handshake authentication functionality provided by renegotiation.
+  Unlike renegotiation, exported Authenticator-based post-handshake
+  authentication does not require any on-the-wire changes.  For simplicity,
+  only TLS 1.2 and later are supported.
+
+>
+>
+>
+>    Post-handshake authentication is defined in TLS 1.3, but it has the
+>    disadvantage of requiring additional state to be stored in the TLS
+>    state machine and it composes poorly with multiplexed connection
+>    protocols like HTTP/2 [RFC7540].  It is also only available for
+>
+> We should probably be more explicit about "composes poorly" being due to
+> the authentication not being tied to a specific event at the higher
+> layer (among other things).
+
+
+How about:
+   Post-handshake authentication is defined in TLS 1.3, but it has the
+   disadvantage of requiring additional state to be stored in the TLS
+   state machine.  Furthermore, the authentication boundaries of TLS
+   1.3 post-handshake authentication align with TLS record boundaries,
+   which are often not aligned with the authentication boundaries of the
+   higher-layer protocol. For example, multiplexed connection protocols
+   like HTTP/2 [RFC7540] do not have a notion of which TLS record
+   a given message is a part of.
+
+>
+>
+> Section 3
+>
+>
+>    The authenticator request is a structured message that can be
+>    exported from either party of a TLS connection.  It can be
+>    transmitted to the other party of the TLS connection at the
+>    application layer.  The application layer protocol used to send the
+>    authenticator SHOULD use TLS as its underlying transport to keep the
+>    request confidential.
+>
+> Also to indicate which TLS connection to pull key material from?
+
+How about:
+   The authenticator request is a structured message that can be
+   created by either party of a TLS connection using data exported
+   from that connection.
+
+>
+>    This message does not include the TLS record layer and is therefore
+>    not encrypted with a handshake key.
+>
+> We should probably reword this -- "include the TLS record layer" is
+> going to confuse people.  It may be as simple as just adding "framing".
+
+How about:
+   This message does not include any TLS framing and is
+   not encrypted with a handshake key.
+
+>
+>
+>    The CertificateRequest is used to define the parameters in a request
+>    for an authenticator.  The definition for TLS 1.3 is:
+>
+>       struct {
+>          opaque certificate_request_context<0..2^8-1>;
+>          Extension extensions<2..2^16-1>;
+>       } CertificateRequest;
+>
+> I think we need some filler paragraph in here noting that we re-use the
+> data structure but assign slightly different meanings to the fields ("as
+> follows") -- otherwise it sounds like we're just repeating the whole
+> definition including field descriptions, which we clearly are not
+> ("[t]his value is unrelated to the certificate_request_context used in
+> post-handshake authentication").
+>
+>
+>       from pre-computing valid authenticators.  This value is unrelated
+>       to the certificate_request_context used in post-handshake
+>       authentication and collisions do not need to be avoided.
+>
+> This text seems to invite the reader to ask "collisions between what".
+> Perhaps we should just say "there is no need to ensure uniqueness
+> between values used in post-handshake authentication and values used for
+> exported authenticators".  Though if we do that, maybe we want to follow
+> up by reiterating the need for uniqueness within each class on its own.
+
+I think it's important to note that this *is* a recap of the
+CertificateRequest
+message in TLS 1.3. Maybe it would be clear if the same or similar
+description
+was used.
+
+How about an introduction:
+   This message reuses the structure to the CertificateRequest message in
+[TLS13].
+   The uniqueness requirements of the certificate_request_context apply
+   only to CertificateRequest messages that are used as part of
+authenticator requests.
+   There is no impact if the value of a certificate_request_context used in
+an authenticator
+   request matches the value of a certificate_request_context in the
+handshake or
+   in a post-handshake message.
+
+And then a shorter description:
+   message.  A certificate_request_context value MUST be unique for
+   each authenticator request within the scope of a connection
+   (preventing replay and context confusion).  The
+   certificate_request_context SHOULD be chosen to be unpredictable
+   to the peer (e.g., by randomly generating it) in order to prevent
+   an attacker who has temporary access to the peer's private key
+   from pre-computing valid authenticators.
+
+>
+>
+>
+>    extensions:  The extensions that are allowed in this structure
+>       include the extensions defined for CertificateRequest messages
+>       defined in Section 4.2. of [TLS13] and the server_name [RFC6066]
+>       extension, which is allowed for client-generated authenticator
+>       requests.
+>
+> Do we need to create a new "message type" for the "TLS 1.3" column in
+> the registry
+> (
+https://www.iana.org/assignments/tls-extensiontype-values/tls-extensiontype-values.xhtml
+)
+> for future extensibility?
+
+This should support the same extensions supported by the corresponding
+messages in TLS.
+
+>
+>
+> Section 4
+>
+>    An authenticator message can be constructed by either the client or
+>    the server given an established TLS connection, a certificate, and a
+>    corresponding private key.  Clients MUST NOT send an authenticator
+>    without a preceding authenticator request; for servers an
+>    authenticator request is optional.  The authenticator uses the
+>
+> I think at this point in the document we haven't indicated what context
+> value to use for unsolicited exported authenticators from the server.
+> Do we want to say something here?
+
+Sure. We can say that it is chosen by the server here, then later the
+uniqueness requirement is stated. Text:
+   corresponding private key.  Clients MUST NOT send an authenticator
+   without a preceding authenticator request; for servers an
+   authenticator request is optional.  For authenticators that do not
+correspond
+   to authenticator requests, the certificate_request_context is chosen by
+   the server.
+
+>
+>
+> Section 4.1
+>
+>    The context_value used for the exporter is empty (zero length) for
+>    all four values.  The length of the exported value is equal to the
+>
+> When I first read this I felt a need to think through the consequences
+> of using the empty context_value here.  A statement to the effect of
+> "the exporter value is used as a standard API to obtain a value that
+> includes the TLS handshake transcript hash.  There is no need to include
+> additional context information at this stage, since the
+> application-supplied context is included in the actual authenticator
+> object" would probably alleviate the concerns of many readers.
+
+Good addition. How about:
+   The context_value used for the exporter is empty (zero length) for
+   all four values.  There is no need to include additional context
+   information at this stage since the application-supplied context
+  is included in the authenticator itself. The length of the exported
+  value is equal to the...
+
+>
+>
+>    length of the output of the hash function selected in TLS for the
+>    pseudorandom function (PRF).  Cipher suites that do not use the TLS
+>    PRF MUST define a hash function that can be used for this purpose or
+>
+> Process-wise this is not great wording, seemingly attempting to bind the
+> specifications of (already extant?) TLS ciphers to do more work.  It's
+> probably better to phrase it like "exported authenticators cannot be
+> used with cipher suites that do not use the TLS PRF and have not defined
+> a hash function for this purpose".
+
+Good simplification, I'll take it:
+   length of the output of the hash function selected in TLS for the
+   pseudorandom function (PRF).  Exported authenticators cannot be
+   used with cipher suites that do not use the TLS PRF and have not defined
+   a hash function for this purpose. Call this hash function the
+authenticator hash.
+
+The last line was added to make references to this hash easier.
+
+>
+>
+>    If the connection is TLS 1.2, the master secret MUST have been
+>    computed with the extended master secret [RFC7627] to avoid key
+>    synchronization attacks.
+>
+> Let's rephrase this as "Exported Authenticators MUST NOT be generated or
+> accepted on connectons not using the extended master secret [RFC7627]
+> extension, to avoid key synchronization attacks", to be very explicit
+> about the prohibited behavior.
+
+Agreed.
+
+>
+>
+> section 4.2
+>
+>    If an authenticator request is present, the extensions used to guide
+>    the construction of these messages are taken from the authenticator
+>    request.  Unrecognized extensions MUST be ignored.  If the
+>    certificate_request_context from the authenticator request has
+>    already been used in the connection, then no authenticator should be
+>
+> What does "used" mean?
+
+How about:
+   If the peer creating the certificate_request_context has already created
+or
+   correctly validated an authenticator with the same value, then no
+authenticator
+
+>
+>
+>                                        Only servers can provide an
+>    authenticator without a corresponding request.  [...]
+>
+> This statement duplicates a requirement already stated above.
+
+We can safely remove this line.
+
+>
+>
+>    ClientHello extensions are used to determine permissible extensions
+>    in the Certificate message.
+>
+> I'd suggest reiterating the "negotiation" model for extensions, and that
+> you generally can't send something in a response that you didn't receive
+> in a request (with, of course, the hardcoded exceptions listed in the
+> initial spec for that functionality).
+
+Not sure the right way to word this. Here's a shot:
+   ClientHello extensions are used to determine permissible extensions
+   in the Certificate message.  This follows the general model for
+   extensions in TLS in which extensions can only be included
+   as part of a Certificate message if they were previously sent as
+   part of a CertificateRequest message or ClientHello message.
+
+>
+>
+> Section 4.2.1
+>
+>    In addition to "signature_algorithms" and
+>    "signature_algorithms_cert", the "server_name" [RFC6066],
+>    "certificate_authorities" (Section 4.2.4. of [TLS13]), and
+>    "oid_filters" (Section 4.2.5. of [TLS13]) extensions are used to
+>    guide certificate selection.  The extensions, or others that might
+>    affect certificate selection, are taken from the authenticator
+>    request if present, or the TLS handshake if not.
+>
+> The text about "taken from the authenticator request if present, or the
+> TLS handshake if not" seems to be duplicating previous discussions.
+>
+> Maybe go with "commonly used [to guide certifciate selection]"?  We
+> don't limit what can be used for that purpose in core spec, IIRC.
+
+How about we just remove that sentence?
+
+>
+>
+> I'm a little reluctant to bring this up, as it's fairly tangential to
+> this document, but there seems to be some general disagreement in the
+> community about whether the SNI usage model is a proper "negotiation",
+> where the recipient has to ack the offered value in order for both
+> parties to agree what server name is in use, versus an assertive model
+> where the sender just says "this is who I'm trying to talk to" and
+> decides from the received certificate whether that's the case.
+> But it doesn't look like we have a way to echo back the accepted SNI in
+> this message flow....
+>
+>    Alternative certificate formats such as [RFC7250] Raw Public Keys are
+>    not supported in this version of the specification.
+>
+> Even if we call out some things that aren't supported, we probably still
+> want to explicitly state what format we do support.
+
+Let's use:
+   Only the X509 certificate type in [TLS13] is supported.
+   Alternative certificate formats such as [RFC7250] Raw Public Keys are
+   not supported in this version of the specification.
+
+>
+>
+>    If an authenticator request was provided, the Certificate message
+>    MUST contain only extensions present in the authenticator request.
+>    Otherwise, the Certificate message MUST contain only extensions
+>    present in the TLS handshake.
+>
+> "Present in the TLS handshake" could mean SH or EE, too (but we just
+> mean CH).  Also, this is the third time we say that!
+
+If we're not exactly repeating anymore since the earlier statement only
+applies to extensions, and this to the certificate itself. I'll re-word to
+make sure it's specific to the Certificate message:
+   If an authenticator request is present, the signature algorithm MUST be
+chosen
+   from one of the signature schemes present in the authenticator request.
+Otherwise, the
+   signature algorithm used should be chosen from the
+"signature_algorithms" sent
+   by the peer in the TLS ClientHello.
+
+>
+>
+> Section 4.2.2
+>
+>    If an authenticator request is present, the signature algorithm MUST
+>    be chosen from one of the signature schemes in the authenticator
+>    request.  Otherwise, the signature algorithm used should be chosen
+>    from the "signature_algorithms" sent by the peer in the TLS
+>    handshake.
+>
+> This text could probably be tightened up.  Specifically, we mean in the
+> CH if we are falling back to the handshake values, and I don't think we
+> say what to do if we're using TLS 1.2 and "signature_algorithms" wasn't
+> sent in the ClientHello.
+
+Proposed change:
+   Otherwise, the signature algorithm used should be chosen
+   from the "signature_algorithms" sent by the peer in the ClientHello of
+the TLS
+   handshake. There are no available signature algorithms, then no
+   authenticator should be constructed.
+
+>
+>
+>    Where Hash is the hash function negotiated by TLS.  If the
+>    authenticator request is not present, it is omitted from this
+>    construction (that is, it is zero length).
+>
+> Above, we say that this Hash could be defined on a per-ciphersuite
+> basis post-facto; does this text need to be changed to be consistent?
+
+Yes. Change:
+    Where Hash is the authenticator hash defined in section 4.1.
+
+>
+>    failed CertificateVerify validation, it may be helpful for the
+>    application to confirm that both peers share the same connection
+>    using a value derived from the connection secrets before taking a
+>    user-visible action.
+>
+> We may want to define a new exporter for that, here, to keep people from
+> rolling their own custom (read: broken) scheme.
+
+Hmm. Maybe that should be a separate spec? I'm not sure we should add
+additional mechanisms of this sort into this spec.
+
+>
+>
+> Also, we could say something about needing to identify (by context?)
+> which TLS connection to use for a given EA validation...
+
+I'm not sure we need to be prescriptive about this. It should be clear
+which connection is used from the validate/authenticate API (noticed this
+was missing and added it in the PR).
+
+>
+>
+> Section 4.2.3
+>
+> Maybe give the hash output a good name so we don't get confused about
+> Hash vs. HMAC?
+>
+>    The HMAC is computed using the same hash function using the Finished
+>    MAC Key as a key.
+>
+
+Change:
+    The HMAC is computed using the authenticator hash with the Finished MAC
+Key as a key.
+
+>
+>
+> comma after "function"?
+>
+> Section 4.2.4
+>
+> Do we want to reiterate that the record layer framing is not used?
+
+Ok:
+   This message does not include any TLS framing.
+
+>
+>
+>    A given authenticator can be validated by checking the validity of
+>    the CertificateVerify message given the authenticator request (if
+>    used) and recomputing the Finished message to see if it matches.
+>
+> "can be" is not very strong language; do we want to be more proscriptive
+> about what needs to be done for proper validation?
+
+Sure:
+   An authenticator is valid if the CertificateVerify message is correctly
+constructed given the authenticator request (if
+   used) and the Finished message matches the expected value.  When
+validating an authenticator, a constant-time
+   comparison SHOULD be used.
+>
+>
+> Also, is a constant time comparison going to be needed?
+
+Yes, I think so. Otherwise, some bits of the correct finished message may
+leak.
+
+>
+>
+> Section 5
+>
+> Same comments as above about a comma, and naming the Hash output.
+
+Noted.
+
+>
+>
+> Section 6
+>
+>    it is possible to implement it at the application layer.  TLS
+>    implementations supporting the use of exported authenticators MUST
+>    provide application programming interfaces by which clients and
+>    servers may request and verify exported authenticator messages.
+>
+> Some people will complain that the MUST is not enforcable by the peer.
+> Perhaps saying why we want that property would help, though.
+
+Good point. I think a SHOULD is more appropriate because the existence of
+the API is not enforceable by the peer.
+
+>
+>
+>
+>    o  the connection is TLS 1.2 and the extended master secret [RFC7627]
+>       was not used
+>
+> nit: "extension", "negotiated"
+
+Will add.
+
+>
+>
+> Section 6.1
+>
+>    The "request" API takes as input:
+>
+>    o  certificate_request_context (from 0 to 255 bytes)
+>
+> How do I pick this context value?  Is it always going to be input from
+> the application layer or might I need to pick something (randomly)
+> within the TLS stack?
+
+Application layer.
+
+>
+>
+>    o  set of extensions to include (this MUST include
+>       signature_algorithms)
+>
+>    It returns an authenticator request, which is a sequence of octets
+>    that includes a CertificateRequest message.
+>
+> "includes" or "is"/"comprises"?
+
+Comprises. Changed.
+
+>
+> Section 6.3
+>
+>    The "authenticate" takes as input:
+>
+> nit: "API"
+
+Will add.
+
+>
+>
+>    o  a signer (either the private key associated with the certificate,
+>       or interface to perform private key operation) for each chain
+>
+> If I'm doing a spontaneous server-driven EA but I have multiple possible
+> chains I could use, is there guidance to give about who should do the
+> picking (application vs. TLS stack) and what the choice should be?
+
+I don't think TLS provides any guidance, I don't think we need to either.
+
+>
+>
+>    o  an optional authenticator request or certificate_request_context
+>       (from 0 to 255 bytes)
+>
+> Why the choice?
+
+This could be phrased better. The authenticator needs a
+certificate_request_context, so you can send it explicitly (spontaneous) or
+extract it from the authenticator request. Removing optional fixes this.
+
+>
+>
+>    It returns either the exported authenticator or an empty
+>    authenticator as a sequence of octets.  It is RECOMMENDED that the
+>    logic for selecting the certificates and extensions to include in the
+>    exporter is implemented in the TLS library.  Implementing this in the
+>    TLS library lets the implementer take advantage of existing extension
+>    and certificate selection logic.
+>
+> Also to more easily remember what extensions were in CH, right?
+
+Yes.
+
+>
+>
+>    It is also possible to implement this API outside of the TLS library
+>    using TLS exporters.  This may be preferable in cases where the
+>    application does not have access to a TLS library with these APIs or
+>    when TLS is handled independently of the application layer protocol.
+>
+> It's harder to remember what extensions were sent in the ClientHello in
+> this case, though.
+
+Right. There might be a need for another API to expose the set of client
+hello extensions that were present.
+
+>
+>
+> Section 6.4
+>
+> What do we do if a triggered and spontaneous EA race, w.r.t. the input
+> to the validation process.  Do we need to check the context that we're
+> trying to validate?
+
+Do you mean if they both have the same context should this API fail for the
+second one? We don't explicitly fail if the context is repeated here. We
+should spell out what happens:
+   The API MUST return a failure if the certificate_request_context of the
+authenticator was used in a
+   previously validated authenticator.
+
+>
+>    It returns the certificate chain and extensions and a status to
+>    indicate whether the authenticator is valid or not.  If the
+>    authenticator was empty - that is, it did not contain a certificate -
+>    the certificate chain will contain no certificates.
+>
+> Should we say what we expect the caller to be doing with the certificate
+> chain?
+
+I don't think it's necessary.
+
+>
+> Also, is an empty authenticator going to be considered "valid"?
+
+Yes.
+
+>
+>
+> Section 8
+>
+>    The Certificate/Verify/Finished pattern intentionally looks like the
+>    TLS 1.3 pattern which now has been analyzed several times.  In the
+>    case where the client presents an authenticator to a server, [SIGMAC]
+>    presents a relevant framework for analysis.
+>
+> Why is it only in that case?
+
+I guess it covers both. How about:
+   The Certificate/Verify/Finished pattern intentionally looks like the
+   TLS 1.3 pattern which now has been analyzed several times. For example,
+   [SIGMAC] presents a relevant framework for analysis.
+
+>
+>
+>    o  This property makes it difficult to formally prove that a server
+>       is jointly authoritative over multiple certificates, rather than
+>       individually authoritative over each.
+>
+> I mentioned this already, but these difficulties should be mentioned
+> earlier/throughout, and we should think about providing some usage
+> guidance for use patterns believed to be safe.
+>
+>    o  There is no indication in the TLS layer about which point in time
+>       an authenticator was computed.  Any feedback about the time of
+>       creation or validation of the authenticator should be tracked as
+>       part of the application layer semantics if required.
+>
+> IIUC, all we know is that it's tied to this connection, plus the
+> semantics of whatever additional data the application put into the
+> context field.  Should we say that more explicitly?
+
+Yes. I like that phrasing. At the end of the paragraph before the bullets:
+   Authenticators are independent and unidirectional.  There is no explicit
+state change
+   inside TLS when an authenticator is either created or validated.  The
+application in
+   possession of a validated authenticator can rely on any semantics
+associated with data
+   in the certificate_request_context.
+
+
+Nick
+
+--00000000000004bb900587b1b3ca
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div di=
+r=3D"ltr">Ben,<br><br>Thank you for the thorough review. I&#39;ve added res=
+ponses/comments inline and a PR to the spec=C2=A0<a href=3D"https://github.=
+com/tlswg/tls-exported-authenticator/pull/46">https://github.com/tlswg/tls-=
+exported-authenticator/pull/46</a>. Feel free to respond in the PR for spec=
+ific changes or on this thread for structural comments.</div><div dir=3D"lt=
+r"><br>On Tue, Apr 23, 2019 at 11:21 AM Benjamin Kaduk &lt;<a href=3D"mailt=
+o:kaduk@mit.edu" target=3D"_blank">kaduk@mit.edu</a>&gt; wrote:<br>&gt;<br>=
+&gt; Hi all,<br>&gt;<br>&gt; I don&#39;t think there&#39;s anything earth-s=
+hattering in here; mostly just places<br>&gt; where we can tighten things u=
+p before it gets to a broader set of<br>&gt; reviewers.<br>&gt;<br>&gt; Tha=
+nks!<br>&gt;<br>&gt; -Ben<br>&gt;<br>&gt; Abstract, Introduction<br>&gt;<br=
+>&gt; Maybe s/other party/peer/?<br><br>How about:<br><br>This document pro=
+vides a way to authenticate one party of a Transport<br>Layer Security (TLS=
+) communication to its peer using a certificate<br><br>&gt; Section 1<br>&g=
+t;<br>&gt; =C2=A0 =C2=A0This document provides a way to authenticate one pa=
+rty of a Transport<br>&gt; =C2=A0 =C2=A0Layer Security (TLS) communication =
+to another using a certificate<br>&gt; =C2=A0 =C2=A0after the session has b=
+een established.=C2=A0 This allows both the client<br>&gt; =C2=A0 =C2=A0and=
+ server to prove ownership of additional identities at any time<br>&gt; =C2=
+=A0 =C2=A0after the handshake has completed.=C2=A0 This proof of authentica=
+tion can<br>&gt; =C2=A0 =C2=A0be exported and transmitted out of band from =
+one party to be<br>&gt; =C2=A0 =C2=A0validated by the other party.<br>&gt;<=
+br>&gt; We need to be careful about what exactly is being proved when, and =
+how it<br>&gt; synchronizes (or doesn&#39;t) with other events/data.<br>&gt=
+; This will be a general theme throughout...<br>&gt;<br>&gt; =C2=A0 =C2=A0m=
+ultiple identities - =C2=A0Endpoints that are authoritative for multiple<br=
+>&gt; =C2=A0 =C2=A0 =C2=A0 identities - but do not have a single certificat=
+e that includes<br>&gt; =C2=A0 =C2=A0 =C2=A0 all of the identities - can au=
+thenticate with those identities<br>&gt; =C2=A0 =C2=A0 =C2=A0 over a single=
+ connection.<br>&gt;<br>&gt; (The RFC Editor will do two-hyphen em dashes.)=
+<br>&gt; I didn&#39;t go back and reread the formal analysis that Jonathan =
+sent out,<br>&gt; but my recollection was that the semantics around being &=
+quot;jointly<br>&gt; authoritative&quot; over multiple identities are quite=
+ subtle, and that the<br>&gt; wording here may be doing the reader a disser=
+vice.<br><br><br>Here&#39;s a suggested edit:<br>can authenticate with thos=
+e identities over a single connection -&gt;<br>can authenticate additional =
+identities over a single connection<br><br>Jonathan&#39;s analysis showed t=
+hat the protocol provides &quot;joint authentication&quot; between the cert=
+ificate used in the handshake and one added as an EA. It does not provide &=
+quot;joint authentication&quot; between two EAs. That&#39;s a subtle point,=
+ but I think it maps cleanly to this text.<br><br>=C2=A0<br>&gt;<br>&gt;<br=
+>&gt;<br>&gt; =C2=A0 =C2=A0This document intends to replace much of the fun=
+ctionality of<br>&gt; =C2=A0 =C2=A0renegotiation in previous versions of TL=
+S.=C2=A0 It has the advantages<br>&gt; =C2=A0 =C2=A0over renegotiation of n=
+ot requiring additional on-the-wire changes<br>&gt; =C2=A0 =C2=A0during a c=
+onnection.=C2=A0 For simplicity, only TLS 1.2 and later are<br>&gt; =C2=A0 =
+=C2=A0supported.<br>&gt;<br>&gt; Well, renegotiation does many things.=C2=
+=A0 We need to say why we claim that<br>&gt; renegotiation was widely used =
+and for what purpose(s), and only then say<br>&gt; that we provide an alter=
+native.<br>&gt; Also, the wording about &quot;previous versions of TLS&quot=
+; is pretty vague -- is<br>&gt; it intended to be &quot;prior to TLS 1.3&qu=
+ot;?<br><br><br>Very good point.<br><br>How about:<br>=C2=A0 Versions of TL=
+S prior to TLS 1.3 used renegotiation as a way to enable<br>=C2=A0 post-han=
+dshake client authentication given an existing TLS connection.<br>=C2=A0 Th=
+e mechanism described in this document may be used to replace the<br>=C2=A0=
+ post-handshake authentication functionality provided by renegotiation.<br>=
+=C2=A0 Unlike renegotiation, exported Authenticator-based post-handshake<br=
+>=C2=A0 authentication does not require any on-the-wire changes.=C2=A0 For =
+simplicity,<br>=C2=A0 only TLS 1.2 and later are supported.<br>=C2=A0<br>&g=
+t;<br>&gt;<br>&gt;<br>&gt; =C2=A0 =C2=A0Post-handshake authentication is de=
+fined in TLS 1.3, but it has the<br>&gt; =C2=A0 =C2=A0disadvantage of requi=
+ring additional state to be stored in the TLS<br>&gt; =C2=A0 =C2=A0state ma=
+chine and it composes poorly with multiplexed connection<br>&gt; =C2=A0 =C2=
+=A0protocols like HTTP/2 [RFC7540].=C2=A0 It is also only available for<br>=
+&gt;<br>&gt; We should probably be more explicit about &quot;composes poorl=
+y&quot; being due to<br>&gt; the authentication not being tied to a specifi=
+c event at the higher<br>&gt; layer (among other things).<br><br><br>How ab=
+out:<br>=C2=A0 =C2=A0Post-handshake authentication is defined in TLS 1.3, b=
+ut it has the<br>=C2=A0 =C2=A0disadvantage of requiring additional state to=
+ be stored in the TLS<br>=C2=A0 =C2=A0state machine.=C2=A0 Furthermore, the=
+ authentication boundaries of TLS<br>=C2=A0 =C2=A01.3 post-handshake authen=
+tication align with TLS record boundaries,<br>=C2=A0 =C2=A0which are often =
+not aligned with the authentication boundaries of the<br>=C2=A0 =C2=A0highe=
+r-layer protocol. For example, multiplexed connection protocols<br>=C2=A0 =
+=C2=A0like HTTP/2 [RFC7540] do not have a notion of which TLS record<br>=C2=
+=A0 =C2=A0a given message is a part of. <br><br>&gt;<br>&gt;<br>&gt; Sectio=
+n 3<br>&gt;<br>&gt;<br>&gt; =C2=A0 =C2=A0The authenticator request is a str=
+uctured message that can be<br>&gt; =C2=A0 =C2=A0exported from either party=
+ of a TLS connection.=C2=A0 It can be<br>&gt; =C2=A0 =C2=A0transmitted to t=
+he other party of the TLS connection at the<br>&gt; =C2=A0 =C2=A0applicatio=
+n layer.=C2=A0 The application layer protocol used to send the<br>&gt; =C2=
+=A0 =C2=A0authenticator SHOULD use TLS as its underlying transport to keep =
+the<br>&gt; =C2=A0 =C2=A0request confidential.<br>&gt;<br>&gt; Also to indi=
+cate which TLS connection to pull key material from?<br><br>How about:<br>=
+=C2=A0 =C2=A0The authenticator request is a structured message that can be<=
+br>=C2=A0 =C2=A0created by either party of a TLS connection using data expo=
+rted<br>=C2=A0 =C2=A0from that connection.<br><br>&gt;<br>&gt; =C2=A0 =C2=
+=A0This message does not include the TLS record layer and is therefore<br>&=
+gt; =C2=A0 =C2=A0not encrypted with a handshake key.<br>&gt;<br>&gt; We sho=
+uld probably reword this -- &quot;include the TLS record layer&quot; is<br>=
+&gt; going to confuse people.=C2=A0 It may be as simple as just adding &quo=
+t;framing&quot;.<br><br>How about:<br>=C2=A0 =C2=A0This message does not in=
+clude any TLS framing and is<br>=C2=A0 =C2=A0not encrypted with a handshake=
+ key.<br>=C2=A0<br>&gt;<br>&gt;<br>&gt; =C2=A0 =C2=A0The CertificateRequest=
+ is used to define the parameters in a request<br>&gt; =C2=A0 =C2=A0for an =
+authenticator.=C2=A0 The definition for TLS 1.3 is:<br>&gt;<br>&gt; =C2=A0 =
+=C2=A0 =C2=A0 struct {<br>&gt; =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0opaque cer=
+tificate_request_context&lt;0..2^8-1&gt;;<br>&gt; =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0Extension extensions&lt;2..2^16-1&gt;;<br>&gt; =C2=A0 =C2=A0 =C2=
+=A0 } CertificateRequest;<br>&gt;<br>&gt; I think we need some filler parag=
+raph in here noting that we re-use the<br>&gt; data structure but assign sl=
+ightly different meanings to the fields (&quot;as<br>&gt; follows&quot;) --=
+ otherwise it sounds like we&#39;re just repeating the whole<br>&gt; defini=
+tion including field descriptions, which we clearly are not<br>&gt; (&quot;=
+[t]his value is unrelated to the certificate_request_context used in<br>&gt=
+; post-handshake authentication&quot;). <br>&gt;<br>&gt;<br>&gt; =C2=A0 =C2=
+=A0 =C2=A0 from pre-computing valid authenticators.=C2=A0 This value is unr=
+elated<br>&gt; =C2=A0 =C2=A0 =C2=A0 to the certificate_request_context used=
+ in post-handshake<br>&gt; =C2=A0 =C2=A0 =C2=A0 authentication and collisio=
+ns do not need to be avoided.<br>&gt;<br>&gt; This text seems to invite the=
+ reader to ask &quot;collisions between what&quot;.<br>&gt; Perhaps we shou=
+ld just say &quot;there is no need to ensure uniqueness<br>&gt; between val=
+ues used in post-handshake authentication and values used for<br>&gt; expor=
+ted authenticators&quot;.=C2=A0 Though if we do that, maybe we want to foll=
+ow<br>&gt; up by reiterating the need for uniqueness within each class on i=
+ts own.<br><br>I think it&#39;s important to note that this *is* a recap of=
+ the CertificateRequest<br>message in TLS 1.3. Maybe it would be clear if t=
+he same or similar description<br>was used.<br><br>How about an introductio=
+n:<br>=C2=A0 =C2=A0This message reuses the structure to the CertificateRequ=
+est message in [TLS13].<div>=C2=A0 =C2=A0The uniqueness requirements of the=
+ certificate_request_context apply<br>=C2=A0 =C2=A0only to CertificateReque=
+st messages that are used as part of authenticator requests.<br>=C2=A0 =C2=
+=A0There is no impact if the value of a certificate_request_context used in=
+ an authenticator<br>=C2=A0 =C2=A0request matches the value of a certificat=
+e_request_context in the handshake or<br>=C2=A0 =C2=A0in a post-handshake m=
+essage.<br><br>And then a shorter description:<br>=C2=A0 =C2=A0message.=C2=
+=A0 A certificate_request_context value MUST be unique for<br>=C2=A0 =C2=A0=
+each authenticator request within the scope of a connection<br>=C2=A0 =C2=
+=A0(preventing replay and context confusion).=C2=A0 The<br>=C2=A0 =C2=A0cer=
+tificate_request_context SHOULD be chosen to be unpredictable<br>=C2=A0 =C2=
+=A0to the peer (e.g., by randomly generating it) in order to prevent<br>=C2=
+=A0 =C2=A0an attacker who has temporary access to the peer&#39;s private ke=
+y<br>=C2=A0 =C2=A0from pre-computing valid authenticators. =C2=A0<br>=C2=A0=
+<br>&gt;<br>&gt;<br>&gt;<br>&gt; =C2=A0 =C2=A0extensions: =C2=A0The extensi=
+ons that are allowed in this structure<br>&gt; =C2=A0 =C2=A0 =C2=A0 include=
+ the extensions defined for CertificateRequest messages<br>&gt; =C2=A0 =C2=
+=A0 =C2=A0 defined in Section 4.2. of [TLS13] and the server_name [RFC6066]=
+<br>&gt; =C2=A0 =C2=A0 =C2=A0 extension, which is allowed for client-genera=
+ted authenticator<br>&gt; =C2=A0 =C2=A0 =C2=A0 requests.<br>&gt;<br>&gt; Do=
+ we need to create a new &quot;message type&quot; for the &quot;TLS 1.3&quo=
+t; column in<br>&gt; the registry<br>&gt; (<a href=3D"https://www.iana.org/=
+assignments/tls-extensiontype-values/tls-extensiontype-values.xhtml" target=
+=3D"_blank">https://www.iana.org/assignments/tls-extensiontype-values/tls-e=
+xtensiontype-values.xhtml</a>)<br>&gt; for future extensibility?<br><br>Thi=
+s should support the same extensions supported by the corresponding message=
+s in TLS.</div><div><br>&gt;<br>&gt;<br>&gt; Section 4<br>&gt;<br>&gt; =C2=
+=A0 =C2=A0An authenticator message can be constructed by either the client =
+or<br>&gt; =C2=A0 =C2=A0the server given an established TLS connection, a c=
+ertificate, and a<br>&gt; =C2=A0 =C2=A0corresponding private key.=C2=A0 Cli=
+ents MUST NOT send an authenticator<br>&gt; =C2=A0 =C2=A0without a precedin=
+g authenticator request; for servers an<br>&gt; =C2=A0 =C2=A0authenticator =
+request is optional.=C2=A0 The authenticator uses the<br>&gt;<br>&gt; I thi=
+nk at this point in the document we haven&#39;t indicated what context<br>&=
+gt; value to use for unsolicited exported authenticators from the server.<b=
+r>&gt; Do we want to say something here?<br><br>Sure. We can say that it is=
+ chosen by the server here, then later the uniqueness requirement is stated=
+. Text:</div><div>=C2=A0 =C2=A0corresponding private key.=C2=A0 Clients MUS=
+T NOT send an authenticator<br>=C2=A0 =C2=A0without a preceding authenticat=
+or request; for servers an<br>=C2=A0 =C2=A0authenticator request is optiona=
+l.=C2=A0 For authenticators that do not correspond<br>=C2=A0 =C2=A0to authe=
+nticator requests, the certificate_request_context is chosen by<br>=C2=A0 =
+=C2=A0the server.<br><br>&gt;<br>&gt;<br>&gt; Section 4.1<br>&gt;<br>&gt; =
+=C2=A0 =C2=A0The context_value used for the exporter is empty (zero length)=
+ for<br>&gt; =C2=A0 =C2=A0all four values.=C2=A0 The length of the exported=
+ value is equal to the<br>&gt;<br>&gt; When I first read this I felt a need=
+ to think through the consequences<br>&gt; of using the empty context_value=
+ here.=C2=A0 A statement to the effect of<br>&gt; &quot;the exporter value =
+is used as a standard API to obtain a value that<br>&gt; includes the TLS h=
+andshake transcript hash.=C2=A0 There is no need to include<br>&gt; additio=
+nal context information at this stage, since the<br>&gt; application-suppli=
+ed context is included in the actual authenticator<br>&gt; object&quot; wou=
+ld probably alleviate the concerns of many readers.<br><br>Good addition. H=
+ow about:<br>=C2=A0 =C2=A0The context_value used for the exporter is empty =
+(zero length) for<br>=C2=A0 =C2=A0all four values.=C2=A0 There is no need t=
+o include additional context<br>=C2=A0 =C2=A0information at this stage sinc=
+e the application-supplied context<br>=C2=A0 is included in the authenticat=
+or itself. The length of the exported<br>=C2=A0 value is equal to the...<br=
+>=C2=A0<br>&gt;<br>&gt;<br>&gt; =C2=A0 =C2=A0length of the output of the ha=
+sh function selected in TLS for the<br>&gt; =C2=A0 =C2=A0pseudorandom funct=
+ion (PRF).=C2=A0 Cipher suites that do not use the TLS<br>&gt; =C2=A0 =C2=
+=A0PRF MUST define a hash function that can be used for this purpose or<br>=
+&gt;<br>&gt; Process-wise this is not great wording, seemingly attempting t=
+o bind the<br>&gt; specifications of (already extant?) TLS ciphers to do mo=
+re work.=C2=A0 It&#39;s<br>&gt; probably better to phrase it like &quot;exp=
+orted authenticators cannot be<br>&gt; used with cipher suites that do not =
+use the TLS PRF and have not defined<br>&gt; a hash function for this purpo=
+se&quot;.<br><br>Good simplification, I&#39;ll take it:</div><div>=C2=A0 =
+=C2=A0length of the output of the hash function selected in TLS for the<br>=
+=C2=A0 =C2=A0pseudorandom function (PRF).=C2=A0 Exported authenticators can=
+not be<br>=C2=A0 =C2=A0used with cipher suites that do not use the TLS PRF =
+and have not defined<br>=C2=A0 =C2=A0a hash function for this purpose. Call=
+ this hash function the authenticator hash.<br><br>The last line was added =
+to make references to this hash easier.<br><br>&gt;<br>&gt;<br>&gt; =C2=A0 =
+=C2=A0If the connection is TLS 1.2, the master secret MUST have been<br>&gt=
+; =C2=A0 =C2=A0computed with the extended master secret [RFC7627] to avoid =
+key<br>&gt; =C2=A0 =C2=A0synchronization attacks.<br>&gt;<br>&gt; Let&#39;s=
+ rephrase this as &quot;Exported Authenticators MUST NOT be generated or<br=
+>&gt; accepted on connectons not using the extended master secret [RFC7627]=
+<br>&gt; extension, to avoid key synchronization attacks&quot;, to be very =
+explicit<br>&gt; about the prohibited behavior.<br><br>Agreed. <br><br></di=
+v><div>&gt;<br>&gt;<br>&gt; section 4.2<br>&gt;<br>&gt; =C2=A0 =C2=A0If an =
+authenticator request is present, the extensions used to guide<br>&gt; =C2=
+=A0 =C2=A0the construction of these messages are taken from the authenticat=
+or<br>&gt; =C2=A0 =C2=A0request.=C2=A0 Unrecognized extensions MUST be igno=
+red.=C2=A0 If the<br>&gt; =C2=A0 =C2=A0certificate_request_context from the=
+ authenticator request has<br>&gt; =C2=A0 =C2=A0already been used in the co=
+nnection, then no authenticator should be<br>&gt;<br>&gt; What does &quot;u=
+sed&quot; mean?<br><br>How about:<br>=C2=A0 =C2=A0If the peer creating the =
+certificate_request_context has already created or<br>=C2=A0 =C2=A0correctl=
+y validated an authenticator with the same value, then no authenticator<br>=
+=C2=A0<br>&gt;<br>&gt;<br>&gt; =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0Only servers can provide an<br>&gt; =C2=A0 =C2=A0au=
+thenticator without a corresponding request. =C2=A0[...]<br>&gt;<br>&gt; Th=
+is statement duplicates a requirement already stated above.<br><br>We can s=
+afely remove this line.</div><div><br>&gt;<br>&gt;<br>&gt; =C2=A0 =C2=A0Cli=
+entHello extensions are used to determine permissible extensions<br>&gt; =
+=C2=A0 =C2=A0in the Certificate message.<br>&gt;<br>&gt; I&#39;d suggest re=
+iterating the &quot;negotiation&quot; model for extensions, and that<br>&gt=
+; you generally can&#39;t send something in a response that you didn&#39;t =
+receive<br>&gt; in a request (with, of course, the hardcoded exceptions lis=
+ted in the<br>&gt; initial spec for that functionality).<br><br>Not sure th=
+e right way to word this. Here&#39;s a shot:<br>=C2=A0 =C2=A0ClientHello ex=
+tensions are used to determine permissible extensions<br>=C2=A0 =C2=A0in th=
+e Certificate message.=C2=A0 This follows the general model for<br>=C2=A0 =
+=C2=A0extensions in TLS in which extensions can only be included<br>=C2=A0 =
+=C2=A0as part of a Certificate message if they were previously sent as<br>=
+=C2=A0 =C2=A0part of a CertificateRequest message or ClientHello message.<b=
+r><br>&gt;<br>&gt;<br>&gt; Section 4.2.1<br>&gt;<br>&gt; =C2=A0 =C2=A0In ad=
+dition to &quot;signature_algorithms&quot; and<br>&gt; =C2=A0 =C2=A0&quot;s=
+ignature_algorithms_cert&quot;, the &quot;server_name&quot; [RFC6066],<br>&=
+gt; =C2=A0 =C2=A0&quot;certificate_authorities&quot; (Section 4.2.4. of [TL=
+S13]), and<br>&gt; =C2=A0 =C2=A0&quot;oid_filters&quot; (Section 4.2.5. of =
+[TLS13]) extensions are used to<br>&gt; =C2=A0 =C2=A0guide certificate sele=
+ction.=C2=A0 The extensions, or others that might<br>&gt; =C2=A0 =C2=A0affe=
+ct certificate selection, are taken from the authenticator<br>&gt; =C2=A0 =
+=C2=A0request if present, or the TLS handshake if not.<br>&gt;<br>&gt; The =
+text about &quot;taken from the authenticator request if present, or the<br=
+>&gt; TLS handshake if not&quot; seems to be duplicating previous discussio=
+ns.<br>&gt;<br>&gt; Maybe go with &quot;commonly used [to guide certifciate=
+ selection]&quot;?=C2=A0 We<br>&gt; don&#39;t limit what can be used for th=
+at purpose in core spec, IIRC.<br><br>How about we just remove that sentenc=
+e?</div><div><br>&gt;<br>&gt;<br>&gt; I&#39;m a little reluctant to bring t=
+his up, as it&#39;s fairly tangential to<br>&gt; this document, but there s=
+eems to be some general disagreement in the<br>&gt; community about whether=
+ the SNI usage model is a proper &quot;negotiation&quot;,<br>&gt; where the=
+ recipient has to ack the offered value in order for both<br>&gt; parties t=
+o agree what server name is in use, versus an assertive model<br>&gt; where=
+ the sender just says &quot;this is who I&#39;m trying to talk to&quot; and=
+<br>&gt; decides from the received certificate whether that&#39;s the case.=
+<br>&gt; But it doesn&#39;t look like we have a way to echo back the accept=
+ed SNI in<br>&gt; this message flow....<br>&gt;<br>&gt; =C2=A0 =C2=A0Altern=
+ative certificate formats such as [RFC7250] Raw Public Keys are<br>&gt; =C2=
+=A0 =C2=A0not supported in this version of the specification.<br>&gt;<br>&g=
+t; Even if we call out some things that aren&#39;t supported, we probably s=
+till<br>&gt; want to explicitly state what format we do support.<br><br>Let=
+&#39;s use:<br>=C2=A0 =C2=A0Only the X509 certificate type in [TLS13] is su=
+pported.<br>=C2=A0 =C2=A0Alternative certificate formats such as [RFC7250] =
+Raw Public Keys are<br>=C2=A0 =C2=A0not supported in this version of the sp=
+ecification.<br>=C2=A0<br>&gt;<br>&gt;<br>&gt; =C2=A0 =C2=A0If an authentic=
+ator request was provided, the Certificate message<br>&gt; =C2=A0 =C2=A0MUS=
+T contain only extensions present in the authenticator request.<br>&gt; =C2=
+=A0 =C2=A0Otherwise, the Certificate message MUST contain only extensions<b=
+r>&gt; =C2=A0 =C2=A0present in the TLS handshake.<br>&gt;<br>&gt; &quot;Pre=
+sent in the TLS handshake&quot; could mean SH or EE, too (but we just<br>&g=
+t; mean CH).=C2=A0 Also, this is the third time we say that!<br><br>If we&#=
+39;re not exactly repeating anymore since the earlier statement only applie=
+s to extensions, and this to the certificate itself. I&#39;ll re-word to ma=
+ke sure it&#39;s specific to the Certificate message:</div><div><div>=C2=A0=
+ =C2=A0If an authenticator request is present, the signature algorithm MUST=
+ be chosen</div><div>=C2=A0 =C2=A0from one of the signature schemes present=
+ in the authenticator request.=C2=A0 Otherwise, the</div><div>=C2=A0 =C2=A0=
+signature algorithm used should be chosen from the &quot;signature_algorith=
+ms&quot; sent</div><div>=C2=A0 =C2=A0by the peer in the TLS ClientHello.</d=
+iv></div><div><br>&gt;<br>&gt;<br>&gt; Section 4.2.2<br>&gt;<br>&gt; =C2=A0=
+ =C2=A0If an authenticator request is present, the signature algorithm MUST=
+<br>&gt; =C2=A0 =C2=A0be chosen from one of the signature schemes in the au=
+thenticator<br>&gt; =C2=A0 =C2=A0request.=C2=A0 Otherwise, the signature al=
+gorithm used should be chosen<br>&gt; =C2=A0 =C2=A0from the &quot;signature=
+_algorithms&quot; sent by the peer in the TLS<br>&gt; =C2=A0 =C2=A0handshak=
+e.<br>&gt;<br>&gt; This text could probably be tightened up.=C2=A0 Specific=
+ally, we mean in the<br>&gt; CH if we are falling back to the handshake val=
+ues, and I don&#39;t think we<br>&gt; say what to do if we&#39;re using TLS=
+ 1.2 and &quot;signature_algorithms&quot; wasn&#39;t<br>&gt; sent in the Cl=
+ientHello.<br><br>Proposed change:<br>=C2=A0 =C2=A0Otherwise, the signature=
+ algorithm used should be chosen<br>=C2=A0 =C2=A0from the &quot;signature_a=
+lgorithms&quot; sent by the peer in the ClientHello of the TLS<br>=C2=A0 =
+=C2=A0handshake. There are no available signature algorithms, then no<br>=
+=C2=A0 =C2=A0authenticator should be constructed.<br>=C2=A0<br>&gt;<br>&gt;=
+<br>&gt; =C2=A0 =C2=A0Where Hash is the hash function negotiated by TLS.=C2=
+=A0 If the<br>&gt; =C2=A0 =C2=A0authenticator request is not present, it is=
+ omitted from this<br>&gt; =C2=A0 =C2=A0construction (that is, it is zero l=
+ength).<br>&gt;<br>&gt; Above, we say that this Hash could be defined on a =
+per-ciphersuite<br>&gt; basis post-facto; does this text need to be changed=
+ to be consistent?<br><br>Yes. Change:</div><div>=C2=A0 =C2=A0 Where Hash i=
+s the authenticator hash defined in section 4.1.<br><br>&gt;<br>&gt; =C2=A0=
+ =C2=A0failed CertificateVerify validation, it may be helpful for the<br>&g=
+t; =C2=A0 =C2=A0application to confirm that both peers share the same conne=
+ction<br>&gt; =C2=A0 =C2=A0using a value derived from the connection secret=
+s before taking a<br>&gt; =C2=A0 =C2=A0user-visible action.<br>&gt;<br>&gt;=
+ We may want to define a new exporter for that, here, to keep people from<b=
+r>&gt; rolling their own custom (read: broken) scheme.<br><br>Hmm. Maybe th=
+at should be a separate spec? I&#39;m not sure we should add additional mec=
+hanisms of this sort into this spec.=C2=A0<br>=C2=A0<br>&gt;<br>&gt;<br>&gt=
+; Also, we could say something about needing to identify (by context?)<br>&=
+gt; which TLS connection to use for a given EA validation...<br><br>I&#39;m=
+ not sure we need to be prescriptive about this. It should be clear which c=
+onnection is used from the validate/authenticate API (noticed this was miss=
+ing and added it in the PR).<br><br>&gt;<br>&gt;<br>&gt; Section 4.2.3<br>&=
+gt;<br>&gt; Maybe give the hash output a good name so we don&#39;t get conf=
+used about<br>&gt; Hash vs. HMAC?<br>&gt;<br>&gt; =C2=A0 =C2=A0The HMAC is =
+computed using the same hash function using the Finished<br>&gt; =C2=A0 =C2=
+=A0MAC Key as a key.<br>&gt;</div><div><br></div><div>Change:</div><div>=C2=
+=A0 =C2=A0 The HMAC is computed using the authenticator hash with the Finis=
+hed=C2=A0MAC Key as a key.</div><div><br></div><div>&gt;<br>&gt;<br>&gt; co=
+mma after &quot;function&quot;?<br>&gt;<br>&gt; Section 4.2.4<br>&gt;<br>&g=
+t; Do we want to reiterate that the record layer framing is not used?<br><b=
+r>Ok:</div><div>=C2=A0 =C2=A0This message does not include any TLS framing.=
+</div><div><br>&gt;<br>&gt;<br>&gt; =C2=A0 =C2=A0A given authenticator can =
+be validated by checking the validity of<br>&gt; =C2=A0 =C2=A0the Certifica=
+teVerify message given the authenticator request (if<br>&gt; =C2=A0 =C2=A0u=
+sed) and recomputing the Finished message to see if it matches.<br>&gt;<br>=
+&gt; &quot;can be&quot; is not very strong language; do we want to be more =
+proscriptive<br>&gt; about what needs to be done for proper validation?<br>=
+<br>Sure:<br>=C2=A0 =C2=A0An authenticator is valid if the CertificateVerif=
+y message is correctly constructed given the authenticator request (if<br>=
+=C2=A0 =C2=A0used) and the Finished message matches the expected value.=C2=
+=A0 When validating an authenticator, a constant-time<br>=C2=A0 =C2=A0compa=
+rison SHOULD be used.<br>&gt;<br>&gt;<br>&gt; Also, is a constant time comp=
+arison going to be needed?<br><br>Yes, I think so. Otherwise, some bits of =
+the correct finished message may leak.<br>=C2=A0<br>&gt;<br>&gt;<br>&gt; Se=
+ction 5<br>&gt;<br>&gt; Same comments as above about a comma, and naming th=
+e Hash output.<br><br>Noted.=C2=A0</div><div><br>&gt;<br>&gt;<br>&gt; Secti=
+on 6<br>&gt;<br>&gt; =C2=A0 =C2=A0it is possible to implement it at the app=
+lication layer.=C2=A0 TLS<br>&gt; =C2=A0 =C2=A0implementations supporting t=
+he use of exported authenticators MUST<br>&gt; =C2=A0 =C2=A0provide applica=
+tion programming interfaces by which clients and<br>&gt; =C2=A0 =C2=A0serve=
+rs may request and verify exported authenticator messages.<br>&gt;<br>&gt; =
+Some people will complain that the MUST is not enforcable by the peer.<br>&=
+gt; Perhaps saying why we want that property would help, though.<br><br>Goo=
+d point. I think a SHOULD is more appropriate because the existence of the =
+API is not enforceable by the peer.<br>=C2=A0<br>&gt;<br>&gt;<br>&gt;<br>&g=
+t; =C2=A0 =C2=A0o =C2=A0the connection is TLS 1.2 and the extended master s=
+ecret [RFC7627]<br>&gt; =C2=A0 =C2=A0 =C2=A0 was not used<br>&gt;<br>&gt; n=
+it: &quot;extension&quot;, &quot;negotiated&quot;<br><br>Will add.<br><br><=
+/div><div>&gt;<br>&gt;<br>&gt; Section 6.1<br>&gt;<br>&gt; =C2=A0 =C2=A0The=
+ &quot;request&quot; API takes as input:<br>&gt;<br>&gt; =C2=A0 =C2=A0o =C2=
+=A0certificate_request_context (from 0 to 255 bytes)<br>&gt;<br>&gt; How do=
+ I pick this context value?=C2=A0 Is it always going to be input from<br>&g=
+t; the application layer or might I need to pick something (randomly)<br>&g=
+t; within the TLS stack?<br><br>Application layer.=C2=A0</div><div><br>&gt;=
+<br>&gt;<br>&gt; =C2=A0 =C2=A0o =C2=A0set of extensions to include (this MU=
+ST include<br>&gt; =C2=A0 =C2=A0 =C2=A0 signature_algorithms)<br>&gt;<br>&g=
+t; =C2=A0 =C2=A0It returns an authenticator request, which is a sequence of=
+ octets<br>&gt; =C2=A0 =C2=A0that includes a CertificateRequest message.<br=
+>&gt;<br>&gt; &quot;includes&quot; or &quot;is&quot;/&quot;comprises&quot;?=
+<br><br>Comprises. Changed.<br>=C2=A0<br>&gt;<br>&gt; Section 6.3<br>&gt;<b=
+r>&gt; =C2=A0 =C2=A0The &quot;authenticate&quot; takes as input:<br>&gt;<br=
+>&gt; nit: &quot;API&quot;<br><br>Will add.=C2=A0</div><div><br>&gt;<br>&gt=
+;<br>&gt; =C2=A0 =C2=A0o =C2=A0a signer (either the private key associated =
+with the certificate,<br>&gt; =C2=A0 =C2=A0 =C2=A0 or interface to perform =
+private key operation) for each chain<br>&gt;<br>&gt; If I&#39;m doing a sp=
+ontaneous server-driven EA but I have multiple possible<br>&gt; chains I co=
+uld use, is there guidance to give about who should do the<br>&gt; picking =
+(application vs. TLS stack) and what the choice should be?<br><br>I don&#39=
+;t think TLS provides any guidance, I don&#39;t think we need to either.</d=
+iv><div><br>&gt;<br>&gt;<br>&gt; =C2=A0 =C2=A0o =C2=A0an optional authentic=
+ator request or certificate_request_context<br>&gt; =C2=A0 =C2=A0 =C2=A0 (f=
+rom 0 to 255 bytes)<br>&gt;<br>&gt; Why the choice?<br><br>This could be ph=
+rased better. The authenticator needs a certificate_request_context, so you=
+ can send it explicitly (spontaneous) or extract it from the authenticator =
+request. Removing optional fixes this.<br>=C2=A0<br>&gt;<br>&gt;<br>&gt; =
+=C2=A0 =C2=A0It returns either the exported authenticator or an empty<br>&g=
+t; =C2=A0 =C2=A0authenticator as a sequence of octets.=C2=A0 It is RECOMMEN=
+DED that the<br>&gt; =C2=A0 =C2=A0logic for selecting the certificates and =
+extensions to include in the<br>&gt; =C2=A0 =C2=A0exporter is implemented i=
+n the TLS library.=C2=A0 Implementing this in the<br>&gt; =C2=A0 =C2=A0TLS =
+library lets the implementer take advantage of existing extension<br>&gt; =
+=C2=A0 =C2=A0and certificate selection logic.<br>&gt;<br>&gt; Also to more =
+easily remember what extensions were in CH, right?<br><br>Yes.=C2=A0</div><=
+div><br>&gt;<br>&gt;<br>&gt; =C2=A0 =C2=A0It is also possible to implement =
+this API outside of the TLS library<br>&gt; =C2=A0 =C2=A0using TLS exporter=
+s.=C2=A0 This may be preferable in cases where the<br>&gt; =C2=A0 =C2=A0app=
+lication does not have access to a TLS library with these APIs or<br>&gt; =
+=C2=A0 =C2=A0when TLS is handled independently of the application layer pro=
+tocol.<br>&gt;<br>&gt; It&#39;s harder to remember what extensions were sen=
+t in the ClientHello in<br>&gt; this case, though.<br><br>Right. There migh=
+t be a need for another API to expose the set of client hello extensions th=
+at were present.</div><div><br></div><div>&gt;<br>&gt;<br>&gt; Section 6.4<=
+br>&gt;<br>&gt; What do we do if a triggered and spontaneous EA race, w.r.t=
+. the input<br>&gt; to the validation process.=C2=A0 Do we need to check th=
+e context that we&#39;re<br>&gt; trying to validate?<br><br>Do you mean if =
+they both have the same context should this API fail for the second one? We=
+ don&#39;t explicitly fail if the context is repeated here. We should spell=
+ out what happens:</div><div><div>=C2=A0 =C2=A0The API MUST return a failur=
+e if the certificate_request_context of the authenticator was used in a</di=
+v><div>=C2=A0 =C2=A0previously validated authenticator.</div></div><div><br=
+>&gt;<br>&gt; =C2=A0 =C2=A0It returns the certificate chain and extensions =
+and a status to<br>&gt; =C2=A0 =C2=A0indicate whether the authenticator is =
+valid or not.=C2=A0 If the<br>&gt; =C2=A0 =C2=A0authenticator was empty - t=
+hat is, it did not contain a certificate -<br>&gt; =C2=A0 =C2=A0the certifi=
+cate chain will contain no certificates.<br>&gt;<br>&gt; Should we say what=
+ we expect the caller to be doing with the certificate<br>&gt; chain?<br><b=
+r>I don&#39;t think it&#39;s necessary.<br>=C2=A0<br>&gt;<br>&gt; Also, is =
+an empty authenticator going to be considered &quot;valid&quot;?<br><br>Yes=
+.<br>=C2=A0<br>&gt;<br>&gt;<br>&gt; Section 8<br>&gt;<br>&gt; =C2=A0 =C2=A0=
+The Certificate/Verify/Finished pattern intentionally looks like the<br>&gt=
+; =C2=A0 =C2=A0TLS 1.3 pattern which now has been analyzed several times.=
+=C2=A0 In the<br>&gt; =C2=A0 =C2=A0case where the client presents an authen=
+ticator to a server, [SIGMAC]<br>&gt; =C2=A0 =C2=A0presents a relevant fram=
+ework for analysis.<br>&gt;<br>&gt; Why is it only in that case?<br><br>I g=
+uess it covers both. How about:<br>=C2=A0 =C2=A0The Certificate/Verify/Fini=
+shed pattern intentionally looks like the<br>=C2=A0 =C2=A0TLS 1.3 pattern w=
+hich now has been analyzed several times. For example,<br>=C2=A0 =C2=A0[SIG=
+MAC] presents a relevant framework for analysis.<br><br>&gt;<br>&gt;<br>&gt=
+; =C2=A0 =C2=A0o =C2=A0This property makes it difficult to formally prove t=
+hat a server<br>&gt; =C2=A0 =C2=A0 =C2=A0 is jointly authoritative over mul=
+tiple certificates, rather than<br>&gt; =C2=A0 =C2=A0 =C2=A0 individually a=
+uthoritative over each.<br>&gt;<br>&gt; I mentioned this already, but these=
+ difficulties should be mentioned<br>&gt; earlier/throughout, and we should=
+ think about providing some usage<br>&gt; guidance for use patterns believe=
+d to be safe.<br></div><div>&gt;<br>&gt; =C2=A0 =C2=A0o =C2=A0There is no i=
+ndication in the TLS layer about which point in time<br>&gt; =C2=A0 =C2=A0 =
+=C2=A0 an authenticator was computed.=C2=A0 Any feedback about the time of<=
+br>&gt; =C2=A0 =C2=A0 =C2=A0 creation or validation of the authenticator sh=
+ould be tracked as<br>&gt; =C2=A0 =C2=A0 =C2=A0 part of the application lay=
+er semantics if required.<br>&gt;<br>&gt; IIUC, all we know is that it&#39;=
+s tied to this connection, plus the<br>&gt; semantics of whatever additiona=
+l data the application put into the<br>&gt; context field.=C2=A0 Should we =
+say that more explicitly?<br><br>Yes. I like that phrasing. At the end of t=
+he paragraph before the bullets:<br><div>=C2=A0 =C2=A0Authenticators are in=
+dependent and unidirectional.=C2=A0 There is no explicit state change</div>=
+<div>=C2=A0 =C2=A0inside TLS when an authenticator is either created or val=
+idated.=C2=A0 The application in</div><div>=C2=A0 =C2=A0possession of a val=
+idated authenticator can rely on any semantics associated with data</div><d=
+iv>=C2=A0 =C2=A0in the certificate_request_context.</div></div><div><br></d=
+iv><div><br></div><div>Nick</div></div></div></div></div></div>
+
+--00000000000004bb900587b1b3ca--
+

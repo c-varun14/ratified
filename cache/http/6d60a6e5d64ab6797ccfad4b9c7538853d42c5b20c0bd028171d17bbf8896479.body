@@ -1,0 +1,91 @@
+From nobody Sun Jan 31 22:28:41 2021
+Return-Path: <kaduk@mit.edu>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 974333A0A0B;
+ Sun, 31 Jan 2021 22:28:34 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.919
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.919 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, RCVD_IN_MSPIKE_H4=-0.01,
+ RCVD_IN_MSPIKE_WL=-0.01, SPF_HELO_NONE=0.001, SPF_PASS=-0.001,
+ URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id uOEsPWq3VMgB; Sun, 31 Jan 2021 22:28:33 -0800 (PST)
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id B2C3E3A09FA;
+ Sun, 31 Jan 2021 22:28:32 -0800 (PST)
+Received: from kduck.mit.edu ([24.16.140.251]) (authenticated bits=56)
+ (User authenticated as kaduk@ATHENA.MIT.EDU)
+ by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1116SHVW016861
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Mon, 1 Feb 2021 01:28:22 -0500
+Date: Sun, 31 Jan 2021 22:28:16 -0800
+From: Benjamin Kaduk <kaduk@mit.edu>
+To: Peter Gutmann <pgut001@cs.auckland.ac.nz>
+Cc: Alan DeKok <aland@deployingradius.com>,
+ Jorge Vergara <jovergar@microsoft.com>,
+ "<tls@ietf.org>" <tls@ietf.org>, EMU WG <emu@ietf.org>
+Message-ID: <20210201062816.GA21@kduck.mit.edu>
+References: <CAOgPGoBGOMXH-kMhQSujWxnACdmBL845u0ouE0fUYc4rWtUrZg@mail.gmail.com>
+ <ca4c526e-79a0-4fa7-abda-2b626795f068@www.fastmail.com>
+ <3409F71E-4CE4-46BB-8079-BFBE9BE83C9A@deployingradius.com>
+ <66157321-55DC-4831-8EF2-D75934D9024C@deployingradius.com>
+ <20210129183220.GI21@kduck.mit.edu>
+ <1A830492-3404-4BCC-844B-D7D950458BD9@deployingradius.com>
+ <CAOgPGoAoFL0aL8-g2waWny=BCod4tN9R==jR_N3kuLPFzvNGOg@mail.gmail.com>
+ <MW2PR2101MB092355019C6248626D2CEF96D1B99@MW2PR2101MB0923.namprd21.prod.outlook.com>
+ <F0FBEFD6-E46C-4824-BBE6-33FFC93CB356@deployingradius.com>
+ <1612160476669.16911@cs.auckland.ac.nz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1612160476669.16911@cs.auckland.ac.nz>
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/fAGQ3tlD_oW9WjwnkSqeJp2FQeo>
+Subject: Re: [TLS] [Emu] Fwd: Benjamin Kaduk's Discuss on
+ draft-ietf-emu-eap-tls13-13: (with DISCUSS and COMMENT)
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Mon, 01 Feb 2021 06:28:35 -0000
+
+On Mon, Feb 01, 2021 at 06:21:16AM +0000, Peter Gutmann wrote:
+> Alan DeKok <aland@deployingradius.com> writes:
+> 
+> >OpenSSL has a feature SSL_MODE_AUTO_RETRY which makes it process TLS messages
+> >*after* the Finished message. i.e. the Session Ticket, etc. When an
+> >application calls SSL_Read(), all of the TLS data is processed, instead of
+> >just the "TLS finished" message. They've made this the default, because most
+> >applications get it wrong.
+> 
+> Asking as the author of a TLS library that has always done this, why would you
+> stop immediately after the Finished and leave metadata messages sitting unread
+> in the input stream?  Was it just some arbitrary implementation decision, or
+> is there a technical reason for it?
+
+I expect (but did not attempt to validate) that this was SSLeay-vintage logic
+involving only reading a single record from the wire per call to
+SSL_read().  If that record was a handshake record and not application
+data, well, then the SSL_read() didn't do something useful and so the
+special "try again" code was returned and the application was supposed to
+call SSL_read() again.
+
+There's no technical reason that I'm aware of.
+
+-Ben
+

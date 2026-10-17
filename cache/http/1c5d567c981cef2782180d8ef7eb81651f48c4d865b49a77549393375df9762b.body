@@ -1,0 +1,318 @@
+Return-Path: <ekr@rtfm.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id C1C18127599
+ for <tls@ietfa.amsl.com>; Wed, 21 Feb 2018 06:32:18 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.899
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.899 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ HTML_MESSAGE=0.001, RCVD_IN_DNSWL_NONE=-0.0001]
+ autolearn=unavailable autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=rtfm-com.20150623.gappssmtp.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 2T3hLkmMB3RZ for <tls@ietfa.amsl.com>;
+ Wed, 21 Feb 2018 06:32:17 -0800 (PST)
+Received: from mail-qk0-x243.google.com (mail-qk0-x243.google.com
+ [IPv6:2607:f8b0:400d:c09::243])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id F0EC81275AB
+ for <tls@ietf.org>; Wed, 21 Feb 2018 06:32:14 -0800 (PST)
+Received: by mail-qk0-x243.google.com with SMTP id d206so2159262qkb.3
+ for <tls@ietf.org>; Wed, 21 Feb 2018 06:32:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=rtfm-com.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+ :cc; bh=IBH3XBpOAMJUcwvsjzj834VgYZdXPyh1GGmPMhY5+XA=;
+ b=RDXfE3CgQTnSHs4GHlq+A6MdMMh0ucPocqCa66D8W2tsFOQyzRmDpma+mw0oTK8bg2
+ lDydo1K3JwAah/cDRlgHBD6N4Blx+w2AGQN5SXczPL60bI0Kh/MDNDxQiDQRHEwXQhDN
+ rFTbE1fpVHaRodifWXGpqD/YmS57jfkc0VpzdsZST+u04Do93TlkS7M5OsaTT0taxQXi
+ RXWPZiL3KucIAuLhAy3DVByrnQQfMdiM+ybE+/xngVWIFzL3otAboymTim0OE8wq5UJI
+ bfJE13JeX9R4W4IDRKdq8MS8+OOJlU/vOURXn5LL1JIyespaykbzMQ9YqVQQ682+hC3+
+ 59WQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+ :message-id:subject:to:cc;
+ bh=IBH3XBpOAMJUcwvsjzj834VgYZdXPyh1GGmPMhY5+XA=;
+ b=MsFN4odBOaVBKIJd7rHc1TRFH/Zy3FJ63AXt6pVFFHHcwfJaygctgzlrAVP2MVJyjS
+ qHLNj/EFYGjeqf+aDkdg7jTMEETUQulUd+Vz5/FcCY5RjcM5OYx1poumVNX0ryQun7zi
+ PPrdAIgGkUyjP9zcIyi4t8Eq66lFlftjG6d4JGVzrl7DN6U5NhHKSA166upb9RoSqsVt
+ 85vEzWkYoEILBF6pXNJw3t4VbMukv46cxq9cIYKqwElaL2bUE5YDfOaaHPP7805cJxiu
+ CRJ/A7y/GTf381LSJxHsMiqXo7zARwDmInwvtveB41Bx5S021QPT2XcdOwlozktXF5sF
+ ATxA==
+X-Gm-Message-State: APf1xPCXh2cydatYHZziiwj16CRvZgjs4E6uEcFDPyODgUnqWTVyuHIL
+ dvZeUDe1nY32io8dOeyXtJ9G1E1FxSVpoJUI9rgvfA==
+X-Google-Smtp-Source: AG47ELu8fMB0hUidykbcWwS0pspLFf7+1wVHSnyhBx6ACnawM/SrNKaByLcXRfq9pEsduCgOKL96Ef1J5c6nxD2+5m4=
+X-Received: by 10.55.137.132 with SMTP id l126mr5571388qkd.15.1519223533983;
+ Wed, 21 Feb 2018 06:32:13 -0800 (PST)
+MIME-Version: 1.0
+Received: by 10.200.37.176 with HTTP; Wed, 21 Feb 2018 06:31:33 -0800 (PST)
+In-Reply-To: <21708133.DmTAOkxbDk@pintsize.usersys.redhat.com>
+References: <151880080195.1349.14035524657942875385.idtracker@ietfa.amsl.com>
+ <1545738.SpB3f87gQo@pintsize.usersys.redhat.com>
+ <CABcZeBOXzXf32JZkOw51JkXz6e_RG5Y+n+XG-9Y=Fb=a-as-CQ@mail.gmail.com>
+ <21708133.DmTAOkxbDk@pintsize.usersys.redhat.com>
+From: Eric Rescorla <ekr@rtfm.com>
+Date: Wed, 21 Feb 2018 06:31:33 -0800
+Message-ID: <CABcZeBOpPW_0=2qfCL4Uc8y8=o8Toj8cVec0=hLUCucUJNwO-w@mail.gmail.com>
+To: Hubert Kario <hkario@redhat.com>
+Cc: draft-ietf-tls-tls13@ietf.org, "<tls@ietf.org>" <tls@ietf.org>, 
+ IETF discussion list <ietf@ietf.org>
+Content-Type: multipart/alternative; boundary="94eb2c072d761414530565b9cb80"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/U82KLFmQhCoOMnY6s_zTB_ojjek>
+Subject: Re: [TLS] external PSK identity enumeration Re: UPDATED Last Call:
+ <draft-ietf-tls-tls13-24.txt> (The Transport Layer Security (TLS) Protocol
+ Version 1.3) to Proposed Standard
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Wed, 21 Feb 2018 14:32:19 -0000
+
+--94eb2c072d761414530565b9cb80
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+i think your general point is sound here, but I'll nitpick the statement
+that
+"if the server recognises an identity but is unable to verify corresponding
+binder".
+
+1. The server only picks one identity so you if you send A, B, and C and yo=
+u
+get an abort, you don't know if it recognized one or all.
+2. The server can *recognize* the identity but ignore it (say it's a ticket
+that's
+too old)
+
+With that said, I think it would probably be safe to say you must ignore an
+identity
+where the binder doesn't validate, but I'd like to hear from cryptographers
+on this
+one.
+
+Thanks,
+-Ekr
+
+
+On Wed, Feb 21, 2018 at 6:26 AM, Hubert Kario <hkario@redhat.com> wrote:
+
+> On Wednesday, 21 February 2018 15:21:58 CET Eric Rescorla wrote:
+> > On Wed, Feb 21, 2018 at 6:13 AM, Hubert Kario <hkario@redhat.com> wrote=
+:
+> > > On Friday, 16 February 2018 18:06:41 CET The IESG wrote:
+> > > > The IESG has received a request from the Transport Layer Security W=
+G
+> > >
+> > > (tls)
+> > >
+> > > > to consider the following document: - 'The Transport Layer Security
+> > > > (TLS)
+> > > > Protocol Version 1.3'
+> > > >
+> > > >   <draft-ietf-tls-tls13-24.txt> as Proposed Standard
+> > >
+> > > The current draft states that if the server recognises an identity bu=
+t
+> is
+> > > unable to verify corresponding binder, it "MUST abort the handshake"
+> >
+> > Which text are you referring to here?
+>
+> Section 4.2.11:
+>
+>    Prior to accepting PSK key establishment, the server MUST validate
+>    the corresponding binder value (see Section 4.2.11.2 below).  If this
+>    value is not present or does not validate, the server MUST abort the
+>    handshake.  Servers SHOULD NOT attempt to validate multiple binders;
+>    rather they SHOULD select a single PSK and validate solely the binder
+>    that corresponds to that PSK.
+>
+> > -Ekr
+> >
+> > at the same time, they "SHOULD select as single PSK and validate solely
+> the
+> >
+> > > binder that corresponds to that PSK"
+> > > (Page 60, draft-ietf-tls-tls13-24).
+> > >
+> > > That allows for trivial enumeration of externally established
+> identities -
+> > > the
+> > > attacker just needs to send to the server a list of identity guesses,
+> with
+> > > random data as binders, if the server recognises any identity it will
+> > > abort
+> > > connection, if it doesn't, it will continue to a non-PSK handshake.
+> > >
+> > > Behaviour like this is generally considered a vulnerability:
+> > > https://cve.mitre.org/cgi-bin/cvename.cgi?name=3DCVE-2003-0190
+> > > https://cve.mitre.org/cgi-bin/cvename.cgi?name=3DCVE-2006-5229
+> > >
+> > > I was wondering if the document shouldn't recommend ignoring any and
+> all
+> > > identities for which binders do not verify to prevent this kind of
+> attack.
+> > > --
+> > > Regards,
+> > > Hubert Kario
+> > > Senior Quality Engineer, QE BaseOS Security team
+> > > Web: www.cz.redhat.com
+> > > Red Hat Czech s.r.o., Purky=C5=88ova 115, 612 00  Brno, Czech Republi=
+c
+> > > _______________________________________________
+> > > TLS mailing list
+> > > TLS@ietf.org
+> > > https://www.ietf.org/mailman/listinfo/tls
+>
+>
+> --
+> Regards,
+> Hubert Kario
+> Senior Quality Engineer, QE BaseOS Security team
+> Web: www.cz.redhat.com
+> Red Hat Czech s.r.o., Purky=C5=88ova 115, 612 00  Brno, Czech Republic
+>
+
+--94eb2c072d761414530565b9cb80
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">i think your general point is sound here, but I&#39;ll nit=
+pick the statement that=C2=A0<div>&quot;i<span style=3D"color:rgb(80,0,80);=
+font-family:arial,sans-serif;font-size:12.8px;font-style:normal;font-varian=
+t-ligatures:normal;font-variant-caps:normal;font-weight:400;letter-spacing:=
+normal;text-align:start;text-indent:0px;text-transform:none;white-space:nor=
+mal;word-spacing:0px;background-color:rgb(255,255,255);text-decoration-styl=
+e:initial;text-decoration-color:initial;float:none;display:inline">f the se=
+rver recognises an identity but is</span><span style=3D"color:rgb(80,0,80);=
+font-family:arial,sans-serif;font-size:12.8px;font-style:normal;font-varian=
+t-ligatures:normal;font-variant-caps:normal;font-weight:400;letter-spacing:=
+normal;text-align:start;text-indent:0px;text-transform:none;white-space:nor=
+mal;word-spacing:0px;background-color:rgb(255,255,255);text-decoration-styl=
+e:initial;text-decoration-color:initial;float:none;display:inline">=C2=A0un=
+able to verify corresponding binder&quot;.</span></div><div><br></div><div>=
+1. The server only picks one identity so you if you send A, B, and C and yo=
+u</div><div>get an abort, you don&#39;t know if it recognized one or all.</=
+div><div>2. The server can *recognize* the identity but ignore it (say it&#=
+39;s a ticket that&#39;s</div><div>too old)</div><div><br></div><div>With t=
+hat said, I think it would probably be safe to say you must ignore an ident=
+ity</div><div>where the binder doesn&#39;t validate, but I&#39;d like to he=
+ar from cryptographers on this</div><div>one.</div><div><br></div><div>Than=
+ks,</div><div>-Ekr<br></div><div><br></div></div><div class=3D"gmail_extra"=
+><br><div class=3D"gmail_quote">On Wed, Feb 21, 2018 at 6:26 AM, Hubert Kar=
+io <span dir=3D"ltr">&lt;<a href=3D"mailto:hkario@redhat.com" target=3D"_bl=
+ank">hkario@redhat.com</a>&gt;</span> wrote:<br><blockquote class=3D"gmail_=
+quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1=
+ex"><span class=3D"">On Wednesday, 21 February 2018 15:21:58 CET Eric Resco=
+rla wrote:<br>
+&gt; On Wed, Feb 21, 2018 at 6:13 AM, Hubert Kario &lt;<a href=3D"mailto:hk=
+ario@redhat.com">hkario@redhat.com</a>&gt; wrote:<br>
+&gt; &gt; On Friday, 16 February 2018 18:06:41 CET The IESG wrote:<br>
+&gt; &gt; &gt; The IESG has received a request from the Transport Layer Sec=
+urity WG<br>
+&gt; &gt;<br>
+&gt; &gt; (tls)<br>
+&gt; &gt;<br>
+&gt; &gt; &gt; to consider the following document: - &#39;The Transport Lay=
+er Security<br>
+&gt; &gt; &gt; (TLS)<br>
+&gt; &gt; &gt; Protocol Version 1.3&#39;<br>
+&gt; &gt; &gt;<br>
+&gt; &gt; &gt;=C2=A0 =C2=A0&lt;draft-ietf-tls-tls13-24.txt&gt; as Proposed =
+Standard<br>
+&gt; &gt;<br>
+&gt; &gt; The current draft states that if the server recognises an identit=
+y but is<br>
+&gt; &gt; unable to verify corresponding binder, it &quot;MUST abort the ha=
+ndshake&quot;<br>
+&gt;<br>
+&gt; Which text are you referring to here?<br>
+<br>
+</span>Section 4.2.11:<br>
+<br>
+=C2=A0 =C2=A0Prior to accepting PSK key establishment, the server MUST vali=
+date<br>
+=C2=A0 =C2=A0the corresponding binder value (see Section 4.2.11.2 below).=
+=C2=A0 If this<br>
+=C2=A0 =C2=A0value is not present or does not validate, the server MUST abo=
+rt the<br>
+=C2=A0 =C2=A0handshake.=C2=A0 Servers SHOULD NOT attempt to validate multip=
+le binders;<br>
+=C2=A0 =C2=A0rather they SHOULD select a single PSK and validate solely the=
+ binder<br>
+=C2=A0 =C2=A0that corresponds to that PSK.<br>
+<div class=3D"HOEnZb"><div class=3D"h5"><br>
+&gt; -Ekr<br>
+&gt;<br>
+&gt; at the same time, they &quot;SHOULD select as single PSK and validate =
+solely the<br>
+&gt;<br>
+&gt; &gt; binder that corresponds to that PSK&quot;<br>
+&gt; &gt; (Page 60, draft-ietf-tls-tls13-24).<br>
+&gt; &gt;<br>
+&gt; &gt; That allows for trivial enumeration of externally established ide=
+ntities -<br>
+&gt; &gt; the<br>
+&gt; &gt; attacker just needs to send to the server a list of identity gues=
+ses, with<br>
+&gt; &gt; random data as binders, if the server recognises any identity it =
+will<br>
+&gt; &gt; abort<br>
+&gt; &gt; connection, if it doesn&#39;t, it will continue to a non-PSK hand=
+shake.<br>
+&gt; &gt;<br>
+&gt; &gt; Behaviour like this is generally considered a vulnerability:<br>
+&gt; &gt; <a href=3D"https://cve.mitre.org/cgi-bin/cvename.cgi?name=3DCVE-2=
+003-0190" rel=3D"noreferrer" target=3D"_blank">https://cve.mitre.org/cgi-bi=
+n/<wbr>cvename.cgi?name=3DCVE-2003-0190</a><br>
+&gt; &gt; <a href=3D"https://cve.mitre.org/cgi-bin/cvename.cgi?name=3DCVE-2=
+006-5229" rel=3D"noreferrer" target=3D"_blank">https://cve.mitre.org/cgi-bi=
+n/<wbr>cvename.cgi?name=3DCVE-2006-5229</a><br>
+&gt; &gt;<br>
+&gt; &gt; I was wondering if the document shouldn&#39;t recommend ignoring =
+any and all<br>
+&gt; &gt; identities for which binders do not verify to prevent this kind o=
+f attack.<br>
+&gt; &gt; --<br>
+&gt; &gt; Regards,<br>
+&gt; &gt; Hubert Kario<br>
+&gt; &gt; Senior Quality Engineer, QE BaseOS Security team<br>
+&gt; &gt; Web: <a href=3D"http://www.cz.redhat.com" rel=3D"noreferrer" targ=
+et=3D"_blank">www.cz.redhat.com</a><br>
+&gt; &gt; Red Hat Czech s.r.o., Purky=C5=88ova 115, 612 00=C2=A0 Brno, Czec=
+h Republic<br>
+&gt; &gt; ______________________________<wbr>_________________<br>
+&gt; &gt; TLS mailing list<br>
+&gt; &gt; <a href=3D"mailto:TLS@ietf.org">TLS@ietf.org</a><br>
+&gt; &gt; <a href=3D"https://www.ietf.org/mailman/listinfo/tls" rel=3D"nore=
+ferrer" target=3D"_blank">https://www.ietf.org/mailman/<wbr>listinfo/tls</a=
+><br>
+<br>
+<br>
+--<br>
+Regards,<br>
+Hubert Kario<br>
+Senior Quality Engineer, QE BaseOS Security team<br>
+Web: <a href=3D"http://www.cz.redhat.com" rel=3D"noreferrer" target=3D"_bla=
+nk">www.cz.redhat.com</a><br>
+Red Hat Czech s.r.o., Purky=C5=88ova 115, 612 00=C2=A0 Brno, Czech Republic=
+</div></div></blockquote></div><br></div>
+
+--94eb2c072d761414530565b9cb80--
+

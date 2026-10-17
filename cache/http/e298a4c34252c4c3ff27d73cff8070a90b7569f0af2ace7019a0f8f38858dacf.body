@@ -1,0 +1,283 @@
+Return-Path: <Hannes.Tschofenig@arm.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id CE5553A18DA;
+ Fri,  3 Apr 2020 05:19:43 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.899
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.899 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ SPF_PASS=-0.001, UNPARSEABLE_RELAY=0.001, URIBL_BLOCKED=0.001]
+ autolearn=ham autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=armh.onmicrosoft.com header.b=u35qFZSv;
+ dkim=pass (1024-bit key) header.d=armh.onmicrosoft.com
+ header.b=u35qFZSv
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 8R3hXxm9uuZM; Fri,  3 Apr 2020 05:19:39 -0700 (PDT)
+Received: from FRA01-PR2-obe.outbound.protection.outlook.com
+ (mail-eopbgr120059.outbound.protection.outlook.com [40.107.12.59])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 389AD3A18DD;
+ Fri,  3 Apr 2020 05:19:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com; 
+ s=selector2-armh-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=16/Cje2iiAK95Tt3hj0SNP0uGvtyfcy8h+1RDjMTwwM=;
+ b=u35qFZSvyXa+8uDdCMLnhmBIrqgH9z/V0RrqAlkQ4kAX7nXq6ohfd7SGw1Oybr4traVRki7SpbS0Au49HV/qLU3RrPG6r7cPXJe3rKBMAdm5XTEYoMwGmAQzE2kJsRAJdwbO25u5/GYiLOio/EfYQf0Eh/8k9l1OGRdP4ZFzjqM=
+Received: from AM6P191CA0027.EURP191.PROD.OUTLOOK.COM (2603:10a6:209:8b::40)
+ by PR2PR08MB4700.eurprd08.prod.outlook.com (2603:10a6:101:1b::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2856.20; Fri, 3 Apr
+ 2020 12:19:33 +0000
+Received: from AM5EUR03FT044.eop-EUR03.prod.protection.outlook.com
+ (2603:10a6:209:8b:cafe::28) by AM6P191CA0027.outlook.office365.com
+ (2603:10a6:209:8b::40) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2878.16 via Frontend
+ Transport; Fri, 3 Apr 2020 12:19:33 +0000
+Authentication-Results: spf=pass (sender IP is 63.35.35.123)
+ smtp.mailfrom=arm.com; ietf.org; dkim=pass (signature was verified)
+ header.d=armh.onmicrosoft.com;ietf.org; dmarc=bestguesspass action=none
+ header.from=arm.com;
+Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
+ 63.35.35.123 as permitted sender) receiver=protection.outlook.com;
+ client-ip=63.35.35.123; helo=64aa7808-outbound-1.mta.getcheckrecipient.com;
+Received: from 64aa7808-outbound-1.mta.getcheckrecipient.com (63.35.35.123) by
+ AM5EUR03FT044.mail.protection.outlook.com (10.152.17.56) with
+ Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2856.17 via Frontend Transport; Fri, 3 Apr 2020 12:19:33 +0000
+Received: ("Tessian outbound af37c2b81632:v50");
+ Fri, 03 Apr 2020 12:19:33 +0000
+X-CR-MTA-TID: 64aa7808
+Received: from 2202c02c40ec.1
+ by 64aa7808-outbound-1.mta.getcheckrecipient.com id
+ 17786EDC-F065-4318-B203-9633D4847A52.1; 
+ Fri, 03 Apr 2020 12:19:28 +0000
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com
+ by 64aa7808-outbound-1.mta.getcheckrecipient.com with ESMTPS id 2202c02c40ec.1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384);
+ Fri, 03 Apr 2020 12:19:28 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TUqeZdeFht5f9HU30MLX9WYYhpXV4u09NA0lLwTrqxtHitYs44hrt+1/e7LP+3xOG6F5rH+UJAUsBf23JUwue2LKjOyXZzwaKDfsJaYwHUrw7kAtqp6nA50heORPSpMQviLQ3g1XpuF2KQYka0dEXKSnLWj59OOWfaPLIfCfe7adLgVe7BU9qKPplCyK+aWhFQNhsmNoSaSBk2rFVpapRFV86EoxbuBF3dklthwDbSvpl/0BxlbPBW92WtwJsMQi3FOGqCtWSpCe+1kZGxMAt7yqkMUum9lnSNK3BSWEYBvM/2+7eroNdC4f4FB1CafbX2dOWSwGQSCW+cTmJ2WeBA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=16/Cje2iiAK95Tt3hj0SNP0uGvtyfcy8h+1RDjMTwwM=;
+ b=UX2Pb8kuTo/vf/4kommwS/y2RN5B7+AOSuGzVC1iIOzrxfUQbRM1wcXUw26Lr1uBaWRh/r/4kj5BiIwby99cIhs6gIaD5UY2qYr1Q+jxxxcl3HvjcxxbBvG+hmekUBN4GSOeiUB2tAJx1DWYCKx/DSSebgzpPGcGqpmUoYeWv9CW5aw+O8Houm3PUAFVQAQ6+XKOlUtlGarbtlfHv1+icWiX+OIXz1Q/44Vuv5iGpau10AUvP0nE1QLj2uRHIsO20LY2yphvczJ7pwkA2xUVkzz8HinVo43mDsRmkSD8NDE3kNtiLlc8GhmMbAaeS57gAsXExKx2ujyeGvjBA+Ef4A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
+ header.d=arm.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com; 
+ s=selector2-armh-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=16/Cje2iiAK95Tt3hj0SNP0uGvtyfcy8h+1RDjMTwwM=;
+ b=u35qFZSvyXa+8uDdCMLnhmBIrqgH9z/V0RrqAlkQ4kAX7nXq6ohfd7SGw1Oybr4traVRki7SpbS0Au49HV/qLU3RrPG6r7cPXJe3rKBMAdm5XTEYoMwGmAQzE2kJsRAJdwbO25u5/GYiLOio/EfYQf0Eh/8k9l1OGRdP4ZFzjqM=
+Received: from AM0PR08MB3716.eurprd08.prod.outlook.com (20.178.23.205) by
+ AM0PR08MB3396.eurprd08.prod.outlook.com (20.177.109.138) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2856.19; Fri, 3 Apr 2020 12:18:12 +0000
+Received: from AM0PR08MB3716.eurprd08.prod.outlook.com
+ ([fe80::2159:870b:25df:e612]) by AM0PR08MB3716.eurprd08.prod.outlook.com
+ ([fe80::2159:870b:25df:e612%5]) with mapi id 15.20.2878.018; Fri, 3 Apr 2020
+ 12:18:09 +0000
+From: Hannes Tschofenig <Hannes.Tschofenig@arm.com>
+To: John Mattsson <john.mattsson=40ericsson.com@dmarc.ietf.org>,
+ "TLS@ietf.org" <TLS@ietf.org>, "uta@ietf.org" <uta@ietf.org>
+Thread-Topic: CBOR Certificate Compression of RFC 7925 certificates suitable
+ for cTLS
+Thread-Index: AQHWCYXhsfDqn9t6CkOccV3/F4Ml86hnSa2g
+Date: Fri, 3 Apr 2020 12:18:09 +0000
+Message-ID: <AM0PR08MB3716814FD94620B616006807FAC70@AM0PR08MB3716.eurprd08.prod.outlook.com>
+References: <4F3108DB-4D44-481C-807D-D2870ED719DA@ericsson.com>
+In-Reply-To: <4F3108DB-4D44-481C-807D-D2870ED719DA@ericsson.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ts-tracking-id: 0cfb56a3-d870-4479-86bd-7d29d817b6a4.0
+x-checkrecipientchecked: true
+Authentication-Results-Original: spf=none (sender IP is )
+ smtp.mailfrom=Hannes.Tschofenig@arm.com; 
+x-originating-ip: [80.92.115.214]
+x-ms-publictraffictype: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 26f899d4-2381-4b44-79bd-08d7d7c944c4
+x-ms-traffictypediagnostic: AM0PR08MB3396:|PR2PR08MB4700:
+X-Microsoft-Antispam-PRVS: <PR2PR08MB4700C1856DD91A01CA9EFFDBFAC70@PR2PR08MB4700.eurprd08.prod.outlook.com>
+x-checkrecipientrouted: true
+nodisclaimer: true
+x-ms-oob-tlc-oobclassifiers: OLM:10000;OLM:10000;
+x-forefront-prvs: 0362BF9FDB
+X-Forefront-Antispam-Report-Untrusted: CIP:255.255.255.255; CTRY:; LANG:en;
+ SCL:1; SRV:; IPV:NLI; SFV:NSPM; H:AM0PR08MB3716.eurprd08.prod.outlook.com;
+ PTR:; CAT:NONE; SFTY:;
+ SFS:(10009020)(4636009)(366004)(186003)(81156014)(55016002)(81166006)(86362001)(7696005)(66574012)(9686003)(33656002)(8936002)(71200400001)(76116006)(66946007)(64756008)(8676002)(53546011)(52536014)(2906002)(66446008)(966005)(66556008)(26005)(66476007)(498600001)(5660300002)(6506007)(110136005);
+ DIR:OUT; SFP:1101; 
+received-spf: None (protection.outlook.com: arm.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam-Untrusted: BCL:0;
+X-Microsoft-Antispam-Message-Info-Original: ZzahnF/wop2LeLpfHZn3Inq3M9f0/VILW+4aipTA7m+NtMYJ4YWajNll91ncHaWgNCbMMldSclvTxkpaS28cumCtO0ep0Ydqbal+TgOVjq4Vy+Fgg+SUPP0IRToRzlk6htdc4UsSiczDB5i7gGvWj/FMLRaXI5tJJuwXUj26O6T6Xy9F4r+oVYjPRVYAxX4P4QoNX5mk9O9eQudI8Etn2XhHZcmm26/UwxHxxaac9otMrkDUd3p0bCznSS4l1P83kA2YKYGjSbnGExS5VN9XTh0K44z7z3HraPd5j0MockVP6IdT5CBgByuuN7zkRVVfFn4iEPF9i2qHZ8wBpD4b5ACz0bppBqLSvRZ+sZgQPySdWzGXX0JedhceUrEc6I2ERRu2GHpRa60X9//NrMAtkeI6xZ1/JdHkd790FNSzxyKR9/UqF37pOsBEGeOE3YEsvCpNJfbw58A4UgJVxvB0nHw+VATds57YwPuxVXjBhgZWjaKCNUtWNDAqG/4kkKJHOV9AjQx7f3UlxyFuzA6Vhg==
+x-ms-exchange-antispam-messagedata: wxhe8IVFKFc2gYCpnLhRXn4dVNkenXcqp4USfCw1ugVD8O0PUUoCGRrLAz7WPtZhFfJcyoEifZ9obF0WIpid4Kj5BpKYpf9QhSuvx+utHXtefE+pXbt/mtmkP82s+EYFmPgXD+9EqJNVath9sOdXxw==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR08MB3396
+Original-Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=Hannes.Tschofenig@arm.com; 
+X-EOPAttributedMessage: 0
+X-MS-Exchange-Transport-CrossTenantHeadersStripped: AM5EUR03FT044.eop-EUR03.prod.protection.outlook.com
+X-Forefront-Antispam-Report: CIP:63.35.35.123; CTRY:IE; LANG:en; SCL:1; SRV:; 
+ IPV:CAL; SFV:NSPM;
+ H:64aa7808-outbound-1.mta.getcheckrecipient.com; 
+ PTR:ec2-63-35-35-123.eu-west-1.compute.amazonaws.com; CAT:NONE; SFTY:;
+ SFS:(10009020)(4636009)(136003)(376002)(346002)(39860400002)(396003)(46966005)(81166006)(86362001)(52536014)(81156014)(70586007)(70206006)(316002)(8936002)(356004)(2906002)(966005)(478600001)(9686003)(82740400003)(36906005)(6506007)(66574012)(33656002)(8676002)(55016002)(186003)(47076004)(336012)(450100002)(110136005)(53546011)(26826003)(7696005)(26005)(5660300002);
+ DIR:OUT; SFP:1101; 
+X-MS-Office365-Filtering-Correlation-Id-Prvs: c18fc632-41b4-48c5-489e-08d7d7c9128a
+X-Forefront-PRVS: 0362BF9FDB
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: VjlVxODHLIQb6fzNe9ablZzn/0CMkfulg5Z8Fj7Q3RgnCy/L/75ATPvvnFFlJFwH22byT6eaCx57Y2tol8bB0jbhQEyaP95SsY/UqKczLlERbj+ReSAi/Mw8OwGLEqcKLEmxOb4TlTR5td6jjBL/JMZZrecFL4Pn9ugoojhihOMCLdFEODosvjnzBwbdXJjjvi0m2A+HYweZTGQ+fOut2b2qXFu93o9blImjRY+eI2WO/4DPdzr62SOr+W26x1NTaB1ab07l6udL0mukqLtFiUuAQXYC8dUkQy6ZTp4hdFho7PqFk+nZv9j+E52slja+Q5XcEko3WayTAYTglX8yvKJVowMFb4zJmiTGoWJlIqjhm1jzsUF990DPbXd+Kx7++4AiMntKXbdJ+SM03coKKZfgRF7D3yPJtLLANZmcf9WtvjCsFr1vh9ewGRRcJDkwqlMwROW3mkE6ql5GOe+n8P6Hq41GwRYlJoXRQn4oDDDZWqf1gZ+wpqZxxGkCkR/UqCWKIa5BqAzDhFTddh80V9jNrmzlm3gfg69R2A4JwmvIuEarvIbiqC4YTI/F20+Ec/u0q/fISz/pGiBL4Fs7Rw==
+X-OriginatorOrg: arm.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Apr 2020 12:19:33.7579 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 26f899d4-2381-4b44-79bd-08d7d7c944c4
+X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d; Ip=[63.35.35.123]; 
+ Helo=[64aa7808-outbound-1.mta.getcheckrecipient.com]
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR2PR08MB4700
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/znDQBzx253YktrIMJrCPqkuwjPk>
+Subject: Re: [TLS] CBOR Certificate Compression of RFC 7925 certificates
+ suitable for cTLS
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Fri, 03 Apr 2020 12:19:44 -0000
+
+SGkgSm9obiwNCg0KVGhhbmtzIGZvciB0aGUgaGVhZHMtdXAuDQoNCkRpc2N1c3NpbmcgdGhpcyBh
+c3BlY3QgaW4gZHJhZnQtdHNjaG9mZW5pZy11dGEtdGxzMTMtcHJvZmlsZS0wMSBtYWtlcyBzZW5z
+ZS4NCg0KSSB3YXMgd29uZGVyaW5nIHdoZXRoZXIgeW91IGhhdmUgYmVlbiB3b3JraW5nIG9uIGFu
+IGltcGxlbWVudGF0aW9uIG9mIGRyYWZ0LW1hdHRzc29uLWNvc2UtY2Jvci1jZXJ0LWNvbXByZXNz
+LTAwIC8gZHJhZnQtcmF6YS1hY2UtY2Jvci1jZXJ0aWZpY2F0ZXMtMDQuDQoNCkNpYW8NCkhhbm5l
+cw0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogVExTIDx0bHMtYm91bmNlc0Bp
+ZXRmLm9yZz4gT24gQmVoYWxmIE9mIEpvaG4gTWF0dHNzb24NClNlbnQ6IEZyaWRheSwgQXByaWwg
+MywgMjAyMCA5OjAzIEFNDQpUbzogVExTQGlldGYub3JnOyB1dGFAaWV0Zi5vcmcNClN1YmplY3Q6
+IFtUTFNdIENCT1IgQ2VydGlmaWNhdGUgQ29tcHJlc3Npb24gb2YgUkZDIDc5MjUgY2VydGlmaWNh
+dGVzIHN1aXRhYmxlIGZvciBjVExTDQoNCkhpLA0KDQpEdXJpbmcgdGhlIENPU0UgdmlydHVhbCBp
+bnRlcmltIG1lZXRpbmcgeWVzdGVyZGF5LCB0aGVyZSB3YXMgYWdyZWVtZW50IHRoYXQgdGhlIENP
+U0Ugd29ya2luZyBncm91cCBzaG91bGQgd29yayBvbiBDQk9SIGNvbXByZXNzaW9uIG9mIFJGQyA3
+OTI1IHByb2ZpbGVkIFguNTA5IGNlcnRpZmljYXRlcy4gVGhlIHdvcmsgd2lsbCBiZSBiYXNlZCBv
+biBkcmFmdC1yYXphLWFjZS1jYm9yLWNlcnRpZmljYXRlcyBhbmQgZHJhZnQtbWF0dHNzb24tY29z
+ZS1jYm9yLWNlcnQtY29tcHJlc3MgYW5kIHRoZSB0d28gZHJhZnRzIHdpbGwgYmUgbWVyZ2VkLiBE
+b2luZyB0aGlzIHdvcmsgaW4gYSBzZWN1cml0eSBncm91cCBmb2N1c2VkIG9uIENCT1IgbWFrZXMg
+YSBsb3Qgb2Ygc2Vuc2UuDQoNCmh0dHBzOi8vdG9vbHMuaWV0Zi5vcmcvaHRtbC9kcmFmdC1tYXR0
+c3Nvbi1jb3NlLWNib3ItY2VydC1jb21wcmVzcy0wMA0KaHR0cHM6Ly90b29scy5pZXRmLm9yZy9o
+dG1sL2RyYWZ0LXJhemEtYWNlLWNib3ItY2VydGlmaWNhdGVzLTA0DQoNClRoZSBDT1NFIGRyYWZ0
+IGNoYXJ0ZXIgaGFzIGFscmVhZHkgYmVlbiB1cGRhdGVkIHRvIHJlZmxlY3QgdGhpcy4NCg0KaHR0
+cHM6Ly9naXRodWIuY29tL2Nvc2Utd2cvQ2hhcnRlci9ibG9iL21hc3Rlci9DaGFydGVyLm1kDQoN
+CkFzIHRoZSBhbGdvcml0aG0gaXMgZm9jdXNlZCBvbiBjb21wcmVzc2luZyBSRkMgNzkyNSBwcm9m
+aWxlZCBjZXJ0aWZpY2F0ZXMsIEl0IHNlZW1zIGxpa2UgYSB2ZXJ5IGdvb2QgbWF0Y2ggZm9yIGNU
+TFMuIFRvIGtlZXAgdGhlIG51bWJlciBvZiBpbnRlcm5ldC1kcmFmdHMgZG93biwgSSBwbGFuIHRv
+IGFsc28gaW5jbHVkZSB0aGUgVExTIElBTkEgcmVnaXN0cmF0aW9ucyBpbiB0aGUgbWVyZ2VkIGRy
+YWZ0IHN1Ym1pdHRlZCB0byB0aGUgQ09TRSBXRyBhbmQgbGV0IGRyYWZ0LW1hdHRzc29uLXRscy1j
+Ym9yLWNlcnQtY29tcHJlc3MtMDAgZXhwaXJlLg0KDQpBbnkgY29tbWVudHMgZnJvbSB0aGUgVExT
+IFdHIGFyZSB2ZXJ5IHdlbGNvbWUsIGJ1dCBvdGhlcndpc2UgdGhlc2UgaXMgbm90IHNvIG11Y2gg
+dG8gZGlzY3VzcywgdGhpcyBpcyBqdXN0IGFub3RoZXIgY2VydGlmaWNhdGUgY29tcHJlc3Npb24g
+YWxnb3JpdGhtLiBBbnkgVExTIHJlbGF0ZWQgZGlzY3Vzc2lvbnMgd291bGQgbGlrZWx5IGJlIHJl
+Z2FyZGluZyB0aGUgY2VydGlmaWNhdGUgcHJvZmlsZSBpbiBSRkMgNzkyNSBhbmQgaWYgYW55IGNs
+YXJpZmljYXRpb25zIG9yIHVwZGF0ZXMgYXJlIG5lZWRlZC4gVGhpcyBpcyBsaWtlbHkgYmVzdCBk
+aXNjdXNzZWQgaW4gVVRBIHdoaWNoIG1heSB0YWtlIHVwIHdvcmsgb24gYSBUTFMvRFRMUyAxLjMg
+dXBkYXRlIG9mIFJGQyA3OTI1Lg0KDQpodHRwczovL3Rvb2xzLmlldGYub3JnL2h0bWwvZHJhZnQt
+dHNjaG9mZW5pZy11dGEtdGxzMTMtcHJvZmlsZS0wMQ0KDQpDaGVlcnMsDQpKb2huDQoNCu+7vy0t
+LS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBKb2huIE1hdHRzc29uIDxqb2huLm1hdHRz
+c29uQGVyaWNzc29uLmNvbT4NCkRhdGU6IFRodXJzZGF5LCAxMiBNYXJjaCAyMDIwIGF0IDA4OjU4
+DQpUbzogIlRMU0BpZXRmLm9yZyIgPFRMU0BpZXRmLm9yZz4NCkNjOiAidXRhQGlldGYub3JnIiA8
+dXRhQGlldGYub3JnPg0KU3ViamVjdDogRlc6IE5ldyBWZXJzaW9uIE5vdGlmaWNhdGlvbiBmb3Ig
+ZHJhZnQtbWF0dHNzb24tdGxzLWNib3ItY2VydC1jb21wcmVzcy0wMC50eHQNCg0KICAgIEhpLA0K
+DQogICAgV2UgaGF2ZSBzdWJtaXR0ZWQgYSBuZXcgZHJhZnQgdG8gVExTIGh0dHBzOi8vdG9vbHMu
+aWV0Zi5vcmcvaHRtbC9kcmFmdC1tYXR0c3Nvbi10bHMtY2Jvci1jZXJ0LWNvbXByZXNzLTAwIFRo
+ZSBkcmFmdCByZWdpc3RlciBhIG5ldyBjb21wcmVzc2lvbiBhbGdvcml0aG1zIGZvciB1c2Ugd2l0
+aCBUTFMgQ2VydGlmaWNhdGUgQ29tcHJlc3Npb24gaW4gVExTIDEuMyBhbmQgRFRMUyAxLjMgKGRy
+YWZ0LWlldGYtdGxzLWNlcnRpZmljYXRlLWNvbXByZXNzaW9uKS4NCg0KICAgIFRoZSBkcmFmdCB1
+c2VzIGh0dHBzOi8vdG9vbHMuaWV0Zi5vcmcvaHRtbC9kcmFmdC1yYXphLWFjZS1jYm9yLWNlcnRp
+ZmljYXRlcy0wNCB0byBjb21wcmVzcyBSRkMgNzkyNSBwcm9maWxlcyBjZXJ0aWZpY2F0ZXMgYnkg
+ZW5jb2RpbmcgdGhlbSBmcm9tIERFUiB0byBDQk9SLiBUaGUgYWltIGlzIHRvIGJlIGNvbXBhdGli
+bGUgd2l0aCBhbGwgUkZDIDc5MjUgcHJvZmlsZWQgY2VydGlmaWNhdGVzLiBXaXRoIHRoZSBpbmNs
+dWRlZCBleGFtcGxlIERFUiBlbmNvZGVkIFJGQyA3OTI1IGNlcnRpZmljYXRlIHRvIGNlcnRpZmlj
+YXRlIGlzIGNvbXByZXNzZWQgZnJvbSAzMTQgdG8gMTM2IGJ5dGVzLCBhIGNvbXByZXNzaW9uIHJh
+dGUgb2YgNTclLg0KDQogICAgVGhlIGdlbmVyYWwgcHVycG9zZSBjb21wcmVzc2lvbiBhbGdvcml0
+aG1zIGRlZmluZWQgaW4gZHJhZnQtaWV0Zi10bHMtY2VydGlmaWNhdGUtY29tcHJlc3Npb24gZG8g
+bm90IHNlZW0gYWJsZSB0byBjb21wcmVzcyBwcm9maWxlZCBSRkMgNzkyNSBYLjUwOSBjZXJ0aWZp
+Y2F0ZXMgbXVjaCBhdCBhbGwuIHpsaWIgY29tcHJlc3NlZCB0aGUgZXhhbXBsZSBjZXJ0IDklLCBi
+dXQgZm9yIG90aGVyIGNlcnRpZmljYXRlcyB3ZSB0ZXN0ZWQsIHpsaWIgZGlkIGluIG1hbnkgY2Fz
+ZXMgbm90IHByb3ZpZGUgYW55IGNvbXByZXNzaW9uIGF0IGFsbC4NCg0KICAgIFdlIGhhdmUgc3Vi
+bWl0dGVkIGEgc2ltaWxhciBkcmFmdCB0byB0aGUgQ09TRSBXRyByZWdpc3RlcmluZyBhIG5ldyBh
+bGdvcml0aG1zIGZvciB0aGUgVExTIDEuMyBjZXJ0aWZpY2F0ZSBjb21wcmVzc2lvbiBleHRlbnNp
+b24uDQoNCiAgICBodHRwczovL3Rvb2xzLmlldGYub3JnL2h0bWwvZHJhZnQtbWF0dHNzb24tdGxz
+LWNib3ItY2VydC1jb21wcmVzcy0wMA0KDQogICAgQ2hlZXJzLA0KICAgIEpvaG4NCg0KICAgIC0t
+LS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQogICAgRnJvbTogImludGVybmV0LWRyYWZ0c0BpZXRm
+Lm9yZyIgPGludGVybmV0LWRyYWZ0c0BpZXRmLm9yZz4NCiAgICBEYXRlOiBNb25kYXksIDkgTWFy
+Y2ggMjAyMCBhdCAyMToxOQ0KICAgIFRvOiBKb2huIE1hdHRzc29uIDxqb2huLm1hdHRzc29uQGVy
+aWNzc29uLmNvbT4sIEpvaG4gTWF0dHNzb24gPGpvaG4ubWF0dHNzb25AZXJpY3Nzb24uY29tPiwg
+Sm9lbCBIw7ZnbHVuZCA8am9lbC5ob2dsdW5kQHJpLnNlPiwgSm9lbCBIb2dsdW5kIDxqb2VsLmhv
+Z2x1bmRAcmkuc2U+LCBHw7ZyYW4gU2VsYW5kZXIgPGdvcmFuLnNlbGFuZGVyQGVyaWNzc29uLmNv
+bT4sIE1hcnRpbiBGdXJ1aGVkIDxtYXJ0aW4uZnVydWhlZEBuZXh1c2dyb3VwLmNvbT4sIEfDtnJh
+biBTZWxhbmRlciA8Z29yYW4uc2VsYW5kZXJAZXJpY3Nzb24uY29tPiwgU2hhaGlkIFJhemEgPHNo
+YWhpZC5yYXphQHJpLnNlPg0KICAgIFN1YmplY3Q6IE5ldyBWZXJzaW9uIE5vdGlmaWNhdGlvbiBm
+b3IgZHJhZnQtbWF0dHNzb24tdGxzLWNib3ItY2VydC1jb21wcmVzcy0wMC50eHQNCg0KDQogICAg
+ICAgIEEgbmV3IHZlcnNpb24gb2YgSS1ELCBkcmFmdC1tYXR0c3Nvbi10bHMtY2Jvci1jZXJ0LWNv
+bXByZXNzLTAwLnR4dA0KICAgICAgICBoYXMgYmVlbiBzdWNjZXNzZnVsbHkgc3VibWl0dGVkIGJ5
+IEpvaG4gUHJldXNzIE1hdHRzc29uIGFuZCBwb3N0ZWQgdG8gdGhlDQogICAgICAgIElFVEYgcmVw
+b3NpdG9yeS4NCg0KICAgICAgICBOYW1lOmRyYWZ0LW1hdHRzc29uLXRscy1jYm9yLWNlcnQtY29t
+cHJlc3MNCiAgICAgICAgUmV2aXNpb246MDANCiAgICAgICAgVGl0bGU6Q0JPUiBDZXJ0aWZpY2F0
+ZSBBbGdvcml0aG0gZm9yIFRMUyBDZXJ0aWZpY2F0ZSBDb21wcmVzc2lvbg0KICAgICAgICBEb2N1
+bWVudCBkYXRlOjIwMjAtMDMtMDkNCiAgICAgICAgR3JvdXA6SW5kaXZpZHVhbCBTdWJtaXNzaW9u
+DQogICAgICAgIFBhZ2VzOjYNCiAgICAgICAgVVJMOiAgICAgICAgICAgIGh0dHBzOi8vd3d3Lmll
+dGYub3JnL2ludGVybmV0LWRyYWZ0cy9kcmFmdC1tYXR0c3Nvbi10bHMtY2Jvci1jZXJ0LWNvbXBy
+ZXNzLTAwLnR4dA0KICAgICAgICBTdGF0dXM6ICAgICAgICAgaHR0cHM6Ly9kYXRhdHJhY2tlci5p
+ZXRmLm9yZy9kb2MvZHJhZnQtbWF0dHNzb24tdGxzLWNib3ItY2VydC1jb21wcmVzcy8NCiAgICAg
+ICAgSHRtbGl6ZWQ6ICAgICAgIGh0dHBzOi8vdG9vbHMuaWV0Zi5vcmcvaHRtbC9kcmFmdC1tYXR0
+c3Nvbi10bHMtY2Jvci1jZXJ0LWNvbXByZXNzLTAwDQogICAgICAgIEh0bWxpemVkOiAgICAgICBo
+dHRwczovL2RhdGF0cmFja2VyLmlldGYub3JnL2RvYy9odG1sL2RyYWZ0LW1hdHRzc29uLXRscy1j
+Ym9yLWNlcnQtY29tcHJlc3MNCg0KDQogICAgICAgIEFic3RyYWN0Og0KICAgICAgICAgICBDZXJ0
+aWZpY2F0ZSBjaGFpbnMgb2Z0ZW4gdGFrZSB1cCB0aGUgbWFqb3JpdHkgb2YgdGhlIGJ5dGVzDQog
+ICAgICAgICAgIHRyYW5zbWl0dGVkIGluIFRMUyBoYW5kc2hha2VzLiAgTGFyZ2UgaGFuZHNoYWtl
+cyBjYW4gY2F1c2UgcHJvYmxlbXMsDQogICAgICAgICAgIHBhcnRpY3VsYXJseSBpbiBjb25zdHJh
+aW5lZCBJb1QgZW52aXJvbm1lbnRzLiAgUkZDIDc5MjUgZGVmaW5lcyBhIFRMUw0KICAgICAgICAg
+ICBjZXJ0aWZpY2F0ZSBwcm9maWxlIGZvciBjb25zdHJhaW5lZCBJb1QuICBHZW5lcmFsIHB1cnBv
+c2UgY29tcHJlc3Npb24NCiAgICAgICAgICAgYWxnb3JpdGhtcyBjYW4gaW4gbWFueSBjYXNlcyBu
+b3QgY29tcHJlc3MgUkZDIDc5MjUgcHJvZmlsZWQNCiAgICAgICAgICAgY2VydGlmaWNhdGVzIGF0
+IGFsbC4gIEJ5IHVzaW5nIHRoZSBmYWN0IHRoYXQgdGhlIGNlcnRpZmljYXRlcyBhcmUNCiAgICAg
+ICAgICAgcHJvZmlsZWQsIHRoZSBDQk9SIGNlcnRpZmljYXRlIGNvbXByZXNzaW9uIGFsZ29yaXRo
+bXMgY2FuIGluIG1hbnkNCiAgICAgICAgICAgY2FzZXMgY29tcHJlc3MgUkZDIDc5MjUgcHJvZmls
+ZWQgY2VydGlmaWNhdGVzIHdpdGggb3ZlciA1MCUuIFRoaXMNCiAgICAgICAgICAgZG9jdW1lbnQg
+c3BlY2lmaWVzIHRoZSBDQk9SIGNlcnRpZmljYXRlIGNvbXByZXNzaW9uIGFsZ29yaXRobSBmb3Ig
+dXNlDQogICAgICAgICAgIHdpdGggVExTIENlcnRpZmljYXRlIENvbXByZXNzaW9uIGluIFRMUyAx
+LjMgYW5kIERUTFMgMS4zLg0KDQoNCg0KDQogICAgICAgIFBsZWFzZSBub3RlIHRoYXQgaXQgbWF5
+IHRha2UgYSBjb3VwbGUgb2YgbWludXRlcyBmcm9tIHRoZSB0aW1lIG9mIHN1Ym1pc3Npb24NCiAg
+ICAgICAgdW50aWwgdGhlIGh0bWxpemVkIHZlcnNpb24gYW5kIGRpZmYgYXJlIGF2YWlsYWJsZSBh
+dCB0b29scy5pZXRmLm9yZy4NCg0KICAgICAgICBUaGUgSUVURiBTZWNyZXRhcmlhdA0KDQoNCg0K
+DQoNCg0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NClRM
+UyBtYWlsaW5nIGxpc3QNClRMU0BpZXRmLm9yZw0KaHR0cHM6Ly93d3cuaWV0Zi5vcmcvbWFpbG1h
+bi9saXN0aW5mby90bHMNCklNUE9SVEFOVCBOT1RJQ0U6IFRoZSBjb250ZW50cyBvZiB0aGlzIGVt
+YWlsIGFuZCBhbnkgYXR0YWNobWVudHMgYXJlIGNvbmZpZGVudGlhbCBhbmQgbWF5IGFsc28gYmUg
+cHJpdmlsZWdlZC4gSWYgeW91IGFyZSBub3QgdGhlIGludGVuZGVkIHJlY2lwaWVudCwgcGxlYXNl
+IG5vdGlmeSB0aGUgc2VuZGVyIGltbWVkaWF0ZWx5IGFuZCBkbyBub3QgZGlzY2xvc2UgdGhlIGNv
+bnRlbnRzIHRvIGFueSBvdGhlciBwZXJzb24sIHVzZSBpdCBmb3IgYW55IHB1cnBvc2UsIG9yIHN0
+b3JlIG9yIGNvcHkgdGhlIGluZm9ybWF0aW9uIGluIGFueSBtZWRpdW0uIFRoYW5rIHlvdS4NCg==
+

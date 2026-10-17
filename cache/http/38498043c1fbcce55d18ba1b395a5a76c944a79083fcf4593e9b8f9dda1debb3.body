@@ -1,0 +1,86 @@
+Return-Path: <ilariliusvaara@welho.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 248E21321C0
+ for <tls@ietfa.amsl.com>; Tue, 15 Aug 2017 06:54:23 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.899
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.899 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, URIBL_BLOCKED=0.001]
+ autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id Rr6r0TgvPHG9 for <tls@ietfa.amsl.com>;
+ Tue, 15 Aug 2017 06:54:20 -0700 (PDT)
+Received: from welho-filter1.welho.com (welho-filter1.welho.com [83.102.41.23])
+ by ietfa.amsl.com (Postfix) with ESMTP id 6989E13219F
+ for <tls@ietf.org>; Tue, 15 Aug 2017 06:54:20 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+ by welho-filter1.welho.com (Postfix) with ESMTP id 8E69E52790;
+ Tue, 15 Aug 2017 16:54:18 +0300 (EEST)
+X-Virus-Scanned: Debian amavisd-new at pp.htv.fi
+Received: from welho-smtp2.welho.com ([IPv6:::ffff:83.102.41.85])
+ by localhost (welho-filter1.welho.com [::ffff:83.102.41.23]) (amavisd-new,
+ port 10024)
+ with ESMTP id p7a3VxEqZMSn; Tue, 15 Aug 2017 16:54:18 +0300 (EEST)
+Received: from LK-Perkele-VII (87-92-19-27.bb.dnainternet.fi [87.92.19.27])
+ (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by welho-smtp2.welho.com (Postfix) with ESMTPSA id E629A286;
+ Tue, 15 Aug 2017 16:54:15 +0300 (EEST)
+Date: Tue, 15 Aug 2017 16:54:15 +0300
+From: Ilari Liusvaara <ilariliusvaara@welho.com>
+To: Hubert Kario <hkario@redhat.com>
+Cc: tls@ietf.org
+Message-ID: <20170815135415.rxupa7zixqs3tt7c@LK-Perkele-VII>
+References: <1502460670.3202.8.camel@redhat.com>
+ <1853204.q6hYlzKLln@pintsize.usersys.redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1853204.q6hYlzKLln@pintsize.usersys.redhat.com>
+User-Agent: NeoMutt/20170609 (1.8.3)
+Sender: ilariliusvaara@welho.com
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/kAhb6CKil4EB8Ah-NSHaAjgY1ro>
+Subject: Re: [TLS] draft-ietf-tls-tls13-21: TLS 1.3 record padding removal
+ leaks padding size
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Tue, 15 Aug 2017 13:54:23 -0000
+
+On Tue, Aug 15, 2017 at 03:31:56PM +0200, Hubert Kario wrote:
+> I've created a Pull Request that introduces requirement for constant time 
+> processing of padding and an example on how to do it:
+> 
+> https://github.com/tlswg/tls13-spec/pull/1073
+
+-1
+
+Except doing the depad in constant-time is useless if you just re-
+introduce the timing leaks at the next step. Actually not introducing
+timing leaks in TLS library requires special API for passing the data
+to application... API that has had no reason to exist so far, and is
+more complicated to use than current read or zerocopy callback APIs.
+
+And even if you have such special API, it is extremely doubtful how
+many applications could use it correctly. Constant-time processing of
+variable-length data is extremely hard (LUCKY13 anyone?)
+
+Oh, and then there are timing leaks when sending data too...
+
+
+-Ilari
+

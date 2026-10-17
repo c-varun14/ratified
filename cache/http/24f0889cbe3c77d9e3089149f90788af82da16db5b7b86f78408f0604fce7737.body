@@ -1,0 +1,371 @@
+Return-Path: <dstainton415@gmail.com>
+X-Original-To: tls@mail2.ietf.org
+Delivered-To: tls@mail2.ietf.org
+Received: from localhost (localhost [127.0.0.1])
+	by mail2.ietf.org (Postfix) with ESMTP id D0120BF76079
+	for <tls@mail2.ietf.org>; Fri, 27 Feb 2026 02:12:10 -0800 (PST)
+X-Virus-Scanned: amavisd-new at ietf.org
+X-Spam-Flag: NO
+X-Spam-Score: -1.849
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.849 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+	DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1,
+	FREEMAIL_ENVFROM_END_DIGIT=0.25, FREEMAIL_FROM=0.001,
+	RCVD_IN_DNSWL_NONE=-0.0001, SPF_HELO_NONE=0.001, SPF_PASS=-0.001]
+	autolearn=ham autolearn_force=no
+Authentication-Results: mail2.ietf.org (amavisd-new); dkim=pass (2048-bit key)
+	header.d=gmail.com
+Received: from mail2.ietf.org ([166.84.6.31])
+	by localhost (mail2.ietf.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id KVwDDGvnuAeK for <tls@mail2.ietf.org>;
+	Fri, 27 Feb 2026 02:12:09 -0800 (PST)
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com
+ [IPv6:2a00:1450:4864:20::22d])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail2.ietf.org (Postfix) with ESMTPS id B0ED4BF75D85
+	for <tls@ietf.org>; Fri, 27 Feb 2026 02:11:05 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id
+ 38308e7fff4ca-389ee8efedeso19506221fa.3
+        for <tls@ietf.org>; Fri, 27 Feb 2026 02:11:05 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1772187064; cv=none;
+        d=google.com; s=arc-20240605;
+        b=J4AqI5wHimHQUup0jD2+fxt0IsTWLuuq3S9uHH51/ub7Jx3U3fu6/O2SWui/SILAQg
+         1xLrs/TFHItGF0yKwlhezMs5XIXKtMFy4SAJHl9mb0e4xdDDpmZhwAOWf1bZeGd9o0b3
+         KEuUM1Ah0qMZ3COqCQ+pw5hRJMlYUSsKBibN15yJvowJBLar0/6rJE65qmebCSITPkpn
+         KrcrYEcHsIx/4aW6jTL20OtoPYDQzVbszDubgZKhr+PflXFObnaqEjltEsdITnfoLbgU
+         25AHDIsyWkY5IQDhN6RIIqhrDy6eGCDP12zpAPDRZ3Yjo81rRo8kzBhj3x7Xo3tJ+qiA
+         gqAQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20240605;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=0XXvB+35/U4c/GdT6G36d20ssfD6LY8TfFnQkrCD4gc=;
+        fh=iMQEz7fIE2XtFWqLUMEt8tz+aEDEJVSqHa2ftqd9oME=;
+        b=YpoxDKAm3eViY2GQ6bRhKm/H885GYKIRFG2nv41IK1ZYkVzDByVa0nTh8PRMTmA69g
+         cF444pQL/Tjqg8izAdvSooz0VoAjnY9UJAYO+a0Y+EE266xcBPIhJL2K08NZaMRkSNrz
+         98aTESb/x+KhyWlYlPVMmqBhb/P1fsVYGgSGLYeKDc/du6dAnSaqD7ZnuMP0CQbDgaQr
+         INVLBorYUY74AD2yqYzvysfXhG0EmJPU1APmmCtVEngHef77K9XUmgw4zAn3hYbkJ3NM
+         9eg6qcDkU0ZpugIrZXWaVlmpoxy2r3+WPq+qiK3kfSpxBegEyVd/K3g7adDBthGAyBy4
+         bdXA==;
+        darn=ietf.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1772187064; x=1772791864; darn=ietf.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0XXvB+35/U4c/GdT6G36d20ssfD6LY8TfFnQkrCD4gc=;
+        b=VrecApIZoKvACKPuAvKbjWBSf3XEm2DliPB6MuTz+f9VyTFqa1/MHovpf4yEEZSBJL
+         Xnr06naZldSk2GArUE5akYQkg7yL1/K5Atf4KkO1+WAfUWDPn3378zDfiZt88/8nO0WJ
+         SCUEl6UE9c2KdGmdTKHaWXU1CR1+pKlRt44mk/9dsNrSuq1jI8Wv9oD9qDhHN5dLNeQK
+         HcUSHKcwjJwqzOveXXoGlq7DZnPF/1y0EZYYqkpGqiWgaStYCGOhAAHfk9PdTlzGyClp
+         tVI2oM482r6f6dI/oq7Rj/2Cf2Y5686NNpqmdS8xfEiSgm839/9X3DX57U9tH3F117cG
+         t6Mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772187064; x=1772791864;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=0XXvB+35/U4c/GdT6G36d20ssfD6LY8TfFnQkrCD4gc=;
+        b=xNbmjro3Z+rC4LGVo5xi2Y2bWe6MxWSeMGg2TP0QjyfdcbVnAFzNJ1oim0muoTajMP
+         x6IaGGxAQ17eTZFwaSN2rh3mdQpLvpLSIhjCnARMDgtesvHThRd41SFQX5cQgGj8rZzV
+         8TgSPVjH3ooXjbAopxLkWLAIQblOLegVqjHsbsu0qxA3sTYqutH2Jq9O2BO5ncWghrNe
+         xwIk8t/J8NEeLRVYNeZQ2Y3bKp9SAmC3V/ozCnDqvt0GKEh3iWyt0dCq+0mvCFR+7c6C
+         8XmJhSuS+3BRlotrrSyj60EE7KZ6j3B5h7bxebuRApGoVojwA0RkceZgA2llKoH5VlUi
+         4I7g==
+X-Gm-Message-State: AOJu0YxJpaoBfaTSIPqbYiC4S5f+BZyYa1ztMnBHPg9D+k3E7fYg1BcG
+	ptbJ5UFY9KfocG7YidTlx0ssSognk2u4sYeLaRulHxska2NTZHkziCZ23Ba4UwsCgealXvIkzR9
+	V/XIEHzY2S3UMBKbxN057kp5eBm5rMpj0T83RtAGBTF/2tK4=
+X-Gm-Gg: ATEYQzzIP24DiKIH71bAVon2ZkO5d+K4LRTuI7iX+64xERnqBy/mrHInWZ0HurcIyBE
+	I58h/qllrDqR3vmzedJW7IJqkEai4xsUMXQR9XRNIO6cjFRSImKEAlA0XF1B1Dw27cqBpkpZIG2
+	I3XudJ3cv6skamFVfs2k19q3asv60xJzIb6lxvY69kiSPkX4L6MN6se2c/LpM90FN27wgldiUwm
+	oxv9ioFHH+0+FD9uMPLGbbyfpSHXKL3/Boq62bqEIqIZ8KRE707my45Q0ZzhSD3TRs1N76iQBaT
+	nLFFer/uI6eFesbPo4+73NUdPIK30NCM3YyHF8GVbqkn+WIPWDvewpVW5XQkEEBAo9Q=
+X-Received: by 2002:a05:651c:b0f:b0:386:e8fe:8997 with SMTP id
+ 38308e7fff4ca-389ff363982mr14423431fa.36.1772187063666; Fri, 27 Feb 2026
+ 02:11:03 -0800 (PST)
+MIME-Version: 1.0
+References: 
+ <PA1PR07MB10584B777AB27187DE25F575B8973A@PA1PR07MB10584.eurprd07.prod.outlook.com>
+In-Reply-To: 
+ <PA1PR07MB10584B777AB27187DE25F575B8973A@PA1PR07MB10584.eurprd07.prod.outlook.com>
+From: David Stainton <dstainton415@gmail.com>
+Date: Fri, 27 Feb 2026 11:10:52 +0100
+X-Gm-Features: AaiRm50cpUN7KyV8PHLOkQb8AgMskBk6WbZiMV6rsYDMAGMQTKi6lA4HlkSyg18
+Message-ID: 
+ <CAFN1edqREg9+7woVXMWq=m31hYgSR1Z-QXCN+=HXmvmLeGviFA@mail.gmail.com>
+To: tls@ietf.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Message-ID-Hash: JQKPVCLCT5MJ6H35WIZIR5XXY7CNRJ4H
+X-Message-ID-Hash: JQKPVCLCT5MJ6H35WIZIR5XXY7CNRJ4H
+X-MailFrom: dstainton415@gmail.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Re=3A_WG_Last_Call=3A_draft-ietf-tls-mlkem-05_=28Ends_20?=
+	=?utf-8?q?26-02-27=29?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/MQhtgZbvUAK_gtAPhuJ3uHQcAlk>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+Gentlemen,
+
+Are we really optimizing TLS 1.3 around 32 bytes? If so, then why?
+
+ML-KEM-768 public keys are 1184 bytes. X25519 adds 32 bytes. In the
+context of kilobyte scale key shares, certificate chains, and network
+latency, that delta is not the dominant cost for general purpose
+deployments.
+
+If the goal of this transition is risk reduction under uncertainty,
+hybrid key exchange is the conservative engineering choice.
+
+On IoT specifically:
+
+If a device can afford a ~1 KB ML-KEM public key, it is difficult to
+argue that an additional 32 bytes is categorically infeasible. The
+real constraints in IoT tend to be code footprint, CPU cycles, update
+mechanisms, and operational simplicity, not raw 32 byte bandwidth
+differences.
+
+If a constrained profile needs a non hybrid option, that should be
+justified explicitly in the profile. But constrained environments
+should not automatically determine the default posture for the entire
+Internet.
+
+On =E2=80=9Cmost people are satisfied with NIST=E2=80=99s PQC project=E2=80=
+=9D:
+
+Rough consensus among active participants is not the same as universal
+agreement across the broader cryptographic community. There are
+serious and diverse threat models in play, including surveillance
+resistant and adversarial deployment contexts, where conservative
+transition strategies matter greatly.
+
+The transition to post quantum cryptography is one of the largest
+cryptographic migrations ever undertaken. The safest available path
+during transition should be the baseline, not the exception.
+
+
+Sincerely,
+David Stainton
+
+
+On Fri, Feb 27, 2026 at 10:28=E2=80=AFAM John Mattsson
+<john.mattsson=3D40ericsson.com@dmarc.ietf.org> wrote:
+>
+> Jacob Appelbaum wrote:
+> >Those who want post-quantum protections should not be less secure for
+> >hedging security concerns with the use of hybrid constructions. TLS
+> >enjoyers and myriad unknowing users should not need to take special
+> >steps to ensure they aren't accidentally using the less conservative,
+> >riskier strategy.
+>
+> This is handled by the RECOMMENDED column, application profiles, and the =
+default configuration in libraries, not by registering code points. Limitin=
+g available options for real-world deployments can be detrimental to securi=
+ty. Highly constrained IoT devices are unlikely to deploy hybrids. The IETF=
+ is expected to soon publish a quantum-vulnerable TLS profile for IoT. I wo=
+uld already prefer standalone ML-KEM over standalone ECC in a forward-looki=
+ng profile, but this can be debated. Demonizing standalone ML-KEM will like=
+ly slow the urgently needed PQC migration in IoT.
+> https://datatracker.ietf.org/doc/draft-ietf-uta-tls13-iot-profile/
+>
+> >Targeted and mass surveillance collection of data is part of a
+> >larger pervasive attack strategy that is practiced by many adversaries
+> >more or less continuously.
+>
+> Fully agree. Beyond signal intelligence agencies, I wish more focus were =
+given to private data hoarders. Meta=E2=80=99s business model relies on mas=
+sive data hoarding and behavioral surveillance, with well-documented negati=
+ve effects on users, particularly young women exposed to addictive and appe=
+arance-driven content optimization. The expansion of this model into wearab=
+le devices, highlighted by recent scandals involving sensitive data capture=
+d through Meta=E2=80=99s smart glasses, raises serious concerns about conse=
+nt, privacy, and the normalization of pervasive surveillance in everyday li=
+fe.
+>
+> >With regard to Kyber/ML-KEM, NIST dismissed or did not address important
+> >technical concerns, and they ignored other related concerns of
+> >significance that were raised in the public comment period[0]. The
+> >effect of that overall disappointment has been immensely harmful to
+> >NIST's international standing, which was already lying down, to
+> >paraphrase a great American poet.
+>
+> Do you have any concrete examples? I think it is nearly impossible to add=
+ress all comments, as many of them are mutually contradictory. Based on my =
+personal experience, I believe NIST pays close attention to the feedback it=
+ receives and makes reasonable trade-offs. Overall, I think most people are=
+ quite satisfied with NIST=E2=80=99s PQC project. At least, NIST offers pub=
+lic email lists, workshops, comment periods, and specifications, something =
+that organizations such as ISO and ECCG do not.
+>
+> >should see hybrids listed as RECOMMENDED (i.e.: recommend=3DY). In an
+> >ideal world with prudent risk management, hybrids would be listed as a
+> >MUST, and PQ only should be a MUST NOT[1].
+>
+> I agree that X25519MLKEM768 should be MTI as soon as possible. Two questi=
+ons: where would you place quantum-vulnerable ECC-only key exchange on this=
+ scale, and do you think non-hybrids should be forbidden even in what ANSSI=
+ refers to as Phase 3?
+> https://na.eventscloud.com/file_uploads/b635298de1c10be6d3732863e8b1beca_=
+Day2-1600-ANSSI.pdf
+>
+> Cheers,
+> John Preu=C3=9F Mattsson
+>
+> On 2026-02-27, 00:57, "Jacob Appelbaum" <jacob@appelbaum.net> wrote:
+>
+> Hello,
+>
+> On 2/26/26 04:44, Nadim Kobeissi wrote:
+> > Dear Stephen,
+> >
+> > Thank you for your note. I appreciate your shared reservations
+> > regarding the publication of this document.
+> >
+> > I agree entirely with both you and Rich that a single participant
+> > does not possess a unilateral veto, and that assessing consensus
+> > requires judgement calls by the chairs. IETF procedures do not allow
+> > one person to hold a document hostage based merely on contention or
+> > preference.
+> >
+> > However, there is a fundamental difference between a generic
+> > complaint and a substantive, detailed technical objection. As
+> > outlined in RFC 7282, the essence of rough consensus is that all
+> > legitimate technical concerns must be addressed=E2=80=94not necessarily
+> > accommodated, but technically resolved or refuted.
+> >
+> > If a severe technical flaw is demonstrated, or if prerequisites=E2=80=
+=94such
+> > as FATT review=E2=80=94aren=E2=80=99t met, and the Working Group's only=
+ response is
+> > to state that they "still want to move forward" without engaging
+> > with the realities of the flaw, then the technical issue remains
+> > unaddressed. Proceeding under such circumstances is not rough
+> > consensus; it is the administrative dismissal of an unresolved
+> > technical reality.
+> >
+> > My objective is simply to ensure that the cryptographic standards we
+> > produce are sound. I remain fully prepared to engage with any
+> > rigorous technical refutation of the vulnerabilities I have
+> > detailed. Until the substance of those concerns is actually met, my
+> > objection stands on its technical merits.
+>
+> I am in full agreement with Nadim and others on the list pushing back
+> against publication of this draft. I find the counter arguments, and the
+> motivations or rather the lack of motivations, to be unconvincing.
+>
+> It is important to model and verify, and indeed to think about changes
+> very carefully. It is surprising that the FATT review isn't the starting
+> point for serious consideration.
+>
+> It is prudent from a risk management perspective to use hybrid
+> constructions with an appropriate combiner. Even if an attack against
+> ECC were to be demonstrated tomorrow using a quantum computer, does
+> anyone expect every adversary to have the same capability and the same
+> datasets instantly? It seems unlikely, and various issues in
+> post-quantum implementations seem to be much more likely to arrive again
+> and again, and sooner.
+>
+> Those who want post-quantum protections should not be less secure for
+> hedging security concerns with the use of hybrid constructions. TLS
+> enjoyers and myriad unknowing users should not need to take special
+> steps to ensure they aren't accidentally using the less conservative,
+> riskier strategy. The longer cryptographers and security researchers
+> have to discover and fix various issues while hedging safely, the
+> better. Those who only want post-quantum security are always free to
+> publish their ECC secret keys as a sign of their confidence.
+>
+> The compositional security properties mentioned by Nadim and others are
+> table stakes for deploying post-quantum cryptography. The math, the
+> various implementation details, and the deployment contexts that are
+> secure today using ECC today should remain at least as secure today and
+> tomorrow. Targeted and mass surveillance collection of data is part of a
+> larger pervasive attack strategy that is practiced by many adversaries
+> more or less continuously. Practical cryptanalysis of data collected
+> through such surveillance or other means of data collection is by no
+> means limited to a hypothetical quantum computer.
+>
+> In the tremendous volume of email on list there has not been a
+> compelling technical argument against hybrids to the contrary presented.
+>
+> I oppose publication of the draft and furthermore think that for TLS, we
+> should see hybrids listed as RECOMMENDED (i.e.: recommend=3DY). In an
+> ideal world with prudent risk management, hybrids would be listed as a
+> MUST, and PQ only should be a MUST NOT[1].
+>
+> With regard to Kyber/ML-KEM, NIST dismissed or did not address important
+> technical concerns, and they ignored other related concerns of
+> significance that were raised in the public comment period[0]. The
+> effect of that overall disappointment has been immensely harmful to
+> NIST's international standing, which was already lying down, to
+> paraphrase a great American poet.
+>
+> Given this experience with NIST, I oppose publication of this draft for
+> another reason: it will further damage IETF's standing as an independent
+> and fair forum that seeks to protect users and the internet without
+> advantaging any Adversary.
+>
+> Probably others have already received emails about this very WGLC where
+> they have been asked if this will be an example of Project BULLRUN's
+> latest victory. Exclusionary hostility and anti-competitive concerns
+> aside, I am cautiously optimistic that it is at least possible that the
+> WG and indeed the IETF won't be such an example (again).
+>
+> Kind regards and happy hacking,
+> Jacob Appelbaum
+>
+> [0]
+> https://csrc.nist.gov/files/pubs/fips/203/ipd/docs/fips-203-initial-publi=
+c-comments-2023.pdf
+> [1] Pure PQ in TLS, not even once!
+>
+> >
+> > Nadim Kobeissi Symbolic Software =E2=80=A2 https://symbolic.software
+> >
+> >> On 25 Feb 2026, at 11:38=E2=80=AFPM, Stephen Farrell
+> >> <stephen.farrell@cs.tcd.ie> wrote:
+> >>
+> >> =EF=BB=BF
+> >>
+> >>> On 25/02/2026 21:50, Salz, Rich wrote: You misunderstand what
+> >>> =E2=80=9Caddressed=E2=80=9D means here. A perfectly reasonable respon=
+se is =E2=80=9Cthe
+> >>> issue has been discussed by the WG and they still want to move
+> >>> forward.=E2=80=9D As another recent example, the LAMPS WG went ahead
+> >>> even though one participant (repeatedly:) raised patent
+> >>> concerns.
+> >>
+> >> Despite me not wanting to see this document published, Rich is
+> >> correct here. There are always judgement calls required and one
+> >> participant being convinced there's a fatal flaw in something is
+> >> not sufficient in itself to block that thing. If a participant
+> >> convinces others of the fatality of the flaw, that may be
+> >> different, but if something is generally contentious, (as in this
+> >> case), a claim of a fatal flaw by itself blocks nothing.
+> >>
+> >> Cheers, S. <OpenPGP_signature.asc>
+> >
+> > _______________________________________________ TLS mailing list --
+> > tls@ietf.org To unsubscribe send an email to tls-leave@ietf.org
+>
+>
+> _______________________________________________
+> TLS mailing list -- tls@ietf.org
+> To unsubscribe send an email to tls-leave@ietf.org
+

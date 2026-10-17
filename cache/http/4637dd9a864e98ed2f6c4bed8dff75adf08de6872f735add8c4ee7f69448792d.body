@@ -1,0 +1,575 @@
+From nobody Fri Jan 29 13:28:53 2021
+Return-Path: <joe@salowey.net>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id C2EF13A1313
+ for <tls@ietfa.amsl.com>; Fri, 29 Jan 2021 13:28:48 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.898
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.898 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+ HTML_MESSAGE=0.001, SPF_HELO_NONE=0.001, SPF_PASS=-0.001,
+ URIBL_BLOCKED=0.001] autolearn=unavailable autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=salowey-net.20150623.gappssmtp.com
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id YvGPtnzozKV9 for <tls@ietfa.amsl.com>;
+ Fri, 29 Jan 2021 13:28:46 -0800 (PST)
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com
+ [IPv6:2a00:1450:4864:20::231])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id C6BB43A118D
+ for <tls@ietf.org>; Fri, 29 Jan 2021 13:28:45 -0800 (PST)
+Received: by mail-lj1-x231.google.com with SMTP id b20so4275184ljo.1
+ for <tls@ietf.org>; Fri, 29 Jan 2021 13:28:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=salowey-net.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=RlsPxmyvKq9nqO8dMIKAICtXgNHyNWzN8WLS8XGWVWw=;
+ b=XJuDAFxgEPr6UzGRGs4rEc91Sreg4ouDmhFZW0MtCnYRQSMBkEoG/E7h4ED3AlLMCe
+ 0EzQ3AfOuePGmzMqxMazMdRf/n5L6VIb8qh+eUpeTASKMZl8Cw/w8FfCmtHKRvmR3/4c
+ 4+kEpZV423Wdp2SlRiF5Xw8s2EE9JMBwAmGizlYtjraKsxpOCig2XAq5DtNL8hIFlf0G
+ JFsNVi4fp4ZmOMJyekHmGqCzY+9z4dT6qTJdSXUG7Y2D13DhkXBsQ3THR3exaGF3NILG
+ YBa8i4Cm40SAh1eUvVhLvYQSViVWu1KGfWBBOBf2TieHs+SHaHU8cvRxNoI4SU//KlUo
+ J/YQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=RlsPxmyvKq9nqO8dMIKAICtXgNHyNWzN8WLS8XGWVWw=;
+ b=hWavRg902RasqlARGfHyVzLpgVRPdhcVWhwZBZrLTJDWHkcY6OhCs4uYycf7B2I8Ee
+ o2ql9FZaTNYiSMoXcPnFiCEztIJxKxU0RYXacaUVzCIgsBdZgimqzsLJDSif14YHQB2F
+ CXi7etgnRy94yZQUtiAgghAljdajF8nL92+Ym0rqXlDA/dFuMykweKR5ZhetsMoOSSKB
+ 2QCI5ryzFQLvNR/a1B3kexK5XaE/3xiXXfL4aRKREceC4Mn0wNHl5kpjXrLIbWDHAiEa
+ kSMR2gH4ZYZOK8OFqgsR8zQJBUTFzE2A5kgNbmsDftGyCSVyT5b36AP40Mqi3mz8oauW
+ AILA==
+X-Gm-Message-State: AOAM530RQJ/kyIOb13rMFFiLICxSiB/HX8KBOS9EGi5o6l9Xv2G++MQg
+ O8ss+YtKe7MrD6EA3hJ3tj60mZT0uSmOhiLhYpXYcg==
+X-Google-Smtp-Source: ABdhPJwqwawNga0AQ/u26gAU2NGzj1IjkQzGg7Q7NkMvFfD+6HTzBPLxo5T3MCWK64qM8VI1aXrDa+iGGE+KmzJejqI=
+X-Received: by 2002:a2e:3507:: with SMTP id z7mr3256611ljz.32.1611955723788;
+ Fri, 29 Jan 2021 13:28:43 -0800 (PST)
+MIME-Version: 1.0
+References: <e669002f-caff-1e6e-e28b-d09157eb0c07@ericsson.com>
+ <6241F0B6-C722-449E-AC3A-183DE330E7B5@deployingradius.com>
+ <9ddd1593-3131-f5cc-d0db-74bf3db697bf@ericsson.com>
+ <3CB58153-8CCA-4B1E-B530-BA67A6035310@deployingradius.com>
+ <CAOgPGoA3U+XpZMY7J+KGovNx6MtAdEzRaGW33xVJdQNWSi4LVg@mail.gmail.com>
+ <770e6a49-52fc-4e8b-91af-48f85e581fbb@www.fastmail.com>
+ <CAOgPGoBGOMXH-kMhQSujWxnACdmBL845u0ouE0fUYc4rWtUrZg@mail.gmail.com>
+ <ca4c526e-79a0-4fa7-abda-2b626795f068@www.fastmail.com>
+ <3409F71E-4CE4-46BB-8079-BFBE9BE83C9A@deployingradius.com>
+ <66157321-55DC-4831-8EF2-D75934D9024C@deployingradius.com>
+ <20210129183220.GI21@kduck.mit.edu>
+ <14073c6e-878b-0b29-5892-b66d9c53eba1@ericsson.com>
+In-Reply-To: <14073c6e-878b-0b29-5892-b66d9c53eba1@ericsson.com>
+From: Joseph Salowey <joe@salowey.net>
+Date: Fri, 29 Jan 2021 13:28:32 -0800
+Message-ID: <CAOgPGoBUXidL4pF7L9VoxfoyEbUTcbz3G4MvF-dDh4mSwcPRwQ@mail.gmail.com>
+To: Mohit Sethi M <mohit.m.sethi=40ericsson.com@dmarc.ietf.org>
+Cc: Benjamin Kaduk <kaduk@mit.edu>, Alan DeKok <aland@deployingradius.com>, 
+ "tls@ietf.org" <tls@ietf.org>, Martin Thomson <mt@lowentropy.net>,
+ EMU WG <emu@ietf.org>
+Content-Type: multipart/alternative; boundary="0000000000004f7a5405ba10b06d"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/bGdiXCdyEyJFBTZqKvMn__7f6cs>
+Subject: Re: [TLS] [Emu] Fwd: Benjamin Kaduk's Discuss on
+ draft-ietf-emu-eap-tls13-13: (with DISCUSS and COMMENT)
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Fri, 29 Jan 2021 21:28:49 -0000
+
+--0000000000004f7a5405ba10b06d
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Jan 29, 2021 at 11:34 AM Mohit Sethi M <mohit.m.sethi=3D
+40ericsson.com@dmarc.ietf.org> wrote:
+
+> Hi Ben,
+> On 1/29/21 8:32 PM, Benjamin Kaduk wrote:
+>
+> Hi Alan,
+>
+> I see that the thread is continuing and that perhaps my reply will even
+> become stale as I write it, but I'm replying to your note instead of the
+> tip of the thread because it has good context for making some broader
+> points that I would like to make.
+>
+> On Sat, Jan 23, 2021 at 05:28:10PM -0500, Alan DeKok wrote:
+>
+>   We're approaching 2 weeks since the last discussion of this topic.  Thi=
+s document has been in development for 3 years.  We desperately need to fin=
+ish it.  IMHO waiting another 6 months is not an option.  Even 3 would be w=
+orrying.
+>
+> My understanding of the discussions involving the TLS WG are that we fork=
+ed
+> off into two sub-threads: one about the use of TLS Exporters for key
+> derivation (the one this is a reply to), that largely concluded with
+> agreement on a simple change to make, and the other sub-thread about the
+> protocol element known in -13 as the "commitment message".
+>
+> With respect to the exporter usage, I do see you had asked about using th=
+e
+> type-code as the exporter context value that Martin didn't see much value
+> in, but I am willing to accept that as a boon for safety of portability t=
+o
+> other TLS-using EAP mechanisms.  (I do note that the current editor's cop=
+y
+> shows calls to TLS-Exporter() with only two arguments, but three are
+> required; the construction there also seems to include a propspect for
+> violation of the requirement that "one label is not a prefix of any other
+> label" when both regular one-byte and extended type codes are used, but i=
+f
+> the type code is meant to be the context argument I believe that risk goe=
+s
+> away.)
+>
+> RFC 5705 says:
+>
+>    If no context is provided, it then computes:
+>
+>            PRF(SecurityParameters.master_secret, label,
+>                SecurityParameters.client_random +
+>                SecurityParameters.server_random
+>                )[length]
+>
+>    If context is provided, it computes:
+>
+>            PRF(SecurityParameters.master_secret, label,
+>                SecurityParameters.client_random +
+>                SecurityParameters.server_random +
+>                context_value_length + context_value
+>                )[length]
+>
+> We use only two arguments and say "No context data is used in the TLS
+> exporter interface.". We could show the context argument as empty in the
+> calls to make things clearer. By the way, this is what is done by TEAP
+> also. RFC 7170 says "TEAPv1 makes use of the TLS Keying Material Exporter=
+s
+> defined in [RFC5705] to derive the session_key_seed.  The label used in t=
+he
+> derivation is "EXPORTER: teap session key seed".  The length of the sessi=
+on
+> key seed material is 40 octets.  *No context data is used in the export
+> process.*"
+>
+> The change of moving the type-code from the context to the label was made
+> based on your review (comments from Martin) and the fact that some
+> libraries such as wolfssl don't support passing a context (so far). See:
+> https://w1.fi/cgit/hostap/tree/src/crypto/tls_wolfssl.c#n1996
+>
+[Joe] If this implements the derivation RFC 5216.  It's not clear that
+function will give you the right output with TLS 1.3 since we are now using
+exporters.  Perhaps they provide an exporter interface which should be used
+instead.
+
+Personally, I think including the method byte in the context is a bit less
+error prone and straight forward then including it in the label.
+
+
+>
+> With respect to the "commitment message", I thought we had a discussion
+> that revealed that the mechanism in the -13 could not fulfil its stated
+> purpose, and that also called into question whether that stated purpose w=
+as
+> actually the right thing that the protocol needed.  My understanding,
+> therefore, was that the TLS WG could not contribute further insight until
+> there was a revised proposal from people who understand the needs of the
+> EAP-TLS protocol from TLS that would both satisfy the needs of EAP and
+> actually be achievable.
+>
+>
+>   We have multiple inter-operable implementations which have implemented =
+draft-13.  That work over the last few months have resulted in implementors=
+ making plans to do beta testing in the next few weeks.  Those plans have b=
+een put on indefinite hold, due to the recent request for changes.
+>
+>   I understand getting feedback from the TLS WG is useful.  But I would p=
+refer to have consensus on a *solution*. Right now, we just have a series o=
+f proposed changes, with little to no discussion.
+>
+> I think this is becaues the TLS WG members (in aggregate) do not have a
+> clear picture of what property or properties EAP-TLS will require from TL=
+S
+> that led to the need for an additional message when using TLS 1.3 as
+> opposed to the RFC 5216 case with TLS 1.2.  The prospect of an
+> "authenticated signal from TLS to EAP-TLS that the authentication complet=
+ed
+> successfully" was mentioned, but I did not have the sense that there was
+> universal agreement of that as the sole relevant property.
+>
+> I think there was a misunderstanding that an authenticated signal of
+> authentication completed was needed. Only a signal of no more post
+> handshake messages was needed. I think Alan's summary might also explain
+> the situation better.
+>
+> --Mohit
+>
+>   We're getting to the point where we have to ship code as promised to cu=
+stomers soon (weeks, not months).  We therefore need consensus, as soon as =
+possible.
+>
+>   My preference is to implement draft-13.  We know the code works.  Peopl=
+e are ready to ship it.  Any changes will add not just more months of stand=
+ard discussion, but more months of interoperability testing.
+>
+>   If there is no progress in EMU, we're looking at September for first be=
+tas.  With no guarantee that there won't be further changes made after that=
+.
+>
+>   So the question is:
+>
+> * are the draft-13 0x00 byte and exporter *terrible* enough to delay the =
+standard another 6 months?
+>
+> Well, the text of the -13 contains a protocol mechanism that cannot deliv=
+er
+> its stated purpose, so I will continue to hold a Discuss position if that
+> remains.  One Discuss ballot does not have to block the work indefinitely
+> (the shepherding AD can request a different IESG balloting procedure be
+> used), and I leave it between the WG and Roman whether to attempt that
+> route.  It is perhaps possible that (as John noted downthread) the text
+> about the commitment message was badly written, and that just changing th=
+e
+> surrounding description could work, but that gets back to the question I
+> mentioned above of what properties EAP-TLS actually requires from TLS.
+>
+> -Ben
+>
+>
+> * if the answer is "no", then we can ship now.
+>
+> * if the answer is 'yes", then the next question is "when can we get this=
+ finalized?"  "March" would be late.  "July" is a major problem.
+>
+>
+> On Jan 12, 2021, at 10:22 AM, Alan DeKok <aland@deployingradius.com> <ala=
+nd@deployingradius.com> wrote:
+>
+> On Jan 11, 2021, at 7:08 PM, Martin Thomson <mt@lowentropy.net> <mt@lowen=
+tropy.net> wrote:
+>
+> I was not exactly.  I was thinking that EAP-TLS uses the unadorned string=
+ and other usages (that need a different MSK) define their own string as ne=
+eded.
+>
+>  Which is largely what was done for <=3D TLS 1.2.
+>
+>  That choice made implementations more difficult.  Not impossible, but an=
+noying.  The other TLS-based EAP types are generally implemented as variant=
+s of EAP-TLS.  They re-use much of the EAP-TLS code.  So every difference i=
+s more code, and more things to test.
+>
+>
+> Though what you describe would scale more, if the ordinality of that scal=
+e is bounded by RFC numbers, defining the extra strings would not be that h=
+ard.  You could provide some sort of infrastructure in the form of a recomm=
+ended label prefix if you are concerned about misuse.
+>
+>  I'm not sure EAP-TLS is the place to make recommendations for other EAP =
+types.  There is a draft to deal with other EAP types:
+> https://urldefense.com/v3/__https://tools.ietf.org/html/draft-dekok-emu-t=
+ls-eap-types-00__;!!GjvTz_vk!BN9rm7SoWGOKFjfY7fFgpHjeV58wJeRS31O8qeE3B4tZbN=
+y-zWi1yMwNRryTgg$
+>
+>  It's pretty trivial.  Adding more complexity is annoying, but not much w=
+orse than that.
+>
+>  My preference is to remain with the EAP type as the context.  The code i=
+s simple, and it's easy to understand.  But if it causes issues with TLS re=
+view, we can change it.
+>
+>  Alan DeKok.
+>
+>
+> _______________________________________________
+> TLS mailing listTLS@ietf.orghttps://urldefense.com/v3/__https://www.ietf.=
+org/mailman/listinfo/tls__;!!GjvTz_vk!BN9rm7SoWGOKFjfY7fFgpHjeV58wJeRS31O8q=
+eE3B4tZbNy-zWi1yMwitxxMCA$
+>
+> _______________________________________________
+> Emu mailing listEmu@ietf.orghttps://www.ietf.org/mailman/listinfo/emu
+>
+> _______________________________________________
+> Emu mailing list
+> Emu@ietf.org
+> https://www.ietf.org/mailman/listinfo/emu
+>
+
+--0000000000004f7a5405ba10b06d
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><br></div><br><div class=3D"gmail_quote">=
+<div dir=3D"ltr" class=3D"gmail_attr">On Fri, Jan 29, 2021 at 11:34 AM Mohi=
+t Sethi M &lt;mohit.m.sethi=3D<a href=3D"mailto:40ericsson.com@dmarc.ietf.o=
+rg">40ericsson.com@dmarc.ietf.org</a>&gt; wrote:<br></div><blockquote class=
+=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rg=
+b(204,204,204);padding-left:1ex">
+
+
+
+<div>
+<p>Hi Ben,</p>
+On 1/29/21 8:32 PM, Benjamin Kaduk wrote:<br>
+<blockquote type=3D"cite">
+<pre>Hi Alan,
+
+I see that the thread is continuing and that perhaps my reply will even
+become stale as I write it, but I&#39;m replying to your note instead of th=
+e
+tip of the thread because it has good context for making some broader
+points that I would like to make.
+
+On Sat, Jan 23, 2021 at 05:28:10PM -0500, Alan DeKok wrote:
+</pre>
+<blockquote type=3D"cite">
+<pre>  We&#39;re approaching 2 weeks since the last discussion of this topi=
+c.  This document has been in development for 3 years.  We desperately need=
+ to finish it.  IMHO waiting another 6 months is not an option.  Even 3 wou=
+ld be worrying.
+</pre>
+</blockquote>
+<pre>My understanding of the discussions involving the TLS WG are that we f=
+orked
+off into two sub-threads: one about the use of TLS Exporters for key
+derivation (the one this is a reply to), that largely concluded with
+agreement on a simple change to make, and the other sub-thread about the
+protocol element known in -13 as the &quot;commitment message&quot;.
+
+With respect to the exporter usage, I do see you had asked about using the
+type-code as the exporter context value that Martin didn&#39;t see much val=
+ue
+in, but I am willing to accept that as a boon for safety of portability to
+other TLS-using EAP mechanisms.  (I do note that the current editor&#39;s c=
+opy
+shows calls to TLS-Exporter() with only two arguments, but three are
+required; the construction there also seems to include a propspect for
+violation of the requirement that &quot;one label is not a prefix of any ot=
+her
+label&quot; when both regular one-byte and extended type codes are used, bu=
+t if
+the type code is meant to be the context argument I believe that risk goes
+away.)</pre>
+</blockquote>
+<p>RFC 5705 says: </p>
+<blockquote type=3D"cite">
+<pre>   If no context is provided, it then computes:
+
+           PRF(SecurityParameters.master_secret, label,
+               SecurityParameters.client_random +
+               SecurityParameters.server_random
+               )[length]
+
+   If context is provided, it computes:
+
+           PRF(SecurityParameters.master_secret, label,
+               SecurityParameters.client_random +
+               SecurityParameters.server_random +
+               context_value_length + context_value
+               )[length]
+</pre>
+</blockquote>
+<p></p>
+<p>We use only two arguments and say &quot;No context data is used in the T=
+LS exporter interface.&quot;. We could show the context argument as empty i=
+n the calls to make things clearer. By the way, this is what is done by TEA=
+P also. RFC 7170 says &quot;TEAPv1 makes use of
+ the TLS Keying Material Exporters defined in [RFC5705] to derive the sessi=
+on_key_seed.=C2=A0 The label used in the derivation is &quot;EXPORTER: teap=
+ session key seed&quot;.=C2=A0 The length of the session key seed material =
+is 40 octets.=C2=A0
+<b>No context data is used in the export process.</b>&quot;</p>
+<p>The change of moving the type-code from the context to the label was mad=
+e based on your review (comments from Martin) and the fact that some librar=
+ies such as wolfssl don&#39;t support passing a context (so far). See:
+<a href=3D"https://w1.fi/cgit/hostap/tree/src/crypto/tls_wolfssl.c#n1996" t=
+arget=3D"_blank">
+https://w1.fi/cgit/hostap/tree/src/crypto/tls_wolfssl.c#n1996</a></p></div>=
+</blockquote><div>[Joe] If this implements the derivation RFC 5216.=C2=A0 I=
+t&#39;s not clear that function will give you the right output with TLS 1.3=
+ since we are now using exporters.=C2=A0 Perhaps they provide an exporter i=
+nterface which should be used instead.=C2=A0=C2=A0</div><div><br></div><div=
+>Personally, I think including the method byte in the context is a bit less=
+ error prone and straight forward then including it in the label.=C2=A0=C2=
+=A0</div><div>=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"margin=
+:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"=
+><div><p><br>
+</p>
+<blockquote type=3D"cite">
+<pre>With respect to the &quot;commitment message&quot;, I thought we had a=
+ discussion
+that revealed that the mechanism in the -13 could not fulfil its stated
+purpose, and that also called into question whether that stated purpose was
+actually the right thing that the protocol needed.  My understanding,
+therefore, was that the TLS WG could not contribute further insight until
+there was a revised proposal from people who understand the needs of the
+EAP-TLS protocol from TLS that would both satisfy the needs of EAP and
+actually be achievable.
+
+</pre>
+<blockquote type=3D"cite">
+<pre>  We have multiple inter-operable implementations which have implement=
+ed draft-13.  That work over the last few months have resulted in implement=
+ors making plans to do beta testing in the next few weeks.  Those plans hav=
+e been put on indefinite hold, due to the recent request for changes.
+
+  I understand getting feedback from the TLS WG is useful.  But I would pre=
+fer to have consensus on a *solution*. Right now, we just have a series of =
+proposed changes, with little to no discussion.</pre></blockquote></blockqu=
+ote></div></blockquote><blockquote class=3D"gmail_quote" style=3D"margin:0p=
+x 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><d=
+iv><blockquote type=3D"cite"><pre>I think this is becaues the TLS WG member=
+s (in aggregate) do not have a
+clear picture of what property or properties EAP-TLS will require from TLS
+that led to the need for an additional message when using TLS 1.3 as
+opposed to the RFC 5216 case with TLS 1.2.  The prospect of an
+&quot;authenticated signal from TLS to EAP-TLS that the authentication comp=
+leted
+successfully&quot; was mentioned, but I did not have the sense that there w=
+as
+universal agreement of that as the sole relevant property.</pre>
+</blockquote>
+<p>I think there was a misunderstanding that an authenticated signal of aut=
+hentication completed was needed. Only a signal of no more post handshake m=
+essages was needed. I think Alan&#39;s summary might also explain the situa=
+tion better.
+<br>
+</p>
+<p>--Mohit<br>
+</p>
+<blockquote type=3D"cite">
+<pre></pre>
+<blockquote type=3D"cite">
+<pre>  We&#39;re getting to the point where we have to ship code as promise=
+d to customers soon (weeks, not months).  We therefore need consensus, as s=
+oon as possible.
+
+  My preference is to implement draft-13.  We know the code works.  People =
+are ready to ship it.  Any changes will add not just more months of standar=
+d discussion, but more months of interoperability testing.
+
+  If there is no progress in EMU, we&#39;re looking at September for first =
+betas.  With no guarantee that there won&#39;t be further changes made afte=
+r that.
+
+  So the question is:
+
+* are the draft-13 0x00 byte and exporter *terrible* enough to delay the st=
+andard another 6 months?
+</pre>
+</blockquote>
+<pre>Well, the text of the -13 contains a protocol mechanism that cannot de=
+liver
+its stated purpose, so I will continue to hold a Discuss position if that
+remains.  One Discuss ballot does not have to block the work indefinitely
+(the shepherding AD can request a different IESG balloting procedure be
+used), and I leave it between the WG and Roman whether to attempt that
+route.  It is perhaps possible that (as John noted downthread) the text
+about the commitment message was badly written, and that just changing the
+surrounding description could work, but that gets back to the question I
+mentioned above of what properties EAP-TLS actually requires from TLS.
+
+-Ben
+
+</pre>
+<blockquote type=3D"cite">
+<pre>* if the answer is &quot;no&quot;, then we can ship now.
+
+* if the answer is &#39;yes&quot;, then the next question is &quot;when can=
+ we get this finalized?&quot;  &quot;March&quot; would be late.  &quot;July=
+&quot; is a major problem.
+
+</pre>
+<blockquote type=3D"cite">
+<pre>On Jan 12, 2021, at 10:22 AM, Alan DeKok <a href=3D"mailto:aland@deplo=
+yingradius.com" target=3D"_blank">&lt;aland@deployingradius.com&gt;</a> wro=
+te:
+
+On Jan 11, 2021, at 7:08 PM, Martin Thomson <a href=3D"mailto:mt@lowentropy=
+.net" target=3D"_blank">&lt;mt@lowentropy.net&gt;</a> wrote:
+</pre>
+<blockquote type=3D"cite">
+<pre>I was not exactly.  I was thinking that EAP-TLS uses the unadorned str=
+ing and other usages (that need a different MSK) define their own string as=
+ needed.
+</pre>
+</blockquote>
+<pre> Which is largely what was done for &lt;=3D TLS 1.2.
+
+ That choice made implementations more difficult.  Not impossible, but anno=
+ying.  The other TLS-based EAP types are generally implemented as variants =
+of EAP-TLS.  They re-use much of the EAP-TLS code.  So every difference is =
+more code, and more things to test.
+
+</pre>
+<blockquote type=3D"cite">
+<pre>Though what you describe would scale more, if the ordinality of that s=
+cale is bounded by RFC numbers, defining the extra strings would not be tha=
+t hard.  You could provide some sort of infrastructure in the form of a rec=
+ommended label prefix if you are concerned about misuse.
+</pre>
+</blockquote>
+<pre> I&#39;m not sure EAP-TLS is the place to make recommendations for oth=
+er EAP types.  There is a draft to deal with other EAP types:
+
+<a href=3D"https://urldefense.com/v3/__https://tools.ietf.org/html/draft-de=
+kok-emu-tls-eap-types-00__;!!GjvTz_vk!BN9rm7SoWGOKFjfY7fFgpHjeV58wJeRS31O8q=
+eE3B4tZbNy-zWi1yMwNRryTgg$" target=3D"_blank">https://urldefense.com/v3/__h=
+ttps://tools.ietf.org/html/draft-dekok-emu-tls-eap-types-00__;!!GjvTz_vk!BN=
+9rm7SoWGOKFjfY7fFgpHjeV58wJeRS31O8qeE3B4tZbNy-zWi1yMwNRryTgg$</a>=20
+
+ It&#39;s pretty trivial.  Adding more complexity is annoying, but not much=
+ worse than that.
+
+ My preference is to remain with the EAP type as the context.  The code is =
+simple, and it&#39;s easy to understand.  But if it causes issues with TLS =
+review, we can change it.
+
+ Alan DeKok.
+
+</pre>
+</blockquote>
+<pre>_______________________________________________
+TLS mailing list
+<a href=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.org</a>
+<a href=3D"https://urldefense.com/v3/__https://www.ietf.org/mailman/listinf=
+o/tls__;!!GjvTz_vk!BN9rm7SoWGOKFjfY7fFgpHjeV58wJeRS31O8qeE3B4tZbNy-zWi1yMwi=
+txxMCA$" target=3D"_blank">https://urldefense.com/v3/__https://www.ietf.org=
+/mailman/listinfo/tls__;!!GjvTz_vk!BN9rm7SoWGOKFjfY7fFgpHjeV58wJeRS31O8qeE3=
+B4tZbNy-zWi1yMwitxxMCA$</a>=20
+</pre>
+</blockquote>
+<pre>_______________________________________________
+Emu mailing list
+<a href=3D"mailto:Emu@ietf.org" target=3D"_blank">Emu@ietf.org</a>
+<a href=3D"https://www.ietf.org/mailman/listinfo/emu" target=3D"_blank">htt=
+ps://www.ietf.org/mailman/listinfo/emu</a>
+</pre>
+</blockquote>
+</div>
+
+_______________________________________________<br>
+Emu mailing list<br>
+<a href=3D"mailto:Emu@ietf.org" target=3D"_blank">Emu@ietf.org</a><br>
+<a href=3D"https://www.ietf.org/mailman/listinfo/emu" rel=3D"noreferrer" ta=
+rget=3D"_blank">https://www.ietf.org/mailman/listinfo/emu</a><br>
+</blockquote></div></div>
+
+--0000000000004f7a5405ba10b06d--
+

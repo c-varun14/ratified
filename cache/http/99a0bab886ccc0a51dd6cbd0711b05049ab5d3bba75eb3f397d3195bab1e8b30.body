@@ -1,0 +1,662 @@
+Return-Path: <ekr@rtfm.com>
+X-Original-To: tls@mail2.ietf.org
+Delivered-To: tls@mail2.ietf.org
+Received: from localhost (localhost [127.0.0.1])
+	by mail2.ietf.org (Postfix) with ESMTP id 0F4162BDD450
+	for <tls@mail2.ietf.org>; Thu, 22 May 2025 08:37:03 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at ietf.org
+X-Spam-Flag: NO
+X-Spam-Score: -1.897
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.897 tagged_above=-999 required=5
+	tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+	HTML_MESSAGE=0.001, RCVD_IN_DNSWL_NONE=-0.0001, SPF_HELO_NONE=0.001,
+	SPF_NONE=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: mail2.ietf.org (amavisd-new); dkim=pass (2048-bit key)
+	header.d=rtfm-com.20230601.gappssmtp.com
+Received: from mail2.ietf.org ([166.84.6.31])
+	by localhost (mail2.ietf.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id v72mklC_g7xN for <tls@mail2.ietf.org>;
+	Thu, 22 May 2025 08:37:01 -0700 (PDT)
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com
+ [IPv6:2607:f8b0:4864:20::b33])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail2.ietf.org (Postfix) with ESMTPS id 7F15B2BDD0B3
+	for <tls@ietf.org>; Thu, 22 May 2025 08:36:44 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id
+ 3f1490d57ef6-e7d78c3f554so395557276.3
+        for <tls@ietf.org>; Thu, 22 May 2025 08:36:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rtfm-com.20230601.gappssmtp.com; s=20230601; t=1747928204;
+ x=1748533004; darn=ietf.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=7HXV1Gnlu1F76xooH58cvUC9DAnP1LfF4XWPWQdzVRc=;
+        b=wWg3km3PczSKCLQLgMQiVGPQCLfLT5xNQelG5yFiHoNLA06sBjSUYcpyiWE+EBgLCG
+         ZraZklPSjmr1oMYhIu/v+SqsultqWAETD2VXtt+7fvtzYTLtqtzNYzG18zPQkH+1mwBk
+         eQp3V5T9f61rYYIuOuik+w4DkH/TFNnlZcSDtnpJgJLXAVw5nsM0KgEEeRA5mWxcXJ8P
+         crlaD0YDHxaiOSJ3V4EIQQd6vGHJdri+6riHxjv1f3apuOngNW6Mxb3sPuEj8K02CoQV
+         HNR1aTv5mErec41hVJFRFXISINw1jzwMQ1Uhj4suAixYHtVV65TStdEwyCLYNtpPwdf5
+         DmeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747928204; x=1748533004;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7HXV1Gnlu1F76xooH58cvUC9DAnP1LfF4XWPWQdzVRc=;
+        b=D1jPM+OsAhAmm1kBu+SBFUnKiYAnfyjgWssAcYmu/R6cDbYevaJw+lA4VZFpE99v0G
+         ruTqJYlSW4QObHBzzonaTMPgRrpw3YCu7FD0bGLmOlRXkrY+ktJIsx43ZxPYlnITMjpf
+         dZROyXHc3A3YT60tHU7vaZjLHY36Alwt1DTiqjBnDB5G1n8RoV/2fxcDp4QAtnvK7Eql
+         a0rt1h8orc/XeIBLa5la+jno2dvPbyd+vCfzpBH0XWkxlcryjlCQ5G4MkYoYsrCghxEq
+         a/bI+IZyk/nag1ncHrHqs9+IrngELZwDdCRgTWYDQaAljiQCWinyBaTHmp5WIRxrPkb+
+         ysCA==
+X-Gm-Message-State: AOJu0Yz+Rr9boVKt3ABe5Sw3kbFCuaJuRla67ll3IsOGQbNy6VRUc3pe
+	qMrDqOzAlWktJGK1iQmcKuWtCqUzrucoD09XS8QvAMg35Wvg6vKY/3nEcumFlzmS84nLTHh8/s8
+	ZfeNtKnJJyYeOW8eEyiBUOAtPPMkPbhnjUHraJmVdSwveCMkKLUl3ecc=
+X-Gm-Gg: ASbGnctqCDg92IPPS0a5x+XKrNKwDQ6t6REAyXduv3K/ImYoqYI0pZe/lb3P1+gTg1E
+	q51mKz/nCIaUhAsYVCbSBo+FBysFP801kDIlz4xOhbfyxNqkubVeP21IlpydFVpqpX/tEDhd8aD
+	/xtfDKZmcawOeEWYdKpfKs8Znye4njQCc=
+X-Google-Smtp-Source: 
+ AGHT+IGjI8W7OwiaB4RSC7FRMIXNR2oP/alX94OQyVkFvTqyLZSMu1b86dyYA0DpJ42kSwAwdOkpjHVj5KYf1e41Or4=
+X-Received: by 2002:a05:6902:704:b0:e7d:6829:207a with SMTP id
+ 3f1490d57ef6-e7d682921b2mr6308495276.16.1747928202246; Thu, 22 May 2025
+ 08:36:42 -0700 (PDT)
+MIME-Version: 1.0
+References: <90bdd3cd-a5d0-4a82-b28c-2965536a7154@tu-dresden.de>
+ <CADi0yUP27w+gcLvfWjn=+EqxfiWebFiyaNa1aUomVai8AUAU5w@mail.gmail.com>
+ <f16029e7-33ea-449d-9a6d-936b649d30d5@tu-dresden.de>
+ <b805cab0-1395-44cc-9dfb-8599e491226d@tu-dresden.de>
+In-Reply-To: <b805cab0-1395-44cc-9dfb-8599e491226d@tu-dresden.de>
+From: Eric Rescorla <ekr@rtfm.com>
+Date: Thu, 22 May 2025 08:36:06 -0700
+X-Gm-Features: AX0GCFu3AeO5sDPeK_AFjs5ko30IYP0QqwigVtqIWTOJQGE3cmI8MqsR66q-Wc0
+Message-ID: 
+ <CABcZeBP_fqYBjUhNdEhZJcUorVYhAiTnP-2x6zqU9BQTs=Rm+A@mail.gmail.com>
+To: Muhammad Usama Sardar <muhammad_usama.sardar@tu-dresden.de>
+Content-Type: multipart/alternative; boundary="000000000000969fd20635bb3f19"
+Message-ID-Hash: CGKCCBYLSH4CHSYVWNTOMGSOVFY6E2NV
+X-Message-ID-Hash: CGKCCBYLSH4CHSYVWNTOMGSOVFY6E2NV
+X-MailFrom: ekr@rtfm.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; header-match-tls.ietf.org-0;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+CC: tls@ietf.org
+X-Mailman-Version: 3.3.9rc6
+Precedence: list
+Subject: =?utf-8?q?=5BTLS=5D_Re=3A_Key_Hierarchy_TLS_1=2E3_RFC8446=28bis=29?=
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/Ho98JDz06Tuz_bQZPMNdgIs3Q5A>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+--000000000000969fd20635bb3f19
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Thanks for your note. Some responses below.
+
+
+> TL;DR: Please define "session keys" precisely.
+>
+> Details:
+>
+> Appendix F.1 of RFC8446bis-12 states:
+>  > A set of "session keys" (the various secrets derived from the
+> main secret) from which can be derived a set of working keys.
+>
+> Figure in section 7.1 shows that there are 4 secrets derived from main
+secret:
+>
+>     client_application_traffic_secret_0
+>     server_application_traffic_secret_0
+>     exporter_secret
+>     resumption_secret
+>
+> From the above statement, I am assuming that the set of all these
+> four secrets is what constitutes "session keys". But then the
+>  literature sharply contradicts this. For example, Dowling et al. [1]
+> label 4 other keys in addition to these as "session keys" (see
+>  Figure 2 in [1]):
+>
+>     client_early_traffic_secret
+>     early_exporter_master_secret
+>     client_write_key for Record type =3D Handshake
+>     server_write_key for Record type =3D Handshake
+>
+> The first two in this list are derived from Early Secret while the
+> last two are derived from Handshake Secret, immediately
+>  contradicting the description of "session keys" in Appendix F.1
+> quoted above.
+>
+> So it would be helpful to explicitly state which keys exactly are
+included in "session keys".
+
+I agree that there is some ambiguity here, but it seems like to some
+extent the ambiguity is in the published literature. The general idea
+here is that we generate a set of keying material from the various
+secrets (Early, Handshake, Main/Master) but then those secrets
+themselves need to undergo some internal transformations to be
+useful. E.g., the [sender]_write_key and [sender]_write_iv.
+
+ISTM that one could prove either the security of the directly derived
+keys or of the leaf keys, but that this document doesn't need to take
+a position on this. WRT to the particular list you have from Dowling,
+I don't understand why one would include [sender]_write_key for
+handshake, but not for application. However, this text does seem clear
+even if others used a different definition; given that this is not
+part of the protocol definition but just in an appendix listing
+the security properties, I think it's reasonable to say as-is.
+
+
+> Issue 2: "Binder Finished Key"
+>
+> TL;DR: Please confirm if this is correct and if so, mention it explicitly
+in RFC8446bis.
+>
+> Details:
+>
+>> Dowling et al. [1] also mention "Binder Finished Key" derived from
+> Binder Key (Figure 2 and Table 1 in [1]). In my read of
+> RFC8446bis-12 (particularly section 4.4 and 4.4.4), I could not
+> figure out where this is coming from. The only mention of binders in
+> these sections is:
+>
+> > The PSK binders also perform key confirmation, in a similar fashion.
+>
+> Perhaps the intention here was not to say key confirmation alone,
+> but also handshake integrity via Finished message?  Specifically,
+> Table 2 never mentions binder key, as one of the base keys for the
+> derivation.
+
+Here too, it seems like we have a situation where the specification
+is clear:
+
+   The PskBinderEntry is computed in the same way as the Finished
+   message (Section 4.4.4) but with the BaseKey being the binder_key
+   derived via the key schedule from the corresponding PSK which is
+   being offered (see Section 7.1).
+
+It seems like Dowling has chosen to call the output of the computation
+indicated in S 4.4.4 but with BaseKey as the binder key as a
+"Binder Finished Key". I don't think that's an unreasonable choice,
+even though it's not technically a Finished key, just computed in
+the same fashion.
+
+
+> ---
+>
+> Issue 3: Empty string vs. zero-filled string in key schedule:
+>
+> TL;DR: These two have been colluded in ProVerif implementation
+> [2]. Are there any already known real-world security implications of
+>  doing so?
+>
+> Details:
+>
+> ProVerif implementation [2] of key schedule has colluded empty
+> string "" with a zero-filled string "0". I think other than the two
+> "0" in HKDF-Extract for Early Secret and Master Secret, all others
+> should be empty strings instead and hence should be represented by
+> some other constant other than "zero" in ProVerif. I will create an
+> issue on this in the reftls repo.
+>
+> In my understanding, "0" is intended for the case of no prior key
+> for HKDF-Extract and "" is intended for the case of no additional
+> context for HKDF-Expand-Label.
+
+That's correct.
+
+
+> Does someone know any security implications that could originate
+> from -- for example -- using "0" instead of "" in HKDF-Expand-Label?
+> I think depending on HMAC construction used, this might lead to
+> security concerns, generating unexpected keys and breaking the key
+>  agreement at the very least.
+
+I'm not a cryptographer but I don't know of any impacts.  Glancing
+quickly at the specification, it doesn't appear that there are any
+situations where you could have either "" or some value, so I don't
+*think* there's room for ambiguity here. I'm not sure what you mean by
+"depending on HMAC construction used", as HMAC is a single
+construction just instantiated with hashes.  I agree it would be good
+to get some confirmation here.
+
+
+> ---
+>
+> Issue 4: Full key derivation schedule:
+>
+> TL;DR: Please add full key derivation schedule in specifications in
+RFC8446bis.
+>
+> Details:
+>
+> The text in section 7.1 says
+>
+> > This produces a full key derivation schedule shown in the diagram below=
+.
+>
+> The figure, however, by no means is anything close to a full key
+> schedule. It shows only the first stage of keys. Seems like it would
+> be very beneficial if at least the Appendix of RFC8446bis includes a
+> full key derivation schedule. Right now, the key schedule is
+> scattered around in sections 7.1, 7.3, 7.5, 4.4 and 4.4.4.
+
+This diagram is already quite large, so I fear it would be a lot of
+work to produce something that was readable. I agree it's not helpful
+to say "full" here, and I'd welcome some revised text.
+
+-Ekr
+
+
+
+On Mon, Nov 11, 2024 at 7:20=E2=80=AFAM Muhammad Usama Sardar <
+muhammad_usama.sardar@tu-dresden.de> wrote:
+
+> Just a quick update/reminder on this:
+>
+> The authors acknowledged that their implementation of key schedule in
+> ProVerif was incorrect [5-6]. So this part of the mystery was resolved.
+>
+> However, it is still unclear whether there are any *practical* attacks if
+> Derive-Secret is skipped in generating handshake and master secrets.
+>
+> Again, I am not much into computational analysis. I may be missing
+> something but I would very much like to know what I am missing. Is there
+> any intuitive explanation for understanding why Derive-Secret is required=
+?
+>
+> Usama
+> On 22.12.23 11:11, Muhammad Usama Sardar wrote:
+>
+> Hi Hugo,
+>
+> Following the related sources [1-4], it appears to be - as Eric called it
+> - a theoretical and futuristic concern. In my understanding, the main
+> concern was that with the key hierarchy of draft 18:
+>
+>    - the Handshake Secret could collide with binder_key if the attacker
+>    is somehow able to match (EC)DHE secret with the label to the correspo=
+nding
+>    Derive-Secret.
+>    - the Handshake Secret could collide with client_early_traffic_secret
+>    if the attacker is somehow able to match (EC)DHE secret with the label=
+ to
+>    the corresponding Derive-Secret.
+>
+> The reasoning for 2nd Derive-Secret is even more far-fetched. If in the
+> future the IKM input to HKDF-Extract (zero) changes, then similar collisi=
+on
+> may happen between Master Secret and client_handshake_traffic_secret or
+> server_handshake_traffic_secret. So my question more precisely is:
+>
+>    - Is there any *practical* security implication for missing the
+>    additional Derive-Secrets? Has this ever been *practically* exploited?
+>    Has anyone else explored this?
+>
+> Now about the Inria paper that you have mentioned, I am not much
+> knowledgeable about computational analysis. I understand that it helped
+> them remove the assumption (that DH group elements do not match the
+> corresponding labels) in their proof in CryptoVerif but the corresponding
+> formal analysis in ProVerif in the same paper does not support this view,
+> i.e., all properties remain the same regardless of the additional
+> Derive-Secret.
+>
+> Moreover, the implementation of key hierarchy in draft 20 in ProVerif by
+> the authors is incorrect [5-6]. For instance, due to a strange reason and
+> beyond our understanding, the draft 20 implementation does not use the
+> Derive-Secret for Master Secret [5]. Do you have any thoughts/opinion on
+> this? The same implementation is being used by other extensions as a
+> baseline, including Lurk [7].
+>
+> Usama
+>
+> [1] https://github.com/tlswg/tls13-spec/pull/875
+>
+> [2] https://mailarchive.ietf.org/arch/msg/tls/cS4vdMvENOGdpall7uos9iwZ5OA=
+/
+>
+> [3]
+> https://datatracker.ietf.org/meeting/98/materials/slides-98-tls-tls13-00
+>
+> [4]
+> https://www.youtube.com/watch?v=3DoSwXkhVd2ts&list=3DPLC86T-6ZTP5jo6kIuqd=
+yeYYhsKv9sUwG1&ab_channel=3DIETF-InternetEngineeringTaskForce
+>
+> [5] https://github.com/Inria-Prosecco/reftls/issues/6
+>
+> [6] https://github.com/Inria-Prosecco/reftls/issues/7
+>
+> [7] https://github.com/lurk-t/proverif
+>
+>
+> On 17.12.23 21:05, Hugo Krawczyk wrote:
+>
+> See full thread here
+> https://mailarchive.ietf.org/arch/msg/tls/cS4vdMvENOGdpall7uos9iwZ5OA/
+>
+> See also how this helped analysis here (search for reference [73]
+> https://inria.hal.science/hal-01528752v3/file/RR-9040.pdf
+>
+> On Sat, Dec 16, 2023 at 1:16=E2=80=AFPM Muhammad Usama Sardar <
+> muhammad_usama.sardar@tu-dresden.de> wrote:
+>
+>> Hi all,
+>> In the key schedule (section 7.1) of RFC8446(bis), what is the rationale
+>> for using *Derive-Secret(., "derived", "")* in the derivations of
+>> Handshake and Master Secrets? Since this change was made in draft 19, I
+>> expect there should be some reasoning of why this was added. Specificall=
+y,
+>> what are the security implications if this step is missed, i.e.,
+>>
+>>    - if Early Secret is directly used as the Salt argument for
+>>    HKDF-Extract of Handshake Secret;
+>>    - and similarly if Handshake Secret is directly used as the Salt
+>>    argument for HKDF-Extract of Master Secret.
+>>
+>> Regards,
+>>
+>> Usama
+>> _______________________________________________
+>> TLS mailing list
+>> TLS@ietf.org
+>> https://www.ietf.org/mailman/listinfo/tls
+>>
+> _______________________________________________
+> TLS mailing list -- tls@ietf.org
+> To unsubscribe send an email to tls-leave@ietf.org
+>
+
+--000000000000969fd20635bb3f19
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">Thanks for your note. Some responses below.<br><br><br>&gt=
+; TL;DR: Please define &quot;session keys&quot; precisely.<br>&gt; <br>&gt;=
+ Details:<br>&gt; <br>&gt; Appendix F.1 of RFC8446bis-12 states:<br>&gt; =
+=C2=A0&gt; A set of &quot;session keys&quot; (the various secrets derived f=
+rom the<br>&gt; main secret) from which can be derived a set of working key=
+s.<br>&gt; <br>&gt; Figure in section 7.1 shows that there are 4 secrets de=
+rived from main secret: <br>&gt; <br>&gt; =C2=A0 =C2=A0 client_application_=
+traffic_secret_0<br>&gt; =C2=A0 =C2=A0 server_application_traffic_secret_0<=
+br>&gt; =C2=A0 =C2=A0 exporter_secret<br>&gt; =C2=A0 =C2=A0 resumption_secr=
+et<br>&gt; <br>&gt; From the above statement, I am assuming that the set of=
+ all these<br>&gt; four secrets is what constitutes &quot;session keys&quot=
+;. But then the<br>&gt; =C2=A0literature sharply contradicts this. For exam=
+ple, Dowling et al. [1]<br>&gt; label 4 other keys in addition to these as =
+&quot;session keys&quot; (see<br>&gt; =C2=A0Figure 2 in [1]):<br>&gt; <br>&=
+gt; =C2=A0 =C2=A0 client_early_traffic_secret<br>&gt; =C2=A0 =C2=A0 early_e=
+xporter_master_secret<br>&gt; =C2=A0 =C2=A0 client_write_key for Record typ=
+e =3D Handshake<br>&gt; =C2=A0 =C2=A0 server_write_key for Record type =3D =
+Handshake<br>&gt; <br>&gt; The first two in this list are derived from Earl=
+y Secret while the<br>&gt; last two are derived from Handshake Secret, imme=
+diately<br>&gt; =C2=A0contradicting the description of &quot;session keys&q=
+uot; in Appendix F.1<br>&gt; quoted above.<br>&gt; <br>&gt; So it would be =
+helpful to explicitly state which keys exactly are included in &quot;sessio=
+n keys&quot;.<br><br>I agree that there is some ambiguity here, but it seem=
+s like to some<br>extent the ambiguity is in the published literature. The =
+general idea<br>here is that we generate a set of keying material from the =
+various<br>secrets (Early, Handshake, Main/Master) but then those secrets<b=
+r>themselves need to undergo some internal transformations to be<br>useful.=
+ E.g., the [sender]_write_key and [sender]_write_iv.<br><br>ISTM that one c=
+ould prove either the security of the directly derived<br>keys or of the le=
+af keys, but that this document doesn&#39;t need to take<br>a position on t=
+his. WRT to the particular list you have from Dowling,<br>I don&#39;t under=
+stand why one would include [sender]_write_key for<br>handshake, but not fo=
+r application. However, this text does seem clear<br>even if others used a =
+different definition; given that this is not<br>part of the protocol defini=
+tion but just in an appendix listing<br>the security properties, I think it=
+&#39;s reasonable to say as-is.<br><br><br>&gt; Issue 2: &quot;Binder Finis=
+hed Key&quot;<br>&gt; <br>&gt; TL;DR: Please confirm if this is correct and=
+ if so, mention it explicitly in RFC8446bis.<br>&gt; <br>&gt; Details:<br>&=
+gt; <br>&gt;&gt; Dowling et al. [1] also mention &quot;Binder Finished Key&=
+quot; derived from<br>&gt; Binder Key (Figure 2 and Table 1 in [1]). In my =
+read of<br>&gt; RFC8446bis-12 (particularly section 4.4 and 4.4.4), I could=
+ not<br>&gt; figure out where this is coming from. The only mention of bind=
+ers in<br>&gt; these sections is:<br>&gt; <br>&gt; &gt; The PSK binders als=
+o perform key confirmation, in a similar fashion.<br>&gt; <br>&gt; Perhaps =
+the intention here was not to say key confirmation alone,<br>&gt; but also =
+handshake integrity via Finished message?=C2=A0 Specifically,<br>&gt; Table=
+ 2 never mentions binder key, as one of the base keys for the<br>&gt; deriv=
+ation.<br><br>Here too, it seems like we have a situation where the specifi=
+cation<br>is clear:<br><br>=C2=A0 =C2=A0The PskBinderEntry is computed in t=
+he same way as the Finished<br>=C2=A0 =C2=A0message (Section 4.4.4) but wit=
+h the BaseKey being the binder_key<br>=C2=A0 =C2=A0derived via the key sche=
+dule from the corresponding PSK which is<br>=C2=A0 =C2=A0being offered (see=
+ Section 7.1).<br><br>It seems like Dowling has chosen to call the output o=
+f the computation<br>indicated in S 4.4.4 but with BaseKey as the binder ke=
+y as a<br>&quot;Binder Finished Key&quot;. I don&#39;t think that&#39;s an =
+unreasonable choice,<br>even though it&#39;s not technically a Finished key=
+, just computed in<br>the same fashion. <br><br><br>&gt; ---<br>&gt; <br>&g=
+t; Issue 3: Empty string vs. zero-filled string in key schedule:<br>&gt; <b=
+r>&gt; TL;DR: These two have been colluded in ProVerif implementation<br>&g=
+t; [2]. Are there any already known real-world security implications of<br>=
+&gt; =C2=A0doing so?<br>&gt; <br>&gt; Details:<br>&gt; <br>&gt; ProVerif im=
+plementation [2] of key schedule has colluded empty<br>&gt; string &quot;&q=
+uot; with a zero-filled string &quot;0&quot;. I think other than the two<br=
+>&gt; &quot;0&quot; in HKDF-Extract for Early Secret and Master Secret, all=
+ others<br>&gt; should be empty strings instead and hence should be represe=
+nted by<br>&gt; some other constant other than &quot;zero&quot; in ProVerif=
+. I will create an<br>&gt; issue on this in the reftls repo.<br>&gt; <br>&g=
+t; In my understanding, &quot;0&quot; is intended for the case of no prior =
+key<br>&gt; for HKDF-Extract and &quot;&quot; is intended for the case of n=
+o additional<br>&gt; context for HKDF-Expand-Label.<br><br>That&#39;s corre=
+ct.<br><br><br>&gt; Does someone know any security implications that could =
+originate<br>&gt; from -- for example -- using &quot;0&quot; instead of &qu=
+ot;&quot; in HKDF-Expand-Label?<br>&gt; I think depending on HMAC construct=
+ion used, this might lead to<br>&gt; security concerns, generating unexpect=
+ed keys and breaking the key<br>&gt; =C2=A0agreement at the very least.<br>=
+<br>I&#39;m not a cryptographer but I don&#39;t know of any impacts.=C2=A0 =
+Glancing<br>quickly at the specification, it doesn&#39;t appear that there =
+are any<br>situations where you could have either &quot;&quot; or some valu=
+e, so I don&#39;t<br>*think* there&#39;s room for ambiguity here. I&#39;m n=
+ot sure what you mean by<br>&quot;depending on HMAC construction used&quot;=
+, as HMAC is a single<br>construction just instantiated with hashes.=C2=A0 =
+I agree it would be good<br>to get some confirmation here.<br><br><br>&gt; =
+---<br>&gt; <br>&gt; Issue 4: Full key derivation schedule:<br>&gt; <br>&gt=
+; TL;DR: Please add full key derivation schedule in specifications in RFC84=
+46bis.<br>&gt; <br>&gt; Details:<br>&gt; <br>&gt; The text in section 7.1 s=
+ays<br>&gt; <br>&gt; &gt; This produces a full key derivation schedule show=
+n in the diagram below.<br>&gt; <br>&gt; The figure, however, by no means i=
+s anything close to a full key<br>&gt; schedule. It shows only the first st=
+age of keys. Seems like it would<br>&gt; be very beneficial if at least the=
+ Appendix of RFC8446bis includes a<br>&gt; full key derivation schedule. Ri=
+ght now, the key schedule is<br>&gt; scattered around in sections 7.1, 7.3,=
+ 7.5, 4.4 and 4.4.4.<br><br>This diagram is already quite large, so I fear =
+it would be a lot of<br>work to produce something that was readable. I agre=
+e it&#39;s not helpful<br>to say &quot;full&quot; here, and I&#39;d welcome=
+ some revised text.<br><br>-Ekr<br><br><br></div><br><div class=3D"gmail_qu=
+ote"><div dir=3D"ltr" class=3D"gmail_attr">On Mon, Nov 11, 2024 at 7:20=E2=
+=80=AFAM Muhammad Usama Sardar &lt;<a href=3D"mailto:muhammad_usama.sardar@=
+tu-dresden.de" target=3D"_blank">muhammad_usama.sardar@tu-dresden.de</a>&gt=
+; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px=
+ 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><u></u>
+
+ =20
+   =20
+ =20
+  <div>
+    <p>Just a quick update/reminder on this:=C2=A0</p>
+    <p>The authors acknowledged that their implementation of key
+      schedule in ProVerif was incorrect [5-6]. So this part of the
+      mystery was resolved.<br>
+    </p>
+    <p>However, it is still unclear whether there are any <i>practical</i>
+      attacks if Derive-Secret is skipped in generating handshake and
+      master secrets. <br>
+    </p>
+    <p>Again, I am not much into computational analysis. I may be
+      missing something but I would very much like to know what I am
+      missing. Is there any intuitive explanation for understanding why
+      Derive-Secret is required? <br>
+    </p>
+    <p>Usama</p>
+    <div>On 22.12.23 11:11, Muhammad Usama
+      Sardar wrote:<br>
+    </div>
+    <blockquote type=3D"cite">
+     =20
+      <p>Hi Hugo,</p>
+      <p>Following the related sources [1-4], it appears to be - as Eric
+        called it - a theoretical and futuristic concern. In my
+        understanding, the main concern was that with the key hierarchy
+        of draft 18: <br>
+      </p>
+      <ul>
+        <li>the Handshake Secret could collide with binder_key if the
+          attacker is somehow able to match (EC)DHE secret with the
+          label to the corresponding Derive-Secret.</li>
+        <li>the Handshake Secret could collide with
+          client_early_traffic_secret if the attacker is somehow able to
+          match (EC)DHE secret with the label to the corresponding
+          Derive-Secret. <br>
+        </li>
+      </ul>
+      <p>The reasoning for 2nd Derive-Secret is even more far-fetched.
+        If in the future the IKM input to HKDF-Extract (zero) changes,
+        then similar collision may happen between Master Secret and
+        client_handshake_traffic_secret or
+        server_handshake_traffic_secret. So my question more precisely
+        is: <br>
+      </p>
+      <ul>
+        <li>Is there any <i>practical</i> security implication for
+          missing the additional Derive-Secrets? Has this ever been <i>prac=
+tically</i>
+          exploited? Has anyone else explored this? <br>
+        </li>
+      </ul>
+      <p>Now about the Inria paper that you have mentioned, I am not
+        much knowledgeable about computational analysis. I understand
+        that it helped them remove the assumption (that DH group
+        elements do not match the corresponding labels) in their proof
+        in CryptoVerif but the corresponding formal analysis in ProVerif
+        in the same paper does not support this view, i.e., all
+        properties remain the same regardless of the additional
+        Derive-Secret.=C2=A0</p>
+      <p>Moreover, the implementation of key hierarchy in draft 20 in
+        ProVerif by the authors is incorrect [5-6]. For instance, due to
+        a strange reason and beyond our understanding, the draft 20
+        implementation does not use the Derive-Secret for Master Secret
+        [5]. Do you have any thoughts/opinion on this? The same
+        implementation is being used by other extensions as a baseline,
+        including Lurk [7]. <br>
+      </p>
+      <p> Usama </p>
+      <p>[1] <a href=3D"https://github.com/tlswg/tls13-spec/pull/875" targe=
+t=3D"_blank">https://github.com/tlswg/tls13-spec/pull/875</a></p>
+      <p>[2] <a href=3D"https://mailarchive.ietf.org/arch/msg/tls/cS4vdMvEN=
+OGdpall7uos9iwZ5OA/" target=3D"_blank">https://mailarchive.ietf.org/arch/ms=
+g/tls/cS4vdMvENOGdpall7uos9iwZ5OA/</a></p>
+      <p>[3] <a href=3D"https://datatracker.ietf.org/meeting/98/materials/s=
+lides-98-tls-tls13-00" target=3D"_blank">https://datatracker.ietf.org/meeti=
+ng/98/materials/slides-98-tls-tls13-00</a></p>
+      <p>[4] <a href=3D"https://www.youtube.com/watch?v=3DoSwXkhVd2ts&amp;l=
+ist=3DPLC86T-6ZTP5jo6kIuqdyeYYhsKv9sUwG1&amp;ab_channel=3DIETF-InternetEngi=
+neeringTaskForce" target=3D"_blank">https://www.youtube.com/watch?v=3DoSwXk=
+hVd2ts&amp;list=3DPLC86T-6ZTP5jo6kIuqdyeYYhsKv9sUwG1&amp;ab_channel=3DIETF-=
+InternetEngineeringTaskForce</a></p>
+      <p>[5] <a href=3D"https://github.com/Inria-Prosecco/reftls/issues/6" =
+target=3D"_blank">https://github.com/Inria-Prosecco/reftls/issues/6</a><br>
+      </p>
+      <p>[6] <a href=3D"https://github.com/Inria-Prosecco/reftls/issues/7" =
+target=3D"_blank">https://github.com/Inria-Prosecco/reftls/issues/7</a><br>
+      </p>
+      <p>[7] <a href=3D"https://github.com/lurk-t/proverif" target=3D"_blan=
+k">https://github.com/lurk-t/proverif</a><br>
+      </p>
+      <p><br>
+      </p>
+      <div>On 17.12.23 21:05, Hugo Krawczyk
+        wrote:<br>
+      </div>
+      <blockquote type=3D"cite">
+        <div dir=3D"ltr">
+          <div class=3D"gmail_default" style=3D"font-family:arial,helvetica=
+,sans-serif;font-size:small">See full
+            thread here</div>
+          <div class=3D"gmail_default" style=3D"font-family:arial,helvetica=
+,sans-serif;font-size:small"><a href=3D"https://mailarchive.ietf.org/arch/m=
+sg/tls/cS4vdMvENOGdpall7uos9iwZ5OA/" target=3D"_blank">https://mailarchive.=
+ietf.org/arch/msg/tls/cS4vdMvENOGdpall7uos9iwZ5OA/</a><br>
+          </div>
+          <div class=3D"gmail_default" style=3D"font-family:arial,helvetica=
+,sans-serif;font-size:small"><br>
+          </div>
+          <div class=3D"gmail_default" style=3D"font-family:arial,helvetica=
+,sans-serif;font-size:small">See also
+            how this helped analysis here (search for reference [73]</div>
+          <div class=3D"gmail_default" style=3D"font-family:arial,helvetica=
+,sans-serif;font-size:small"><a href=3D"https://inria.hal.science/hal-01528=
+752v3/file/RR-9040.pdf" target=3D"_blank">https://inria.hal.science/hal-015=
+28752v3/file/RR-9040.pdf</a><br>
+          </div>
+        </div>
+        <br>
+        <div class=3D"gmail_quote">
+          <div dir=3D"ltr" class=3D"gmail_attr">On Sat, Dec 16, 2023 at
+            1:16=E2=80=AFPM Muhammad Usama Sardar &lt;<a href=3D"mailto:muh=
+ammad_usama.sardar@tu-dresden.de" target=3D"_blank">muhammad_usama.sardar@t=
+u-dresden.de</a>&gt;
+            wrote:<br>
+          </div>
+          <blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8=
+ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">
+            <div>
+              <p>Hi all,<br>
+              </p>
+              In the key schedule (section 7.1) of RFC8446(bis), what is
+              the rationale for using <span style=3D"white-space:pre-wrap">=
+<i><b>Derive-Secret(., &quot;derived&quot;, &quot;&quot;)</b></i><span styl=
+e=3D"white-space:normal"> in the derivations of Handshake and Master Secret=
+s? </span></span>Since
+              this change was made in draft 19, I expect there should be
+              some reasoning of why this was added. <span style=3D"white-sp=
+ace:pre-wrap"><span style=3D"white-space:normal">Specifically, what are the=
+ security implications if this step is missed, i.e.,</span></span>
+              <ul>
+                <li><span style=3D"white-space:pre-wrap"><span style=3D"whi=
+te-space:normal">if Early Secret is directly used as the Salt argument for =
+HKDF-Extract of Handshake Secret;=C2=A0</span></span></li>
+                <li><span style=3D"white-space:pre-wrap"><span style=3D"whi=
+te-space:normal">and similarly if </span></span><span style=3D"white-space:=
+pre-wrap"><span style=3D"white-space:normal"></span></span><span style=3D"w=
+hite-space:pre-wrap"><span style=3D"white-space:normal">Handshake Secret is=
+ directly used as the Salt argument for HKDF-Extract of Master Secret.</spa=
+n></span></li>
+              </ul>
+              <p>Regards,</p>
+              <p>Usama<br>
+              </p>
+            </div>
+            _______________________________________________<br>
+            TLS mailing list<br>
+            <a href=3D"mailto:TLS@ietf.org" target=3D"_blank">TLS@ietf.org<=
+/a><br>
+            <a href=3D"https://www.ietf.org/mailman/listinfo/tls" rel=3D"no=
+referrer" target=3D"_blank">https://www.ietf.org/mailman/listinfo/tls</a><b=
+r>
+          </blockquote>
+        </div>
+      </blockquote>
+    </blockquote>
+  </div>
+
+_______________________________________________<br>
+TLS mailing list -- <a href=3D"mailto:tls@ietf.org" target=3D"_blank">tls@i=
+etf.org</a><br>
+To unsubscribe send an email to <a href=3D"mailto:tls-leave@ietf.org" targe=
+t=3D"_blank">tls-leave@ietf.org</a><br>
+</blockquote></div>
+
+--000000000000969fd20635bb3f19--
+

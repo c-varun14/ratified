@@ -1,0 +1,123 @@
+Return-Path: <hkario@redhat.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id A6BF91323CA
+ for <tls@ietfa.amsl.com>; Mon, 14 Aug 2017 11:07:03 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -6.901
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.901 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, RCVD_IN_DNSWL_HI=-5, SPF_PASS=-0.001]
+ autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id aAmwmDZ2OzAR for <tls@ietfa.amsl.com>;
+ Mon, 14 Aug 2017 11:07:02 -0700 (PDT)
+Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 80B901323C9
+ for <tls@ietf.org>; Mon, 14 Aug 2017 11:07:02 -0700 (PDT)
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com
+ [10.5.11.14])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mx1.redhat.com (Postfix) with ESMTPS id F1232686AA;
+ Mon, 14 Aug 2017 18:07:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mx1.redhat.com F1232686AA
+Authentication-Results: ext-mx03.extmail.prod.ext.phx2.redhat.com;
+ dmarc=none (p=none dis=none) header.from=redhat.com
+Authentication-Results: ext-mx03.extmail.prod.ext.phx2.redhat.com;
+ spf=fail smtp.mailfrom=hkario@redhat.com
+Received: from pintsize.usersys.redhat.com (unknown [10.43.21.223])
+ by smtp.corp.redhat.com (Postfix) with ESMTPS id 54EFA5D967;
+ Mon, 14 Aug 2017 18:06:59 +0000 (UTC)
+From: Hubert Kario <hkario@redhat.com>
+To: tls@ietf.org
+Date: Mon, 14 Aug 2017 20:06:57 +0200
+Message-ID: <1708503.gcSoZQpuhk@pintsize.usersys.redhat.com>
+In-Reply-To: <DM2PR21MB0091750568F7FDBF1939F7B88C890@DM2PR21MB0091.namprd21.prod.outlook.com>
+References: <1502460670.3202.8.camel@redhat.com>
+ <CADh2w8QexuvQtXyOsj3WkiPf+2YjH8yFhR7Wj3Ek+b=U3Bb3Fg@mail.gmail.com>
+ <DM2PR21MB0091750568F7FDBF1939F7B88C890@DM2PR21MB0091.namprd21.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="nextPart4110553.B2nBj1sAOJ";
+ micalg="pgp-sha512"; protocol="application/pgp-signature"
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16
+ (mx1.redhat.com [10.5.110.27]); Mon, 14 Aug 2017 18:07:02 +0000 (UTC)
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/0zT4c0-zoruUDuNGutKtp6EacMQ>
+Subject: Re: [TLS] draft-ietf-tls-tls13-21: TLS 1.3 record padding removal
+ leaks padding size
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Mon, 14 Aug 2017 18:07:03 -0000
+
+--nextPart4110553.B2nBj1sAOJ
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
+
+On Friday, 11 August 2017 19:04:05 CEST Andrei Popov wrote:
+>   *   I don't argue with this but this is not the approach TLS 1.3 took. =
+It
+> provides a generic padding mechanism to be used across application
+> protocols.
+> At some point I thought we said that the TLS 1.3 padding
+> mechanism was supposed to be application-driven (in the form of
+> application-provided policy or simply desired pad size), which would mean
+> that the application has to be involved anyway.=20
+
+Problem is, that the application doesn't know how much time did processing =
+of=20
+the message took (even if it gets the information that the received message=
+=20
+was padded, which is not possible with current common library APIs).
+
+So even if the application takes exactly as much time to process a long=20
+request as it does to process a short request, the length of that processin=
+g=20
+will leak.
+
+=2D-=20
+Regards,
+Hubert Kario
+Senior Quality Engineer, QE BaseOS Security team
+Web: www.cz.redhat.com
+Red Hat Czech s.r.o., Purky=C5=88ova 115, 612 00  Brno, Czech Republic
+--nextPart4110553.B2nBj1sAOJ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAABCgAGBQJZkebBAAoJEJKo0bgB0vX18HIP/06VKtaSoeQQLFEe4iM19GxD
+rzvw/9NNFvWdHuQFpmx1yFtGEVjNTTRElr/7PgkbkyeE7qhVkvh6VrCts0+NNDR5
+yEQlxz9qrxXudAEcJMoCLfl8062pWPmlsi7bF8SqiGyNQt8YKvLjG+g9YWVCHQf2
+9EEpmI5wYchargD6ulRMSpxa8w42dv6jvZt4ppi7WpZhuOH+VdrOUxDO8u6SWzMr
+ozAQrPhE31Lt2ADilFgUtnof8AxXlZygqPiH4NnxzBBjxOIxxD6lUkSLsUXizWyU
+1wwqG6G0RyUGoU8K4kttVlpbwJjFrPQFhkjDZSthD4bbZgWEYvgLmMgbAJ8q8t+S
+isHqxcJtRyedG9WEH1pZZIkiUguX4vXi1FrsfQxB5aisi9mc5d+fy/+NV9hX4MjS
+UwxdBZp9gUY2DLpR0Qpsx5idCDUFa5bDXHmZbEH6BMZ8LbzfUlwev3wNCCIWfhah
+Wo9Zu3BuzVs0KGsFg0mAOpNw13cX86TIJgmVYy4dfvPDbkWg/x+KrU16yQ+tC8z2
+dk5QTknslh9U1O0ZZ9wHduodpDU+pJCzWCKo/jgxDB8sog9GjIgV/7DtMJboH5Xs
+tQcQxpkxPBlROvc5sSINz6P00ra6S73miCcw3Z+P1NTKByRhe/GcA73eKdL+CDLc
+lab5YBFc8QPLIXOGcDDC
+=JUFl
+-----END PGP SIGNATURE-----
+
+--nextPart4110553.B2nBj1sAOJ--
+

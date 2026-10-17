@@ -1,0 +1,343 @@
+Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com
+ [IPv6:2607:f8b0:4864:20::112c])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature ECDSA (prime256v1) server-digest
+ SHA256)
+	(No client certificate requested)
+	by mx.ietf.org (Postfix) with ESMTPS id 858E146
+	for <tls@ietf.org>; Fri, 16 Oct 2026 17:30:00 +0000 (UTC)
+Authentication-Results: mx.ietf.org;
+	dkim=pass header.d=rwap.app header.s=google header.b=RHaldt9c;
+	arc=pass ("google.com:s=arc-20260327:i=1");
+	spf=pass (mx.ietf.org: domain of chris@rwap.app designates
+ 2607:f8b0:4864:20::112c as permitted sender) smtp.mailfrom=chris@rwap.app;
+	dmarc=none
+Received: by mail-yw1-x112c.google.com with SMTP id
+ 00721157ae682-8aea7b7ca0cso1485497b3.2
+        for <tls@ietf.org>; Fri, 16 Oct 2026 10:30:00 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1792171794; cv=none;
+        d=google.com; s=arc-20260327;
+        b=Y/ZWxCduqgG/n+eOH5ie1aSPt1QJYmQSjNXxpDYoEVkPOo06l+dT3P5cFo1QpjwNXD
+         uKcKfdm99PEClRZVe4JxbDEsYr4rhC48XjJIEjDurRHrI/r2Rl9Yb6nUSy39/58RtmWt
+         D8oXxb/2ozOFt0+8JvIynjLP7PHDAeISFI5DhF52iC2Y0GP0d0Qhf45pCSjzp3fRhcx7
+         fx5CL1Nxihd6KA6IT+ohsWYKpJaHHEhdZy2AkaN8Gqitshul9DsTUN74wdO4S13J3nmS
+         MJMpp3tfWnvZ/cjfpo77mkY0bXD7D9Nys7rcYzz5auWLBmL7J7eAIT19ZKJqmaEoTvCn
+         S25g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20260327;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=1e0Ee+Uq13yMGNkwSauxlydSQewUM1CXF2tWDArKtOA=;
+        fh=aZJuTt6ebs+cOJshz62E1JjCg5RTnq4jx/EvG4d6mbs=;
+        b=k/PaMzzIm/C05DR8kFWA1JS/07MLiyO9tKpjMMxlXwzbvIuxJ2cp8BcHu7Yi7W21Du
+         qboUGL3x+09iQz6cpN30FIkw/2EpobVMQbrtYnlWc6lRR1M11kX1EWk0rZ/THAshk6n7
+         HL2wyfcBsT9lTMwLYRpqQW8muxW4RTNktzU/qtjEFYQGPfoqen5M8bilg3aIFRxo3GoR
+         xJ2FrZN94sj/ENsAOFZUQe3llgXYBv8k8J4kLHSdtTQQ4CM/a2rWhE5xoLfk968FV7ep
+         jBp87ThL29z21BTxPqFU+F3FRIC2EglIgIOr+1ohz8i4R5hwmtBBk3a/foRXL1V2ym7w
+         xMkw==;
+        darn=ietf.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rwap.app; s=google; t=1792171794; x=1792776594; darn=ietf.org;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=1e0Ee+Uq13yMGNkwSauxlydSQewUM1CXF2tWDArKtOA=;
+        b=RHaldt9cHPAUiKB2neGq6rEgLPpiMUi23ZBPtuQbZAptFOk3pHv/QycByI26ZWJlKG
+         tf3fes/nuaCIH4Cql7q6J3qAGXt2jvUGR4lLBoJ7d9pdC4kF+9dOzFcoijwJ/LnW5Ys6
+         GQ/Inf0qGcIkQg1WvzLjYwreM3lALyv0gKoJId5CkI4ekQqErn5eXmyuUAuGu6c2AVI8
+         R9n/KXb6IchC4u0x6AiqRfgqICjI3vZ9jrvaJo2fwPjN7CbLfZcwSf+yy4Phtk73FNxh
+         1asEVjQeQuJlDvdJM4MVsFBjSnwo2FUkdEVV79y/rookKqhzs+6dUt0FiwgKl8++cEPP
+         zj/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1792171794; x=1792776594;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=1e0Ee+Uq13yMGNkwSauxlydSQewUM1CXF2tWDArKtOA=;
+        b=iWHRoO/UQF/EipVDrt6fVbrkEEuiY/gE6UBwU6IPmkdAMmSf47tHViRdpYzNbkJ4nI
+         k/eWeZKexm7kFG6FmKb6YHbe+c9M6Hs9j+ZrwqfzbE0owyofyrYYLPivznzrHsScNedg
+         kHAWUuoaukAC2PvWkeB4GYiiETYHv147xQhzsaFla3wrXXWWwOLG4cerDuX31Cnbb5uG
+         qXRsbWuOta3j816J666XIMgVjpreU1jWKEq2wsYmBXas+41rpSaY7XE5QPTjweKNOpbd
+         TiS/DI/DVAaaB99jhwCs6eJnVoiBFe9PRB+f3zPPaqVX2AhRW3hR6h1gFRfgwn62RGAX
+         n8wg==
+X-Forwarded-Encrypted: i=1;
+ AKwUvBzZZjLcAVOA/Tit0fBIac2CrQ6e+vkHuFkLbRL1jXcPItkj2DpWY9M2pq1kXyBcbFeB/dQ=@ietf.org
+X-Gm-Message-State: AFq9FYKyvVspdvRyn+T3L4jhREk1E8Vg0s9vMl2K/sYkhakA8zJjOGx+
+	F8PEfWciQROUF4cLwXO0uj91YtlT7j3ksvl17LpygPb+qsZRJ8Ku/kWt1ZRC+e0PvevMKBm3DIb
+	AohD4M17f0Rr6/+yJ1b0iMAXQTHh3OCjcwnKpi7TxIA==
+X-Gm-Gg: AYBFou2Kj4e1qBaDRxyYkG0LbX2KtqLuaR2dU3l+WlS2Et+DIRnyapf8FeRl27bHAgH
+	aoaja/s/pPspnUjEDt98KKtuwisFksd8Q8ItVEKd9+oNDe9kUaxZKSwHDkjSVPVIUGrVHFgebDH
+	RCwLvFnZkfXcDHEkzWnDXGgWRUM31cdFQU6ytknZYOgHIxGiThntIVaXQNsuNHIARr56/KAbBnF
+	B1nDJIBE1niOYOjZ0chWFyMQxfYqvdhYWEjIpFQZFPeoy9zezzLD4/p7ojFyDNd9028EVgh2Bup
+	/LVl1VxJGH8QbcuXEICNc9svb3XBJ9kADkyS/zc2NNyLpqzkiT+XAyi2sFUqQ5IGVdLkK60LyYs
+	ke5lW4emWe2LQ8rhWIcKbsIm5LJ8zZXTGZBzyRMN1iux6lhSOzdbYgzDE+RX8yUBaxGhlFX6KLS
+	sB0zRrKp77Br5IbdknfJo=
+X-Received: by 2002:a05:690c:c509:b0:7bd:cf35:e33b with SMTP id
+ 00721157ae682-8b0f213a7a2mr2559147b3.17.1792171793688; Fri, 16 Oct 2026
+ 10:29:53 -0700 (PDT)
+MIME-Version: 1.0
+References: 
+ <179212974799.956.6205877666245761924@dt-datatracker-7457c9c988-pqlqx>
+ <05bfc072-cf8a-4ac2-b456-e69a1f899129@alexburke.ca>
+In-Reply-To: <05bfc072-cf8a-4ac2-b456-e69a1f899129@alexburke.ca>
+From: Chris Hughes <chris@rwap.app>
+Date: Fri, 16 Oct 2026 10:29:42 -0700
+X-Gm-Features: AclHuK8UZlsCyoU65tVlHtO6zJ_fZ2olJmaOrSbq3_UB5t1_q2bShYdx8dx43Ls
+Message-ID: 
+ <CAJhfu7LVk8FpgBK=F_XdfbeWwiVgdgfyxDo3=RUhkuZU_H=2Xg@mail.gmail.com>
+To: Alexander Burke <alex@alexburke.ca>
+Content-Type: multipart/alternative; boundary="00000000000023ba51065df88314"
+X-Spamd-Bar: -------------------------
+Message-ID-Hash: X4U7ZSKFM33GAA3W3OS6XW3GIMHWXZV5
+X-Message-ID-Hash: X4U7ZSKFM33GAA3W3OS6XW3GIMHWXZV5
+X-MailFrom: chris@rwap.app
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
+ banned-address; header-match-tls.ietf.org-0; header-match-tls.ietf.org-1;
+ header-match-tls.ietf.org-2; header-match-tls.ietf.org-3;
+ header-match-tls.ietf.org-4; header-match-tls.ietf.org-5;
+ header-match-tls.ietf.org-6; header-match-tls.ietf.org-7;
+ header-match-tls.ietf.org-8; header-match-tls.ietf.org-9;
+ header-match-tls.ietf.org-10; header-match-tls.ietf.org-11;
+ header-match-tls.ietf.org-12; emergency; member-moderation;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+CC: iesg@ietf.org, ietf@ietf.org, tls@ietf.org, sshm@ietf.org,
+ mod-discuss@ietf.org
+X-Mailman-Version: 3.3.10
+Precedence: list
+Subject: [TLS] Re: PR-Action Approved: Ken Kubota
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/Mgaiq5K7geZbxRUz7QW9NYC76eY>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+--00000000000023ba51065df88314
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+I think Ken did their job... Rational minds will clearly not go the
+non-standards approach and look for better alternatives. It's happened
+before.
+
+On Fri, Oct 16, 2026 at 7:06=E2=80=AFAM Alexander Burke <alex=3D
+40alexburke.ca@dmarc.ietf.org> wrote:
+
+> Hello,
+>
+> Perhaps George R. R. Martin said it best: "When you tear out a man's
+> tongue, you are not proving him a liar, you're only telling the world
+> that you fear what he might say."
+>
+> As for words of my own, I don't really have any that accurately describe
+> how I feel about how the TLS mailing list and related processes are run,
+> but it certainly doesn't make me want to try to contribute; I'll focus
+> my energy on the other SDOs I work with instead. It's a shame.
+>
+> So long, and thanks for all the fish.
+>
+> --
+> Alexander Burke, CISSP, CIPP/E, CIPM, FIP
+>
+>
+> On 2026-10-16 07:49, IETF Chair wrote:
+> > # Last Call Result
+> >
+> > The IESG received feedback from the community in response to the IETF
+> Last Call on the proposed RFC 3683 PR-action for Ken Kubota [1]. After
+> evaluating this feedback, the IESG has concluded there is rough consensus
+> to proceed with the PR-action.
+> >
+> > Per the terms described in Section 2 of RFC 3683, the administrators of
+> the ietf, tls, sshm, and mod-discuss lists are directed to suspend Ken
+> Kubota=E2=80=99s posting privileges.  Additionally, this same section adv=
+ises
+> =E2=80=9Cmaintainers of any IETF mailing list may, at their discretion, a=
+lso remove
+> posting rights to that IETF mailing list.=E2=80=9D
+> >
+> > # Highlights from the Community Feedback
+> >
+> > The IESG thanks the community for providing this feedback and highlight=
+s
+> the following feedback.
+> >
+> > ## Additional Justification for Action
+> >
+> > In addition to the messages outlined in [1], the following additional
+> message was requested during the IETF Last Call to be added to the record
+> motivating this PR action by the community:
+> >
+> > *
+> https://mailarchive.ietf.org/arch/msg/ietf/OrvxKgjrEOMb95KAWoJYSilDxiY/
+> >
+> > ## Recommendations for PR actions
+> >
+> > The community made the following recommendations regarding PR actions:
+> >
+> > * Ensuring that the subject of the PR action is directly notified in
+> addition to using the last-call@ietf.org mailing list.
+> >
+> > * Harmonizing active PR actions with the new RFC 9945-defined procedure=
+s.
+> >
+> > ## Implementing RFC9945
+> >
+> > The community expressed an urgency to fully implement the procedures of
+> RFC 9945.
+> >
+> > # Conclusion
+> >
+> > The IESG reiterates that the purpose of this action is to minimize
+> disruptive behavior by a single participant.  The IESG also reaffirms tha=
+t
+> a diverse set of opinions in the standards process is both important for
+> the IETF and actively encouraged.
+> >
+> > Per RFC 9945, the IETF Moderator Team [2] is authoring the first draft
+> of the new moderation procedures.  For discussion about IETF moderation
+> procedures use mod-discuss@ietf.org [3].
+> >
+> > Roman Danyliw
+> > (as IETF Chair, for the IESG)
+> >
+> > [1]
+> https://mailarchive.ietf.org/arch/msg/last-call/JZXmLcVXUPtYWfMC2MMpPVOsT=
+NM/
+> > [2] https://datatracker.ietf.org/group/ietfmoderators/about/
+> > [3]
+> https://mailarchive.ietf.org/arch/msg/ietf-announce/kVletyOqMHSiXpsLAeqaB=
+4CPsdQ/
+> > _______________________________________________
+> > TLS mailing list -- tls@ietf.org
+> > To unsubscribe send an email to tls-leave@ietf.org
+>
+> _______________________________________________
+> TLS mailing list -- tls@ietf.org
+> To unsubscribe send an email to tls-leave@ietf.org
+>
+
+--00000000000023ba51065df88314
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">I think Ken did their job... Rational minds will clearly n=
+ot go the non-standards approach and look for better alternatives. It&#39;s=
+ happened before.</div><br><div class=3D"gmail_quote gmail_quote_container"=
+><div dir=3D"ltr" class=3D"gmail_attr">On Fri, Oct 16, 2026 at 7:06=E2=80=
+=AFAM Alexander Burke &lt;alex=3D<a href=3D"mailto:40alexburke.ca@dmarc.iet=
+f.org">40alexburke.ca@dmarc.ietf.org</a>&gt; wrote:<br></div><blockquote cl=
+ass=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid=
+ rgb(204,204,204);padding-left:1ex">Hello,<br>
+<br>
+Perhaps George R. R. Martin said it best: &quot;When you tear out a man&#39=
+;s <br>
+tongue, you are not proving him a liar, you&#39;re only telling the world <=
+br>
+that you fear what he might say.&quot;<br>
+<br>
+As for words of my own, I don&#39;t really have any that accurately describ=
+e <br>
+how I feel about how the TLS mailing list and related processes are run, <b=
+r>
+but it certainly doesn&#39;t make me want to try to contribute; I&#39;ll fo=
+cus <br>
+my energy on the other SDOs I work with instead. It&#39;s a shame.<br>
+<br>
+So long, and thanks for all the fish.<br>
+<br>
+-- <br>
+Alexander Burke, CISSP, CIPP/E, CIPM, FIP<br>
+<br>
+<br>
+On 2026-10-16 07:49, IETF Chair wrote:<br>
+&gt; # Last Call Result<br>
+&gt; <br>
+&gt; The IESG received feedback from the community in response to the IETF =
+Last Call on the proposed RFC 3683 PR-action for Ken Kubota [1]. After eval=
+uating this feedback, the IESG has concluded there is rough consensus to pr=
+oceed with the PR-action.<br>
+&gt; <br>
+&gt; Per the terms described in Section 2 of RFC 3683, the administrators o=
+f the ietf, tls, sshm, and mod-discuss lists are directed to suspend Ken Ku=
+bota=E2=80=99s posting privileges.=C2=A0 Additionally, this same section ad=
+vises =E2=80=9Cmaintainers of any IETF mailing list may, at their discretio=
+n, also remove posting rights to that IETF mailing list.=E2=80=9D<br>
+&gt; <br>
+&gt; # Highlights from the Community Feedback<br>
+&gt; <br>
+&gt; The IESG thanks the community for providing this feedback and highligh=
+ts the following feedback.<br>
+&gt; <br>
+&gt; ## Additional Justification for Action<br>
+&gt; <br>
+&gt; In addition to the messages outlined in [1], the following additional =
+message was requested during the IETF Last Call to be added to the record m=
+otivating this PR action by the community:<br>
+&gt; <br>
+&gt; * <a href=3D"https://mailarchive.ietf.org/arch/msg/ietf/OrvxKgjrEOMb95=
+KAWoJYSilDxiY/" rel=3D"noreferrer" target=3D"_blank">https://mailarchive.ie=
+tf.org/arch/msg/ietf/OrvxKgjrEOMb95KAWoJYSilDxiY/</a><br>
+&gt; <br>
+&gt; ## Recommendations for PR actions<br>
+&gt; <br>
+&gt; The community made the following recommendations regarding PR actions:=
+<br>
+&gt; <br>
+&gt; * Ensuring that the subject of the PR action is directly notified in a=
+ddition to using the <a href=3D"mailto:last-call@ietf.org" target=3D"_blank=
+">last-call@ietf.org</a> mailing list.<br>
+&gt; <br>
+&gt; * Harmonizing active PR actions with the new RFC 9945-defined procedur=
+es.<br>
+&gt; <br>
+&gt; ## Implementing RFC9945<br>
+&gt; <br>
+&gt; The community expressed an urgency to fully implement the procedures o=
+f RFC 9945.<br>
+&gt; <br>
+&gt; # Conclusion<br>
+&gt; <br>
+&gt; The IESG reiterates that the purpose of this action is to minimize dis=
+ruptive behavior by a single participant.=C2=A0 The IESG also reaffirms tha=
+t a diverse set of opinions in the standards process is both important for =
+the IETF and actively encouraged.<br>
+&gt; <br>
+&gt; Per RFC 9945, the IETF Moderator Team [2] is authoring the first draft=
+ of the new moderation procedures.=C2=A0 For discussion about IETF moderati=
+on procedures use <a href=3D"mailto:mod-discuss@ietf.org" target=3D"_blank"=
+>mod-discuss@ietf.org</a> [3].<br>
+&gt; <br>
+&gt; Roman Danyliw<br>
+&gt; (as IETF Chair, for the IESG)<br>
+&gt; <br>
+&gt; [1] <a href=3D"https://mailarchive.ietf.org/arch/msg/last-call/JZXmLcV=
+XUPtYWfMC2MMpPVOsTNM/" rel=3D"noreferrer" target=3D"_blank">https://mailarc=
+hive.ietf.org/arch/msg/last-call/JZXmLcVXUPtYWfMC2MMpPVOsTNM/</a><br>
+&gt; [2] <a href=3D"https://datatracker.ietf.org/group/ietfmoderators/about=
+/" rel=3D"noreferrer" target=3D"_blank">https://datatracker.ietf.org/group/=
+ietfmoderators/about/</a><br>
+&gt; [3] <a href=3D"https://mailarchive.ietf.org/arch/msg/ietf-announce/kVl=
+etyOqMHSiXpsLAeqaB4CPsdQ/" rel=3D"noreferrer" target=3D"_blank">https://mai=
+larchive.ietf.org/arch/msg/ietf-announce/kVletyOqMHSiXpsLAeqaB4CPsdQ/</a><b=
+r>
+&gt; _______________________________________________<br>
+&gt; TLS mailing list -- <a href=3D"mailto:tls@ietf.org" target=3D"_blank">=
+tls@ietf.org</a><br>
+&gt; To unsubscribe send an email to <a href=3D"mailto:tls-leave@ietf.org" =
+target=3D"_blank">tls-leave@ietf.org</a><br>
+<br>
+_______________________________________________<br>
+TLS mailing list -- <a href=3D"mailto:tls@ietf.org" target=3D"_blank">tls@i=
+etf.org</a><br>
+To unsubscribe send an email to <a href=3D"mailto:tls-leave@ietf.org" targe=
+t=3D"_blank">tls-leave@ietf.org</a><br>
+</blockquote></div>
+
+--00000000000023ba51065df88314--

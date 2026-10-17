@@ -1,0 +1,145 @@
+Return-Path: <hkario@redhat.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 4BFE3132626
+ for <tls@ietfa.amsl.com>; Tue, 15 Aug 2017 07:16:17 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -6.9
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.9 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, RCVD_IN_DNSWL_HI=-5, SPF_PASS=-0.001,
+ URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Received: from mail.ietf.org ([4.31.198.44])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 4rc-Ynz1sxog for <tls@ietfa.amsl.com>;
+ Tue, 15 Aug 2017 07:16:14 -0700 (PDT)
+Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 71A281321D2
+ for <tls@ietf.org>; Tue, 15 Aug 2017 07:16:14 -0700 (PDT)
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com
+ [10.5.11.13])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mx1.redhat.com (Postfix) with ESMTPS id 2BA336AAF3;
+ Tue, 15 Aug 2017 14:16:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mx1.redhat.com 2BA336AAF3
+Authentication-Results: ext-mx02.extmail.prod.ext.phx2.redhat.com;
+ dmarc=none (p=none dis=none) header.from=redhat.com
+Authentication-Results: ext-mx02.extmail.prod.ext.phx2.redhat.com;
+ spf=fail smtp.mailfrom=hkario@redhat.com
+Received: from pintsize.usersys.redhat.com (unknown [10.43.21.223])
+ by smtp.corp.redhat.com (Postfix) with ESMTPS id 916DE60601;
+ Tue, 15 Aug 2017 14:16:12 +0000 (UTC)
+From: Hubert Kario <hkario@redhat.com>
+To: Ilari Liusvaara <ilariliusvaara@welho.com>
+Cc: tls@ietf.org
+Date: Tue, 15 Aug 2017 16:16:10 +0200
+Message-ID: <15658972.z11fxi4GSl@pintsize.usersys.redhat.com>
+In-Reply-To: <20170815135415.rxupa7zixqs3tt7c@LK-Perkele-VII>
+References: <1502460670.3202.8.camel@redhat.com>
+ <1853204.q6hYlzKLln@pintsize.usersys.redhat.com>
+ <20170815135415.rxupa7zixqs3tt7c@LK-Perkele-VII>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="nextPart25915195.tS1x7ihDYp";
+ micalg="pgp-sha512"; protocol="application/pgp-signature"
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16
+ (mx1.redhat.com [10.5.110.26]); Tue, 15 Aug 2017 14:16:14 +0000 (UTC)
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/vnT71b9hCvpN5FpOJFKOC9U2dv0>
+Subject: Re: [TLS] draft-ietf-tls-tls13-21: TLS 1.3 record padding removal
+ leaks padding size
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.22
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Tue, 15 Aug 2017 14:16:17 -0000
+
+--nextPart25915195.tS1x7ihDYp
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
+
+On Tuesday, 15 August 2017 15:54:15 CEST Ilari Liusvaara wrote:
+> On Tue, Aug 15, 2017 at 03:31:56PM +0200, Hubert Kario wrote:
+> > I've created a Pull Request that introduces requirement for constant ti=
+me
+> > processing of padding and an example on how to do it:
+> >=20
+> > https://github.com/tlswg/tls13-spec/pull/1073
+>=20
+> -1
+>=20
+> Except doing the depad in constant-time is useless if you just re-
+> introduce the timing leaks at the next step. Actually not introducing
+> timing leaks in TLS library requires special API for passing the data
+> to application...
+
+In C you pass data to application using pointer to memory location and a=20
+length variable. Padding influences only the length variable value. How=20
+exactly can you do that in _non_ constant time?
+
+> API that has had no reason to exist so far, and is
+> more complicated to use than current read or zerocopy callback APIs.
+
+with current read(3), you require the application to provide a buffer the s=
+ize=20
+of the whole padded data, you copy the whole padded data, you return a leng=
+th=20
+that truncates the content type and padding.
+
+I fail to see how is that a "special API"
+
+> And even if you have such special API, it is extremely doubtful how
+> many applications could use it correctly. Constant-time processing of
+> variable-length data is extremely hard (LUCKY13 anyone?)
+
+right, so because it is hard, we should just throw our hands in the air and=
+=20
+walk away?
+
+The point is that, if possible, we shouldn't undermine the work of=20
+applications that *do* have constant-time processing of variable-length dat=
+a.
+
+=2D-=20
+Regards,
+Hubert Kario
+Senior Quality Engineer, QE BaseOS Security team
+Web: www.cz.redhat.com
+Red Hat Czech s.r.o., Purky=C5=88ova 115, 612 00  Brno, Czech Republic
+--nextPart25915195.tS1x7ihDYp
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAABCgAGBQJZkwIqAAoJEJKo0bgB0vX1EqkP/0/npJSNe2YFjQBq1OZymtyy
+qZ4CdCgk1f80FEdEOS4YFoPxx8/Le/VT3MAaJB1sntmWdHv4fBA8T40PjNJ8yoft
+wSt09CdemH7fZ1akbfTK77i22sFd6bfhjfwVYSA0AnM42G9dPoyA+oogTIIv44Pd
+DCzknXhvUv94yY7sJou1bSFxEF4qwQZ7yizdWBTRV98dmP/jD60ZyOyPg559UccF
++rw99YHENMAodnCED1xBkfrtU+nwxxIlXECh9gSn4SEFc23bZl9lEptzH3Unk4GW
+BU/Ekc79RsTlYpws5YhhKNRKjrizEQ34ZwP7TNVhJwUqxQD+GD8bTVmdn9Nt/M3z
+Q4bHEBHIZWwF5ta7CzdVY4+laRkOUZacmH2pVJ4JuMpozkCq3z02RFO1Dl7mSYVf
+cRR1VeMjp3qwFE7nSDnLAuD18gOlXGiVofSUbHi/Dq555eITlnMi9TBoV49NOdRb
+4LBc0qKONF/XDL8bgpPNnfKrBvx3u5xNtTw7LULgMOlHqxNaLd/B9Yyjl9aKZOrF
+5UE0Soh8EWXIm3vi1006ri0I/HrF5g+CsX//joOCNsRKda7ylEjT7W0AOyO7lTWp
+ERjyvm2CSwYiRbHdDLUfN/Qzrkyc7TbE6yg22h/CRU1KwtlNSwp0sPSNCAqjw+pA
+fes2vEiU3Drieah4nBvY
+=MQQx
+-----END PGP SIGNATURE-----
+
+--nextPart25915195.tS1x7ihDYp--
+

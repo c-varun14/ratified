@@ -1,0 +1,174 @@
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com
+ [IPv6:2a00:1450:4864:20::52c])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature ECDSA (prime256v1) server-digest
+ SHA256)
+	(No client certificate requested)
+	by mx.ietf.org (Postfix) with ESMTPS id 6F8C346
+	for <tls@ietf.org>; Fri, 16 Oct 2026 19:12:31 +0000 (UTC)
+Authentication-Results: mx.ietf.org;
+	dkim=pass header.d=chromium.org header.s=google header.b=JKDhJ8Nz;
+	arc=pass ("google.com:s=arc-20260327:i=1");
+	spf=pass (mx.ietf.org: domain of davidben@google.com designates
+ 2a00:1450:4864:20::52c as permitted sender)
+ smtp.mailfrom=davidben@google.com;
+	dmarc=pass (policy=none) header.from=chromium.org
+Received: by mail-ed1-x52c.google.com with SMTP id
+ 4fb4d7f45d1cf-6b1aa4d71e7so199273a12.0
+        for <tls@ietf.org>; Fri, 16 Oct 2026 12:12:31 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1792177943; cv=none;
+        d=google.com; s=arc-20260327;
+        b=eOstxKfLLkzDklFOvjcH5ttE1wzX5WWmLpPHoCKDarZ1Hc2fRQUUVYUCFQTIYT1bkb
+         Si8jtH+bf/FeCAZ26hse8e6opcRpGUsPgdWMkqGAybtXQ+vCNRKxDIKx7Fh/eYiESDhO
+         ++anFP/GywJLBbRe1f03iRqMXGsytm/Jydv0bl9aXfLkom9G/fWtWiKeWppcjtwi0uWr
+         URifzDH1YiDr694KqZSH+dlA7gV7t8LDGpL8IYNi2Ep48+/EKCjTwwrtSPwCQFwenDy+
+         kGC2R5M6gC2lymBct4Xmf4TsBPZtJmZXQvlyoZ59mtA5SIlg7BCTYZpPJDVfkdmOMWjB
+         x/Ow==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20260327;
+        h=to:subject:message-id:date:from:mime-version:dkim-signature;
+        bh=5ts2mn8RTvtqOU3d0EklKLw24lJiU3TruMf+gxwqiwk=;
+        fh=sZccneBR8FM3IhNMUvwu7G+8Aunn/jixigwDj15zehI=;
+        b=aB5/poQe+daRYL+7SCEGnIAZK1VsEIxAckhV3O6htkCvngv8fi9rkUHyo55iFYhkhv
+         B9ZJPRlfJRHgL3Q/2LsImu+udvxFdGqDAImArgESXAFInXGPIaHEHLGWJqTOqmrS/omp
+         tSGWXA2OhtNx1VI0UwTi8C1x8zZ93BxhlirQ8noKgwCc4Ic3nkm1oap5Wx/Jhn2rtp3q
+         Nj6av4L+EuyDv+Kts9RgtoE8a8Gd/UnrdeCVOrqLlMGt0NS1xx6g0p0FX+p9GoY0F15N
+         7QrhyBgKJVTGpZQwoBv9d3qL1TQXQ+DhufzhDpdzFjEp4qF9uYWBMnENT9uhm3hytjaN
+         5Bpg==;
+        darn=ietf.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1792177943; x=1792782743; darn=ietf.org;
+        h=content-type:to:subject:message-id:date:from:mime-version:from:to
+         :cc:subject:date:message-id:reply-to:content-type;
+        bh=5ts2mn8RTvtqOU3d0EklKLw24lJiU3TruMf+gxwqiwk=;
+        b=JKDhJ8Nz8ZSRMZV7oAH+D4NonYtF7sM4oGdaC0h7UlZmEIspnKIDh+4EStlFtItu5B
+         DubCMBJFb3H3w7nmH+ZHwzywYL2PJW2LUSK0jyYmI1uSWz+zX+GHzXbu1MztkRRUD/WC
+         3HWIBhCC1PDI0YkD0lVHn+UI2XWyesttghVEw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1792177943; x=1792782743;
+        h=content-type:to:subject:message-id:date:from:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=5ts2mn8RTvtqOU3d0EklKLw24lJiU3TruMf+gxwqiwk=;
+        b=y3KM3YPMnnhowxazs0gHZ4n41owV8Vtff7JqTeL5mCUHdivDIYJuT3u05UaY5vjstm
+         ouyfKmuDZ/IpnEnYYboZ2xqr/GGPPU6hEHwwzEAuLqkc8AGjJ4PVHYdTT6p1cZaeflf+
+         kS9YQo62T91GxUyz4UrUUG8JOPEnjW3Pbx4kmaKt4OTiz0IEfwMogdLxgTljtE5L0ODb
+         xf19AbyG5DV20vARy2EKffl/BMv92nl1DwLC2HCIfP5F2CeHVUYiRLDzvvMoONJTLa/7
+         9PEbPySP+dHPGPoPJif9tjzO7JQfDsaZOmQMSOKkFTHfgCi0LtPBs5dJl7GOthx8AcS7
+         IQ8Q==
+X-Gm-Message-State: AFq9FYIqfwTJQiLDWhPn96JiycaPiw456n34PKJtvAAy2Zd75fD4aFkY
+	0x3lmnGwv5Qbsb81ljTR+g5P+BN9HnDhSZNt3AMdC03pKTylWPbS0AzkoP8YZVmeWyZN3GCjU6/
+	ujuZByBmU8eZ6A18oZ0z+hksz864f0XxssN+oJYSsAaRK+Tnh53N7MB2IaA==
+X-Gm-Gg: AYBFou1MuN8d2dIuLB9Mr+Tzd54iXMphRr6lbXKrU38SpIEBwweTVFxVqV8OrZP59ra
+	jyDzE+za572TrxVRSmTp1C68H4AqeXt8iNOqCp1rWBTLkNrMbGHGVUb/4uTCPm72jm7PcCNPYfu
+	X3bAd+oVbX1aaklhcLQhSvjX648jRYCwFKBNYARpRhb8F1nTIirrdazxHsQzI8IyxwbD7+NbHRu
+	ZjvpndFoHt6Gi0tDijUR8w2IcFSPKNLwVRmQi4Ujiq2JGPNwY/myj94XT15qmgtEVtWdv3oWXXH
+	f51Tpg8mk5elNUn6iWsHBgWtDz70PVGXgKAQgiRk61sYES89pz0bVKWZjjC13M3esA2ICmB43at
+	ujtTvpsCmz4e1t9XqBPs=
+X-Received: by 2002:a05:6402:2809:b0:6aa:9fd4:35fb with SMTP id
+ 4fb4d7f45d1cf-6b3a8175febmr321288a12.8.1792177943088; Fri, 16 Oct 2026
+ 12:12:23 -0700 (PDT)
+MIME-Version: 1.0
+From: David Benjamin <davidben@chromium.org>
+Date: Fri, 16 Oct 2026 15:12:05 -0400
+X-Gm-Features: AclHuK-beMDKx4SBq7gn8EubtzQVkLTNZ6KDbj1QbX0CISB6FQQSYGhP-TstKqo
+Message-ID: 
+ <CAF8qwaBhxQyfLLJFWyawzgqRjMTELkeshjnCN41QgD29FfSPng@mail.gmail.com>
+To: "<tls@ietf.org>" <tls@ietf.org>, Plants <plants@ietf.org>
+Content-Type: multipart/alternative; boundary="000000000000ad98ff065df9f15b"
+X-Spamd-Bar: --------------------------
+Message-ID-Hash: RXD4IRI7UJPJBXHCZYRYJUYDACEFWQ6H
+X-Message-ID-Hash: RXD4IRI7UJPJBXHCZYRYJUYDACEFWQ6H
+X-MailFrom: davidben@google.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
+ banned-address; header-match-tls.ietf.org-0; header-match-tls.ietf.org-1;
+ header-match-tls.ietf.org-2; header-match-tls.ietf.org-3;
+ header-match-tls.ietf.org-4; header-match-tls.ietf.org-5;
+ header-match-tls.ietf.org-6; header-match-tls.ietf.org-7;
+ header-match-tls.ietf.org-8; header-match-tls.ietf.org-9;
+ header-match-tls.ietf.org-10; header-match-tls.ietf.org-11;
+ header-match-tls.ietf.org-12; header-match-tls.ietf.org-13; emergency;
+ member-moderation; nonmember-moderation; administrivia; implicit-dest;
+ max-recipients; max-size; news-moderation; no-subject; digests;
+ suspicious-header
+X-Mailman-Version: 3.3.10
+Precedence: list
+Subject: [TLS] Moving id-rdna-trustAnchorID between documents
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/tls/GKTxW8BWZ5g-V4vbFhO5VyzgvhU>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Owner: <mailto:tls-owner@ietf.org>
+List-Post: <mailto:tls@ietf.org>
+List-Subscribe: <mailto:tls-join@ietf.org>
+List-Unsubscribe: <mailto:tls-leave@ietf.org>
+
+--000000000000ad98ff065df9f15b
+Content-Type: text/plain; charset="UTF-8"
+
+Hi TLS and PLANTS friends,
+
+There was some feedback that id-rdna-trustAnchorID from
+draft-ietf-plants-merkle-tree-certs would be useful in contexts outside of
+MTC. This attribute was defined in MTC for CAs which are (by construction)
+new enough to be directly named by trust anchor ID.
+
+There's nothing special about MTC here. The same could apply to any
+ecosystem where it makes sense to identify CAs this way. This means, at
+least in the basic case, we have an easy way to configure relying parties,
+even for non-MTC CAs.
+
+I've uploaded a PR to start it off.
+https://github.com/tlswg/tls-trust-anchor-ids/pull/133
+
+The plan would be to land that PR, cut draft-ietf-tls-trust-anchor-ids-07,
+then update draft-ietf-plants-merkle-tree-certs to just cite that text, and
+finally cut draft-ietf-plants-merkle-tree-certs-08. This doesn't change the
+wire format of either document, just moves some text around and gives
+id-rdna-trustAnchorID
+a clearer definition on its own. (There's already a separate extension for
+denoting that a CA certificate is an MTC CA.)
+
+We already have an early allocation, pointing to an MTC draft. Hopefully it
+won't cause too much confusion if it gets repointed to a different RFC by
+the end?
+
+Funny how we only just removed the ASN.1 module from
+draft-ietf-tls-trust-anchor-ids-05, :-)
+
+David
+
+--000000000000ad98ff065df9f15b
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">Hi TLS and PLANTS friends,<div><br></div><div>There was so=
+me feedback that id-rdna-trustAnchorID=C2=A0from draft-ietf-plants-merkle-t=
+ree-certs would be useful in contexts outside of MTC. This attribute was de=
+fined in MTC for CAs which are (by construction) new enough to be directly =
+named by trust anchor ID.</div><div><br></div><div>There&#39;s nothing spec=
+ial about MTC here. The same could apply to any ecosystem where it makes se=
+nse to identify CAs this way. This means, at least in the basic case, we ha=
+ve an easy way to configure relying parties, even for non-MTC CAs.</div><di=
+v><br></div><div>I&#39;ve uploaded a PR to start it off.</div><div><a href=
+=3D"https://github.com/tlswg/tls-trust-anchor-ids/pull/133">https://github.=
+com/tlswg/tls-trust-anchor-ids/pull/133</a></div><div><br></div><div>The pl=
+an would be to land that=C2=A0PR, cut draft-ietf-tls-trust-anchor-ids-07, t=
+hen update draft-ietf-plants-merkle-tree-certs to just cite that text, and =
+finally cut=C2=A0draft-ietf-plants-merkle-tree-certs-08.=C2=A0<span style=
+=3D"background-color:transparent">This doesn&#39;t change the wire format o=
+f either document, just moves some text around and gives=C2=A0</span><span =
+style=3D"background-color:transparent">id-rdna-trustAnchorID a clearer defi=
+nition=C2=A0on its own. (There&#39;s already a separate extension for denot=
+ing that a CA certificate is an MTC CA.)</span></div><div><span style=3D"ba=
+ckground-color:transparent"><br></span></div><div>We already have an early =
+allocation, pointing to an MTC draft. Hopefully it won&#39;t cause too much=
+ confusion if it gets repointed to a different RFC by the end?</div><div><b=
+r></div><div>Funny how we only just removed the ASN.1 module from draft-iet=
+f-tls-trust-anchor-ids-05, :-)</div><div><br></div><div><div>David</div></d=
+iv></div>
+
+--000000000000ad98ff065df9f15b--

@@ -1,0 +1,684 @@
+From nobody Tue Mar 21 09:07:17 2023
+Return-Path: <davidben@google.com>
+X-Original-To: tls@ietfa.amsl.com
+Delivered-To: tls@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id C264EC151532
+ for <tls@ietfa.amsl.com>; Tue, 21 Mar 2023 09:07:16 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -9.247
+X-Spam-Level: 
+X-Spam-Status: No, score=-9.247 tagged_above=-999 required=5
+ tests=[BAYES_00=-1.9, DKIMWL_WL_HIGH=-0.001, DKIM_SIGNED=0.1,
+ DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1,
+ HEADER_FROM_DIFFERENT_DOMAINS=0.25, HTML_MESSAGE=0.001,
+ RCVD_IN_DNSWL_NONE=-0.0001, RCVD_IN_ZEN_BLOCKED_OPENDNS=0.001,
+ SPF_HELO_NONE=0.001, SPF_PASS=-0.001, URIBL_DBL_BLOCKED_OPENDNS=0.001,
+ URIBL_ZEN_BLOCKED_OPENDNS=0.001, USER_IN_DEF_SPF_WL=-7.5]
+ autolearn=no autolearn_force=no
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=chromium.org
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id bvHk2LwgbAO0 for <tls@ietfa.amsl.com>;
+ Tue, 21 Mar 2023 09:07:12 -0700 (PDT)
+Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com
+ [IPv6:2607:f8b0:4864:20::1136])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id D523BC14CE5F
+ for <tls@ietf.org>; Tue, 21 Mar 2023 09:07:12 -0700 (PDT)
+Received: by mail-yw1-x1136.google.com with SMTP id
+ 00721157ae682-544787916d9so288503027b3.13
+ for <tls@ietf.org>; Tue, 21 Mar 2023 09:07:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=chromium.org; s=google; t=1679414832;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=33Y6J/SkoorGdHcccIvMz1Ph+JOVkBrEn/yTYjQicdY=;
+ b=jGghS6cTbFHiqh81ZO0rpC7D/wTrERmzvPoLUloTDmsDBq+z/1PJu37rqHf2TqtL8k
+ gR2sN1HXH1eZsgp1mHbjZMULrWIFEQMyZ9JUc1iUwtjRqE6Y6I7JhXAPazbYd45jTaGM
+ xH35s1wS9SiXN+Qy+PbOMhRvIwLEAxk1ZF10Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112; t=1679414832;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=33Y6J/SkoorGdHcccIvMz1Ph+JOVkBrEn/yTYjQicdY=;
+ b=BFAuklMr6NbFM+Z1WCWsEXs5LouZ3VuQARj06XVyyhUzRFvfahd9L2ng+5qVRcCDax
+ CmB+NJtV2Z7DpaWwfNKcyDjLsEpRSEs7cxKXq/hbRZkQGHlNJsAehV7XJ6jFAD9KYNOZ
+ Di+NhiqzweeeCskfZOjFYL1GAcFw+zMEe+UCnFVNdFgaC2QMyM1aw0hKfitV+GRCfwcc
+ ByR9oDqHqd7M9tIOmBog1Zm6JR6NwHl8rh2qlwFI329NTgzLQzqn0S3pojWJPgjJ6Y3R
+ Y9T5vKbYcjbngpG673KoTY1hysOinn6xhSOatdwKOzBLpCT3Ua7cH8SsOcEaYTPn4LhK
+ ZnxQ==
+X-Gm-Message-State: AAQBX9dbpI+XmU8WMF0TK3rCzOexbfuBPvOAKe1tafV05f455th/r0kF
+ eLNEXxUK6xX+QHnG2iwJcPkUOOLKDeZmIa1VA2/AWFR8XCVWscsFV8LX
+X-Google-Smtp-Source: AKy350YZpKtka/FAMF63eibHlAuk6yC8SW+KOmiw0BcH8eAGn4p1vzMsr7pZWB6HrA7d5+coL7i6n8ymOWu6Jww49vg=
+X-Received: by 2002:a81:ae61:0:b0:544:b8c2:3cf4 with SMTP id
+ g33-20020a81ae61000000b00544b8c23cf4mr2194132ywk.1.1679414831567; Tue, 21 Mar
+ 2023 09:07:11 -0700 (PDT)
+MIME-Version: 1.0
+References: <167848430887.5487.1347334366320377305@ietfa.amsl.com>
+ <CAF8qwaD9x5v1uU6mLtnUAGMnBW881ZE0ymK8rsQzrV2hfj7yHA@mail.gmail.com>
+ <e1bffaf7-bca0-45d0-a844-39d20473c446@redhat.com>
+ <a24924a2cc2b4afba890660bdc2c220d@amazon.com>
+ <CAF8qwaBe6o3ASer_wnztse_Wk7RwofkpzuPfVGdo7AGjN6T9aw@mail.gmail.com>
+ <8f6ffb56-ed99-46b9-92c4-e07b75f7d85c@redhat.com>
+In-Reply-To: <8f6ffb56-ed99-46b9-92c4-e07b75f7d85c@redhat.com>
+From: David Benjamin <davidben@chromium.org>
+Date: Tue, 21 Mar 2023 12:06:54 -0400
+Message-ID: <CAF8qwaD4HnPvnuHDNeXLgMkuqkFnOfpwk4DsjDb-SBudumeiug@mail.gmail.com>
+To: Hubert Kario <hkario@redhat.com>
+Cc: "Kampanakis, Panos" <kpanos@amazon.com>, "<tls@ietf.org>" <tls@ietf.org>, 
+ "Devon O'Brien" <asymmetric@google.com>
+Content-Type: multipart/alternative; boundary="00000000000077cc5105f76b3c0f"
+Archived-At: <https://mailarchive.ietf.org/arch/msg/tls/DJNTJl-ADwjP5SNUkGC7R_-Uzsw>
+Subject: Re: [TLS] Merkle Tree Certificates
+X-BeenThere: tls@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Id: "This is the mailing list for the Transport Layer Security working
+ group of the IETF." <tls.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/tls>,
+ <mailto:tls-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/tls/>
+List-Post: <mailto:tls@ietf.org>
+List-Help: <mailto:tls-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/tls>,
+ <mailto:tls-request@ietf.org?subject=subscribe>
+X-List-Received-Date: Tue, 21 Mar 2023 16:07:16 -0000
+
+--00000000000077cc5105f76b3c0f
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Mar 21, 2023 at 8:01=E2=80=AFAM Hubert Kario <hkario@redhat.com> wr=
+ote:
+
+> On Monday, 20 March 2023 19:54:24 CET, David Benjamin wrote:
+> > I don't think flattening is the right way to look at it. See my
+> > other reply for a discussion about flattening, and how this does
+> > a bit more than that. (It also handles SCTs.)
+> >
+> > As for RFC 7924, in this context you should think of it as a
+> > funny kind of TLS resumption. In clients that talk to many
+> > servers[0], the only plausible source of cached information is a
+> > previous TLS exchange. Cached info is then: if I previously
+> > connected to you and I am willing to correlate that previous
+> > connection to this new one, we can re-connect more efficiently.
+> > It's a bit more flexible than resumption---it doesn't replace
+> > authentication, so we could conceivably use larger lifetimes.
+> > But it's broadly the same w.r.t. when it can be used. It doesn't
+> > help the first connection to a service, or a service that was
+> > connected long enough ago that it's fallen off the cache. And it
+> > doesn't help across contexts where we don't want correlation.
+> > Within a web browser, things are a bit more partitioned these
+> > days,
+> > see
+> https://github.com/MattMenke2/Explainer---Partition-Network-State/blob/ma=
+in/README.md
+> > and https://github.com/privacycg/storage-partitioning.
+>
+> Sorry, but as long as the browsers are willing to perform session
+> resumption
+> I'm not buying the "cached info is a privacy problem".
+>
+
+I'm not seeing where this quote comes from. I said it had analogous
+properties to resumption, not that it was a privacy problem in the absolute=
+.
+
+The privacy properties of resumption and cached info on the situation. If
+you were okay correlating the two connections, both are okay in this
+regard. If not, then no. rfc8446bis discusses this:
+https://tlswg.org/tls13-spec/draft-ietf-tls-rfc8446bis.html#appendix-C.4
+
+In browsers, the correlation boundaries (across *all* state, not just TLS)
+were once browsing-profile-wide, but they're shifting to this notion of
+"site". I won't bore the list with the web's security model, but roughly
+the domain part of the top-level (not the same as destination!) URL. See
+the links above for details.
+
+That equally impacts resumption and any hypothetical deployment of cached
+info. So, yes, within those same bounds, a browser could deploy cached
+info. Whether it's useful depends on whether there are many cases where
+resumption wouldn't work, but cached info would. (E.g. because resumption
+has different security properties than cached info.)
+
+
+> It also completely ignores the encrypted client hello
+>
+
+ECH helps with outside observers correlating your connections, but it
+doesn't do anything about the server correlating connections. In the
+context of correlation boundaries within a web browser, we care about the
+latter too.
+
+
+> Browser doesn't have to cache the certs since the beginning of time to be
+> of benefit, a few hours or even just current boot would be enough:
+>
+> 1. if it's a page visited once then all the tracking cookies and javascri=
+pt
+>    will be an order of magnitude larger download anyway
+> 2. if it's a page visited many times, then optimising for the subsequent
+>    connections is of higher benefit anyway
+>
+
+I don't think that's quite the right dichotomy. There are plenty of reasons
+to optimize for the first connection, time to first bytes, etc. Indeed,
+this WG did just that with False Start and TLS 1.3 itself. (Prior to those,
+TLS 1.2 was 2-RTT for the first connection and 1-RTT for resumption.)
+
+I suspect a caching for a few hours would not justify cached info because
+you may as well use resumption at that point.
+
+> In comparison, this design doesn't depend on this sort of
+> > per-destination state and can apply to the first time you talk
+> > to a server.
+>
+> it does depend on complex code instead, that effectively duplicates the
+> functionality of existing code
+>
+> > David
+> >
+> > [0] If you're a client that only talks to one or two servers,
+> > you could imagine getting this cached information pushed
+> > out-of-band, similar to how this document pushes some valid tree
+> > heads out-of-band. But that doesn't apply to most clients,
+> > certainly not a web browser.
+>
+> web browser could get a list of most commonly accessed pages/cert pairs,
+> randomised to some degree by addition of not commonly accessed pages to
+> hide if
+> the connection is new or not, and make inference about previous visits
+> worthless
+>
+
+True, we could preload cached info for a global list of common
+certificates. I'm personally much more interested in mechanisms that
+benefit popular and unpopular pages alike.
+
+
+> > On Tue, Mar 14, 2023 at 9:46=E2=80=AFAM Kampanakis, Panos <kpanos@amazo=
+n.com>
+> wrote:
+> > Hi Hubert,
+> >
+> > I am not an author of draft-davidben-tls-merkle-tree-certs, but
+> > I had some feedback on this question:
+> >
+> > RFC7924 was a good idea but I don=E2=80=99t think it got deployed. It
+> > has the disadvantage that it allows for connection correlation
+> > and it is also challenging to demand a client to either know all
+> > its possible destination end-entity certs or be able to have a
+> > caching mechanism that keeps getting updated. Given these
+> > challenges and that CAs are more static and less (~1500 in
+> > number) than leaf certs, we have proposed suppressing the ICAs
+> > in the chain (draft-kampanakis-tls-scas-latest which replaced
+> > draft-thomson-tls-sic ) , but not the server cert.
+> >
+> > I think draft-davidben-tls-merkle-tree-certs is trying to
+> > achieve something similar by introducing a Merkle tree structure
+> > for certs signed by a CA. To me it seems to leverage a Merkle
+> > tree structure which "batches the public key + identities" the
+> > CA issues. Verifiers can just verify the tree and thus assume
+> > that the public key of the peer it is talking to is "certified
+> > by the tree CA". The way I see it, this construction flattens
+> > the PKI structure, and issuing CA's are trusted now instead of a
+> > more limited set of roots. This change is not trivial in my
+> > eyes, but the end goal is similar, to shrink the amount of auth
+> > data.
+> >
+> >
+> >
+> > -----Original Message-----
+> > From: TLS <tls-bounces@ietf.org> On Behalf Of Hubert Kario
+> > Sent: Monday, March 13, 2023 11:08 AM
+> > To: David Benjamin <davidben@chromium.org>
+> > Cc: <tls@ietf.org> <tls@ietf.org>; Devon O'Brien <asymmetric@google.com=
+>
+> > Subject: RE: [EXTERNAL][TLS] Merkle Tree Certificates
+> >
+> > CAUTION: This email originated from outside of the
+> > organization. Do not click links or open attachments unless you
+> > can confirm the sender and know the content is safe.
+> >
+> >
+> >
+> > Why not rfc7924?
+> >
+> > On Friday, 10 March 2023 23:09:10 CET, David Benjamin wrote:
+> >> Hi all,
+> >>
+> >> I've just uploaded a draft, below, describing several ideas we've been
+> >> mulling over regarding certificates in TLS. This is a
+> >> draft-00 with a lot of moving parts, so think of it as the first pass
+> >> at some of ideas that we think fit well together, rather than a
+> >> concrete, fully-baked system.
+> >>
+> >> The document describes a new certificate format based on Merkle Trees,
+> >> which aims to mitigate the many signatures we send today, particularly
+> >> in applications that use Certificate Transparency, and as post-quantum
+> >> signature schemes get large. Four signatures (two SCTs, two X.509
+> >> signatures) and an intermediate CA's public key gets rather large,
+> >> particularly with something like Dilithium3's 3,293-byte signatures.
+> >> This format uses a single Merkle Tree inclusion proof, which we
+> >> estimate at roughly 600 bytes. (Note that this proposal targets
+> >> certificate-related signatures but not the TLS handshake signature.)
+> >>
+> >> As part of this, it also includes an extensibility and certificate
+> >> negotiation story that we hope will be useful beyond this particular
+> >> scheme.
+> >>
+> >> This isn't meant to replace existing PKI mechanisms. Rather, it's an
+> >> optional optimization for connections that are able to use it. Where
+> >> they aren't, you negotiate another certificate. I work on a web
+> >> browser, so this has browsers and HTTPS over TLS in mind, but we hope
+> >> it, or some ideas in it, will be more broadly useful.
+> >>
+> >> That said, we don't expect it's for everyone, and that's fine!
+> >> With a robust negotiation story, we don't have to limit ourselves to a
+> >> single answer for all cases at once. Even within browsers and the web,
+> >> it cannot handle all cases, so we're thinking of this as one of
+> >> several sorts of PKI mechanisms that might be selected via
+> >> negotiation.
+> >>
+> >> Thoughts? We're very eager to get feedback on this.
+> >>
+> >> David
+> >>
+> >> On Fri, Mar 10, 2023 at 4:38=E2=80=AFPM <internet-drafts@ietf.org> wro=
+te:
+> >>
+> >> A new version of I-D, draft-davidben-tls-merkle-tree-certs-00.txt
+> >> has been successfully submitted by David Benjamin and posted to the
+> >> IETF repository.
+> >>
+> >> Name:           draft-davidben-tls-merkle-tree-certs
+> >> Revision:       00
+> >> Title:          Merkle Tree Certificates for TLS
+> >> Document date:  2023-03-10
+> >> Group:          Individual Submission
+> >> Pages:          45
+> >> URL:
+> >> https://www.ietf.org/archive/id/draft-davidben-tls-merkle-tree-certs-0
+> >> 0.txt
+> >> Status:
+> >>
+> >> https://datatracker.ietf.org/doc/draft-davidben-tls-merkle-tree-certs/
+> >> Html:
+> >>
+> >> https://www.ietf.org/archive/id/draft-davidben-tls-merkle-tree-certs-0
+> >> 0.html
+> >> Htmlized:
+> >>
+> >> https://datatracker.ietf.org/doc/html/draft-davidben-tls-merkle-tree-c
+> >> erts
+> >>
+> >>
+> >> Abstract:
+> >>    This document describes Merkle Tree certificates, a new certificate
+> >>    type for use with TLS.  A relying party that regularly fetches
+> >>    information from a transparency service can use this certificate ty=
+pe
+> >>    as a size optimization over more conventional mechanisms with post-
+> >>    quantum signatures.  Merkle Tree certificates integrate the roles o=
+f
+> >>    X.509 and Certificate Transparency, achieving comparable security
+> >>    properties with a smaller message size, at the cost of more limited
+> >>    applicability.
+> >>
+> >>
+> >>
+> >>
+> >> The IETF Secretariat
+> >>
+> >>
+> >>
+> >
+> > --
+> > Regards,
+> > Hubert Kario
+> > Principal Quality Engineer, RHEL Crypto team
+> > Web: www.cz.redhat.com
+> > Red Hat Czech s.r.o., Purky=C5=88ova 99/71, 612 45, Brno, Czech Republi=
+c
+> >
+>
+> --
+> Regards,
+> Hubert Kario
+> Principal Quality Engineer, RHEL Crypto team
+> Web: www.cz.redhat.com
+> Red Hat Czech s.r.o., Purky=C5=88ova 99/71, 612 45, Brno, Czech Republic
+>
+>
+
+--00000000000077cc5105f76b3c0f
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr">On Tue, Mar 21, 2023 at 8:01=E2=80=AFAM H=
+ubert Kario &lt;<a href=3D"mailto:hkario@redhat.com">hkario@redhat.com</a>&=
+gt; wrote:<br></div><div class=3D"gmail_quote"><blockquote class=3D"gmail_q=
+uote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,2=
+04);padding-left:1ex">On Monday, 20 March 2023 19:54:24 CET, David Benjamin=
+ wrote:<br>
+&gt; I don&#39;t think flattening is the right way to look at it. See my <b=
+r>
+&gt; other reply for a discussion about flattening, and how this does <br>
+&gt; a bit more than that. (It also handles SCTs.)<br>
+&gt;<br>
+&gt; As for RFC 7924, in this context you should think of it as a <br>
+&gt; funny kind of TLS resumption. In clients that talk to many <br>
+&gt; servers[0], the only plausible source of cached information is a <br>
+&gt; previous TLS exchange. Cached info is then: if I previously <br>
+&gt; connected to you and I am willing to correlate that previous <br>
+&gt; connection to this new one, we can re-connect more efficiently. <br>
+&gt; It&#39;s a bit more flexible than resumption---it doesn&#39;t replace =
+<br>
+&gt; authentication, so we could conceivably use larger lifetimes. <br>
+&gt; But it&#39;s broadly the same w.r.t. when it can be used. It doesn&#39=
+;t <br>
+&gt; help the first connection to a service, or a service that was <br>
+&gt; connected long enough ago that it&#39;s fallen off the cache. And it <=
+br>
+&gt; doesn&#39;t help across contexts where we don&#39;t want correlation. =
+<br>
+&gt; Within a web browser, things are a bit more partitioned these <br>
+&gt; days, <br>
+&gt; see <a href=3D"https://github.com/MattMenke2/Explainer---Partition-Net=
+work-State/blob/main/README.md" rel=3D"noreferrer" target=3D"_blank">https:=
+//github.com/MattMenke2/Explainer---Partition-Network-State/blob/main/READM=
+E.md</a> <br>
+&gt; and <a href=3D"https://github.com/privacycg/storage-partitioning" rel=
+=3D"noreferrer" target=3D"_blank">https://github.com/privacycg/storage-part=
+itioning</a>.<br>
+<br>
+Sorry, but as long as the browsers are willing to perform session <br>
+resumption<br>
+I&#39;m not buying the &quot;cached info is a privacy problem&quot;.<br></b=
+lockquote><div><br></div><div>I&#39;m not seeing where this quote comes fro=
+m. I said it had analogous properties to resumption, not that it was a priv=
+acy problem in the absolute.</div><div><br></div><div>The privacy propertie=
+s of resumption and cached info on the situation. If you were okay correlat=
+ing the two connections, both are okay in this regard. If not, then no. rfc=
+8446bis discusses this:</div><div><a href=3D"https://tlswg.org/tls13-spec/d=
+raft-ietf-tls-rfc8446bis.html#appendix-C.4">https://tlswg.org/tls13-spec/dr=
+aft-ietf-tls-rfc8446bis.html#appendix-C.4</a></div><div><br></div><div>In b=
+rowsers, the correlation boundaries (across <i>all</i>=C2=A0state,=C2=A0not=
+ just TLS) were once browsing-profile-wide, but they&#39;re shifting to thi=
+s notion of &quot;site&quot;. I won&#39;t bore the=C2=A0list with the web&#=
+39;s security model, but roughly the domain part of the top-level (not the =
+same as destination!) URL. See the links above for details.</div><div><br><=
+/div><div>That equally impacts resumption and any hypothetical deployment o=
+f cached info. So, yes, within those same bounds, a browser could deploy ca=
+ched info. Whether it&#39;s useful depends on whether there are many cases =
+where resumption wouldn&#39;t work, but cached info would. (E.g. because re=
+sumption has different security properties than cached info.)</div><div>=C2=
+=A0</div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8e=
+x;border-left:1px solid rgb(204,204,204);padding-left:1ex">
+It also completely ignores the encrypted client hello<br></blockquote><div>=
+<br></div><div>ECH helps with outside observers correlating your connection=
+s, but it doesn&#39;t do anything about the server correlating connections.=
+ In the context of correlation boundaries within a web browser, we care abo=
+ut the latter too.</div><div>=C2=A0</div><blockquote class=3D"gmail_quote" =
+style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);pa=
+dding-left:1ex">
+Browser doesn&#39;t have to cache the certs since the beginning of time to =
+be<br>
+of benefit, a few hours or even just current boot would be enough:<br>
+<br>
+1. if it&#39;s a page visited once then all the tracking cookies and javasc=
+ript<br>
+=C2=A0 =C2=A0will be an order of magnitude larger download anyway<br>
+2. if it&#39;s a page visited many times, then optimising for the subsequen=
+t<br>
+=C2=A0 =C2=A0connections is of higher benefit anyway<br></blockquote><div><=
+br></div><div>I don&#39;t think that&#39;s quite the right dichotomy. There=
+ are plenty of reasons to optimize for the first connection, time to first =
+bytes, etc. Indeed, this WG did just that with False Start and TLS 1.3 itse=
+lf. (Prior to those, TLS 1.2 was 2-RTT for the first connection and 1-RTT f=
+or resumption.)</div><div><br></div><div>I suspect a caching for a few hour=
+s would not justify cached info because you may as well use resumption at t=
+hat point.</div><div><br></div><blockquote class=3D"gmail_quote" style=3D"m=
+argin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left=
+:1ex">
+&gt; In comparison, this design doesn&#39;t depend on this sort of <br>
+&gt; per-destination state and can apply to the first time you talk <br>
+&gt; to a server.<br>
+<br>
+it does depend on complex code instead, that effectively duplicates the<br>
+functionality of existing code<br>
+<br>
+&gt; David<br>
+&gt;<br>
+&gt; [0] If you&#39;re a client that only talks to one or two servers, <br>
+&gt; you could imagine getting this cached information pushed <br>
+&gt; out-of-band, similar to how this document pushes some valid tree <br>
+&gt; heads out-of-band. But that doesn&#39;t apply to most clients, <br>
+&gt; certainly not a web browser.<br>
+<br>
+web browser could get a list of most commonly accessed pages/cert pairs,<br=
+>
+randomised to some degree by addition of not commonly accessed pages to <br=
+>
+hide if<br>
+the connection is new or not, and make inference about previous visits <br>
+worthless<br></blockquote><div><br></div><div>True, we could preload cached=
+ info for a global list of common certificates. I&#39;m personally much mor=
+e interested in mechanisms that benefit popular and unpopular pages alike.<=
+/div><div>=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"margin:0px=
+ 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">
+&gt; On Tue, Mar 14, 2023 at 9:46=E2=80=AFAM Kampanakis, Panos &lt;<a href=
+=3D"mailto:kpanos@amazon.com" target=3D"_blank">kpanos@amazon.com</a>&gt; w=
+rote:<br>
+&gt; Hi Hubert, <br>
+&gt;<br>
+&gt; I am not an author of draft-davidben-tls-merkle-tree-certs, but <br>
+&gt; I had some feedback on this question: <br>
+&gt;<br>
+&gt; RFC7924 was a good idea but I don=E2=80=99t think it got deployed. It =
+<br>
+&gt; has the disadvantage that it allows for connection correlation <br>
+&gt; and it is also challenging to demand a client to either know all <br>
+&gt; its possible destination end-entity certs or be able to have a <br>
+&gt; caching mechanism that keeps getting updated. Given these <br>
+&gt; challenges and that CAs are more static and less (~1500 in <br>
+&gt; number) than leaf certs, we have proposed suppressing the ICAs <br>
+&gt; in the chain (draft-kampanakis-tls-scas-latest which replaced <br>
+&gt; draft-thomson-tls-sic ) , but not the server cert. <br>
+&gt;<br>
+&gt; I think draft-davidben-tls-merkle-tree-certs is trying to <br>
+&gt; achieve something similar by introducing a Merkle tree structure <br>
+&gt; for certs signed by a CA. To me it seems to leverage a Merkle <br>
+&gt; tree structure which &quot;batches the public key + identities&quot; t=
+he <br>
+&gt; CA issues. Verifiers can just verify the tree and thus assume <br>
+&gt; that the public key of the peer it is talking to is &quot;certified <b=
+r>
+&gt; by the tree CA&quot;. The way I see it, this construction flattens <br=
+>
+&gt; the PKI structure, and issuing CA&#39;s are trusted now instead of a <=
+br>
+&gt; more limited set of roots. This change is not trivial in my <br>
+&gt; eyes, but the end goal is similar, to shrink the amount of auth <br>
+&gt; data. <br>
+&gt;<br>
+&gt;<br>
+&gt;<br>
+&gt; -----Original Message-----<br>
+&gt; From: TLS &lt;<a href=3D"mailto:tls-bounces@ietf.org" target=3D"_blank=
+">tls-bounces@ietf.org</a>&gt; On Behalf Of Hubert Kario<br>
+&gt; Sent: Monday, March 13, 2023 11:08 AM<br>
+&gt; To: David Benjamin &lt;<a href=3D"mailto:davidben@chromium.org" target=
+=3D"_blank">davidben@chromium.org</a>&gt;<br>
+&gt; Cc: &lt;<a href=3D"mailto:tls@ietf.org" target=3D"_blank">tls@ietf.org=
+</a>&gt; &lt;<a href=3D"mailto:tls@ietf.org" target=3D"_blank">tls@ietf.org=
+</a>&gt;; Devon O&#39;Brien &lt;<a href=3D"mailto:asymmetric@google.com" ta=
+rget=3D"_blank">asymmetric@google.com</a>&gt;<br>
+&gt; Subject: RE: [EXTERNAL][TLS] Merkle Tree Certificates<br>
+&gt;<br>
+&gt; CAUTION: This email originated from outside of the <br>
+&gt; organization. Do not click links or open attachments unless you <br>
+&gt; can confirm the sender and know the content is safe.<br>
+&gt;<br>
+&gt;<br>
+&gt;<br>
+&gt; Why not rfc7924?<br>
+&gt;<br>
+&gt; On Friday, 10 March 2023 23:09:10 CET, David Benjamin wrote:<br>
+&gt;&gt; Hi all,<br>
+&gt;&gt;<br>
+&gt;&gt; I&#39;ve just uploaded a draft, below, describing several ideas we=
+&#39;ve been <br>
+&gt;&gt; mulling over regarding certificates in TLS. This is a<br>
+&gt;&gt; draft-00 with a lot of moving parts, so think of it as the first p=
+ass <br>
+&gt;&gt; at some of ideas that we think fit well together, rather than a <b=
+r>
+&gt;&gt; concrete, fully-baked system.<br>
+&gt;&gt;<br>
+&gt;&gt; The document describes a new certificate format based on Merkle Tr=
+ees, <br>
+&gt;&gt; which aims to mitigate the many signatures we send today, particul=
+arly <br>
+&gt;&gt; in applications that use Certificate Transparency, and as post-qua=
+ntum <br>
+&gt;&gt; signature schemes get large. Four signatures (two SCTs, two X.509 =
+<br>
+&gt;&gt; signatures) and an intermediate CA&#39;s public key gets rather la=
+rge, <br>
+&gt;&gt; particularly with something like Dilithium3&#39;s 3,293-byte signa=
+tures. <br>
+&gt;&gt; This format uses a single Merkle Tree inclusion proof, which we <b=
+r>
+&gt;&gt; estimate at roughly 600 bytes. (Note that this proposal targets <b=
+r>
+&gt;&gt; certificate-related signatures but not the TLS handshake signature=
+.)<br>
+&gt;&gt;<br>
+&gt;&gt; As part of this, it also includes an extensibility and certificate=
+ <br>
+&gt;&gt; negotiation story that we hope will be useful beyond this particul=
+ar <br>
+&gt;&gt; scheme.<br>
+&gt;&gt;<br>
+&gt;&gt; This isn&#39;t meant to replace existing PKI mechanisms. Rather, i=
+t&#39;s an <br>
+&gt;&gt; optional optimization for connections that are able to use it. Whe=
+re <br>
+&gt;&gt; they aren&#39;t, you negotiate another certificate. I work on a we=
+b <br>
+&gt;&gt; browser, so this has browsers and HTTPS over TLS in mind, but we h=
+ope <br>
+&gt;&gt; it, or some ideas in it, will be more broadly useful.<br>
+&gt;&gt;<br>
+&gt;&gt; That said, we don&#39;t expect it&#39;s for everyone, and that&#39=
+;s fine!<br>
+&gt;&gt; With a robust negotiation story, we don&#39;t have to limit oursel=
+ves to a <br>
+&gt;&gt; single answer for all cases at once. Even within browsers and the =
+web, <br>
+&gt;&gt; it cannot handle all cases, so we&#39;re thinking of this as one o=
+f <br>
+&gt;&gt; several sorts of PKI mechanisms that might be selected via <br>
+&gt;&gt; negotiation.<br>
+&gt;&gt;<br>
+&gt;&gt; Thoughts? We&#39;re very eager to get feedback on this.<br>
+&gt;&gt;<br>
+&gt;&gt; David<br>
+&gt;&gt;<br>
+&gt;&gt; On Fri, Mar 10, 2023 at 4:38=E2=80=AFPM &lt;<a href=3D"mailto:inte=
+rnet-drafts@ietf.org" target=3D"_blank">internet-drafts@ietf.org</a>&gt; wr=
+ote:<br>
+&gt;&gt;<br>
+&gt;&gt; A new version of I-D, draft-davidben-tls-merkle-tree-certs-00.txt<=
+br>
+&gt;&gt; has been successfully submitted by David Benjamin and posted to th=
+e <br>
+&gt;&gt; IETF repository.<br>
+&gt;&gt;<br>
+&gt;&gt; Name:=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0draft-davidben-tls-m=
+erkle-tree-certs<br>
+&gt;&gt; Revision:=C2=A0 =C2=A0 =C2=A0 =C2=A000<br>
+&gt;&gt; Title:=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Merkle Tree Certificates =
+for TLS<br>
+&gt;&gt; Document date:=C2=A0 2023-03-10<br>
+&gt;&gt; Group:=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Individual Submission<br>
+&gt;&gt; Pages:=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 45<br>
+&gt;&gt; URL:<br>
+&gt;&gt; <a href=3D"https://www.ietf.org/archive/id/draft-davidben-tls-merk=
+le-tree-certs-0" rel=3D"noreferrer" target=3D"_blank">https://www.ietf.org/=
+archive/id/draft-davidben-tls-merkle-tree-certs-0</a><br>
+&gt;&gt; 0.txt<br>
+&gt;&gt; Status:<br>
+&gt;&gt;=C2=A0 <br>
+&gt;&gt; <a href=3D"https://datatracker.ietf.org/doc/draft-davidben-tls-mer=
+kle-tree-certs/" rel=3D"noreferrer" target=3D"_blank">https://datatracker.i=
+etf.org/doc/draft-davidben-tls-merkle-tree-certs/</a><br>
+&gt;&gt; Html:<br>
+&gt;&gt;=C2=A0 <br>
+&gt;&gt; <a href=3D"https://www.ietf.org/archive/id/draft-davidben-tls-merk=
+le-tree-certs-0" rel=3D"noreferrer" target=3D"_blank">https://www.ietf.org/=
+archive/id/draft-davidben-tls-merkle-tree-certs-0</a><br>
+&gt;&gt; 0.html<br>
+&gt;&gt; Htmlized:<br>
+&gt;&gt;=C2=A0 <br>
+&gt;&gt; <a href=3D"https://datatracker.ietf.org/doc/html/draft-davidben-tl=
+s-merkle-tree-c" rel=3D"noreferrer" target=3D"_blank">https://datatracker.i=
+etf.org/doc/html/draft-davidben-tls-merkle-tree-c</a><br>
+&gt;&gt; erts<br>
+&gt;&gt;<br>
+&gt;&gt;<br>
+&gt;&gt; Abstract:<br>
+&gt;&gt;=C2=A0 =C2=A0 This document describes Merkle Tree certificates, a n=
+ew certificate<br>
+&gt;&gt;=C2=A0 =C2=A0 type for use with TLS.=C2=A0 A relying party that reg=
+ularly fetches<br>
+&gt;&gt;=C2=A0 =C2=A0 information from a transparency service can use this =
+certificate type<br>
+&gt;&gt;=C2=A0 =C2=A0 as a size optimization over more conventional mechani=
+sms with post-<br>
+&gt;&gt;=C2=A0 =C2=A0 quantum signatures.=C2=A0 Merkle Tree certificates in=
+tegrate the roles of<br>
+&gt;&gt;=C2=A0 =C2=A0 X.509 and Certificate Transparency, achieving compara=
+ble security<br>
+&gt;&gt;=C2=A0 =C2=A0 properties with a smaller message size, at the cost o=
+f more limited<br>
+&gt;&gt;=C2=A0 =C2=A0 applicability.<br>
+&gt;&gt;<br>
+&gt;&gt;<br>
+&gt;&gt;<br>
+&gt;&gt;<br>
+&gt;&gt; The IETF Secretariat<br>
+&gt;&gt;<br>
+&gt;&gt;<br>
+&gt;&gt;<br>
+&gt;<br>
+&gt; --<br>
+&gt; Regards,<br>
+&gt; Hubert Kario<br>
+&gt; Principal Quality Engineer, RHEL Crypto team<br>
+&gt; Web: <a href=3D"http://www.cz.redhat.com" rel=3D"noreferrer" target=3D=
+"_blank">www.cz.redhat.com</a><br>
+&gt; Red Hat Czech s.r.o., Purky=C5=88ova 99/71, 612 45, Brno, Czech Republ=
+ic<br>
+&gt;<br>
+<br>
+-- <br>
+Regards,<br>
+Hubert Kario<br>
+Principal Quality Engineer, RHEL Crypto team<br>
+Web: <a href=3D"http://www.cz.redhat.com" rel=3D"noreferrer" target=3D"_bla=
+nk">www.cz.redhat.com</a><br>
+Red Hat Czech s.r.o., Purky=C5=88ova 99/71, 612 45, Brno, Czech Republic<br=
+>
+<br>
+</blockquote></div></div>
+
+--00000000000077cc5105f76b3c0f--
+
