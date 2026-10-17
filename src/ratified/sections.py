@@ -9,8 +9,17 @@ ties, and an unresolvable heading is left unmatched rather than guessed.
 from __future__ import annotations
 
 import difflib
+import json
 import re
 from collections import Counter
+from pathlib import Path
+
+from .paths import DATA_DIR
+
+RFC_URL = "https://www.rfc-editor.org/rfc/{name}.txt"
+DRAFT_URL = "https://www.ietf.org/archive/id/{name}.txt"
+DEFAULT_RFC = ("rfc8446", 8446, "The Transport Layer Security (TLS) Protocol Version 1.3")
+DEFAULT_DRAFT_REVS = tuple(f"draft-ietf-tls-tls13-{n:02d}" for n in range(18, 29))
 
 ALIGNMENT_METHOD = "heading"
 ALIGNMENT_PAIRS = 861
@@ -114,3 +123,59 @@ def align_to_rfc(draft_sections: dict[str, dict], rfc_sections: dict[str, dict])
         stats["aligned"] += 1
         stats[f"how_{how}"] += 1
     return align, stats
+
+
+def build(
+    fetcher,
+    data_dir: str = DATA_DIR,
+    rfc: tuple[str, int, str] = DEFAULT_RFC,
+    draft_revs: tuple[str, ...] = DEFAULT_DRAFT_REVS,
+) -> dict:
+    name, number, title = rfc
+    rfc_sections = parse_sections(fetcher.get(RFC_URL.format(name=name)).decode("utf-8", "replace"))
+    record: dict = {
+        "rfc": {
+            "name": name,
+            "number": number,
+            "title": title,
+            "n_sections": len(rfc_sections),
+            "sections": rfc_sections,
+        },
+        "drafts": {},
+        "aggregate": {},
+    }
+    aggregate: Counter = Counter()
+    for revision in draft_revs:
+        text = fetcher.get(DRAFT_URL.format(name=revision)).decode("utf-8", "replace")
+        draft_sections = parse_sections(text)
+        align, stats = align_to_rfc(draft_sections, rfc_sections)
+        record["drafts"][revision] = {
+            "n_sections": len(draft_sections),
+            "align": align,
+            "stats": dict(stats),
+        }
+        aggregate.update(stats)
+    record["aggregate"] = dict(aggregate)
+    path = Path(data_dir) / "sections.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(record))
+    return record
+
+
+def main() -> None:
+    import argparse
+
+    from .fetch import Fetcher
+
+    parser = argparse.ArgumentParser(description="Parse an RFC and align the draft revisions to it.")
+    parser.add_argument("--rfc", default=DEFAULT_RFC[0])
+    parser.add_argument("--number", type=int, default=DEFAULT_RFC[1])
+    parser.add_argument("--title", default=DEFAULT_RFC[2])
+    args = parser.parse_args()
+    fetcher = Fetcher(min_interval=0.4)
+    record = build(fetcher, rfc=(args.rfc, args.number, args.title))
+    print(json.dumps(record["aggregate"], indent=2))
+
+
+if __name__ == "__main__":
+    main()
