@@ -19,7 +19,7 @@ Ask *"I'm new here: why does RFC 8446 section 4.2.1 read the way it does, and wh
 3. **What to read with it.** Clauses cited in the same messages: §4.1.3 Server Hello (6 shared messages), §4.1.2 Client Hello and §4.1.4 Hello Retry Request (2 each).
 4. **Who to ask now.** The 5 people who cited it, plus the current TLS chairs and area directors, by name from the datatracker.
 5. **A drafted question** to them, citing the thread and the section. It is rendered and **never sent**.
-6. **The proof.** A panel listing the 4 Cypher queries FalkorDB ran for the card (under 1 ms inside the database).
+6. **The proof.** A panel listing the 4 Cypher queries FalkorDB ran for the card and FalkorDB's own execution time for each (under 1 ms in total on a laptop).
 
 You don't need a section number. *"Why does early data work like this in TLS 1.3?"* resolves to §4.2.10 Early Data Indication through FalkorDB's full-text index on section headings. The card says which words matched and offers the runner-up clauses as one-click alternatives. *"What did people say about middleboxes?"* returns quotes from the list. *"Who knows the most about TLS 1.3?"* ranks people with FalkorDB's PageRank. Ask about IESG ballots or meeting minutes, which were never ingested, and the card says **the graph does not know**.
 
