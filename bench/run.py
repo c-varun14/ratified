@@ -84,7 +84,9 @@ def _pipeline_answers(questions: list[dict], keys: dict) -> dict[str, dict]:
         card = tools.run(graph, tool, **arguments)
         abstain = card["outcome"] == tools.OUTCOME_UNKNOWN
         answers[question["id"]] = {
-            "answer": None if abstain else card["title"],
+            # The card's canonical answer when it carries one (the new tools do),
+            # else its title: this is the answer a reader takes off the card.
+            "answer": None if abstain else card.get("answer", card["title"]),
             "abstain": abstain,
             "tool": tool,
             "arguments": arguments,

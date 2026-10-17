@@ -40,7 +40,7 @@ def answer_one(graph, question: dict, kind: str) -> dict:
             [card["title"], *[claim["text"] for claim in card["claims"]]]
         ).strip()
         return {
-            "answer": None if abstain else card["title"],
+            "answer": None if abstain else card.get("answer", card["title"]),
             "abstain": abstain,
             "outcome": card["outcome"],
             "rows": len(card["rows"]),
