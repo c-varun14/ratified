@@ -44,6 +44,11 @@ TOOL_CATALOGUE = [
     {"name": "section_by_heading", "args": ["draft", "heading"], "description": "the section number a heading names, from the draft's RFC"},
     {"name": "revisions", "args": ["draft", "lo", "hi", "latest", "count"], "description": "a draft's revisions: list them, bound them to a range, count them, or name the latest"},
     {"name": "count_unresolved", "args": ["draft"], "description": "how many clauses of a draft are argued against with no resolution trail"},
+    {"name": "chairs", "args": ["wg"], "description": "the chairs of the working group, and its area directors, from CHAIRS/AD_FOR"},
+    {"name": "became_rfc", "args": ["draft"], "description": "the RFC a draft became, from the BECAME edge"},
+    {"name": "threads_by_subject", "args": ["pattern"], "description": "thread ids whose subject names a distinctive pattern, from Thread/Message subjects"},
+    {"name": "count_became", "args": ["draft"], "description": "how many drafts in a family the record shows became an RFC"},
+    {"name": "count_thread_messages", "args": ["thread_or_draft"], "description": "how many messages a thread (or a draft's discussion) carries"},
 ]
 
 CATALOGUE_BY_NAME = {tool["name"]: tool for tool in TOOL_CATALOGUE}
@@ -540,6 +545,145 @@ def count_unresolved(graph, draft: str = DEFAULT_DRAFT):
     return result
 
 
+def chairs(graph, wg: str = ""):
+    """The working group's chairs (and, separately, its area directors)."""
+    wg = wg or ingest.LIST
+    people = rows(
+        graph,
+        "MATCH (c:Chair)-[:CHAIRS]->(w:Wg {id:$wg}) RETURN c.name AS name ORDER BY c.name",
+        {"wg": wg},
+    )
+    if not people:
+        result = card("chairs", f"Chairs of {wg}", [], notes=[f"no chair of {wg} is recorded in the graph"])
+        result["answer"] = None
+        return result
+    ads = rows(
+        graph,
+        "MATCH (a:AreaDirector)-[:AD_FOR]->(w:Wg {id:$wg}) RETURN a.name AS name ORDER BY a.name",
+        {"wg": wg},
+    )
+    claims = [{"text": f"chair: {person['name']}", "chips": []} for person in people]
+    claims += [{"text": f"area director: {person['name']}", "chips": []} for person in ads]
+    result = card("chairs", f"Chairs of {wg}", claims, rows_out=people)
+    result["answer"] = [person["name"] for person in people]
+    result["area_directors"] = [person["name"] for person in ads]
+    return result
+
+
+def became_rfc(graph, draft: str = DEFAULT_DRAFT):
+    """The RFC a draft became, read straight off the BECAME edge."""
+    hits = rows(
+        graph,
+        "MATCH (d:Draft {id:$draft})-[:HAS_REVISION]->(:DraftRevision)-[:BECAME]->(rfc:RFC) "
+        "RETURN DISTINCT rfc.id AS id, rfc.number AS number, rfc.title AS title, rfc.url AS url ORDER BY rfc.id",
+        {"draft": draft},
+    )
+    if not hits:
+        result = card("became_rfc", f"What {draft} became", [], notes=[f"the graph records no RFC that {draft} became"])
+        result["answer"] = None
+        return result
+    claims = [
+        {"text": f"{hit['id']} — {hit['title']}", "chips": [rfc_chip(hit["id"], hit["url"])]}
+        for hit in hits
+    ]
+    title = f"{draft} became {hits[0]['id']}" if len(hits) == 1 else f"{draft} became {len(hits)} RFCs"
+    result = card("became_rfc", title, claims, rows_out=hits)
+    result["answer"] = hits[0]["id"] if len(hits) == 1 else [hit["id"] for hit in hits]
+    return result
+
+
+def threads_by_subject(graph, pattern: str = ""):
+    """Thread ids whose subject (or any message's subject) carries a distinctive pattern."""
+    pattern = (pattern or "").strip()
+    hits = rows(
+        graph,
+        """
+        MATCH (t:Thread)
+        OPTIONAL MATCH (t)<-[:IN_THREAD]-(m:Message)
+        WITH t, collect(toLower(m.subject)) AS subjects
+        WHERE toLower(t.subject) CONTAINS toLower($pattern)
+           OR any(subject IN subjects WHERE subject CONTAINS toLower($pattern))
+        RETURN DISTINCT t.id AS id, t.subject AS subject, t.url AS url ORDER BY t.id
+        """,
+        {"pattern": pattern},
+    )
+    if not hits:
+        result = card(
+            "threads_by_subject",
+            f'Threads naming "{pattern}"',
+            [],
+            notes=[f'no thread subject in the graph contains "{pattern}"'],
+        )
+        result["answer"] = None
+        return result
+    claims = [
+        {"text": f"{hit['id']} — {hit['subject']}", "chips": [thread_chip(hit["id"], hit["url"])]}
+        for hit in hits
+    ]
+    result = card("threads_by_subject", f'{len(hits)} thread(s) naming "{pattern}"', claims, rows_out=hits)
+    result["answer"] = [hit["id"] for hit in hits]
+    return result
+
+
+def count_became(graph, draft: str = DEFAULT_DRAFT):
+    """How many drafts in a family the record shows became an RFC (BECAME count)."""
+    if draft.endswith("-") or "*" in draft:
+        cypher = (
+            "MATCH (d:Draft)-[:HAS_REVISION]->(:DraftRevision)-[:BECAME]->(:RFC) "
+            "WHERE d.id STARTS WITH $draft RETURN count(DISTINCT d) AS n"
+        )
+    else:
+        cypher = (
+            "MATCH (d:Draft {id:$draft})-[:HAS_REVISION]->(:DraftRevision)-[:BECAME]->(:RFC) "
+            "RETURN count(DISTINCT d) AS n"
+        )
+    count = rows(graph, cypher, {"draft": draft})[0]["n"]
+    if not count:
+        result = card(
+            "count_became",
+            f"No draft matching {draft} is recorded as having become an RFC",
+            [],
+            notes=[f"the graph has no BECAME edge from a draft matching {draft}"],
+        )
+        result["answer"] = None
+        return result
+    claims = [{"text": f"{count} draft(s) matching {draft} hold a BECAME edge to an RFC", "chips": []}]
+    result = card("count_became", f"{count} drafts matching {draft} became an RFC", claims, rows_out=[{"count": count}])
+    result["answer"] = count
+    result["count"] = count
+    return result
+
+
+def count_thread_messages(graph, thread_or_draft: str = ""):
+    """How many messages a thread carries (or a draft's discussion does)."""
+    ref = (thread_or_draft or "").strip()
+    if ":" in ref:
+        hits = rows(
+            graph,
+            "MATCH (t:Thread {id:$ref})<-[:IN_THREAD]-(m:Message) "
+            "RETURN t.id AS id, t.subject AS subject, t.url AS url, count(m) AS n",
+            {"ref": ref},
+        )
+    else:
+        hits = rows(
+            graph,
+            "MATCH (d:Draft {id:$ref})-[:HAS_REVISION]->(:DraftRevision)<-[:DISCUSSED]-(m:Message) "
+            "RETURN d.id AS id, d.title AS subject, d.id AS url, count(DISTINCT m) AS n",
+            {"ref": ref},
+        )
+    if not hits or not hits[0]["id"]:
+        result = card("count_thread_messages", f"Messages in {ref}", [], notes=[f"the graph does not know {ref}"])
+        result["answer"] = None
+        return result
+    hit = hits[0]
+    chips = [thread_chip(hit["id"], hit["url"])] if ":" in ref else []
+    claims = [{"text": f"{hit['id']} — {hit['n']} message(s)", "chips": chips}]
+    result = card("count_thread_messages", f"{hit['n']} message(s) in {hit['id']}", claims, rows_out=hits)
+    result["answer"] = hit["n"]
+    result["count"] = hit["n"]
+    return result
+
+
 class SyncDeferred(RuntimeError):
     """Raised when mailarchive cannot be re-fetched and the cache cannot stand in."""
 
@@ -694,6 +838,11 @@ TOOLS = {
     "section_by_heading": section_by_heading,
     "revisions": revisions,
     "count_unresolved": count_unresolved,
+    "chairs": chairs,
+    "became_rfc": became_rfc,
+    "threads_by_subject": threads_by_subject,
+    "count_became": count_became,
+    "count_thread_messages": count_thread_messages,
 }
 
 
