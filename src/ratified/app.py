@@ -37,6 +37,16 @@ def ask(request: Request, question: str = Form("")):
     )
 
 
+@app.get("/receipt", response_class=HTMLResponse)
+def receipt(request: Request, draft: str = "", sid: str = ""):
+    graph = connect()
+    return TEMPLATES.TemplateResponse(
+        request,
+        "_receipt.html",
+        {"receipt": tools.clause_receipt(graph, draft, sid)},
+    )
+
+
 @app.get("/health")
 def health():
     return {"status": "ok"}

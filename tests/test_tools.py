@@ -118,3 +118,21 @@ def test_aggregate_labels_topic_links_as_leads(graph, sample_dataset):
     assert any("§5.4" in claim["text"] for claim in buckets["cited"])
     assert any("§5.5" in claim["text"] for claim in buckets["topic"])
     assert result["notes"] and "measured" in result["notes"][0]
+
+
+def test_clause_receipt_traces_object_thread_revisions_to_section(graph, sample_dataset):
+    ingest.ingest(graph, sample_dataset)
+    receipt = tools.clause_receipt(graph, "draft-ietf-tls-tls13", "rfc8446#5.4")
+    assert receipt["paths"]
+    steps = receipt["paths"][0]["steps"]
+    kinds = [step["kind"] for step in steps]
+    assert kinds[0] == "message"
+    assert kinds[1] == "thread"
+    assert "revision" in kinds
+    assert kinds[-2] == "rfc" and kinds[-1] == "section"
+    assert all(step["url"].startswith("http") for step in steps)
+
+
+def test_clause_receipt_empty_for_unknown_clause(graph, sample_dataset):
+    ingest.ingest(graph, sample_dataset)
+    assert tools.clause_receipt(graph, "draft-ietf-tls-tls13", "rfc8446#99.9")["paths"] == []

@@ -200,6 +200,78 @@ def aggregate_unresolved(graph, draft: str = DEFAULT_DRAFT):
     )
 
 
+CITED_PATH_Q = """
+MATCH (s:Section {id:$sid})
+MATCH (m:Message)-[:CITES]->(s)
+MATCH (m)-[:DISCUSSED]->(dr:DraftRevision)
+MATCH (dr)-[al:ALIGNS_SECTION]->(s)
+MATCH (m)-[:IN_THREAD]->(t:Thread)
+MATCH p=(dr)-[:SUPERSEDED*0..]->(last:DraftRevision)
+MATCH (last)-[:BECAME]->(rfc:RFC)-[:HAS_SECTION]->(s)
+WHERE al.changed = true
+RETURN DISTINCT m.id AS mid, m.url AS murl, m.date AS date, m.subject AS subject,
+       t.id AS tid, t.url AS turl,
+       [n IN nodes(p) | n.id] AS chain, rfc.id AS rfc,
+       s.number AS number, s.title AS title, s.url AS surl,
+       al.similarity AS similarity, al.changed AS changed
+ORDER BY m.date
+"""
+
+TOPIC_PATH_Q = """
+MATCH (s:Section {id:$sid})
+MATCH (t:Thread)-[ab:ABOUT_SECTION]->(s)
+MATCH (m:Message)-[:IN_THREAD]->(t)
+MATCH (m)-[:DISCUSSED]->(dr:DraftRevision)
+MATCH (dr)-[al:ALIGNS_SECTION]->(s)
+MATCH p=(dr)-[:SUPERSEDED*0..]->(last:DraftRevision)
+MATCH (last)-[:BECAME]->(rfc:RFC)-[:HAS_SECTION]->(s)
+WHERE al.changed = true
+RETURN DISTINCT t.id AS tid, t.url AS turl, ab.matched_tokens AS tokens,
+       m.id AS mid, m.url AS murl, m.date AS date,
+       [n IN nodes(p) | n.id] AS chain, rfc.id AS rfc,
+       s.number AS number, s.title AS title, s.url AS surl, al.similarity AS similarity
+ORDER BY m.date
+"""
+
+
+def _path_steps(row: dict) -> list[dict]:
+    steps = [
+        message_chip(row["mid"], row["murl"]),
+        thread_chip(row["tid"], row["turl"]),
+    ]
+    steps += [revision_chip(revision) for revision in (row.get("chain") or [])]
+    steps.append(rfc_chip(row["rfc"]))
+    steps.append(section_chip(row["number"], row["title"], row["surl"]))
+    return steps
+
+
+def clause_receipt(graph, draft: str, sid: str):
+    """The full traced path for one clause as ordered lists of mechanical permalinks.
+
+    object -> thread -> draft revision -> SUPERSEDED hops -> RFC section. Citation
+    objects come first; subject-token threads follow, labelled as such.
+    """
+    cited = rows(graph, CITED_PATH_Q, {"sid": sid})
+    topic = rows(graph, TOPIC_PATH_Q, {"sid": sid})
+    paths = [
+        {"via": "cited in message", "similarity": row["similarity"], "steps": _path_steps(row)}
+        for row in cited
+    ]
+    seen: set[str] = set()
+    for row in topic:
+        if row["tid"] in seen:
+            continue
+        seen.add(row["tid"])
+        paths.append(
+            {
+                "via": f"thread matched by subject tokens ({row['tokens']})",
+                "similarity": row["similarity"],
+                "steps": _path_steps(row),
+            }
+        )
+    return {"draft": draft, "sid": sid, "paths": paths}
+
+
 def who_argued(graph, draft: str = DEFAULT_DRAFT):
     people = rows(
         graph,
