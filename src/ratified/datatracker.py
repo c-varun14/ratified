@@ -92,13 +92,17 @@ def pull(fetcher, group: str = "tls", prefix: str = "draft-ietf-tls", data_dir: 
         rfcs[name] = {"title": objects[0].get("title") or "", "rfc_number": objects[0].get("rfc_number")}
 
     def people(roles: list[dict]) -> list[dict]:
-        return [
-            {
-                "person": role["person"].strip("/").split("/")[-1],
-                "email": (role.get("email") or "").strip("/").split("/")[-1],
-            }
-            for role in roles
-        ]
+        out = []
+        for role in roles:
+            person = role["person"].strip("/").split("/")[-1]
+            out.append(
+                {
+                    "person": person,
+                    "name": jget(fetcher, f"/api/v1/person/person/{person}/?format=json").get("name") or "",
+                    "email": (role.get("email") or "").strip("/").split("/")[-1],
+                }
+            )
+        return out
 
     record = {
         "group": {

@@ -94,7 +94,7 @@ def _chairs(params: dict) -> tuple[object, dict]:
     names = sorted(p["name"] for p in people)
     return names, {
         "record": f"{sources.BASE}/api/v1/group/role/?group=1326&name={role}",
-        "rule": "local part of each role holder's registered email",
+        "rule": "each role holder's name from their datatracker person record (email local part if none is cached)",
         "evidence": {"people": people},
     }
 

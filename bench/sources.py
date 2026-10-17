@@ -209,8 +209,10 @@ def roles(role: str, list_name: str = LIST) -> list[dict]:
         people = []
         for obj in page.get("objects", []):
             email = (obj.get("email") or "").strip("/").split("/")[-1]
+            person = (obj.get("person") or "").strip("/").split("/")[-1]
+            record = cached_json(f"{BASE}/api/v1/person/person/{person}/?format=json") if person else None
             if email:
-                people.append({"name": email.split("@")[0], "email": email})
+                people.append({"name": (record or {}).get("name") or email.split("@")[0], "email": email})
         if people:
             return people
     return []

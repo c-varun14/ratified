@@ -134,11 +134,11 @@ def role_rows(docs: dict) -> tuple[list[dict], list[dict], list[dict], list[dict
         "email": docs["group"].get("list_email") or "",
     }
     chairs = [
-        {"id": f"chair:{c['email']}", "name": c["email"].split("@")[0], "email": c["email"]}
+        {"id": f"chair:{c['email']}", "name": c.get("name") or c["email"].split("@")[0], "email": c["email"]}
         for c in docs.get("chairs", [])
     ]
     ads = [
-        {"id": f"ad:{a['email']}", "name": a["email"].split("@")[0], "email": a["email"]}
+        {"id": f"ad:{a['email']}", "name": a.get("name") or a["email"].split("@")[0], "email": a["email"]}
         for a in docs.get("ads", [])
     ]
     chair_edges = [{"src": c["id"], "tgt": wg["id"]} for c in chairs]
