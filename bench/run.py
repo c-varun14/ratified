@@ -37,6 +37,16 @@ def _graph_meta() -> dict:
     return {"nodes": counts["nodes"], "edges": edges["edges"], "messages_with_body": bodies["n"]}
 
 
+def _require_graph(graph_meta: dict) -> None:
+    """Refuse to grade an empty graph: the app rebuilds it on boot, so wait for health."""
+    if graph_meta["nodes"] == 0:
+        raise SystemExit(
+            "the graph is empty, so every answer would be a false negative.\n"
+            "Boot the stack first and wait for it to be healthy — the app rebuilds the graph on "
+            "start-up (`docker compose up --build -d`, then `docker compose ps`) — then re-run."
+        )
+
+
 def _hero_observation() -> dict:
     """The hero aggregate is a graph-negative; no independent authority exists for its count."""
     from ratified import tools
@@ -87,8 +97,9 @@ def _pipeline_answers(questions: list[dict], keys: dict) -> dict[str, dict]:
 def build_results(questions_path: Path = QUESTIONS, out_path: Path = RESULTS) -> dict:
     questions = json.loads(questions_path.read_text())
     keys_record = make_keys.build(questions_path)
-    (HERE / "keys.json").write_text(json.dumps(keys_record, indent=2) + "\n")
     keys = keys_record["keys"]
+    graph_meta = _graph_meta()
+    _require_graph(graph_meta)
 
     graph_answers = graph_runner.answer_all(questions, keys)
     retriever = rag.Rag()
@@ -99,12 +110,13 @@ def build_results(questions_path: Path = QUESTIONS, out_path: Path = RESULTS) ->
     for entry in graded["questions"]:
         entry["pipeline"] = pipeline[entry["id"]]
 
+    (HERE / "keys.json").write_text(json.dumps(keys_record, indent=2) + "\n")
     chunks = retriever.chunks
     results = {
         "meta": {
             "n_questions": len(questions),
             "categories": keys_record["meta"]["categories"],
-            "graph": _graph_meta(),
+            "graph": graph_meta,
             "hero_card": _hero_observation(),
             "rag": {
                 "model": rag.MODEL,
