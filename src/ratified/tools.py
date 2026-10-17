@@ -41,6 +41,9 @@ TOOL_CATALOGUE = [
     {"name": "what_happened_to", "args": ["number"], "description": "what happened to a clause across revisions and the RFC"},
     {"name": "precedent", "args": ["message_id"], "description": "trace a message to a revision and the RFC section it became"},
     {"name": "sync", "args": ["days"], "description": "how current the graph is, by record date"},
+    {"name": "section_by_heading", "args": ["draft", "heading"], "description": "the section number a heading names, from the draft's RFC"},
+    {"name": "revisions", "args": ["draft", "lo", "hi", "latest", "count"], "description": "a draft's revisions: list them, bound them to a range, count them, or name the latest"},
+    {"name": "count_unresolved", "args": ["draft"], "description": "how many clauses of a draft are argued against with no resolution trail"},
 ]
 
 CATALOGUE_BY_NAME = {tool["name"]: tool for tool in TOOL_CATALOGUE}
@@ -424,6 +427,119 @@ def precedent(graph, message_id: str):
     return card("precedent", f"Precedent for {message_id}", claims, rows_out=paths, missing=missing, conflicts=conflicts)
 
 
+def section_by_heading(graph, draft: str = DEFAULT_DRAFT, heading: str = ""):
+    """The section number a heading names. Scoped to the RFC the draft became."""
+    heading = (heading or "").strip()
+    hits = rows(
+        graph,
+        """
+        MATCH (d:Draft {id:$draft})-[:HAS_REVISION]->(:DraftRevision)-[:BECAME]->(rfc:RFC)
+              -[:HAS_SECTION]->(s:Section)
+        WHERE toLower(s.title) = toLower($heading)
+        RETURN s.number AS number, s.title AS title, s.url AS url ORDER BY s.number
+        """,
+        {"draft": draft, "heading": heading},
+    )
+    scoped = bool(hits)
+    if not hits:
+        hits = rows(
+            graph,
+            "MATCH (s:Section) WHERE toLower(s.title) = toLower($heading) "
+            "RETURN s.number AS number, s.title AS title, s.url AS url ORDER BY s.number",
+            {"heading": heading},
+        )
+    if not hits:
+        result = card(
+            "section_by_heading",
+            f'Section for heading "{heading}"',
+            [],
+            notes=[f'no section in the graph carries the heading "{heading}"'],
+        )
+        result["answer"] = None
+        return result
+    claims = [
+        {"text": f'§{hit["number"]} {hit["title"]}', "chips": [section_chip(hit["number"], hit["title"], hit["url"])]}
+        for hit in hits
+    ]
+    title = f'§{hits[0]["number"]} — {hits[0]["title"]}' if len(hits) == 1 else f'{len(hits)} sections carry the heading "{heading}"'
+    result = card("section_by_heading", title, claims, rows_out=hits)
+    result["answer"] = hits[0]["number"] if len(hits) == 1 else [hit["number"] for hit in hits]
+    if not scoped:
+        result["notes"].append(f"matched the RFC sections directly; {draft} has no RFC link in the graph")
+    return result
+
+
+def _revision_number(rev) -> int | None:
+    try:
+        return int(rev)
+    except (TypeError, ValueError):
+        return None
+
+
+def revisions(graph, draft: str = DEFAULT_DRAFT, lo=None, hi=None, latest: bool = False, count: bool = False):
+    """A draft's revisions: the list, a range of it, its count, or the latest one."""
+    all_revs = rows(
+        graph,
+        "MATCH (d:Draft {id:$draft})-[:HAS_REVISION]->(r:DraftRevision) "
+        "RETURN r.id AS id, r.rev AS rev, r.date AS date ORDER BY toInteger(r.rev), r.id",
+        {"draft": draft},
+    )
+    low = _revision_number(lo)
+    high = _revision_number(hi)
+    selected = [
+        row for row in all_revs
+        if (low is None or (_revision_number(row["rev"]) is not None and _revision_number(row["rev"]) >= low))
+        and (high is None or (_revision_number(row["rev"]) is not None and _revision_number(row["rev"]) <= high))
+    ]
+    if not selected:
+        result = card("revisions", f"Revisions of {draft}", [], notes=[f"no revision of {draft} matches the request"])
+        result["answer"] = None
+        return result
+    ids = [row["id"] for row in selected]
+    claims = [
+        {"text": row["id"] + (f' ({row["date"]})' if row.get("date") else ""), "chips": [revision_chip(row["id"])]}
+        for row in selected
+    ]
+    if count:
+        answer, title = len(ids), f"{len(ids)} revisions of {draft}"
+    elif latest:
+        answer, title = ids[-1], f"Latest revision of {draft} — {ids[-1]}"
+    else:
+        answer, title = ids, f"Revisions of {draft} ({len(ids)})"
+    result = card(
+        "revisions",
+        title,
+        claims,
+        rows_out=[{"id": row["id"], "rev": row["rev"], "date": row["date"]} for row in selected],
+    )
+    result["answer"] = answer
+    result["count"] = len(ids)
+    result["latest"] = ids[-1]
+    return result
+
+
+def count_unresolved(graph, draft: str = DEFAULT_DRAFT):
+    """How many clauses of a draft are argued against with no resolution trail."""
+    aggregate = aggregate_unresolved(graph, draft)
+    cited = [claim for claim in aggregate["claims"] if claim.get("bucket") == "cited" and claim.get("unresolved")]
+    leads = [claim for claim in aggregate["claims"] if claim.get("bucket") == "topic"]
+    count = len(cited)
+    claims = [{"text": claim["text"], "chips": claim["chips"]} for claim in cited]
+    notes = list(aggregate.get("notes") or [])
+    if leads:
+        notes.append(f"{len(leads)} further clause(s) are subject-token leads, counted separately from the {count} cited here")
+    result = card(
+        "count_unresolved",
+        f"{count} clauses of {draft} argued against, no resolution trail",
+        claims,
+        rows_out=[{"section": claim["text"]} for claim in cited],
+        notes=notes,
+    )
+    result["answer"] = count
+    result["count"] = count
+    return result
+
+
 class SyncDeferred(RuntimeError):
     """Raised when mailarchive cannot be re-fetched and the cache cannot stand in."""
 
@@ -575,6 +691,9 @@ TOOLS = {
     "what_happened_to": what_happened_to,
     "precedent": precedent,
     "sync": sync,
+    "section_by_heading": section_by_heading,
+    "revisions": revisions,
+    "count_unresolved": count_unresolved,
 }
 
 
