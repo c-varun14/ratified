@@ -1,6 +1,17 @@
 {% macro ask_clause(number, label) -%}
 <button type="button" class="pill" hx-post="/ask" hx-vals='{"question": {{ ("Why does section " ~ number ~ " read the way it does, and who do I ask?") | tojson }}}' hx-target="#card" hx-swap="innerHTML show:#card:top">{{ label }}</button>
 {%- endmacro %}
+{% macro claim_li(claim, i) -%}
+      <li class="claim{% if claim.bucket == 'topic' %} lead{% endif %}">
+        <span>{{ claim.text }}</span>{% if claim.bucket == 'topic' %}<span class="tag">possible lead</span>{% endif %}
+        {% if claim.quote %}<blockquote class="quote">{{ claim.quote }}</blockquote>{% endif %}
+        {% if claim.chips %}<div class="chips">{% for chip in claim.chips %}<a class="chip" href="{{ chip.url }}" target="_blank" rel="noopener" title="{{ chip.url }}">{{ chip.kind }} · {{ chip.label }}</a>{% endfor %}</div>{% endif %}
+        {% if claim.sid %}
+        <button class="path-btn" hx-get="/receipt?draft={{ claim.draft | urlencode }}&sid={{ claim.sid | urlencode }}" hx-target="#receipt-{{ i }}" hx-swap="innerHTML">show the traced path</button>
+        <div id="receipt-{{ i }}" class="receipt"></div>
+        {% endif %}
+      </li>
+{%- endmacro %}
 {% set badge_words = {
   'answer': 'Answered',
   'partial': 'Partly answered',
@@ -31,47 +42,52 @@
     <h3 class="step-heading">The conversation</h3>
     <p class="sub">What people actually wrote while the clause was still changing. Open a chip to read the original email.</p>
     <ol class="claims">
-      {% for claim in card.claims %}
-      <li class="claim{% if claim.bucket == 'topic' %} lead{% endif %}">
-        <span>{{ claim.text }}</span>{% if claim.bucket == 'topic' %}<span class="tag">possible lead</span>{% endif %}
-        {% if claim.quote %}<blockquote class="quote">{{ claim.quote }}</blockquote>{% endif %}
-        {% if claim.chips %}<div class="chips">{% for chip in claim.chips %}<a class="chip" href="{{ chip.url }}" target="_blank" rel="noopener" title="{{ chip.url }}">{{ chip.kind }} · {{ chip.label }}</a>{% endfor %}</div>{% endif %}
-        {% if claim.sid %}
-        <button class="path-btn" hx-get="/receipt?draft={{ claim.draft | urlencode }}&sid={{ claim.sid | urlencode }}" hx-target="#receipt-{{ loop.index }}" hx-swap="innerHTML">show the traced path</button>
-        <div id="receipt-{{ loop.index }}" class="receipt"></div>
-        {% endif %}
-      </li>
-      {% endfor %}
+      {% for claim in card.claims[:2] %}{{ claim_li(claim, loop.index) }}{% endfor %}
     </ol>
+    {% if card.claims | length > 2 %}
+    <details class="more">
+      <summary>Show {{ card.claims | length - 2 }} more</summary>
+      <ol class="claims" start="3">
+        {% for claim in card.claims[2:] %}{{ claim_li(claim, loop.index + 2) }}{% endfor %}
+      </ol>
+    </details>
+    {% endif %}
   </section>
   {% endif %}
 
   {% if card.tool == 'why_clause' and card.sid %}
   <section class="step sec-trace">
-    <h3 class="step-heading">How we got here</h3>
+    <details class="fold">
+    <summary class="step-heading">How we got here</summary>
     <p class="sub">From the email, through each draft, to the section that shipped. Every box opens the public source.</p>
     <div class="receipt" hx-get="/receipt?draft={{ card.draft | urlencode }}&sid={{ card.sid | urlencode }}&limit=1" hx-trigger="load" hx-swap="innerHTML"></div>
+    </details>
   </section>
   {% endif %}
 
   {% if card.who_to_ask %}
   <section class="step sec-people">
     <h3 class="step-heading">Who to ask</h3>
-    <ul class="people">{% for person in card.who_to_ask %}<li><strong>{{ person.name }}</strong><span>{{ person.why }}</span></li>{% endfor %}</ul>
+    <ul class="people">{% for person in card.who_to_ask[:3] %}<li><strong>{{ person.name }}</strong><span>{{ person.why }}</span></li>{% endfor %}</ul>
+    {% if card.who_to_ask | length > 3 %}<details class="more"><summary>Show {{ card.who_to_ask | length - 3 }} more people</summary>
+    <ul class="people">{% for person in card.who_to_ask[3:] %}<li><strong>{{ person.name }}</strong><span>{{ person.why }}</span></li>{% endfor %}</ul></details>{% endif %}
   </section>
   {% endif %}
 
   {% if card.related %}
   <section class="step sec-related">
-    <h3 class="step-heading">Read these next</h3>
+    <details class="fold">
+    <summary class="step-heading">Read these next</summary>
     <p class="sub">Clauses that came up in the same messages. Read them before changing this one so you don't miss the bigger picture.</p>
     <div class="chips-row" style="margin:0">{% for r in card.related %}{{ ask_clause(r.number, "§" ~ r.number ~ " " ~ r.title ~ " · " ~ r.n ~ " shared messages") }}{% endfor %}</div>
+    </details>
   </section>
   {% endif %}
 
   {% if card.draft_message %}
   <section class="step sec-draft">
-    <h3 class="step-heading">A question you could send <span class="tag">not sent</span></h3>
+    <details class="fold">
+    <summary class="step-heading">A question you could send <span class="tag">not sent</span></summary>
     <p class="sub">Ratified never sends email. Every line is filled from the graph.</p>
     <div class="mail">
       <div class="mail-head">
@@ -82,6 +98,7 @@
       <pre>{{ card.draft_message.body }}</pre>
       <div class="mail-foot"><button type="button" class="btn" onclick="navigator.clipboard.writeText(this.closest('.mail').querySelector('pre').innerText); this.textContent='Copied'">Copy the question</button></div>
     </div>
+    </details>
   </section>
   {% endif %}
 
