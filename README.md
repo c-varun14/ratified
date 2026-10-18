@@ -39,6 +39,8 @@ One FalkorDB graph for one working group, rebuilt from the committed public reco
 | Chairs / area directors | 3 / 2 | datatracker roles and person records |
 | **Total** | **8,300 nodes · 55,603 edges** | |
 
+The counts above are what the committed record rebuilds to in a fresh clone. The live instance also syncs new list mail, so its landing page can read slightly higher (8,302 nodes · 55,606 edges · 3,079 messages on 18 Oct 2026).
+
 The TLS 1.3 design era is covered by one archive search per draft revision, -18 to -28, with every message body downloaded (0 failures). That gives 333 `CITES` edges and **47 RFC 8446 clauses** that can be traced to a discussion.
 
 ### Graph data model
@@ -170,7 +172,7 @@ Two sets of 40 questions were written by a second model (DeepSeek V4.1 Flash via
 | Set | First pass, before any change | Then |
 |---|---|---|
 | [`heldout`](bench/heldout_results.json) | 22/40 | used to generalise the router's vocabulary, so no longer held out |
-| [`heldout2`](bench/heldout2_results.json) | **30/40 strict, 31/40 counting both kinds of correct decline** (the scorer printed 34/40; reading the rows showed 4 "any section" questions that took *TLS 1.3* as section 1.3, which is a wrong answer) | its misses were fixed ("TLS 1.3" is no longer read as a section number), so it is no longer held out either |
+| [`heldout2`](bench/heldout2_results.json) | **30/40 strict, 31/40 counting both kinds of correct decline** (the scorer printed 34/40; reading the rows showed 4 "any section" questions that took *TLS 1.3* as section 1.3, which is a wrong answer — recorded in the file's `adjudication` block) | its misses were fixed ("TLS 1.3" is no longer read as a section number), so it is no longer held out either |
 
 In the second set's first pass, 5 questions were confidently routed wrong. That's the number to keep in mind: a question phrased differently from anything above can still miss.
 
