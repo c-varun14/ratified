@@ -4,7 +4,7 @@
 
 Every team argues in chat and forgets who decided what. Ratified is a company brain built on an organisation where every argument is public, the IETF's TLS working group, so a judge can click any answer through to the original email.
 
-Graph Hacks 2026 (WeMakeDevs × FalkorDB) · **Track 03: Company Brain** · Live demo: _link added at deploy_ · Demo video: _link added before submission_
+Graph Hacks 2026 (WeMakeDevs × FalkorDB) · **Track 03: Company Brain** · Live demo: **http://54.226.12.76/** (no login; one small server) · Demo video: _link added before submission_
 
 ![RFC 8446 §4.2.1 traced from a March 2018 mailing-list message, through draft revisions -24 to -28, to the section that shipped, with the FalkorDB query panel](assets/scenario-path.png)
 

@@ -10,6 +10,17 @@ HERE=$(cd "$(dirname "$0")" && pwd)
 MYIP=$(curl -s https://checkip.amazonaws.com)
 VPC=$(aws ec2 describe-vpcs --region $REGION --filters Name=isDefault,Values=true --query 'Vpcs[0].VpcId' --output text)
 
+EXISTING=$(aws ec2 describe-instances --region $REGION --filters Name=tag:project,Values=ratified \
+  Name=instance-state-name,Values=pending,running --query 'Reservations[0].Instances[0].[InstanceId,PublicIpAddress]' --output text)
+if [ -n "$EXISTING" ] && [ "$EXISTING" != "None" ]; then
+  set -- $EXISTING
+  SG=$(aws ec2 describe-security-groups --region $REGION --filters Name=group-name,Values=ratified-sg --query 'SecurityGroups[0].GroupId' --output text)
+  aws ec2 authorize-security-group-ingress --region $REGION --group-id "$SG" --protocol tcp --port 22 --cidr "$MYIP/32" >/dev/null 2>&1 || true
+  echo "instance=$1 already running; ip=$2 (ssh allowed from $MYIP)"
+  echo "$2" > "$HERE/.host"
+  exit 0
+fi
+
 if [ ! -f "$PEM" ]; then
   aws ec2 create-key-pair --region $REGION --key-name $KEY \
     --tag-specifications 'ResourceType=key-pair,Tags=[{Key=project,Value=ratified}]' \
