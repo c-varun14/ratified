@@ -11,13 +11,17 @@
   <script src="https://unpkg.com/htmx.org@1.9.12"></script>
   <style>
     :root {
-      --bg: #f6f6f3; --surface: #ffffff; --surface-2: #f0f0ec; --ink: #16181d; --muted: #5d6470; --faint: #8a909a;
-      --line: #e2e2dc; --line-strong: #c9cac2;
+      --bg: #f7f6f2; --surface: #ffffff; --surface-2: #f1f0ea; --ink: #16181d; --muted: #5d6470; --faint: #8a909a;
+      --line: #e6e3da; --line-strong: #cbc8bd;
       --accent: #3b4cca; --accent-ink: #ffffff; --accent-soft: #e8eafb; --accent-line: #b9c0f0;
       --ok: #17663a; --ok-soft: #e3f3e8; --warn: #8a5a00; --warn-soft: #fbf0d9; --none: #4a5260; --none-soft: #eceef1;
       --bad: #a3221b; --bad-soft: #fbe5e3;
+      --amber: #b36a00; --amber-soft: #fdf0da;
+      --teal: #0f7a68; --teal-soft: #e0f4ef;
+      --rose: #c0344d; --rose-soft: #fde7eb;
       --shadow: 0 1px 2px rgba(20, 22, 30, .05), 0 4px 16px rgba(20, 22, 30, .05);
-      --radius: 14px; --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+      --shadow-lg: 0 2px 4px rgba(20, 22, 30, .05), 0 12px 32px rgba(20, 22, 30, .09);
+      --radius: 16px; --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
       color-scheme: light;
     }
     @media (prefers-color-scheme: dark) {
@@ -27,7 +31,11 @@
         --accent: #8f9bff; --accent-ink: #0f1226; --accent-soft: #23284a; --accent-line: #444d8c;
         --ok: #6fd39a; --ok-soft: #173325; --warn: #f0c25e; --warn-soft: #382c12; --none: #b4bcc8; --none-soft: #262b33;
         --bad: #ff8c84; --bad-soft: #3d1c1a;
+        --amber: #f0bd63; --amber-soft: #3a2c12;
+        --teal: #63cfba; --teal-soft: #14322c;
+        --rose: #ff9aa8; --rose-soft: #3a1c22;
         --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 6px 20px rgba(0, 0, 0, .25);
+        --shadow-lg: 0 2px 6px rgba(0, 0, 0, .35), 0 16px 40px rgba(0, 0, 0, .35);
         color-scheme: dark;
       }
     }
@@ -36,42 +44,84 @@
     body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.6 Inter, ui-sans-serif, system-ui, sans-serif; }
     a { color: var(--accent); }
     code, pre, .mono { font-family: var(--mono); font-size: .86em; }
-    .wrap { max-width: 64rem; margin: 0 auto; padding: 2.4rem 1.25rem 4rem; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
 
-    .top { display: flex; align-items: center; gap: .6rem; margin-bottom: 2rem; }
-    .mark { width: 30px; height: 30px; border-radius: 9px; background: var(--accent); display: grid; place-items: center; }
-    .mark svg { width: 18px; height: 18px; }
-    .brand { font-weight: 700; letter-spacing: -.01em; font-size: 1.05rem; }
-    .top .tag-line { margin-left: auto; font-size: .78rem; color: var(--muted); }
+    /* ---------- top bar + stepper ---------- */
+    .topbar { position: sticky; top: 0; z-index: 50; background: var(--surface); border-bottom: 1px solid var(--line); box-shadow: 0 1px 0 rgba(20, 22, 30, .02); }
+    .topbar-inner { max-width: 64rem; margin: 0 auto; padding: .55rem 16px; display: flex; align-items: center; gap: .5rem 1rem; flex-wrap: wrap; }
+    .brand-lockup { display: inline-flex; align-items: center; gap: .55rem; text-decoration: none; color: var(--ink); min-height: 44px; }
+    .mark { width: 34px; height: 34px; border-radius: 11px; background: linear-gradient(135deg, var(--accent), #7d87f4); display: grid; place-items: center; box-shadow: var(--shadow); }
+    .mark svg { width: 19px; height: 19px; }
+    .brand { font-weight: 700; letter-spacing: -.01em; font-size: 1.08rem; }
+    .stepper { display: flex; align-items: center; gap: .1rem; margin-left: auto; flex-wrap: wrap; }
+    .stepper a { display: inline-flex; align-items: center; gap: .4rem; min-height: 44px; padding: .3rem .55rem; border-radius: 999px; text-decoration: none; color: var(--muted); font-size: .84rem; font-weight: 500; }
+    .stepper a:hover { background: var(--surface-2); color: var(--ink); }
+    .stepper a[aria-current="step"] { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+    .stepper .num { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; font-size: .76rem; font-weight: 700; color: #fff; background: var(--faint); }
+    .stepper a:nth-of-type(1) .num { background: var(--accent); }
+    .stepper a:nth-of-type(2) .num { background: var(--teal); }
+    .stepper a:nth-of-type(3) .num { background: var(--amber); }
+    .stepper a:nth-of-type(4) .num { background: var(--rose); }
+    .stepper .sep { width: 12px; height: 2px; background: var(--line); border-radius: 2px; }
 
-    h1 { font-size: clamp(1.9rem, 4.6vw, 2.8rem); line-height: 1.12; letter-spacing: -.025em; margin: 0 0 .8rem; max-width: 46rem; }
-    .lede { font-size: 1.08rem; color: var(--muted); max-width: 44rem; margin: 0 0 1.2rem; }
-    .stats { display: flex; flex-wrap: wrap; gap: .4rem; margin: 0 0 2rem; padding: 0; list-style: none; }
-    .stats li { font-size: .78rem; color: var(--muted); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: .2rem .65rem; }
-    .stats strong { color: var(--ink); font-weight: 600; }
+    /* ---------- layout ---------- */
+    .wrap { max-width: 64rem; margin: 0 auto; padding: 1.6rem 16px 4rem; }
+    .panel { display: block; }
+    .panel[hidden] { display: none; }
+    .panel > h2, .panel-head > h2 { font-size: clamp(1.4rem, 3.4vw, 1.85rem); line-height: 1.15; letter-spacing: -.02em; margin: 0; }
+    .panel-head { display: flex; align-items: baseline; justify-content: space-between; gap: .5rem 1rem; flex-wrap: wrap; margin: 0 0 .9rem; }
+    .eyebrow { font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; font-weight: 600; color: var(--accent); margin: 0 0 .45rem; }
+    .lede { font-size: 1.06rem; color: var(--muted); max-width: 44rem; margin: 0 0 1.1rem; }
+    .link { color: var(--accent); font-weight: 600; font-size: .92rem; text-decoration: none; min-height: 44px; padding: .6rem .2rem; display: inline-flex; align-items: center; }
+    .link:hover { text-decoration: underline; }
 
-    .scenario { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.4rem 1.5rem; margin: 0 0 1.6rem; display: grid; grid-template-columns: 1fr auto; gap: 1rem 1.5rem; align-items: center; }
-    .eyebrow { font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; font-weight: 600; color: var(--accent); margin: 0 0 .35rem; }
-    .scenario p.story { margin: 0; font-size: 1.02rem; }
-    .run { font: 600 1rem Inter, sans-serif; padding: .85rem 1.35rem; border-radius: 10px; border: 0; background: var(--accent); color: var(--accent-ink); cursor: pointer; white-space: nowrap; box-shadow: var(--shadow); }
-    .run:hover { filter: brightness(1.07); }
+    /* ---------- start / hero ---------- */
+    .hero-start {
+      border: 1px solid var(--line); border-radius: calc(var(--radius) + 6px); box-shadow: var(--shadow-lg);
+      padding: 1.7rem 1.6rem 1.4rem;
+      background:
+        radial-gradient(115% 130% at 0% 0%, var(--accent-soft), transparent 58%),
+        radial-gradient(115% 130% at 100% 0%, var(--amber-soft), transparent 55%),
+        var(--surface);
+    }
+    .hero-start h1 { font-size: clamp(1.75rem, 5.4vw, 2.7rem); line-height: 1.12; letter-spacing: -.025em; margin: 0 0 .7rem; max-width: 46rem; }
+    .how { display: grid; grid-template-columns: repeat(3, 1fr); gap: .8rem; margin: 1.3rem 0 0; }
+    .how-item { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem; box-shadow: var(--shadow); }
+    .how-item .ico { width: 44px; height: 44px; border-radius: 13px; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); margin-bottom: .65rem; }
+    .how-item:nth-of-type(2) .ico { background: var(--teal-soft); color: var(--teal); }
+    .how-item:nth-of-type(3) .ico { background: var(--amber-soft); color: var(--amber); }
+    .how-item .ico svg { width: 22px; height: 22px; }
+    .how-item h3 { font-size: .98rem; margin: 0 0 .25rem; letter-spacing: -.01em; }
+    .how-item p { margin: 0; font-size: .86rem; color: var(--muted); }
+    .cta-block { margin-top: 1.5rem; padding-top: 1.3rem; border-top: 1px solid var(--line); }
+    .story { font-size: 1.05rem; margin: 0 0 1rem; max-width: 46rem; }
+    .story code { background: var(--surface-2); padding: .05rem .35rem; border-radius: 5px; }
+    .cta-actions { display: flex; align-items: center; gap: .3rem 1rem; flex-wrap: wrap; }
+    .cta { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; min-height: 48px; font: 600 1rem Inter, sans-serif; padding: .85rem 1.55rem; border-radius: 12px; border: 0; background: var(--accent); color: var(--accent-ink); cursor: pointer; box-shadow: 0 6px 18px rgba(59, 76, 202, .26); }
+    .cta:hover { filter: brightness(1.07); }
+    .stats-line { margin: 1.2rem 0 0; color: var(--muted); font-size: .85rem; }
 
-    .ask { display: flex; gap: .5rem; margin: 0 0 .8rem; }
-    .ask input { flex: 1; min-width: 0; font: inherit; padding: .75rem .95rem; border-radius: 10px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink); }
+    /* ---------- ask ---------- */
+    .ask { display: flex; gap: .5rem; margin: 0 0 1rem; }
+    .ask input { flex: 1; min-width: 0; min-height: 46px; font: inherit; padding: .75rem .95rem; border-radius: 10px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink); }
     .ask input:focus { outline: 2px solid var(--accent-line); border-color: var(--accent); }
-    .btn { font: 500 .92rem Inter, sans-serif; padding: .7rem 1rem; border-radius: 10px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink); cursor: pointer; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; font: 500 .92rem Inter, sans-serif; padding: .6rem 1rem; border-radius: 10px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink); cursor: pointer; text-decoration: none; }
     .btn.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
-    .btn:hover { border-color: var(--accent); }
-    .chips-row { display: flex; flex-wrap: wrap; gap: .4rem; margin: 0 0 1.8rem; }
-    .pill { font: 500 .8rem Inter, sans-serif; padding: .32rem .7rem; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; text-align: left; }
+    .btn.ghost { background: none; color: var(--muted); border-color: var(--line); }
+    .btn:hover { border-color: var(--accent); color: var(--accent); }
+    .btn.primary:hover { color: var(--bg); }
+    .chips-row { display: flex; flex-wrap: wrap; gap: .45rem; margin: 0 0 1.1rem; }
+    .pill { display: inline-flex; align-items: center; min-height: 44px; font: 500 .82rem Inter, sans-serif; padding: .4rem .8rem; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; text-align: left; }
     .pill:hover { border-color: var(--accent); color: var(--accent); }
-    .pill .sub { color: var(--faint); font-weight: 400; }
-    .htmx-request.run, .htmx-request.pill, .htmx-request.btn, .htmx-request .btn.primary { opacity: .55; cursor: progress; }
-    .loading { display: none; color: var(--muted); font-size: .9rem; margin: .5rem 0 1rem; }
-    .htmx-request .loading, .loading.htmx-request { display: block; }
+    .pill .sub { color: var(--faint); font-weight: 400; margin-left: .25rem; }
+    .htmx-request.cta, .htmx-request.pill, .htmx-request.btn, .htmx-request .btn.primary { opacity: .55; cursor: progress; }
 
+    /* ---------- answer / card target ---------- */
     #card:empty { display: none; }
-    #card { margin: 0 0 2.4rem; scroll-margin-top: 1rem; }
+    #card { margin: 0 0 1.5rem; scroll-margin-top: 5rem; }
+    #card[hidden] { display: none; }
+    .empty-state { text-align: center; padding: 2.6rem 1rem; border: 1px dashed var(--line-strong); border-radius: var(--radius); background: var(--surface); }
+    .empty-state .empty { font-size: 1rem; margin: 0 0 1rem; }
     .asked { font-size: .88rem; color: var(--muted); margin: 0 0 .6rem; }
     .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.3rem 1.5rem; }
     .card + .card { margin-top: 1rem; }
@@ -87,7 +137,7 @@
     .hero-explain { margin: .8rem 0 0; color: var(--muted); font-size: .98rem; }
     .resolved { margin: .9rem 0 0; padding: .65rem .85rem; border-radius: 10px; background: var(--accent-soft); font-size: .86rem; }
     .resolved .alts { display: inline-flex; flex-wrap: wrap; gap: .3rem; margin-left: .3rem; vertical-align: middle; }
-    .resolved .pill { padding: .12rem .55rem; font-size: .76rem; }
+    .resolved .pill { min-height: 0; padding: .12rem .55rem; font-size: .76rem; }
     .empty { color: var(--muted); font-style: italic; }
     .phrasing { border-left: 3px solid var(--line-strong); padding-left: .8rem; color: var(--muted); }
     .card h3 { font-size: .74rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 1.6rem 0 .2rem; font-weight: 600; }
@@ -101,7 +151,8 @@
     .chip { font: 500 .72rem var(--mono); text-decoration: none; color: var(--accent); background: var(--accent-soft); border-radius: 6px; padding: .12rem .45rem; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .chip:hover { text-decoration: underline; }
     .tag { font-size: .66rem; text-transform: uppercase; letter-spacing: .06em; border: 1px solid var(--line-strong); color: var(--muted); border-radius: 5px; padding: 0 .3rem; margin-left: .3rem; }
-    .path-btn { font: 500 .74rem Inter, sans-serif; margin-top: .4rem; padding: .18rem .6rem; border-radius: 999px; border: 1px solid var(--line-strong); background: none; color: var(--ink); cursor: pointer; }
+    .path-btn { font: 500 .74rem Inter, sans-serif; margin-top: .5rem; min-height: 44px; padding: .3rem .75rem; border-radius: 999px; border: 1px solid var(--line-strong); background: none; color: var(--ink); cursor: pointer; }
+    .path-btn:hover { border-color: var(--accent); color: var(--accent); }
     .people { list-style: none; padding: 0; margin: .5rem 0 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: .45rem; }
     .people li { background: var(--surface-2); border-radius: 10px; padding: .5rem .7rem; font-size: .88rem; }
     .people li span { display: block; font-size: .76rem; color: var(--muted); }
@@ -115,6 +166,7 @@
     .missing li::before { content: "partial · "; color: var(--warn); font-weight: 600; }
     .conflicts { color: var(--bad); font-size: .88rem; }
 
+    /* ---------- traced path / receipt ---------- */
     .receipt:empty { display: none; }
     .receipt-body { margin: .6rem 0 0; padding: .9rem 1rem; border-radius: 12px; background: var(--surface-2); }
     .path-via { font-size: .76rem; color: var(--muted); margin-bottom: .3rem; }
@@ -139,111 +191,318 @@
     .trace li { margin: 0 0 .6rem; font-size: .76rem; color: var(--muted); }
     .trace pre { margin: .2rem 0 0; padding: .55rem .7rem; background: var(--surface-2); border-radius: 8px; overflow-x: auto; white-space: pre-wrap; word-break: break-word; color: var(--ink); font-size: .74rem; }
 
-    .explore { display: grid; grid-template-columns: 3fr 2fr; gap: 1rem; margin: 0 0 2rem; }
-    .panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.1rem 1.2rem; }
-    .panel h2 { font-size: 1rem; margin: 0 0 .2rem; letter-spacing: -.01em; }
-    .panel p.sub { font-size: .82rem; color: var(--muted); margin: 0 0 .8rem; }
-    .panel .chips-row { margin: 0; max-height: 19rem; overflow-y: auto; }
+    /* ---------- explore ---------- */
+    .tabs { display: flex; gap: .25rem; border-bottom: 1px solid var(--line); margin: 0 0 1.1rem; flex-wrap: wrap; }
+    .tab { appearance: none; background: none; border: 0; border-bottom: 3px solid transparent; padding: .7rem .6rem; min-height: 44px; font: 600 .92rem Inter, sans-serif; color: var(--muted); cursor: pointer; white-space: normal; }
+    .tab:hover { color: var(--ink); }
+    .tab[aria-selected="true"] { color: var(--accent); border-bottom-color: var(--accent); }
+    .tab-chips { max-height: 24rem; overflow-y: auto; margin-bottom: 0; }
+    @media (max-width: 720px) { .tab-chips { max-height: none; overflow: visible; } }
     .rank { list-style: none; padding: 0; margin: 0; }
-    .rank li { display: grid; grid-template-columns: 1.4rem 1fr auto; gap: .5rem; align-items: center; padding: .4rem 0; border-top: 1px solid var(--line); font-size: .88rem; }
+    .rank li { display: grid; grid-template-columns: 1.4rem 1fr auto; gap: .5rem; align-items: center; padding: .45rem 0; border-top: 1px solid var(--line); font-size: .88rem; }
     .rank li:first-child { border-top: 0; }
     .rank .n { color: var(--faint); font-size: .76rem; }
     .rank .bar { height: 6px; width: 4.5rem; background: var(--surface-2); border-radius: 3px; overflow: hidden; }
     .rank .bar i { display: block; height: 100%; background: var(--accent); }
     .rank small { display: block; color: var(--muted); font-size: .74rem; }
-    details.catalogue-box { margin: 0 0 1.4rem; font-size: .84rem; }
-    details.catalogue-box summary { cursor: pointer; color: var(--muted); }
+    details.catalogue-box { margin: 1.6rem 0 1.4rem; font-size: .84rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: .9rem 1.1rem; }
+    details.catalogue-box summary { cursor: pointer; color: var(--muted); font-weight: 600; min-height: 44px; display: flex; align-items: center; }
     .catalogue { padding-left: 1.2rem; color: var(--muted); }
     .catalogue code { color: var(--ink); }
-    footer { color: var(--faint); font-size: .78rem; border-top: 1px solid var(--line); padding-top: 1rem; }
+
+    footer { color: var(--faint); font-size: .78rem; border-top: 1px solid var(--line); padding-top: 1rem; margin-top: 1rem; }
+    footer p { margin: 0; }
     footer a { color: var(--muted); }
     .sync-counts { font-weight: 600; }
 
     @media (max-width: 720px) {
-      .wrap { padding: 1.4rem 16px 3rem; }
-      .top .tag-line { display: none; }
-      .scenario { grid-template-columns: 1fr; padding: 1.1rem; }
-      .run { width: 100%; }
+      .how { grid-template-columns: 1fr; }
+      .hero-start { padding: 1.3rem 1.1rem; }
       .ask { flex-wrap: wrap; }
       .ask input { flex-basis: 100%; }
-      .ask .btn { flex: 1; }
-      .explore { grid-template-columns: 1fr; }
+      .ask .btn.primary { flex: 1; }
       .card { padding: 1.05rem; }
       .card.hero .card-head h2 { font-size: 1.22rem; }
       .mail-head { grid-template-columns: 3.6rem 1fr; }
     }
+    @media (max-width: 620px) {
+      .stepper { width: 100%; justify-content: space-between; margin-left: 0; }
+      .stepper .sep { display: none; }
+      .stepper a { padding: .3rem .35rem; gap: .3rem; }
+      .stepper a .lbl { font-size: .8rem; }
+      .cta { width: 100%; }
+      .cta-actions { gap: .1rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
+    }
+
+    /* ---------- guided answer card ---------- */
+    .card { counter-reset: stepnum; }
+    .card .step { border-top: 1px solid var(--line); margin-top: 1.15rem; padding-top: 1.1rem; }
+    .card .step:first-of-type { border-top: 0; margin-top: 0; padding-top: 0; }
+    .card .sec-label, .card h3.step-heading {
+      display: flex; align-items: center; gap: .55rem; flex-wrap: wrap;
+      margin: 0 0 .55rem; font-size: .96rem; font-weight: 700; letter-spacing: -.01em;
+      text-transform: none; color: var(--ink); line-height: 1.35;
+    }
+    .card .sec-label::before, .card h3.step-heading::before {
+      counter-increment: stepnum; content: counter(stepnum);
+      flex: none; display: inline-grid; place-items: center;
+      width: 22px; height: 22px; border-radius: 50%;
+      background: var(--accent-soft); color: var(--accent);
+      font-size: .72rem; line-height: 1;
+    }
+    .card h3.step-heading .tag { margin-left: 0; }
+    .not-it { display: flex; align-items: center; flex-wrap: wrap; gap: .25rem .55rem; margin: .75rem 0 0; font-size: .84rem; font-weight: 600; color: var(--muted); }
+    .not-it .alts { display: inline-flex; flex-wrap: wrap; gap: .3rem; vertical-align: middle; }
+    .card details.proof { margin-top: 1.15rem; border-top: 1px solid var(--line); padding-top: .35rem; }
+    .card details.proof summary { list-style: none; cursor: pointer; min-height: 44px; display: flex; align-items: center; gap: .5rem; font-size: .88rem; font-weight: 600; color: var(--muted); }
+    .card details.proof summary:hover { color: var(--ink); }
+    .card details.proof summary::-webkit-details-marker { display: none; }
+    .card details.proof summary::after { content: "▾"; flex: none; font-size: .75rem; color: var(--faint); }
+    .card details.proof[open] summary::after { transform: rotate(180deg); }
+    .proof .tool { margin-top: .35rem; }
+    .proof .proof-note { margin: .7rem 0 0; font-size: .85rem; color: var(--muted); }
+    .proof .notes { margin-top: .8rem; }
+
+    /* ---------- receipt timeline ---------- */
+    .timeline { list-style: none; margin: .35rem 0 0; padding: 0; }
+    .timeline li { position: relative; display: flex; align-items: center; flex-wrap: wrap; gap: .3rem .55rem; margin: 0; padding: 0 0 0 1.7rem; min-height: 46px; }
+    .timeline li::before { content: ""; position: absolute; left: 7px; top: 0; bottom: 0; width: 2px; border-radius: 2px; background: var(--accent-line); }
+    .timeline li:first-child::before { top: 50%; }
+    .timeline li:last-child::before { bottom: 50%; }
+    .timeline li::after { content: ""; position: absolute; left: 2px; top: 50%; transform: translateY(-50%); width: 12px; height: 12px; border-radius: 50%; background: var(--surface); border: 2px solid var(--accent); }
+    .timeline .tl-kind { flex: none; font-size: .68rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); background: var(--surface-2); border-radius: 5px; padding: .12rem .45rem; }
+    .timeline a { display: inline-flex; align-items: center; min-height: 44px; padding: .1rem .35rem; margin: -.1rem -.15rem -.1rem -.25rem; font: 500 .8rem var(--mono); color: var(--ink); text-decoration: none; word-break: break-word; }
+    .timeline a:hover { text-decoration: underline; }
+    .timeline .tl-rfc a, .timeline .tl-section a { font-family: Inter, sans-serif; font-size: .88rem; }
+    .timeline .tl-section a { color: var(--accent); font-weight: 600; }
+
+    @media (max-width: 720px) {
+      .card .sec-label, .card h3.step-heading { font-size: .9rem; gap: .45rem; }
+      .timeline li { padding-left: 1.5rem; }
+    }
   </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="top">
-    <div class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="6" r="2.4"/><circle cx="19" cy="6" r="2.4"/><circle cx="12" cy="18" r="2.4"/><path d="M7 7.5 10.6 16M17 7.5 13.4 16M7.4 6h9.2"/></svg></div>
-    <span class="brand">Ratified</span>
-    <span class="tag-line">A company brain on FalkorDB · Graph Hacks 2026</span>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand-lockup" href="#/start" aria-label="Ratified — back to start">
+      <span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="6" r="2.4"/><circle cx="19" cy="6" r="2.4"/><circle cx="12" cy="18" r="2.4"/><path d="M7 7.5 10.6 16M17 7.5 13.4 16M7.4 6h9.2"/></svg></span>
+      <span class="brand">Ratified</span>
+    </a>
+    <nav class="stepper" aria-label="Progress">
+      <a href="#/start" aria-current="step"><span class="num" aria-hidden="true">1</span><span class="lbl">Start</span></a>
+      <span class="sep" aria-hidden="true"></span>
+      <a href="#/ask"><span class="num" aria-hidden="true">2</span><span class="lbl">Ask</span></a>
+      <span class="sep" aria-hidden="true"></span>
+      <a href="#/answer"><span class="num" aria-hidden="true">3</span><span class="lbl">Answer</span></a>
+      <span class="sep" aria-hidden="true"></span>
+      <a href="#/explore"><span class="num" aria-hidden="true">4</span><span class="lbl">Explore</span></a>
+    </nav>
   </div>
+</header>
 
-  <h1>Ask why a decision was made. Get the discussion, the people, and a path you can click.</h1>
-  <p class="lede">Every team argues in chat and forgets who decided what. Ratified is a company brain built on an organisation where every argument is public, the IETF's TLS working group, so every answer can be checked against the record.</p>
-  {% if stats %}
-  <ul class="stats">
-    <li><strong>{{ "{:,}".format(stats.nodes) }}</strong> nodes</li>
-    <li><strong>{{ "{:,}".format(stats.edges) }}</strong> edges</li>
-    <li><strong>{{ "{:,}".format(stats.messages) }}</strong> list messages, {{ "{:,}".format(stats.with_text | int) }} with their text ({{ stats.first[:4] }}–{{ stats.last[:4] }})</li>
-    <li>drafts, revisions, RFC 8446 sections, chairs</li>
-    <li>every claim links to its public source</li>
-  </ul>
-  {% endif %}
+<main class="wrap">
+  <section class="panel" data-panel="start">
+    <div class="hero-start">
+      <p class="eyebrow">The public record of TLS</p>
+      <h1>Ask why a team made a decision. Get the real conversation behind it.</h1>
+      <p class="lede">Ratified reads the public IETF TLS mailing list, so every answer links straight to the original email.</p>
 
-  <section class="scenario">
-    <div>
-      <p class="eyebrow">The scenario</p>
-      <p class="story">You just joined a team shipping TLS 1.3. RFC 8446 negotiates the protocol version in a <code>supported_versions</code> extension instead of the version field everyone used before. Why? The people who settled it are spread across years of mailing-list threads.</p>
+      <div class="how" aria-label="How it works">
+        <div class="how-item">
+          <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h16v11H9l-5 4z"/><path d="M9.6 9.4a2.4 2.4 0 1 1 3.4 2.2c-.7.35-1 .8-1 1.6"/><circle cx="12" cy="15" r=".7" fill="currentColor" stroke="none"/></svg></span>
+          <h3>Ask a question</h3>
+          <p>Type what you want to know in plain words.</p>
+        </div>
+        <div class="how-item">
+          <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5"/><path d="M8 9h5M8 12h3"/></svg></span>
+          <h3>We find the discussion</h3>
+          <p>Ratified searches the mailing-list threads and drafts that decided it.</p>
+        </div>
+        <div class="how-item">
+          <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></span>
+          <h3>You click through to the source</h3>
+          <p>Every claim opens the original email or RFC text.</p>
+        </div>
+      </div>
+
+      <div class="cta-block">
+        <p class="story">You just joined a team shipping TLS 1.3. Why does RFC 8446 negotiate the version in a <code>supported_versions</code> extension, and who do you ask?</p>
+        <div class="cta-actions">
+          <button class="cta" hx-post="/ask" hx-vals='{"question": {{ scenario | tojson }}}' hx-target="#card" hx-swap="innerHTML">Try an example</button>
+          <a class="link" href="#/ask">or ask your own question</a>
+        </div>
+      </div>
+
+      {% if stats %}
+      <p class="stats-line">{{ "{:,}".format(stats.nodes) }} nodes · {{ "{:,}".format(stats.edges) }} edges · {{ "{:,}".format(stats.messages) }} list messages in the graph</p>
+      {% endif %}
     </div>
-    <button class="run" hx-post="/ask" hx-vals='{"question": {{ scenario | tojson }}}' hx-target="#card" hx-swap="innerHTML show:#card:top">▶ Run the scenario</button>
   </section>
 
-  <form class="ask" hx-post="/ask" hx-target="#card" hx-swap="innerHTML show:#card:top">
-    <input name="question" placeholder="Why does early data work like this? · What did people say about middleboxes?" value="{{ question }}" aria-label="Ask a question">
-    <button class="btn primary" type="submit">Ask</button>
-    <button class="btn" type="button" hx-post="/sync" hx-target="#card" hx-swap="innerHTML show:#card:top" title="re-fetch the last 24 h of the WG list">Sync</button>
-  </form>
+  <section class="panel" data-panel="ask" hidden>
+    <h2>What do you want to know?</h2>
+    <form class="ask" hx-post="/ask" hx-target="#card" hx-swap="innerHTML">
+      <input name="question" placeholder="Why does early data work like this? · What did people say about middleboxes?" value="{{ question }}" aria-label="Ask a question">
+      <button class="btn primary" type="submit">Ask</button>
+    </form>
+    <div class="chips-row">
+      {% for example in examples %}{% if loop.index <= 4 %}<button type="button" class="pill" hx-post="/ask" hx-vals='{"question": {{ example | tojson }}}' hx-target="#card" hx-swap="innerHTML">{{ example }}</button>{% endif %}{% endfor %}
+    </div>
+    <button class="btn ghost" type="button" hx-post="/sync" hx-target="#card" hx-swap="innerHTML">Sync latest list mail</button>
+  </section>
 
-  <div class="chips-row">
-    {% for example in examples %}<button type="button" class="pill" hx-post="/ask" hx-vals='{"question": {{ example | tojson }}}' hx-target="#card" hx-swap="innerHTML show:#card:top">{{ example }}</button>{% endfor %}
-  </div>
+  <section class="panel" data-panel="answer" hidden>
+    <div class="panel-head">
+      <h2>Your answer</h2>
+      <a class="link" href="#/ask">Ask another question</a>
+    </div>
+    <section id="card"{% if not card %} hidden{% endif %}>{% if card %}{% include "_card.html" %}{% endif %}</section>
+    <div id="card-empty" class="empty-state"{% if card %} hidden{% endif %}>
+      <p class="empty">No answer yet. Ask a question and the discussion behind it will show up here.</p>
+      <a class="btn primary" href="#/ask">Ask a question</a>
+    </div>
+  </section>
 
-  <section id="card">{% if card %}{% include "_card.html" %}{% endif %}</section>
+  <section class="panel" data-panel="explore" hidden>
+    <h2>Browse the record</h2>
+    <div class="tabs" role="tablist" aria-label="Ways to browse the record">
+      <button class="tab" type="button" role="tab" id="tab-clauses" data-tab="clauses" aria-controls="tabpanel-clauses" aria-selected="true">Clauses with a discussion</button>
+      <button class="tab" type="button" role="tab" id="tab-people" data-tab="people" aria-controls="tabpanel-people" aria-selected="false" tabindex="-1">Most connected people</button>
+    </div>
 
-  <div class="explore">
-    {% if clauses %}
-    <section class="panel">
-      <h2>{{ clauses | length }} clauses with a traced discussion</h2>
-      <p class="sub">Every RFC 8446 clause the graph can trace to messages written while its text was still changing. Pick one.</p>
-      <div class="chips-row">
-        {% for clause in clauses %}<button type="button" class="pill" hx-post="/ask" hx-vals='{"question": {{ ("Why does section " ~ clause.number ~ " read the way it does, and who do I ask?") | tojson }}}' hx-target="#card" hx-swap="innerHTML show:#card:top">§{{ clause.number }} {{ clause.title }} <span class="sub">· {{ clause.messages }} msg · {{ clause.people }} people</span></button>{% endfor %}
+    <div id="tabpanel-clauses" role="tabpanel" aria-labelledby="tab-clauses">
+      {% if clauses %}
+      <div class="chips-row tab-chips">
+        {% for clause in clauses %}<button type="button" class="pill" hx-post="/ask" hx-vals='{"question": {{ ("Why does section " ~ clause.number ~ " read the way it does, and who do I ask?") | tojson }}}' hx-target="#card" hx-swap="innerHTML">§{{ clause.number }} {{ clause.title }} <span class="sub">· {{ clause.messages }} msg · {{ clause.people }} people</span></button>{% endfor %}
       </div>
-    </section>
-    {% endif %}
-    {% if people %}
-    <section class="panel">
-      <h2>Who knows what</h2>
-      <p class="sub">FalkorDB <code>algo.pageRank</code> over who wrote in the same threads. Central is not the same as right.</p>
+      {% else %}
+      <p class="empty">No clauses with a traced discussion yet.</p>
+      {% endif %}
+    </div>
+
+    <div id="tabpanel-people" role="tabpanel" aria-labelledby="tab-people" hidden>
+      {% if people %}
+      <p class="lede">Most connected people ranks who wrote in the same threads most often. Being central is not the same as being right.</p>
       <ol class="rank">
         {% set top = people[0].pagerank %}
-        {% for person in people %}<li><span class="n">{{ loop.index }}</span><span>{{ person.name }}<small>{{ person.threads }} threads · {{ person.clauses }} clauses cited</small></span><span class="bar" title="PageRank {{ person.pagerank }}"><i style="width: {{ (100 * person.pagerank / top) | round | int }}%"></i></span></li>{% endfor %}
+        {% for person in people %}<li><span class="n">{{ loop.index }}</span><span>{{ person.name }}<small>{{ person.threads }} threads · {{ person.clauses }} clauses cited</small></span><span class="bar" title="most connected people (FalkorDB PageRank {{ person.pagerank }})"><i style="width: {{ (100 * person.pagerank / top) | round | int }}%"></i></span></li>{% endfor %}
       </ol>
-    </section>
-    {% endif %}
-  </div>
+      {% else %}
+      <p class="empty">No people data yet.</p>
+      {% endif %}
+    </div>
 
-  <details class="catalogue-box">
-    <summary>The fixed tool catalogue: every question routes to one of these, each a hand-written Cypher query. No model writes Cypher or citations.</summary>
-    <ul class="catalogue">
-      {% for tool in catalogue %}<li><code>{{ tool.name }}</code>({{ tool.args | join(', ') }}) — {{ tool.description }}</li>{% endfor %}
-    </ul>
-  </details>
+    <details class="catalogue-box">
+      <summary>How it works (for the curious)</summary>
+      <p class="lede">Every question routes to one of these fixed tools, each a hand-written Cypher query. No model writes Cypher or citations.</p>
+      <ul class="catalogue">
+        {% for tool in catalogue %}<li><code>{{ tool.name }}</code>({{ tool.args | join(', ') }}) — {{ tool.description }}</li>{% endfor %}
+      </ul>
+    </details>
+  </section>
 
-  <footer>Ratified · built on FalkorDB · data from the IETF datatracker, the mailarchive and the RFC Editor · Graph Hacks 2026 (WeMakeDevs × FalkorDB), Track 03 Company Brain</footer>
-</div>
+  <footer>
+    <p>Ratified · built on FalkorDB · data from the IETF datatracker, the mailarchive and the RFC Editor · Graph Hacks 2026 (WeMakeDevs × FalkorDB), Track 03 Company Brain</p>
+  </footer>
+</main>
+
+<script>
+(function () {
+  var ROUTES = ['start', 'ask', 'answer', 'explore'];
+  var motionQuery = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : { matches: false };
+
+  function routeFromHash() {
+    var h = (location.hash || '').replace(/^#\/?/, '').split('?')[0];
+    return ROUTES.indexOf(h) !== -1 ? h : 'start';
+  }
+
+  function updateEmpty() {
+    var card = document.getElementById('card');
+    var empty = document.getElementById('card-empty');
+    if (!card || !empty) return;
+    var has = card.children.length > 0 && card.textContent.replace(/\s+/g, '') !== '';
+    empty.hidden = has;
+    card.hidden = !has;
+  }
+
+  function focusHeading(route) {
+    var panel = document.querySelector('.panel[data-panel="' + route + '"]');
+    if (!panel) return;
+    var heading = panel.querySelector('h1, h2');
+    if (!heading) return;
+    heading.setAttribute('tabindex', '-1');
+    try { heading.focus({ preventScroll: true }); } catch (e) { heading.focus(); }
+  }
+
+  function render(route, focus) {
+    var panels = document.querySelectorAll('.panel[data-panel]');
+    for (var i = 0; i < panels.length; i++) {
+      panels[i].hidden = panels[i].getAttribute('data-panel') !== route;
+    }
+    var links = document.querySelectorAll('.stepper a[href^="#/"]');
+    for (var j = 0; j < links.length; j++) {
+      if (links[j].getAttribute('href') === '#/' + route) links[j].setAttribute('aria-current', 'step');
+      else links[j].removeAttribute('aria-current');
+    }
+    if (route === 'answer') updateEmpty();
+    if (focus) {
+      focusHeading(route);
+      try { window.scrollTo({ top: 0, behavior: motionQuery.matches ? 'auto' : 'smooth' }); }
+      catch (e) { window.scrollTo(0, 0); }
+    }
+  }
+
+  function go(route) {
+    var target = '#/' + route;
+    if (location.hash === target) render(route, true);
+    else location.hash = target;
+  }
+
+  window.addEventListener('hashchange', function () { render(routeFromHash(), true); });
+
+  document.addEventListener('htmx:afterSwap', function (e) {
+    if (e.target && e.target.id === 'card') {
+      updateEmpty();
+      go('answer');
+    }
+  });
+
+  function selectTab(name) {
+    var tabs = document.querySelectorAll('.tab');
+    for (var i = 0; i < tabs.length; i++) {
+      var on = tabs[i].getAttribute('data-tab') === name;
+      tabs[i].setAttribute('aria-selected', on ? 'true' : 'false');
+      tabs[i].setAttribute('tabindex', on ? '0' : '-1');
+      var panel = document.getElementById(tabs[i].getAttribute('aria-controls'));
+      if (panel) panel.hidden = !on;
+    }
+  }
+
+  var tablist = document.querySelector('.tabs[role="tablist"]');
+  if (tablist) {
+    var tabs = document.querySelectorAll('.tab');
+    for (var k = 0; k < tabs.length; k++) {
+      tabs[k].addEventListener('click', function () { selectTab(this.getAttribute('data-tab')); });
+    }
+    tablist.addEventListener('keydown', function (e) {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      var list = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+      var idx = list.indexOf(document.activeElement);
+      if (idx === -1) return;
+      e.preventDefault();
+      var next = e.key === 'ArrowRight' ? (idx + 1) % list.length : (idx - 1 + list.length) % list.length;
+      list[next].focus();
+      selectTab(list[next].getAttribute('data-tab'));
+    });
+  }
+
+  updateEmpty();
+  render(routeFromHash(), false);
+})();
+</script>
 </body>
 </html>

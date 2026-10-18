@@ -1,11 +1,23 @@
+{% set kind_words = {
+  'message': 'A list email',
+  'thread': 'Mail thread',
+  'revision': 'Draft revision',
+  'rfc': 'Published RFC',
+  'section': 'The clause that shipped'
+} %}
 <div class="receipt-body">
   {% if receipt.paths %}
   {% for path in receipt.paths %}
   <div class="path">
-    <div class="path-via">{{ path.via }}{% if path.similarity is not none %} · the cited revision's text was {{ (100 * path.similarity) | round | int }}% similar to what shipped{% endif %}</div>
+    <div class="path-via">{% if path.via.startswith('cited') %}Traced from a message that cites this clause{% else %}Traced from a thread whose subject matched the topic{% endif %}{% if path.similarity is not none %} · the cited revision's text was {{ (100 * path.similarity) | round | int }}% similar to what shipped{% endif %}</div>
     {{ path.svg | safe }}
-    <ol class="steps">
-      {% for step in path.steps %}<li class="step-{{ step.kind }}"><a href="{{ step.url }}" target="_blank" rel="noopener">{{ step.kind }}: {{ step.label }}</a></li>{% endfor %}
+    <ol class="timeline">
+      {% for step in path.steps %}
+      <li class="tl-{{ step.kind }}">
+        <span class="tl-kind">{{ kind_words[step.kind] if step.kind in kind_words else step.kind }}</span>
+        <a href="{{ step.url }}" target="_blank" rel="noopener">{{ step.label }}</a>
+      </li>
+      {% endfor %}
     </ol>
   </div>
   {% endfor %}

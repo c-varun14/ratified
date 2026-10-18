@@ -1,77 +1,97 @@
 {% macro ask_clause(number, label) -%}
 <button type="button" class="pill" hx-post="/ask" hx-vals='{"question": {{ ("Why does section " ~ number ~ " read the way it does, and who do I ask?") | tojson }}}' hx-target="#card" hx-swap="innerHTML show:#card:top">{{ label }}</button>
 {%- endmacro %}
+{% set badge_words = {
+  'answer': 'Answered',
+  'partial': 'Partly answered',
+  'unknown': 'The graph doesn’t know',
+  'conflict': 'Answers disagree'
+} %}
 {% if question %}<p class="asked">You asked: <q>{{ question }}</q></p>{% endif %}
 <div class="card outcome-{{ card.outcome }}{% if card.hero or card.tool == 'aggregate_unresolved' %} hero{% endif %}">
-  <div class="card-head">
-    <span class="badge">{{ card.outcome_message if card.outcome == 'unknown' else card.outcome }}</span>
-    <h2>{{ card.title }}</h2>
-  </div>
-  <div class="tool">answered by <code>{{ card.tool }}</code> from the fixed catalogue</div>
 
-  {% if card.resolved %}
-  <div class="resolved">
-    FalkorDB's full-text index on section headings matched <code>{{ card.resolved.query }}</code> to <strong>§{{ card.resolved.matches[0].number }} {{ card.resolved.matches[0].title }}</strong>.
-    {% if card.resolved.matches | length > 1 %}Not it?<span class="alts">{% for m in card.resolved.matches[1:] %}{{ ask_clause(m.number, "§" ~ m.number ~ " " ~ m.title) }}{% endfor %}</span>{% endif %}
-  </div>
-  {% endif %}
-
-  {% if card.explanation %}<p class="hero-explain">{{ card.explanation }}</p>{% endif %}
-  {% if card.outcome == "unknown" and not card.explanation %}<p class="empty">the graph does not know</p>{% endif %}
-  {% if card.phrasing %}<p class="phrasing">{{ card.phrasing }} <em>(LLM phrasing, not a source)</em></p>{% endif %}
-
-  {% if card.conflicts %}<ul class="conflicts">{% for conflict in card.conflicts %}<li>{{ conflict }}</li>{% endfor %}</ul>{% endif %}
-
-  {% if card.tool == 'why_clause' and card.sid %}
-  <h3>The traced path</h3>
-  <p class="sub">mailing-list message → thread → the draft revision it discussed → every later revision → the RFC section that shipped. Every box is a public link.</p>
-  <div class="receipt" hx-get="/receipt?draft={{ card.draft | urlencode }}&sid={{ card.sid | urlencode }}&limit=1" hx-trigger="load" hx-swap="innerHTML"></div>
-  {% if card.claims and not card.missing %}<h3>The discussion it rests on</h3>{% endif %}
+  <section class="step sec-answer">
+    <p class="sec-label">A short answer</p>
+    <div class="card-head">
+      <span class="badge">{{ card.outcome_message if card.outcome == 'unknown' else badge_words.get(card.outcome, card.outcome) }}</span>
+      <h2>{{ card.title }}</h2>
+    </div>
+    {% if card.explanation %}<p class="hero-explain">{{ card.explanation }}</p>{% endif %}
+    {% if card.outcome == "unknown" and not card.explanation %}<p class="empty">the graph does not know</p>{% endif %}
+    {% if card.phrasing %}<p class="phrasing">{{ card.phrasing }} <em>(LLM phrasing, not a source)</em></p>{% endif %}
+    {% if card.conflicts %}<ul class="conflicts">{% for conflict in card.conflicts %}<li>{{ conflict }}</li>{% endfor %}</ul>{% endif %}
+    {% if card.missing %}<ul class="missing">{% for item in card.missing %}<li>{{ item }}</li>{% endfor %}</ul>{% endif %}
+  </section>
+  {% if card.resolved and card.resolved.matches | length > 1 %}
+  <div class="not-it">Not it?<span class="alts">{% for m in card.resolved.matches[1:] %}{{ ask_clause(m.number, "§" ~ m.number ~ " " ~ m.title) }}{% endfor %}</span></div>
   {% endif %}
 
   {% if card.claims %}
-  <ol class="claims">
-    {% for claim in card.claims %}
-    <li class="claim{% if claim.bucket == 'topic' %} lead{% endif %}">
-      <span>{{ claim.text }}</span>{% if claim.bucket == 'topic' %}<span class="tag">lead</span>{% endif %}
-      {% if claim.quote %}<blockquote class="quote">{{ claim.quote }}</blockquote>{% endif %}
-      {% if claim.chips %}<div class="chips">{% for chip in claim.chips %}<a class="chip" href="{{ chip.url }}" target="_blank" rel="noopener" title="{{ chip.url }}">{{ chip.kind }} · {{ chip.label }}</a>{% endfor %}</div>{% endif %}
-      {% if claim.sid %}
-      <button class="path-btn" hx-get="/receipt?draft={{ claim.draft | urlencode }}&sid={{ claim.sid | urlencode }}" hx-target="#receipt-{{ loop.index }}" hx-swap="innerHTML">show the traced path</button>
-      <div id="receipt-{{ loop.index }}" class="receipt"></div>
-      {% endif %}
-    </li>
-    {% endfor %}
-  </ol>
+  <section class="step sec-claims">
+    <h3 class="step-heading">The conversation</h3>
+    <p class="sub">What people actually wrote while the clause was still changing. Open a chip to read the original email.</p>
+    <ol class="claims">
+      {% for claim in card.claims %}
+      <li class="claim{% if claim.bucket == 'topic' %} lead{% endif %}">
+        <span>{{ claim.text }}</span>{% if claim.bucket == 'topic' %}<span class="tag">possible lead</span>{% endif %}
+        {% if claim.quote %}<blockquote class="quote">{{ claim.quote }}</blockquote>{% endif %}
+        {% if claim.chips %}<div class="chips">{% for chip in claim.chips %}<a class="chip" href="{{ chip.url }}" target="_blank" rel="noopener" title="{{ chip.url }}">{{ chip.kind }} · {{ chip.label }}</a>{% endfor %}</div>{% endif %}
+        {% if claim.sid %}
+        <button class="path-btn" hx-get="/receipt?draft={{ claim.draft | urlencode }}&sid={{ claim.sid | urlencode }}" hx-target="#receipt-{{ loop.index }}" hx-swap="innerHTML">show the traced path</button>
+        <div id="receipt-{{ loop.index }}" class="receipt"></div>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ol>
+  </section>
   {% endif %}
 
-  {% if card.related %}
-  <h3>Discussed together with</h3>
-  <p class="sub">Clauses cited in the same messages (the <code>CO_CITED</code> projection). Read these before changing this one.</p>
-  <div class="chips-row" style="margin:0">{% for r in card.related %}{{ ask_clause(r.number, "§" ~ r.number ~ " " ~ r.title ~ " · " ~ r.n ~ " shared") }}{% endfor %}</div>
+  {% if card.tool == 'why_clause' and card.sid %}
+  <section class="step sec-trace">
+    <h3 class="step-heading">How we got here</h3>
+    <p class="sub">From the email, through each draft, to the section that shipped. Every box opens the public source.</p>
+    <div class="receipt" hx-get="/receipt?draft={{ card.draft | urlencode }}&sid={{ card.sid | urlencode }}&limit=1" hx-trigger="load" hx-swap="innerHTML"></div>
+  </section>
   {% endif %}
 
   {% if card.who_to_ask %}
-  <h3>Who to ask now</h3>
-  <ul class="people">{% for person in card.who_to_ask %}<li><strong>{{ person.name }}</strong><span>{{ person.why }}</span></li>{% endfor %}</ul>
+  <section class="step sec-people">
+    <h3 class="step-heading">Who to ask</h3>
+    <ul class="people">{% for person in card.who_to_ask %}<li><strong>{{ person.name }}</strong><span>{{ person.why }}</span></li>{% endfor %}</ul>
+  </section>
+  {% endif %}
+
+  {% if card.related %}
+  <section class="step sec-related">
+    <h3 class="step-heading">Read these next</h3>
+    <p class="sub">Clauses that came up in the same messages. Read them before changing this one so you don't miss the bigger picture.</p>
+    <div class="chips-row" style="margin:0">{% for r in card.related %}{{ ask_clause(r.number, "§" ~ r.number ~ " " ~ r.title ~ " · " ~ r.n ~ " shared messages") }}{% endfor %}</div>
+  </section>
   {% endif %}
 
   {% if card.draft_message %}
-  <h3>Drafted question <span class="tag">not sent</span></h3>
-  <p class="sub">Ratified never sends email. Every line is filled from the graph.</p>
-  <div class="mail">
-    <div class="mail-head">
-      <span class="field">To</span><span>{{ card.draft_message.to | join(', ') }}</span>
-      {% if card.draft_message.cc %}<span class="field">Cc</span><span>{{ card.draft_message.cc | join(', ') }}</span>{% endif %}
-      <span class="field">Subject</span><span>{{ card.draft_message.subject }}</span>
+  <section class="step sec-draft">
+    <h3 class="step-heading">A question you could send <span class="tag">not sent</span></h3>
+    <p class="sub">Ratified never sends email. Every line is filled from the graph.</p>
+    <div class="mail">
+      <div class="mail-head">
+        <span class="field">To</span><span>{{ card.draft_message.to | join(', ') }}</span>
+        {% if card.draft_message.cc %}<span class="field">Cc</span><span>{{ card.draft_message.cc | join(', ') }}</span>{% endif %}
+        <span class="field">Subject</span><span>{{ card.draft_message.subject }}</span>
+      </div>
+      <pre>{{ card.draft_message.body }}</pre>
+      <div class="mail-foot"><button type="button" class="btn" onclick="navigator.clipboard.writeText(this.closest('.mail').querySelector('pre').innerText); this.textContent='Copied'">Copy the question</button></div>
     </div>
-    <pre>{{ card.draft_message.body }}</pre>
-    <div class="mail-foot"><button type="button" class="btn" onclick="navigator.clipboard.writeText(this.closest('.mail').querySelector('pre').innerText); this.textContent='Copied'">Copy the question</button></div>
-  </div>
+  </section>
   {% endif %}
 
-  {% if card.missing %}<ul class="missing">{% for item in card.missing %}<li>{{ item }}</li>{% endfor %}</ul>{% endif %}
-  {% if card.notes %}<ul class="notes">{% for note in card.notes %}<li>{{ note }}</li>{% endfor %}</ul>{% endif %}
-
-  {% if trace %}{% include "_trace.html" %}{% endif %}
+  <details class="proof">
+    <summary>Show how this was computed</summary>
+    <div class="tool">answered by <code>{{ card.tool }}</code> from the fixed catalogue</div>
+    {% if card.resolved %}
+    <div class="proof-note">FalkorDB's full-text index on section headings matched <code>{{ card.resolved.query }}</code> to <strong>§{{ card.resolved.matches[0].number }} {{ card.resolved.matches[0].title }}</strong>.</div>
+    {% endif %}
+    {% if card.notes %}<ul class="notes">{% for note in card.notes %}<li>{{ note }}</li>{% endfor %}</ul>{% endif %}
+    {% if trace %}{% include "_trace.html" %}{% endif %}
+  </details>
 </div>
